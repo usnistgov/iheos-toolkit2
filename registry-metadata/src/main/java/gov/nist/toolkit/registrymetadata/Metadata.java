@@ -101,6 +101,14 @@ public class Metadata {
 		return buf.toString();
 	}
 
+	public boolean isEmpty() {
+		return extrinsicObjects.isEmpty() &&
+				folders.isEmpty() &&
+				submissionSets.isEmpty() &&
+				associations.isEmpty() &&
+				objectRefs.isEmpty();
+	}
+
 	public String getSummary() {
 		StringBuffer buf = new StringBuffer();
 

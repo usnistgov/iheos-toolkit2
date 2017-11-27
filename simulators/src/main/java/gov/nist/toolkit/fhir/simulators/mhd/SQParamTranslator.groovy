@@ -20,6 +20,7 @@ class SQParamTranslator {
     static confKey = '$XDSDocumentEntryConfidentialityCode'
     static formatKey = '$XDSDocumentEntryFormatCode'
     static relatedKey = '$XDSDocumentEntryReferenceIdList'
+    static authorKey = '$XDSDocumentEntryAuthorPerson'
     static String queryType = 'QueryType'
 
     // coded types
@@ -32,6 +33,18 @@ class SQParamTranslator {
             confKey,
             formatKey,
             relatedKey
+    ]
+
+    static acceptsMultiple = [
+            classKey,
+            typeKey,
+            settingKey,
+            facilityKey,
+            eventKey,
+            confKey,
+            authorKey,
+            formatKey,
+            statusKey
     ]
 
     // Query Types

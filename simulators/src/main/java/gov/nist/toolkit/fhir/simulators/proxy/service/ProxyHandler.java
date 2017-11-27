@@ -50,8 +50,11 @@ class ProxyHandler implements HttpRequestHandler {
             } else
                 throw new Exception("SimProxyBase not available in ProxyHandler");
 
-            if (proxyBase.getSimDb() == null)
-                throw new Exception("ProxyHandler - SimProxyBase has not been initialized");
+            // this will be null on GET requests
+            if (proxyBase.getSimDb() == null) {
+                proxyBase.init(request);
+            }
+                //throw new Exception("ProxyHandler - SimProxyBase has not been initialized");
             clientLogger = proxyBase.getClientLogger();
         }
         catch (BadSimIdException e) {

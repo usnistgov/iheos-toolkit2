@@ -1,6 +1,7 @@
 package gov.nist.toolkit.fhir.simulators.proxy.transforms
 
 import gov.nist.toolkit.fhir.context.ToolkitFhirContext
+import gov.nist.toolkit.fhir.simulators.fhir.OperationOutcomeGenerator
 import gov.nist.toolkit.fhir.simulators.fhir.WrapResourceInHttpResponse
 import gov.nist.toolkit.fhir.simulators.mhd.MetadataToDocumentReferenceTranslator
 import gov.nist.toolkit.fhir.simulators.proxy.exceptions.SimProxyTransformException
@@ -11,9 +12,15 @@ import gov.nist.toolkit.registrymetadata.Metadata
 import gov.nist.toolkit.registrymetadata.MetadataParser
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection
+import gov.nist.toolkit.registrymsg.registry.RegistryError
+import gov.nist.toolkit.registrymsg.registry.RegistryErrorListParser
 import gov.nist.toolkit.results.MetadataToMetadataCollectionParser
+import gov.nist.toolkit.soap.http.SoapFault
 import gov.nist.toolkit.utilities.io.Io
+import gov.nist.toolkit.utilities.xml.Util
+import gov.nist.toolkit.utilities.xml.XmlUtil
 import gov.nist.toolkit.xdsexception.ExceptionUtil
+import org.apache.axiom.om.OMElement
 import org.apache.commons.httpclient.HttpStatus
 import org.apache.http.HttpResponse
 import org.apache.http.message.BasicHttpResponse
@@ -36,6 +43,20 @@ class SQResponseToFhirSearchResponseTransform implements ContentResponseTransfor
 
             String content = Io.getStringFromInputStream(response.getEntity().content)
             Metadata metadata = MetadataParser.parseNonSubmission(content)
+            if (metadata.isEmpty()) {
+                SoapFault fault = SoapFault.parse(content)
+                if (fault) {
+                    OperationOutcome oo = OperationOutcomeGenerator.translate(fault)
+                    return WrapResourceInHttpResponse.wrap(base, oo, HttpStatus.SC_INTERNAL_SERVER_ERROR)
+                }
+                OMElement responseEle = Util.parse_xml(content)
+                List<OMElement> rel = XmlUtil.decendentsWithLocalName(responseEle, 'RegistryErrorList')
+                if (rel && rel.size() > 0) {
+                    List<RegistryError> re = new RegistryErrorListParser(rel[0]).getRegistryErrorList()
+                    OperationOutcome oo = OperationOutcomeGenerator.translate(re)
+                    return WrapResourceInHttpResponse.wrap(base, oo, HttpStatus.SC_INTERNAL_SERVER_ERROR)
+                }
+            }
             MetadataToMetadataCollectionParser mmparser = new MetadataToMetadataCollectionParser(metadata, 'Label')
             MetadataCollection col = mmparser.get()
             col.docEntries.each { DocumentEntry de ->
@@ -44,6 +65,7 @@ class SQResponseToFhirSearchResponseTransform implements ContentResponseTransfor
                 Bundle.BundleEntryComponent comp = new Bundle.BundleEntryComponent()
                 comp.fullUrl = 'http://example.com/fhir'
                 comp.resource = dr
+                bundle.addEntry(comp)
             }
             return WrapResourceInHttpResponse.wrap(base, bundle, HttpStatus.SC_OK)
 

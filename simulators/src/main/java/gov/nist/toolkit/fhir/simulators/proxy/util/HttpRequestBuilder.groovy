@@ -18,7 +18,8 @@ class HttpRequestBuilder {
             newrequest.setEntity(((BasicHttpEntityEnclosingRequest) request).getEntity())
             return newrequest
         } else if (request instanceof BasicHttpRequest) {
-            BasicHttpRequest newRequest = new BasicHttpRequest(requestLine)
+//            BasicHttpRequest newRequest = new BasicHttpRequest(requestLine)
+            BasicHttpEntityEnclosingRequest newRequest = new BasicHttpEntityEnclosingRequest(requestLine)
             newRequest.setHeaders(request.allHeaders)
             return newRequest
         }

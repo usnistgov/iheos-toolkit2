@@ -14,6 +14,8 @@ class SimEndpoint {
     String actorType
     String transactionType
     String simIdString
+    String resourceType = null
+    String query = null
 
     SimEndpoint(String endpoint) {
         assert endpoint
@@ -30,6 +32,8 @@ class SimEndpoint {
         if (i == -1)
             throw new InvalidSimEndpointException(endpoint, 'Cannot find delimiting /')
         int coloni = service.indexOf(':')
+        if (!endpoint.startsWith('http'))
+            coloni = -1
         if (coloni > -1) {
             hostName = service.substring(0, coloni)
             String portStr = service.substring(coloni+1, i)
@@ -50,7 +54,17 @@ class SimEndpoint {
         List partsList = parts as List  // index beyond end with list -> returns null instead of exception
         simIdString = partsList[simStart+1]
         actorType = partsList[simStart+2]
-        transactionType = partsList[simStart+3]   // with FHIR this is sometimes null
+        transactionType = partsList[simStart+3]// with FHIR this is sometimes null
+        def isQuery = service.contains('?')
+        if ('fhir' == transactionType && partsList?.get(simStart+4)) {// is FHIR transaction - this says what type
+            if (isQuery) {
+                def resAndQuery = partsList[simStart+4]
+                (resourceType, query) = resAndQuery.split('\\?', 2)
+                transactionType = resourceType
+            }
+            else
+                transactionType = partsList[simStart + 4]
+        }
     }
 
     HttpHost getHost() {

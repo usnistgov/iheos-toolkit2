@@ -9,7 +9,7 @@ class SoapBuilder {
     /**
      * wrap bodyXml in simple soap frame
      * @param bodyXml
-     * @return [ http header,  htto body  ]
+     * @return [ http header,  http body  ]
      */
     List<String> simpleSoap(String service, String host, String port, String action, String bodyXml) {
         def map = [theService: service, theHost: host, thePort: port, theAction: action]

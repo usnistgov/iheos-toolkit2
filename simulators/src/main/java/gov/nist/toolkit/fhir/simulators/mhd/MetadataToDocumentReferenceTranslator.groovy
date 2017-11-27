@@ -10,7 +10,8 @@ class MetadataToDocumentReferenceTranslator {
     IFhirSearch searcher
 
     MetadataToDocumentReferenceTranslator(List<String> supportServerBases, IFhirSearch searcher) {
-        assert !supportServerBases?.empty()
+        assert supportServerBases
+        assert supportServerBases.size() > 0
         assert searcher
         this.supportServerBases = supportServerBases
         this.searcher = searcher
@@ -96,15 +97,19 @@ class MetadataToDocumentReferenceTranslator {
                 def system = "urn:oid:${aa}"
                 // lookup Patient Resource in FHIR Support server based on system|value
                 def params = ["identifier=${system}|${value}"]
-                Map<String, IBaseResource> searchResults = searcher.search(supportServerBase, 'Patient', params)
-                if (searchResults.size() == 0)
-                    throw new Exception("Did not find Patient identiied by ${params} on server ${supportServerBase}")
-                if (searchResults.size() > 1)
-                    throw new Exception("Search for Patient identiied by ${params} on server ${supportServerBase} returned ${searchResults.size()} Patients")
-                IBaseResource theResource = searchResults.values()[0]
+//                Map<String, IBaseResource> searchResults = searcher.search(supportServerBase, 'Patient', params)
+//                if (searchResults.size() == 0)
+//                    throw new Exception("Did not find Patient identiied by ${params} on server ${supportServerBase}")
+//                if (searchResults.size() > 1)
+//                    throw new Exception("Search for Patient identiied by ${params} on server ${supportServerBase} returned ${searchResults.size()} Patients")
+//                IBaseResource theResource = searchResults.values()[0]
+
+                def (fullUrl, theResource) = find(supportServerBases, 'Patient', params)
                 if (!(theResource instanceof Patient))
-                    throw new Exception("Search for Patient identiied by ${params} on server ${supportServerBase} returned Resource of type ${theResource.getClass().simpleName} instead of Patient")
-                dr.subject = new Reference(searchResults.keySet()[0])
+                    throw new Exception("Search for Patient identiied by ${params} on servers ${supportServerBases} returned Resource of type ${theResource.getClass().simpleName} instead of Patient")
+
+
+                dr.subject = new Reference(fullUrl)
             } else
                 throw new Exception("Patient ID ${de.patientId} is improperly formatted")
         }
@@ -122,5 +127,16 @@ class MetadataToDocumentReferenceTranslator {
         }
 
         return dr
+    }
+
+    // returns [String, IBaseResource]
+    def find(List bases, String resourceType, params) {
+        Map<String, IBaseResource> searchResults
+        for (String base : bases) {
+            searchResults = searcher.search(base, resourceType, params)
+            if (searchResults.size() == 0) break
+            return [searchResults.keySet()[0], searchResults.values()[0]]
+        }
+        throw new Exception("Did not find ${resourceType} identiied by ${params} on servers ${bases}")
     }
 }

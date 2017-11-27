@@ -36,7 +36,7 @@ public enum TransactionType implements Serializable, IsSerializable {
     STS("STS", "Secure Token Service", "sts", "sts", "sts.as", true, "sts", "sts", true, null, null),
     FHIR("FHIR", "FHIR", "fhir", "fhir", "fhir.as", true, "fhir", "fhir", true, SimulatorProperties.fhirEndpoint, SimulatorProperties.fhirTlsEndpoint, true),
     PROV_DOC_BUNDLE("ITI-65", "Provide Document Bundle", "pdb", "pdb", "pdb.as", false, "fhir", "fhir", false, SimulatorProperties.fhirEndpoint, SimulatorProperties.fhirTlsEndpoint, true),
-    FIND_DOC_REFS("ITI-67", "Find Document References", "fdr", "fdr", "fdr.as", false, "fhir", "fhir", false, SimulatorProperties.fhirEndpoint, SimulatorProperties.fhirTlsEndpoint, true),
+    FIND_DOC_REFS("ITI-67", "DocumentReference", "fdr", "fdr", "fdr.as", false, "fhir", "fhir", false, SimulatorProperties.fhirEndpoint, SimulatorProperties.fhirTlsEndpoint, true),
     ANY("ANY", "ANY", "any", "any", "any.as", false, "any", "any", false, null, null, false);
 
 	private static final long serialVersionUID = 1L;

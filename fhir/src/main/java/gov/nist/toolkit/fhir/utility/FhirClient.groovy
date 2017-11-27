@@ -78,8 +78,8 @@ class FhirClient implements IFhirSearch {
             request.addHeader('Content-Type', contentType)
             HttpResponse response = client.execute(request)
             def statusLine = response.getStatusLine()
-             if (statusLine.statusCode != 200)
-                throw new Exception("GET from ${uri} for content type ${contentType} failed with ${statusLine.statusCode}: ${statusLine.reasonPhrase}")
+//             if (statusLine.statusCode != 200)
+//                throw new Exception("GET from ${uri} for content type ${contentType} failed with ${statusLine.statusCode}: ${statusLine.reasonPhrase}")
             logger.info("GET ${uri} for content type ${contentType}")
             return [statusLine, Io.getStringFromInputStream(response.getEntity().content)]
         }
@@ -114,19 +114,23 @@ class FhirClient implements IFhirSearch {
      */
     Map<String, IBaseResource> search(String base, String resourceType, List params) {
         try {
-            IBaseResource theBundle = readResource(buildURL(base, resourceType, params))
+            def url = buildURL(base, resourceType, params)
+            IBaseResource theBundle = readResource(url)
             if (theBundle instanceof Bundle) {
                 Bundle bundle = theBundle
                 logger.info("...returning ${bundle.entry.size()} entries")
                 Map<String, IBaseResource> map = [:]
                 bundle.entry.each { Bundle.BundleEntryComponent comp ->
                     def fullUrl = comp.fullUrl
-                    IBaseResource resource = comp.resource
+                    IBaseResource resource = comp.getResource()
                     map[fullUrl] = resource
                 }
                 return map
             }
-            throw new Exception("returned resource of type ${theBundle.class.name}")
+            Map<String, IBaseResource> map = [:]
+            map[''] = theBundle
+            return map
+//            throw new Exception("returned resource of type ${theBundle.class.name}")
         }
         catch (Throwable e) {
             logger.error("...${e.getMessage()}")

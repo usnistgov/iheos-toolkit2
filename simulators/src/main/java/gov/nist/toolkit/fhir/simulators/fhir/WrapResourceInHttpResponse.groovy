@@ -16,9 +16,13 @@ import org.hl7.fhir.instance.model.api.IBaseResource
 class WrapResourceInHttpResponse {
 
     static BasicHttpResponse wrap(SimProxyBase base, IBaseResource resource, int httpCode) {
+        wrap(base, resource, httpCode, EnglishReasonPhraseCatalog.INSTANCE.getReason(httpCode, Locale.ENGLISH))
+    }
+
+    static BasicHttpResponse wrap(SimProxyBase base, IBaseResource resource, int httpCode, String reason) {
         FhirContext ctx = ResourceCache.ctx
-        String httpCodeString = EnglishReasonPhraseCatalog.INSTANCE.getReason(httpCode, Locale.ENGLISH)
-        BasicHttpResponse outcome = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion('HTTP', 1, 1), httpCode, httpCodeString))
+//        String httpCodeString = EnglishReasonPhraseCatalog.INSTANCE.getReason(httpCode, Locale.ENGLISH)
+        BasicHttpResponse outcome = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion('HTTP', 1, 1), httpCode, reason))
         outcome.addHeader('Content-Type', base.clientContentType)
         outcome.addHeader('Date', new HttpDateGenerator().currentDate)
         String content

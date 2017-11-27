@@ -23,17 +23,21 @@ class SQTranslator {
 
         def writer = new StringWriter()
         def xml = new MarkupBuilder(writer)
-
-        xml.AdhocQueryRequest {
-            ResponseOption(returnComposedObjects:'true', returnType:(leafClass) ? 'LeafClass' : 'ObjectRef')
-            AdhocQuery(id:queryType) {
+//xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0"
+        xml.'query:AdhocQueryRequest'('xmlns:query':'urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0') {
+            'query:ResponseOption'(returnComposedObjects:'true', returnType:(leafClass) ? 'LeafClass' : 'ObjectRef')
+            'rim:AdhocQuery'('xmlns:rim':'urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0', id:queryType) {
                 model.each { paramName, paramValues ->
-                    Slot(name: paramName) {
-                        ValueList() {
+                    'rim:Slot'(name: paramName) {
+                        'rim:ValueList'() {
                             paramValues.each { paramValue ->
                                 if (SQParamTranslator.codedTypes.contains(paramName))
                                     paramValue = "('${paramValue}')"
-                                Value(paramValue)
+                                else
+                                    paramValue = "'${paramValue}'"
+                                if (SQParamTranslator.acceptsMultiple.contains(paramName))
+                                    paramValue = "(${paramValue})"
+                                'rim:Value'(paramValue)
                             }
                         }
                     }

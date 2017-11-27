@@ -13,6 +13,7 @@ import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import gov.nist.toolkit.toolkitServicesCommon.ToolkitFactory
+import org.hl7.fhir.dstu3.model.DocumentReference
 import org.hl7.fhir.instance.model.api.IBaseResource
 import spock.lang.Shared
 
@@ -41,43 +42,46 @@ class MhdSimProxySearchSpec extends ToolkitSpecification {
         // Needed to build simulators
         spi = getSimulatorApi(remoteToolkitPort)
 
-        new BuildCollections().init(null)
+        def build = true
+        if (build) {
+            new BuildCollections().init(null)
 
-        // Build MHD Document Recipient
+            // Build MHD Document Recipient
 
-        api.createTestSession(testSession)
+            api.createTestSession(testSession)
 
-        spi.delete(ToolkitFactory.newSimId(mhdId, testSession, ActorType.MHD_DOC_RECIPIENT.name, envName, true))
+            spi.delete(ToolkitFactory.newSimId(mhdId, testSession, ActorType.MHD_DOC_RECIPIENT.name, envName, true))
 
-        Installation.instance().defaultEnvironmentName()
+            Installation.instance().defaultEnvironmentName()
 
-        mhdSimConfig = spi.create(
-                mhdId,
-                testSession,
-                SimulatorActorType.MHD_DOC_RECIPIENT,
-                envName
-        )
+            mhdSimConfig = spi.create(
+                    mhdId,
+                    testSession,
+                    SimulatorActorType.MHD_DOC_RECIPIENT,
+                    envName
+            )
 
-        mhdSimConfig.asList(SimulatorProperties.simulatorGroup).each { String simIdString ->
-            SimId theSimId = new SimId(simIdString)
-            SimConfig config = spi.get(spi.get(theSimId.user, theSimId.id))
-            simGroup[simIdString] = config
+            mhdSimConfig.asList(SimulatorProperties.simulatorGroup).each { String simIdString ->
+                SimId theSimId = new SimId(simIdString)
+                SimConfig config = spi.get(spi.get(theSimId.user, theSimId.id))
+                simGroup[simIdString] = config
+            }
+
+            SimConfig rrConfig = simGroup['bill__mhd_regrep']
+            rrConfig.setProperty(SimulatorProperties.VALIDATE_CODES, false)
+            rrConfig.setProperty(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, false)
+            spi.update(rrConfig)
+
+            // load MHD Doc Rec with single one-doc submission
+
+            def sections = ['pdb']
+            def params = [:]
+            List<Result> results = api.runTest(testSession, mhdName, testInstance, sections, params, true)
+
+            assert results.size() == 1
+            assert results.get(0).passed()
+            assert results[0].assertions.getAssertionsThatContains('Ref =').size() == 2
         }
-
-        SimConfig rrConfig = simGroup['bill__mhd_regrep']
-        rrConfig.setProperty(SimulatorProperties.VALIDATE_CODES, false)
-        rrConfig.setProperty(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, false)
-        spi.update(rrConfig)
-
-        // load MHD Doc Rec with single one-doc submission
-
-        def sections = ['pdb']
-        def params = [ :]
-        List<Result> results = api.runTest(testSession, mhdName, testInstance, sections, params, true)
-
-        assert results.size() == 1
-        assert results.get(0).passed()
-        assert results[0].assertions.getAssertionsThatContains('Ref =').size() == 2
     }
 
     def setup() {
@@ -87,9 +91,15 @@ class MhdSimProxySearchSpec extends ToolkitSpecification {
 
     def 'Find Document References search through simproxy'() {
         when:
-        Map<String, IBaseResource> result = new FhirClient().search(baseAddress, 'DocumentReference', ['patient.identifier=urn:oid:1.2.3.4.5.6|MRN'])
+        def config = spi.get(spi.get(testSession, mhdId))
+        def baseAddr = config.asString(SimulatorProperties.fhirEndpoint)
+        Map<String, IBaseResource> result = new FhirClient().search(baseAddr,
+                'DocumentReference',
+                ['patient.identifier=urn:oid:1.2.3.4.5.6|MRN',
+                'status=current'])
 
         then:
         !result.isEmpty()
+        result.values()[0] instanceof DocumentReference
     }
 }

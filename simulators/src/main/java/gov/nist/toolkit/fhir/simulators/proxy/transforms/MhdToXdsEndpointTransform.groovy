@@ -9,6 +9,7 @@ import gov.nist.toolkit.fhir.simulators.proxy.util.SimpleRequestTransform
 import org.apache.http.HttpRequest
 import org.apache.http.RequestLine
 import org.apache.http.message.BasicHttpEntityEnclosingRequest
+import org.apache.http.message.BasicHttpRequest
 import org.apache.http.message.BasicRequestLine
 import org.apache.log4j.Logger
 /**
@@ -20,16 +21,24 @@ class MhdToXdsEndpointTransform implements SimpleRequestTransform {
     @Override
     HttpRequest run(SimProxyBase base, HttpRequest theRequest) {
         logger.info('Running MhdToXdsEndpointTransform')
-        assert theRequest instanceof BasicHttpEntityEnclosingRequest
-        BasicHttpEntityEnclosingRequest request = theRequest
-        if (request.requestLine.method.equalsIgnoreCase('post')) {
-            // this allows endpoint to be chosen
-            base.setTargetType(ActorType.REPOSITORY, TransactionType.PROVIDE_AND_REGISTER)
+        if (theRequest instanceof BasicHttpEntityEnclosingRequest) {
+            BasicHttpEntityEnclosingRequest request = theRequest
+            if (request.requestLine.method.equalsIgnoreCase('post')) {
+                // this allows endpoint to be chosen
+                base.setTargetType(ActorType.REPOSITORY, TransactionType.PROVIDE_AND_REGISTER)
 
+                EndpointParser targetEndpoint = new EndpointParser(base.getTargetEndpoint())
+                RequestLine requestLine = new BasicRequestLine(request.requestLine.method, targetEndpoint.service, request.requestLine.protocolVersion)
+                return HttpRequestBuilder.build(request, requestLine)
+            }
+        }
+        if (theRequest instanceof BasicHttpRequest) {
+            BasicHttpRequest request = theRequest
+            base.setTargetType(ActorType.REGISTRY, TransactionType.STORED_QUERY)
             EndpointParser targetEndpoint = new EndpointParser(base.getTargetEndpoint())
-            RequestLine requestLine = new BasicRequestLine(request.requestLine.method, targetEndpoint.service, request.requestLine.protocolVersion)
+            RequestLine requestLine = new BasicRequestLine('POST', targetEndpoint.service, request.requestLine.protocolVersion)
             return HttpRequestBuilder.build(request, requestLine)
         }
-        return request
+        return theRequest
     }
 }

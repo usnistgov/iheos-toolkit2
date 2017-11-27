@@ -2,10 +2,7 @@ package gov.nist.toolkit.fhir.simulators.proxy.service;
 
 import gov.nist.toolkit.fhir.simulators.proxy.util.SimProxyBase;
 import gov.nist.toolkit.utilities.io.Io;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpException;
-import org.apache.http.HttpResponse;
+import org.apache.http.*;
 import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.impl.DefaultBHttpClientConnection;
 import org.apache.http.util.Args;
@@ -75,5 +72,10 @@ public class ClientConnection extends DefaultBHttpClientConnection {
         response.setEntity(entity);
     }
 
+    @Override
+    public void sendRequestHeader(final HttpRequest request)
+            throws HttpException, IOException {
+        super.sendRequestHeader(request);
+    }
 
 }
