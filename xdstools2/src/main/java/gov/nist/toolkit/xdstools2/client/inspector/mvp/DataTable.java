@@ -73,7 +73,9 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
     T lastSelectedObject;
 
     abstract ProvidesKey<T> getKeyProvider();
+    abstract void defaultSingleClickAction(T row);
     abstract void defaultDoubleClickAction(T row);
+    abstract void diffAction(T left, T right);
     abstract int getWidthInPx();
     abstract void setData(List<T> objectRefList);
 
@@ -146,7 +148,7 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
                     }
                 }
             });
-        } else {
+        } else { // TODO: test this option. This should Follow the Diff Mode logic.
             multiSelect.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
                 @Override
                 public void onValueChange(ValueChangeEvent<Boolean> valueChangeEvent) {
@@ -210,6 +212,7 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
                 } else {
                     list.add(placeHolderRow);
                 }
+                defaultSingleClickAction(mySelection);
             }
         });
     }
@@ -263,6 +266,11 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
                                                              Set<T> mySelection = ((MultiSelectionModel<T>) selectionModel).getSelectedSet();
                                                              if (mySelection.size() > 0) {
                                                                  lastSelectedObject = mySelection.iterator().next();
+                                                             }
+                                                             if (mySelection.size()==2) {
+                                                                 T left = mySelection.iterator().next();
+                                                                 T right = mySelection.iterator().next();
+                                                                 diffAction(left,right);
                                                              }
                                                          }
                                                      }

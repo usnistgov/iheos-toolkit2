@@ -7,6 +7,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HeaderPanel;
 import com.google.gwt.user.client.ui.ProvidesResize;
 import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractView;
@@ -41,6 +42,16 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         @Override
         void defaultDoubleClickAction(ObjectRef row) { // TODO: 1. change to just (single) Click. 2. Wire this into inspector to navigate (or focus) object into view
 //            getPresenter().do
+        }
+
+        @Override
+        void defaultSingleClickAction(ObjectRef row) {
+           getPresenter().doFocusTreeItem(null,row);
+        }
+
+        @Override
+        void diffAction(ObjectRef left, ObjectRef right) {
+
         }
 
         @Override
@@ -82,7 +93,7 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
 //        GWT.log("setting North height to: " + resultPanelHeight + ". activityDiagram height is: " + activityDiagram.getDiagramHeight() + ". objectRef height: " + objectRefTable.asWidget().getElement().getStyle().getHeight());
 
         containerPanel.setHeaderWidget(topNavPanel);
-        containerPanel.setContentWidget(metadataInspector.asWidget()); // TODO: put this in a scroll panel.
+        containerPanel.setContentWidget(new ScrollPanel(metadataInspector.asWidget())); // TODO: put this in a scroll panel.
 //        containerPanel.add(new HTML("add"));
 
         //

@@ -31,6 +31,7 @@ import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -61,6 +62,8 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 	// Data for test being displayed.
 	DataModel data;
 	Logger logger = Logger.getLogger("");
+
+	List<Tree> treeList = new ArrayList<>();
 
 	public MetadataInspectorTab() {
 	}
@@ -185,6 +188,7 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 	
 	void showContents() {
 		historyPanel.clear();
+		treeList.clear();
 
 		HTML title = new HTML();
 		title.setHTML("<h3>Contents</h3>");
@@ -199,6 +203,7 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 		if (data.combinedMetadata != null) {
 
 			Tree contentTree = new Tree();
+			treeList.add(contentTree);
 
 			new ListingDisplay(this, data, new TreeThing(contentTree)).listing();
 
@@ -305,6 +310,8 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
     */
 	void showHistory() {
 		historyPanel.clear();
+		treeList.clear();
+
 		// History panel title
 		HTML title = new HTML();
 		title.setHTML("<h3>History</h3>");
@@ -318,11 +325,13 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 
 		if (data.results == null)
 			return;
+
       // Pass tests, displaying history results for each test.
 		for (Result res : data.results) {
 			AssertionResults ares = res.assertions;
 			// Tree widget created for each test
 			Tree historyTree = new Tree();
+			treeList.add(historyTree);
 			// tree element for test with test id & time stamp, red if test failed
 			TreeItem historyElement = 
 			   new TreeItem(redAsHTML(res.testInstance.getId() + "   (" + res.timestamp + ")", !ares.isFailed()));
@@ -567,6 +576,10 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 		}
 
 		return data.combinedMetadata;
+	}
+
+	public List<Tree> getTreeList() {
+		return treeList;
 	}
 
 	@Override

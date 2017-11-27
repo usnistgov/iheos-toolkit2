@@ -2,7 +2,12 @@ package gov.nist.toolkit.xdstools2.client.inspector.mvp;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.user.client.ui.Hyperlink;
+import com.google.gwt.user.client.ui.Tree;
+import com.google.gwt.user.client.ui.TreeItem;
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
+import gov.nist.toolkit.registrymetadata.client.MetadataObject;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
@@ -125,4 +130,84 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
             view.objectRefTable.setData(metadataCollection.objectRefs);
         }
     }
+
+    /**
+     *
+     * @param target
+     * @return true if object was located/found in the tree, selected
+     */
+    public boolean doFocusTreeItem(final TreeItem root, final ObjectRef target) {
+       return new TreeItemSelector<ObjectRef>().doFocusTreeItem(root, target);
+    }
+
+    class TreeItemSelector<T> {
+        public boolean doFocusTreeItem(final TreeItem root, final T target) {
+            if (root == null) {
+                List<Tree> treeList = view.metadataInspector.getTreeList();
+
+                for (Tree tree : treeList) {
+                    if (doFocusTreeItem(tree.getItem(0), target)) {
+                        break;
+                    }
+                }
+            } else {
+                int childCt = root.getChildCount();
+                if (attemptSelect(root, root.getUserObject(), target)) {
+                    root.setState(true);
+                    return true;
+                }
+                if (childCt>0) {
+                    for (int cx = 0; cx < childCt; cx++) {
+                        TreeItem child = root.getChild(cx);
+                        Object userObject = child.getUserObject();
+                        if (attemptSelect(child, userObject, target)) {
+                            root.setState(true);
+                            return true;
+                        } else if (child.getChildCount()>0) {
+                            return doFocusTreeItem(child, target);
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        boolean attemptSelect(TreeItem treeItem, Object userObject, T target) {
+            if (userObject != null && target!=null) {
+                if (compareTo((MetadataObject)userObject,target)) {
+                    ((Hyperlink)treeItem.getWidget()).fireEvent(new ClickEvent() {});
+                    treeItem.setSelected(true);
+                    treeItem.setState(true, true);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public boolean compareTo(MetadataObject source, Object target) {
+            if (source == target) return true;
+            if (!(target instanceof MetadataObject)) return false;
+
+            MetadataObject that = (MetadataObject) target;
+
+            if (source!=null && that!=null) {
+                if (source.id== null || that.id==null)
+                    return false;
+            }
+
+            try {
+                GWT.log("source id is: " + source.id + " target id is: " + that.id + ". Are they equal? " + (source.id == that.id));
+            } catch (Exception ex) {
+                GWT.log(ex.toString());
+            }
+
+            if (source.id != null ? !source.id.equals(that.id) : that.id != null) {
+                return false;
+            }
+
+            return source.home != null ? source.home.equals(that.home) : that.home == null;
+        }
+
+    }
+
 }

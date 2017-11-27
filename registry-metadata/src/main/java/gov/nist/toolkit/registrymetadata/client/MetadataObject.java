@@ -33,5 +33,5 @@ public abstract class MetadataObject implements IsSerializable, Serializable {
 	public boolean hasExtra() {
 		return extra != null && extra.size() > 0;
 	}
-	
+
 }

@@ -17,6 +17,8 @@ import java.util.Comparator;
 import java.util.List;
 
 abstract class ObjectRefDataTable extends DataTable<ObjectRef> implements IsWidget {
+    abstract void doGetDocuments(List<ObjectRef> objectRefs);
+
     private FlowPanel widgetPanel = new FlowPanel();
     private static String ID_COLUMN_NAME = "Id";
     private static String HOME_ID_COLUMN_NAME = "HomeId";
@@ -167,7 +169,6 @@ abstract class ObjectRefDataTable extends DataTable<ObjectRef> implements IsWidg
         return KEY_PROVIDER;
     }
 
-    abstract void doGetDocuments(List<ObjectRef> objectRefs);
 
     void setData(List<ObjectRef> objectRefList) {
         dataProvider.getList().clear();
