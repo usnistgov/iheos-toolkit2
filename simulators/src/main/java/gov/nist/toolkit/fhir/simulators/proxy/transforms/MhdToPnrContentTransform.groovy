@@ -24,7 +24,7 @@ import org.hl7.fhir.instance.model.api.IBaseResource
  *
  */
 class MhdToPnrContentTransform implements ContentRequestTransform {
-    static private final Logger logger = Logger.getLogger(MhdToPnrContentTransform.class);
+    static private final Logger logger = Logger.getLogger(MhdToPnrContentTransform)
 
     @Override
     HttpRequest run(SimProxyBase base, BasicHttpEntityEnclosingRequest request) {

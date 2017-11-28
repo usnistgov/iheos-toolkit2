@@ -15,6 +15,7 @@ import com.google.gwt.user.client.ui.TabBar;
 import gov.nist.toolkit.actortransaction.client.ActorOption;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.IheItiProfile;
+import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.interactiondiagram.client.events.DiagramClickedEvent;
 import gov.nist.toolkit.interactiondiagram.client.events.DiagramPartClickedEventHandler;
 import gov.nist.toolkit.interactiondiagram.client.widgets.InteractionDiagram;
@@ -25,15 +26,7 @@ import gov.nist.toolkit.session.client.sort.TestSorter;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
-import gov.nist.toolkit.xdstools2.client.command.command.AutoInitConformanceTestingCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.DeleteSingleTestCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.GetAssignedSiteForTestSessionCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.GetSiteCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.GetStsSamlAssertionCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.GetTabConfigCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.GetTestCollectionsCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.GetTestsOverviewCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.RunTestCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.event.testContext.TestContextChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testContext.TestContextChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
@@ -43,19 +36,9 @@ import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.LaunchInspectorClickHandler;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
-import gov.nist.toolkit.xdstools2.shared.command.request.DeleteSingleTestRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetCollectionRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetStsSamlAssertionRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetTabConfigRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetTestsOverviewRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.RunTestRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TestContext.NONE;
 
@@ -1043,8 +1026,9 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 	}
 
-	private String setPatientId(Map<String, String> parms, String patientId) {
-		return parms.put("$patientid$",patientId);
+	private void setPatientId(Map<String, String> parms, String patientId) {
+		if (patientId != null && !patientId.equals(""))
+		parms.put("$patientid$",patientId);
 	}
 
 	private String getTestInstancePatientId(TestInstance testInstance, Map<String, String> parms) {
@@ -1068,7 +1052,9 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		}
 
 		if (ActorType.DOCUMENT_RECIPIENT.getActorCode().equals(currentActorOption.actorTypeId)) {
-			setPatientId(parms, recOrchestrationResponse.getRegisterPid().asString());
+			Pid pid = recOrchestrationResponse.getRegisterPid();
+			if (pid != null)
+				setPatientId(parms, pid.asString());
 		}
 
 		if (ActorType.REGISTRY.getActorCode().equals(currentActorOption.actorTypeId)) {

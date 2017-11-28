@@ -122,7 +122,7 @@ class RecOrchestrationBuilder {
             }
             orchProps.save()
 
-            response.setRegisterPid(PidBuilder.createPid('fake^^^&1.2.3&ISO'))
+           // response.setRegisterPid(PidBuilder.createPid('fake^^^&1.2.3&ISO'))
             response.rrConfig = rrSimConfig
             response.RRSite = SimCache.getSite(session.getId(), rrSimId.toString())
             response.supportSite = SimCache.getSite(session.getId(), rrSimId.toString())

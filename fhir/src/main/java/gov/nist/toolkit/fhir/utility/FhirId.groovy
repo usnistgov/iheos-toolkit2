@@ -7,7 +7,7 @@ class FhirId {
     String type = null  // Resource type
     String id = null   // id
     String vid = null  // version
-
+    String base = null
 
     // format is Patient/ea0d8b08-8f1d-40ac-b9e2-bbcc781c586b/_history/1
     FhirId(String value) {
@@ -17,11 +17,18 @@ class FhirId {
             id = locationParts[historyIndex - 1]
             type = locationParts[historyIndex - 2]
             vid = locationParts[historyIndex + 1]
+            parseBase(locationParts, historyIndex - 2)
         } else {
             id = locationParts[locationParts.size()-1]
             type = locationParts[locationParts.size()-2]
+            parseBase(locationParts, locationParts.size()-2)
         }
+    }
 
+    def parseBase(locationParts, typeI) {
+        base = ''
+        for (int i=0; i<typeI; i++)
+            base = base + locationParts[i] + '/'
     }
 
     @Override

@@ -118,6 +118,8 @@ public abstract class BasicTransaction  {
 
 	public UseReportManager getUseReportManager() { return useReportManager; }
 
+	public void setUseReportManager(UseReportManager m) { useReportManager = m; }
+
 	public Map<String, String> getExternalLinkage() {
 		return planContext.getExtraLinkage();
 	}

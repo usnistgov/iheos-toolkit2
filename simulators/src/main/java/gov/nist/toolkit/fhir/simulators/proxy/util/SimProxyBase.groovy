@@ -8,6 +8,7 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.fhir.simulators.proxy.exceptions.SimProxyTransformException
 import gov.nist.toolkit.fhir.simulators.proxy.sim.SimProxyFactory
+import gov.nist.toolkit.fhir.utility.UriBuilder
 import gov.nist.toolkit.simcommon.client.BadSimIdException
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
@@ -111,10 +112,10 @@ public class SimProxyBase {
 
                 request = ((SimpleRequestTransform) instance).run(this, request)
                 assert request, "${className} returned null request"
-        }
+            }
 
         }
-        assert transformsRun.size() > 0, "SimProxyBase#runRequestTransform: none of the input transforms declared the targetTransaction."
+        assert transformsRun.size() > 0, "SimProxyBase#runRequestTransform: none of the input transforms declared the clientTransaction ${clientTransactionType}"
         return request
     }
 
@@ -156,13 +157,18 @@ public class SimProxyBase {
         uri = request.requestLine.uri
        // if (serverConnection)
        //     this.serverConnection = serverConnection
-        SimEndpoint endpoint = new SimEndpoint(uri)
+        endpoint = new SimEndpoint(uri)
         clientActorType = ActorType.findActor(endpoint.actorType)
         if (!clientActorType) return handleEarlyException(new Exception("ActorType name was ${endpoint.actorType}"))
-        clientTransactionType = TransactionType.find(endpoint.transactionType)
-        if (!clientTransactionType && clientActorType.transactions.size() == 1)
-            clientTransactionType = clientActorType.transactions[0]
-        if (!clientTransactionType) return handleEarlyException(new Exception("TransactionType name was ${endpoint.transactionType}"))
+        URI urix = UriBuilder.build(uri)
+        if (urix.query)  // to distringuish query from read
+            clientTransactionType = TransactionType.find(endpoint.transactionTypeName)
+        if (!clientTransactionType) {
+            clientTransactionType = (clientActorType.transactions.contains(endpoint.transactionType)) ?  endpoint.transactionType : null
+        }
+        if (!clientTransactionType && clientActorType.transactions.contains(TransactionType.FHIR))
+            clientTransactionType = TransactionType.FHIR  // probably a read
+        if (!clientTransactionType) return handleEarlyException(new Exception("TransactionType name was ${endpoint.transactionTypeName}"))
         simId = SimIdParser.parse(uri)
         simDb = new SimDb(simId, endpoint.actorType, clientTransactionType.shortName)
         config = simDb.getSimulator(simId);

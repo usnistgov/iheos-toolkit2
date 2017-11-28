@@ -28,6 +28,7 @@ import org.apache.log4j.Logger
 import org.hl7.fhir.dstu3.model.Bundle
 import org.hl7.fhir.dstu3.model.DocumentReference
 import org.hl7.fhir.dstu3.model.OperationOutcome
+import org.hl7.fhir.dstu3.model.Resource
 import org.hl7.fhir.instance.model.api.IBaseResource
 
 class SQResponseToFhirSearchResponseTransform implements ContentResponseTransform {
@@ -40,7 +41,7 @@ class SQResponseToFhirSearchResponseTransform implements ContentResponseTransfor
 //            List<String> fhirBases = ['http://example.com/fhir']  // Fhir servers to search for Patient references
             MetadataToDocumentReferenceTranslator xlat = new MetadataToDocumentReferenceTranslator(fhirBases, new Searcher())
 
-            Bundle bundle = new Bundle()
+//            Bundle bundle = new Bundle()
 
             String content = Io.getStringFromInputStream(response.getEntity().content)
             Metadata metadata = MetadataParser.parseNonSubmission(content)
@@ -63,12 +64,17 @@ class SQResponseToFhirSearchResponseTransform implements ContentResponseTransfor
             col.docEntries.each { DocumentEntry de ->
                 DocumentReference dr = xlat.run(de)
                 // TODO = need fullUrl for Bundle
-                Bundle.BundleEntryComponent comp = new Bundle.BundleEntryComponent()
-                comp.fullUrl = 'http://example.com/fhir'
-                comp.resource = dr
-                bundle.addEntry(comp)
+                addToReturn('http://example.com/fhir', dr)
+//                Bundle.BundleEntryComponent comp = new Bundle.BundleEntryComponent()
+//                comp.fullUrl = 'http://example.com/fhir'
+//                comp.resource = dr
+//                bundle.addEntry(comp)
             }
-            return WrapResourceInHttpResponse.wrap(base, bundle, HttpStatus.SC_OK)
+            if (returnThing instanceof Bundle && returnThing.empty && returnErrorIfNoContent()) {
+                response.statusCode = HttpStatus.SC_NOT_FOUND
+                return response
+            }
+            return WrapResourceInHttpResponse.wrap(base, returnThing, HttpStatus.SC_OK)
 
         } catch (Throwable e) {
             OperationOutcome oo = new OperationOutcome()
@@ -81,7 +87,16 @@ class SQResponseToFhirSearchResponseTransform implements ContentResponseTransfor
         }
     }
 
+    Resource returnThing = new Bundle()
 
+    boolean returnErrorIfNoContent() { return false }
+
+    def addToReturn(def fullUrl, Resource resource) {
+        Bundle.BundleEntryComponent comp = new Bundle.BundleEntryComponent()
+        comp.fullUrl = fullUrl.toString()
+        comp.resource = resource
+        ((Bundle)returnThing).addEntry(comp)
+    }
 
     @Override
     HttpResponse run(SimProxyBase base, HttpResponse response) {

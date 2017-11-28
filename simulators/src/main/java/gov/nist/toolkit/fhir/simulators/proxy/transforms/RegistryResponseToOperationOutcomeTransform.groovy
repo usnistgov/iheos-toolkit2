@@ -111,6 +111,12 @@ class RegistryResponseToOperationOutcomeTransform implements ContentResponseTran
     }
 
     String makeLocalFullUrl(Resource resource) {
-        return Installation.instance().getToolkitAsFhirServerBaseUrl() + '/' + resource.getClass().getSimpleName() + '/' + resource.id
+        return Installation.instance().getToolkitAsFhirServerBaseUrl() + '/' + resource.getClass().getSimpleName() + '/' + withoutUrnUuid(resource.id)
+    }
+
+    def withoutUrnUuid(String str) {
+        if (str.startsWith('urn:uuid:'))
+            return str.substring('urn:uuid:'.size())
+        return str
     }
 }

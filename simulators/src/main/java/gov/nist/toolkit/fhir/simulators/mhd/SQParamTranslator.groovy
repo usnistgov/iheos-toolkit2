@@ -21,6 +21,7 @@ class SQParamTranslator {
     static formatKey = '$XDSDocumentEntryFormatCode'
     static relatedKey = '$XDSDocumentEntryReferenceIdList'
     static authorKey = '$XDSDocumentEntryAuthorPerson'
+    static entryUUID = '$XDSDocumentEntryEntryUUID'
     static String queryType = 'QueryType'
 
     // coded types
@@ -50,6 +51,7 @@ class SQParamTranslator {
     // Query Types
     static FindDocsKey = 'urn:uuid:14d4debf-8f97-4251-9a74-a90016b0af0d'
     static FindDocsByRefIdKey = 'urn:uuid:12941a89-e02e-4be5-967c-ce4bfc8fe492'
+    static GetDocs = 'urn:uuid:5c4f972b-d56b-40ac-a5fc-c8ca9b40b9d4'
 
     // shows default query - may be upgraded to FindDocsByRefIdKey if related-id is used
     def result = ['QueryType':[FindDocsKey]]

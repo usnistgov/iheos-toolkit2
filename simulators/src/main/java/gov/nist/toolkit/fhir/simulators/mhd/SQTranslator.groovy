@@ -10,13 +10,14 @@ class SQTranslator {
      * @param query is param1=value1;param2=value2...
      * @return StoredQuery
      */
-    String run(String query) {
+    Map fhirQueryToSQModel(String query) {
         List params = query.split(';')
-        Map model = new SQParamTranslator().run(params)
-        return toXml(model, true)
+        new SQParamTranslator().run(params)
+//        return toXml(model, true)
     }
 
-    private static String toXml(Map theModel, boolean leafClass) {
+    // model is [queryParamName: [values]]
+    static String toXml(Map theModel, boolean leafClass) {
         Map model = [:] << theModel  // copy
         String queryType = model[SQParamTranslator.queryType][0]
         model.remove(SQParamTranslator.queryType)

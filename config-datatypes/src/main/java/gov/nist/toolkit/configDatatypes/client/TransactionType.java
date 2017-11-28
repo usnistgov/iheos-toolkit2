@@ -102,6 +102,9 @@ public enum TransactionType implements Serializable, IsSerializable {
        this.http = httpOnly;
    }
 
+   @Override
+   public String toString() { return shortName; }
+
    public boolean isFhir() { return fhir;  }
 
     public boolean isRequiresMtom() {

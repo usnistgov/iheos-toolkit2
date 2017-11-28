@@ -1,5 +1,6 @@
 package gov.nist.toolkit.simcommon.server
 
+import gov.nist.toolkit.configDatatypes.client.TransactionType
 import org.apache.http.HttpHost
 
 /**
@@ -12,10 +13,22 @@ class SimEndpoint {
     String service
     String simServiceType = 'sim'
     String actorType
-    String transactionType
+    String transactionTypeName
     String simIdString
     String resourceType = null
     String query = null
+    String id = null
+
+    def resourceNames = [
+            'DocumentReference',
+            'DocumentManifest',
+            'Patient'
+    ]
+
+    TransactionType getTransactionType() {
+        if (transactionTypeName) return TransactionType.find(transactionTypeName)
+        null
+    }
 
     SimEndpoint(String endpoint) {
         assert endpoint
@@ -54,21 +67,23 @@ class SimEndpoint {
         List partsList = parts as List  // index beyond end with list -> returns null instead of exception
         simIdString = partsList[simStart+1]
         actorType = partsList[simStart+2]
-        transactionType = partsList[simStart+3]// with FHIR this is sometimes null
-        if (!transactionType)
-            transactionType = 'fhir'
+        transactionTypeName = partsList[simStart+3]// with FHIR this is sometimes null
+        if (!transactionTypeName)
+            transactionTypeName = 'fhir'
+        if (resourceNames.contains(transactionTypeName))
+            id = partsList[simStart+4]
         def isQuery = service.contains('?')
 //        if ('fhir' == transactionType && partsList?.get(simStart+4)) {// is FHIR transaction - this says what type
         if (partsList.size() > simStart+3) { //?.get(simStart+3)) {// is FHIR transaction - this says what type
             if (isQuery) {
                 def resAndQuery = partsList[simStart+3]
                 (resourceType, query) = resAndQuery.split('\\?', 2)
-                transactionType = resourceType
+                transactionTypeName = resourceType
             }
             else {
-                transactionType = partsList[simStart + 3]
-                if (!transactionType)
-                    transactionType = 'fhir'
+                transactionTypeName = partsList[simStart + 3]
+                if (!transactionTypeName)
+                    transactionTypeName = 'fhir'
             }
         }
     }

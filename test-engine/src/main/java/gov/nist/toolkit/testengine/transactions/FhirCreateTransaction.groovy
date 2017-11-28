@@ -112,6 +112,10 @@ class FhirCreateTransaction extends BasicFhirTransaction {
         def sendContent = fhirCtx.newJsonParser().setPrettyPrint(true).encodeResourceToString(resource)
         testLog.add_name_value(instruction_output, 'InputMetadata', sendContent)
 
+        def dmCount = 0
+        def drCount = 0
+        def otherCount = 0
+
         // No fhirID from transaction
         def (BasicStatusLine statusLine, String content, FhirId fhirId) = FhirClient.post(new URI(fullEndpoint), sendContent)
         if (content) {
@@ -124,9 +128,22 @@ class FhirCreateTransaction extends BasicFhirTransaction {
                 testLog.add_name_value(instruction_output, "Result", fhirCtx.newXmlParser().setPrettyPrint(true).encodeResourceToString(baseResource));
                 Bundle bundle = baseResource
                 bundle.entry.each { Bundle.BundleEntryComponent comp ->
-                    assert comp.response.status == '200'
+                    if (comp?.response?.status != '200')
+                        stepContext.set_error("Response Bundle reported status of ${comp.response.status} for component ${comp.fullUrl} (${comp.id}")
+//                    assert comp.response.status == '200'
                     if (comp.fullUrl) {
-                        reportManager.add('Ref', new FhirId(comp.fullUrl).withoutHistory())
+                        def reportName
+                        IBaseResource resource1 = comp.getResource()
+                        if (resource1 instanceof DocumentManifest) {
+                            reportName = "DM${dmCount++}"
+                        } else if (resource1 instanceof DocumentReference) {
+                            reportName = "DR${drCount++}"
+                        } else {
+                            reportName = "OTHER${otherCount++}"
+                        }
+                        def url = new FhirId(comp.fullUrl).withoutHistory()
+                        reportManager.add(reportName, url)
+                        reportManager.add("REF_${reportName}", "${getBaseUrl()}/${url}")
                     }
 //                    FhirId myId = new FhirId(comp.response?.outcome?.id)
 //                    if (myId)

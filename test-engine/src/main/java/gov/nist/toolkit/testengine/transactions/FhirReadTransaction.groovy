@@ -3,6 +3,7 @@ package gov.nist.toolkit.testengine.transactions
 import ca.uhn.fhir.context.FhirContext
 import gov.nist.toolkit.fhir.context.ToolkitFhirContext
 import gov.nist.toolkit.fhir.utility.FhirClient
+import gov.nist.toolkit.fhir.utility.FhirId
 import gov.nist.toolkit.testengine.engine.StepContext
 import gov.nist.toolkit.testengine.fhir.FhirSupport
 import gov.nist.toolkit.utilities.xml.Util
@@ -16,6 +17,7 @@ import org.hl7.fhir.instance.model.api.IBaseResource
  */
 class FhirReadTransaction extends BasicFhirTransaction {
     boolean requestXml = false
+    boolean mustReturn = false
     FhirContext ctx = ToolkitFhirContext.get()
 
     FhirReadTransaction(StepContext s_ctx, OMElement instruction, OMElement instruction_output) {
@@ -43,23 +45,41 @@ class FhirReadTransaction extends BasicFhirTransaction {
         if (statusLine.statusCode in 400..599)  {
             stepContext.set_error("Status:${statusLine}")
         } else {
-            // content is either JSON or XML
-            if (requestXml) {
-                OMElement f = testLog.add_simple_element(instruction_output, "Format")
-                f.addAttribute('value', 'xml', null)
-                testLog.add_name_value(instruction_output, "Result", FhirSupport.format(content));
-            } else {
-                // by default JSON is requested
-                OMElement f = testLog.add_simple_element(instruction_output, "Format")
-                f.addAttribute('value', 'json', null)
-                IBaseResource baseResource = FhirSupport.parse(content)
-                String xml = ctx.newXmlParser().encodeResourceToString(baseResource)
-                OMElement xmlo = Util.parse_xml(xml)
+            if (content) {
+                // content is either JSON or XML
+                if (requestXml) {
+                    OMElement f = testLog.add_simple_element(instruction_output, "Format")
+                    f.addAttribute('value', 'xml', null)
+                    testLog.add_name_value(instruction_output, "Result", FhirSupport.format(content));
+                } else {
+                    // by default JSON is requested
+                    OMElement f = testLog.add_simple_element(instruction_output, "Format")
+                    f.addAttribute('value', 'json', null)
+                    IBaseResource baseResource = FhirSupport.parse(content)
+                    String xml = ctx.newXmlParser().encodeResourceToString(baseResource)
+                    OMElement xmlo = Util.parse_xml(xml)
 //                xml = new OMFormatter(xml).toString()
-                testLog.add_name_value(instruction_output, "Result", xmlo);
+                    testLog.add_name_value(instruction_output, "Result", xmlo);
+                }
+                if (mustReturn) {
+                    def expectedResourceType = resourceTypeFromUrl(fullEndpoint.toString())
+                    IBaseResource resource1 = FhirSupport.parse(content)
+                    def theResourceType = resource1.class.simpleName
+                    if (expectedResourceType != theResourceType)
+                        stepContext.set_error("Expected resource of type ${expectedResourceType} but got ${theResourceType} instead")
+                }
+            } else {
+                testLog.add_name_value(instruction_output, "Result", 'None');
+                if (mustReturn)
+                    stepContext.set_error("A Resource was not returned")
             }
         }
 
+    }
+
+    static resourceTypeFromUrl(url) {
+        def fhirId = new FhirId(url)
+        return fhirId.type
     }
 
     @Override
@@ -73,6 +93,9 @@ class FhirReadTransaction extends BasicFhirTransaction {
 
         if (part_name == 'RequestXml') {
             requestXml = true;
+        }
+        else if (part_name == 'MustReturn') {
+            mustReturn = true;
         }
         else {
             super.parseInstruction(part)

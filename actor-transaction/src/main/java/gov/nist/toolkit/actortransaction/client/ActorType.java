@@ -165,7 +165,15 @@ public enum ActorType implements IsSerializable, Serializable {
                             "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToSQRequestTransform").toString(),
                     new ProxyTransformConfig(TransactionType.FIND_DOC_REFS,
                             TransactionDirection.RESPONSE,
-                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.SQResponseToFhirSearchResponseTransform").toString()
+                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.SQResponseToFhirSearchResponseTransform").toString(),
+
+                    new ProxyTransformConfig(TransactionType.FHIR,
+                                             TransactionDirection.REQUEST,
+                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.FhirToAnyRequestTransform").toString(),
+                    new ProxyTransformConfig(TransactionType.FHIR,
+                                             TransactionDirection.RESPONSE,
+                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.SQResponseToFhirReadResponseTransform").toString()
+
             ),
             "rec",   // must match rec from rec(mhd) in collections.txt
             IheItiProfile.MHD,
