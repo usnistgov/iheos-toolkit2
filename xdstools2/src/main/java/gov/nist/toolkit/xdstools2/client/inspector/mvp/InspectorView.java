@@ -1,6 +1,8 @@
 package gov.nist.toolkit.xdstools2.client.inspector.mvp;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -18,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 public class InspectorView extends AbstractView<InspectorPresenter> implements ProvidesResize, RequiresResize {
-    HeaderPanel containerPanel = new HeaderPanel();
+    HeaderPanel mainHeaderPanel = new HeaderPanel();
 
     ActivityItem activityItem;
 
@@ -26,7 +28,7 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
      Clicking on it should display the data table.
      */
 
-    ButtonListSelector metadataObjectSelector = new ButtonListSelector("Metadata Object","Metadata Object") {
+    ButtonListSelector metadataObjectSelector = new ButtonListSelector("Select a Metadata Object","Metadata Object") {
         @Override
         public void doSelected(String label) {
             getPresenter().doUpdateChosenMetadataObjectType(label);
@@ -58,7 +60,7 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         int getWidthInPx() {
             int width;
             try {
-                width = (int)(containerPanel.getParent().getElement().getClientWidth() * .80);
+                width = (int)(mainHeaderPanel.getParent().getElement().getClientWidth() * .80);
             } catch (Exception ex) {
                 GWT.log("containerPanel error: " + ex.toString());
                 width = (int)(Window.getClientWidth() * .80);
@@ -86,14 +88,47 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         // TODO: how to tie the NamedBox ClickHandler to the show-data table?
 //        resultPanel.add(activityDiagram);
 
-        topNavPanel.add(metadataObjectSelector.asWidget());
-        topNavPanel.add(new HTML("<br/>"));
-        topNavPanel.add(objectRefTable.asWidget());
+        final HTML title = new HTML();
+        title.setHTML("<h2>Inspector</h2>");
+        topNavPanel.add(title);
+
+        final HTML advancedOptionCtl = new HTML("Advanced Options");
+        advancedOptionCtl.addStyleName("iconStyle");
+        advancedOptionCtl.addStyleName("inlineLink");
+        advancedOptionCtl.addStyleName("insetBorder");
+        final ScrollPanel advancedOptionPanel = new ScrollPanel();
+        advancedOptionPanel.addStyleName("with-border");
+        advancedOptionCtl.addClickHandler(new ClickHandler() { // Toggle control
+            @Override
+            public void onClick(ClickEvent clickEvent) {
+                boolean isPanelVisible = advancedOptionPanel.isVisible();
+                if (isPanelVisible) {
+                    advancedOptionCtl.removeStyleName("insetBorder");
+                    advancedOptionCtl.addStyleName("outsetBorder");
+                } else {
+                    advancedOptionCtl.removeStyleName("outsetBorder");
+                    advancedOptionCtl.addStyleName("insetBorder");
+                }
+                advancedOptionPanel.setVisible(!isPanelVisible);
+            }
+        });
+        advancedOptionPanel.setVisible(false);
+        topNavPanel.add(advancedOptionCtl);
+        topNavPanel.add(advancedOptionPanel);
+
+        FlowPanel advancedOptionWrapper = new FlowPanel();
+        advancedOptionWrapper.add(metadataObjectSelector.asWidget());
+        advancedOptionWrapper.add(new HTML("<br/>"));
+        objectRefTable.asWidget().setVisible(false);
+        advancedOptionWrapper.add(objectRefTable.asWidget());
+        advancedOptionPanel.add(advancedOptionWrapper);
+
+
 //        resultPanelHeight = activityDiagram.getDiagramHeight() + (int)objectRefTable.guessTableHeight();
 //        GWT.log("setting North height to: " + resultPanelHeight + ". activityDiagram height is: " + activityDiagram.getDiagramHeight() + ". objectRef height: " + objectRefTable.asWidget().getElement().getStyle().getHeight());
 
-        containerPanel.setHeaderWidget(topNavPanel);
-        containerPanel.setContentWidget(new ScrollPanel(metadataInspector.asWidget())); // TODO: put this in a scroll panel.
+        mainHeaderPanel.setHeaderWidget(topNavPanel);
+        mainHeaderPanel.setContentWidget(new ScrollPanel(metadataInspector.asWidget())); // TODO: put this in a scroll panel.
 //        containerPanel.add(new HTML("add"));
 
         //
@@ -101,7 +136,7 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
 //        containerPanel.add(mainPanel);
 
         //
-        return containerPanel;
+        return mainHeaderPanel;
     }
 
     @Override

@@ -37,6 +37,7 @@ import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SelectionModel;
 import com.google.gwt.view.client.SingleSelectionModel;
+import gov.nist.toolkit.xdstools2.client.util.AnnotatedItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +54,7 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
     ListDataProvider<T> actionBtnProvider = new ListDataProvider<T>();
 
     List<CheckBox> columnsToDisplay = new ArrayList<>();
-    List<String> columnNames;
+    private List<AnnotatedItem> columnList;
 
     SelectionModel<T> selectionModel;
     CheckBox multiSelect = new CheckBox("Multiple selection");
@@ -79,8 +80,8 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
     abstract int getWidthInPx();
     abstract void setData(List<T> objectRefList);
 
-    public DataTable(List<String> columnNames, int pageSize, T placeHolderRow, boolean displayDiff, boolean displayAction) {
-        this.columnNames = columnNames;
+    public DataTable(List<AnnotatedItem> columnList, int pageSize, T placeHolderRow, boolean displayDiff, boolean displayAction) {
+        this.columnList = columnList;
         this.pageSize = pageSize;
         this.placeHolderRow = placeHolderRow;
         this.keyProvider = keyProvider;
@@ -165,8 +166,12 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
 
     private void addColumnSelectionCheckboxes() {
         FlowPanel columnSelectionPanel = new FlowPanel();
-        for (String columnName : columnNames) {
-            CheckBox checkBox = new CheckBox(columnName);
+        for (AnnotatedItem column : columnList) {
+            CheckBox checkBox = new CheckBox(column.getName());
+            if (column.isEnabled()) { // show column by DEFAULT will make the checkbox selected and disabled
+                checkBox.setValue(true);
+                checkBox.setEnabled(false);
+            }
 //            checkBox.setValue(true);
             checkBox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
                 @Override

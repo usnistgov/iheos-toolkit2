@@ -369,3 +369,11 @@ table tr td div button {
   border:none;
   background-color:transparent;
 }
+
+.insetBorder {
+  border: inset;
+}
+
+.outsetBorder {
+  border: outset;
+}

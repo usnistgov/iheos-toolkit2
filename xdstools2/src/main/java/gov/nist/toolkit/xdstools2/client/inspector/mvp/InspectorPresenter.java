@@ -127,14 +127,16 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
     void doUpdateChosenMetadataObjectType(String type) {
         MetadataObjectType metadataObjectType = MetadataObjectType.valueOf(type);
         if (MetadataObjectType.ObjectRefs.equals(metadataObjectType)) {
+            view.objectRefTable.asWidget().setVisible(true);
             view.objectRefTable.setData(metadataCollection.objectRefs);
         }
     }
 
     /**
      *
+     * @param root
      * @param target
-     * @return true if object was located/found in the tree, selected
+     * @return True if object was located/found in the tree, selected
      */
     public boolean doFocusTreeItem(final TreeItem root, final ObjectRef target) {
        return new TreeItemSelector<ObjectRef>().doFocusTreeItem(root, target);
@@ -184,7 +186,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
             return false;
         }
 
-        public boolean compareTo(MetadataObject source, Object target) {
+        public boolean compareTo(MetadataObject source, T target) {
             if (source == target) return true;
             if (!(target instanceof MetadataObject)) return false;
 
@@ -195,11 +197,6 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
                     return false;
             }
 
-            try {
-                GWT.log("source id is: " + source.id + " target id is: " + that.id + ". Are they equal? " + (source.id == that.id));
-            } catch (Exception ex) {
-                GWT.log(ex.toString());
-            }
 
             if (source.id != null ? !source.id.equals(that.id) : that.id != null) {
                 return false;

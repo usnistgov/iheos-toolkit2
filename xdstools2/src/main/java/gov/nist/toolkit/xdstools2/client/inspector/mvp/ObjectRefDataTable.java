@@ -11,6 +11,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ProvidesKey;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
+import gov.nist.toolkit.xdstools2.client.util.AnnotatedItem;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -24,7 +25,9 @@ abstract class ObjectRefDataTable extends DataTable<ObjectRef> implements IsWidg
     private static String HOME_ID_COLUMN_NAME = "HomeId";
     private FlowPanel columnSelectionPanel = new FlowPanel();
 
-    private static List<String> columnNames = Arrays.asList(ID_COLUMN_NAME, HOME_ID_COLUMN_NAME);
+    private static List<AnnotatedItem> columnList = Arrays.asList(
+            new AnnotatedItem(true,ID_COLUMN_NAME),
+            new AnnotatedItem(false,HOME_ID_COLUMN_NAME));
 
     private static final ProvidesKey<ObjectRef> KEY_PROVIDER = new ProvidesKey<ObjectRef>() {
         @Override
@@ -34,7 +37,7 @@ abstract class ObjectRefDataTable extends DataTable<ObjectRef> implements IsWidg
     };
 
     public ObjectRefDataTable(int pageSize) {
-        super(columnNames, pageSize, new ObjectRef(), true, false);
+        super(columnList, pageSize, new ObjectRef(), true, false);
         widgetPanel.add(columnSelectionPanel);
         widgetPanel.add(super.asWidget());
     }
@@ -81,31 +84,31 @@ abstract class ObjectRefDataTable extends DataTable<ObjectRef> implements IsWidg
             }, "Select");
         }
 
+        if (columnToBeDisplayedIsChecked(ID_COLUMN_NAME)) {
+            TextColumn<ObjectRef> idColumn = new TextColumn<ObjectRef>() {
+                @Override
+                public String getValue(ObjectRef objectRef) {
+                    return objectRef.getId().toString();
+                }
 
-        TextColumn<ObjectRef> idColumn = new TextColumn<ObjectRef>() {
-            @Override
-            public String getValue(ObjectRef objectRef) {
-                return objectRef.getId().toString();
-            }
+            };
+            idColumn.setSortable(true);
+            columnSortHandler.setComparator(idColumn,
+                    new Comparator<ObjectRef>() {
+                        public int compare(ObjectRef o1, ObjectRef o2) {
+                            if (o1 == o2) {
+                                return 0;
+                            }
 
-        };
-        idColumn.setSortable(true);
-        columnSortHandler.setComparator(idColumn,
-                new Comparator<ObjectRef>() {
-                    public int compare(ObjectRef o1, ObjectRef o2) {
-                        if (o1 == o2) {
-                            return 0;
+                            // Compare the name columns.
+                            if (o1 != null && o1.getId() != null) {
+                                return (o2 != null && o2.getId() != null) ? o1.getId().toString().compareTo(o2.getId().toString()) : 1;
+                            }
+                            return -1;
                         }
-
-                        // Compare the name columns.
-                        if (o1 != null && o1.getId()!=null) {
-                            return (o2 != null && o2.getId()!=null) ? o1.getId().toString().compareTo(o2.getId().toString()) : 1;
-                        }
-                        return -1;
-                    }
-                });
-        dataTable.addColumn(idColumn, ID_COLUMN_NAME);
-
+                    });
+            dataTable.addColumn(idColumn, ID_COLUMN_NAME);
+        }
 
         if (columnToBeDisplayedIsChecked(HOME_ID_COLUMN_NAME)) {
             TextColumn<ObjectRef> homeColumn = new TextColumn<ObjectRef>() {
