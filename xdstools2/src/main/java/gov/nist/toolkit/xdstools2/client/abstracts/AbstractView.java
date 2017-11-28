@@ -1,12 +1,9 @@
 package gov.nist.toolkit.xdstools2.client.abstracts;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
-import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
 import java.util.Map;
 import java.util.logging.Logger;
@@ -40,6 +37,7 @@ public abstract class AbstractView<P extends AbstractPresenter<?>> implements Is
 //        cp.setBorders(false);
         pathToWidgetsMap = getPathToWidgetsMap();
         ui = buildUI();
+        cp.setSize("100%","100%");
         cp.setWidget(ui);
         bindUI();
 

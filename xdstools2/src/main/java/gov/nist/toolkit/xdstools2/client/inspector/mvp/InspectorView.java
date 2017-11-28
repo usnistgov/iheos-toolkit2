@@ -6,7 +6,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HeaderPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ProvidesResize;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -20,7 +20,10 @@ import java.util.List;
 import java.util.Map;
 
 public class InspectorView extends AbstractView<InspectorPresenter> implements ProvidesResize, RequiresResize {
-    HeaderPanel mainHeaderPanel = new HeaderPanel();
+    FlowPanel mainHeaderPanel = new FlowPanel();
+
+    final HTML advancedOptionCtl = new HTML("Advanced Options");
+    final FlowPanel advancedOptionPanel = new FlowPanel();
 
     ActivityItem activityItem;
 
@@ -48,12 +51,18 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
 
         @Override
         void defaultSingleClickAction(ObjectRef row) {
-           getPresenter().doFocusTreeItem(null,row);
+            getPresenter().doSingleMode();
+           getPresenter().doFocusTreeItem(metadataInspectorLeft.getTreeList(), null,row);
+        }
+
+        @Override
+        void setupDiffMode(boolean isSelected) {
+           getPresenter().doSetupDiffMode(isSelected);
         }
 
         @Override
         void diffAction(ObjectRef left, ObjectRef right) {
-
+            getPresenter().doDiffAction(left, right);
         }
 
         @Override
@@ -69,7 +78,9 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         }
     };
 
-    MetadataInspectorTab metadataInspector = new MetadataInspectorTab(true);
+    HorizontalPanel inspectorWrapper = new HorizontalPanel();
+    MetadataInspectorTab metadataInspectorRight = new MetadataInspectorTab(true);
+    MetadataInspectorTab metadataInspectorLeft = new MetadataInspectorTab(true);
 
     @Override
     public void onResize() {
@@ -92,26 +103,12 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         title.setHTML("<h2>Inspector</h2>");
         topNavPanel.add(title);
 
-        final HTML advancedOptionCtl = new HTML("Advanced Options");
         advancedOptionCtl.addStyleName("iconStyle");
         advancedOptionCtl.addStyleName("inlineLink");
-        advancedOptionCtl.addStyleName("insetBorder");
-        final ScrollPanel advancedOptionPanel = new ScrollPanel();
+        advancedOptionCtl.addStyleName("outsetBorder");
+        advancedOptionCtl.addStyleName("roundedButton1");
         advancedOptionPanel.addStyleName("with-border");
-        advancedOptionCtl.addClickHandler(new ClickHandler() { // Toggle control
-            @Override
-            public void onClick(ClickEvent clickEvent) {
-                boolean isPanelVisible = advancedOptionPanel.isVisible();
-                if (isPanelVisible) {
-                    advancedOptionCtl.removeStyleName("insetBorder");
-                    advancedOptionCtl.addStyleName("outsetBorder");
-                } else {
-                    advancedOptionCtl.removeStyleName("outsetBorder");
-                    advancedOptionCtl.addStyleName("insetBorder");
-                }
-                advancedOptionPanel.setVisible(!isPanelVisible);
-            }
-        });
+
         advancedOptionPanel.setVisible(false);
         topNavPanel.add(advancedOptionCtl);
         topNavPanel.add(advancedOptionPanel);
@@ -122,26 +119,29 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         objectRefTable.asWidget().setVisible(false);
         advancedOptionWrapper.add(objectRefTable.asWidget());
         advancedOptionPanel.add(advancedOptionWrapper);
+        advancedOptionPanel.addStyleName("paddedHorizontalPanel");
 
 
-//        resultPanelHeight = activityDiagram.getDiagramHeight() + (int)objectRefTable.guessTableHeight();
-//        GWT.log("setting North height to: " + resultPanelHeight + ". activityDiagram height is: " + activityDiagram.getDiagramHeight() + ". objectRef height: " + objectRefTable.asWidget().getElement().getStyle().getHeight());
+        mainHeaderPanel.add(topNavPanel);
 
-        mainHeaderPanel.setHeaderWidget(topNavPanel);
-        mainHeaderPanel.setContentWidget(new ScrollPanel(metadataInspector.asWidget())); // TODO: put this in a scroll panel.
-//        containerPanel.add(new HTML("add"));
+        inspectorWrapper.add(metadataInspectorLeft.asWidget());
 
-        //
+//        inspectorWrapper.add(metadataInspectorRight.asWidget());
+//        getPresenter().doSetInspectorVisibility(metadataInspectorRight,false);
 
-//        containerPanel.add(mainPanel);
-
-        //
-        return mainHeaderPanel;
+        mainHeaderPanel.add(inspectorWrapper);
+        return new ScrollPanel(mainHeaderPanel);
     }
 
     @Override
     protected void bindUI() {
 
+        advancedOptionCtl.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent clickEvent) {
+                getPresenter().doAdvancedOptionToggle(advancedOptionCtl, advancedOptionPanel);
+            }
+        });
     }
 
     @Override
@@ -152,5 +152,9 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
 
     public void setActivityItem(ActivityItem activityItem) {
         this.activityItem = activityItem;
+    }
+
+    public HorizontalPanel getInspectorWrapper() {
+        return inspectorWrapper;
     }
 }

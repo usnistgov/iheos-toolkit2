@@ -582,6 +582,14 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 		return treeList;
 	}
 
+	public void showHistory(boolean showHistory) {
+		if (!showHistory) {
+		    historyPanel.removeFromParent();
+		} else
+			hpanel.insert(historyPanel, 0);
+
+	}
+
 	@Override
 	public Widget asWidget() {
 	    return hpanel;

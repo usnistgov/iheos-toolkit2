@@ -74,6 +74,8 @@ public class InspectorActivity extends AbstractToolkitActivity {
         presenter.setActivityDisplayer(displayer);  // so presenter can update tab title
         GWT.log("Calling activityDisplay");
         displayer.display(getContainer(), presenter.getTitle(), this, acceptsOneWidget, eventBus);
+        presenter.autoSelectIfOnlyOneTypeOfObjectIsAvail();
+        presenter.setupResizeTableTimer();
 
     }
 

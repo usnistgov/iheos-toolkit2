@@ -3,6 +3,8 @@ package gov.nist.toolkit.xdstools2.client.inspector.mvp;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
@@ -12,6 +14,7 @@ import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractPresenter;
+import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.util.AnnotatedItem;
 
 import java.util.ArrayList;
@@ -25,6 +28,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
     private List<Result> results;
     private SiteSpec siteSpec;
     private MetadataCollection metadataCollection;
+    List<AnnotatedItem> annotatedItems;
 
     @Override
     public void init() {
@@ -34,33 +38,40 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
 
         // The provided EventBus doesn't seem to work ?
 
+
+//        doResizeTable();
+
+
+    }
+
+    public void setupResizeTableTimer() {
+
         /*
         Scheduler is required because view is built before it is actually displayed.
         https://www.mail-archive.com/google-web-toolkit@googlegroups.com/msg75253.html
          */
-
         Scheduler.get().scheduleFixedDelay(new Scheduler.RepeatingCommand() {
             @Override
             public boolean execute() {
-                if (tableExists()) {
+                if (isTableCellHeightAvailable()) {
                     view.objectRefTable.resizeTable();
                     return false;
                 } else return true;
             }
 
-            boolean tableExists() {
+            boolean isTableCellHeightAvailable() {
                 try {
-                   int height = view.objectRefTable.dataTable.getRowElement(0).getClientHeight();
-//                   GWT.log("table row height is: " + height);
-                   return true;
-                } catch (Exception ex) {
-                    return false;
+                    int height = view.objectRefTable.dataTable.getRowElement(0).getClientHeight();
+                    if (height > 0) {
+//                        GWT.log("Table cell height is available! cell height is:" + height);
+                      return true;
+                    }
+                } catch (Throwable t) {
                 }
+                return false;
             }
 
         },200);
-
-
     }
 
     private void setData() {
@@ -68,11 +79,52 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
 
         GWT.log("result list size is: " + results.size());
         // At this point there should be only one Result.TODO: Need to revisit this if there are more!? -- Conformance tests!
-        view.metadataInspector.setResults(results);
-        view.metadataInspector.setSiteSpec(siteSpec);
-        view.metadataInspector.preInit();
-        metadataCollection = view.metadataInspector.init();
-        view.metadataObjectSelector.setNames(getMetadataObjectAnnotatedItems(metadataCollection));
+        setupInspectorWidget(view.metadataInspectorLeft);
+        metadataCollection = setupInspectorWidget(view.metadataInspectorRight);
+        annotatedItems = getMetadataObjectAnnotatedItems(metadataCollection);
+        view.metadataObjectSelector.setNames(annotatedItems);
+    }
+
+    public void autoSelectIfOnlyOneTypeOfObjectIsAvail() {
+        int cx = 0;
+        AnnotatedItem defaultItem = null;
+        for (AnnotatedItem annotatedItem : annotatedItems) {
+           if (annotatedItem.isEnabled()) {
+               if (defaultItem==null)
+                   defaultItem = annotatedItem;
+               cx++;
+           }
+        }
+        if (cx==1) {
+            view.metadataObjectSelector.updateSiteSelectedView(defaultItem.getName());
+        }
+    }
+
+    public void doSetupDiffMode(boolean isSelected) {
+        view.metadataInspectorLeft.showHistory(true);
+        view.metadataInspectorRight.showHistory(true);
+        if (isSelected) {
+        }
+        if (!isSelected) {
+            view.metadataInspectorLeft.asWidget().setVisible(false);
+        }
+    }
+
+    private MetadataCollection setupInspectorWidget(MetadataInspectorTab inspector) {
+        inspector.setResults(results);
+        inspector.setSiteSpec(siteSpec);
+        inspector.preInit();
+        return inspector.init();
+    }
+
+    public void doDiffAction(MetadataObject left, MetadataObject right) {
+
+        view.inspectorWrapper.add(view.metadataInspectorRight.asWidget());
+       view.metadataInspectorLeft.showHistory(false);
+       view.metadataInspectorRight.showHistory(false);
+
+       doFocusTreeItem(view.metadataInspectorLeft.getTreeList(), null, left);
+       doFocusTreeItem(view.metadataInspectorRight.getTreeList(), null, right);
     }
 
     /*
@@ -132,20 +184,33 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
         }
     }
 
+    public void doSingleMode() {
+        view.metadataInspectorLeft.showHistory(true);
+
+        if (view.inspectorWrapper.getWidgetCount()>1)
+            view.inspectorWrapper.remove(1);
+    }
+
+
     /**
      *
      * @param root
      * @param target
      * @return True if object was located/found in the tree, selected
      */
-    public boolean doFocusTreeItem(final TreeItem root, final ObjectRef target) {
-       return new TreeItemSelector<ObjectRef>().doFocusTreeItem(root, target);
+    public boolean doFocusTreeItem(List<Tree> treeList, final TreeItem root, final MetadataObject target) {
+       return new TreeItemSelector<ObjectRef>(treeList).doFocusTreeItem(root, target);
     }
 
     class TreeItemSelector<T> {
-        public boolean doFocusTreeItem(final TreeItem root, final T target) {
+        private List<Tree> treeList;
+
+        public TreeItemSelector(List<Tree> treeList) {
+            this.treeList = treeList;
+        }
+
+        public boolean doFocusTreeItem(final TreeItem root, final MetadataObject target) {
             if (root == null) {
-                List<Tree> treeList = view.metadataInspector.getTreeList();
 
                 for (Tree tree : treeList) {
                     if (doFocusTreeItem(tree.getItem(0), target)) {
@@ -174,7 +239,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
             return false;
         }
 
-        boolean attemptSelect(TreeItem treeItem, Object userObject, T target) {
+        boolean attemptSelect(TreeItem treeItem, Object userObject, MetadataObject target) {
             if (userObject != null && target!=null) {
                 if (compareTo((MetadataObject)userObject,target)) {
                     ((Hyperlink)treeItem.getWidget()).fireEvent(new ClickEvent() {});
@@ -186,7 +251,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
             return false;
         }
 
-        public boolean compareTo(MetadataObject source, T target) {
+        public boolean compareTo(MetadataObject source, MetadataObject target) {
             if (source == target) return true;
             if (!(target instanceof MetadataObject)) return false;
 
@@ -205,6 +270,19 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
             return source.home != null ? source.home.equals(that.home) : that.home == null;
         }
 
+    }
+
+    public void doAdvancedOptionToggle(HTML ctl, FlowPanel panel) {
+        boolean isPanelVisible = panel.isVisible();
+        if (isPanelVisible) {
+            ctl.removeStyleName("insetBorder");
+            ctl.addStyleName("outsetBorder");
+        } else {
+            ctl.removeStyleName("outsetBorder");
+            ctl.addStyleName("insetBorder");
+            setupResizeTableTimer();
+        }
+        panel.setVisible(!isPanelVisible);
     }
 
 }

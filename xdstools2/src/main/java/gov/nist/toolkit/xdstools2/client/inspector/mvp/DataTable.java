@@ -24,6 +24,7 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ProvidesResize;
 import com.google.gwt.user.client.ui.RequiresResize;
@@ -40,6 +41,7 @@ import com.google.gwt.view.client.SingleSelectionModel;
 import gov.nist.toolkit.xdstools2.client.util.AnnotatedItem;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -76,6 +78,7 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
     abstract ProvidesKey<T> getKeyProvider();
     abstract void defaultSingleClickAction(T row);
     abstract void defaultDoubleClickAction(T row);
+    abstract void setupDiffMode(boolean isSelected);
     abstract void diffAction(T left, T right);
     abstract int getWidthInPx();
     abstract void setData(List<T> objectRefList);
@@ -166,6 +169,7 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
 
     private void addColumnSelectionCheckboxes() {
         FlowPanel columnSelectionPanel = new FlowPanel();
+        columnSelectionPanel.add(new HTML("Columns "));
         for (AnnotatedItem column : columnList) {
             CheckBox checkBox = new CheckBox(column.getName());
             if (column.isEnabled()) { // show column by DEFAULT will make the checkbox selected and disabled
@@ -272,9 +276,12 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
                                                              if (mySelection.size() > 0) {
                                                                  lastSelectedObject = mySelection.iterator().next();
                                                              }
-                                                             if (mySelection.size()==2) {
-                                                                 T left = mySelection.iterator().next();
-                                                                 T right = mySelection.iterator().next();
+                                                             if (mySelection.size()==1) {
+                                                                 defaultSingleClickAction(mySelection.iterator().next());
+                                                             } else if (mySelection.size()==2) {
+                                                                 Iterator<T> it = mySelection.iterator();
+                                                                 T left = it.next();
+                                                                 T right = it.next();
                                                                  diffAction(left,right);
                                                              }
                                                          }
