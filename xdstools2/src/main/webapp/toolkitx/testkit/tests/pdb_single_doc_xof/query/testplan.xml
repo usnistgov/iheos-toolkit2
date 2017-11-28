@@ -1,0 +1,14 @@
+<TestPlan>
+    <Test>pdb_single_doc_xof/query</Test>
+    <TestStep id="search">
+        <Goal>
+        </Goal>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <FhirSearchTransaction>
+            <RequestXml/>
+            <UseReport test="pdb_single_doc_xof" section="submit" step="SendPdb" reportName="Base" useAs="Base"/>
+            <QueryParams>/DocumentReference?patient.identifier=urn:oid:1.2.36.146.595.217.0.1|12345;status=current</QueryParams>
+            <ExpectedContent dr="1" dm="0"/>
+        </FhirSearchTransaction>
+    </TestStep>
+</TestPlan>

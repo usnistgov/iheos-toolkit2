@@ -112,23 +112,23 @@ class FhirClient implements IFhirSearch {
      * @param params List of "name=value"
      * @return  fullUrl ==> Resource
      */
-    Map<String, IBaseResource> search(String base, String resourceType, List params) {
+    Map<URI, IBaseResource> search(String base, String resourceType, List params) {
         try {
             def url = buildURL(base, resourceType, params)
             IBaseResource theBundle = readResource(url)
             if (theBundle instanceof Bundle) {
                 Bundle bundle = theBundle
                 logger.info("...returning ${bundle.entry.size()} entries")
-                Map<String, IBaseResource> map = [:]
+                Map<URI, IBaseResource> map = [:]
                 bundle.entry.each { Bundle.BundleEntryComponent comp ->
                     def fullUrl = comp.fullUrl
                     IBaseResource resource = comp.getResource()
-                    map[fullUrl] = resource
+                    map[UriBuilder.build(fullUrl)] = resource
                 }
                 return map
             }
-            Map<String, IBaseResource> map = [:]
-            map[''] = theBundle
+            Map<URI, IBaseResource> map = [:]
+            map[new URI('')] = theBundle
             return map
 //            throw new Exception("returned resource of type ${theBundle.class.name}")
         }

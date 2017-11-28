@@ -1,6 +1,7 @@
 package gov.nist.toolkit.fhir.resourceMgr
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder
+import gov.nist.toolkit.errorrecording.client.XdsErrorCode
 import gov.nist.toolkit.fhir.utility.FhirClient
 import gov.nist.toolkit.fhir.utility.UriBuilder
 import gov.nist.toolkit.utilities.id.UuidAllocator
@@ -11,7 +12,7 @@ import org.hl7.fhir.instance.model.api.IBaseResource
  *
  */
 class ResourceMgr {
-    static private final Logger logger = Logger.getLogger(ResourceMgr.class);
+    static private final Logger logger1 = Logger.getLogger(ResourceMgr.class);
     Bundle bundle = null
     // Object is some Resource type
     Map<URI, IBaseResource> resources = [:]   // url -> resource
@@ -26,13 +27,44 @@ class ResourceMgr {
 
     ErrorRecorder er = null;
 
+    class InternalLogger {
+        ErrorRecorder er
+        Logger logger
+
+        InternalLogger(ErrorRecorder er, Logger logger) {
+            this.er = er
+            this.logger = logger
+        }
+        def info(String msg) {
+            logger.info(msg)
+            er?.detail(msg)
+        }
+        def error(String msg) {
+            logger.error(msg)
+            er?.err(XdsErrorCode.Code.NoCode, msg, "", "")
+        }
+        def warn(String msg) {
+            logger.warn(msg)
+            er?.warning(XdsErrorCode.Code.NoCode, msg, "", "")
+        }
+        def fatal(String msg) {
+            logger.fatal(msg)
+            er?.err(XdsErrorCode.Code.NoCode, msg, "", "")
+        }
+    }
+
+    InternalLogger logger
+
+
     ResourceMgr() {
         er = null
+        logger = new InternalLogger(er, logger1)
     }
 
     ResourceMgr(Bundle bundle, ErrorRecorder er) {
         this.bundle = bundle
         this.er = er;
+        logger = new InternalLogger(er, logger1)
         if (bundle)
             parseBundle()
     }
@@ -272,7 +304,12 @@ class ResourceMgr {
         if (!config.internalRequired && isAbsolute(referenceUrl)) {
             if (resourceCacheMgr) {
                 logger.info("Resolver: ...looking in Resource Cache")
-                def resource = resourceCacheMgr.getResource(referenceUrl)
+                def resource
+                try {
+                    resource = resourceCacheMgr.getResource(referenceUrl)
+                } catch (Exception e) {
+                    ;
+                }
                 if (resource) {
                     logger.info("Resolver: ...returned from cache")
                     return [referenceUrl, resource]
@@ -280,7 +317,12 @@ class ResourceMgr {
             } else
                 logger.info("Resource Cache not configured")
             try {
-                IBaseResource res = FhirClient.readResource(referenceUrl)
+                IBaseResource res
+                try {
+                    res = FhirClient.readResource(referenceUrl)
+                } catch (Exception e) {
+                    ;
+                }
                 if (res) {
                     logger.info("Resolver: ...found")
                     return [referenceUrl, res]

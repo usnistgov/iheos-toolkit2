@@ -38,6 +38,8 @@ class ResourceCacheMgr {
      * @return
      */
     static IBaseResource getResource(fullUrl) {
+        if (!Installation.isTestRunning())
+            throw new Exception("Resource Cache is disabled")
         if (fullUrl instanceof String)
             fullUrl = UriBuilder.build(fullUrl)
         assert ResourceMgr.isAbsolute(fullUrl)

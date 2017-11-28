@@ -139,7 +139,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "mhddocrec",
             "gov.nist.toolkit.fhir.simulators.proxy.sim.MhdRecipientFactory",
             "gov.nist.toolkit.fhir.simulators.proxy.sim.MhdRecipientSimulator",
-            Arrays.asList(TransactionType.PROV_DOC_BUNDLE),  // place holder - transaction types
+            Arrays.asList(TransactionType.PROV_DOC_BUNDLE, TransactionType.FHIR),
             true,  // show in config - only partially configured - only used in IT tests
             null,  // actorsFileLabel
             null,   // httpSimulatorClassName
@@ -417,6 +417,7 @@ public enum ActorType implements IsSerializable, Serializable {
             IheItiProfile.XDS,
             Arrays.asList(OptionType.REQUIRED)
     ),
+    @Obsolete
     XDS_on_FHIR_Recipient(   //
             "XDS on FHIR Recipient",
             Arrays.asList(""),

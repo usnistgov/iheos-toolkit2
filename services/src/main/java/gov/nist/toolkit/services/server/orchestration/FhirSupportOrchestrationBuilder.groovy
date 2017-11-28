@@ -2,6 +2,7 @@ package gov.nist.toolkit.services.server.orchestration
 
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
+import gov.nist.toolkit.fhir.simulators.proxy.util.SimProxyBase
 import gov.nist.toolkit.fhir.utility.FhirClient
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.results.client.TestInstance
@@ -29,7 +30,7 @@ class FhirSupportOrchestrationBuilder {
     private Util util
     TestInstance testInstance = new TestInstance('supporting_fhir_patients')
     String siteName
-    String simName = 'fhir_support'
+    String simName = SimProxyBase.fhirSupportSimName
     SiteSpec siteSpec
     private ActorType actorType = ActorType.FHIR_SERVER
     private SimId simId

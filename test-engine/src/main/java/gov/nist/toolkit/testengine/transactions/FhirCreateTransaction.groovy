@@ -1,5 +1,6 @@
 package gov.nist.toolkit.testengine.transactions
 
+import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.fhir.utility.FhirClient
 import gov.nist.toolkit.fhir.utility.FhirId
 import gov.nist.toolkit.testengine.engine.StepContext
@@ -50,17 +51,41 @@ class FhirCreateTransaction extends BasicFhirTransaction {
         }
     }
 
+    def updatePatientReference(def resource, String patientReference) {
+        if ((resource instanceof DocumentManifest)) {
+            resource.subject.reference = patientReference
+        }
+        else if ((resource instanceof DocumentReference)) {
+            resource.subject.reference = patientReference
+        } else if (resource instanceof Bundle) {
+            Bundle bundle = resource
+            bundle.entry.each { Bundle.BundleEntryComponent comp ->
+                Resource res = comp.getResource()
+                updatePatientReference(res, patientReference)
+            }
+        }
+    }
+
+    String getBaseUrl() {
+        testConfig.site.getEndpoint(TransactionType.FHIR, false, false)
+    }
+
     @Override
     void doRun(IBaseResource resource, String urlExtension) {
         assert endpoint, 'TestClient:FhirCreateTransaction: endpoint is null'
 
         String pid_value = null
         String pid_system = null
+        String patientReference = null
 
         if (useReportManager) {
             pid_value = useReportManager.get('$pid_value$');
             pid_system = useReportManager.get('$pid_system$');
+            patientReference = useReportManager.get('$patient_reference$')
         }
+
+        if (patientReference)
+            updatePatientReference(resource, patientReference)
 
         if (pid_value && pid_system)
             updatePidIdentifier(resource, pid_value, pid_system)
@@ -77,7 +102,7 @@ class FhirCreateTransaction extends BasicFhirTransaction {
 
         def fullEndpoint = "${endpoint}${urlExtension}"
 
-        reportManager.add('Base', endpoint)
+        reportManager.add('Base', getBaseUrl())   // endpoint)
         reportManager.add('Url', fullEndpoint)
 
 //        fullEndpoint = fullEndpoint.replace('7777', '6666')

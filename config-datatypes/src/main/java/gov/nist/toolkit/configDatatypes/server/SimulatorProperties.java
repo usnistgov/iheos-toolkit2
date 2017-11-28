@@ -27,6 +27,8 @@ public class SimulatorProperties {
      */
     public static final String                      PART_OF_RECIPIENT = "Part_of_Recipient";
 
+    public static final String                      VALIDATE_AS_RECIPIENT = "Validate_as_Recipient";
+
     /**
      * Boolean property controlling whether Registry Simulator validates Affinity Domain codes defined
      * in the Simulator Environment.

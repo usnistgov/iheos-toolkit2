@@ -34,10 +34,10 @@ public enum TransactionType implements Serializable, IsSerializable {
     RET_IMG_DOC_SET_GW("RAD-69", "Retrieve Img Doc Set Gateway", "ret.iig", "ret.iig.b", "ret.iig.as", true, "urn:ihe:rad:2009:RetrieveImagingDocumentSet", "urn:ihe:iti:2007:RetrieveDocumentSetResponse", true, SimulatorProperties.idsrIigEndpoint, SimulatorProperties.idsrIigTlsEndpoint),
     XC_RET_IMG_DOC_SET("RAD-75", "Cross-Community Ret Img Doc Set", "xcr.ids", "xcr.ids.b", "xcr.ids.as", true, "urn:ihe:rad:2011:CrossGatewayRetrieveImagingDocumentSet", "urn:ihe:rad:2011:CrossGatewayRetrieveImagingDocumentSetResponse", true, SimulatorProperties.xcirEndpoint, SimulatorProperties.xcirTlsEndpoint),
     STS("STS", "Secure Token Service", "sts", "sts", "sts.as", true, "sts", "sts", true, null, null),
-    FHIR("FHIR", "FHIR", "fhir", "fhir", "fhir.as", true, "fhir", "fhir", true, SimulatorProperties.fhirEndpoint, SimulatorProperties.fhirTlsEndpoint, true),
-    PROV_DOC_BUNDLE("ITI-65", "Provide Document Bundle", "pdb", "pdb", "pdb.as", false, "fhir", "fhir", false, SimulatorProperties.fhirEndpoint, SimulatorProperties.fhirTlsEndpoint, true),
-    FIND_DOC_REFS("ITI-67", "DocumentReference", "fdr", "fdr", "fdr.as", false, "fhir", "fhir", false, SimulatorProperties.fhirEndpoint, SimulatorProperties.fhirTlsEndpoint, true),
-    ANY("ANY", "ANY", "any", "any", "any.as", false, "any", "any", false, null, null, false);
+    FHIR("FHIR", "FHIR", "fhir", "fhir", "fhir.as", true, "fhir", "fhir", true, SimulatorProperties.fhirEndpoint, SimulatorProperties.fhirTlsEndpoint, true, false),
+    PROV_DOC_BUNDLE("ITI-65", "Provide Document Bundle", "pdb", "pdb", "pdb.as", false, "fhir", "fhir", false, SimulatorProperties.fhirEndpoint, SimulatorProperties.fhirTlsEndpoint, true, true),
+    FIND_DOC_REFS("ITI-67", "DocumentReference", "fdr", "fdr", "fdr.as", false, "fhir", "fhir", false, SimulatorProperties.fhirEndpoint, SimulatorProperties.fhirTlsEndpoint, true, false),
+    ANY("ANY", "ANY", "any", "any", "any.as", false, "any", "any", false, null, null, false, false);
 
 	private static final long serialVersionUID = 1L;
     String id = "";
@@ -54,6 +54,7 @@ public enum TransactionType implements Serializable, IsSerializable {
     boolean fhir = false;
     String endpointSimPropertyName;  // TODO is this irrelevant?
     String tlsEndpointSimPropertyName;  // TODO is this irrelevant?
+    boolean isTransaction = false;
 
 	TransactionType() {
 	}  // For GWT
@@ -72,7 +73,7 @@ public enum TransactionType implements Serializable, IsSerializable {
         this.tlsEndpointSimPropertyName = tlsEndpointSimPropertyName;
     }
 
-    TransactionType(String id, String name, String shortName, String code, String asyncCode, boolean needsRepUid, String requestAction, String responseAction, boolean requiresMtom, String endpointSimPropertyName, String tlsEndpointSimPropertyName, boolean fhir) {
+    TransactionType(String id, String name, String shortName, String code, String asyncCode, boolean needsRepUid, String requestAction, String responseAction, boolean requiresMtom, String endpointSimPropertyName, String tlsEndpointSimPropertyName, boolean fhir, boolean isTransaction) {
         this.id = id;
         this.name = name;
         this.shortName = shortName;
@@ -85,6 +86,7 @@ public enum TransactionType implements Serializable, IsSerializable {
         this.endpointSimPropertyName = endpointSimPropertyName;
         this.tlsEndpointSimPropertyName = tlsEndpointSimPropertyName;
         this.fhir = fhir;
+        this.isTransaction = isTransaction;
     }
 
     TransactionType(String id, String name, String shortName, String code, String asyncCode, boolean needsRepUid, boolean requiresMtom, String endpointSimPropertyName, String tlsEndpointSimPropertyName, boolean httpOnly) {
@@ -130,8 +132,12 @@ public enum TransactionType implements Serializable, IsSerializable {
         if (requestAction.equals("")) return false;
         return true;
     }
-    
-	/**
+
+    public boolean isTransaction() {
+        return isTransaction;
+    }
+
+    /**
     * @return the {@link #requestAction} value.
     */
    public String getRequestAction() {

@@ -32,6 +32,7 @@ public class ServerConnection extends DefaultBHttpServerConnection {
         final HttpEntity entity = prepareInput(request);
         if (entity != null && entity instanceof BasicHttpEntity) {
             System.out.println("Got Client Request entity");
+            proxyBase.init(request);
             BasicHttpEntity entity2 = (BasicHttpEntity) entity;
             InputStream is = entity2.getContent();
             byte[] buffer = Io.getBytesFromInputStream(is);

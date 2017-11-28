@@ -326,10 +326,10 @@ public abstract class AbstractActorFactory {
 	}
 
 	protected String mkFhirEndpoint(SimulatorConfig asc, SimulatorConfigElement ele, String actor, boolean isTLS) throws Exception {
-		return mkFhirEndpoint(asc, ele, actor, isTLS, false);
+		return mkFhirEndpoint(asc, ele, actor, null, isTLS, false);
 	}
 
-	protected String mkFhirEndpoint(SimulatorConfig asc, SimulatorConfigElement ele, String actor, boolean isTLS, boolean isProxy) throws Exception {
+	protected String mkFhirEndpoint(SimulatorConfig asc, SimulatorConfigElement ele, String actor, TransactionType transactionType, boolean isTLS, boolean isProxy) throws Exception {
 //		String transtype = SimDb.getTransactionDirName(ele.transType);
 
 		String contextName = Installation.instance().getServletContextName();
@@ -348,6 +348,7 @@ public abstract class AbstractActorFactory {
 				+ asc.getId()
 				+ "/" + actor
 	//			+ "/fhir"
+				+ ((transactionType != null && transactionType.isTransaction() ? "/" + transactionType.getShortName() : ""))
 				;
 	}
 
@@ -625,7 +626,7 @@ public abstract class AbstractActorFactory {
 		ele.name = endpointName;
 		ele.type = ParamType.ENDPOINT;
 		ele.transType = transactionType;
-		ele.setStringValue(mkFhirEndpoint(sc, ele, actorType.getShortName(), tls, proxy));
+		ele.setStringValue(mkFhirEndpoint(sc, ele, actorType.getShortName(), transactionType, tls, proxy));
 		ele.setTls(tls);
 		addFixed(sc, ele);
 	}

@@ -105,11 +105,12 @@ class MetadataToDocumentReferenceTranslator {
 //                IBaseResource theResource = searchResults.values()[0]
 
                 def (fullUrl, theResource) = find(supportServerBases, 'Patient', params)
+//                theResource = null
                 if (!(theResource instanceof Patient))
-                    throw new Exception("Search for Patient identiied by ${params} on servers ${supportServerBases} returned Resource of type ${theResource.getClass().simpleName} instead of Patient")
+                    throw new Exception("Trying to find Patient resource to match returned XDS Patient ID. Search for Patient identiied by ${params} on servers ${supportServerBases} returned Resource of type ${theResource.getClass().simpleName} instead of Patient")
 
 
-                dr.subject = new Reference(fullUrl)
+                dr.subject = new Reference(fullUrl.toString())
             } else
                 throw new Exception("Patient ID ${de.patientId} is improperly formatted")
         }
@@ -129,7 +130,7 @@ class MetadataToDocumentReferenceTranslator {
         return dr
     }
 
-    // returns [String, IBaseResource]
+    // returns [URI, IBaseResource]
     def find(List bases, String resourceType, params) {
         Map<String, IBaseResource> searchResults
         for (String base : bases) {

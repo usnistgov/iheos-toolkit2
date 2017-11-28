@@ -50,6 +50,11 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 		return sce != null && sce.asBoolean();
 	}
 
+	public boolean isValidateAsRecipient() {
+		SimulatorConfigElement sce = getSimulatorConfig().get(SimulatorProperties.VALIDATE_AS_RECIPIENT);
+		return sce != null && sce.asBoolean();
+	}
+
 	public boolean isValidateCodes() {
 		SimulatorConfigElement sce = getSimulatorConfig().get(SimulatorProperties.VALIDATE_CODES);
 		return sce != null && sce.asBoolean();
@@ -99,6 +104,9 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 			common.vc.isRequest = true;
 			common.vc.hasHttp = true;
 			common.vc.hasSoap = true;
+
+			if (isValidateAsRecipient())
+				common.vc.isPartOfRecipient = true;
 
             // *********************************************
             // Metadata is validated by the class MetadataMessageValidator

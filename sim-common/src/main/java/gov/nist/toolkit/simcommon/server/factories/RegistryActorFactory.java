@@ -71,6 +71,7 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
                 addEditableConfig(sc, SimulatorProperties.codesEnvironment, ParamType.SELECTION, codesFile.toString());
             }
 
+			addEditableConfig(sc, SimulatorProperties.VALIDATE_AS_RECIPIENT, ParamType.BOOLEAN, false);
 			addEditableConfig(sc, SimulatorProperties.UPDATE_METADATA_OPTION, ParamType.BOOLEAN, false);
 			addEditableConfig(sc, SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, ParamType.BOOLEAN, true);
 			addEditableConfig(sc, SimulatorProperties.extraMetadataSupported, ParamType.BOOLEAN, true);

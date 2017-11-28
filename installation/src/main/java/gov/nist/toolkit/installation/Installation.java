@@ -29,6 +29,16 @@ public class Installation {
     private static Logger logger = Logger.getLogger(Installation.class);
 
     static Installation me = null;
+    static private boolean testIsRunning = false;
+
+
+    public static boolean isTestRunning() {
+        return testIsRunning;
+    }
+
+    public static void setTestRunning(boolean testIsRunning) {
+        Installation.testIsRunning = testIsRunning;
+    }
 
     /**
      * will self initialize to the production manager.  For testing purposes

@@ -1,12 +1,12 @@
 package gov.nist.toolkit.fhir.simulators.proxy.transforms
 
-import gov.nist.toolkit.fhir.context.ToolkitFhirContext
 import gov.nist.toolkit.fhir.simulators.fhir.OperationOutcomeGenerator
 import gov.nist.toolkit.fhir.simulators.fhir.WrapResourceInHttpResponse
 import gov.nist.toolkit.fhir.simulators.mhd.MetadataToDocumentReferenceTranslator
 import gov.nist.toolkit.fhir.simulators.proxy.exceptions.SimProxyTransformException
 import gov.nist.toolkit.fhir.simulators.proxy.util.ContentResponseTransform
 import gov.nist.toolkit.fhir.simulators.proxy.util.SimProxyBase
+import gov.nist.toolkit.fhir.utility.FhirClient
 import gov.nist.toolkit.fhir.utility.IFhirSearch
 import gov.nist.toolkit.registrymetadata.Metadata
 import gov.nist.toolkit.registrymetadata.MetadataParser
@@ -36,7 +36,8 @@ class SQResponseToFhirSearchResponseTransform implements ContentResponseTransfor
     @Override
     HttpResponse run(SimProxyBase base, BasicHttpResponse response) {
         try {
-            List<String> fhirBases = ['http://example.com/fhir']  // Fhir servers to search for Patient references
+            def fhirBases = [base.fhirSupportBase()]
+//            List<String> fhirBases = ['http://example.com/fhir']  // Fhir servers to search for Patient references
             MetadataToDocumentReferenceTranslator xlat = new MetadataToDocumentReferenceTranslator(fhirBases, new Searcher())
 
             Bundle bundle = new Bundle()
@@ -90,9 +91,12 @@ class SQResponseToFhirSearchResponseTransform implements ContentResponseTransfor
     class Searcher implements IFhirSearch {
 
         @Override
-        Map<String, IBaseResource> search(String base, String resourceType, List params) {
-            IBaseResource thePatient = ToolkitFhirContext.get().newXmlParser().parseResource(patient)
-            return ['http://example.com/fhir/Patient/1':thePatient]
+        Map<URI, IBaseResource> search(String base, String resourceType, List params) {
+            def map = new FhirClient().search(base, resourceType, params)
+//            IBaseResource thePatient = ToolkitFhirContext.get().newXmlParser().parseResource(patient)
+//            def map = [:]
+//            map[uri] = theResource
+            map
         }
     }
 

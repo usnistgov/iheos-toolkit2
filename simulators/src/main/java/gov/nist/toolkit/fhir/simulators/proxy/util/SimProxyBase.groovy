@@ -26,6 +26,9 @@ import org.hl7.fhir.dstu3.model.Resource
  *
  */
 public class SimProxyBase {
+    static final String fhirSupportSimName = 'fhir_support'
+
+
     String uri = null
      SimId simId;
      SimId simId2;
@@ -46,6 +49,15 @@ public class SimProxyBase {
     ProxyLogger targetLogger = null
     String clientContentType
     List<Resource> resourcesSubmitted = []
+
+    String fhirSupportBase() {
+        def userName = simId.user
+        SimId supportId = new SimId(userName, fhirSupportSimName)
+        SimDb simDb = new SimDb(supportId)
+        SimulatorConfig config = simDb.getSimulator(supportId)
+        config.getConfigEle(SimulatorProperties.fhirEndpoint).asString()
+    }
+
 
     /**
      * called by the first transform when something is known about the target system transaction
