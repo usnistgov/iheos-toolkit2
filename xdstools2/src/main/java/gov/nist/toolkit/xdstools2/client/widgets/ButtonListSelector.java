@@ -17,6 +17,8 @@ import java.util.List;
  * Present systems for selection
  */
 abstract public class ButtonListSelector implements IsWidget {
+    private static final String GWT_BUTTON_STYLE = "gwt-Button";
+    private static final String SITE_SELECTED_STYLE = "siteSelected";
     private FlowPanel thePanel = new FlowPanel();
     private FlowPanel tablePanel = new FlowPanel();
     private List<Button> buttons = new ArrayList<>();
@@ -46,6 +48,15 @@ abstract public class ButtonListSelector implements IsWidget {
         bindList();
     }
 
+    public void refreshEnabledStatus(List<? extends AnnotatedItem> items) {
+        for (AnnotatedItem item : items) {
+            Button b = findButton(item.getName());
+            if (b!=null) {
+               b.setEnabled(item.isEnabled());
+            }
+        }
+    }
+
     /**
      * I tried using the defined style SiteButtonSelected defined in css
      * but it is ignored so removing the default style gives a dark
@@ -68,9 +79,9 @@ abstract public class ButtonListSelector implements IsWidget {
 
     private void updateSiteSelectedView(Button button) {
         for (Button u : buttons) {
-            u.setStyleName("gwt-Button");
+            u.setStyleName(GWT_BUTTON_STYLE);
         }
-        button.setStyleName("siteSelected");
+        button.setStyleName(SITE_SELECTED_STYLE);
         doSelected(button.getText());
     }
 
@@ -78,10 +89,10 @@ abstract public class ButtonListSelector implements IsWidget {
         GWT.log("updateSiteSelectedView - " + title);
 
         for (Button u : buttons) {
-            u.setStyleName("gwt-Button");
+            u.setStyleName(GWT_BUTTON_STYLE);
         }
         Button button = findButton(title);
-        button.setStyleName("siteSelected");
+        button.setStyleName(SITE_SELECTED_STYLE);
         doSelected(title);
     }
 

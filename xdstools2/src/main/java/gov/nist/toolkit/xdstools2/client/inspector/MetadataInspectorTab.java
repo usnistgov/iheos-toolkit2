@@ -61,6 +61,7 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 
 	// Data for test being displayed.
 	DataModel data;
+	DataNotification dataNotification;
 	Logger logger = Logger.getLogger("");
 
 	List<Tree> treeList = new ArrayList<>();
@@ -70,6 +71,10 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 
 	public MetadataInspectorTab(boolean isWidget) {
 		super(isWidget);
+	}
+
+	public void setDataNotification(DataNotification dataNotification) {
+		this.dataNotification = dataNotification;
 	}
 
 	/**
@@ -93,7 +98,13 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 		}
 		data.buildCombined();
 		showHistoryOrContents();
+		if (dataNotification!=null) {
+			dataNotification.onAddToHistory(data.combinedMetadata);
+		}
 	}
+
+
+
 	// main panel
 	HorizontalPanel hpanel = new HorizontalPanel();
 	Collection<Result> results;
@@ -585,8 +596,9 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 	public void showHistory(boolean showHistory) {
 		if (!showHistory) {
 		    historyPanel.removeFromParent();
-		} else
+		} else if (!hpanel.getWidget(0).equals(historyPanel)) {
 			hpanel.insert(historyPanel, 0);
+		}
 
 	}
 

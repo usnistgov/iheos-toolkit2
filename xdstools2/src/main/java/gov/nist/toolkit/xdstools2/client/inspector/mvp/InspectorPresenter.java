@@ -14,6 +14,7 @@ import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractPresenter;
+import gov.nist.toolkit.xdstools2.client.inspector.DataNotification;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.util.AnnotatedItem;
 
@@ -23,7 +24,7 @@ import java.util.List;
 /**
  *
  */
-public class InspectorPresenter extends AbstractPresenter<InspectorView> {
+public class InspectorPresenter extends AbstractPresenter<InspectorView> implements DataNotification {
     public enum MetadataObjectType {ObjectRefs, DocEntries, SubmissionSets, Folders, Assocs}
     private List<Result> results;
     private SiteSpec siteSpec;
@@ -82,7 +83,15 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
         setupInspectorWidget(view.metadataInspectorLeft);
         metadataCollection = setupInspectorWidget(view.metadataInspectorRight);
         annotatedItems = getMetadataObjectAnnotatedItems(metadataCollection);
-        view.metadataObjectSelector.setNames(annotatedItems);
+        view.metadataObjectSelector.setNames(annotatedItems); // This will create the button list
+        view.metadataInspectorLeft.setDataNotification(this);
+    }
+
+    @Override
+    public void onAddToHistory(MetadataCollection metadataCollection) {
+        this.metadataCollection = metadataCollection;
+        annotatedItems = getMetadataObjectAnnotatedItems(metadataCollection);
+        view.metadataObjectSelector.refreshEnabledStatus(annotatedItems);
     }
 
     public void autoSelectIfOnlyOneTypeOfObjectIsAvail() {
@@ -99,6 +108,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
             view.metadataObjectSelector.updateSiteSelectedView(defaultItem.getName());
         }
     }
+
 
     public void doSetupDiffMode(boolean isSelected) {
         view.metadataInspectorLeft.showHistory(true);
