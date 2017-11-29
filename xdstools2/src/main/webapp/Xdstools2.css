@@ -234,6 +234,10 @@ h3 {
   /*right: 0px;*/
 }
 
+.left {
+  float: left;
+}
+
 .gwt-TabBarItem { /* folder-type rounded tab edges */
   border-top-left-radius: .7em;
   border-top-right-radius: .7em;

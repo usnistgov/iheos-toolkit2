@@ -169,9 +169,12 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
 
     private void addColumnSelectionCheckboxes() {
         FlowPanel columnSelectionPanel = new FlowPanel();
-        columnSelectionPanel.add(new HTML("Columns "));
+        HTML columnTitle = new HTML("Columns");
+        columnTitle.addStyleName("left");
+        columnSelectionPanel.add(columnTitle);
         for (AnnotatedItem column : columnList) {
             CheckBox checkBox = new CheckBox(column.getName());
+            checkBox.addStyleName("left");
             if (column.isEnabled()) { // show column by DEFAULT will make the checkbox selected and disabled
                 checkBox.setValue(true);
                 checkBox.setEnabled(false);
