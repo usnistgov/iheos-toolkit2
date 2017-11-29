@@ -22,7 +22,7 @@ class MetadataToDocumentReferenceTransformTest extends Specification {
         DocumentEntry de = col.docEntries[0]
 
         when:
-        MetadataToDocumentReferenceTranslator xfrm = new MetadataToDocumentReferenceTranslator(['fhirbase'], new Searcher())
+        MetadataToDocumentReferenceTranslator xfrm = new MetadataToDocumentReferenceTranslator(null, ['fhirbase'], new Searcher())
         DocumentReference dr = xfrm.run(de)
 
         then:

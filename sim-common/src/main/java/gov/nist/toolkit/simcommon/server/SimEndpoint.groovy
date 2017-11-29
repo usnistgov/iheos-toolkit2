@@ -1,6 +1,7 @@
 package gov.nist.toolkit.simcommon.server
 
 import gov.nist.toolkit.configDatatypes.client.TransactionType
+import gov.nist.toolkit.installation.Installation
 import org.apache.http.HttpHost
 
 /**
@@ -18,12 +19,14 @@ class SimEndpoint {
     String resourceType = null
     String query = null
     String id = null
+    String baseAddress = null
 
     def resourceNames = [
             'DocumentReference',
             'DocumentManifest',
             'Patient'
     ]
+
 
     TransactionType getTransactionType() {
         if (transactionTypeName) return TransactionType.find(transactionTypeName)
@@ -44,16 +47,19 @@ class SimEndpoint {
         i = service.indexOf('/')
         if (i == -1)
             throw new InvalidSimEndpointException(endpoint, 'Cannot find delimiting /')
-        int coloni = service.indexOf(':')
-        if (!endpoint.startsWith('http'))
-            coloni = -1
-        if (coloni > -1) {
-            hostName = service.substring(0, coloni)
-            String portStr = service.substring(coloni+1, i)
-            setPort(portStr)
-        } else {
-            //hostName = service.substring(0, i)
-        }
+//        int coloni = service.indexOf(':')
+//        if (!endpoint.startsWith('http'))
+//            coloni = -1
+//        if (coloni > -1) {
+//            hostName = service.substring(0, coloni)
+//            String portStr = service.substring(coloni+1, i)
+//            setPort(portStr)
+//        } else {
+//            //hostName = service.substring(0, i)
+//        }
+
+        hostName = Installation.instance().propertyServiceManager().getToolkitHost()
+        setPort(Installation.instance().propertyServiceManager().getProxyPort())
 
         service = service.substring(i)
         String[] parts = service.substring(1).split('/')
@@ -67,6 +73,8 @@ class SimEndpoint {
         List partsList = parts as List  // index beyond end with list -> returns null instead of exception
         simIdString = partsList[simStart+1]
         actorType = partsList[simStart+2]
+        baseAddress = "${schemeName}://${hostName}:${port}/${partsList.subList(0,3).join('/')}"
+
         transactionTypeName = partsList[simStart+3]// with FHIR this is sometimes null
         if (!transactionTypeName)
             transactionTypeName = 'fhir'

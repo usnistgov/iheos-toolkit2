@@ -22,7 +22,6 @@ import org.apache.http.HttpHost
 import org.apache.http.HttpRequest
 import org.apache.http.HttpResponse
 import org.hl7.fhir.dstu3.model.Resource
-
 /**
  *
  */

@@ -184,8 +184,13 @@ public class SimulatorServiceManager extends CommonService {
 					event);
 			File bodyFile = db.getRequestBodyFile(simid, actor, trans, event);
 
-			String body = new String(Io.bytesFromFile(bodyFile));
-			body = MessageBuilder.formatMessage(body);
+			String body = "";
+			try {
+				body = new String(Io.bytesFromFile(bodyFile));
+				body = MessageBuilder.formatMessage(body);
+			} catch (IOException e) {
+				;
+			}
 			String header;
 			if (headerFile.exists())
 				header = Io.stringFromFile(headerFile);

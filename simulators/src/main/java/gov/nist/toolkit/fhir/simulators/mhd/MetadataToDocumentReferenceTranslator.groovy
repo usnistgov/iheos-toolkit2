@@ -1,5 +1,6 @@
 package gov.nist.toolkit.fhir.simulators.mhd
 
+import gov.nist.toolkit.fhir.simulators.proxy.util.SimProxyBase
 import gov.nist.toolkit.fhir.utility.IFhirSearch
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry
 import org.hl7.fhir.dstu3.model.*
@@ -8,13 +9,15 @@ import org.hl7.fhir.instance.model.api.IBaseResource
 class MetadataToDocumentReferenceTranslator {
     List<String> supportServerBases  // FHIR servers to hunt for Patient references
     IFhirSearch searcher
+    SimProxyBase base
 
-    MetadataToDocumentReferenceTranslator(List<String> supportServerBases, IFhirSearch searcher) {
+    MetadataToDocumentReferenceTranslator(SimProxyBase base, List<String> supportServerBases, IFhirSearch searcher) {
         assert supportServerBases
         assert supportServerBases.size() > 0
         assert searcher
         this.supportServerBases = supportServerBases
         this.searcher = searcher
+        this.base = base
     }
 
     DocumentReference run(DocumentEntry de) {
@@ -28,13 +31,16 @@ class MetadataToDocumentReferenceTranslator {
 
         dr.id = stripUrnPrefix(de.id)
         dr.addContent(new DocumentReference.DocumentReferenceContentComponent())
-        dr.content[0].attachment.contentType = de.mimeType
+        org.hl7.fhir.dstu3.model.Attachment attachment = dr.content.attachment[0]
+        attachment.contentType = de.mimeType
         if (de.hash)
-            dr.content[0].attachment.hash = HashTranslator.toByteArray(de.hash)
+            attachment.hash = HashTranslator.toByteArray(de.hash)
         if (de.lang)
-            dr.content[0].attachment.language = de.lang
+            attachment.language = de.lang
         if (de.size)
-            dr.content[0].attachment.size = Integer.parseInt(de.size)
+            attachment.size = Integer.parseInt(de.size)
+        if (base)
+            attachment.url = "${base.endpoint.baseAddress}/Binary/${de.uniqueId}"
         dr.context = new DocumentReference.DocumentReferenceContextComponent()
         if (de.serviceStartTime || de.serviceStopTime) {
             dr.context.period = new Period()

@@ -5,6 +5,7 @@ import gov.nist.toolkit.tk.TkLoader;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import org.apache.http.annotation.Obsolete;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
@@ -460,6 +461,19 @@ public class Installation {
 	}
 
     public String getToolkitAsFhirServerBaseUrl() {
-        return "http://" + propertyServiceManager().getToolkitHost() + ":" + propertyServiceManager().getToolkitPort() + "/" + getServletContextName() + "/fhir";
+        return "http://" +
+                propertyServiceManager().getToolkitHost() + ":" + propertyServiceManager().getToolkitPort() +
+                ((getServletContextName().isEmpty()) ? "" : "/" + getServletContextName() ) +
+                "/fhir";
+    }
+
+
+    // I think this is wrong!!!
+    @Obsolete
+    public String getToolkitProxyBaseUrl() {
+        return "http://" +
+                propertyServiceManager().getToolkitHost() + ":" + propertyServiceManager().getProxyPort() +
+                ((getServletContextName().isEmpty()) ? "" : "/" + getServletContextName() ) +
+                "/fhir";
     }
 }

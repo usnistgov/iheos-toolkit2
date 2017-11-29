@@ -40,7 +40,7 @@ class SQResponseToFhirSearchResponseTransform implements ContentResponseTransfor
         try {
             def fhirBases = [base.fhirSupportBase()]
 //            List<String> fhirBases = ['http://example.com/fhir']  // Fhir servers to search for Patient references
-            MetadataToDocumentReferenceTranslator xlat = new MetadataToDocumentReferenceTranslator(fhirBases, new Searcher())
+            MetadataToDocumentReferenceTranslator xlat = new MetadataToDocumentReferenceTranslator(base, fhirBases, new Searcher())
 
 //            Bundle bundle = new Bundle()
 

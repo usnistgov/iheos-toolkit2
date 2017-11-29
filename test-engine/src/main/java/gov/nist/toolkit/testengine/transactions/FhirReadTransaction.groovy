@@ -11,13 +11,17 @@ import gov.nist.toolkit.xdsexception.client.MetadataException
 import gov.nist.toolkit.xdsexception.client.XdsInternalException
 import org.apache.axiom.om.OMElement
 import org.apache.http.message.BasicStatusLine
+import org.hl7.fhir.dstu3.model.DocumentReference
 import org.hl7.fhir.dstu3.model.OperationOutcome
 import org.hl7.fhir.instance.model.api.IBaseResource
 /**
  *
  */
 class FhirReadTransaction extends BasicFhirTransaction {
+    // if both of these are specified, requestType takes precesencse
     boolean requestXml = false
+    String requestType = null
+
     boolean mustReturn = false
     FhirContext ctx = ToolkitFhirContext.get()
 
@@ -41,6 +45,8 @@ class FhirReadTransaction extends BasicFhirTransaction {
         reportManager.add('Url', fullEndpoint)
 
         def contentType = (requestXml) ? 'application/fhir+xml' : 'application/fhir+json'
+        if (requestType)
+            contentType = requestType
         testLog.add_name_value(instruction_output, 'OutHeader', "GET ${fullEndpoint}")
         def (BasicStatusLine statusLine, String content) = FhirClient.get(new URI(fullEndpoint), contentType)
         if (statusLine.statusCode in 400..599)  {
@@ -62,9 +68,9 @@ class FhirReadTransaction extends BasicFhirTransaction {
 //                xml = new OMFormatter(xml).toString()
                     testLog.add_name_value(instruction_output, "Result", xmlo);
                 }
+                IBaseResource returnedResource = FhirSupport.parse(content)
                 if (mustReturn) {
                     def expectedResourceType = resourceTypeFromUrl(fullEndpoint.toString())
-                    IBaseResource returnedResource = FhirSupport.parse(content)
                     def theResourceType = returnedResource.class.simpleName
                     if (expectedResourceType != theResourceType) {
                         stepContext.set_error("Expected resource of type ${expectedResourceType} but got ${theResourceType} instead")
@@ -79,6 +85,10 @@ class FhirReadTransaction extends BasicFhirTransaction {
                     FhirId responseId = new FhirId(returnedResource.id)
                     if (requestId.withoutHistory() != responseId.withoutHistory())
                         stepContext.set_error("Requested ID ${requestId.withoutHistory()} but received ${responseId.withoutHistory()}")
+                }
+                if (returnedResource instanceof DocumentReference) {
+                    String binaryReference = returnedResource?.content?.attachment?.get(0)?.url
+                    reportManager.add('BinaryUrl', binaryReference)
                 }
             } else {
                 testLog.add_name_value(instruction_output, "Result", 'None');
@@ -108,6 +118,9 @@ class FhirReadTransaction extends BasicFhirTransaction {
         }
         else if (part_name == 'MustReturn') {
             mustReturn = true;
+        }
+        else if (part_name == 'RequestType') {
+            requestType = part.text;
         }
         else {
             super.parseInstruction(part)
