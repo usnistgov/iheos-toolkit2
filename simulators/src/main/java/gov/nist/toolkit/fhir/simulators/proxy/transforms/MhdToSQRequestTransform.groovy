@@ -11,10 +11,14 @@ import org.apache.http.HttpRequest
 import org.apache.http.RequestLine
 import org.apache.http.entity.BasicHttpEntity
 import org.apache.http.message.BasicHttpEntityEnclosingRequest
+import org.apache.log4j.Logger
+
 // the endpoint transform must be run before this one
 class MhdToSQRequestTransform implements ContentRequestTransform {
+    static private final Logger logger = Logger.getLogger(MhdToSQRequestTransform)
     @Override
     HttpRequest run(SimProxyBase base, BasicHttpEntityEnclosingRequest request) {
+        logger.info('Running MhdToSQRequestTransform')
         URI uri = new URI(base.uri)
         def query = uri.query
         if (!query)

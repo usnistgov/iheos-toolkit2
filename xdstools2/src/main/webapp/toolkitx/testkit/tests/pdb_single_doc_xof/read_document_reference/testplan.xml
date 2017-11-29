@@ -1,5 +1,5 @@
 <TestPlan>
-    <Test>pdb_single_doc_xof/read</Test>
+    <Test>pdb_single_doc_xof/read_document_reference</Test>
     <!--<TestStep id="read_DM">-->
         <!--<Goal>-->
         <!--</Goal>-->

@@ -16,7 +16,8 @@ class FhirToAnyRequestTransform implements ContentRequestTransform {
 
     @Override
     HttpRequest run(SimProxyBase base, BasicHttpEntityEnclosingRequest request) {
-        throw new SimProxyTransformException("FhirToAnyRequestTransform cannot handle requests of type ${request.getClass().getName() } ")
+        run(base, (HttpRequest) request)
+        //throw new SimProxyTransformException("FhirToAnyRequestTransform cannot handle requests of type ${request.getClass().getName() } ")
     }
 
     @Override
@@ -29,7 +30,7 @@ class FhirToAnyRequestTransform implements ContentRequestTransform {
 
             def sqModel = [:]   // model is [queryParamName: [values]]
             sqModel[SQParamTranslator.queryType] = [SQParamTranslator.GetDocs]
-            sqModel[SQParamTranslator.entryUUID] = [id]
+            sqModel[SQParamTranslator.entryUUID] = ["urn:uuid:${id}"]
             return MhdToSQRequestTransform.sqAsHttpRequest(base, request, sqModel)
         }
         throw new SimProxyTransformException("Query for ${base.endpoint.transactionType} not supported yet")

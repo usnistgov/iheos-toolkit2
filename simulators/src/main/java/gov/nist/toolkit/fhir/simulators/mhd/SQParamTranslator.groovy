@@ -45,7 +45,8 @@ class SQParamTranslator {
             confKey,
             authorKey,
             formatKey,
-            statusKey
+            statusKey,
+            entryUUID
     ]
 
     // Query Types

@@ -1,5 +1,4 @@
 package gov.nist.toolkit.fhir.utility
-
 /**
  *
  */
@@ -11,6 +10,7 @@ class FhirId {
 
     // format is Patient/ea0d8b08-8f1d-40ac-b9e2-bbcc781c586b/_history/1
     FhirId(String value) {
+        if (!value) return
         def locationParts = value.split('/')
         int historyIndex = locationParts.findIndexOf { it == '_history'}
         if (historyIndex != -1) {
@@ -33,11 +33,15 @@ class FhirId {
 
     @Override
     public String toString() {
-        "${type}/${id}/_history/${vid}"
+        if (type && id)
+            return "${type}/${id}/_history/${vid}"
+        return null
     }
 
     public String withoutHistory() {
-        "${type}/${id}"
+        if (type && id)
+            return "${type}/${id}"
+        return null
     }
 
     boolean equals(o) {

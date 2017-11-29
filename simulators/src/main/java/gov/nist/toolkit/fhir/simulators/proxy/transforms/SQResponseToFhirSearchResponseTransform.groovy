@@ -36,6 +36,7 @@ class SQResponseToFhirSearchResponseTransform implements ContentResponseTransfor
 
     @Override
     HttpResponse run(SimProxyBase base, BasicHttpResponse response) {
+        logger.info('Running SQResponseToFhirSearchResponseTransform')
         try {
             def fhirBases = [base.fhirSupportBase()]
 //            List<String> fhirBases = ['http://example.com/fhir']  // Fhir servers to search for Patient references
@@ -56,7 +57,7 @@ class SQResponseToFhirSearchResponseTransform implements ContentResponseTransfor
                 if (rel && rel.size() > 0) {
                     List<RegistryError> re = new RegistryErrorListParser(rel[0]).getRegistryErrorList()
                     OperationOutcome oo = OperationOutcomeGenerator.translate(re)
-                    return WrapResourceInHttpResponse.wrap(base, oo, HttpStatus.SC_INTERNAL_SERVER_ERROR)
+                    return WrapResourceInHttpResponse.wrap(base, oo, HttpStatus.SC_OK)
                 }
             }
             MetadataToMetadataCollectionParser mmparser = new MetadataToMetadataCollectionParser(metadata, 'Label')
@@ -114,6 +115,7 @@ class SQResponseToFhirSearchResponseTransform implements ContentResponseTransfor
             map
         }
     }
+
 
     def patient = '''
 <Patient xmlns="http://hl7.org/fhir">

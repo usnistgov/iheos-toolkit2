@@ -169,6 +169,9 @@ public enum ActorType implements IsSerializable, Serializable {
 
                     new ProxyTransformConfig(TransactionType.FHIR,
                                              TransactionDirection.REQUEST,
+                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToXdsEndpointTransform").toString(),
+                    new ProxyTransformConfig(TransactionType.FHIR,
+                            TransactionDirection.REQUEST,
                             "gov.nist.toolkit.fhir.simulators.proxy.transforms.FhirToAnyRequestTransform").toString(),
                     new ProxyTransformConfig(TransactionType.FHIR,
                                              TransactionDirection.RESPONSE,

@@ -11,6 +11,7 @@ import gov.nist.toolkit.xdsexception.client.MetadataException
 import gov.nist.toolkit.xdsexception.client.XdsInternalException
 import org.apache.axiom.om.OMElement
 import org.apache.http.message.BasicStatusLine
+import org.hl7.fhir.dstu3.model.OperationOutcome
 import org.hl7.fhir.instance.model.api.IBaseResource
 /**
  *
@@ -63,10 +64,21 @@ class FhirReadTransaction extends BasicFhirTransaction {
                 }
                 if (mustReturn) {
                     def expectedResourceType = resourceTypeFromUrl(fullEndpoint.toString())
-                    IBaseResource resource1 = FhirSupport.parse(content)
-                    def theResourceType = resource1.class.simpleName
-                    if (expectedResourceType != theResourceType)
+                    IBaseResource returnedResource = FhirSupport.parse(content)
+                    def theResourceType = returnedResource.class.simpleName
+                    if (expectedResourceType != theResourceType) {
                         stepContext.set_error("Expected resource of type ${expectedResourceType} but got ${theResourceType} instead")
+                        if (returnedResource instanceof OperationOutcome) {
+                            OperationOutcome oo = returnedResource
+                            oo.issue.each {
+                                stepContext.set_error(it.diagnostics)
+                            }
+                        }
+                    }
+                    FhirId requestId = new FhirId(fullEndpoint)
+                    FhirId responseId = new FhirId(returnedResource.id)
+                    if (requestId.withoutHistory() != responseId.withoutHistory())
+                        stepContext.set_error("Requested ID ${requestId.withoutHistory()} but received ${responseId.withoutHistory()}")
                 }
             } else {
                 testLog.add_name_value(instruction_output, "Result", 'None');

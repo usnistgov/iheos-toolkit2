@@ -26,6 +26,7 @@ class MetadataToDocumentReferenceTranslator {
         // TODO sourcePatientInfo
         // TODO reference to binary
 
+        dr.id = stripUrnPrefix(de.id)
         dr.addContent(new DocumentReference.DocumentReferenceContentComponent())
         dr.content[0].attachment.contentType = de.mimeType
         if (de.hash)
@@ -140,4 +141,12 @@ class MetadataToDocumentReferenceTranslator {
         }
         throw new Exception("Did not find ${resourceType} identiied by ${params} on servers ${bases}")
     }
+
+    static stripUrnPrefix(String id) {
+        if (!id) return id
+        if (id.startsWith('urn:uuid:')) return id.substring('urn:uuid:'.size())
+        if (id.startsWith('urn:oid:')) return id.substring('urn:oid:'.size())
+        return id
+    }
+
 }

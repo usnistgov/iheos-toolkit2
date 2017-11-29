@@ -78,8 +78,6 @@ class FhirClient implements IFhirSearch {
             request.addHeader('Content-Type', contentType)
             HttpResponse response = client.execute(request)
             def statusLine = response.getStatusLine()
-//             if (statusLine.statusCode != 200)
-//                throw new Exception("GET from ${uri} for content type ${contentType} failed with ${statusLine.statusCode}: ${statusLine.reasonPhrase}")
             logger.info("GET ${uri} for content type ${contentType}")
             return [statusLine, Io.getStringFromInputStream(response.getEntity().content)]
         }
@@ -93,16 +91,9 @@ class FhirClient implements IFhirSearch {
         readResource(uri, 'application/fhir+json')
     }
 
-        static IBaseResource readResource(def uri, def contentType) {
-//        try {
-            def (statusLine, body) = get(uri, contentType)
-//            if (statusLine.statusCode != 200)
-//                return null
-            return ToolkitFhirContext.get().newJsonParser().parseResource(body)
-//        }
-//        catch (Exception e) {
-//            return null
-//        }
+    static IBaseResource readResource(def uri, def contentType) {
+        def (statusLine, body) = get(uri, contentType)
+        return ToolkitFhirContext.get().newJsonParser().parseResource(body)
     }
 
     /**
