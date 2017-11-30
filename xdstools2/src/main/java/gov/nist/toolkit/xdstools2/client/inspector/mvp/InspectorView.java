@@ -18,7 +18,7 @@ import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataObjectType;
 import gov.nist.toolkit.xdstools2.client.widgets.ButtonListSelector;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +28,7 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
     final HTML advancedOptionCtl = new HTML("Advanced Options");
     final FlowPanel advancedOptionPanel = new FlowPanel();
 
-    List<DataTable> tables = new ArrayList<>();
+    Map<MetadataObjectType, DataTable> tableMap = new HashMap<>();
 
     ActivityItem activityItem;
     int rowsPerPage = 10;
@@ -177,8 +177,8 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
     @Override
     protected void bindUI() {
 
-        tables.add(objectRefTable);
-        tables.add(docEntryDataTable);
+        tableMap.put(MetadataObjectType.ObjectRefs, objectRefTable);
+        tableMap.put(MetadataObjectType.DocEntries, docEntryDataTable);
 
         advancedOptionCtl.addClickHandler(new ClickHandler() {
             @Override
@@ -202,7 +202,8 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         return inspectorWrapper;
     }
 
-    public List<DataTable> getTables() {
-        return tables;
+    public Map<MetadataObjectType,DataTable> getTableMap() {
+        return tableMap;
     }
+
 }

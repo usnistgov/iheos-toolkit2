@@ -1,6 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.inspector;
 
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.TreeItem;
 import gov.nist.toolkit.registrymetadata.client.Association;
 import gov.nist.toolkit.registrymetadata.client.Document;
@@ -90,16 +91,20 @@ public class ListingDisplay {
 
 			boolean hasHcIds = false;
 			for (ObjectRef o : data.combinedMetadata.objectRefs) {
-					TreeItem item = new TreeItem(HyperlinkFactory.link(tab, o));
-					item.setUserObject(new MetadataObjectWrapper(MetadataObjectType.ObjectRefs,o));
-					ti.addItem(item);
+				Hyperlink h = HyperlinkFactory.link(tab, o);
+				h.addStyleName("inheritBackground"); // Widget does not convey selected style from parent, so we need to add it here.
+				TreeItem item = new TreeItem(h);
+				item.setUserObject(new MetadataObjectWrapper(MetadataObjectType.ObjectRefs,o));
+				ti.addItem(item);
 			}
 		}
 	}
 
 	void associations() {
 		for (Association a : data.combinedMetadata.assocs) {
-			TreeItem item = new TreeItem(HyperlinkFactory.link(tab, a));
+			Hyperlink h = HyperlinkFactory.link(tab, a);
+			h.addStyleName("inheritBackground");
+			TreeItem item = new TreeItem(h);
 			item.setUserObject(new MetadataObjectWrapper(MetadataObjectType.Assocs,a));
 			root.addItem(item);
 		}
@@ -112,7 +117,9 @@ public class ListingDisplay {
 	}
 
 	void addDe(TreeThing treeThing, DocumentEntry de) {
-		TreeItem item = new TreeItem(HyperlinkFactory.link(tab, de));
+		Hyperlink h = HyperlinkFactory.link(tab, de);
+		h.addStyleName("inheritBackground");
+		TreeItem item = new TreeItem(h);
 		item.setUserObject(new MetadataObjectWrapper(MetadataObjectType.DocEntries,de));
 
 		if (data.enableActions) {
@@ -143,7 +150,9 @@ public class ListingDisplay {
 
 	void folders() {
 		for (Folder fol : data.combinedMetadata.folders) {
-			TreeItem item = new TreeItem(HyperlinkFactory.link(tab, fol));
+			Hyperlink h = HyperlinkFactory.link(tab, fol);
+			h.addStyleName("inheritBackground");
+			TreeItem item = new TreeItem(h);
 			item.setUserObject(new MetadataObjectWrapper(MetadataObjectType.Folders,fol));
 
 			if (data.enableActions) {
@@ -163,7 +172,9 @@ public class ListingDisplay {
 
 	void submissionSets() {
 		for (SubmissionSet ss : data.combinedMetadata.submissionSets) {
-			TreeItem item = new TreeItem(HyperlinkFactory.link(tab, ss));
+			Hyperlink h = HyperlinkFactory.link(tab, ss);
+			h.addStyleName("inheritBackground");
+			TreeItem item = new TreeItem(h);
 			item.setUserObject(new MetadataObjectWrapper(MetadataObjectType.SubmissionSets,ss));
 			root.addItem(item);
 		}

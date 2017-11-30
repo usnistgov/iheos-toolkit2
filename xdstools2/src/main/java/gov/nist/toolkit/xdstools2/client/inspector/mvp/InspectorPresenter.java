@@ -45,7 +45,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> impleme
 
     }
 
-    public void setupResizeTableTimer() {
+    public void setupResizeTableTimer(final MetadataObjectType objectType) {
 
         /*
         Scheduler is required because view is built before it is actually displayed.
@@ -55,14 +55,14 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> impleme
             @Override
             public boolean execute() {
                 if (isTableCellHeightAvailable()) {
-                    view.objectRefTable.resizeTable();
+                    view.getTableMap().get(objectType).resizeTable();
                     return false;
                 } else return true;
             }
 
             boolean isTableCellHeightAvailable() {
                 try {
-                    int height = view.objectRefTable.dataTable.getRowElement(0).getClientHeight();
+                    int height = view.getTableMap().get(objectType).dataTable.getRowElement(0).getClientHeight();
                     if (height > 0) {
 //                        GWT.log("Table cell height is available! cell height is:" + height);
                       return true;
@@ -82,11 +82,11 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> impleme
         // At this point there should be only one Result.TODO: Need to revisit this if there are more!? -- Conformance tests!
 //        view.metadataInspectorRight.preInit();
 //        view.metadataInspectorRight.init();
+        view.metadataInspectorLeft.setDataNotification(this);
         setupInspectorWidget(view.metadataInspectorRight);
         metadataCollection = setupInspectorWidget(view.metadataInspectorLeft);
         annotatedItems = getMetadataObjectAnnotatedItems(metadataCollection);
         view.metadataObjectSelector.setNames(annotatedItems); // This will create the button list
-        view.metadataInspectorLeft.setDataNotification(this);
     }
 
     @Override
@@ -96,19 +96,39 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> impleme
         view.metadataObjectSelector.refreshEnabledStatus(annotatedItems);
     }
 
-    public void autoSelectIfOnlyOneTypeOfObjectIsAvail() {
-        int cx = 0;
+    @Override
+    public void onObjectSelected(MetadataObjectWrapper objectWrapper) {
+        try {
+            MetadataObjectType currentObjectTypeSelection = MetadataObjectType.valueOf(view.metadataObjectSelector.getCurrentSelection());
+            MetadataObjectType requestedObjectType = objectWrapper.getType();
+            if (!currentObjectTypeSelection.equals(requestedObjectType)) {
+                view.metadataObjectSelector.updateSiteSelectedView(requestedObjectType.name());
+            }
+            view.getTableMap().get(requestedObjectType).diffSelect.setValue(false,true);
+            view.getTableMap().get(requestedObjectType).setSelectedRow(objectWrapper.getObject(), true);
+        } catch (Exception ex) {
+           GWT.log("onObjectSelected" + ex.toString());
+        }
+    }
+
+    public MetadataObjectType autoSelectObjectType() {
         AnnotatedItem defaultItem = null;
+        // Make DocEntry the default object type selection when more than one are available at loading time.
         for (AnnotatedItem annotatedItem : annotatedItems) {
            if (annotatedItem.isEnabled()) {
+               if (MetadataObjectType.DocEntries.equals(MetadataObjectType.valueOf(annotatedItem.getName()))) {
+                   defaultItem = annotatedItem;
+                   break;
+               }
                if (defaultItem==null)
                    defaultItem = annotatedItem;
-               cx++;
            }
         }
-        if (cx==1) {
+        if (defaultItem!=null) {
             view.metadataObjectSelector.updateSiteSelectedView(defaultItem.getName());
+            return MetadataObjectType.valueOf(defaultItem.getName());
         }
+        return null;
     }
 
 
@@ -120,11 +140,9 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> impleme
             view.metadataInspectorRight.setData(view.metadataInspectorLeft.getData());
             view.metadataInspectorRight.init();
         }
-//        view.metadataInspectorLeft.showHistory(!isSelected); // hide history when Diff is selected
-        view.metadataInspectorRight.showHistory(!isSelected); // hide history when Diff is selected
-//        if (!isSelected) {
-//            view.metadataInspectorRight.asWidget().setVisible(false);
-//        }
+        // hide history pane when Diff is selected
+        view.metadataInspectorRight.showHistory(!isSelected);
+        view.metadataInspectorRight.showStructure(!isSelected);
     }
 
     private MetadataCollection setupInspectorWidget(MetadataInspectorTab inspector) {
@@ -138,8 +156,8 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> impleme
 
         view.inspectorWrapper.add(view.metadataInspectorRight.asWidget());
 
-//       view.metadataInspectorLeft.showHistory(false);
-//       view.metadataInspectorRight.showHistory(false);
+       view.metadataInspectorLeft.showHistory(false);
+       view.metadataInspectorLeft.showStructure(false);
 
        doFocusTreeItem(metadataObjectType, view.metadataInspectorLeft.getTreeList(), null, left);
        doFocusTreeItem(metadataObjectType, view.metadataInspectorRight.getTreeList(), null, right);
@@ -173,27 +191,26 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> impleme
 
     void doUpdateChosenMetadataObjectType(String type) {
         MetadataObjectType metadataObjectType = MetadataObjectType.valueOf(type);
-        if (MetadataObjectType.ObjectRefs.equals(metadataObjectType)) {
-            doSwitchTable(view.objectRefTable);
-            view.objectRefTable.setData(metadataCollection.objectRefs);
-        } else if (MetadataObjectType.DocEntries.equals(metadataObjectType)) {
-            doSwitchTable(view.docEntryDataTable);
-            view.docEntryDataTable.setData(metadataCollection.docEntries);
-        }
+        doSwitchTable(metadataObjectType);
     }
 
-    public void doSwitchTable(DataTable table) {
-        for (DataTable tab : view.tables) {
-            if (table.equals(tab)) {
-               tab.asWidget().setVisible(true);
+    public void doSwitchTable(MetadataObjectType objectType) {
+        view.objectRefTable.setData(metadataCollection.objectRefs);
+        view.docEntryDataTable.setData(metadataCollection.docEntries);
+
+        for (MetadataObjectType key : view.tableMap.keySet()) {
+            if (key.equals(objectType)) {
+                view.tableMap.get(key).asWidget().setVisible(true);
             } else {
-                tab.asWidget().setVisible(false);
+                view.tableMap.get(key).asWidget().setVisible(false);
             }
+            view.tableMap.get(key).diffSelect.setValue(false,true);
         }
     }
 
     public void doSingleMode() {
         view.metadataInspectorLeft.showHistory(true);
+        view.metadataInspectorLeft.showStructure(true);
 
         if (view.inspectorWrapper.getWidgetCount()>1)
             view.inspectorWrapper.remove(1);
@@ -308,7 +325,10 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> impleme
         } else {
             ctl.removeStyleName("outsetBorder");
             ctl.addStyleName("insetBorder");
-            setupResizeTableTimer();
+            String currentObjectType = view.metadataObjectSelector.getCurrentSelection();
+            if (currentObjectType!=null && !"".equals(currentObjectType)) {
+                setupResizeTableTimer(MetadataObjectType.valueOf(currentObjectType));
+            }
         }
         panel.setVisible(!isPanelVisible);
     }

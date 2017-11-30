@@ -11,6 +11,7 @@ import gov.nist.toolkit.xdstools2.client.abstracts.AbstractToolkitActivity;
 import gov.nist.toolkit.xdstools2.client.abstracts.ActivityDisplayer;
 import gov.nist.toolkit.xdstools2.client.abstracts.GenericMVP;
 import gov.nist.toolkit.xdstools2.client.injector.Injector;
+import gov.nist.toolkit.xdstools2.client.inspector.MetadataObjectType;
 import gov.nist.toolkit.xdstools2.client.util.ClientFactoryImpl;
 
 /**
@@ -74,8 +75,10 @@ public class InspectorActivity extends AbstractToolkitActivity {
         presenter.setActivityDisplayer(displayer);  // so presenter can update tab title
         GWT.log("Calling activityDisplay");
         displayer.display(getContainer(), presenter.getTitle(), this, acceptsOneWidget, eventBus);
-        presenter.autoSelectIfOnlyOneTypeOfObjectIsAvail();
-        presenter.setupResizeTableTimer();
+        MetadataObjectType objectType = presenter.autoSelectObjectType();
+        if (objectType!=null) {
+            presenter.setupResizeTableTimer(objectType);
+        }
 
     }
 

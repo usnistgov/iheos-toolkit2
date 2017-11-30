@@ -60,7 +60,11 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
 
     SelectionModel<T> selectionModel;
     CheckBox multiSelect = new CheckBox("Multiple selection");
-    CheckBox diffSelect = new CheckBox("Diff");
+    /**
+     * Compare only shows two objects side by side.
+     * Diff should show/highlight the differences.
+     */
+    CheckBox diffSelect = new CheckBox("Compare");
 
     ColumnSortEvent.ListHandler<T> columnSortHandler = new ColumnSortEvent.ListHandler<T>(
             dataProvider.getList());
@@ -98,6 +102,7 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
         addDataTable();
 
         if (displayDiff) {
+            diffSelect.addStyleName("block");
             diffSelect.setVisible(true);
             initDiffSelectionMode();
             multiSelect.setVisible(false);
@@ -171,11 +176,9 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
     private void addColumnSelectionCheckboxes() {
         FlowPanel columnSelectionPanel = new FlowPanel();
         HTML columnTitle = new HTML("Columns");
-        columnTitle.addStyleName("left");
         columnSelectionPanel.add(columnTitle);
         for (AnnotatedItem column : columnList) {
             CheckBox checkBox = new CheckBox(column.getName());
-            checkBox.addStyleName("left");
             if (column.isEnabled()) { // show column by DEFAULT will make the checkbox selected and disabled
                 checkBox.setValue(true);
                 checkBox.setEnabled(false);
@@ -622,6 +625,12 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
             }
         }
         return new SafeHtmlBuilder().appendHtmlConstant("<input type=\"image\" style=\"width: 24px; height: 24px; opacity:0.5\" src=\"" + iconFilePath + "\" border=0 disabled/>").toSafeHtml();
+    }
+
+
+    public void setSelectedRow(Object item, boolean isSelected) {
+        if (dataTable.getSelectionModel() instanceof SingleSelectionModel)
+            dataTable.getSelectionModel().setSelected((T)item, isSelected);
     }
 
 }

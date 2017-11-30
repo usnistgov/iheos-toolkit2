@@ -2,6 +2,7 @@ package gov.nist.toolkit.xdstools2.client.inspector.mvp;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CheckboxCell;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
@@ -84,7 +85,6 @@ abstract class DocEntryDataTable extends DataTable<DocumentEntry> implements IsW
                                 return 0;
                             }
 
-                            // Compare the name columns.
                             if (o1 != null && o1.id != null) {
                                 return (o2 != null && o2.id != null) ? o1.id.toString().compareTo(o2.id.toString()) : 1;
                             }
@@ -108,7 +108,6 @@ abstract class DocEntryDataTable extends DataTable<DocumentEntry> implements IsW
                                 return 0;
                             }
 
-                            // Compare the name columns.
                             if (o1 != null && o1.title!=null) {
                                 return (o2 != null && o2.title!=null) ? o1.title.toString().compareTo(o2.title.toString()) : 1;
                             }
@@ -133,7 +132,6 @@ abstract class DocEntryDataTable extends DataTable<DocumentEntry> implements IsW
                                 return 0;
                             }
 
-                            // Compare the name columns.
                             if (o1 != null && o1.home!=null) {
                                 return (o2 != null && o2.home!=null) ? o1.home.toString().compareTo(o2.home.toString()) : 1;
                             }
@@ -159,7 +157,6 @@ abstract class DocEntryDataTable extends DataTable<DocumentEntry> implements IsW
                                 return 0;
                             }
 
-                            // Compare the name columns.
                             if (o1 != null && o1.repositoryUniqueId!=null) {
                                 return (o2 != null && o2.repositoryUniqueId!=null) ? o1.repositoryUniqueId.toString().compareTo(o2.repositoryUniqueId.toString()) : 1;
                             }
@@ -171,9 +168,72 @@ abstract class DocEntryDataTable extends DataTable<DocumentEntry> implements IsW
         }
 
 
+        // hash
+        if (columnToBeDisplayedIsChecked(HASH_COLUMN_NAME)) {
+            TextColumn<DocumentEntry> hashColumn = new TextColumn<DocumentEntry>() {
+                @Override
+                public String getValue(DocumentEntry de) {
+                    return de.hash;
+                }
+            };
+            hashColumn.setSortable(true);
+            columnSortHandler.setComparator(hashColumn,
+                    new Comparator<DocumentEntry>() {
+                        public int compare(DocumentEntry o1, DocumentEntry o2) {
+                            if (o1 == o2) {
+                                return 0;
+                            }
+
+                            if (o1 != null && o1.hash!=null) {
+                                return (o2 != null && o2.hash!=null) ? o1.hash.toString().compareTo(o2.hash.toString()) : 1;
+                            }
+                            return -1;
+                        }
+                    });
+
+            dataTable.addColumn(hashColumn,HASH_COLUMN_NAME);
+        }
 
 
-}
+        // size
+        if (columnToBeDisplayedIsChecked(SIZE_COLUMN_NAME)) {
+            TextColumn<DocumentEntry> sizeColumn = new TextColumn<DocumentEntry>() {
+                @Override
+                public String getValue(DocumentEntry de) {
+                    return de.size;
+                }
+            };
+            sizeColumn.setSortable(true);
+            columnSortHandler.setComparator(sizeColumn,
+                    new Comparator<DocumentEntry>() {
+                        public int compare(DocumentEntry o1, DocumentEntry o2) {
+                            if (o1 == o2) {
+                                return 0;
+                            }
+
+                            if (o1 != null && o1.size!=null) {
+                                try {
+                                    if (o2!=null && o2.size!=null) {
+                                       return new Integer(o1.size).compareTo(new Integer(o2.size));
+                                    }
+                                    return 1;
+                                } catch (Exception ex) {
+                                    GWT.log(ex.toString());
+                                }
+                            } else if (o2!=null && o2.size!=null) {
+                                return 1;
+                            }
+                            return -1;
+                        }
+                    });
+
+            dataTable.addColumn(sizeColumn,SIZE_COLUMN_NAME);
+        }
+
+
+
+
+    }
 
 
 

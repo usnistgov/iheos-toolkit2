@@ -238,6 +238,10 @@ h3 {
   float: left;
 }
 
+.block {
+  display: block;
+}
+
 .gwt-TabBarItem { /* folder-type rounded tab edges */
   border-top-left-radius: .7em;
   border-top-right-radius: .7em;
@@ -380,4 +384,8 @@ table tr td div button {
 
 .outsetBorder {
   border: outset;
+}
+
+.inheritBackground {
+  background: inherit;
 }
