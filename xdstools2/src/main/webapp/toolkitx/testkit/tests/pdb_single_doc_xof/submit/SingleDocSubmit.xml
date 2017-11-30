@@ -91,7 +91,7 @@
                     <attachment>
                         <contentType value="text/plain"/>
                         <language value="en-us"/>
-                        <url value="http://localhost:9556/svc/fhir/Binary/1e404af3-077f-4bee-b7a6-a9be97e1ce32"/>
+                        <url value="file://textfile.txt"/>
                     </attachment>
                     <format>
                         <system value="urn:oid:1.3.6.1.4.1.19376.1.2.3"/>
@@ -248,21 +248,21 @@
             <url value="Practitioner"/>
         </request>
     </entry>
-    <entry>
-        <fullUrl value="http://localhost:9556/svc/fhir/Binary/1e404af3-077f-4bee-b7a6-a9be97e1ce32"/>
-        <resource>
-            <Binary>
-                <id value="1e404af3-077f-4bee-b7a6-a9be97e1ce32"/>
-                <meta>
-                    <lastUpdated value="2013-07-01T13:11:33Z"/>
-                </meta>
-                <contentType value="text/plain"/>
-                <content value="YXNkYXNkYXNkYXNkYXNk"/>
-            </Binary>
-        </resource>
-        <request>
-            <method value="POST"/>
-            <url value="Binary"/>
-        </request>
-    </entry>
+    <!--<entry>-->
+        <!--<fullUrl value="http://localhost:9556/svc/fhir/Binary/1e404af3-077f-4bee-b7a6-a9be97e1ce32"/>-->
+        <!--<resource>-->
+            <!--<Binary>-->
+                <!--<id value="1e404af3-077f-4bee-b7a6-a9be97e1ce32"/>-->
+                <!--<meta>-->
+                    <!--<lastUpdated value="2013-07-01T13:11:33Z"/>-->
+                <!--</meta>-->
+                <!--<contentType value="text/plain"/>-->
+                <!--<content value="YXNkYXNkYXNkYXNkYXNk"/>-->
+            <!--</Binary>-->
+        <!--</resource>-->
+        <!--<request>-->
+            <!--<method value="POST"/>-->
+            <!--<url value="Binary"/>-->
+        <!--</request>-->
+    <!--</entry>-->
 </Bundle>

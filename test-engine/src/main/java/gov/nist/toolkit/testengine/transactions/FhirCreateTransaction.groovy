@@ -6,6 +6,7 @@ import gov.nist.toolkit.fhir.utility.FhirId
 import gov.nist.toolkit.testengine.engine.StepContext
 import gov.nist.toolkit.testengine.engine.UniqueIdAllocator
 import gov.nist.toolkit.testengine.fhir.FhirSupport
+import gov.nist.toolkit.utilities.io.Io
 import gov.nist.toolkit.xdsexception.client.MetadataException
 import gov.nist.toolkit.xdsexception.client.XdsInternalException
 import org.apache.axiom.om.OMElement
@@ -83,6 +84,8 @@ class FhirCreateTransaction extends BasicFhirTransaction {
             pid_system = useReportManager.get('$pid_system$');
             patientReference = useReportManager.get('$patient_reference$')
         }
+
+        includeLocalReferences(resource)
 
         if (patientReference)
             updatePatientReference(resource, patientReference)
@@ -196,5 +199,49 @@ class FhirCreateTransaction extends BasicFhirTransaction {
         return 'fhir'
     }
 
+    def includeLocalReferences(IBaseResource resource) {
+        def toAdd = []
+        if (!(resource instanceof Bundle))
+            return
+        Bundle bundle = resource
+        bundle.entry.each { Bundle.BundleEntryComponent comp ->
+            Resource aResource = comp.getResource()
+            if (aResource instanceof DocumentReference) {
+                DocumentReference dr = aResource
+                String binaryUrl = dr.content[0].attachment.url
+                if (binaryUrl?.startsWith('file://')) {
+                    String filename = binaryUrl.substring('file://'.size())
+                    def (id, ext) = filename.split('\\.', 2)
+                    Binary binary = new Binary()
+                    File contentFile = new File(this.testConfig.testplanDir, filename)
+                    binary.setContent(Io.bytesFromFile(contentFile))
+                    binary.contentTypeElement = new CodeType(mimeType(contentFile))
+                    toAdd << [id, binary]
+                    dr.content[0].attachment.url = id
+                    dr.content[0].attachment.contentType = mimeType(contentFile)
+                }
+            }
+        }
+        toAdd.each { String id, Resource r ->
+            Bundle.BundleEntryComponent comp = new Bundle.BundleEntryComponent()
+            comp.resource = r
+            comp.id = id
+            comp.fullUrl = id
+            bundle.addEntry(comp)
+        }
+    }
+
+    def mimeTypes = [
+            txt: 'text/plain',
+            pdf: 'application/pdf',
+            xml: 'text/xml'
+    ]
+
+    String mimeType(File file) {
+        String name = file.name
+        def parts = name.split('\\.')
+        def ext = parts[parts.size()-1]
+        mimeTypes[ext]
+    }
 
 }
