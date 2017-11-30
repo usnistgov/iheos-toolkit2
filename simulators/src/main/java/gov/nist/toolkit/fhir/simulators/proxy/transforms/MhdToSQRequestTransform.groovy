@@ -23,12 +23,6 @@ class MhdToSQRequestTransform implements ContentRequestTransform {
         def query = uri.query
         if (!query)
             throw new SimProxyTransformException("Query is null")
-//        def parts = uri.split('\\?', 2)
-//        if (parts.size() != 2) {
-//            // throw error
-//        }
-//        String query = parts[1]
-
         Map sqModel = new SQTranslator().fhirQueryToSQModel(query)
         sqAsHttpRequest(base, request, sqModel)
     }

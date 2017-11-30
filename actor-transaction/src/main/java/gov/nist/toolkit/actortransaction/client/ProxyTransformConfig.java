@@ -1,6 +1,7 @@
 package gov.nist.toolkit.actortransaction.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.configDatatypes.client.FhirVerb;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 
 import java.io.Serializable;
@@ -9,15 +10,21 @@ public class ProxyTransformConfig implements IsSerializable, Serializable {
     private TransactionType transactionType;
     private TransactionDirection transactionDirection;
     private String transformClassName;
+    private FhirVerb fhirVerb;
 
-    public ProxyTransformConfig(TransactionType transactionType, TransactionDirection transactionDirection, String transformClassName) {
+    public ProxyTransformConfig(TransactionType transactionType, TransactionDirection transactionDirection, FhirVerb fhirVerb, String transformClassName) {
         this.transactionType = transactionType;
         this.transactionDirection = transactionDirection;
+        this.fhirVerb = fhirVerb;
         this.transformClassName = transformClassName;
     }
 
     public TransactionType getTransactionType() {
         return transactionType;
+    }
+
+    public FhirVerb getFhirVerb() {
+        return fhirVerb;
     }
 
     public TransactionDirection getTransactionDirection() {
@@ -29,8 +36,8 @@ public class ProxyTransformConfig implements IsSerializable, Serializable {
     }
 
     public static ProxyTransformConfig parse(String encoded) throws Exception {
-        String[] parts = encoded.split("\\^", 3);
-        if (parts.length != 3)
+        String[] parts = encoded.split("\\^", 4);
+        if (parts.length != 4)
             throw new Exception("ProxyTransformConfig: bad configuration: " + encoded);
         TransactionType ttype = TransactionType.find(parts[0]);
         TransactionDirection dir;
@@ -40,10 +47,10 @@ public class ProxyTransformConfig implements IsSerializable, Serializable {
             dir = TransactionDirection.RESPONSE;
         else
             throw new Exception("ProxyTransformConfig: bad TransactionDirection: " + parts[1]);
-        return new ProxyTransformConfig(ttype, dir, parts[2]);
+        return new ProxyTransformConfig(ttype, dir, FhirVerb.valueOf(parts[2]), parts[3]);
     }
 
     public String toString() {
-        return transactionType.getShortName() + "^" + transactionDirection.name() + "^" + transformClassName;
+        return transactionType.getShortName() + "^" + transactionDirection.name() + "^" + fhirVerb.name() + "^" + transformClassName;
     }
 }

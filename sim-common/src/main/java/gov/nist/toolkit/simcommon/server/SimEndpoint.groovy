@@ -1,5 +1,6 @@
 package gov.nist.toolkit.simcommon.server
 
+import gov.nist.toolkit.configDatatypes.client.FhirVerb
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.installation.Installation
 import org.apache.http.HttpHost
@@ -20,18 +21,15 @@ class SimEndpoint {
     String query = null
     String id = null
     String baseAddress = null
+    FhirVerb fhirVerb = FhirVerb.NONE
+    TransactionType transactionType
 
     def resourceNames = [
             'DocumentReference',
             'DocumentManifest',
-            'Patient'
+            'Binary'
+     //       'Patient'
     ]
-
-
-    TransactionType getTransactionType() {
-        if (transactionTypeName) return TransactionType.find(transactionTypeName)
-        null
-    }
 
     SimEndpoint(String endpoint) {
         assert endpoint
@@ -47,17 +45,6 @@ class SimEndpoint {
         i = service.indexOf('/')
         if (i == -1)
             throw new InvalidSimEndpointException(endpoint, 'Cannot find delimiting /')
-//        int coloni = service.indexOf(':')
-//        if (!endpoint.startsWith('http'))
-//            coloni = -1
-//        if (coloni > -1) {
-//            hostName = service.substring(0, coloni)
-//            String portStr = service.substring(coloni+1, i)
-//            setPort(portStr)
-//        } else {
-//            //hostName = service.substring(0, i)
-//        }
-
         hostName = Installation.instance().propertyServiceManager().getToolkitHost()
         setPort(Installation.instance().propertyServiceManager().getProxyPort())
 
@@ -69,7 +56,6 @@ class SimEndpoint {
         simServiceType = parts[simStart]
 
         if (!simServiceType.contains('sim')) throw new InvalidSimEndpointException(endpoint, 'Service name must start with /sim/')
-//        assert parts.size() >= 4
         List partsList = parts as List  // index beyond end with list -> returns null instead of exception
         simIdString = partsList[simStart+1]
         actorType = partsList[simStart+2]
@@ -81,19 +67,27 @@ class SimEndpoint {
         if (resourceNames.contains(transactionTypeName))
             id = partsList[simStart+4]
         def isQuery = service.contains('?')
-//        if ('fhir' == transactionType && partsList?.get(simStart+4)) {// is FHIR transaction - this says what type
-        if (partsList.size() > simStart+3) { //?.get(simStart+3)) {// is FHIR transaction - this says what type
+        if (partsList.size() > simStart+3) {
             if (isQuery) {
                 def resAndQuery = partsList[simStart+3]
                 (resourceType, query) = resAndQuery.split('\\?', 2)
                 transactionTypeName = resourceType
+                fhirVerb = FhirVerb.QUERY
             }
             else {
                 transactionTypeName = partsList[simStart + 3]
                 if (!transactionTypeName)
                     transactionTypeName = 'fhir'
+                if (resourceNames.contains(transactionTypeName))
+                    fhirVerb = FhirVerb.READ
+                else
+                    fhirVerb = FhirVerb.TRANSACTION
             }
         }
+        if (transactionTypeName)
+            transactionType = TransactionType.find(transactionTypeName, fhirVerb)
+
+        def x = 0
     }
 
     HttpHost getHost() {

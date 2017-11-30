@@ -1,6 +1,7 @@
 package gov.nist.toolkit.actortransaction.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.configDatatypes.client.FhirVerb;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.xdsexception.client.TkActorNotFoundException;
 import org.apache.http.annotation.Obsolete;
@@ -139,6 +140,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "mhddocrec",
             "gov.nist.toolkit.fhir.simulators.proxy.sim.MhdRecipientFactory",
             "gov.nist.toolkit.fhir.simulators.proxy.sim.MhdRecipientSimulator",
+//            Arrays.asList(TransactionType.PROV_DOC_BUNDLE, TransactionType.FHIR),
             Arrays.asList(TransactionType.PROV_DOC_BUNDLE, TransactionType.FHIR),
             true,  // show in config - only partially configured - only used in IT tests
             null,  // actorsFileLabel
@@ -147,34 +149,60 @@ public enum ActorType implements IsSerializable, Serializable {
             false,    // is fhir
             // proxy transaform configs
             Arrays.asList(
+                    // Provide Document Bundle Transaction
                     new ProxyTransformConfig(TransactionType.PROV_DOC_BUNDLE,
                             TransactionDirection.REQUEST,
+                            FhirVerb.TRANSACTION,
                             "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToXdsEndpointTransform").toString(),
                     new ProxyTransformConfig(TransactionType.PROV_DOC_BUNDLE,
                             TransactionDirection.REQUEST,
+                            FhirVerb.TRANSACTION,
                             "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToPnrContentTransform").toString(),
                     new ProxyTransformConfig(TransactionType.PROV_DOC_BUNDLE,
                             TransactionDirection.RESPONSE,
+                            FhirVerb.TRANSACTION,
                             "gov.nist.toolkit.fhir.simulators.proxy.transforms.RegistryResponseToOperationOutcomeTransform").toString(),
 
+                    // broken
                     new ProxyTransformConfig(TransactionType.FIND_DOC_REFS,
                             TransactionDirection.REQUEST,
+                            FhirVerb.QUERY,
                             "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToXdsEndpointTransform").toString(),
                     new ProxyTransformConfig(TransactionType.FIND_DOC_REFS,
                             TransactionDirection.REQUEST,
+                            FhirVerb.QUERY,
                             "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToSQRequestTransform").toString(),
                     new ProxyTransformConfig(TransactionType.FIND_DOC_REFS,
                             TransactionDirection.RESPONSE,
+                            FhirVerb.QUERY,
                             "gov.nist.toolkit.fhir.simulators.proxy.transforms.SQResponseToFhirSearchResponseTransform").toString(),
 
-                    new ProxyTransformConfig(TransactionType.FHIR,
-                                             TransactionDirection.REQUEST,
-                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToXdsEndpointTransform").toString(),
-                    new ProxyTransformConfig(TransactionType.FHIR,
+                    // DocumentReference READ
+                    new ProxyTransformConfig(TransactionType.READ_DOC_REF,
                             TransactionDirection.REQUEST,
-                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.FhirToAnyRequestTransform").toString(),
-                    new ProxyTransformConfig(TransactionType.FHIR,
+                            FhirVerb.READ,
+                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToXdsEndpointTransform").toString(),
+                    new ProxyTransformConfig(TransactionType.READ_DOC_REF,
+                            TransactionDirection.REQUEST,
+                            FhirVerb.READ,
+                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.FhirReadDocRefTransform").toString(),
+                    new ProxyTransformConfig(TransactionType.READ_DOC_REF,
+                            TransactionDirection.RESPONSE,
+                            FhirVerb.READ,
+                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.SQResponseToFhirReadResponseTransform").toString(),
+
+                    // Binary READ
+                    new ProxyTransformConfig(TransactionType.READ_BINARY,
+                                             TransactionDirection.REQUEST,
+                                             FhirVerb.READ,
+                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToXdsEndpointTransform").toString(),
+                    new ProxyTransformConfig(TransactionType.READ_BINARY,
+                                             TransactionDirection.REQUEST,
+                                             FhirVerb.READ,
+                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.FhirReadDocRefTransform").toString(),
+                    new ProxyTransformConfig(TransactionType.READ_BINARY,
                                              TransactionDirection.RESPONSE,
+                                             FhirVerb.READ,
                             "gov.nist.toolkit.fhir.simulators.proxy.transforms.SQResponseToFhirReadResponseTransform").toString()
 
             ),
@@ -445,22 +473,28 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList(
                     new ProxyTransformConfig(TransactionType.PROV_DOC_BUNDLE,
                             TransactionDirection.REQUEST,
+                            FhirVerb.NONE,
                             "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToXdsEndpointTransform").toString(),
                     new ProxyTransformConfig(TransactionType.PROV_DOC_BUNDLE,
                             TransactionDirection.REQUEST,
+                            FhirVerb.NONE,
                             "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToPnrContentTransform").toString(),
                     new ProxyTransformConfig(TransactionType.PROV_DOC_BUNDLE,
                             TransactionDirection.RESPONSE,
+                            FhirVerb.NONE,
                             "gov.nist.toolkit.fhir.simulators.proxy.transforms.RegistryResponseToOperationOutcomeTransform").toString(),
 
                     new ProxyTransformConfig(TransactionType.FIND_DOC_REFS,
                             TransactionDirection.REQUEST,
+                            FhirVerb.NONE,
                             "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToXdsEndpointTransform").toString(),
                     new ProxyTransformConfig(TransactionType.FIND_DOC_REFS,
                             TransactionDirection.REQUEST,
+                            FhirVerb.NONE,
                             "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToSQRequestTransform").toString(),
                     new ProxyTransformConfig(TransactionType.FIND_DOC_REFS,
                             TransactionDirection.RESPONSE,
+                            FhirVerb.NONE,
                             "gov.nist.toolkit.fhir.simulators.proxy.transforms.SQResponseToFhirSearchResponseTransform").toString()
             ),
             "rec",
@@ -484,22 +518,28 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList(
                     new ProxyTransformConfig(TransactionType.PROV_DOC_BUNDLE,
                             TransactionDirection.REQUEST,
+                            FhirVerb.NONE,
                             "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToXdsEndpointTransform").toString(),
                     new ProxyTransformConfig(TransactionType.PROV_DOC_BUNDLE,
                             TransactionDirection.REQUEST,
+                            FhirVerb.NONE,
                             "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToPnrContentTransform").toString(),
                     new ProxyTransformConfig(TransactionType.PROV_DOC_BUNDLE,
                             TransactionDirection.RESPONSE,
+                            FhirVerb.NONE,
                             "gov.nist.toolkit.fhir.simulators.proxy.transforms.RegistryResponseToOperationOutcomeTransform").toString(),
 
-                    new ProxyTransformConfig(TransactionType.FIND_DOC_REFS,
+                    new ProxyTransformConfig(TransactionType.READ_DOC_REF,
                             TransactionDirection.REQUEST,
+                            FhirVerb.NONE,
                             "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToXdsEndpointTransform").toString(),
-                    new ProxyTransformConfig(TransactionType.FIND_DOC_REFS,
+                    new ProxyTransformConfig(TransactionType.READ_DOC_REF,
                             TransactionDirection.REQUEST,
+                            FhirVerb.NONE,
                             "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToSQRequestTransform").toString(),
-                    new ProxyTransformConfig(TransactionType.FIND_DOC_REFS,
+                    new ProxyTransformConfig(TransactionType.READ_DOC_REF,
                             TransactionDirection.RESPONSE,
+                            FhirVerb.NONE,
                             "gov.nist.toolkit.fhir.simulators.proxy.transforms.SQResponseToFhirSearchResponseTransform").toString()
             ),
             "rec",

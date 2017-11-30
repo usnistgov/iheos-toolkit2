@@ -1,6 +1,7 @@
 package gov.nist.toolkit.fhir.simulators.proxy.transforms
 
-import gov.nist.toolkit.fhir.simulators.proxy.exceptions.SimProxyTransformException
+import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.fhir.simulators.proxy.util.ContentRequestTransform
 import gov.nist.toolkit.fhir.simulators.proxy.util.ReturnableErrorException
 import gov.nist.toolkit.fhir.simulators.proxy.util.SimProxyBase
@@ -8,16 +9,22 @@ import org.apache.http.HttpRequest
 import org.apache.http.message.BasicHttpEntityEnclosingRequest
 import org.apache.log4j.Logger
 
-class MhdToRetrieveRequestTransform implements ContentRequestTransform {
-    static private final Logger logger = Logger.getLogger(MhdToRetrieveRequestTransform)
+class FhirReadBinaryTransform implements ContentRequestTransform {
+    static private final Logger logger = Logger.getLogger(FhirReadBinaryTransform)
 
     @Override
     HttpRequest run(SimProxyBase base, BasicHttpEntityEnclosingRequest request) {
-        return null
+        run(base, (HttpRequest) request)
     }
 
     @Override
     HttpRequest run(SimProxyBase base, HttpRequest request) throws ReturnableErrorException {
-        throw new SimProxyTransformException("MhdToRetrieveRequestTransform cannot handle requests of type ${request.getClass().getName() } ")
+        logger.info('Running FhirReadBinaryTransform')
+        base.setTargetType(ActorType.REPOSITORY, TransactionType.RETRIEVE)
+
+
+
+
+        return null
     }
 }

@@ -4,6 +4,7 @@ import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.actortransaction.client.ProxyTransformConfig
 import gov.nist.toolkit.actortransaction.client.TransactionDirection
 import gov.nist.toolkit.actortransaction.server.EndpointParser
+import gov.nist.toolkit.configDatatypes.client.FhirVerb
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.fhir.simulators.proxy.exceptions.SimProxyTransformException
@@ -49,6 +50,7 @@ public class SimProxyBase {
     ProxyLogger targetLogger = null
     String clientContentType
     List<Resource> resourcesSubmitted = []
+    FhirVerb fhirVerb
 
     String fhirSupportBase() {
         def userName = simId.user
@@ -154,19 +156,23 @@ public class SimProxyBase {
     def init(HttpRequest request) {
         if (uri) return
         uri = request.requestLine.uri
-       // if (serverConnection)
-       //     this.serverConnection = serverConnection
         endpoint = new SimEndpoint(uri)
         clientActorType = ActorType.findActor(endpoint.actorType)
         if (!clientActorType) return handleEarlyException(new Exception("ActorType name was ${endpoint.actorType}"))
-        URI urix = UriBuilder.build(uri)
-        if (urix.query)  // to distringuish query from read
-            clientTransactionType = TransactionType.find(endpoint.transactionTypeName)
-        if (!clientTransactionType) {
-            clientTransactionType = (clientActorType.transactions.contains(endpoint.transactionType)) ?  endpoint.transactionType : null
+        if (endpoint.transactionType) {
+            clientTransactionType = endpoint.transactionType
+            fhirVerb = endpoint.fhirVerb
         }
-        if (!clientTransactionType && clientActorType.transactions.contains(TransactionType.FHIR))
-            clientTransactionType = TransactionType.FHIR  // probably a read
+        URI urix = UriBuilder.build(uri)
+//        if (urix.query) {  // to distringuish query from read
+//            clientTransactionType = TransactionType.find(endpoint.transactionTypeName)
+//            fhirVerb = FhirVerb.QUERY
+//        }
+//        if (!clientTransactionType) {
+//            clientTransactionType = (clientActorType.transactions.contains(endpoint.transactionType)) ?  endpoint.transactionType : null
+//        }
+//        if (!clientTransactionType && clientActorType.transactions.contains(TransactionType.FHIR))
+//            clientTransactionType = TransactionType.FHIR  // probably a read
         if (!clientTransactionType) return handleEarlyException(new Exception("TransactionType name was ${endpoint.transactionTypeName}"))
         simId = SimIdParser.parse(uri)
         simDb = new SimDb(simId, endpoint.actorType, clientTransactionType.shortName)
@@ -184,9 +190,6 @@ public class SimProxyBase {
         config.get(SimulatorProperties.simProxyTransformations)?.asList()?.collect {
             ProxyTransformConfig.parse(it)
         }
-//        transformConfigs = ProxyTransformConfig.parse();
-//        responseTransformClassNames = config.get(SimulatorProperties.simProxyResponseTransformations)?.asList();
-
         Header contentTypeHeader = request.getFirstHeader('Content-Type')
         clientContentType = contentTypeHeader.value
 
@@ -195,20 +198,10 @@ public class SimProxyBase {
         targetSite = SimCache.getSite(targetSiteName)
         if (!targetSite) return handleEarlyException(new Exception("Site ${targetSiteName} does not exist"))
         return null
-        //return new ProxyLogger(simDb)
     }
 
     Exception handleEarlyException(Exception e) {
         earlyException = e
-//        if (clientTransactionType.isFhir()) {
-//            BasicHttpResponse response = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion('http', 1, 1), 500, e.getMessage()))
-//            OutputStream outstream = serverConnection.prepareOutputStream(response)
-//            outstream.write(response.toString().getBytes())
-//            outstream.flush()
-//            outstream.close()
-//            return e
-//        }
-//        assert true, "handleEarlyException - non-FHIR exceptions not implemented"
     }
 
 

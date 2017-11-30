@@ -35,7 +35,7 @@ class FhirToAnyRequestTransform implements ContentRequestTransform {
         } else if (base.endpoint.transactionTypeName == 'Binary') {
 
         }
-        throw new SimProxyTransformException("Query for ${base.endpoint.transactionType} not supported yet")
+        throw new SimProxyTransformException("Query for ${base.endpoint?.transactionType?.name} not supported yet")
     }
 
 //    String getRequestedContentType(HttpRequest request, String name) {

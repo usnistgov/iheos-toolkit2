@@ -3,6 +3,7 @@ package gov.nist.toolkit.simcommon.server;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
+import gov.nist.toolkit.configDatatypes.client.FhirVerb;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
@@ -348,7 +349,7 @@ public abstract class AbstractActorFactory {
 				+ asc.getId()
 				+ "/" + actor
 	//			+ "/fhir"
-				+ ((transactionType != null && transactionType.isTransaction() ? "/" + transactionType.getShortName() : ""))
+				+ ((transactionType != null && transactionType.getFhirVerb() == FhirVerb.TRANSACTION ? "/" + transactionType.getShortName() : ""))
 				;
 	}
 
