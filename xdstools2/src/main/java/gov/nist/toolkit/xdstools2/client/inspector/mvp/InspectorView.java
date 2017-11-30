@@ -11,11 +11,14 @@ import com.google.gwt.user.client.ui.ProvidesResize;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
+import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractView;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
+import gov.nist.toolkit.xdstools2.client.inspector.MetadataObjectType;
 import gov.nist.toolkit.xdstools2.client.widgets.ButtonListSelector;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +28,10 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
     final HTML advancedOptionCtl = new HTML("Advanced Options");
     final FlowPanel advancedOptionPanel = new FlowPanel();
 
+    List<DataTable> tables = new ArrayList<>();
+
     ActivityItem activityItem;
+    int rowsPerPage = 10;
 
     /* TODO: create a new widget to select Object Types (using the same style as the SystemSelector).
      Clicking on it should display the data table.
@@ -38,7 +44,35 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         }
     };
 
-    ObjectRefDataTable objectRefTable = new ObjectRefDataTable(10) {
+    DocEntryDataTable docEntryDataTable = new DocEntryDataTable(rowsPerPage) {
+        @Override
+        void defaultSingleClickAction(DocumentEntry row) {
+            getPresenter().doSingleMode();
+            getPresenter().doFocusTreeItem(MetadataObjectType.valueOf(metadataObjectSelector.getCurrentSelection()), metadataInspectorLeft.getTreeList(), null,row);
+        }
+
+        @Override
+        void defaultDoubleClickAction(DocumentEntry row) {
+
+        }
+
+        @Override
+        void setupDiffMode(boolean isSelected) {
+            getPresenter().doSetupDiffMode(isSelected);
+        }
+
+        @Override
+        void diffAction(DocumentEntry left, DocumentEntry right) {
+            getPresenter().doDiffAction(MetadataObjectType.valueOf(metadataObjectSelector.getCurrentSelection()), left, right);
+        }
+
+        @Override
+        int getWidthInPx() {
+            return getParentContainerWidth();
+        }
+    };
+
+    ObjectRefDataTable objectRefTable = new ObjectRefDataTable(rowsPerPage) {
         @Override
         void doGetDocuments(List<ObjectRef> objectRefs) { // TODO: remove this
 //            getPresenter().do
@@ -52,7 +86,7 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         @Override
         void defaultSingleClickAction(ObjectRef row) {
             getPresenter().doSingleMode();
-           getPresenter().doFocusTreeItem(metadataInspectorLeft.getTreeList(), null,row);
+           getPresenter().doFocusTreeItem(MetadataObjectType.valueOf(metadataObjectSelector.getCurrentSelection()), metadataInspectorLeft.getTreeList(), null,row);
         }
 
         @Override
@@ -62,29 +96,34 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
 
         @Override
         void diffAction(ObjectRef left, ObjectRef right) {
-            getPresenter().doDiffAction(left, right);
+            getPresenter().doDiffAction(MetadataObjectType.valueOf(metadataObjectSelector.getCurrentSelection()), left, right);
         }
 
         @Override
         int getWidthInPx() {
-            int width;
-            try {
-                width = (int)(mainHeaderPanel.getParent().getElement().getClientWidth() * .80);
-            } catch (Exception ex) {
-                GWT.log("containerPanel error: " + ex.toString());
-                width = (int)(Window.getClientWidth() * .80);
-            }
-            return width;
+            return getParentContainerWidth();
         }
     };
 
+    private int getParentContainerWidth() {
+        int width;
+        try {
+            width = (int)(mainHeaderPanel.getParent().getElement().getClientWidth() * .80);
+        } catch (Exception ex) {
+            GWT.log("containerPanel error: " + ex.toString());
+            width = (int)(Window.getClientWidth() * .80);
+        }
+        return width;
+    }
+
     HorizontalPanel inspectorWrapper = new HorizontalPanel();
-    MetadataInspectorTab metadataInspectorRight = new MetadataInspectorTab(true);
     MetadataInspectorTab metadataInspectorLeft = new MetadataInspectorTab(true);
+    MetadataInspectorTab metadataInspectorRight = new MetadataInspectorTab(true);
 
     @Override
     public void onResize() {
         objectRefTable.resizeTable();
+        docEntryDataTable.resizeTable();
     }
 
     @Override
@@ -117,7 +156,9 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         advancedOptionWrapper.add(metadataObjectSelector.asWidget());
         advancedOptionWrapper.add(new HTML("<br/>"));
         objectRefTable.asWidget().setVisible(false);
+        docEntryDataTable.asWidget().setVisible(false);
         advancedOptionWrapper.add(objectRefTable.asWidget());
+        advancedOptionWrapper.add(docEntryDataTable.asWidget());
         advancedOptionPanel.add(advancedOptionWrapper);
         advancedOptionPanel.addStyleName("paddedHorizontalPanel");
 
@@ -135,6 +176,9 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
 
     @Override
     protected void bindUI() {
+
+        tables.add(objectRefTable);
+        tables.add(docEntryDataTable);
 
         advancedOptionCtl.addClickHandler(new ClickHandler() {
             @Override
@@ -156,5 +200,9 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
 
     public HorizontalPanel getInspectorWrapper() {
         return inspectorWrapper;
+    }
+
+    public List<DataTable> getTables() {
+        return tables;
     }
 }

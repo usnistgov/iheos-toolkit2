@@ -546,6 +546,8 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 	}
 
 	public MetadataCollection init() {
+		treeList.clear();
+		hpanel.clear();
 		hpanel.setBorderWidth(1);
 
 		historyPanel = new VerticalPanel();
@@ -572,7 +574,12 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 		});
 
 
-		addToHistory(results);
+		if (results!=null) {
+			addToHistory(results);
+		} else {
+			data.buildCombined();
+			showHistoryOrContents();
+		}
 
 		if (!data.enableActions) {
 			if (selectHistory != null) selectHistory.setEnabled(false);
@@ -600,6 +607,18 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 			hpanel.insert(historyPanel, 0);
 		}
 
+	}
+
+
+
+
+
+	public DataModel getData() {
+		return new DataModel(data);
+	}
+
+	public void setData(DataModel data) {
+		this.data = data;
 	}
 
 	@Override

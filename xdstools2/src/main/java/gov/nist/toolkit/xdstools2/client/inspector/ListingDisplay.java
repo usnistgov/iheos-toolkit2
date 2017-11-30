@@ -91,7 +91,7 @@ public class ListingDisplay {
 			boolean hasHcIds = false;
 			for (ObjectRef o : data.combinedMetadata.objectRefs) {
 					TreeItem item = new TreeItem(HyperlinkFactory.link(tab, o));
-					item.setUserObject(o);
+					item.setUserObject(new MetadataObjectWrapper(MetadataObjectType.ObjectRefs,o));
 					ti.addItem(item);
 			}
 		}
@@ -100,7 +100,7 @@ public class ListingDisplay {
 	void associations() {
 		for (Association a : data.combinedMetadata.assocs) {
 			TreeItem item = new TreeItem(HyperlinkFactory.link(tab, a));
-			item.setUserObject(a);
+			item.setUserObject(new MetadataObjectWrapper(MetadataObjectType.Assocs,a));
 			root.addItem(item);
 		}
 	}
@@ -113,7 +113,7 @@ public class ListingDisplay {
 
 	void addDe(TreeThing treeThing, DocumentEntry de) {
 		TreeItem item = new TreeItem(HyperlinkFactory.link(tab, de));
-		item.setUserObject(de);
+		item.setUserObject(new MetadataObjectWrapper(MetadataObjectType.DocEntries,de));
 
 		if (data.enableActions) {
             TreeItem getRelatedItem = new TreeItem(HyperlinkFactory.getRelated(tab, new ObjectRef(de.id, de.home), "Action: Get Related Documents"));
@@ -144,7 +144,7 @@ public class ListingDisplay {
 	void folders() {
 		for (Folder fol : data.combinedMetadata.folders) {
 			TreeItem item = new TreeItem(HyperlinkFactory.link(tab, fol));
-			item.setUserObject(fol);
+			item.setUserObject(new MetadataObjectWrapper(MetadataObjectType.Folders,fol));
 
 			if (data.enableActions) {
 				TreeItem getContentsItem = new TreeItem(HyperlinkFactory.getFolderAndContents(tab, new ObjectRef(fol.id, fol.home), "Action: Get Contents"));
@@ -164,7 +164,7 @@ public class ListingDisplay {
 	void submissionSets() {
 		for (SubmissionSet ss : data.combinedMetadata.submissionSets) {
 			TreeItem item = new TreeItem(HyperlinkFactory.link(tab, ss));
-			item.setUserObject(ss);
+			item.setUserObject(new MetadataObjectWrapper(MetadataObjectType.SubmissionSets,ss));
 			root.addItem(item);
 		}
 	}

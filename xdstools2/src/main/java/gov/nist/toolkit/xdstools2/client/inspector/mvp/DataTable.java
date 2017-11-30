@@ -129,6 +129,7 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
             diffSelect.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
                 @Override
                 public void onValueChange(ValueChangeEvent<Boolean> valueChangeEvent) {
+                    setupDiffMode(diffSelect.getValue());
                     if (diffSelect.getValue()) {
                         clearActionDataList();
                         removeTableColumns();

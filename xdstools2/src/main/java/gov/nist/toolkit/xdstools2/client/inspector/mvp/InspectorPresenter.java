@@ -10,12 +10,13 @@ import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
 import gov.nist.toolkit.registrymetadata.client.MetadataObject;
-import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractPresenter;
 import gov.nist.toolkit.xdstools2.client.inspector.DataNotification;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
+import gov.nist.toolkit.xdstools2.client.inspector.MetadataObjectType;
+import gov.nist.toolkit.xdstools2.client.inspector.MetadataObjectWrapper;
 import gov.nist.toolkit.xdstools2.client.util.AnnotatedItem;
 
 import java.util.ArrayList;
@@ -25,7 +26,6 @@ import java.util.List;
  *
  */
 public class InspectorPresenter extends AbstractPresenter<InspectorView> implements DataNotification {
-    public enum MetadataObjectType {ObjectRefs, DocEntries, SubmissionSets, Folders, Assocs}
     private List<Result> results;
     private SiteSpec siteSpec;
     private MetadataCollection metadataCollection;
@@ -80,8 +80,10 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> impleme
 
         GWT.log("result list size is: " + results.size());
         // At this point there should be only one Result.TODO: Need to revisit this if there are more!? -- Conformance tests!
-        setupInspectorWidget(view.metadataInspectorLeft);
-        metadataCollection = setupInspectorWidget(view.metadataInspectorRight);
+//        view.metadataInspectorRight.preInit();
+//        view.metadataInspectorRight.init();
+        setupInspectorWidget(view.metadataInspectorRight);
+        metadataCollection = setupInspectorWidget(view.metadataInspectorLeft);
         annotatedItems = getMetadataObjectAnnotatedItems(metadataCollection);
         view.metadataObjectSelector.setNames(annotatedItems); // This will create the button list
         view.metadataInspectorLeft.setDataNotification(this);
@@ -111,13 +113,18 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> impleme
 
 
     public void doSetupDiffMode(boolean isSelected) {
-        view.metadataInspectorLeft.showHistory(true);
-        view.metadataInspectorRight.showHistory(true);
         if (isSelected) {
+//            view.metadataInspectorRight.setSiteSpec(siteSpec);
+//            view.metadataInspectorRight.setResults(view.metadataInspectorLeft.getResults());
+            view.metadataInspectorRight.setResults(null);
+            view.metadataInspectorRight.setData(view.metadataInspectorLeft.getData());
+            view.metadataInspectorRight.init();
         }
-        if (!isSelected) {
-            view.metadataInspectorLeft.asWidget().setVisible(false);
-        }
+//        view.metadataInspectorLeft.showHistory(!isSelected); // hide history when Diff is selected
+        view.metadataInspectorRight.showHistory(!isSelected); // hide history when Diff is selected
+//        if (!isSelected) {
+//            view.metadataInspectorRight.asWidget().setVisible(false);
+//        }
     }
 
     private MetadataCollection setupInspectorWidget(MetadataInspectorTab inspector) {
@@ -127,14 +134,15 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> impleme
         return inspector.init();
     }
 
-    public void doDiffAction(MetadataObject left, MetadataObject right) {
+    public void doDiffAction(MetadataObjectType metadataObjectType, MetadataObject left, MetadataObject right) {
 
         view.inspectorWrapper.add(view.metadataInspectorRight.asWidget());
-       view.metadataInspectorLeft.showHistory(false);
-       view.metadataInspectorRight.showHistory(false);
 
-       doFocusTreeItem(view.metadataInspectorLeft.getTreeList(), null, left);
-       doFocusTreeItem(view.metadataInspectorRight.getTreeList(), null, right);
+//       view.metadataInspectorLeft.showHistory(false);
+//       view.metadataInspectorRight.showHistory(false);
+
+       doFocusTreeItem(metadataObjectType, view.metadataInspectorLeft.getTreeList(), null, left);
+       doFocusTreeItem(metadataObjectType, view.metadataInspectorRight.getTreeList(), null, right);
     }
 
     /*
@@ -154,29 +162,6 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> impleme
         return annotatedItems;
     }
 
-    public List<ObjectRef> composeTableData() {
-        /*
-        List<ObjectRef> objectRefs = new ArrayList<>();
-
-            for (Result result : results)  {
-               for (StepResult stepResult : result.stepResults)  {
-                    if (stepResult.toBeRetrieved!=null && !stepResult.toBeRetrieved.isEmpty())  {
-                       objectRefs.addAll(stepResult.toBeRetrieved);
-                    }
-                    // TODO: There should be only one StepResult for Utilities BUT there are multiple for the Conformance tool
-                   // Possibly one solution is to use a tree on the left that shows the existing style of tree menu nav --- but selecting a step will show the new inspector, which is step-focused, in a split layout panel
-                    break;
-                }
-                // TODO:
-                break;
-            }
-        return objectRefs;
-        */
-
-        return metadataCollection.objectRefs;
-    }
-
-
 
     public void setDataModel(List<Result> results) {
         this.results = results;
@@ -189,8 +174,21 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> impleme
     void doUpdateChosenMetadataObjectType(String type) {
         MetadataObjectType metadataObjectType = MetadataObjectType.valueOf(type);
         if (MetadataObjectType.ObjectRefs.equals(metadataObjectType)) {
-            view.objectRefTable.asWidget().setVisible(true);
+            doSwitchTable(view.objectRefTable);
             view.objectRefTable.setData(metadataCollection.objectRefs);
+        } else if (MetadataObjectType.DocEntries.equals(metadataObjectType)) {
+            doSwitchTable(view.docEntryDataTable);
+            view.docEntryDataTable.setData(metadataCollection.docEntries);
+        }
+    }
+
+    public void doSwitchTable(DataTable table) {
+        for (DataTable tab : view.tables) {
+            if (table.equals(tab)) {
+               tab.asWidget().setVisible(true);
+            } else {
+                tab.asWidget().setVisible(false);
+            }
         }
     }
 
@@ -208,14 +206,16 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> impleme
      * @param target
      * @return True if object was located/found in the tree, selected
      */
-    public boolean doFocusTreeItem(List<Tree> treeList, final TreeItem root, final MetadataObject target) {
-       return new TreeItemSelector<ObjectRef>(treeList).doFocusTreeItem(root, target);
+    public boolean doFocusTreeItem(MetadataObjectType metadataObjectType, List<Tree> treeList, final TreeItem root, final MetadataObject target) {
+       return new TreeItemSelector(metadataObjectType, treeList).doFocusTreeItem(root, target);
     }
 
-    class TreeItemSelector<T> {
+    class TreeItemSelector {
         private List<Tree> treeList;
+        private MetadataObjectType metadataObjectType;
 
-        public TreeItemSelector(List<Tree> treeList) {
+        public TreeItemSelector(MetadataObjectType metadataObjectType, List<Tree> treeList) {
+            this.metadataObjectType = metadataObjectType;
             this.treeList = treeList;
         }
 
@@ -223,25 +223,35 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> impleme
             if (root == null) {
 
                 for (Tree tree : treeList) {
+                    // Assume only 1 child at the root level
+//                    GWT.log("tree has " + tree.getItemCount() + " items.");
                     if (doFocusTreeItem(tree.getItem(0), target)) {
-                        break;
+                        tree.getItem(0).setState(true);
+                        return true;
                     }
                 }
             } else {
                 int childCt = root.getChildCount();
-                if (attemptSelect(root, root.getUserObject(), target)) {
-                    root.setState(true);
-                    return true;
+                if (root.getUserObject()!=null) {
+                    if (attemptSelect(root,(MetadataObjectWrapper)root.getUserObject(), target)) {
+                        root.setState(true);
+                        return true;
+                    }
                 }
                 if (childCt>0) {
                     for (int cx = 0; cx < childCt; cx++) {
                         TreeItem child = root.getChild(cx);
-                        Object userObject = child.getUserObject();
-                        if (attemptSelect(child, userObject, target)) {
-                            root.setState(true);
-                            return true;
-                        } else if (child.getChildCount()>0) {
-                            return doFocusTreeItem(child, target);
+                        if (child.getUserObject()!=null) {
+                            MetadataObjectWrapper userObject = (MetadataObjectWrapper) child.getUserObject();
+                            if (attemptSelect(child, userObject, target)) {
+                                root.setState(true);
+                                return true;
+                            }
+                        }
+                        if (child.getChildCount()>0) {
+                            if (doFocusTreeItem(child, target)) {
+                                return true;
+                            }
                         }
                     }
                 }
@@ -249,35 +259,42 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> impleme
             return false;
         }
 
-        boolean attemptSelect(TreeItem treeItem, Object userObject, MetadataObject target) {
+        boolean attemptSelect(TreeItem treeItem, MetadataObjectWrapper userObject, MetadataObject target) {
             if (userObject != null && target!=null) {
-                if (compareTo((MetadataObject)userObject,target)) {
+                if (compareTo(userObject,target)) {
                     ((Hyperlink)treeItem.getWidget()).fireEvent(new ClickEvent() {});
                     treeItem.setSelected(true);
-                    treeItem.setState(true, true);
+                    treeItem.setState(false, true);
                     return true;
                 }
             }
             return false;
         }
 
-        public boolean compareTo(MetadataObject source, MetadataObject target) {
-            if (source == target) return true;
-            if (!(target instanceof MetadataObject)) return false;
+        public boolean compareTo(MetadataObjectWrapper userObject, MetadataObject target) {
 
-            MetadataObject that = (MetadataObject) target;
+            if (metadataObjectType.equals(userObject.getType())) {
+                MetadataObject source = userObject.getObject();
+                if (source == target) return true;
+                if (!(target instanceof MetadataObject)) return false;
 
-            if (source!=null && that!=null) {
-                if (source.id== null || that.id==null)
+
+
+                if (source!=null && target!=null) {
+                    if (source.id== null || target.id==null)
+                        return false;
+                }
+
+
+                if (source.id != null ? !source.id.equals(target.id) : target.id != null) {
                     return false;
+                }
+
+                return source.home != null ? source.home.equals(target.home) : target.home == null || "".equals(target.home);
             }
+            return false;
 
 
-            if (source.id != null ? !source.id.equals(that.id) : that.id != null) {
-                return false;
-            }
-
-            return source.home != null ? source.home.equals(that.home) : that.home == null;
         }
 
     }
@@ -287,6 +304,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> impleme
         if (isPanelVisible) {
             ctl.removeStyleName("insetBorder");
             ctl.addStyleName("outsetBorder");
+            doSingleMode();
         } else {
             ctl.removeStyleName("outsetBorder");
             ctl.addStyleName("insetBorder");

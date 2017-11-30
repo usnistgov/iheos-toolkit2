@@ -22,6 +22,7 @@ abstract public class ButtonListSelector implements IsWidget {
     private FlowPanel thePanel = new FlowPanel();
     private FlowPanel tablePanel = new FlowPanel();
     private List<Button> buttons = new ArrayList<>();
+    private String currentSelection;
 
     abstract public void doSelected(String label);
 
@@ -82,6 +83,7 @@ abstract public class ButtonListSelector implements IsWidget {
             u.setStyleName(GWT_BUTTON_STYLE);
         }
         button.setStyleName(SITE_SELECTED_STYLE);
+        setCurrentSelection(button.getText());
         doSelected(button.getText());
     }
 
@@ -93,6 +95,7 @@ abstract public class ButtonListSelector implements IsWidget {
         }
         Button button = findButton(title);
         button.setStyleName(SITE_SELECTED_STYLE);
+        setCurrentSelection(button.getText());
         doSelected(title);
     }
 
@@ -105,6 +108,14 @@ abstract public class ButtonListSelector implements IsWidget {
         if (buttons.size() > 0)
             return buttons.get(0);
         return new Button("Fake");
+    }
+
+    public String getCurrentSelection() {
+        return currentSelection;
+    }
+
+    private void setCurrentSelection(String currentSelection) {
+        this.currentSelection = currentSelection;
     }
 
     @Override
