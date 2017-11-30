@@ -69,22 +69,22 @@ class FhirReadTransaction extends BasicFhirTransaction {
                     testLog.add_name_value(instruction_output, "Result", xmlo);
                 }
                 IBaseResource returnedResource = FhirSupport.parse(content)
+                if (returnedResource instanceof OperationOutcome) {
+                    OperationOutcome oo = returnedResource
+                    oo.issue.each {
+                        stepContext.set_error(it.diagnostics)
+                    }
+                }
                 if (mustReturn) {
                     def expectedResourceType = resourceTypeFromUrl(fullEndpoint.toString())
                     def theResourceType = returnedResource.class.simpleName
                     if (expectedResourceType != theResourceType) {
                         stepContext.set_error("Expected resource of type ${expectedResourceType} but got ${theResourceType} instead")
-                        if (returnedResource instanceof OperationOutcome) {
-                            OperationOutcome oo = returnedResource
-                            oo.issue.each {
-                                stepContext.set_error(it.diagnostics)
-                            }
-                        }
                     }
                     FhirId requestId = new FhirId(fullEndpoint)
-                    FhirId responseId = new FhirId(returnedResource.id)
-                    if (requestId.withoutHistory() != responseId.withoutHistory())
-                        stepContext.set_error("Requested ID ${requestId.withoutHistory()} but received ${responseId.withoutHistory()}")
+                    FhirId returnedId = new FhirId(returnedResource)
+                    if (requestId.id != returnedId.id)
+                        stepContext.set_error("Requested ID ${requestId.id} but received ${returnedId.id}")
                 }
                 if (returnedResource instanceof DocumentReference) {
                     String binaryReference = returnedResource?.content?.attachment?.get(0)?.url

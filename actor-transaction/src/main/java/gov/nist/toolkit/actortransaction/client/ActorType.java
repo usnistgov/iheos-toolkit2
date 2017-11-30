@@ -199,11 +199,11 @@ public enum ActorType implements IsSerializable, Serializable {
                     new ProxyTransformConfig(TransactionType.READ_BINARY,
                                              TransactionDirection.REQUEST,
                                              FhirVerb.READ,
-                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.FhirReadDocRefTransform").toString(),
+                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToRetrieveRequestTransform").toString(),
                     new ProxyTransformConfig(TransactionType.READ_BINARY,
                                              TransactionDirection.RESPONSE,
                                              FhirVerb.READ,
-                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.SQResponseToFhirReadResponseTransform").toString()
+                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.RetrieveResponseToFhirTransform").toString()
 
             ),
             "rec",   // must match rec from rec(mhd) in collections.txt

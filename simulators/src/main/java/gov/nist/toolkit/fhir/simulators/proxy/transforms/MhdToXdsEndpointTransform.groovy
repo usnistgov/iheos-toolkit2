@@ -32,11 +32,18 @@ class MhdToXdsEndpointTransform implements SimpleRequestTransform {
                 return HttpRequestBuilder.build(request, requestLine)
             }
         }
+        RequestLine requestLine
         if (theRequest instanceof BasicHttpRequest) {
             BasicHttpRequest request = theRequest
-            base.setTargetType(ActorType.REGISTRY, TransactionType.STORED_QUERY)
-            EndpointParser targetEndpoint = new EndpointParser(base.getTargetEndpoint())
-            RequestLine requestLine = new BasicRequestLine('POST', targetEndpoint.service, request.requestLine.protocolVersion)
+            if (base.endpoint.transactionType == TransactionType.READ_BINARY) {
+                base.setTargetType(ActorType.REPOSITORY, TransactionType.RETRIEVE)
+                EndpointParser targetEndpoint = new EndpointParser(base.getTargetEndpoint())
+                requestLine = new BasicRequestLine('POST', targetEndpoint.service, request.requestLine.protocolVersion)
+            } else {
+                base.setTargetType(ActorType.REGISTRY, TransactionType.STORED_QUERY)
+                EndpointParser targetEndpoint = new EndpointParser(base.getTargetEndpoint())
+                requestLine = new BasicRequestLine('POST', targetEndpoint.service, request.requestLine.protocolVersion)
+            }
             return HttpRequestBuilder.build(request, requestLine)
         }
         return theRequest

@@ -18,6 +18,7 @@ import gov.nist.toolkit.simcommon.server.SimCache
 import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.simcommon.server.SimEndpoint
 import gov.nist.toolkit.sitemanagement.client.Site
+import gov.nist.toolkit.sitemanagement.client.TransactionBean
 import org.apache.http.Header
 import org.apache.http.HttpHost
 import org.apache.http.HttpRequest
@@ -31,8 +32,8 @@ public class SimProxyBase {
 
 
     String uri = null
-     SimId simId;
-     SimId simId2;
+     SimId simId;   // mhd doc rec
+     SimId simId2;  // reg/rep sim
      SimDb simDb;
      SimDb simDb2;
      SimulatorConfig config;
@@ -85,7 +86,18 @@ public class SimProxyBase {
         assert targetSite
         assert targetTransactionType
         boolean isSecure = false
+        if (targetTransactionType == TransactionType.RETRIEVE) {
+            def reposId = targetSite.getRepositoryUniqueId(TransactionBean.RepositoryType.REPOSITORY)
+            return targetSite.getRetrieveEndpoint(reposId, false, false)
+        }
         return targetSite.getEndpoint(targetTransactionType, isSecure, false)
+    }
+
+    String getTargetRepositoryUniqueId() {
+        if (targetTransactionType == TransactionType.RETRIEVE) {
+            return targetSite.getRepositoryUniqueId(TransactionBean.RepositoryType.REPOSITORY)
+        }
+        return null
     }
 
     HttpHost getTargetHost() {

@@ -4,7 +4,7 @@ package gov.nist.toolkit.fhir.simulators.mhd
  *
  */
 class Submission {
-
+// TODO insert real To address
     def header = '''
 <soapenv:Envelope xmlns:soapenv="http://www.w3.org/2003/05/soap-envelope">
    <soapenv:Header xmlns:wsa="http://www.w3.org/2005/08/addressing">

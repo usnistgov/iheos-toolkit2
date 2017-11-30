@@ -1,12 +1,30 @@
 package gov.nist.toolkit.fhir.utility
+
+import org.hl7.fhir.dstu3.model.Resource
+
 /**
  *
  */
 class FhirId {
     String type = null  // Resource type
-    String id = null   // id
+    String id = null   // id - aka Logical ID
     String vid = null  // version
     String base = null
+
+    /**
+     * This is Ugly!
+     *
+     * The standard says that the id is just the id, the thing following the Resourcetype
+     * But, HAPI includes the resource type as well as in DocumentEntry/1  instead of just 1
+     * So, for now, this will acomodate and we will use the FhirId always as type/id (plus history...)
+     */
+
+    FhirId(Resource theResource) {
+        type = theResource.class.simpleName
+        id = theResource.id
+        if (id.contains('/'))
+            id = id.substring(id.indexOf('/') + 1)
+    }
 
     // format is Patient/ea0d8b08-8f1d-40ac-b9e2-bbcc781c586b/_history/1
     FhirId(String value) {
