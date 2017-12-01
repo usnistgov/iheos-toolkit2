@@ -75,6 +75,10 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 		this.dataNotification = dataNotification;
 	}
 
+	public DataNotification getDataNotification() {
+		return dataNotification;
+	}
+
 	/**
     * Add test results to DataModel and redisplay history
     * @param results to add

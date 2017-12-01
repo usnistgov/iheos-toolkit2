@@ -10,6 +10,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ProvidesResize;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.registrymetadata.client.Association;
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
@@ -48,7 +49,8 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         @Override
         void defaultSingleClickAction(Association row) {
             getPresenter().doSingleMode();
-            getPresenter().doFocusTreeItem(MetadataObjectType.valueOf(metadataObjectSelector.getCurrentSelection()), metadataInspectorLeft.getTreeList(), null,row);
+            TreeItem treeItem = getPresenter().doFocusTreeItem(MetadataObjectType.valueOf(metadataObjectSelector.getCurrentSelection()), metadataInspectorLeft.getTreeList(), null,row);
+            metadataInspectorLeft.setCurrentSelectedTreeItem(treeItem);
         }
 
         @Override
@@ -76,7 +78,8 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         @Override
         void defaultSingleClickAction(Folder row) {
             getPresenter().doSingleMode();
-            getPresenter().doFocusTreeItem(MetadataObjectType.valueOf(metadataObjectSelector.getCurrentSelection()), metadataInspectorLeft.getTreeList(), null,row);
+            TreeItem treeItem = getPresenter().doFocusTreeItem(MetadataObjectType.valueOf(metadataObjectSelector.getCurrentSelection()), metadataInspectorLeft.getTreeList(), null,row);
+            metadataInspectorLeft.setCurrentSelectedTreeItem(treeItem);
         }
 
         @Override
@@ -104,7 +107,8 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         @Override
         void defaultSingleClickAction(SubmissionSet row) {
             getPresenter().doSingleMode();
-            getPresenter().doFocusTreeItem(MetadataObjectType.valueOf(metadataObjectSelector.getCurrentSelection()), metadataInspectorLeft.getTreeList(), null,row);
+            TreeItem treeItem = getPresenter().doFocusTreeItem(MetadataObjectType.valueOf(metadataObjectSelector.getCurrentSelection()), metadataInspectorLeft.getTreeList(), null,row);
+            metadataInspectorLeft.setCurrentSelectedTreeItem(treeItem);
         }
 
         @Override
@@ -131,7 +135,8 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         @Override
         void defaultSingleClickAction(DocumentEntry row) {
             getPresenter().doSingleMode();
-            getPresenter().doFocusTreeItem(MetadataObjectType.valueOf(metadataObjectSelector.getCurrentSelection()), metadataInspectorLeft.getTreeList(), null,row);
+            TreeItem treeItem = getPresenter().doFocusTreeItem(MetadataObjectType.valueOf(metadataObjectSelector.getCurrentSelection()), metadataInspectorLeft.getTreeList(), null,row);
+            metadataInspectorLeft.setCurrentSelectedTreeItem(treeItem);
         }
 
         @Override
@@ -169,7 +174,8 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         @Override
         void defaultSingleClickAction(ObjectRef row) {
             getPresenter().doSingleMode();
-           getPresenter().doFocusTreeItem(MetadataObjectType.valueOf(metadataObjectSelector.getCurrentSelection()), metadataInspectorLeft.getTreeList(), null,row);
+           TreeItem treeItem = getPresenter().doFocusTreeItem(MetadataObjectType.valueOf(metadataObjectSelector.getCurrentSelection()), metadataInspectorLeft.getTreeList(), null,row);
+           metadataInspectorLeft.setCurrentSelectedTreeItem(treeItem);
         }
 
         @Override

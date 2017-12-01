@@ -150,7 +150,7 @@ abstract class FoldersDataTable extends DataTable<Folder> implements IsWidget {
             TextColumn<Folder> column = new TextColumn<Folder>() {
                 @Override
                 public String getValue(Folder folder) {
-                    return folder.home;
+                    return folder.lastUpdateTime;
                 }
             };
             column.setSortable(true);

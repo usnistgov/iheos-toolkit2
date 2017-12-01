@@ -27,7 +27,7 @@ import java.util.Map;
 /**
  *
  */
-public class InspectorPresenter extends AbstractPresenter<InspectorView> implements DataNotification {
+public class InspectorPresenter extends AbstractPresenter<InspectorView> {
     private List<Result> results;
     private SiteSpec siteSpec;
     private MetadataCollection metadataCollection;
@@ -83,7 +83,80 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> impleme
 
         GWT.log("result list size is: " + results.size());
         // At this point there should be only one Result.TODO: Need to revisit this if there are more!? -- Conformance tests!
-        view.metadataInspectorLeft.setDataNotification(this);
+        view.metadataInspectorLeft.setDataNotification(new DataNotification() {
+            @Override
+        public boolean inCompare() {
+            String currentObjectType = view.metadataObjectSelector.getCurrentSelection();
+            if (currentObjectType!=null) {
+                MetadataObjectType currentObjectTypeSelection = MetadataObjectType.valueOf(currentObjectType);
+                if (currentObjectTypeSelection != null) {
+                    return view.getTableMap().get(currentObjectTypeSelection).diffSelect.getValue();
+                }
+            }
+            return false;
+        }
+
+            @Override
+            public void onAddToHistory(MetadataCollection metadataCollection) {
+                InspectorPresenter.this.metadataCollection = metadataCollection;
+                setDataMap(metadataCollection);
+                annotatedItems = getMetadataObjectAnnotatedItems(metadataCollection);
+                view.metadataObjectSelector.refreshEnabledStatus(annotatedItems);
+            }
+
+            @Override
+            public void onObjectSelected(MetadataObjectWrapper objectWrapper) {
+                try {
+                    MetadataObjectType currentObjectTypeSelection = MetadataObjectType.valueOf(view.metadataObjectSelector.getCurrentSelection());
+                    MetadataObjectType requestedObjectType = objectWrapper.getType();
+                    if (!currentObjectTypeSelection.equals(requestedObjectType)) {
+                        view.metadataObjectSelector.updateSiteSelectedView(requestedObjectType.name());
+                    }
+                    view.getTableMap().get(requestedObjectType).diffSelect.setValue(false,true);
+                    view.getTableMap().get(requestedObjectType).setSelectedRow(objectWrapper.getObject(), true);
+                } catch (Exception ex) {
+                    GWT.log("onObjectSelected" + ex.toString());
+                }
+            }
+
+            @Override
+            public void onCloseOffDetail(TreeItem currentTreeItem) {
+                MetadataObjectType objectType = MetadataObjectType.valueOf(view.metadataObjectSelector.getCurrentSelection());
+                MetadataObject toClose = ((MetadataObjectWrapper)currentTreeItem.getUserObject()).getObject();
+                MetadataObject toFocus = null;
+                DataTable dataTable = view.tableMap.get(objectType);
+                if (dataTable.lastSelectedObject.equals(toClose)) {
+                    toFocus = (MetadataObject)dataTable.compareObject;
+                } else {
+                    toFocus = (MetadataObject)dataTable.lastSelectedObject;
+                }
+                doSingleMode();
+                dataTable.lastSelectedObject = toFocus;
+                dataTable.compareObject = null;
+                dataTable.diffSelect.setValue(false,true);
+                TreeItem treeItem = doFocusTreeItem(objectType, view.metadataInspectorLeft.getTreeList(), null, toFocus);
+                view.metadataInspectorLeft.setCurrentSelectedTreeItem(treeItem);
+            }
+        });
+        view.metadataInspectorRight.setDataNotification(new DataNotification() {
+            @Override
+            public void onAddToHistory(MetadataCollection metadataCollection) {
+            }
+
+            @Override
+            public void onObjectSelected(MetadataObjectWrapper objectWrapper) {
+            }
+
+            @Override
+            public boolean inCompare() {
+                return view.metadataInspectorLeft.getDataNotification().inCompare();
+            }
+
+            @Override
+            public void onCloseOffDetail(TreeItem currentTreeItem) {
+                view.metadataInspectorLeft.getDataNotification().onCloseOffDetail(currentTreeItem);
+            }
+        });
         setupInspectorWidget(view.metadataInspectorRight);
         metadataCollection = setupInspectorWidget(view.metadataInspectorLeft);
         setDataMap(metadataCollection);
@@ -99,28 +172,6 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> impleme
         dataMap.put(MetadataObjectType.Assocs, metadataCollection.assocs);
     }
 
-    @Override
-    public void onAddToHistory(MetadataCollection metadataCollection) {
-        this.metadataCollection = metadataCollection;
-        setDataMap(metadataCollection);
-        annotatedItems = getMetadataObjectAnnotatedItems(metadataCollection);
-        view.metadataObjectSelector.refreshEnabledStatus(annotatedItems);
-    }
-
-    @Override
-    public void onObjectSelected(MetadataObjectWrapper objectWrapper) {
-        try {
-            MetadataObjectType currentObjectTypeSelection = MetadataObjectType.valueOf(view.metadataObjectSelector.getCurrentSelection());
-            MetadataObjectType requestedObjectType = objectWrapper.getType();
-            if (!currentObjectTypeSelection.equals(requestedObjectType)) {
-                view.metadataObjectSelector.updateSiteSelectedView(requestedObjectType.name());
-            }
-            view.getTableMap().get(requestedObjectType).diffSelect.setValue(false,true);
-            view.getTableMap().get(requestedObjectType).setSelectedRow(objectWrapper.getObject(), true);
-        } catch (Exception ex) {
-           GWT.log("onObjectSelected" + ex.toString());
-        }
-    }
 
     public MetadataObjectType autoSelectObjectType() {
         AnnotatedItem defaultItem = null;
@@ -170,8 +221,10 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> impleme
        view.metadataInspectorLeft.showHistory(false);
        view.metadataInspectorLeft.showStructure(false);
 
-       doFocusTreeItem(metadataObjectType, view.metadataInspectorLeft.getTreeList(), null, left);
-       doFocusTreeItem(metadataObjectType, view.metadataInspectorRight.getTreeList(), null, right);
+       TreeItem treeItem = doFocusTreeItem(metadataObjectType, view.metadataInspectorLeft.getTreeList(), null, left);
+       view.metadataInspectorLeft.setCurrentSelectedTreeItem(treeItem);
+       TreeItem compare = doFocusTreeItem(metadataObjectType, view.metadataInspectorRight.getTreeList(), null, right);
+       view.metadataInspectorRight.setCurrentSelectedTreeItem(compare);
     }
 
     /*
@@ -217,7 +270,8 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> impleme
                     dataTable.asWidget().setVisible(true);
                     if (!dataTable.diffSelect.getValue()) {
                         doSingleMode();
-                        doFocusTreeItem(objectType, view.metadataInspectorLeft.getTreeList(), null, (MetadataObject)dataTable.lastSelectedObject);
+                        TreeItem treeItem = doFocusTreeItem(objectType, view.metadataInspectorLeft.getTreeList(), null, (MetadataObject)dataTable.lastSelectedObject);
+                        view.metadataInspectorLeft.setCurrentSelectedTreeItem(treeItem);
                     } else {
                         doSetupDiffMode(true);
                         doDiffAction(key, (MetadataObject)dataTable.lastSelectedObject, (MetadataObject)dataTable.compareObject);
@@ -248,10 +302,10 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> impleme
      * @param target
      * @return True if object was located/found in the tree, selected
      */
-    public boolean doFocusTreeItem(MetadataObjectType metadataObjectType, List<Tree> treeList, final TreeItem root, MetadataObject target) {
+    public TreeItem doFocusTreeItem(MetadataObjectType metadataObjectType, List<Tree> treeList, final TreeItem root, MetadataObject target) {
         if (target!=null)
             return new TreeItemSelector(metadataObjectType, treeList).doFocusTreeItem(root, target);
-        return false;
+        return null;
     }
 
     class TreeItemSelector {
@@ -263,24 +317,26 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> impleme
             this.treeList = treeList;
         }
 
-        public boolean doFocusTreeItem(final TreeItem root, final MetadataObject target) {
+        public TreeItem doFocusTreeItem(final TreeItem root, final MetadataObject target) {
 
             if (root == null) {
 
                 for (Tree tree : treeList) {
                     // Assume only 1 child at the root level
 //                    GWT.log("tree has " + tree.getItemCount() + " items.");
-                    if (doFocusTreeItem(tree.getItem(0), target)) {
+                    TreeItem treeItem = doFocusTreeItem(tree.getItem(0), target);
+                    if (treeItem!=null) {
                         tree.getItem(0).setState(true);
-                        return true;
+                        return treeItem;
                     }
                 }
             } else {
                 int childCt = root.getChildCount();
                 if (root.getUserObject()!=null) {
-                    if (attemptSelect(root,(MetadataObjectWrapper)root.getUserObject(), target)) {
+                    TreeItem treeItem = attemptSelect(root,(MetadataObjectWrapper)root.getUserObject(), target);
+                    if (treeItem!=null) {
                         root.setState(true);
-                        return true;
+                        return treeItem;
                     }
                 }
                 if (childCt>0) {
@@ -288,23 +344,25 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> impleme
                         TreeItem child = root.getChild(cx);
                         if (child.getUserObject()!=null) {
                             MetadataObjectWrapper userObject = (MetadataObjectWrapper) child.getUserObject();
-                            if (attemptSelect(child, userObject, target)) {
+                            TreeItem treeItem = attemptSelect(child, userObject, target);
+                            if (treeItem!=null) {
                                 root.setState(true);
-                                return true;
+                                return treeItem;
                             }
                         }
                         if (child.getChildCount()>0) {
-                            if (doFocusTreeItem(child, target)) {
-                                return true;
+                            TreeItem treeItem = doFocusTreeItem(child, target);
+                            if (treeItem!=null) {
+                                return treeItem;
                             }
                         }
                     }
                 }
             }
-            return false;
+            return null;
         }
 
-        boolean attemptSelect(TreeItem treeItem, MetadataObjectWrapper userObject, MetadataObject target) {
+        TreeItem attemptSelect(TreeItem treeItem, MetadataObjectWrapper userObject, MetadataObject target) {
             if (userObject != null && target!=null) {
                 if (compareTo(userObject,target)) {
                     ((Hyperlink)treeItem.getWidget()).fireEvent(new ClickEvent() {});
@@ -314,11 +372,10 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> impleme
                         view.metadataInspectorLeft.getCurrentSelectedTreeItem().getWidget().removeStyleName("insetBorder");
                     }
                     treeItem.getWidget().addStyleName("insetBorder");
-                    view.metadataInspectorLeft.setCurrentSelectedTreeItem(treeItem);
-                    return true;
+                    return treeItem;
                 }
             }
-            return false;
+            return null;
         }
 
         public boolean compareTo(MetadataObjectWrapper userObject, MetadataObject target) {
