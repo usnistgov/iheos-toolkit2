@@ -236,6 +236,7 @@ public class DetailDisplay {
 		if (it.dataNotification!=null) {
 		    if (it.dataNotification.inCompare()) {
 		        HTML closeX = new HTML("X");
+		        closeX.setTitle("Close");
 		        closeX.addStyleName("requiredFieldLabel");
 		        closeX.addStyleName("outsetBorder");
 		        closeX.addStyleName("right");
