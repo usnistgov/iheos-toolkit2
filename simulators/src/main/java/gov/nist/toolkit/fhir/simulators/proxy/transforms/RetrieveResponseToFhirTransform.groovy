@@ -12,7 +12,11 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil
 import org.apache.commons.httpclient.HttpStatus
 import org.apache.http.Header
 import org.apache.http.HttpResponse
+import org.apache.http.ProtocolVersion
+import org.apache.http.entity.ByteArrayEntity
 import org.apache.http.message.BasicHttpResponse
+import org.apache.http.message.BasicStatusLine
+import org.apache.http.protocol.HttpDateGenerator
 import org.apache.log4j.Logger
 import org.hl7.fhir.dstu3.model.Binary
 import org.hl7.fhir.dstu3.model.CodeType
@@ -40,6 +44,20 @@ class RetrieveResponseToFhirTransform implements ContentResponseTransform {
                 response.reasonPhrase = 'Multiple Documents found'
                 return response
             }
+
+            if (base.nonTradionalContentTypeRequested) {
+                String contentType = base.requestedContentType
+                boolean wildcard = base.requestedContentTypeWildcarded
+                String mimeType = contents[0].mimeType
+                if (wildcard || mimeType == contentType) {
+                    BasicHttpResponse outcome = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion('HTTP', 1, 1), HttpStatus.SC_OK, ''))
+                    outcome.addHeader('Content-Type', mimeType)
+                    outcome.addHeader('Date', new HttpDateGenerator().currentDate)
+                    outcome.setEntity(new ByteArrayEntity(contents[0].content))
+                    return outcome
+                }
+            }
+
             Binary binary = new Binary()
             binary.contentTypeElement = new CodeType(contents[0].mimeType)
             binary.setContent(contents[0].content)

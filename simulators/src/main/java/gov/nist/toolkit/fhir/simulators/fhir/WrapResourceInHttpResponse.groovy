@@ -19,16 +19,12 @@ class WrapResourceInHttpResponse {
         wrap(base, resource, httpCode, EnglishReasonPhraseCatalog.INSTANCE.getReason(httpCode, Locale.ENGLISH))
     }
 
-    static List<String> types = [
-            'application/fhir+json',
-            'application/fhir+xml'
-    ]
 
     static BasicHttpResponse wrap(SimProxyBase base, IBaseResource resource, int httpCode, String reason) {
         FhirContext ctx = ResourceCache.ctx
 //        String httpCodeString = EnglishReasonPhraseCatalog.INSTANCE.getReason(httpCode, Locale.ENGLISH)
         BasicHttpResponse outcome = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion('HTTP', 1, 1), httpCode, reason))
-        String contentType = chooseContentType(base.clientContentTypes)
+        String contentType = base.chooseContentType()
         outcome.addHeader('Content-Type', contentType)
         outcome.addHeader('Date', new HttpDateGenerator().currentDate)
         String content
@@ -42,11 +38,4 @@ class WrapResourceInHttpResponse {
 
     }
 
-    static chooseContentType(List<String> acceptableTypes) {
-        if (acceptableTypes.empty)
-            return 'application/fhir+json'
-        def xx = types.intersect(acceptableTypes)
-        if (xx) return xx[0]
-        return 'application/fhir+json'
-    }
 }

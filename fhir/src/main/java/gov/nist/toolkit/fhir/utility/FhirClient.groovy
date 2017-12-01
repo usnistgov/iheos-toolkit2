@@ -87,6 +87,23 @@ class FhirClient implements IFhirSearch {
         }
     }
 
+    static getBytes(def uri, def contentType) {
+        try {
+            HttpClient client = HttpClientBuilder.create().build()
+            HttpGet request = new HttpGet(uri)
+            request.addHeader('Accept', contentType)
+            HttpResponse response = client.execute(request)
+            def returnContentType = response.getHeaders('Content-Type')[0].value
+            def statusLine = response.getStatusLine()
+            logger.info("GET ${uri} for content type ${contentType}")
+            return [statusLine, returnContentType, Io.getBytesFromInputStream(response.getEntity().content)]
+        }
+        catch (Throwable e) {
+            logger.error("GET from ${uri} for content type ${contentType} failed: ${e.getMessage()}")
+            throw new Exception("GET from ${uri} for content type ${contentType} failed.", e)
+        }
+    }
+
     static IBaseResource readResource(def uri) {
         readResource(uri, 'application/fhir+json')
     }

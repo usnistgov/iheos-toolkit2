@@ -54,7 +54,29 @@ class FhirReadTransaction extends BasicFhirTransaction {
         if (requestAcceptType)
             acceptType = requestAcceptType
         testLog.add_name_value(instruction_output, 'OutHeader', "GET ${fullEndpoint}")
-        def (BasicStatusLine statusLine, String content) = FhirClient.get(new URI(fullEndpoint), acceptType)
+
+        BasicStatusLine statusLine
+        String content
+        byte[] contentBytes
+        String returnedContentType
+        if (requestAcceptType) {
+            (statusLine, returnedContentType, contentBytes) = FhirClient.getBytes(new URI(fullEndpoint), acceptType)
+            content = new String(contentBytes)
+            if (referenceDocument) {
+                File referenceFile = new File(testConfig.testplanDir, referenceDocument)
+                byte[] referenceBytes = referenceFile.bytes
+                if (referenceBytes != contentBytes) {
+                    stepContext.set_error("Returned bytes do not match those sent")
+                    stepContext.set_error("Sent ${referenceBytes.size()}")
+                    stepContext.set_error("Received ${contentBytes.size()}")
+                    return
+                }
+                return
+            }
+        } else {
+            (statusLine, content) = FhirClient.get(new URI(fullEndpoint), acceptType)
+        }
+
         IBaseResource baseResource = null
         Resource returnedResource = null
         if (statusLine.statusCode in 400..599)  {

@@ -218,6 +218,29 @@ public class SimProxyBase {
         earlyException = e
     }
 
+    static List<String> types = [
+            'application/fhir+json',
+            'application/fhir+xml'
+    ]
 
+    String chooseContentType() {
+        if (clientContentTypes.empty)
+            return 'application/fhir+json'
+        def xx = types.intersect(clientContentTypes)
+        if (xx) return xx[0]
+        return 'application/fhir+json'
+    }
+
+    boolean isNonTradionalContentTypeRequested() {
+        !clientContentTypes.empty && !types.contains(clientContentTypes[0])
+    }
+
+    String getRequestedContentType() {
+        clientContentTypes[0]
+    }
+
+    boolean isRequestedContentTypeWildcarded() {
+        clientContentTypes.find { it.contains('*')}
+    }
 
 }
