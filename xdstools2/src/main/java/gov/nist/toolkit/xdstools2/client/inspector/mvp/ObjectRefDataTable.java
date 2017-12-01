@@ -32,7 +32,7 @@ abstract class ObjectRefDataTable extends DataTable<ObjectRef> implements IsWidg
     private static final ProvidesKey<ObjectRef> KEY_PROVIDER = new ProvidesKey<ObjectRef>() {
         @Override
         public Object getKey(ObjectRef item) {
-            return item == null ? null : item.getId();
+            return item == null ? null : item.id;
         }
     };
 

@@ -86,7 +86,7 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
     abstract void setupDiffMode(boolean isSelected);
     abstract void diffAction(T left, T right);
     abstract int getWidthInPx();
-    abstract void setData(List<T> objectRefList);
+    abstract void setData(List<T> metadataObjectList);
 
     public DataTable(List<AnnotatedItem> columnList, int pageSize, T placeHolderRow, boolean displayDiff, boolean displayAction) {
         this.columnList = columnList;

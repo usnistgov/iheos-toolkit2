@@ -11,8 +11,11 @@ import com.google.gwt.user.client.ui.ProvidesResize;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
+import gov.nist.toolkit.registrymetadata.client.Association;
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
+import gov.nist.toolkit.registrymetadata.client.Folder;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
+import gov.nist.toolkit.registrymetadata.client.SubmissionSet;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractView;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataObjectType;
@@ -33,14 +36,94 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
     ActivityItem activityItem;
     int rowsPerPage = 10;
 
-    /* TODO: create a new widget to select Object Types (using the same style as the SystemSelector).
-     Clicking on it should display the data table.
-     */
 
     ButtonListSelector metadataObjectSelector = new ButtonListSelector("Select a Metadata Object","Metadata Object") {
         @Override
         public void doSelected(String label) {
             getPresenter().doUpdateChosenMetadataObjectType(label);
+        }
+    };
+
+    AssocDataTable assocDataTable = new AssocDataTable(rowsPerPage) {
+        @Override
+        void defaultSingleClickAction(Association row) {
+            getPresenter().doSingleMode();
+            getPresenter().doFocusTreeItem(MetadataObjectType.valueOf(metadataObjectSelector.getCurrentSelection()), metadataInspectorLeft.getTreeList(), null,row);
+        }
+
+        @Override
+        void defaultDoubleClickAction(Association row) {
+
+        }
+
+        @Override
+        void setupDiffMode(boolean isSelected) {
+            getPresenter().doSetupDiffMode(isSelected);
+        }
+
+        @Override
+        void diffAction(Association left, Association right) {
+            getPresenter().doDiffAction(MetadataObjectType.valueOf(metadataObjectSelector.getCurrentSelection()), left, right);
+        }
+
+        @Override
+        int getWidthInPx() {
+            return getParentContainerWidth();
+        }
+    };
+
+    FoldersDataTable foldersDataTable = new FoldersDataTable(rowsPerPage) {
+        @Override
+        void defaultSingleClickAction(Folder row) {
+            getPresenter().doSingleMode();
+            getPresenter().doFocusTreeItem(MetadataObjectType.valueOf(metadataObjectSelector.getCurrentSelection()), metadataInspectorLeft.getTreeList(), null,row);
+        }
+
+        @Override
+        void defaultDoubleClickAction(Folder row) {
+
+        }
+
+        @Override
+        void setupDiffMode(boolean isSelected) {
+            getPresenter().doSetupDiffMode(isSelected);
+        }
+
+        @Override
+        void diffAction(Folder left, Folder right) {
+            getPresenter().doDiffAction(MetadataObjectType.valueOf(metadataObjectSelector.getCurrentSelection()), left, right);
+        }
+
+        @Override
+        int getWidthInPx() {
+            return getParentContainerWidth();
+        }
+    };
+
+    SubmissionSetDataTable submissionSetDataTable = new SubmissionSetDataTable(rowsPerPage) {
+        @Override
+        void defaultSingleClickAction(SubmissionSet row) {
+            getPresenter().doSingleMode();
+            getPresenter().doFocusTreeItem(MetadataObjectType.valueOf(metadataObjectSelector.getCurrentSelection()), metadataInspectorLeft.getTreeList(), null,row);
+        }
+
+        @Override
+        void defaultDoubleClickAction(SubmissionSet row) {
+        }
+
+        @Override
+        void setupDiffMode(boolean isSelected) {
+            getPresenter().doSetupDiffMode(isSelected);
+        }
+
+        @Override
+        void diffAction(SubmissionSet left, SubmissionSet right) {
+            getPresenter().doDiffAction(MetadataObjectType.valueOf(metadataObjectSelector.getCurrentSelection()), left, right);
+        }
+
+        @Override
+        int getWidthInPx() {
+            return getParentContainerWidth();
         }
     };
 
@@ -79,7 +162,7 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         }
 
         @Override
-        void defaultDoubleClickAction(ObjectRef row) { // TODO: 1. change to just (single) Click. 2. Wire this into inspector to navigate (or focus) object into view
+        void defaultDoubleClickAction(ObjectRef row) {
 //            getPresenter().do
         }
 
@@ -155,10 +238,12 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         FlowPanel advancedOptionWrapper = new FlowPanel();
         advancedOptionWrapper.add(metadataObjectSelector.asWidget());
         advancedOptionWrapper.add(new HTML("<br/>"));
-        objectRefTable.asWidget().setVisible(false);
-        docEntryDataTable.asWidget().setVisible(false);
+
         advancedOptionWrapper.add(objectRefTable.asWidget());
         advancedOptionWrapper.add(docEntryDataTable.asWidget());
+        advancedOptionWrapper.add(submissionSetDataTable.asWidget());
+        advancedOptionWrapper.add(foldersDataTable.asWidget());
+        advancedOptionWrapper.add(assocDataTable.asWidget());
         advancedOptionPanel.add(advancedOptionWrapper);
         advancedOptionPanel.addStyleName("paddedHorizontalPanel");
 
@@ -179,6 +264,9 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
 
         tableMap.put(MetadataObjectType.ObjectRefs, objectRefTable);
         tableMap.put(MetadataObjectType.DocEntries, docEntryDataTable);
+        tableMap.put(MetadataObjectType.SubmissionSets, submissionSetDataTable);
+        tableMap.put(MetadataObjectType.Folders, foldersDataTable);
+        tableMap.put(MetadataObjectType.Assocs, assocDataTable);
 
         advancedOptionCtl.addClickHandler(new ClickHandler() {
             @Override

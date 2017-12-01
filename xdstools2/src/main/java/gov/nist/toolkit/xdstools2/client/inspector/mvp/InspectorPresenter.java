@@ -20,7 +20,9 @@ import gov.nist.toolkit.xdstools2.client.inspector.MetadataObjectWrapper;
 import gov.nist.toolkit.xdstools2.client.util.AnnotatedItem;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -30,6 +32,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> impleme
     private SiteSpec siteSpec;
     private MetadataCollection metadataCollection;
     List<AnnotatedItem> annotatedItems;
+    Map<MetadataObjectType, List<? extends MetadataObject>> dataMap = new HashMap<>();
 
     @Override
     public void init() {
@@ -80,18 +83,26 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> impleme
 
         GWT.log("result list size is: " + results.size());
         // At this point there should be only one Result.TODO: Need to revisit this if there are more!? -- Conformance tests!
-//        view.metadataInspectorRight.preInit();
-//        view.metadataInspectorRight.init();
         view.metadataInspectorLeft.setDataNotification(this);
         setupInspectorWidget(view.metadataInspectorRight);
         metadataCollection = setupInspectorWidget(view.metadataInspectorLeft);
+        setDataMap(metadataCollection);
         annotatedItems = getMetadataObjectAnnotatedItems(metadataCollection);
         view.metadataObjectSelector.setNames(annotatedItems); // This will create the button list
+    }
+
+    void setDataMap(MetadataCollection metadataCollection) {
+        dataMap.put(MetadataObjectType.ObjectRefs, metadataCollection.objectRefs);
+        dataMap.put(MetadataObjectType.DocEntries, metadataCollection.docEntries);
+        dataMap.put(MetadataObjectType.SubmissionSets, metadataCollection.submissionSets);
+        dataMap.put(MetadataObjectType.Folders, metadataCollection.folders);
+        dataMap.put(MetadataObjectType.Assocs, metadataCollection.assocs);
     }
 
     @Override
     public void onAddToHistory(MetadataCollection metadataCollection) {
         this.metadataCollection = metadataCollection;
+        setDataMap(metadataCollection);
         annotatedItems = getMetadataObjectAnnotatedItems(metadataCollection);
         view.metadataObjectSelector.refreshEnabledStatus(annotatedItems);
     }
@@ -172,11 +183,12 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> impleme
 
     List<AnnotatedItem> getMetadataObjectAnnotatedItems(MetadataCollection metadataCollection) {
         List<AnnotatedItem> annotatedItems = new ArrayList<>();
-        annotatedItems.add(new AnnotatedItem(metadataCollection.objectRefs!=null && metadataCollection.objectRefs.size()>0, MetadataObjectType.ObjectRefs.name()));
-        annotatedItems.add(new AnnotatedItem(metadataCollection.docEntries!=null && metadataCollection.docEntries.size()>0, MetadataObjectType.DocEntries.name()));
-        annotatedItems.add(new AnnotatedItem(metadataCollection.submissionSets!=null && metadataCollection.submissionSets.size()>0, MetadataObjectType.SubmissionSets.name()));
-        annotatedItems.add(new AnnotatedItem(metadataCollection.folders!=null && metadataCollection.folders.size()>0, MetadataObjectType.Folders.name()));
-        annotatedItems.add(new AnnotatedItem(metadataCollection.assocs!=null && metadataCollection.assocs.size()>0, MetadataObjectType.Assocs.name()));
+
+        for (MetadataObjectType type : MetadataObjectType.values()) {
+            List<? extends MetadataObject> metadataObject = dataMap.get(type);
+            annotatedItems.add(new AnnotatedItem(metadataObject!=null && metadataObject.size()>0, type.name()));
+        }
+
         return annotatedItems;
     }
 
@@ -195,16 +207,14 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> impleme
     }
 
     public void doSwitchTable(MetadataObjectType objectType) {
-        view.objectRefTable.setData(metadataCollection.objectRefs);
-        view.docEntryDataTable.setData(metadataCollection.docEntries);
 
         for (MetadataObjectType key : view.tableMap.keySet()) {
             DataTable dataTable = view.tableMap.get(key);
             if (key.equals(objectType)) {
-
                 // Just redisplay current selection in table selection
-                dataTable.asWidget().setVisible(true);
                 if (dataTable!=null) {
+                    dataTable.setData(dataMap.get(objectType));
+                    dataTable.asWidget().setVisible(true);
                     if (!dataTable.diffSelect.getValue()) {
                         doSingleMode();
                         doFocusTreeItem(objectType, view.metadataInspectorLeft.getTreeList(), null, (MetadataObject)dataTable.lastSelectedObject);
@@ -212,6 +222,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> impleme
                         doSetupDiffMode(true);
                         doDiffAction(key, (MetadataObject)dataTable.lastSelectedObject, (MetadataObject)dataTable.compareObject);
                     }
+                    setupResizeTableTimer(key);
                 }
 
             } else {
