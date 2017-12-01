@@ -62,6 +62,7 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 	Logger logger = Logger.getLogger("");
 
 	List<Tree> treeList = new ArrayList<>();
+	TreeItem currentSelectedTreeItem;
 
 	public MetadataInspectorTab() {
 	}
@@ -634,17 +635,30 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 		this.data = data;
 	}
 
-	private void addTreeSelectionHandler(Tree t) {
+	private void addTreeSelectionHandler(final Tree t) {
 			t.addSelectionHandler(new SelectionHandler<TreeItem>() {
 				@Override
 				public void onSelection(SelectionEvent<TreeItem> selectionEvent) {
-					TreeItem selectedItem = selectionEvent.getSelectedItem();
+					TreeItem selectedItem = (TreeItem)selectionEvent.getSelectedItem();
 					if (selectedItem.getUserObject()!=null) {
+						if (currentSelectedTreeItem!=null) {
+							currentSelectedTreeItem.getWidget().removeStyleName("insetBorder");
+						}
+						selectedItem.getWidget().addStyleName("insetBorder");
+						currentSelectedTreeItem = selectedItem;
 						MetadataObjectWrapper userObject = (MetadataObjectWrapper) selectedItem.getUserObject();
 						dataNotification.onObjectSelected(userObject);
 					}
 				}
 			});
+	}
+
+	public TreeItem getCurrentSelectedTreeItem() {
+		return currentSelectedTreeItem;
+	}
+
+	public void setCurrentSelectedTreeItem(TreeItem currentSelectedTreeItem) {
+		this.currentSelectedTreeItem = currentSelectedTreeItem;
 	}
 
 	@Override

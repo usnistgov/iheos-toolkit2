@@ -78,6 +78,7 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
 
     private ProvidesKey<T> keyProvider;
     T lastSelectedObject;
+    T compareObject;
 
     abstract ProvidesKey<T> getKeyProvider();
     abstract void defaultSingleClickAction(T row);
@@ -289,6 +290,7 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
                                                                  Iterator<T> it = mySelection.iterator();
                                                                  T left = it.next();
                                                                  T right = it.next();
+                                                                 compareObject = right;
                                                                  diffAction(left,right);
                                                              }
                                                          }

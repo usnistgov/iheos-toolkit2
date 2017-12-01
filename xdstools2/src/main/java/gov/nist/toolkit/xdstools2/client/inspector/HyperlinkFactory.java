@@ -4,13 +4,18 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Hyperlink;
-import gov.nist.toolkit.registrymetadata.client.*;
+import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
+import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
+import gov.nist.toolkit.registrymetadata.client.MetadataObject;
+import gov.nist.toolkit.registrymetadata.client.ObjectRef;
+import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
+import gov.nist.toolkit.registrymetadata.client.Uid;
 import gov.nist.toolkit.results.client.AssertionResults;
 import gov.nist.toolkit.results.client.StepResult;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.TestDocumentation;
 import gov.nist.toolkit.xdstools2.client.tabs.GetRelatedTab;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 public class HyperlinkFactory {
 	
@@ -45,6 +50,13 @@ public class HyperlinkFactory {
 
 	static Hyperlink link(MetadataInspectorTab it, MetadataObject mo) {
 		Hyperlink h = new Hyperlink();
+		h.setText(prefix(mo.displayName(), 40));
+		h.addClickHandler(new HistorySelector(it, mo));
+		return h;
+	}
+
+	static HTML html(MetadataInspectorTab it, MetadataObject mo) {
+		HTML h = new HTML();
 		h.setText(prefix(mo.displayName(), 40));
 		h.addClickHandler(new HistorySelector(it, mo));
 		return h;

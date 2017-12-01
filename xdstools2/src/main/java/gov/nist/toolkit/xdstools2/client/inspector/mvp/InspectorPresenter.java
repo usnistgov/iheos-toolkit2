@@ -199,13 +199,27 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> impleme
         view.docEntryDataTable.setData(metadataCollection.docEntries);
 
         for (MetadataObjectType key : view.tableMap.keySet()) {
+            DataTable dataTable = view.tableMap.get(key);
             if (key.equals(objectType)) {
-                view.tableMap.get(key).asWidget().setVisible(true);
+
+                // Just redisplay current selection in table selection
+                dataTable.asWidget().setVisible(true);
+                if (dataTable!=null) {
+                    if (!dataTable.diffSelect.getValue()) {
+                        doSingleMode();
+                        doFocusTreeItem(objectType, view.metadataInspectorLeft.getTreeList(), null, (MetadataObject)dataTable.lastSelectedObject);
+                    } else {
+                        doSetupDiffMode(true);
+                        doDiffAction(key, (MetadataObject)dataTable.lastSelectedObject, (MetadataObject)dataTable.compareObject);
+                    }
+                }
+
             } else {
-                view.tableMap.get(key).asWidget().setVisible(false);
+                dataTable.asWidget().setVisible(false);
             }
-            view.tableMap.get(key).diffSelect.setValue(false,true);
+//            dataTable.diffSelect.setValue(false,true);
         }
+
     }
 
     public void doSingleMode() {
@@ -223,8 +237,10 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> impleme
      * @param target
      * @return True if object was located/found in the tree, selected
      */
-    public boolean doFocusTreeItem(MetadataObjectType metadataObjectType, List<Tree> treeList, final TreeItem root, final MetadataObject target) {
-       return new TreeItemSelector(metadataObjectType, treeList).doFocusTreeItem(root, target);
+    public boolean doFocusTreeItem(MetadataObjectType metadataObjectType, List<Tree> treeList, final TreeItem root, MetadataObject target) {
+        if (target!=null)
+            return new TreeItemSelector(metadataObjectType, treeList).doFocusTreeItem(root, target);
+        return false;
     }
 
     class TreeItemSelector {
@@ -237,6 +253,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> impleme
         }
 
         public boolean doFocusTreeItem(final TreeItem root, final MetadataObject target) {
+
             if (root == null) {
 
                 for (Tree tree : treeList) {
@@ -282,6 +299,11 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> impleme
                     ((Hyperlink)treeItem.getWidget()).fireEvent(new ClickEvent() {});
                     treeItem.setSelected(true);
                     treeItem.setState(false, true);
+                    if (view.metadataInspectorLeft.getCurrentSelectedTreeItem()!=null) {
+                        view.metadataInspectorLeft.getCurrentSelectedTreeItem().getWidget().removeStyleName("insetBorder");
+                    }
+                    treeItem.getWidget().addStyleName("insetBorder");
+                    view.metadataInspectorLeft.setCurrentSelectedTreeItem(treeItem);
                     return true;
                 }
             }
@@ -325,9 +347,16 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> impleme
         } else {
             ctl.removeStyleName("outsetBorder");
             ctl.addStyleName("insetBorder");
-            String currentObjectType = view.metadataObjectSelector.getCurrentSelection();
-            if (currentObjectType!=null && !"".equals(currentObjectType)) {
-                setupResizeTableTimer(MetadataObjectType.valueOf(currentObjectType));
+            if (view.metadataObjectSelector.getCurrentSelection()==null) {
+                MetadataObjectType objectType = autoSelectObjectType();
+                if (objectType != null) {
+                    setupResizeTableTimer(objectType);
+                }
+            } else {
+                String currentObjectType = view.metadataObjectSelector.getCurrentSelection();
+                if (currentObjectType != null && !"".equals(currentObjectType)) {
+                    setupResizeTableTimer(MetadataObjectType.valueOf(currentObjectType));
+                }
             }
         }
         panel.setVisible(!isPanelVisible);

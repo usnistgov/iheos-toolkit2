@@ -50,10 +50,12 @@ abstract public class ButtonListSelector implements IsWidget {
     }
 
     public void refreshEnabledStatus(List<? extends AnnotatedItem> items) {
-        for (AnnotatedItem item : items) {
-            Button b = findButton(item.getName());
-            if (b!=null) {
-               b.setEnabled(item.isEnabled());
+        if (buttons!=null && buttons.size()>0) {
+            for (AnnotatedItem item : items) {
+                Button b = findButton(item.getName());
+                if (b != null) {
+                    b.setEnabled(item.isEnabled());
+                }
             }
         }
     }

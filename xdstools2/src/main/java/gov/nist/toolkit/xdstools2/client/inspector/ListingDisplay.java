@@ -92,7 +92,7 @@ public class ListingDisplay {
 			boolean hasHcIds = false;
 			for (ObjectRef o : data.combinedMetadata.objectRefs) {
 				Hyperlink h = HyperlinkFactory.link(tab, o);
-				h.addStyleName("inheritBackground"); // Widget does not convey selected style from parent, so we need to add it here.
+//				HTML h = HyperlinkFactory.html(tab, o);
 				TreeItem item = new TreeItem(h);
 				item.setUserObject(new MetadataObjectWrapper(MetadataObjectType.ObjectRefs,o));
 				ti.addItem(item);
@@ -103,7 +103,6 @@ public class ListingDisplay {
 	void associations() {
 		for (Association a : data.combinedMetadata.assocs) {
 			Hyperlink h = HyperlinkFactory.link(tab, a);
-			h.addStyleName("inheritBackground");
 			TreeItem item = new TreeItem(h);
 			item.setUserObject(new MetadataObjectWrapper(MetadataObjectType.Assocs,a));
 			root.addItem(item);
@@ -118,7 +117,6 @@ public class ListingDisplay {
 
 	void addDe(TreeThing treeThing, DocumentEntry de) {
 		Hyperlink h = HyperlinkFactory.link(tab, de);
-		h.addStyleName("inheritBackground");
 		TreeItem item = new TreeItem(h);
 		item.setUserObject(new MetadataObjectWrapper(MetadataObjectType.DocEntries,de));
 
@@ -151,7 +149,6 @@ public class ListingDisplay {
 	void folders() {
 		for (Folder fol : data.combinedMetadata.folders) {
 			Hyperlink h = HyperlinkFactory.link(tab, fol);
-			h.addStyleName("inheritBackground");
 			TreeItem item = new TreeItem(h);
 			item.setUserObject(new MetadataObjectWrapper(MetadataObjectType.Folders,fol));
 
@@ -173,7 +170,6 @@ public class ListingDisplay {
 	void submissionSets() {
 		for (SubmissionSet ss : data.combinedMetadata.submissionSets) {
 			Hyperlink h = HyperlinkFactory.link(tab, ss);
-			h.addStyleName("inheritBackground");
 			TreeItem item = new TreeItem(h);
 			item.setUserObject(new MetadataObjectWrapper(MetadataObjectType.SubmissionSets,ss));
 			root.addItem(item);
