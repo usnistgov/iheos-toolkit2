@@ -9,6 +9,11 @@ import gov.nist.toolkit.errorrecording.client.ValidationStepResult;
 import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
+import gov.nist.toolkit.fhir.simulators.sim.reg.AdhocQueryResponseGenerator;
+import gov.nist.toolkit.fhir.simulators.sim.reg.RegistryResponseSendingSim;
+import gov.nist.toolkit.fhir.simulators.sim.reg.SoapWrapperRegistryResponseSim;
+import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegIndex;
+import gov.nist.toolkit.fhir.simulators.sim.rep.RepIndex;
 import gov.nist.toolkit.http.HttpParserBa;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.registrymetadata.Metadata;
@@ -18,11 +23,6 @@ import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.server.SimCommon;
 import gov.nist.toolkit.simcommon.server.SimDb;
-import gov.nist.toolkit.fhir.simulators.sim.reg.AdhocQueryResponseGenerator;
-import gov.nist.toolkit.fhir.simulators.sim.reg.RegistryResponseSendingSim;
-import gov.nist.toolkit.fhir.simulators.sim.reg.SoapWrapperRegistryResponseSim;
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegIndex;
-import gov.nist.toolkit.fhir.simulators.sim.rep.RepIndex;
 import gov.nist.toolkit.soap.http.SoapFault;
 import gov.nist.toolkit.soap.http.SoapUtil;
 import gov.nist.toolkit.utilities.io.Io;
@@ -38,7 +38,6 @@ import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.engine.ValidationStep;
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.XdsException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
@@ -430,115 +429,115 @@ public class DsSimCommon {
         documentsToAttach.put(sd.cid, sd);
     }
 
-    /**
-     * Insert document Includes into DocumentResponse cluster
-     *
-     * @param env
-     * @throws MetadataException
-     */
-    void insertDocumentIncludes(OMElement env, ErrorRecorder er) throws MetadataException {
-        if (documentsToAttach == null)
-            return;
+//    /**
+//     * Insert document Includes into DocumentResponse cluster
+//     *
+//     * @param env
+//     * @throws MetadataException
+//     */
+//    void insertDocumentIncludes(OMElement env, ErrorRecorder er) throws MetadataException {
+//        if (documentsToAttach == null)
+//            return;
+//
+//        List<OMElement> docResponses = XmlUtil.decendentsWithLocalName(env, "DocumentResponse");
+//        Map<String, OMElement> uidToDocResp = new HashMap<String, OMElement>();
+//
+//        for (OMElement docResp : docResponses) {
+//            OMElement docUidEle = XmlUtil.firstChildWithLocalName(docResp, "DocumentUniqueId");
+//            if (docUidEle == null) {
+//                er.err(XdsErrorCode.Code.XDSRepositoryError, "Internal Error: response does not have DocumentUniqueId element", "SimCommon#insertDocumentIncludes", null);
+//                continue;
+//            }
+//            String docUid = docUidEle.getText();
+//            uidToDocResp.put(docUid, docResp);
+//        }
+//
+//        for (String cid : documentsToAttach.keySet()) {
+//            String uid = documentsToAttach.get(cid).getUid();
+//            OMElement docResp = uidToDocResp.get(uid);
+//            if (docResp == null) {
+//                er.err(XdsErrorCode.Code.XDSRepositoryError, "Internal Error: response does not have Document for " + uid, "SimCommon#insertDocumentIncludes", null);
+//                continue;
+//            }
+//            OMElement doc = MetadataSupport.om_factory.createOMElement(MetadataSupport.document_qnamens);
+//            OMElement incl = MetadataSupport.om_factory.createOMElement(MetadataSupport.xop_include_qnamens);
+//            incl.addAttribute("href", "cid:" + cid, null);
+//            doc.addChild(incl);
+//            docResp.addChild(doc);
+//        }
+//    }
 
-        List<OMElement> docResponses = XmlUtil.decendentsWithLocalName(env, "DocumentResponse");
-        Map<String, OMElement> uidToDocResp = new HashMap<String, OMElement>();
-
-        for (OMElement docResp : docResponses) {
-            OMElement docUidEle = XmlUtil.firstChildWithLocalName(docResp, "DocumentUniqueId");
-            if (docUidEle == null) {
-                er.err(XdsErrorCode.Code.XDSRepositoryError, "Internal Error: response does not have DocumentUniqueId element", "SimCommon#insertDocumentIncludes", null);
-                continue;
-            }
-            String docUid = docUidEle.getText();
-            uidToDocResp.put(docUid, docResp);
-        }
-
-        for (String cid : documentsToAttach.keySet()) {
-            String uid = documentsToAttach.get(cid).getUid();
-            OMElement docResp = uidToDocResp.get(uid);
-            if (docResp == null) {
-                er.err(XdsErrorCode.Code.XDSRepositoryError, "Internal Error: response does not have Document for " + uid, "SimCommon#insertDocumentIncludes", null);
-                continue;
-            }
-            OMElement doc = MetadataSupport.om_factory.createOMElement(MetadataSupport.document_qnamens);
-            OMElement incl = MetadataSupport.om_factory.createOMElement(MetadataSupport.xop_include_qnamens);
-            incl.addAttribute("href", "cid:" + cid, null);
-            doc.addChild(incl);
-            docResp.addChild(doc);
-        }
-    }
-
-    /**
-     * Used to build RetrieveDocumentSetRespoinse
-     *
-     * @param env
-     * @param er
-     * @return
-     */
-    public StringBuffer wrapSoapEnvelopeInMultipartResponse(OMElement env, ErrorRecorder er) {
-        logger.debug("DsSimCommon#wrapSoapEnvelopeInMultipartResponse");
-
-        er.detail("Wrapping in Multipart");
-
-        // build body
-        String boundary = "MIMEBoundary112233445566778899";
-        StringBuffer contentTypeBuffer = new StringBuffer();
-        String rn = "\r\n";
-
-        contentTypeBuffer
-                .append("multipart/related")
-                .append("; boundary=")
-                .append(boundary)
-                .append(";  type=\"application/xop+xml\"")
-                .append("; start=\"<" + mkCid(0) + ">\"")
-                .append("; start-info=\"application/soap+xml\"");
-
-        simCommon.response.setHeader("Content-Type", contentTypeBuffer.toString());
-
-        StringBuffer body = new StringBuffer();
-
-        body.append("--").append(boundary).append(rn);
-        body.append("Content-Type: application/xop+xml; charset=UTF-8; type=\"application/soap+xml\"").append(rn);
-        body.append("Content-Transfer-Encoding: binary").append(rn);
-        body.append("Content-ID: <" + mkCid(0) + ">").append(rn);
-        body.append(rn);
-
-        body.append(env.toString());
-
-        body.append(rn);
-        body.append(rn);
-
-        if (documentsToAttach != null) {
-            er.detail("Attaching " + documentsToAttach.size() + " documents as separate Parts in the Multipart");
-            for (String cid : documentsToAttach.keySet()) {
-                StoredDocument sd = documentsToAttach.get(cid);
-
-                body.append("--").append(boundary).append(rn);
-                body.append("Content-Type: ").append(sd.getMimeType()).append(rn);
-                body.append("Content-Transfer-Encoding: binary").append(rn);
-                body.append("Content-ID: <" + cid + ">").append(rn);
-                body.append(rn);
-                try {
-                    String contents;
-                    if (sd.getCharset() != null) {
-                        contents = new String(sd.getContent(), sd.getCharset());
-                    } else {
-                        contents = new String(sd.getContent());
-                    }
-                    logger.debug("Attaching " + cid + " length " + contents.length());
-                    body.append(contents);
-                } catch (Exception e) {
-                    er.err(XdsErrorCode.Code.XDSRepositoryError, e);
-                }
-                body.append(rn);
-            }
-        }
-
-
-        body.append("--").append(boundary).append("--").append(rn);
-
-        return body;
-    }
+//    /**
+//     * Used to build RetrieveDocumentSetRespoinse
+//     *
+//     * @param env
+//     * @param er
+//     * @return
+//     */
+//    public StringBuffer wrapSoapEnvelopeInMultipartResponse(OMElement env, ErrorRecorder er) {
+//        logger.debug("DsSimCommon#wrapSoapEnvelopeInMultipartResponse");
+//
+//        er.detail("Wrapping in Multipart");
+//
+//        // build body
+//        String boundary = "MIMEBoundary112233445566778899";
+//        StringBuffer contentTypeBuffer = new StringBuffer();
+//        String rn = "\r\n";
+//
+//        contentTypeBuffer
+//                .append("multipart/related")
+//                .append("; boundary=")
+//                .append(boundary)
+//                .append(";  type=\"application/xop+xml\"")
+//                .append("; start=\"<" + mkCid(0) + ">\"")
+//                .append("; start-info=\"application/soap+xml\"");
+//
+//        simCommon.response.setHeader("Content-Type", contentTypeBuffer.toString());
+//
+//        StringBuffer body = new StringBuffer();
+//
+//        body.append("--").append(boundary).append(rn);
+//        body.append("Content-Type: application/xop+xml; charset=UTF-8; type=\"application/soap+xml\"").append(rn);
+//        body.append("Content-Transfer-Encoding: binary").append(rn);
+//        body.append("Content-ID: <" + mkCid(0) + ">").append(rn);
+//        body.append(rn);
+//
+//        body.append(env.toString());
+//
+//        body.append(rn);
+//        body.append(rn);
+//
+//        if (documentsToAttach != null) {
+//            er.detail("Attaching " + documentsToAttach.size() + " documents as separate Parts in the Multipart");
+//            for (String cid : documentsToAttach.keySet()) {
+//                StoredDocument sd = documentsToAttach.get(cid);
+//
+//                body.append("--").append(boundary).append(rn);
+//                body.append("Content-Type: ").append(sd.getMimeType()).append(rn);
+//                body.append("Content-Transfer-Encoding: binary").append(rn);
+//                body.append("Content-ID: <" + cid + ">").append(rn);
+//                body.append(rn);
+//                try {
+//                    String contents;
+//                    if (sd.getCharset() != null) {
+//                        contents = new String(sd.getContent(), sd.getCharset());
+//                    } else {
+//                        contents = new String(sd.getContent());
+//                    }
+//                    logger.debug("Attaching " + cid + " length " + contents.length());
+//                    body.append(contents);
+//                } catch (Exception e) {
+//                    er.err(XdsErrorCode.Code.XDSRepositoryError, e);
+//                }
+//                body.append(rn);
+//            }
+//        }
+//
+//
+//        body.append("--").append(boundary).append("--").append(rn);
+//
+//        return body;
+//    }
 
     /**
      * Used to build RetrieveDocumentSetResponse
@@ -692,22 +691,7 @@ public class DsSimCommon {
                     body.append(rn);
                     os.write(body.toString().getBytes());
                     os.write(sd.getContent());
-                    os.write(rn.getBytes());
-/*
-                try {
-                    String contents = "ZZZ";
-                    if (sd.getCharset() != null) {
-                        contents = new String(sd.getContent(), sd.getCharset());
-                    } else {
-                        contents = new String(sd.getContent());
-                    }
-		    logger.debug("Attaching " + cid + " length " + contents.length());
-                    body.append(contents);
-                } catch (Exception e) {
-                    er.err(XdsErrorCode.Code.XDSRepositoryError, e);
-                }
-                body.append(rn);
-*/
+//                    os.write(rn.getBytes());
                 }
             }
 

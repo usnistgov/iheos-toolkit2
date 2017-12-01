@@ -14,7 +14,7 @@
         <ExpectedStatus>Success</ExpectedStatus>
         <FhirReadTransaction>
             <MustReturn/>
-            <ReferenceDocument>../submit/textfile.txt</ReferenceDocument>
+            <ReferenceDocument>../submit/pdffile.pdf</ReferenceDocument>
             <RequestType>application/fhir+json</RequestType>
             <UseReport test="pdb_single_doc_xof" section="read_document_reference" step="read_DR" reportName="BinaryUrl" useAs="Ref"/>
         </FhirReadTransaction>

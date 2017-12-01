@@ -6,6 +6,7 @@ import org.apache.http.NameValuePair
 import org.apache.http.message.BasicHeader
 import org.apache.http.message.BasicHeaderElement
 import org.apache.http.message.BasicNameValuePair
+import org.apache.http.util.ByteArrayBuffer
 /**
  *
  */
@@ -40,20 +41,23 @@ class MtomContentTypeGenerator {
         '"' + input + '"'
     }
 
-    static byte[] buildBody(List<PartSpec> parts) {
+    static byte[] buildBody(List<BinaryPartSpec> parts) {
         //def contentIdBase = '.694859fac46e21a68c012f8f4fe208a370fc32b6e07ae79f'
-        StringBuilder buf = new StringBuilder()
+//        StringBuilder buf = new StringBuilder()
+        ByteArrayBuffer buf = new ByteArrayBuffer(4000)
 
         def partHeaderTemplate = getClass().getResource('/templates/part_header.txt').text
         parts.each {
             def map = [theContentType: it.contentType, theContentId:"${it.contentId}"]
-            buf.append(new StrSubstitutor(map).replace(partHeaderTemplate)).append('\r\n')  // header
-            buf.append(it.content).append('\r\n')   // body
+            byte[] m = new StrSubstitutor(map).replace(partHeaderTemplate).bytes
+            buf.append(m, 0, m.size())//.append('\n')  // header
+            buf.append(it.content, 0, it.content.size())//.append('\n')   // body
         }
-        buf.append(getClass().getResource('/templates/mtom_close.txt').text)
+        byte[] m = getClass().getResource('/templates/mtom_close.txt').text.bytes
+        buf.append(m, 0, m.size())
 
-        String s = buf.toString()
-        return s.bytes
+//        String s = buf.toString()
+        return buf.toByteArray()
 
     }
 }

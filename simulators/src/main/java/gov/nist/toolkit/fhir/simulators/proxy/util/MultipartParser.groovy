@@ -22,6 +22,7 @@ class MultipartParser {
             else if (line.startsWith("--${boundary}")) {
                 assert contentType
                 assert contentId
+                //buf.deleteCharAt(buf.size() -1)
                 partSpecs << new BinaryPartSpec(contentType, buf.toString().bytes, contentId)
                 buf = new StringBuilder()
                 inheader = true

@@ -213,12 +213,12 @@ class FhirCreateTransaction extends BasicFhirTransaction {
                     String filename = binaryUrl.substring('file://'.size())
                     def (id, ext) = filename.split('\\.', 2)
                     Binary binary = new Binary()
-                    File contentFile = new File(this.testConfig.testplanDir, filename)
+                    File contentFile = new File(testConfig.testplanDir, filename)
                     binary.setContent(Io.bytesFromFile(contentFile))
-                    binary.contentTypeElement = new CodeType(mimeType(contentFile))
+                    binary.contentTypeElement = new CodeType(FhirSupport.mimeType(contentFile))
                     toAdd << [id, binary]
                     dr.content[0].attachment.url = id
-                    dr.content[0].attachment.contentType = mimeType(contentFile)
+                    dr.content[0].attachment.contentType = FhirSupport.mimeType(contentFile)
                 }
             }
         }
@@ -231,17 +231,6 @@ class FhirCreateTransaction extends BasicFhirTransaction {
         }
     }
 
-    def mimeTypes = [
-            txt: 'text/plain',
-            pdf: 'application/pdf',
-            xml: 'text/xml'
-    ]
 
-    String mimeType(File file) {
-        String name = file.name
-        def parts = name.split('\\.')
-        def ext = parts[parts.size()-1]
-        mimeTypes[ext]
-    }
 
 }

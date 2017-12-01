@@ -8,10 +8,7 @@ import gov.nist.toolkit.fhir.simulators.mhd.Attachment
 import gov.nist.toolkit.fhir.simulators.mhd.MhdGenerator
 import gov.nist.toolkit.fhir.simulators.mhd.Submission
 import gov.nist.toolkit.fhir.simulators.proxy.exceptions.SimProxyTransformException
-import gov.nist.toolkit.fhir.simulators.proxy.util.ContentRequestTransform
-import gov.nist.toolkit.fhir.simulators.proxy.util.MtomContentTypeGenerator
-import gov.nist.toolkit.fhir.simulators.proxy.util.PartSpec
-import gov.nist.toolkit.fhir.simulators.proxy.util.SimProxyBase
+import gov.nist.toolkit.fhir.simulators.proxy.util.*
 import gov.nist.toolkit.utilities.io.Io
 import org.apache.http.Header
 import org.apache.http.HttpRequest
@@ -20,6 +17,7 @@ import org.apache.http.message.BasicHttpEntityEnclosingRequest
 import org.apache.log4j.Logger
 import org.hl7.fhir.dstu3.model.Bundle
 import org.hl7.fhir.instance.model.api.IBaseResource
+
 /**
  *
  */
@@ -48,10 +46,10 @@ class MhdToPnrContentTransform implements ContentRequestTransform {
         Bundle bundle = resource
         Submission s = new MhdGenerator(base, ResourceCacheMgr.instance()).buildSubmission(bundle)
         assert s.attachments.size() > 0
-        List<PartSpec> parts = []
-        parts << new PartSpec('application/xop+xml; charset=UTF-8; type="application/soap+xml"', s.metadataInSoapWrapper(), s.contentId)
+        List<BinaryPartSpec> parts = []
+        parts << new BinaryPartSpec('application/xop+xml; charset=UTF-8; type="application/soap+xml"', s.metadataInSoapWrapper().bytes, s.contentId)
         s.attachments.each { Attachment a ->
-            parts << new PartSpec(a.contentType, new String(a.content), a.contentId)
+            parts << new BinaryPartSpec(a.contentType, a.content, a.contentId)
         }
 
         Header targetContentTypeHeader = MtomContentTypeGenerator.buildHeader(TransactionType.PROVIDE_AND_REGISTER.requestAction, s.contentId)

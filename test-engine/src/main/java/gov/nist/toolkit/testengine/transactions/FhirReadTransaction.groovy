@@ -11,8 +11,10 @@ import gov.nist.toolkit.xdsexception.client.MetadataException
 import gov.nist.toolkit.xdsexception.client.XdsInternalException
 import org.apache.axiom.om.OMElement
 import org.apache.http.message.BasicStatusLine
+import org.hl7.fhir.dstu3.model.Binary
 import org.hl7.fhir.dstu3.model.DocumentReference
 import org.hl7.fhir.dstu3.model.OperationOutcome
+import org.hl7.fhir.dstu3.model.Resource
 import org.hl7.fhir.instance.model.api.IBaseResource
 /**
  *
@@ -21,6 +23,8 @@ class FhirReadTransaction extends BasicFhirTransaction {
     // if both of these are specified, requestType takes precesencse
     boolean requestXml = false
     String requestType = null
+    String referenceDocument = null  // relative path
+    String requestAcceptType = null
 
     boolean mustReturn = false
     FhirContext ctx = ToolkitFhirContext.get()
@@ -44,15 +48,22 @@ class FhirReadTransaction extends BasicFhirTransaction {
 
         reportManager.add('Url', fullEndpoint)
 
-        def contentType = (requestXml) ? 'application/fhir+xml' : 'application/fhir+json'
+        def acceptType = (requestXml) ? 'application/fhir+xml' : 'application/fhir+json'
         if (requestType)
-            contentType = requestType
+            acceptType = requestType
+        if (requestAcceptType)
+            acceptType = requestAcceptType
         testLog.add_name_value(instruction_output, 'OutHeader', "GET ${fullEndpoint}")
-        def (BasicStatusLine statusLine, String content) = FhirClient.get(new URI(fullEndpoint), contentType)
+        def (BasicStatusLine statusLine, String content) = FhirClient.get(new URI(fullEndpoint), acceptType)
+        IBaseResource baseResource = null
+        Resource returnedResource = null
         if (statusLine.statusCode in 400..599)  {
             stepContext.set_error("Status:${statusLine}")
         } else {
             if (content) {
+                baseResource = FhirSupport.parse(content)
+                if (baseResource instanceof Resource)
+                    returnedResource = baseResource
                 // content is either JSON or XML
                 if (requestXml) {
                     OMElement f = testLog.add_simple_element(instruction_output, "Format")
@@ -62,13 +73,11 @@ class FhirReadTransaction extends BasicFhirTransaction {
                     // by default JSON is requested
                     OMElement f = testLog.add_simple_element(instruction_output, "Format")
                     f.addAttribute('value', 'json', null)
-                    IBaseResource baseResource = FhirSupport.parse(content)
-                    String xml = ctx.newXmlParser().encodeResourceToString(baseResource)
+                    String xml = ctx.newXmlParser().encodeResourceToString(returnedResource)
                     OMElement xmlo = Util.parse_xml(xml)
 //                xml = new OMFormatter(xml).toString()
                     testLog.add_name_value(instruction_output, "Result", xmlo);
                 }
-                IBaseResource returnedResource = FhirSupport.parse(content)
                 if (returnedResource instanceof OperationOutcome) {
                     OperationOutcome oo = returnedResource
                     oo.issue.each {
@@ -94,6 +103,26 @@ class FhirReadTransaction extends BasicFhirTransaction {
                 testLog.add_name_value(instruction_output, "Result", 'None');
                 if (mustReturn)
                     stepContext.set_error("A Resource was not returned")
+            }
+            if (referenceDocument && returnedResource) {
+                if (!(returnedResource instanceof Binary)) {
+                    stepContext.set_error("referenceDocument provided but returned resource of type ${returnedResource.class.simpleName} instead of Binary")
+                } else {
+                    Binary returnedBinary = returnedResource
+                    File referenceFile = new File(testConfig.testplanDir, referenceDocument)
+                    Binary referenceBinary = FhirSupport.binaryFromFile(referenceFile)
+                    byte[] referenceBytes = referenceBinary.content
+                    byte[] returnedBytes = returnedBinary.content
+                    if (referenceBytes != returnedBytes) {
+                        stepContext.set_error("Returned bytes do not match those sent")
+                        stepContext.set_error("Sent ${referenceBytes.size()}")
+                        stepContext.set_error("Received ${returnedBytes.size()}")
+                        if (referenceDocument.endsWith('.txt')) {
+                            stepContext.set_error("Sent ${new String(referenceBytes).replaceAll('\n','\\n')}")
+                            stepContext.set_error("Back ${new String(returnedBytes).replaceAll('\n','\\n')} ")
+                        }
+                    }
+                }
             }
         }
 
@@ -121,6 +150,12 @@ class FhirReadTransaction extends BasicFhirTransaction {
         }
         else if (part_name == 'RequestType') {
             requestType = part.text;
+        }
+        else if (part_name == 'ReferenceDocument') {
+            referenceDocument = part.text;
+        }
+        else if (part_name == 'AcceptType') {
+            requestAcceptType = part.text;
         }
         else {
             super.parseInstruction(part)

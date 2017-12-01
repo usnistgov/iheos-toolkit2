@@ -49,7 +49,7 @@ public class SimProxyBase {
     Site targetSite
     ProxyLogger clientLogger = null
     ProxyLogger targetLogger = null
-    String clientContentType
+    List<String> clientContentTypes = []
     List<Resource> resourcesSubmitted = []
     FhirVerb fhirVerb
 
@@ -202,8 +202,10 @@ public class SimProxyBase {
         config.get(SimulatorProperties.simProxyTransformations)?.asList()?.collect {
             ProxyTransformConfig.parse(it)
         }
-        Header contentTypeHeader = request.getFirstHeader('Content-Type')
-        clientContentType = contentTypeHeader.value
+        List<Header> contentTypeHeaders = request.getHeaders('Accept')
+        contentTypeHeaders.each { Header h ->
+            clientContentTypes << h.value
+        }
 
         String targetSiteName = config.get(SimulatorProperties.proxyForwardSite)?.asString()
         if (!targetSiteName) return handleEarlyException(new Exception("Proxy forward site not configured"))

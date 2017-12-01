@@ -3,7 +3,7 @@ package gov.nist.toolkit.fhir.simulators.proxy.util
 class RetrieveResponseParser {
     List<RetrieveContent> parse(String msg) {
         // since this is has to work with our sim no need to check for start part - always first
-        List<BinaryPartSpec> parts = MultipartParser.parse(msg)
+        List<BinaryPartSpec> parts = MultipartParser2.parse(msg)
         List<RetrieveContent> contents = []
         def root = new XmlSlurper().parseText(new String(parts[0].content))
         if (root.name() == 'Envelope') {
