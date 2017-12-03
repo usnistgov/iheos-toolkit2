@@ -220,16 +220,21 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
         selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
             @Override
             public void onSelectionChange(SelectionChangeEvent selectionChangeEvent) {
-                final List<T> list = actionBtnProvider.getList();
-                T mySelection = ((SingleSelectionModel<T>) selectionModel).getSelectedObject();
-                lastSelectedObject = mySelection;
-                list.clear();
-                if (mySelection!=null) {
-                    list.add(mySelection);
-                } else {
-                    list.add(placeHolderRow);
+                try {
+//                    final List<T> list = actionBtnProvider.getList();
+                    T mySelection = ((SingleSelectionModel<T>) selectionModel).getSelectedObject();
+                    lastSelectedObject = mySelection;
+//                    list.clear();
+//                    if (mySelection!=null) {
+//                        list.add(mySelection);
+//                    } else {
+//                        list.add(placeHolderRow);
+//                    }
+                    defaultSingleClickAction(mySelection);
+                } catch (Throwable t) {
+                    GWT.log("Data table selection change failed: " + t.getMessage());
                 }
-                defaultSingleClickAction(mySelection);
+
             }
         });
     }

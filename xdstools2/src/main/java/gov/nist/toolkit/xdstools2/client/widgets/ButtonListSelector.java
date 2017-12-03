@@ -103,6 +103,7 @@ abstract public class ButtonListSelector implements IsWidget {
             u.setStyleName(GWT_BUTTON_STYLE);
         }
         button.setStyleName(SITE_SELECTED_STYLE);
+        setCurrentSelection(button.getText());
         doSelected(button.getText());
     }
 
@@ -114,6 +115,7 @@ abstract public class ButtonListSelector implements IsWidget {
         }
         Button button = findButton(title);
         button.setStyleName(SITE_SELECTED_STYLE);
+        setCurrentSelection(button.getText());
         doSelected(title);
     }
 
@@ -134,6 +136,7 @@ abstract public class ButtonListSelector implements IsWidget {
 
 
     public String getCurrentSelection() {
+        // TODO: Should throw an exception if nothing?
         return currentSelection;
     }
 
