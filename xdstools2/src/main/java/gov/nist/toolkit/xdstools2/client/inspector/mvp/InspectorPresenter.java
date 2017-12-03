@@ -107,11 +107,17 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
             @Override
             public void onObjectSelected(MetadataObjectWrapper objectWrapper) {
                 try {
-                    MetadataObjectType currentObjectTypeSelection = MetadataObjectType.valueOf(view.metadataObjectSelector.getCurrentSelection());
                     MetadataObjectType requestedObjectType = objectWrapper.getType();
-                    if (!currentObjectTypeSelection.equals(requestedObjectType)) {
+                    String currentObjectTypeSelectionStr = view.metadataObjectSelector.getCurrentSelection();
+                    if (currentObjectTypeSelectionStr!=null) {
+                        MetadataObjectType currentObjectTypeSelection = MetadataObjectType.valueOf(currentObjectTypeSelectionStr);
+                        if (!currentObjectTypeSelection.equals(requestedObjectType)) {
+                            view.metadataObjectSelector.updateSiteSelectedView(requestedObjectType.name());
+                        }
+                    } else {
                         view.metadataObjectSelector.updateSiteSelectedView(requestedObjectType.name());
                     }
+
                     view.getTableMap().get(requestedObjectType).diffSelect.setValue(false,true);
                     view.getTableMap().get(requestedObjectType).setSelectedRow(objectWrapper.getObject(), true);
                 } catch (Exception ex) {
@@ -264,14 +270,22 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
         for (MetadataObjectType key : view.tableMap.keySet()) {
             DataTable dataTable = view.tableMap.get(key);
             if (key.equals(objectType)) {
-                // Just redisplay current selection in table selection
+                // Just redisplay current selection in table selection. If there is nothing, clear previous selection.
                 if (dataTable!=null) {
                     dataTable.setData(dataMap.get(objectType));
                     dataTable.asWidget().setVisible(true);
                     if (!dataTable.diffSelect.getValue()) {
                         doSingleMode();
-                        TreeItem treeItem = doFocusTreeItem(objectType, view.metadataInspectorLeft.getTreeList(), null, (MetadataObject)dataTable.lastSelectedObject);
-                        view.metadataInspectorLeft.setCurrentSelectedTreeItem(treeItem);
+                        MetadataObject lastSelection = (MetadataObject)dataTable.lastSelectedObject;
+                        if (lastSelection!=null) {
+                            TreeItem treeItem = doFocusTreeItem(objectType, view.metadataInspectorLeft.getTreeList(), null, lastSelection);
+                            view.metadataInspectorLeft.setCurrentSelectedTreeItem(treeItem);
+                        } else {
+                            TreeItem currentSelectedTreeItem = view.metadataInspectorLeft.getCurrentSelectedTreeItem();
+                            if (currentSelectedTreeItem!=null) {
+                                currentSelectedTreeItem.getWidget().removeStyleName("insetBorder");
+                            }
+                        }
                     } else {
                         doSetupDiffMode(true);
                         doDiffAction(key, (MetadataObject)dataTable.lastSelectedObject, (MetadataObject)dataTable.compareObject);
@@ -367,7 +381,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
                 if (compareTo(userObject,target)) {
                     ((Hyperlink)treeItem.getWidget()).fireEvent(new ClickEvent() {});
                     treeItem.setSelected(true);
-                    treeItem.setState(false, true);
+//                    treeItem.setState(false, true);
                     if (view.metadataInspectorLeft.getCurrentSelectedTreeItem()!=null) {
                         view.metadataInspectorLeft.getCurrentSelectedTreeItem().getWidget().removeStyleName("insetBorder");
                     }
