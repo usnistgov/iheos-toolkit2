@@ -1,8 +1,8 @@
 package gov.nist.toolkit.simcommon.server.factories;
 
 import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.Simulator;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
@@ -12,8 +12,6 @@ import gov.nist.toolkit.simcommon.server.SimManager;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
-import gov.nist.toolkit.xdsexception.NoSessionException;
-import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -24,7 +22,7 @@ public class RecipientActorFactory  extends AbstractActorFactory implements IAct
 		Arrays.asList(TransactionType.XDR_PROVIDE_AND_REGISTER);
 
 
-	protected Simulator buildNew(SimManager simm, SimId newID, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
+	protected Simulator buildNew(SimManager simm, SimId newID, boolean configureBase) throws Exception {
 		RegistryActorFactory registryActorFactory;
 		RepositoryActorFactory repositoryActorFactory;
 

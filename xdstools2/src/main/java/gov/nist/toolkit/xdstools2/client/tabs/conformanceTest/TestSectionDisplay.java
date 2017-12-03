@@ -145,6 +145,10 @@ class TestSectionDisplay implements IsWidget {
         }
     }
 
+    public void open() {
+        view.open(true);
+    }
+
     private class SectionNotRunOpenHandler implements OpenHandler<DisclosurePanel> {
         String sessionName;
         TestInstance testInstance;

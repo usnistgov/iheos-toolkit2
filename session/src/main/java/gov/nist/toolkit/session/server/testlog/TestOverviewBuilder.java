@@ -102,7 +102,12 @@ public class TestOverviewBuilder {
                                 sectionOverview.getSteps().put(stepName,stepOverview);
                             }
 
-                            stepOverview.setGoals(sectionDef.getStep(stepName).getGoals());
+                            StringBuilder buf = new StringBuilder();
+                            for (String goal : sectionDef.getStep(stepName).getGoals()) {
+                                buf.append(goal).append(" ");
+//                                buf.append("<br />");
+                            }
+                            stepOverview.setGoals(Markdown.toHtml(buf.toString()));
                             stepOverview.setInteractionSequence(sectionDef.getStep(stepName).getInteractionSequence());
 
                             TestStepLogContentDTO stepDTO = new TestStepLogContentDTO();

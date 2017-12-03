@@ -2,7 +2,9 @@ package gov.nist.toolkit.simcommon.server
 
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.configDatatypes.client.TransactionType
+import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.client.SimLogEventLinkBuilder
 
 /**
  * See SimDbEvents for how this is used
@@ -22,6 +24,14 @@ class SimDbEvent {
 
     SimDb open() {
         return SimDb.open(this)
+    }
+
+    String getSimLogUrl() {
+        SimLogEventLinkBuilder.buildUrl(Installation.instance().getToolkitBaseUrl(), simId.toString(), actor, trans, eventId)
+    }
+
+    String getSimLogPlaceToken() {
+        SimLogEventLinkBuilder.buildToken(simId.toString(), actor, trans, eventId)
     }
 
     ActorType getActorType() { return ActorType.findActor(actor) }
@@ -58,5 +68,13 @@ class SimDbEvent {
 
     String getResponseHeader() {
         return getResponseHeaderFile().text
+    }
+
+    void setActor(String actor) {
+        this.actor = actor
+    }
+
+    void setTrans(String trans) {
+        this.trans = trans
     }
 }

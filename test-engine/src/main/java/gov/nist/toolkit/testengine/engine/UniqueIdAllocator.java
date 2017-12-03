@@ -114,7 +114,7 @@ public class UniqueIdAllocator extends IdAllocator {
 	
 	static {
 		uida = new UniqueIdAllocator();
-		uida.base = "1.42." + new Hl7Date().now();
+		uida.base = "1.2.42." + new Hl7Date().now();
 		uida.cnt = 1;
 	}
 	

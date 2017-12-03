@@ -50,7 +50,7 @@ public abstract class BasicTransaction  {
 	boolean step_failure = false;
 	boolean no_convert = false;
 	boolean isSaml = false ;
-	protected boolean parse_metadata = true;
+	public boolean parse_metadata = true;
 	// metadata building linkage
 	protected ArrayList<OMElement> use_id;
 	protected ArrayList<OMElement> use_xpath ;
@@ -84,7 +84,7 @@ public abstract class BasicTransaction  {
 	boolean useMtom;
 	boolean useAddressing;
 	boolean isSQ;
-	boolean defaultEndpointProcessing = true;
+	public boolean defaultEndpointProcessing = true;
 
 	protected String repositoryUniqueId = null;
 	private final static Logger logger = Logger.getLogger(BasicTransaction.class);
@@ -117,6 +117,8 @@ public abstract class BasicTransaction  {
 	}
 
 	public UseReportManager getUseReportManager() { return useReportManager; }
+
+	public void setUseReportManager(UseReportManager m) { useReportManager = m; }
 
 	public Map<String, String> getExternalLinkage() {
 		return planContext.getExtraLinkage();

@@ -23,6 +23,13 @@ class PatientIndexer implements IResourceIndexer {
 
         Patient patient = (Patient) theResource
 
+        def system = patient.getIdentifier()?.get(0)?.system
+        def value = patient.getIdentifier()?.get(0)?.value
+        def pid = "${system}|${value}"
+
+        if (system && value)
+            resourceIndex.add(new ResourceIndexItem(Patient.SP_IDENTIFIER, pid))
+
         resourceIndex.add(new ResourceIndexItem(Patient.SP_FAMILY, patient.getName().get(0).getFamily()))
 
         patient.name.get(0).given.each {

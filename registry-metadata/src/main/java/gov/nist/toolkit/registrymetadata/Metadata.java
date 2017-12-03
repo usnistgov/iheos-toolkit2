@@ -101,6 +101,14 @@ public class Metadata {
 		return buf.toString();
 	}
 
+	public boolean isEmpty() {
+		return extrinsicObjects.isEmpty() &&
+				folders.isEmpty() &&
+				submissionSets.isEmpty() &&
+				associations.isEmpty() &&
+				objectRefs.isEmpty();
+	}
+
 	public String getSummary() {
 		StringBuffer buf = new StringBuffer();
 
@@ -956,11 +964,11 @@ public class Metadata {
 		else if (folders.contains(ele))
 			return "Folder(" + getId(ele) + ")";
 		else if (submissionSets.contains(ele))
-			return "Folder(" + getId(ele) + ")";
+			return "SubmissionSet(" + getId(ele) + ")";
 		else if (associations.contains(ele))
-			return "Folder(" + getId(ele) + ")";
+			return "Association(" + getId(ele) + ")";
 		else if (objectRefs.contains(ele))
-			return "Folder(" + getId(ele) + ")";
+			return "ObjectRef(" + getId(ele) + ")";
 		else
 			return "Unknown(" + getId(ele) + ")";
 	}

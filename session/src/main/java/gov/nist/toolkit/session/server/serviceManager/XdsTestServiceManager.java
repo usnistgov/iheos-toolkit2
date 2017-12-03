@@ -307,8 +307,9 @@ public class XdsTestServiceManager extends CommonService {
 			return testLogs;
 		} catch (Exception e) {
 			TestLogs testLogs = new TestLogs();
-			testLogs.assertionResult = new AssertionResult(
-					ExceptionUtil.exception_details(e), false);
+			String details = ExceptionUtil.exception_details(e);
+			logger.error(details);
+			testLogs.assertionResult = new AssertionResult(details,false);
 			return testLogs;
 		}
 	}
@@ -378,7 +379,7 @@ public class XdsTestServiceManager extends CommonService {
 		}
 		return tis;
       } catch (Exception e) {
-		   logger.debug(ExceptionUtil.exception_details(e, "getCollectionsMembers error: "));
+		   logger.error(ExceptionUtil.exception_details(e, "getCollectionsMembers error: "));
          throw e;
       }
 	}
@@ -400,8 +401,8 @@ public class XdsTestServiceManager extends CommonService {
 	}
 
 	public List<String> getTestSections(String test) throws Exception   {
-		if (session != null)
-			logger.debug(session.id() + ": " + "getTestSectionsReferencedInUseReports " + test);
+//		if (session != null)
+//			logger.debug(session.id() + ": " + "getTestSectionsReferencedInUseReports " + test);
 		TestKitSearchPath searchPath = session.getTestkitSearchPath();
 		TestDefinition def = session.getTestkitSearchPath().getTestDefinition(test);
 		return def.getSectionIndex();
@@ -617,8 +618,8 @@ public class XdsTestServiceManager extends CommonService {
 	 */
 	public TestOverviewDTO getTestOverview(String sessionName, TestInstance testInstance) throws Exception {
 		try {
-			if (session != null)
-				logger.debug(session.id() + ": " + "getTestOverview(" + testInstance + ")");
+			//if (session != null)
+				//logger.debug(session.id() + ": " + "getTestOverview(" + testInstance + ")");
 
 			testInstance.setUser(sessionName);
 
@@ -948,7 +949,7 @@ public class XdsTestServiceManager extends CommonService {
 							} catch (Exception e) {
 
 							}
-							if (response != null) {
+							if (response != null && response.trim().startsWith("<")) {
 								OMElement rdsr = Util.parse_xml(response);
 								if (!rdsr.getLocalName().equals(
 										"RetrieveDocumentSetResponse"))

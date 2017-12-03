@@ -118,6 +118,18 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
         addDetail(test_step_output, name, value);
     }
 
+    public void addDetailHeader(String headerText) {
+		addDetail("#" + headerText, "");
+	}
+
+	public void addDetailHeader(String headerText, String value) {
+		addDetail("#" + headerText, value);
+	}
+
+	public void addDetailLink(String externalLink, String internalPlaceToken, String linkText, String content) {
+		addDetail(externalLink + " [" + internalPlaceToken + "] (" + linkText + ")", content);
+	}
+
 	public  void set_error(String msg) throws XdsInternalException {
 		setStatus(false);
 		error(test_step_output, msg);
@@ -379,11 +391,20 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 				case "FhirCreateTransaction":
 					transaction = new FhirCreateTransaction(this, instruction, instruction_output);
 					break;
+				case "ProvideDocumentBundleTransaction":
+					transaction = new ProvideDocumentBundleTransaction(this, instruction, instruction_output);
+					break;
+				case "FhirCreatePatientTransaction":
+					transaction = new FhirCreatePatientTransaction(this, instruction, instruction_output);
+					break;
 				case "FhirReadTransaction":
 					transaction = new FhirReadTransaction(this, instruction, instruction_output);
 					break;
 				case "FhirSearchTransaction":
 					transaction = new FhirSearchTransaction(this, instruction, instruction_output);
+					break;
+				case "MhdClientTransaction":
+					transaction = new MhdClientTransaction(this, instruction, instruction_output);
 					break;
 			   case "HttpTransaction":
 					HTTPTransaction hTransaction = new HTTPTransaction(this, instruction, instruction_output);

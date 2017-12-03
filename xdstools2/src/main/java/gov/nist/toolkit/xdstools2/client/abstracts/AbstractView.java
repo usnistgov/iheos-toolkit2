@@ -115,7 +115,7 @@ public abstract class AbstractView<P extends AbstractPresenter<?>> implements Is
         return h;
     }
 
-    public HTML htmlize(String in) {
+    public static HTML htmlize(String in) {
         if (in.trim().startsWith("{")) {
             return htmlizeJson(in);
         }
@@ -128,7 +128,7 @@ public abstract class AbstractView<P extends AbstractPresenter<?>> implements Is
         return h;
     }
 
-    public HTML htmlizeJson(String in) {
+    public static HTML htmlizeJson(String in) {
         String content = in
                 //  .replaceAll("\\n\\n", "\n")
                 .replaceAll("\t", "&nbsp;&nbsp;&nbsp;")

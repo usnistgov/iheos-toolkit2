@@ -38,7 +38,7 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
     int rowsPerPage = 10;
 
 
-    ButtonListSelector metadataObjectSelector = new ButtonListSelector("Select a Metadata Object","Metadata Object") {
+    ButtonListSelector metadataObjectSelector = new ButtonListSelector("Select a Metadata Object") {
         @Override
         public void doSelected(String label) {
             getPresenter().doUpdateChosenMetadataObjectType(label);

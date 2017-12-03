@@ -4,7 +4,7 @@ import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.parser.IParser
 import gov.nist.toolkit.fhir.support.SimIndexManager
 import gov.nist.toolkit.installation.Installation
-import gov.nist.toolkit.testengine.fhir.FhirId
+import gov.nist.toolkit.fhir.utility.FhirId
 import gov.nist.toolkit.itTests.support.FhirSpecification
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.SimDb
@@ -56,7 +56,7 @@ class WriteReadSpec extends FhirSpecification {
 
     def 'CREATE first patient'() {
         when:
-        def (BasicStatusLine statusLine, String results, FhirId locationHeader) = post("${baseURL(simId)}/Patient", patient)
+        def (BasicStatusLine statusLine, String results, FhirId locationHeader) = post("${baseURL(simId)}/fhir/Patient", patient)
         OperationOutcome oo
         if (statusLine.statusCode in 200..299 && results) {
             IBaseResource resource = ourCtx.newJsonParser().parseResource(results)
@@ -92,7 +92,7 @@ class WriteReadSpec extends FhirSpecification {
 
     def 'CREATE and READ patient'() {
         when:
-        def (BasicStatusLine statusLine, String results, FhirId locationHeader) = post("${baseURL(simId)}/Patient", patient)
+        def (BasicStatusLine statusLine, String results, FhirId locationHeader) = post("${baseURL(simId)}/fhir/Patient", patient)
         submission = locationHeader
         OperationOutcome oo
         if (results) {
@@ -110,7 +110,7 @@ class WriteReadSpec extends FhirSpecification {
         !oo
 
         when:
-        def (BasicStatusLine statusLine2, String results2) = get("${baseURL(simId)}/Patient/${locationHeader.id}")
+        def (BasicStatusLine statusLine2, String results2) = get("${baseURL(simId)}/fhir/Patient/${locationHeader.id}")
 
         then:
         statusLine2.statusCode == 200

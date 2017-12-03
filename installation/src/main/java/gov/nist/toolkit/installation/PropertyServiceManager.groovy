@@ -80,7 +80,7 @@ public class PropertyServiceManager {
 	public String getToolkitPort() {
 //		logger.debug(": " + "getToolkitPort");
         if (overrideToolkitPort != null) {
-            logger.info("Overriding toolkit port -> " + overrideToolkitPort);
+//            logger.info("Overriding toolkit port -> " + overrideToolkitPort);
             return overrideToolkitPort;
         }
 		return getPropertyManager().getToolkitPort();
@@ -127,6 +127,10 @@ public class PropertyServiceManager {
 	public String getDefaultAssigningAuthority() {
 		logger.debug(": " + "getDefaultAssigningAuthority");
 		return getPropertyManager().getDefaultAssigningAuthority();
+	}
+
+	public String getProxyPort() {
+		return getPropertyManager().getProxyPort();
 	}
 
 	public PropertyManager getPropertyManager() {

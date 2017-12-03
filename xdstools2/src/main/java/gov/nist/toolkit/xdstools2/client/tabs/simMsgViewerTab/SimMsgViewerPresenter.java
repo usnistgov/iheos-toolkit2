@@ -35,6 +35,7 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
 
     private SimId currentSimId = null;
     private String currentTransaction;
+    private String preSelectEvent;
 
     @Inject
     public SimMsgViewerPresenter() {
@@ -90,7 +91,6 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
 //                    getView().selectSite(currentSimId.toString());
             }
         }.run(new GetSimIdsForUserRequest(getCommandContext(), null));
-
     }
 
     // not sure why this level is useful. Maybe for filters?
@@ -103,28 +103,25 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
             public void onComplete(List<String> result) {
                 GWT.log("Loaded " + result.size() + " events");
                 getView().transactionNamesPanel.clear();
-                loadEventsForSimulator("all");
+                loadEventsForSimulator("all", null);
             }
 
         }.run(new GetTransactionRequest(ClientUtils.INSTANCE.getCommandContext(), currentSimId));
     }
 
-    private void displayEvents(List<TransactionInstance> events) {
+    private void displayEvents(List<TransactionInstance> events, String preselectedEventId) {
         this.events = events;
         List<EventInfo> eventInfos = new ArrayList<>();
         for (TransactionInstance ti : events) {
             eventInfos.add(new EventInfo(ti.messageId, ti.toString()));
         }
-        getView().displayEvents(eventInfos);
-    }
+        getView().displayEvents(eventInfos,preselectedEventId);
 
-    void preselectEvent(final String eventId) {
-        loadEventsForSimulator(new SimpleCallback() {
-            @Override
-            public void run() {
-                doUpdateChosenEvent(eventId);
-            }
-        });
+        if (preselectedEventId!=null) {
+            doUpdateChosenEvent(preselectedEventId);
+        } else if (eventInfos.size()>0) {
+            doUpdateChosenEvent(eventInfos.get(0).getId());
+        }
     }
 
     void doUpdateChosenEvent(String messageId) {
@@ -179,6 +176,7 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
     }
 
     private void loadEventsForSimulator(String transNameFilter, final SimpleCallback callback) {
+        GWT.log("loadEventsForSimulator transNameFilter: " + transNameFilter + " preselect: " + preSelectEvent);
         if (currentSimId == null) {
             getView().message("Select Simulator from the list");
             return;
@@ -191,7 +189,8 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
         new GetTransactionInstancesCommand(){
             @Override
             public void onComplete(List<TransactionInstance> events) {
-                displayEvents(events);
+                displayEvents(events, preSelectEvent);
+                preSelectEvent = null; // reset
                 if (callback != null)
                     callback.run();
             }
@@ -221,16 +220,18 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
     }
 
     void doUpdateChosenSimulator(String simName) {
-        GWT.log("doUpdateChosenSimulator - " + simName);
-        assert(simName != null);
-        assert(!simName.equals(""));
-        // translates to server version of simid
-        currentSimId = getServerSimId(new SimId(simName));
-        loadEventsForSimulator();
-        getView().clearAllTabs();
-        currentTransactionInstance = null;
-        updateEventLink();
-        setTitle("Log " + currentSimId.toString());
+        GWT.log("doUpdateChosenSimulator - " + simName + " preSelectEvent: " + preSelectEvent);
+        if (preSelectEvent==null) {
+            assert (simName != null);
+            assert (!simName.equals(""));
+            // translates to server version of simid
+            currentSimId = getServerSimId(new SimId(simName));
+            loadEventsForSimulator();
+            getView().clearAllTabs();
+            currentTransactionInstance = null;
+            updateEventLink();
+            setTitle("Log " + currentSimId.toString());
+        }
     }
 
     void doInspectRequest() {
@@ -305,4 +306,7 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
 
     }
 
+    public void setPreSelectEvent(String preSelectEvent) {
+        this.preSelectEvent = preSelectEvent;
+    }
 }

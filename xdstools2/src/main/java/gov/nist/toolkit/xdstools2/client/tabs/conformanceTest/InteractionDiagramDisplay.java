@@ -25,11 +25,11 @@ public class InteractionDiagramDisplay extends FlowPanel {
     String sessionName;
     SiteSpec testTarget;
     String pid;
-    ActorOption actorOption;
+    ActorOptionConfig actorOption;
     String sutSystemName;
 
 
-    public InteractionDiagramDisplay(TestOverviewDTO testResultDTO, String sessionName, SiteSpec testTarget, String sutSystemName, ActorOption actorOption, String pid) {
+    public InteractionDiagramDisplay(TestOverviewDTO testResultDTO, String sessionName, SiteSpec testTarget, String sutSystemName, ActorOptionConfig actorOption, String pid) {
 
         setTestOverviewDTO(testResultDTO);
         setSessionName(sessionName);
@@ -120,11 +120,11 @@ public class InteractionDiagramDisplay extends FlowPanel {
         this.testOverviewDTO = testOverviewDTO;
     }
 
-    public ActorOption getActorOption() {
+    public ActorOptionConfig getActorOption() {
         return actorOption;
     }
 
-    public void setActorOption(ActorOption actorOption) {
+    public void setActorOption(ActorOptionConfig actorOption) {
         this.actorOption = actorOption;
     }
 

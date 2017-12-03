@@ -1,0 +1,12 @@
+<TestPlan>
+    <Test>pdb_single_doc_xof/register_patient</Test>
+    <TestStep id="SendPdb">
+        <Goal>
+        </Goal>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <FhirCreatePatientTransaction>
+            <ResourceFile>patient.xml</ResourceFile>
+            <UrlExtension>/Patient</UrlExtension>
+        </FhirCreatePatientTransaction>
+    </TestStep>
+</TestPlan>

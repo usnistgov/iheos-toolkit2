@@ -48,6 +48,10 @@ h3 {
   opacity: .8;
 }
 
+.no-margin {
+  margin: 0;
+}
+
 .roundedButton1 {
   margin: 0;
   padding: 1px 3px;
@@ -90,6 +94,21 @@ h3 {
 
 .my-table-band {
 	background-color: #D8D8D8
+}
+
+.detail-section-header {
+  font-size: 12pt;
+  font-weight: bold;
+}
+
+.detail-table-header {
+  background-color: #D8D8D8;
+  font-size: 12pt;
+  font-weight: bold;
+}
+
+.error-table-header {
+  background-color: #D8D8D8
 }
 
 .my-table-noband {
@@ -184,6 +203,17 @@ h3 {
 
 .borderedTable {
   border:2px solid darkslategray;
+}
+
+.border-collapse {
+  border-collapse: collapse;
+  border:2px solid darkslategray;
+  margin: 1px;
+}
+
+.table-header {
+  background-color: wheat;
+  text-align: center;
 }
 
 .list-border {

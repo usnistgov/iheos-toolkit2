@@ -15,6 +15,7 @@ abstract public class AbstractOrchestrationResponse extends RawResponse {
 //    private List<TestInstance> orchestrationTests = new ArrayList<>();  // test definitions used to build the orchestration
     private List<MessageItem> messages = new ArrayList<>();
 
+    public AbstractOrchestrationResponse() {}
     /**
      * Does vendor initiate first message of test?
      * @return true if they do.
@@ -28,6 +29,14 @@ abstract public class AbstractOrchestrationResponse extends RawResponse {
     }
 
     public Collection<MessageItem> getMessages() { return messages; }
+
+    public boolean hasError() {
+        for (MessageItem item : messages) {
+            if (!item.isSuccess())
+                return true;
+        }
+        return false;
+    }
 
     /**
      * Tests used to build up test environment

@@ -7,8 +7,8 @@ import gov.nist.toolkit.http.HttpMessageBa
 import gov.nist.toolkit.http.HttpParserBa
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
 import gov.nist.toolkit.simcommon.server.SimDb
-import gov.nist.toolkit.simulators.sim.ids.IdsHttpActorSimulator
-import gov.nist.toolkit.simulators.support.DsSimCommon
+import gov.nist.toolkit.fhir.simulators.sim.ids.IdsHttpActorSimulator
+import gov.nist.toolkit.fhir.simulators.support.DsSimCommon
 import gov.nist.toolkit.simcommon.server.SimCommon
 import gov.nist.toolkit.valsupport.client.ValidationContext
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine

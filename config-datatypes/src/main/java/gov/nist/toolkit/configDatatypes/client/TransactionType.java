@@ -34,9 +34,14 @@ public enum TransactionType implements Serializable, IsSerializable {
     RET_IMG_DOC_SET_GW("RAD-69", "Retrieve Img Doc Set Gateway", "ret.iig", "ret.iig.b", "ret.iig.as", true, "urn:ihe:rad:2009:RetrieveImagingDocumentSet", "urn:ihe:iti:2007:RetrieveDocumentSetResponse", true, SimulatorProperties.idsrIigEndpoint, SimulatorProperties.idsrIigTlsEndpoint),
     XC_RET_IMG_DOC_SET("RAD-75", "Cross-Community Ret Img Doc Set", "xcr.ids", "xcr.ids.b", "xcr.ids.as", true, "urn:ihe:rad:2011:CrossGatewayRetrieveImagingDocumentSet", "urn:ihe:rad:2011:CrossGatewayRetrieveImagingDocumentSetResponse", true, SimulatorProperties.xcirEndpoint, SimulatorProperties.xcirTlsEndpoint),
     STS("STS", "Secure Token Service", "sts", "sts", "sts.as", true, "sts", "sts", true, null, null),
-    FHIR("FHIR", "FHIR", "fhir", "fhir", "fhir.as", true, "fhir", "fhir", true, SimulatorProperties.fhirEndpoint, SimulatorProperties.fhirTlsEndpoint, true),
-    PROV_DOC_BUNDLE("ITI-65", "Provide Document Bundle", "pdb", "pdb", "pdb.as", false, "fhir", "fhir", false, SimulatorProperties.fhirEndpoint, SimulatorProperties.fhirTlsEndpoint, true),
-    ANY("ANY", "ANY", "any", "any", "any.as", false, "any", "any", false, null, null, false);
+    FHIR("FHIR", "FHIR", "fhir", "fhir", "fhir.as", true, "fhir", "fhir", true, SimulatorProperties.fhirEndpoint, SimulatorProperties.fhirTlsEndpoint, true, FhirVerb.NONE),
+    PROV_DOC_BUNDLE("ITI-65", "Provide Document Bundle", "pdb", "pdb", "pdb.as", false, "fhir", "fhir", false, SimulatorProperties.fhirEndpoint, SimulatorProperties.fhirTlsEndpoint, true, FhirVerb.TRANSACTION),
+    // for these FHIR types, the name field here matches the resource type
+    // should only be looked for with the FhirVerb option on find()
+    FIND_DOC_REFS("ITI-67", "DocumentReference", "fdr", "fdr", "fdr.as", false, "fhir", "fhir", false, SimulatorProperties.fhirEndpoint, SimulatorProperties.fhirTlsEndpoint, true, FhirVerb.QUERY),
+    READ_DOC_REF("ITI-67", "DocumentReference", "rdr", "rdr", "rdr.as", false, "fhir", "fhir", false, SimulatorProperties.fhirEndpoint, SimulatorProperties.fhirTlsEndpoint, true, FhirVerb.READ),
+    READ_BINARY("ITI-68", "Binary", "br", "br", "br.as", false, "fhir", "fhir", false, SimulatorProperties.fhirEndpoint, SimulatorProperties.fhirTlsEndpoint, true, FhirVerb.READ),
+    ANY("ANY", "ANY", "any", "any", "any.as", false, "any", "any", false, null, null, false, FhirVerb.NONE);
 
 	private static final long serialVersionUID = 1L;
     String id = "";
@@ -50,9 +55,11 @@ public enum TransactionType implements Serializable, IsSerializable {
     boolean requiresMtom = false;
     boolean http = false; // Is this Http only (non-SOAP) transaction
 //    Map<String, TransactionType> basicTypeMap = new HashMap<>();
-    boolean fhir = true;
-    String endpointSimPropertyName;
-    String tlsEndpointSimPropertyName;
+    boolean fhir = false;
+    String endpointSimPropertyName;  // TODO is this irrelevant?
+    String tlsEndpointSimPropertyName;  // TODO is this irrelevant?
+    FhirVerb fhirVerb = FhirVerb.NONE;
+
 
 	TransactionType() {
 	}  // For GWT
@@ -71,7 +78,7 @@ public enum TransactionType implements Serializable, IsSerializable {
         this.tlsEndpointSimPropertyName = tlsEndpointSimPropertyName;
     }
 
-    TransactionType(String id, String name, String shortName, String code, String asyncCode, boolean needsRepUid, String requestAction, String responseAction, boolean requiresMtom, String endpointSimPropertyName, String tlsEndpointSimPropertyName, boolean fhir) {
+    TransactionType(String id, String name, String shortName, String code, String asyncCode, boolean needsRepUid, String requestAction, String responseAction, boolean requiresMtom, String endpointSimPropertyName, String tlsEndpointSimPropertyName, boolean fhir, FhirVerb fhirVerb) {
         this.id = id;
         this.name = name;
         this.shortName = shortName;
@@ -84,6 +91,7 @@ public enum TransactionType implements Serializable, IsSerializable {
         this.endpointSimPropertyName = endpointSimPropertyName;
         this.tlsEndpointSimPropertyName = tlsEndpointSimPropertyName;
         this.fhir = fhir;
+        this.fhirVerb = fhirVerb;
     }
 
     TransactionType(String id, String name, String shortName, String code, String asyncCode, boolean needsRepUid, boolean requiresMtom, String endpointSimPropertyName, String tlsEndpointSimPropertyName, boolean httpOnly) {
@@ -98,6 +106,9 @@ public enum TransactionType implements Serializable, IsSerializable {
         this.tlsEndpointSimPropertyName = tlsEndpointSimPropertyName;
        this.http = httpOnly;
    }
+
+   @Override
+   public String toString() { return shortName; }
 
    public boolean isFhir() { return fhir;  }
 
@@ -129,8 +140,12 @@ public enum TransactionType implements Serializable, IsSerializable {
         if (requestAction.equals("")) return false;
         return true;
     }
-    
-	/**
+
+    public FhirVerb getFhirVerb() {
+        return fhirVerb;
+    }
+
+    /**
     * @return the {@link #requestAction} value.
     */
    public String getRequestAction() {
@@ -170,7 +185,24 @@ public enum TransactionType implements Serializable, IsSerializable {
         return null;
     }
 
-	public boolean isIdentifiedBy(String s) {
+    static public TransactionType find(String s, FhirVerb fhirVerb) {
+        if (s == null) return null;
+        for (TransactionType t : values()) {
+            if (s.equals(t.name) && t.fhirVerb == fhirVerb) return t;
+            if (s.equals(t.shortName) && t.fhirVerb == fhirVerb) return t;
+            if (s.equals(t.code) && t.fhirVerb == fhirVerb) return t;
+            if (s.equals(t.asyncCode) && t.fhirVerb == fhirVerb) return t;
+            if (s.equals(t.getId()) && t.fhirVerb == fhirVerb) return t;
+            try {
+                if (t == TransactionType.valueOf(s) && t.fhirVerb == fhirVerb) return t;
+            } catch (IllegalArgumentException e) {
+                // continue;
+            }
+        }
+        return null;
+    }
+
+    public boolean isIdentifiedBy(String s) {
         if (s == null) return false;
         return
 				s.equals(id) ||

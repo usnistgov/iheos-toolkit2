@@ -5,6 +5,7 @@ import gov.nist.toolkit.tk.TkLoader;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import org.apache.http.annotation.Obsolete;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
@@ -27,23 +28,32 @@ public class Installation {
 
     private PropertyServiceManager propertyServiceMgr = null;
     private static Logger logger = Logger.getLogger(Installation.class);
-    private ResourceCacheMgr resourceCacheMgr = null;
 
     static Installation me = null;
+    static private boolean testIsRunning = false;
+
+
+    public static boolean isTestRunning() {
+        return testIsRunning;
+    }
+
+    public static void setTestRunning(boolean testIsRunning) {
+        Installation.testIsRunning = testIsRunning;
+    }
 
     /**
      * will self initialize to the production manager.  For testing purposes
      * it can be initialized with TestResourceCacheFactory
      * @return
      */
-    public ResourceCacheMgr resourceCacheMgr() {
-        if (resourceCacheMgr == null)
-            resourceCacheMgr = ResourceCacheFactory.getResourceCacheMgr();
-        return resourceCacheMgr;
-    }
 
-    public void resourceCacheMgr(ResourceCacheMgr mgr) {
-        resourceCacheMgr = mgr;
+    public String getToolkitBaseUrl() {
+        return "http://"
+                + propertyServiceMgr.getToolkitHost()
+                + ":"
+                + propertyServiceMgr.getToolkitPort()
+                + getServletContextName()
+                + "/Xdstools2.html";
     }
 
     public String toString() {
@@ -365,6 +375,12 @@ public class Installation {
     public File internalEnvironmentsFile() {
         return new File(toolkitxFile(), "environment");
     }
+    public File internalDatasetsFile() {
+        return new File(toolkitxFile(), "datasets");
+    }
+    public File internalResourceCacheFile() {
+        return new File(toolkitxFile(), "resourceCache");
+    }
 
     public File sessionLogFile(String sessionId) {
         return new File(warHome + sep + "SessionCache" + sep + sessionId);
@@ -444,4 +460,20 @@ public class Installation {
 		this.servletContextName = servletContextName;
 	}
 
+    public String getToolkitAsFhirServerBaseUrl() {
+        return "http://" +
+                propertyServiceManager().getToolkitHost() + ":" + propertyServiceManager().getToolkitPort() +
+                ((getServletContextName().isEmpty()) ? "" : "/" + getServletContextName() ) +
+                "/fhir";
+    }
+
+
+    // I think this is wrong!!!
+    @Obsolete
+    public String getToolkitProxyBaseUrl() {
+        return "http://" +
+                propertyServiceManager().getToolkitHost() + ":" + propertyServiceManager().getProxyPort() +
+                ((getServletContextName().isEmpty()) ? "" : "/" + getServletContextName() ) +
+                "/fhir";
+    }
 }

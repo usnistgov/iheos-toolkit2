@@ -4,7 +4,7 @@ import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.parser.IParser
 import gov.nist.toolkit.fhir.support.SimIndexManager
 import gov.nist.toolkit.installation.Installation
-import gov.nist.toolkit.testengine.fhir.FhirId
+import gov.nist.toolkit.fhir.utility.FhirId
 import gov.nist.toolkit.itTests.support.FhirSpecification
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.SimDb
@@ -40,7 +40,7 @@ class PatientQueryByNameSpec extends FhirSpecification {
 
     def 'submit patient'() {
         when:
-        def (BasicStatusLine statusLine, String results, FhirId locationHeader) = post("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient", patient)
+        def (BasicStatusLine statusLine, String results, FhirId locationHeader) = post("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/fhir/Patient", patient)
         OperationOutcome oo
         if (results) {
             IBaseResource resource = ourCtx.newJsonParser().parseResource(results)
@@ -58,7 +58,7 @@ class PatientQueryByNameSpec extends FhirSpecification {
     // depends on previous
     def 'query by last name'() {
         when:
-        def (BasicStatusLine statusLine2, String results2) = get("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient?family=Chalmers")
+        def (BasicStatusLine statusLine2, String results2) = get("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/fhir/Patient?family=Chalmers")
 
         then:
         statusLine2.statusCode == 200
@@ -87,7 +87,7 @@ class PatientQueryByNameSpec extends FhirSpecification {
     // depends on above submission
     def 'query by first and last name'() {
         when:
-        def (BasicStatusLine statusLine2, String results2) = get("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/Patient?family=Chalmers&given=Peter")
+        def (BasicStatusLine statusLine2, String results2) = get("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/fhir/Patient?family=Chalmers&given=Peter")
 
         then:
         statusLine2.statusCode == 200
@@ -112,6 +112,38 @@ class PatientQueryByNameSpec extends FhirSpecification {
         then:
         patients.size() == 1
     }
+
+
+    // depends on above submission
+    def 'query by patientid'() {
+        when:
+        // ID is urn:oid:1.2.36.146.595.217.0.1|12345
+        def (BasicStatusLine statusLine2, String results2) = get("http://localhost:${remoteToolkitPort}/xdstools2/fsim/${simId}/fhir/Patient?identifier=urn:oid:1.2.36.146.595.217.0.1%7c12345")
+
+        then:
+        statusLine2.statusCode == 200
+
+        when:
+        IParser parser = ourCtx.newJsonParser()
+        IBaseResource bundleResource = parser.parseResource(results2)
+
+        then:
+        bundleResource instanceof Bundle
+
+        when:
+        Bundle bundle = (Bundle) bundleResource
+        def patients = bundle.getEntry().collect { Bundle.BundleEntryComponent comp ->
+            Resource resource = comp.getResource()
+            assert resource instanceof Patient
+            Patient patient = (Patient) resource
+            assert patient.name.get(0).family == 'Chalmers'
+            resource
+        }
+
+        then:
+        patients.size() == 1
+    }
+
 
     def patient = '''
 {

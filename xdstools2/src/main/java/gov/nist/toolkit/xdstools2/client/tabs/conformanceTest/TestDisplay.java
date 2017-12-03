@@ -20,16 +20,18 @@ public class TestDisplay  implements IsWidget {
     private TestInstance testInstance;
     private boolean allowDelete= true;
     private boolean allowRun = true;
-    private boolean showValidate = false;
+    private boolean allowValidate = false;
     private TestDisplayView view = new TestDisplayView();
     private InteractionDiagramDisplay diagramDisplay;
+    private Controller controller;
 
-    public TestDisplay(TestInstance testInstance, TestDisplayGroup testDisplayGroup, TestRunner testRunner, TestContext testContext, TestContextView testContextView) {
+    public TestDisplay(TestInstance testInstance, TestDisplayGroup testDisplayGroup, TestRunner testRunner, TestContext testContext, TestContextView testContextView, Controller controller) {
         this.testInstance = testInstance;
         this.testRunner = testRunner;
         this.testDisplayGroup = testDisplayGroup;
         this.testContext = testContext;
         this.testContextView = testContextView;
+        this.controller = controller;
     }
 
     public void allowDelete(boolean allowDelete) {
@@ -38,6 +40,11 @@ public class TestDisplay  implements IsWidget {
 
     public void allowRun(boolean allowRun) {
         this.allowRun = allowRun;
+    }
+
+    public void allowValidate(boolean allowValidate) {
+        if (allowValidate) allowRun = false;
+        this.allowValidate = allowValidate;
     }
 
     public void display(TestOverviewDTO testOverview) {
@@ -52,7 +59,8 @@ public class TestDisplay  implements IsWidget {
         view.setTestTitle("Test: " + testOverview.getName() + " - " +testOverview.getTitle());
         view.setTime(testOverview.getLatestSectionTime());
 
-        if (allowRun) view.setPlay("Run", new RunClickHandler(testRunner, testInstance, testContext, testContextView));
+        if (allowRun) view.setPlay("Run", new RunClickHandler(testRunner, testInstance, testContext, testContextView, controller));
+        if (allowValidate) view.setValidate("Validate", new RunClickHandler(testRunner, testInstance, testContext, testContextView, controller, true));
 
         if (testOverview.isRun()) {
             if (allowDelete) view.setDelete("Delete Log", new DeleteClickHandler(testDisplayGroup, testContext, testRunner, testInstance));
@@ -78,10 +86,10 @@ public class TestDisplay  implements IsWidget {
                diagramDisplay.getTestOverviewDTO().getSections().put(sectionName,sectionOverview);
 
                 TestSectionDisplay sectionComponent = new TestSectionDisplay(testContext.getTestSession(), testOverview.getTestInstance(), sectionOverview, testRunner, allowRun, diagramDisplay);
-                view.addSection(sectionComponent.asWidget());
+                view.addSection(sectionComponent);
             } else {
                 TestSectionDisplay sectionComponent = new TestSectionDisplay(testContext.getTestSession(), testOverview.getTestInstance(), sectionOverview, testRunner, allowRun, null);
-                view.addSection(sectionComponent.asWidget());
+                view.addSection(sectionComponent);
             }
 
         }
@@ -90,7 +98,7 @@ public class TestDisplay  implements IsWidget {
     }
 
     public void showValidate(boolean showValidate) {
-        this.showValidate = showValidate;
+        this.allowValidate = showValidate;
     }
 
     public Widget asWidget() { return view; }

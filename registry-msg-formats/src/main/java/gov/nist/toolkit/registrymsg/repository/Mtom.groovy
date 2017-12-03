@@ -35,7 +35,7 @@ public class Mtom {
 			}
 			content_type = datahandler.getContentType();
 		} else {
-			String base64 = binaryNode.getText();
+			String base64 =  document.text
 			BASE64Decoder d  = new BASE64Decoder();
 			contents = d.decodeBuffer(base64);
 			content_type = null;

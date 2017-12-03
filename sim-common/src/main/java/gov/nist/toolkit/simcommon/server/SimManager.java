@@ -40,6 +40,11 @@ public class SimManager {
 		AbstractActorFactory af = getActorFactory(config);
 //        logger.info("Getting original actor factory to generate site - " + af.getClass().getName());
 		Site site = af.getActorSite(config, null);
+		if (site == null) {
+			String err = "Simulator " + config.getId() + "(type " + af.getClass().getName() + ") threw error when asked to generate site object";
+			logger.error(err);
+			throw new Exception(err);
+		}
 		return site.setSimulator(true);
 	}
 
@@ -96,6 +101,7 @@ public class SimManager {
 
 	public boolean exists(String siteName) {
 		try {
+			if (siteName.equals("client")) return true;
 			if (SiteServiceManager.getSiteServiceManager().getCommonSites().exists(siteName)) return true;
 			for (SimId simId : SimDb.getAllSimIds()) {
 				if (siteName.equals(simId.toString())) return true;

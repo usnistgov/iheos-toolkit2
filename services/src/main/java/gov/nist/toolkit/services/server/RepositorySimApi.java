@@ -2,9 +2,9 @@ package gov.nist.toolkit.services.server;
 
 import gov.nist.toolkit.simcommon.client.NoSimException;
 import gov.nist.toolkit.simcommon.client.SimId;
-import gov.nist.toolkit.simulators.servlet.SimServlet;
-import gov.nist.toolkit.simulators.sim.rep.RepIndex;
-import gov.nist.toolkit.simulators.support.StoredDocument;
+import gov.nist.toolkit.fhir.simulators.servlet.SimServlet;
+import gov.nist.toolkit.fhir.simulators.sim.rep.RepIndex;
+import gov.nist.toolkit.fhir.simulators.support.StoredDocument;
 
 import java.io.IOException;
 

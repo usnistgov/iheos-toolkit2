@@ -7,11 +7,6 @@ import com.google.gwt.user.client.ui.*;
  *
  */
 class TestsHeaderView {
-    interface Controller {
-        ClickHandler getRunAllClickHandler();
-        ClickHandler getDeleteAllClickHandler();
-        ClickHandler getRefreshTestCollectionClickHandler();
-    }
     private Controller controller;
     private FlowPanel testsHeader = new FlowPanel();
     private HTML selfTestBanner = new HTML();

@@ -2,6 +2,7 @@ package gov.nist.toolkit.soap.http
 
 import gov.nist.toolkit.commondatatypes.MetadataSupport
 import gov.nist.toolkit.utilities.xml.OMFormatter
+import groovy.xml.XmlUtil
 import org.apache.axiom.om.OMElement
 
 public class SoapFault {
@@ -26,6 +27,15 @@ public class SoapFault {
 
 	public void addDetail(String adetail) {
 		details.add(adetail);
+	}
+
+	static SoapFault parse(String xmlBlock) {
+		def xml = new XmlSlurper().parseText(xmlBlock)
+		def faults = xml.depthFirst().findAll { it.name() == 'Fault' }
+		if (!faults)
+			return null
+		String asText = XmlUtil.serialize(faults[0])
+		new SoapFault(asText)
 	}
 
 	public SoapFault(String xml) {

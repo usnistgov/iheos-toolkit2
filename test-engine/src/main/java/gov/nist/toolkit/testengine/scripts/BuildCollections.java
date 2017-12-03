@@ -1,6 +1,8 @@
 package gov.nist.toolkit.testengine.scripts;
 
+import gov.nist.toolkit.actortransaction.client.ActorOption;
 import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.client.OptionType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.utilities.io.Io;
@@ -46,6 +48,7 @@ public class BuildCollections extends HttpServlet {
       collectionsDir.mkdirs(); // create if doesn't exist
       actorCollectionsDir.mkdirs();
 
+      logger.info("Updating Collections...");
       logger.info("Collections found:\n" + collections.keySet());
 
       for (Iterator <String> it = collections.keySet().iterator(); it.hasNext();) {
@@ -65,7 +68,7 @@ public class BuildCollections extends HttpServlet {
       }
 
       for (ActorType actorType : actorTestMap.keySet()) {
-         String name = actorType.getShortName();
+         String name = actorType.getActorCode();
          String descriptiveName = actorType.getName();
          logger.info(String.format("Writing %s", new File(actorCollectionsDir + File.separator + name + ".tc")));
          Io.stringToFile(new File(actorCollectionsDir + File.separator + name + ".tc"),
@@ -79,8 +82,30 @@ public class BuildCollections extends HttpServlet {
 
          collectionName = collectionName.toLowerCase();
 
-         at = ActorType.findActor(collectionName);
-         if (at != null) return at;
+        ActorOption actorOption = new ActorOption(collectionName);
+        at = ActorType.findActorByTcCode(actorOption.actorTypeId);
+        // This is to handle a case where an actor only has optional test but no required tests. In this case, the default actorcollections will contain the first option tests.
+        if (at!=null) {
+           if (at.getOptions().contains(OptionType.REQUIRED)) {
+               if (OptionType.REQUIRED.equals(actorOption.optionId)) {
+                   return at;
+               }
+           } else {
+               // Get first option in the list
+               if (!at.getOptions().isEmpty()) {
+                   OptionType firstOption = at.getOptions().get(0);
+                   if (firstOption.equals(actorOption.optionId)) {
+                       return at;
+                   }
+               }
+           }
+        }
+
+
+        if (OptionType.REQUIRED.equals(actorOption.optionId)) {
+            at = ActorType.findActorByTcCode(actorOption.actorTypeId);
+            if (at != null) return at;
+        }
 
          TransactionType tt = TransactionType.find(collectionName);
          if (tt == null) return null;

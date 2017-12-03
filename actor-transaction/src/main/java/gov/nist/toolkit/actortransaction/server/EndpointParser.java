@@ -1,5 +1,7 @@
 package gov.nist.toolkit.actortransaction.server;
 
+import org.apache.http.HttpHost;
+
 /**
  * Parse and validqte SOAP endpoints and HTTP urls
  */
@@ -13,6 +15,8 @@ public class EndpointParser  {
         if (endpoint != null)
             this.parts = endpoint.split("\\/");
     }
+
+    public String toString() { return endpoint; }
 
     public boolean validate() {
         if (endpoint == null || endpoint.equals("") || parts == null || parts.length < 1) {
@@ -43,6 +47,16 @@ public class EndpointParser  {
         String[] cparts = parts[0].split(":");
         if (cparts.length < 1) return "";
         return cparts[0];
+    }
+
+    public HttpHost getHttpHost() {
+        return HttpHost.create(
+                getProtocol() +
+                        "://" +
+                        getHost() +
+                        ":" +
+                        getPort()
+        );
     }
 
     private boolean validateNoEmptyParts() {

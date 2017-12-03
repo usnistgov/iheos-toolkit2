@@ -7,6 +7,7 @@ import gov.nist.toolkit.datasets.shared.DatasetModel;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
+import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest;
 import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.shared.Message;
@@ -258,8 +259,16 @@ public interface ToolkitServiceAsync {
 
     void fhirCreate(FhirCreateRequest request, AsyncCallback<List<Result>> async);
 
+    void fhirTransaction(FhirTransactionRequest request, AsyncCallback<List<Result>> async);
+
     void getFullSimId(GetFullSimIdRequest request, AsyncCallback<SimId> async);
 
     // Tab configuration
     void getToolTabConfig(GetTabConfigRequest request, AsyncCallback<TabConfig> callback);
+
+    void getDatasetContent(GetDatasetElementContentRequest var1, AsyncCallback<String> callback);
+
+    void buildSrcTestOrchestration(BuildSrcTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+
+    void buildFhirSupportOrchestration(FhirSupportOrchestrationRequest var1, AsyncCallback<RawResponse> callback);
 }

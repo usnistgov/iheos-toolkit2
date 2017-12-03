@@ -1,2 +1,2 @@
 idstool
-ids
+ids(xds-i)

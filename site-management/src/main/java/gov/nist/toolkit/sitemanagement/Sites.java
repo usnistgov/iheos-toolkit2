@@ -256,6 +256,8 @@ public class Sites {
 	public Site getSite(String siteName) throws Exception {
 		if (siteName == null)
 			throw new Exception("Internal error: null site requested");
+		if (siteName.equals("client"))
+			return new Site("client");
 		List<String> sitenames = getSiteNames();
 		if ( !sitenames.contains(siteName)) {
 			// System.out.println(sitenames + " - " + siteName);

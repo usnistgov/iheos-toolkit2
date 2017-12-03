@@ -35,6 +35,7 @@ class ToolkitSpecification extends Specification {
         session = UnitTestEnvironmentManager.setupLocalToolkit()
         api = UnitTestEnvironmentManager.localToolkitApi()
 
+        Installation.setTestRunning(true)
         cleanupDir()
     }
 

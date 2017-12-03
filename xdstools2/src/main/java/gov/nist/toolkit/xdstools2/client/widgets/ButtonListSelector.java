@@ -3,7 +3,10 @@ package gov.nist.toolkit.xdstools2.client.widgets;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -13,44 +16,60 @@ import gov.nist.toolkit.xdstools2.client.util.AnnotatedItem;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Present systems for selection
- */
 abstract public class ButtonListSelector implements IsWidget {
     private static final String GWT_BUTTON_STYLE = "gwt-Button";
     private static final String SITE_SELECTED_STYLE = "siteSelected";
     private FlowPanel thePanel = new FlowPanel();
     private FlowPanel tablePanel = new FlowPanel();
     private List<Button> buttons = new ArrayList<>();
+    private CheckBox showAllCheckBox = new CheckBox("Show All");
+    private List<? extends AnnotatedItem> items;
     private String currentSelection;
 
     abstract public void doSelected(String label);
 
 
-    public ButtonListSelector(String title, String type) {
+    public ButtonListSelector(String title) {
         HTML tableTitle = new HTML("<b>" + title + "</b>");
         tableTitle.setWidth("100%");
         tableTitle.addStyleName("tool-section-header");
         thePanel.add(tableTitle);
         thePanel.add(tablePanel);
-        tablePanel.add(new HTML("No appropriate "+ type + " to show"));
+        //siteTablePanel.add(new HTML("No appropriate systems to show"));
+        showAllCheckBox.setValue(true);
+        showAllCheckBox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Boolean> valueChangeEvent) {
+                displayItems();
+            }
+        });
     }
-
 
     public void setNames(List<? extends AnnotatedItem> items) {
-        if (!items.isEmpty()) tablePanel.clear();
-        for (AnnotatedItem item : items) {
-            Button b = new Button(item.getName());
-            b.setText(item.getName());
-            b.setEnabled(item.isEnabled());
-            buttons.add(b);
-            tablePanel.add(b);
-        }
-        bindList();
+        this.items = items;
+        tablePanel.add(showAllCheckBox);
+        displayItems();
     }
 
+    private void displayItems() {
+        //if (!sites.isEmpty())
+        while (tablePanel.getWidgetCount() > 1)
+            tablePanel.remove(tablePanel.getWidgetCount() - 1);
+        for (AnnotatedItem item : items) {
+            if (isShowAll() || item.isEnabled()) {
+                Button b = new Button(item.getName());
+                b.setText(item.getName());
+                b.setEnabled(item.isEnabled());
+                buttons.add(b);
+                tablePanel.add(b);
+            }
+        }
+        bindSites();
+    }
+
+
     public void refreshEnabledStatus(List<? extends AnnotatedItem> items) {
-        if (buttons!=null && buttons.size()>0) {
+        if (buttons !=null && buttons.size()>0) {
             for (AnnotatedItem item : items) {
                 Button b = findButton(item.getName());
                 if (b != null) {
@@ -59,33 +78,31 @@ abstract public class ButtonListSelector implements IsWidget {
             }
         }
     }
-
     /**
      * I tried using the defined style SiteButtonSelected defined in css
      * but it is ignored so removing the default style gives a dark
      * grey to the background (on MAC) which is good enough for now.  Needs
      * to be tested on Windows and Linux.
      */
-    private void bindList() {
+    private void bindSites() {
         for (Button b : buttons) {
             b.addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent clickEvent) {
                     Object o = clickEvent.getSource();
                     if (o instanceof Button) {
-                        updateSiteSelectedView((Button) o);
+                        updateItemSelectedView((Button) o);
                     }
                 }
             });
         }
     }
 
-    private void updateSiteSelectedView(Button button) {
+    private void updateItemSelectedView(Button button) {
         for (Button u : buttons) {
             u.setStyleName(GWT_BUTTON_STYLE);
         }
         button.setStyleName(SITE_SELECTED_STYLE);
-        setCurrentSelection(button.getText());
         doSelected(button.getText());
     }
 
@@ -97,7 +114,6 @@ abstract public class ButtonListSelector implements IsWidget {
         }
         Button button = findButton(title);
         button.setStyleName(SITE_SELECTED_STYLE);
-        setCurrentSelection(button.getText());
         doSelected(title);
     }
 
@@ -106,11 +122,16 @@ abstract public class ButtonListSelector implements IsWidget {
             if (b.getTitle().equals(title)) return b;
             if (b.getText().equals(title)) return b;
         }
-        GWT.log("ButtonListSelector Button - " + title + " not found");
+        GWT.log("System Button - " + title + " not found");
         if (buttons.size() > 0)
             return buttons.get(0);
         return new Button("Fake");
     }
+
+    private boolean isShowAll() {
+        return showAllCheckBox.getValue();
+    }
+
 
     public String getCurrentSelection() {
         return currentSelection;

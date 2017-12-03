@@ -18,6 +18,24 @@ public class TabConfig implements Serializable, IsSerializable {
 
     private List<TabConfig> childTabConfigs = new ArrayList<TabConfig>();
 
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder();
+
+        buf
+                .append("label=")
+                .append(label)
+                .append(" type=")
+                .append(type)
+                .append(" ")
+                .append(" tcCode=")
+                .append(tcCode)
+                .append(" externalStart=")
+                .append(externalStart);
+
+        return buf.toString();
+    }
+
     public TabConfig() {}
 
     public TabConfig(String label) {
@@ -65,6 +83,10 @@ public class TabConfig implements Serializable, IsSerializable {
         return externalStart;
     }
 
+    public boolean isExternalStart() {
+        return externalStart != null && externalStart;
+    }
+
     public void setExternalStart(Boolean externalStart) {
         this.externalStart = externalStart;
     }
@@ -88,6 +110,10 @@ public class TabConfig implements Serializable, IsSerializable {
         this.childTabConfigs = childTabConfigs;
     }
 
+    /**
+     * Represents a tab group header or the document root where the type attribute is null or does not exist in both cases.
+     * @return
+     */
     public boolean isHeader() {
        return type==null;
     }

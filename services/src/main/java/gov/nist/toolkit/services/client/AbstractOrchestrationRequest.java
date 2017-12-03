@@ -1,6 +1,7 @@
 package gov.nist.toolkit.services.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.actortransaction.client.ActorOption;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 
 import java.io.Serializable;
@@ -15,6 +16,7 @@ abstract public class AbstractOrchestrationRequest implements Serializable, IsSe
     private SiteSpec registrySut;
     private boolean useExistingState = true;   // useExistingState == !reset
     private boolean selfTest = false;
+    private ActorOption actorOption = new ActorOption();
 
     public String getUserName() {
         return userName;
@@ -59,4 +61,12 @@ abstract public class AbstractOrchestrationRequest implements Serializable, IsSe
     public void selfTest(boolean value) { this.selfTest = value; }
 
     public boolean selfTest() { return this.selfTest; }
+
+    public ActorOption getActorOption() {
+        return actorOption;
+    }
+
+    public void setActorOption(ActorOption actorOption) {
+        this.actorOption = actorOption;
+    }
 }

@@ -76,7 +76,6 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
     }
 
     public void orchestrate() {
-        testTab.getMainView().showLoadingMessage("Initializing...");
         String msg = testContext.verifyTestContext();
         if (msg != null) {
             testContextView.launchDialog(msg);
@@ -92,7 +91,7 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
         request.setUserName(testTab.getCurrentTestSession());
         request.setEnvironmentName(testTab.getEnvironmentSelection());
         request.setUseExistingState(!isResetRequested());
-        SiteSpec sutSiteSpec = testContext.getSiteUnderTest().siteSpec();
+        SiteSpec sutSiteSpec = (testContext.getSiteUnderTest() == null) ? null : testContext.getSiteUnderTest().siteSpec();
         if (isSaml()) {
             setSamlAssertion(sutSiteSpec);
         }
@@ -121,7 +120,7 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
                 handleMessages(initializationResultsPanel, orchResponse);
 
                 // Display tests run as part of orchestration - so links to their logs are available
-                initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testContext, testContextView, testTab ));
+                initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testContext, testContextView, testTab, testTab ));
 
                 initializationResultsPanel.add(new HTML("<br />"));
 

@@ -12,6 +12,8 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * This should only be invoked from ListenerFactory.
@@ -133,65 +135,66 @@ public class AdtSocketListener implements Runnable{
                 logger.error(e);
             }
 
-            AdtMessage message = null;
-            try {
-                message = new AdtMessage(input.toString());
-                switch (message.isValid()) {
-                    case ERROR_INCORRECT_BEGINNING:
-                        sendError = true;
-                        break;
-                    case ERROR_INCORRECT_ENDING:
-                        sendError = true;
-                        break;
-                    case ERROR_INCORRECT_MESSAGE_TYPE:
-                        sendError = true;
-                        break;
-                    case ERROR_INCORRECT_NUMBER_OF_LINES:
-                        sendError = true;
-                        break;
-                    case NO_ERROR:
-                        break;
-                }
+                    AdtMessage message = null;
+                    try {
+                        message = new AdtMessage(input.toString());
+                        switch (message.isValid()) {
+                            case ERROR_INCORRECT_BEGINNING:
+                                sendError = true;
+                                break;
+                            case ERROR_INCORRECT_ENDING:
+                                sendError = true;
+                                break;
+                            case ERROR_INCORRECT_MESSAGE_TYPE:
+                                sendError = true;
+                                break;
+                            case ERROR_INCORRECT_NUMBER_OF_LINES:
+                                sendError = true;
+                                break;
+                            case NO_ERROR:
+                                break;
+                        }
 
-                try {
-                    String patientId = message.getPatientId();
-                    String patientName = message.getPatientName();
-                    logger.info("Incoming PatientID = " + patientId + "  Patient Name = " + patientName + " SimId = " + threadPoolItem.simId);
-                    threadPoolItem.pifCallback.addPatient(threadPoolItem.simId, patientId);
+                        try {
+                            String patientId = message.getPatientId();
+                            String patientName = message.getPatientName();
+                            logger.info("Incoming PatientID = " + patientId + "  Patient Name = " + patientName + " SimId = " + threadPoolItem.simId);
+                            threadPoolItem.pifCallback.addPatient(threadPoolItem.simId, patientId);
 //                    Adt.addPatientId(threadPoolItem.simId, patientId);
-                } catch (AdtMessageParseException e) {
-                    sendError = true;
-                    logger.error(e);
-                } catch (Exception e) {
-                    sendError = true;
-                    logger.fatal(ExceptionUtil.exception_details(e));
-                }
-                if(sendError)
-                    writer.write(message.getNack());
-                else {
-                    StringBuilder buf = new StringBuilder();
+                        } catch (AdtMessageParseException e) {
+                            sendError = true;
+                            logger.error(e);
+                        } catch (Exception e) {
+                            sendError = true;
+                            logger.fatal(ExceptionUtil.exception_details(e));
+                        }
+                        if (sendError)
+                            writer.write(message.getNack());
+                        else {
+                            StringBuilder buf = new StringBuilder();
 
-                    for (int i=0; i<ackTemplate.length; i++) {
-                        buf.append(ackTemplate[i].trim()).append("\r\b");
+                            for (int i = 0; i < ackTemplate.length; i++) {
+                                buf.append(ackTemplate[i].trim()).append("\r\b");
+                            }
+                            String adtAckFile = AdtSocketListener.class.getResource("/adt/ACK.txt").getFile();
+                            logger.info("Loading template from " + adtAckFile);
+
+                            writer.write(0x0b);
+                            writer.write(buf.toString());
+                            writer.write(0x1c);
+                            writer.write(0x0d);
+                            //writer.write(message.getAck());
+                        }
+                        writer.flush();
+                        socket.shutdownOutput();
+                        socket.close();
+                    } catch (IOException e) {
+                        logger.error("Problem closing socket connection (already closed?)", e);
                     }
-                    String adtAckFile = AdtSocketListener.class.getResource("/adt/ACK.txt").getFile();
-                    logger.info("Loading template from " + adtAckFile);
-
-                    writer.write(0x0b);
-                    writer.write(buf.toString());
-                    writer.write(0x1c);
-                    writer.write(0x0d);
-                    //writer.write(message.getAck());
-                }
-                writer.flush();
-                socket.shutdownOutput();
-                socket.close();
-            } catch (IOException e) {
-                logger.error("Problem closing socket connection (already closed?)", e);
-            }
 
         } catch (Exception e)   {
             logger.error("Cannot save anything (log or adt).  Cannot send ACK response.", e);
         }
     }
+
 }

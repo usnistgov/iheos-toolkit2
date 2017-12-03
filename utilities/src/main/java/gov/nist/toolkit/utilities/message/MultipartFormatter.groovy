@@ -1,7 +1,6 @@
 package gov.nist.toolkit.utilities.message
 
-import groovy.xml.XmlUtil
-
+import gov.nist.toolkit.utilities.xml.OMFormatter
 
 /**
  *
@@ -47,6 +46,12 @@ class MultipartFormatter {
                    // output.append('\n')
                 }
             }
+        }
+        if (buf.size() > 0) {
+            String s = buf.toString().trim();
+            if (s.startsWith('<'))
+                s = new OMFormatter(s).toString();
+            output.append(s)
         }
         return output.toString()
     }

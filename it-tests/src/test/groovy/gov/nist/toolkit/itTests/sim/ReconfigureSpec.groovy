@@ -8,7 +8,7 @@ import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.client.Simulator
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
-import gov.nist.toolkit.simulators.servlet.ReconfigureSimulators
+import gov.nist.toolkit.fhir.simulators.servlet.ReconfigureSimulators
 import spock.lang.Shared
 import spock.lang.Specification
 /**

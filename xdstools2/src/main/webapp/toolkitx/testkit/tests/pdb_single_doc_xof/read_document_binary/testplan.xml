@@ -1,0 +1,22 @@
+<TestPlan>
+    <Test>pdb_single_doc_xof/read_document_binary</Test>
+    <!--<TestStep id="read_DM">-->
+        <!--<Goal>-->
+        <!--</Goal>-->
+        <!--<ExpectedStatus>Success</ExpectedStatus>-->
+        <!--<FhirReadTransaction>-->
+            <!--<UseReport test="pdb_single_doc_xof" section="submit" step="SendPdb" reportName="REF_DM0" useAs="Ref"/>-->
+        <!--</FhirReadTransaction>-->
+    <!--</TestStep>-->
+    <TestStep id="read_Binary">
+        <Goal>
+        </Goal>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <FhirReadTransaction>
+            <MustReturn/>
+            <ReferenceDocument>../submit/textfile.txt</ReferenceDocument>
+            <RequestType>application/fhir+json</RequestType>
+            <UseReport test="pdb_single_doc_xof" section="read_document_reference" step="read_DR" reportName="BinaryUrl" useAs="Ref"/>
+        </FhirReadTransaction>
+    </TestStep>
+</TestPlan>

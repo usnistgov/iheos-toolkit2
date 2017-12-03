@@ -233,7 +233,7 @@ public class PrsSimLogs {
       return null;
    }
 
-   private static String getRequestURL(Path dir) {
+   public static String getRequestURL(Path dir) {
       try {
          List<String> lines = Files.readAllLines(dir.resolve("request_hdr.txt"), Charsets.UTF_8);
          String line1 = lines.get(0);

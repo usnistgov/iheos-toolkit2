@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -7,11 +8,34 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.DecoratorPanel;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HTMLTable;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.RadioButton;
+import com.google.gwt.user.client.ui.Tree;
+import com.google.gwt.user.client.ui.TreeItem;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.http.client.HtmlMarkup;
-import gov.nist.toolkit.registrymetadata.client.*;
+import gov.nist.toolkit.registrymetadata.client.AnyId;
+import gov.nist.toolkit.registrymetadata.client.AnyIds;
+import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
+import gov.nist.toolkit.registrymetadata.client.ObjectRef;
+import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.results.client.AssertionResult;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
@@ -19,7 +43,10 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.StringSort;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
-import gov.nist.toolkit.xdstools2.client.*;
+import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
+import gov.nist.toolkit.xdstools2.client.GazelleXuaUsername;
+import gov.nist.toolkit.xdstools2.client.TabContainer;
+import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.command.command.GetStsSamlAssertionCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetToolkitPropertiesCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionOfferingsCommand;
@@ -40,7 +67,12 @@ import gov.nist.toolkit.xdstools2.client.widgets.PidWidget;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetStsSamlAssertionRequest;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Infrastructure for any tab that will allow a site to be chosen,
@@ -114,7 +146,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
     private Widget widget;
 
     private boolean displayTab = true;
-    private List<String> selectedSites=new ArrayList<String>();
+    private List<TransactionSelectionManager.RbSite> selectedSites=new ArrayList<>();
 
     // Keep SAML fields off the base class to isolate other tools' preference
     public boolean samlEnabled = true;
@@ -197,16 +229,19 @@ public abstract class GenericQueryTab  extends ToolWindow {
     private void saveSelectedSites() {
         selectedSites.clear();
         if (selectByActor != null) {    // Used in Mesa test tab
+            GWT.log("Mesa tab site selection - TODO?");
+            /*
             for (RadioButton b : byActorButtons) {
                 if (b.getValue()) {
                     selectedSites.add(b.getText());
                 }
             }
+            */
         } else {   // Select by transaction (used in GetDocuments tab)
             if (transactionSelectionManager != null) {
-                SiteSpec site = transactionSelectionManager.generateSiteSpec();
-                if (site != null) {
-                    selectedSites.add(site.getName());
+                List<TransactionSelectionManager.RbSite> rbSites = transactionSelectionManager.selections2();
+                if (rbSites != null) {
+                    selectedSites.addAll(rbSites);
                 }
             }
         }
@@ -242,12 +277,12 @@ public abstract class GenericQueryTab  extends ToolWindow {
             mainGrid.removeRow(mainGrid.getRowCount() - 1);
         row = row_initial;
     }
-
+/*
     void resdisplay2(SiteSpec siteSpec) {
         redisplay(false);
         transactionSelectionManager.selectSite(siteSpec);
     }
-
+*/
     // TODO this is a big method, try to figure out what it is for
     public void redisplay(boolean clearResults) {
         if (resultPanel != null && clearResults)
@@ -412,7 +447,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
                         if (getSiteTableForTransactionsSize(tt) == 0) {
                             siteGrid.setWidget(siteGridRow++, 1, new Label("None Available"));
                         } else {
-                            siteGrid.setWidget(siteGridRow++, 1, getSiteTableWidgetforTransactions(tt));
+                            siteGrid.setWidget(siteGridRow++, 1, getSiteTableWidgetforTransactions(at,tt));
                         }
                     }
                 }
@@ -765,24 +800,25 @@ public abstract class GenericQueryTab  extends ToolWindow {
                 }
             }
         }
-        return sites;
+        return orderedSites;
     }
 
-    Widget getSiteTableWidgetforTransactions(TransactionType tt) {
+    Widget getSiteTableWidgetforTransactions(ActorType at, TransactionType tt) {
         if (transactionSelectionManager == null)
             transactionSelectionManager = new TransactionSelectionManager(couplings, this);
         List<Site> sites = getSiteList(tt);
 
-        transactionSelectionManager.addTransactionType(tt, sites);
+
+        transactionSelectionManager.addTransactionType(at, tt, sites);
 
         int cols = 5;
         int row=0;
         int col=0;
         Grid grid = new Grid( sites.size()/cols + 1 , cols);
-        for (RadioButton rb : transactionSelectionManager.getRadioButtons(tt)) {
-            grid.setWidget(row, col, rb);
-            if (selectedSites.contains(rb.getText())){
-                rb.setValue(true);
+        for (TransactionSelectionManager.RbSite rbSite : transactionSelectionManager.getPerTransRB(at, tt)) {
+            grid.setWidget(row, col, rbSite.rb);
+            if (selectedSites.contains(rbSite)){
+                rbSite.rb.setValue(true);
             }
             col++;
             if (col >= cols) {
@@ -974,5 +1010,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
     public void setDisplayTab(boolean displayTab) {
         this.displayTab = displayTab;
     }
+
+
 
 }

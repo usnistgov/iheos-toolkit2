@@ -10,8 +10,7 @@ class MarkdownTest extends Specification {
     def 'bold' () {
         when:
         def markdown = 'This is my **bold** text.'
-        def html = '''<p>
-This is my <span style="font-weight:bold">bold</span> text.'''
+        def html = '''<p>This is my <span style="font-weight:bold">bold</span> text.'''
 
         then:
         Markdown.toHtml(markdown).trim() == html
@@ -20,8 +19,7 @@ This is my <span style="font-weight:bold">bold</span> text.'''
     def 'leading bold' () {
         when:
         def markdown = '**This** is my bold text.'
-        def html = '''<p>
-<span style="font-weight:bold">This</span> is my bold text.'''
+        def html = '''<p><span style="font-weight:bold">This</span> is my bold text.'''
 
         then:
         Markdown.toHtml(markdown).trim() == html
@@ -30,10 +28,7 @@ This is my <span style="font-weight:bold">bold</span> text.'''
     def 'one para'() {
         when:
         def markdown = 'This is a test'
-        def html = '''
-<p>
-This is a test
-'''.trim()
+        def html = '''<p>This is a test'''.trim()
 
         then:
         Markdown.toHtml(markdown).trim() == html
@@ -46,12 +41,7 @@ This is a test
 
 para 2
 '''.trim()
-        def html = '''
-<p>
-This is a test
-<p>
-para 2
-'''.trim()
+        def html = '''<p>This is a test <p>para 2'''.trim()
 
         then:
         Markdown.toHtml(markdown).trim() == html
@@ -68,12 +58,9 @@ Or so I say it is.
 '''.trim()
         def html = '''
 <p>
-This is a test.
-It really is.
-<p>
-para 2
-Or so I say it is.
-'''.trim()
+This is a test. It really is. <p>
+para 2 Or so I say it is.
+'''.trim().replace('\n','')
 
         then:
         Markdown.toHtml(markdown).trim() == html
@@ -124,10 +111,9 @@ Had this been a real emergency.
 '''.trim()
         def html = '''
 <p>
-This is a test.
-<p>
+This is a test. <p>
 Had this been a real emergency.
-'''.trim()
+'''.trim().replace('\n','')
 
         then:
         Markdown.toHtml(markdown).trim() == html
@@ -142,11 +128,11 @@ Had this been a real emergency.
 '''.trim()
         def html = '''
 <ul>
-<li>One
-<li>Two
-<li>Three
+<li>One</li>
+<li>Two</li>
+<li>Three</li>
 </ul>
-'''.trim()
+'''.trim().replace('\n', '')
 
         then:
         Markdown.toHtml(markdown).trim() == html
@@ -165,16 +151,13 @@ Last paragraph.
 '''.trim()
         def html = '''
 <p>
-First paragraph.
-<ul>
-<li>One
-<li>Two
-<li>Three
-</ul>
-
-<p>
+First paragraph. <ul>
+<li>One</li>
+<li>Two</li>
+<li>Three</li>
+</ul> <p>
 Last paragraph.
-'''.trim()
+'''.trim().replace('\n', '')
 
         then:
         Markdown.toHtml(markdown).trim() == html
@@ -189,11 +172,11 @@ Last paragraph.
 '''
         def html = '''
 <ol>
-<li>One
-<li>Two
-<li>Three
+<li>One</li>
+<li>Two</li>
+<li>Three</li>
 </ol>
-'''.trim()
+'''.trim().replace('\n', '')
 
         then:
         Markdown.toHtml(markdown).trim() == html
@@ -212,16 +195,13 @@ Last paragraph.
 '''
         def html = '''
 <p>
-First paragraph.
-<ol>
-<li>One
-<li>Two
-<li>Three
-</ol>
-
-<p>
+First paragraph. <ol>
+<li>One</li>
+<li>Two</li>
+<li>Three</li>
+</ol> <p>
 Last paragraph.
-'''.trim()
+'''.trim().replace('\n', '')
 
         then:
         Markdown.toHtml(markdown).trim() == html
@@ -244,22 +224,13 @@ About my test.
 There is no section two.
 '''
         def html= '''
-<h1>This is my test</h1>
-
-<p>
-About my test.
-<h2>Section one</h2>
-
-<ol>
-<li>Step 1
-<li>Step 2
-</ol>
-
-<h2>Section two</h2>
-
-<p>
+<h1>This is my test</h1> <p>
+About my test. <h2>Section one</h2> <ol>
+<li>Step 1</li>
+<li>Step 2</li>
+</ol> <h2>Section two</h2> <p>
 There is no section two.
-'''.trim()
+'''.trim().replace('\n', '')
 
         then:
         Markdown.toHtml(markdown).trim() == html
@@ -276,12 +247,27 @@ Line 2.
 '''.trim()
         def html = '''
 <p>
-Line 1.
-<p>
+Line 1. <p>
 Line 2.
-'''.trim()
+'''.trim().replace('\n', '')
 
         then:
         Markdown.toHtml(markdown).trim() == html
     }
+
+//    def 'para 1'() {
+//        when:
+//        def markdown = '''
+//            Lookup the Patient resource submitted in section patient1 of test
+//            supporting_fhir_patients which is created by a conformance test for the actor
+//            FHIR Support. This fake actor exists only to build a supporting FHIR environment
+//            to support tests like this one.
+//'''
+//        def html= '''
+//'''.trim().replace('\n', '')
+//
+//        then:
+//        Markdown.toHtml(markdown).trim() == html
+//
+//    }
 }

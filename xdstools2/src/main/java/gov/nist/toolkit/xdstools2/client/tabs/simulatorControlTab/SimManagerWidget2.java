@@ -85,6 +85,7 @@ public class SimManagerWidget2 extends Composite {
     private SimInfo placeHolderSimInfo = new SimInfo();
     private String testSession = "";
 
+
     SelectionModel<SimInfo> selectionModel;
     private int rows;
     CheckBox multiSelect = new CheckBox("Multiple selection");
@@ -602,9 +603,6 @@ public class SimManagerWidget2 extends Composite {
                     @Override
                     public void execute(SimInfo simInfo) {
                         SimulatorConfig config = simInfo.getSimulatorConfig();
-//                        SimulatorMessageViewTab viewTab = new SimulatorMessageViewTab();
-//                        viewTab.onTabLoad(config.getId());
-
                         // Use the newer Sim Log Viewer
                         new NewToolLauncher().launch(new SimMsgViewer(config.getId().toString()));
                     }
@@ -768,7 +766,7 @@ public class SimManagerWidget2 extends Composite {
 
         /*
          * Columns
-         * Name	ID	[created dt] [last tran] [last accessed dt == filter on date],  Type	Patient Feed Port	SubmissionSets	DocumentEntries	Folders	Documents	PatientIds	Action
+         * Name	ID	[created dt] [last tran] [last accessed dt == validate on date],  Type	Patient Feed Port	SubmissionSets	DocumentEntries	Folders	Documents	PatientIds	Action
          *
          * Sorting
          * Use the Hl7 date values in the comparator
@@ -906,7 +904,7 @@ public class SimManagerWidget2 extends Composite {
                 SimulatorConfig config = object.getSimulatorConfig();
                 // Generic state-less type simulators
                 GenericQueryTab editTab = new EditTab(hostTab, config);
-                editTab.onTabLoad(true, "SimConfig");
+                editTab.onTabLoad(true, "SimConfig " + config.getId().toString());
             }
 
             @Override
@@ -974,7 +972,7 @@ public class SimManagerWidget2 extends Composite {
         } else {
             // Generic state-less type simulators
             GenericQueryTab editTab = new EditTab(hostTab, config);
-            editTab.onTabLoad(true, "SimConfig");
+            editTab.onTabLoad(true, "SimConfig " + config.getId().toString());
         }
     }
 

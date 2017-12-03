@@ -99,7 +99,7 @@ public class SiteSelectionComponent extends Composite implements IsWidget, HasVa
             if (t.getName().equals(tt.getName())) {
                 List<Site> sitesForTransaction = map.get(t);
 
-                // filter out sites that represent sims and do not match user
+                // validate out sites that represent sims and do not match user
                 List<Site> sitesForUser = new ArrayList<Site>();
                 for (Site s : sitesForTransaction) {
                     if (user.equals(s.user))

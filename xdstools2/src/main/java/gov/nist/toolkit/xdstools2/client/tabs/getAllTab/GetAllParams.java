@@ -25,7 +25,7 @@ public class GetAllParams {
     // The query parameters are organized into three groups:
     //    What to include
     //       Approved?  Deprecated?  Both?
-    //       Stable/OnDemand is through a separate filter - OnDemandFilter
+    //       Stable/OnDemand is through a separate validate - OnDemandFilter
     //    Filters to run this data through
     //       Restrict the return based on code selections
     //    What return format do you want
@@ -41,7 +41,7 @@ public class GetAllParams {
     final int idHashCode = System.identityHashCode(this);
 
     public GetAllParams(/*ToolkitServiceAsync toolkitService, */GenericQueryTab genericQueryTab) {
-        // The collective filter bank being assembled
+        // The collective validate bank being assembled
         codeFilterBank = new CodeFilterBank(/*toolkitService, */genericQueryTab);
 
         // What to include

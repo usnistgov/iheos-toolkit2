@@ -138,7 +138,7 @@ public class BuildIDCTestOrchestrationButton extends AbstractOrchestrationButton
             
             if (testContext.getSiteUnderTest() != null) {
                initializationResultsPanel.add(new HTML("<h2>System Under Test Configuration</h2>"));
-               initializationResultsPanel.add(new HTML("Site: " + testContext.getSiteUnderTest().getName()));
+               initializationResultsPanel.add(new HTML("Site: " + testContext.getSiteUnderTestName()));
            }
 
             initializationResultsPanel.add(new HTML("<h2>Generated Environment</h2>"));
@@ -178,7 +178,7 @@ public class BuildIDCTestOrchestrationButton extends AbstractOrchestrationButton
 
             initializationResultsPanel.add(new HTML("<br />"));
 
-            initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testContext, testContextView, testRunner ));
+            initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testContext, testContextView, testRunner, testTab ));
 
             initializationResultsPanel.add(new HTML("<br />"));
 

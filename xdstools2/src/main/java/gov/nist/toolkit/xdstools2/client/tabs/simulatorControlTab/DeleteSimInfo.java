@@ -2,19 +2,21 @@ package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
+import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.xdstools2.client.ClickHandlerData;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
+import gov.nist.toolkit.xdstools2.client.util.SimpleCallback;
 import gov.nist.toolkit.xdstools2.client.widgets.AdminPasswordDialogBox;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DeleteSimInfo {
@@ -96,17 +98,48 @@ List<SimInfo> simInfoList;
                 new ClickHandlerData<List<SimInfo>>(simInfoList) {
                     @Override
                     public void onClick(ClickEvent clickEvent) {
-                        int cx = 1;
+//                        Timer refreshTimer = null;
+//                        final int delayMillis = 500 * simInfoList.size();
+                        hostTab.getSimManagerWidget().asWidget().getElement().removeClassName("loading");
+                        hostTab.getSimManagerWidget().asWidget().getElement().addClassName("loading");
+
+                        List<SimulatorConfig> configList = new ArrayList<>();
+                        for (SimInfo simInfo : simInfoList) {
+                            configList.add(simInfo.getSimulatorConfig());
+                        }
+
+                        DeleteButtonClickHandler handler = new DeleteButtonClickHandler(hostTab, configList);
+                        handler.delete(true, new SimpleCallback() {
+                            @Override
+                            public void run() {
+                                hostTab.getSimManagerWidget().asWidget().getElement().removeClassName("loading");
+                            }
+                        });
+
+                        /*
                         for (SimInfo simInfo : simInfoList) {
                             try {
                                 DeleteButtonClickHandler handler = new DeleteButtonClickHandler(hostTab, simInfo.getSimulatorConfig());
-                                handler.delete(cx==simInfoList.size());
+                                handler.delete(false);
 
                             } catch (Exception ex) {
-                                Window.alert("Delete failed simId: " + simInfo.getSimulatorConfig().getId().toString() + ". Exception: " + ex.toString());
+                                GWT.log("Delete failed simId: " + simInfo.getSimulatorConfig().getId().toString() + ". Exception: " + ex.toString());
+                            } finally {
+                                if (refreshTimer!=null)
+                                    refreshTimer.cancel();
+                                refreshTimer = new Timer() {
+                                    @Override
+                                    public void run() {
+                                        hostTab.getSimManagerWidget().asWidget().getElement().removeClassName("loading");
+                                        hostTab.loadSimStatus();
+                                        ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireSimulatorsUpdatedEvent();
+                                    }
+                                };
+                                refreshTimer.schedule(delayMillis);
                             }
-                            cx++;
                         }
+                        */
+
                     }
                 }
         );

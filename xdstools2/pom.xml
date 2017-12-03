@@ -566,6 +566,7 @@
 					</execution>
 				</executions>
 				<configuration>
+					<style>DETAILED</style>
 					<compileSourcesArtifacts>
 						<compileSourcesArtifact>${project.groupId}:tk</compileSourcesArtifact>
 						<compileSourcesArtifact>${project.groupId}:results</compileSourcesArtifact>
