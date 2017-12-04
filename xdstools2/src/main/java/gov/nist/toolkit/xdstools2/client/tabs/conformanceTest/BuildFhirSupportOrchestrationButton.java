@@ -101,7 +101,13 @@ public class BuildFhirSupportOrchestrationButton extends AbstractOrchestrationBu
                     "added but only the default set are reference by included tests. " +
                     "This server can be reset (deleted, re-created, and loaded) from its " +
                     "Conformance Tool tab or from any Conformnace Tool tab that references it by " +
-                    "resetting the testing environment (controls provided at the top of the tool)."
+                    "resetting the testing environment (controls provided at the top of the tool)." +
+                    "<p>This server can only manage Patient resources and offers only a limitited set of " +
+                    "query parameters:" +
+                    "<ul>" +
+                    "<li>family name and given name in one query" +
+                    "<li>identifier (system|id)" +
+                    "</ul>"
             ));
         }
 

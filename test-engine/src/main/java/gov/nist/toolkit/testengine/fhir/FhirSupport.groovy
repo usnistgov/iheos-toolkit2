@@ -4,6 +4,7 @@ import ca.uhn.fhir.context.FhirContext
 import gov.nist.toolkit.fhir.context.ToolkitFhirContext
 import gov.nist.toolkit.utilities.io.Io
 import org.hl7.fhir.dstu3.model.Binary
+import org.hl7.fhir.dstu3.model.OperationOutcome
 import org.hl7.fhir.instance.model.api.IBaseResource
 
 class FhirSupport {
@@ -52,5 +53,15 @@ class FhirSupport {
         return binary
     }
 
+    static List<String> operationOutcomeIssues(OperationOutcome oo) {
+        def issues = []
+        oo.issue.each { OperationOutcome.OperationOutcomeIssueComponent issue ->
+            issue.with {
+                issues << "Error ${code}: ${diagnostics}"
+            }
+        }
+
+        issues
+    }
 
 }

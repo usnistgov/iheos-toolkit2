@@ -8,6 +8,7 @@ import gov.nist.toolkit.fhir.resourceMgr.TestResourceCacheFactory
 import gov.nist.toolkit.fhir.simulators.mhd.MhdGenerator
 import gov.nist.toolkit.fhir.simulators.proxy.util.SimProxyBase
 import gov.nist.toolkit.fhir.utility.UriBuilder
+import gov.nist.toolkit.installation.Installation
 import groovy.xml.MarkupBuilder
 import org.hl7.fhir.dstu3.model.DocumentReference
 import org.hl7.fhir.dstu3.model.Patient
@@ -58,6 +59,7 @@ class TranslateTest extends Specification {
 
     def 'patient id from patient resource' () {
         when:
+        Installation.instance().setTestRunning(true)
         ResourceCacheMgr cacheMgr = TestResourceCacheFactory.getResourceCacheMgr()
         def patient = cacheMgr.getResource('http://localhost:8080/fhir/Patient/a2')
 

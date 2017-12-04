@@ -108,7 +108,7 @@ class SimEndpoint {
         try {
             port = Integer.parseInt(portStr);
         } catch (NumberFormatException var7) {
-            throw new IllegalArgumentException("Invalid HTTP host: " + portStr);
+            throw new IllegalArgumentException("Invalid HTTP port: " + portStr);
         }
     }
 }

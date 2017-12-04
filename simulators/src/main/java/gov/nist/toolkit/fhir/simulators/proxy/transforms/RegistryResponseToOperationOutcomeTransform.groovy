@@ -1,6 +1,7 @@
 package gov.nist.toolkit.fhir.simulators.proxy.transforms
 
 import ca.uhn.fhir.context.FhirContext
+import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.fhir.resourceMgr.ResourceCache
 import gov.nist.toolkit.fhir.simulators.fhir.OperationOutcomeGenerator
 import gov.nist.toolkit.fhir.simulators.fhir.WrapResourceInHttpResponse
@@ -8,7 +9,6 @@ import gov.nist.toolkit.fhir.simulators.proxy.exceptions.SimProxyTransformExcept
 import gov.nist.toolkit.fhir.simulators.proxy.util.ContentResponseTransform
 import gov.nist.toolkit.fhir.simulators.proxy.util.ResponsePartParser
 import gov.nist.toolkit.fhir.simulators.proxy.util.SimProxyBase
-import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.soap.http.SoapFault
 import gov.nist.toolkit.utilities.io.Io
 import gov.nist.toolkit.xdsexception.ExceptionUtil
@@ -18,7 +18,6 @@ import org.apache.http.HttpResponse
 import org.apache.http.message.BasicHttpResponse
 import org.apache.log4j.Logger
 import org.hl7.fhir.dstu3.model.*
-
 /**
  *
  */
@@ -91,7 +90,7 @@ class RegistryResponseToOperationOutcomeTransform implements ContentResponseTran
                 Bundle.BundleEntryComponent comp = new Bundle.BundleEntryComponent()
                 Bundle.BundleEntryResponseComponent rcomp = new Bundle.BundleEntryResponseComponent()
                 comp.setResponse(rcomp)
-                comp.fullUrl = makeLocalFullUrl(resource)
+                comp.fullUrl = makeLocalFullUrl(base.config.getEndpoint(TransactionType.FHIR),resource)
                 comp.resource = resource
                 rcomp.status = '200'
                 bundle.addEntry(comp)
@@ -110,8 +109,8 @@ class RegistryResponseToOperationOutcomeTransform implements ContentResponseTran
         }
     }
 
-    String makeLocalFullUrl(Resource resource) {
-        return Installation.instance().getToolkitAsFhirServerBaseUrl() + '/' + resource.getClass().getSimpleName() + '/' + withoutUrnUuid(resource.id)
+    String makeLocalFullUrl(String baseUrl, Resource resource) {
+        return baseUrl + '/' + resource.getClass().getSimpleName() + '/' + withoutUrnUuid(resource.id)
     }
 
     def withoutUrnUuid(String str) {

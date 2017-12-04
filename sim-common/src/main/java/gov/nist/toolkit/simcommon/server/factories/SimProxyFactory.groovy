@@ -1,4 +1,4 @@
-package gov.nist.toolkit.fhir.simulators.proxy.sim
+package gov.nist.toolkit.simcommon.server.factories
 
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.actortransaction.client.ParamType

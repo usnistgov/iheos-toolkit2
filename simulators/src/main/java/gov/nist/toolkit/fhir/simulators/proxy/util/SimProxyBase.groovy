@@ -8,7 +8,7 @@ import gov.nist.toolkit.configDatatypes.client.FhirVerb
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.fhir.simulators.proxy.exceptions.SimProxyTransformException
-import gov.nist.toolkit.fhir.simulators.proxy.sim.SimProxyFactory
+import gov.nist.toolkit.simcommon.server.factories.SimProxyFactory
 import gov.nist.toolkit.fhir.utility.UriBuilder
 import gov.nist.toolkit.simcommon.client.BadSimIdException
 import gov.nist.toolkit.simcommon.client.SimId

@@ -138,7 +138,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "MHD Document Recipient",
             Arrays.asList(""),
             "mhddocrec",
-            "gov.nist.toolkit.fhir.simulators.proxy.sim.MhdRecipientFactory",
+            "gov.nist.toolkit.simcommon.server.factories.MhdRecipientFactory",
             "gov.nist.toolkit.fhir.simulators.proxy.sim.MhdRecipientSimulator",
 //            Arrays.asList(TransactionType.PROV_DOC_BUNDLE, TransactionType.FHIR),
             Arrays.asList(TransactionType.PROV_DOC_BUNDLE, TransactionType.FHIR),
@@ -443,7 +443,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "Sim Proxy",
             Arrays.asList(""),
             "simproxy",
-            "gov.nist.toolkit.fhir.simulators.proxy.sim.SimProxyFactory",
+            "gov.nist.toolkit.simcommon.server.factories.SimProxyFactory",
             "gov.nist.toolkit.fhir.simulators.proxy.sim.SimProxySimulator",  // only constructor should be used
             Arrays.asList(TransactionType.PIF),  // place holder - transaction types
             false,  // show in config - only partially configured - only used in IT tests
@@ -461,7 +461,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "XDS on FHIR Recipient",
             Arrays.asList(""),
             "mhdfhirrec",
-            "gov.nist.toolkit.fhir.simulators.proxy.sim.SimProxyFactory",
+            "gov.nist.toolkit.simcommon.server.factories.SimProxyFactory",
             "gov.nist.toolkit.fhir.simulators.proxy.sim.SimProxySimulator",  // only constructor should be used
             Arrays.asList(TransactionType.PROV_DOC_BUNDLE),
             true,  // show in config - only partially configured - only used in IT tests
@@ -506,7 +506,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "XDS on FHIR Responder",
             Arrays.asList(""),
             "mhdfhirres",
-            "gov.nist.toolkit.fhir.simulators.proxy.sim.SimProxyFactory",
+            "gov.nist.toolkit.simcommon.server.factories.SimProxyFactory",
             "gov.nist.toolkit.fhir.simulators.proxy.sim.SimProxySimulator",  // only constructor should be used
             Arrays.asList(TransactionType.FIND_DOC_REFS),
             true,  // show in config - only partially configured - only used in IT tests

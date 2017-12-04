@@ -5,10 +5,14 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Definition for an actor simulator.
@@ -250,7 +254,16 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	public String getDefaultName() {
 		return get("Name").asString(); // + "." + getActorType();
 	}
-	
+
+	public String getEndpoint(TransactionType transactionType) {
+   		List<SimulatorConfigElement> transEles = getEndpointConfigs();
+   		for (SimulatorConfigElement ele : transEles) {
+   			if (ele.transType == transactionType)
+   				return ele.asString();
+		}
+		return null;
+	}
+
 //	public ValidationContext getValidationContext() {
 //		return vc;
 //	}

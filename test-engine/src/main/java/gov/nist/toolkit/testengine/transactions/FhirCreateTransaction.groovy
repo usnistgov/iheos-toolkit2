@@ -152,7 +152,11 @@ class FhirCreateTransaction extends BasicFhirTransaction {
 //                    if (myId)
 //                        reportManager.add('Ref', myId.withoutHistory())
                 }
+            } else {
+                stepContext.set_error("This transaction must return a transaction-response Bundle that contains one entry " +
+                "per entry in the request. Instead, a resource of type ${baseResource.class.simpleName} was returned.")
             }
+            afterRun(baseResource)
         }
         testLog.add_name_value(instruction_output, 'InHeader', statusLine.toString())
 
@@ -164,6 +168,7 @@ class FhirCreateTransaction extends BasicFhirTransaction {
             if (statusLine.statusCode > 201) {
                 stepContext.set_error(statusLine.reasonPhrase)
             }
+            afterRun(null)
         }
 
 //        if (statusLine.statusCode in 400..599)  {
@@ -171,6 +176,19 @@ class FhirCreateTransaction extends BasicFhirTransaction {
 //        }
 //        reportManager.add("FhirIdWithHistory", fhirId.toString())
 //        reportManager.add('RefWithHistory', "${endpoint}/${fhirId}")
+    }
+
+    void afterRun(IBaseResource returnedResource) {}
+
+    List<String> resourceTypes(Bundle bundle) {
+        def types = []
+
+        bundle.entry.each { Bundle.BundleEntryComponent comp ->
+            String type = comp.getResource().class.simpleName
+            types << type
+        }
+
+        types
     }
 
     def simpleErrorMsg(OperationOutcome oo, StepContext sc) {

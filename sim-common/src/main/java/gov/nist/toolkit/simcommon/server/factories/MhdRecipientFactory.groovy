@@ -1,4 +1,4 @@
-package gov.nist.toolkit.fhir.simulators.proxy.sim
+package gov.nist.toolkit.simcommon.server.factories
 
 import gov.nist.toolkit.actortransaction.client.ParamType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
@@ -6,7 +6,6 @@ import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.client.Simulator
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
 import gov.nist.toolkit.simcommon.server.SimManager
-import gov.nist.toolkit.simcommon.server.factories.RepositoryRegistryActorFactory
 
 class MhdRecipientFactory extends SimProxyFactory {
 

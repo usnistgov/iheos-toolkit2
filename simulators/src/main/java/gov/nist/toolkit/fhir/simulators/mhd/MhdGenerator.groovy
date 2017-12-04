@@ -553,7 +553,7 @@ class MhdGenerator {
                         addSubmissionSet(xml, dm.getId(), dm)
                         addSubmissionSetAssociations(xml, dm)
                     }
-                    if (resource instanceof DocumentReference) {
+                    else if (resource instanceof DocumentReference) {
                         rMgr.assignId(resource)
                         er.sectionHeading("DocumentReference(${resource.id})  URL is ${url}")
                         proxyBase.resourcesSubmitted << resource
@@ -572,6 +572,9 @@ class MhdGenerator {
 
                         addExtrinsicObject(xml, dr.getId(), dr)
                         documents[dr.getId()] = a.contentId
+                    } else {
+                        proxyBase.resourcesSubmitted << resource
+
                     }
                 }
             }

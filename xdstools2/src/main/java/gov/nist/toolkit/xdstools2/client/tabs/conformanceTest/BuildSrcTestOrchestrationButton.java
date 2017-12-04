@@ -107,6 +107,9 @@ public class BuildSrcTestOrchestrationButton  extends AbstractOrchestrationButto
 
                 initializationResultsPanel.add(new HTML("<br />"));
 
+                if (orchResponse.hasAdditionalDocumentation())
+                    initializationResultsPanel.add(new HTML(orchResponse.getAdditionalDocumentation()));
+
 //                initializationResultsPanel.add(new HTML("Patient ID for all tests: " + orchResponse.getRegisterPid().toString()));
 //                initializationResultsPanel.add(new HTML("<br />"));
 

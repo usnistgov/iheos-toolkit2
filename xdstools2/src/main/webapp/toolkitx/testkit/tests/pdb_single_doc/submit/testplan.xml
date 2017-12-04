@@ -23,13 +23,15 @@
         <Goal>
             Send a Provide Document Bundle transaction to the Document Recipient. The bundle
             contains a DocumentManifest, a single DocumentReference which references an included
-            Binary resource.  Both the DocumentManifest and the DocumentReference reference
+            Binary resource and two Practitioner resources which are referenced as
+            Document authors.  Both the DocumentManifest and the DocumentReference reference
             the Patient Resource described in the previous step.
         </Goal>
         <ExpectedStatus>Success</ExpectedStatus>
         <ProvideDocumentBundleTransaction>
             <UseReport step="PatientLookup" section="THIS" reportName="pid_value" useAs="$pid_value$"/>
             <UseReport step="PatientLookup" section="THIS" reportName="pid_system" useAs="$pid_system$"/>
+            <UseReport step="PatientLookup" section="THIS" reportName="Url" useAs="$patient_reference$"/>
             <ResourceFile>SingleDocSubmit.xml</ResourceFile>
             <!--<UrlExtension></UrlExtension>-->
         </ProvideDocumentBundleTransaction>

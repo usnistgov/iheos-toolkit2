@@ -1,6 +1,7 @@
 package gov.nist.toolkit.fhir.resourceMgr
 
 import ca.uhn.fhir.context.FhirContext
+import gov.nist.toolkit.installation.Installation
 import org.hl7.fhir.dstu3.model.Bundle
 import org.hl7.fhir.dstu3.model.Observation
 import org.hl7.fhir.dstu3.model.Patient
@@ -40,6 +41,7 @@ class ExternalTest extends Specification {
         mgr.getResourcesByType(Observation.simpleName)[0][0].toString() == 'http://example.org/fhir/Observation/123'
 
         when:
+        Installation.instance().setTestRunning(true)
         mgr.currentResource(mgr.getResourcesByType(Observation.simpleName)[0][1])
 
         then:

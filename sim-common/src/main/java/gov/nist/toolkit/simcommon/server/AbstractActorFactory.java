@@ -4,19 +4,19 @@ import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.FhirVerb;
-import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
-import gov.nist.toolkit.utilities.id.UuidAllocator;
 import gov.nist.toolkit.simcommon.client.NoSimException;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.Simulator;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.utilities.id.UuidAllocator;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.NoSimulatorException;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
@@ -77,23 +77,6 @@ public abstract class AbstractActorFactory {
 		return theFactories;
 
 
-//		factories.put(ActorType.REGISTRY.getName(),           		new RegistryActorFactory());
-//		factories.put(ActorType.REPOSITORY.getName(),         		new RepositoryActorFactory());
-//		factories.put(ActorType.ONDEMAND_DOCUMENT_SOURCE.getName(),	new OnDemandDocumentSourceActorFactory());
-//		factories.put(ActorType.DOCUMENT_RECIPIENT.getName(),  		new RecipientActorFactory());
-//		factories.put(ActorType.REPOSITORY_REGISTRY.getName(), 		new RepositoryRegistryActorFactory());
-//		factories.put(ActorType.INITIATING_GATEWAY.getName(),  		new IGActorFactory());
-//		factories.put(ActorType.INITIATING_IMAGING_GATEWAY.getName(), new IigActorFactory());
-//		factories.put(ActorType.RESPONDING_IMAGING_GATEWAY.getName(), new RigActorFactory());
-//		factories.put(ActorType.RESPONDING_GATEWAY.getName(),  		new RGActorFactory());
-//		factories.put(ActorType.OD_RESPONDING_GATEWAY.getName(),  		new ODRGActorFactory());
-//      factories.put(ActorType.XDR_DOC_SRC.getName(), 				   new XdrDocSrcActorFactory());
-//      factories.put(ActorType.DOC_CONSUMER.getName(), 			   new ConsumerActorFactory());
-//      factories.put(ActorType.IMAGING_DOC_CONSUMER.getName(),         new ImgConsumerActorFactory());
-//      factories.put(ActorType.IMAGING_DOC_SOURCE.getName(), 		new ImagingDocSourceActorFactory());
-//      factories.put(ActorType.COMBINED_INITIATING_GATEWAY.getName(), new CigActorFactory());
-//      factories.put(ActorType.COMBINED_RESPONDING_GATEWAY.getName(), new CrgActorFactory());
-//      factories.put(ActorType.FHIR_SERVER.getName(), new FhirActorFactory());
 	}
 
 	public AbstractActorFactory getActorFactory(ActorType at) {

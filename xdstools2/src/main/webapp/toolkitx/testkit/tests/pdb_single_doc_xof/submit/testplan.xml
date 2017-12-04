@@ -23,7 +23,8 @@
         <Goal>
             Send a Provide Document Bundle transaction to the (MHD) Document Recipient. The bundle
             contains a DocumentManifest, a single DocumentReference which references an included
-            Binary resource.  Both the DocumentManifest and the DocumentReference reference
+            Binary resource and two Practitioner resources which are referenced as
+            Document authors.  Both the DocumentManifest and the DocumentReference reference
             the Patient Resource described in the previous step.
         </Goal>
         <ExpectedStatus>Success</ExpectedStatus>

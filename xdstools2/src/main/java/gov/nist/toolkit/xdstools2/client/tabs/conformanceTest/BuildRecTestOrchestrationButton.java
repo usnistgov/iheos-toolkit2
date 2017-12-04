@@ -4,6 +4,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
 import gov.nist.toolkit.actortransaction.client.ActorOption;
+import gov.nist.toolkit.actortransaction.client.IheItiProfile;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.client.RecOrchestrationRequest;
 import gov.nist.toolkit.services.client.RecOrchestrationResponse;
@@ -107,7 +108,8 @@ public class BuildRecTestOrchestrationButton extends AbstractOrchestrationButton
                 }
 
 
-                BuildFhirSupportOrchestrationButton.supportingFhirServerConfigUI(initializationResultsPanel, orchResponse.getSupportResponse(), true);
+                if (actorOption.profileId == IheItiProfile.MHD)
+                    BuildFhirSupportOrchestrationButton.supportingFhirServerConfigUI(initializationResultsPanel, orchResponse.getSupportResponse(), true);
 
 
 
@@ -115,9 +117,14 @@ public class BuildRecTestOrchestrationButton extends AbstractOrchestrationButton
                 handleMessages(initializationResultsPanel, orchResponse);
 
                 // Display tests run as part of orchestration - so links to their logs are available
-                initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testContext, testContextView, testTab, testTab ));
+                if (actorOption.profileId != IheItiProfile.MHD)
+                    initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testContext, testContextView, testTab, testTab ));
 
                 initializationResultsPanel.add(new HTML("<br />"));
+
+                if (orchResponse.hasAdditionalDocumentation())
+                    initializationResultsPanel.add(new HTML(orchResponse.getAdditionalDocumentation()));
+
 
 //                initializationResultsPanel.add(new HTML("Patient ID for all tests: " + orchResponse.getRegisterPid().toString()));
 //                initializationResultsPanel.add(new HTML("<br />"));

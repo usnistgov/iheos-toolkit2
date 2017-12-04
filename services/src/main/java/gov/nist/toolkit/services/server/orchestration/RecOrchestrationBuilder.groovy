@@ -2,6 +2,7 @@ package gov.nist.toolkit.services.server.orchestration
 
 import gov.nist.toolkit.actortransaction.client.ActorOption
 import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.actortransaction.client.IheItiProfile
 import gov.nist.toolkit.actortransaction.client.OptionType
 import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.configDatatypes.client.PidBuilder
@@ -17,6 +18,7 @@ import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
 import gov.nist.toolkit.simcommon.server.SimCache
+import gov.nist.toolkit.testengine.transactions.ProvideDocumentBundleTransaction
 import groovy.transform.TypeChecked
 /**
  *
@@ -44,9 +46,15 @@ class RecOrchestrationBuilder {
         FhirSupportOrchestrationResponse supportResponse = supportBuilder.buildTestEnvironment()
 
         if (actorOption.optionId == OptionType.XDS_ON_FHIR.toString()) {
-            return setupXdsOnFhir(supportResponse)
+            RawResponse res =  setupXdsOnFhir(supportResponse)
+            RecOrchestrationResponse rres = (RecOrchestrationResponse) res
+            rres.additionalDocumentation = ProvideDocumentBundleTransaction.additionalDocumentation()
+            return res
         } else {
             RecOrchestrationResponse response = new RecOrchestrationResponse()
+            if (actorOption.profileId == IheItiProfile.MHD)
+                response.additionalDocumentation = ProvideDocumentBundleTransaction.additionalDocumentation()
+
             response.supportResponse = supportResponse
             Map<String, TestInstanceManager> pidNameMap = [
                     // RecPIF does not really exist as a test.  It will never be sent.  Just a

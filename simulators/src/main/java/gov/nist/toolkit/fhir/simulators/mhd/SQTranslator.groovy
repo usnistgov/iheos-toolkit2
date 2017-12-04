@@ -16,6 +16,10 @@ class SQTranslator {
 //        return toXml(model, true)
     }
 
+    String run(String query) {
+        toXml(fhirQueryToSQModel(query), true)
+    }
+
     // model is [queryParamName: [values]]
     static String toXml(Map theModel, boolean leafClass) {
         Map model = [:] << theModel  // copy

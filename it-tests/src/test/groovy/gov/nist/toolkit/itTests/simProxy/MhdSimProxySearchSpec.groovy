@@ -13,6 +13,7 @@ import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import gov.nist.toolkit.toolkitServicesCommon.ToolkitFactory
+import org.apache.http.annotation.Obsolete
 import org.hl7.fhir.dstu3.model.DocumentReference
 import org.hl7.fhir.instance.model.api.IBaseResource
 import spock.lang.Shared
@@ -89,6 +90,10 @@ class MhdSimProxySearchSpec extends ToolkitSpecification {
         println "${api.getSiteNames(true)}"
     }
 
+    // this fails because when ProvideDocumentBundleTransaction tries to verify returned fullUrls, to create
+    // the resource to return, the Recipient must query the patient provider which is not running.
+    // To run this test we need to recexamine the test setup - not deep enough
+    @Obsolete
     def 'Find Document References search through simproxy'() {
         when:
         def config = spi.get(spi.get(testSession, mhdId))

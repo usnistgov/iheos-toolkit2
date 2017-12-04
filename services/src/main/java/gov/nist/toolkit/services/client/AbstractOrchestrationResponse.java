@@ -14,6 +14,7 @@ import java.util.List;
 abstract public class AbstractOrchestrationResponse extends RawResponse {
 //    private List<TestInstance> orchestrationTests = new ArrayList<>();  // test definitions used to build the orchestration
     private List<MessageItem> messages = new ArrayList<>();
+    private String additionalDocumentation = null;
 
     public AbstractOrchestrationResponse() {}
     /**
@@ -58,4 +59,15 @@ abstract public class AbstractOrchestrationResponse extends RawResponse {
         return null;
     }
 
+    public String getAdditionalDocumentation() {
+        return additionalDocumentation;
+    }
+
+    public void setAdditionalDocumentation(String additionalDocumentation) {
+        this.additionalDocumentation = additionalDocumentation;
+    }
+
+    public boolean hasAdditionalDocumentation() {
+        return additionalDocumentation != null;
+    }
 }

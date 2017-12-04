@@ -13,7 +13,7 @@ class SimEndpointTest extends Specification {
 
         then:
         ep.actorType == 'mhddocrec'
-        ep.transactionType == 'pdb'
+        ep.transactionType.shortName == 'pdb'
         ep.simIdString == 'bill__mhd'
     }
 
@@ -25,7 +25,7 @@ class SimEndpointTest extends Specification {
 
         then:
         ep.actorType == 'mhddocrec'
-        ep.transactionType == 'DocumentReference'
+        ep.transactionType.shortName == 'fdr'
         ep.simIdString == 'bill__mhd'
         ep.resourceType == 'DocumentReference'
         ep.query == 'patient.identifier=urn:oid:1.2.3.4.5.6%7CMRN'
