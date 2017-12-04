@@ -1,23 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestPlan>
   <Test>30006/eval_remove</Test>
-  <Rule>Evaluate all contents after Remove Metadata transaction.</Rule>
-  <TestStep id="eval_rplc_contents">
-  <!--TODO Not valid-->
-    <Goal>Confirm replacement SubmissionSet content. XFRM_RPLC Association no longer exists.</Goal>
-    <ExpectedStatus>Success</ExpectedStatus>
-    <StoredQueryTransaction>
-      <XDSb/>
-      <UseId testdir="../xfrm_rplc" step="xfrm_rplc" section="AssignedUids" id="SubmissionSet01" symbol="$ssuid$"/>
-      <MetadataFile>query_ss.xml</MetadataFile>
-      <ExpectedContents>
-        <SubmissionSets count="1"/>
-        <Associations count="1"/>
-        <Documents count="1"/>
-		<DocApp/>
-      </ExpectedContents>
-    </StoredQueryTransaction>
-  </TestStep>
+  <Rule>Evaluate removal of all contents after Remove Metadata transaction.</Rule>
   <TestStep id="eval_orig_contents">
     <Goal>Confirm original SubmissionSet does not exist.</Goal>
     <ExpectedStatus>Success</ExpectedStatus>
@@ -46,22 +30,19 @@
       </ExpectedContents>
     </StoredQueryTransaction>
   </TestStep>
-  <TestStep id="query_xfrm_rplc_doc_assoc">
-	<Goal>SQ shall return the DocumentEntry and SS-HM Association.</Goal>
+  <TestStep id="eval_rplc_contents">
+    <Goal>Confirm replacement SubmissionSet content no longer exists.</Goal>
     <ExpectedStatus>Success</ExpectedStatus>
     <StoredQueryTransaction>
       <XDSb/>
-	  <UseId testdir="../xfrm_rplc" step="xfrm_rplc" section="AssignedUuids" id="Document01" symbol="$Document01$"/>
-      <MetadataFile>query_doc_assoc.xml</MetadataFile>
+      <UseId testdir="../xfrm_rplc" step="xfrm_rplc" section="AssignedUids" id="SubmissionSet01" symbol="$ssuid$"/>
+      <MetadataFile>query_ss.xml</MetadataFile>
       <ExpectedContents>
-        <Documents count="1"/>
-		<Associations count="1"/>
+        <SubmissionSets count="0"/>
+        <Associations count="0"/>
+        <Documents count="0"/>
 		<DocApp/>
       </ExpectedContents>
     </StoredQueryTransaction>
   </TestStep>  
-
-
-
-  
 </TestPlan>

@@ -6,5 +6,5 @@ The exceptions, ReferencesExistException and XDSUnreferencedObjectException, are
 
 Reference: ITI TF-2c: Section 3.62.4.1.3 - Expected Actions
 
-Note: This is the same test used in Test 30000 except the for the submitted metadata object .
+Note: This is the same as Test 30001, except for the submitted metadata object.
 

@@ -8,6 +8,6 @@ Test include removing the association and each submission set individually. Thes
 
 The final test should successfully remove all submitted objects. 
 
-Reference: TBD
+Reference: (TBD) ITI TF-2c: Section 3.62.4.1.3 - Expected Actions
 
 

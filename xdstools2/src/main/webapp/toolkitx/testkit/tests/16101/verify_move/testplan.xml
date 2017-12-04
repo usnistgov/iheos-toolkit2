@@ -25,7 +25,7 @@
     <StoredQueryTransaction>
       <XDSb/>
       <MetadataFile>SQfindDoc.xml</MetadataFile>
-      <UseReport reportName="$patientid$" test="16101" section="move_local_PID" step="move" useAs="$pid$"/>
+ 	  <UseReport reportName="$patientid$" test="16101" section="add_new_XADPID" step="register" useAs="$pid$"/>
       <ExpectedContents>
         <Documents count="1"/>
       </ExpectedContents>

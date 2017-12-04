@@ -1,3 +1,1 @@
-
-Replace document from step submit/submit_copy
-
+Submit a new DocumentEntry object that transforms and replaces the original DocumentEntry object.

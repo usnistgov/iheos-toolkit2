@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestPlan>
   <Test>30003/submit</Test>
-  <!--Source: Test 12000-->
   <TestStep id="submit">
     <Goal>Submit Folder with Initial Document</Goal>
     <ExpectedStatus>Success</ExpectedStatus>

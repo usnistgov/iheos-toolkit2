@@ -1,7 +1,4 @@
-Successfully remove all metadata objects.
+ This test evaluates the Document Registry's enforcement of the Document Sharing Metadata Model.
 
-Three steps for this evaluation: 
-
-      [TODO]
-
+Attempt to remove all original, replacement, and appended metadata objects in a single transaction. This transaction should be successfully processed by the Document Registry. 
 

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestPlan>
   <Test>30002/submit</Test>
-  <!--Original: 11999/submit-->
   <TestStep id="submit">
     <Goal>Submit a single empty Folder</Goal>
     <ExpectedStatus>Success</ExpectedStatus>

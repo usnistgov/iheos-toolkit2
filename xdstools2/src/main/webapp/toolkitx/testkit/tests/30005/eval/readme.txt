@@ -1,2 +1,2 @@
-Verify the submission of both documents and the RPLC relationship object.
+Verify the both submissions and the RPLC relationship association object.
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><TestPlan>
-  <Test>30007/submit</Test>
+  <Test>30008/submit</Test>
   <TestStep id="submit">
     <Goal>Submit original DocumentEntry</Goal>
     <ExpectedStatus>Success</ExpectedStatus>

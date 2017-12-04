@@ -1,1 +1,1 @@
-Use the stored query, GetSubmissionSetAndContents, to verify verify all metadata objects are removed.
+Verify the original Submission Set remains in the Document Registry, but without the FD-DE HM association.
