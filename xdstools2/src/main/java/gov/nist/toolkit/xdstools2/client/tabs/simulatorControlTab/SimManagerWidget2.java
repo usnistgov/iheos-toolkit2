@@ -6,10 +6,13 @@ import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.HasCell;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.builder.shared.DivBuilder;
 import com.google.gwt.dom.builder.shared.TableCellBuilder;
 import com.google.gwt.dom.builder.shared.TableRowBuilder;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
@@ -25,6 +28,7 @@ import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.view.client.CellPreviewEvent;
@@ -34,6 +38,7 @@ import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SelectionModel;
+import com.google.gwt.view.client.SingleSelectionModel;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
@@ -50,6 +55,7 @@ import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionRequest;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +66,7 @@ import java.util.Set;
  */
 public class SimManagerWidget2 extends Composite {
 
-    private static final int ROW_BUFFER = 38;
+    protected static final int ROW_BUFFER = 38;
     private static final int PAGE_SIZE = 25;
 
     CommandContext commandContext;
@@ -71,8 +77,7 @@ public class SimManagerWidget2 extends Composite {
     private DataGrid<SimInfo> newSimTable = new DataGrid<SimInfo>();
     private Timer singleClickTimer;
     private int clickCount = 0;
-    private DataGrid<SimInfo> actionTableTop = new DataGrid<SimInfo>();
-    private DataGrid<SimInfo> actionTableBottom = new DataGrid<SimInfo>();
+    private DataGrid<SimInfo> actionTable = new DataGrid<SimInfo>();
     // Create a data provider.
     private ListDataProvider<SimInfo> dataProvider = new ListDataProvider<SimInfo>();
     private ListDataProvider<SimInfo> actionDataProvider = new ListDataProvider<SimInfo>();
@@ -80,7 +85,9 @@ public class SimManagerWidget2 extends Composite {
     private String testSession = "";
 
 
+    SelectionModel<SimInfo> selectionModel;
     private int rows;
+    CheckBox multiSelect = new CheckBox("Multiple selection");
 
     public SimManagerWidget2() {
     }
@@ -109,6 +116,7 @@ public class SimManagerWidget2 extends Composite {
                         };
                         singleClickTimer.schedule(300);
                     } else if (clickCount == 2) {
+                        GWT.log("Double clicked table.");
                         singleClickTimer.cancel();
                         clickCount = 0;
                         DataGrid<SimInfo> grid = (DataGrid<SimInfo>) cellPreviewEvent.getSource();
@@ -116,6 +124,12 @@ public class SimManagerWidget2 extends Composite {
                         SimInfo item = grid.getVisibleItem(row);
 //                        Window.alert("Do Something Here" + item.getSimulatorConfig().getId().toString());
                         defaultEditTabAction(item.getSimulatorConfig());
+                        getSelectionModel().setSelected(item, true);
+//                        actionDataProvider.getList().remove(placeHolderSimInfo);
+//                        actionDataProvider.getList().add(item);
+//                        actionTable.redraw();
+                        GWT.log("action list size: " + actionDataProvider.getList().size());
+
                     }
                 }
             }
@@ -129,18 +143,29 @@ public class SimManagerWidget2 extends Composite {
 //        txTable.setStyleName("txDataGridNoTableSpacing");
         newSimTable.getElement().getStyle().setProperty("wordWrap","break-word");
 
+        multiSelect.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Boolean> valueChangeEvent) {
+                if (multiSelect.isEnabled() && multiSelect.getValue()) {
+                    setupMultiSelectionMode();
+                } else {
+                    setupSingleSelectionMode();
+                }
+            }
 
+        });
+        containerPanel.add(multiSelect);
         containerPanel.add(newSimTable);
 
 
 
-        actionTableTop.setWidth("500px");
-        actionTableTop.setHeight("75px");
+        actionTable.setWidth("500px");
+        actionTable.setHeight("75px");
 //        actionTableTop.getElement().getStyle().setMarginLeft(40, Style.Unit.PCT);
-        actionTableTop.getElement().getStyle().setMarginTop(8, Style.Unit.PX);
-        actionTableTop.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-        actionTableTop.setHeaderBuilder(new MyCustomHeaderBuilder(actionTableTop, false));
-        containerPanel.add(actionTableTop);
+        actionTable.getElement().getStyle().setMarginTop(8, Style.Unit.PX);
+        actionTable.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
+        actionTable.setHeaderBuilder(new MyCustomHeaderBuilder(actionTable, false));
+        containerPanel.add(actionTable);
 //        actionTableBottom.setWidth("500px");
 //        actionTableBottom.setHeight("100px");
 //        containerPanel.add(actionTableBottom);
@@ -154,7 +179,7 @@ public class SimManagerWidget2 extends Composite {
         initWidget(containerPanel);
     }
 
-    protected void popCellTable(String testSession, List<SimulatorConfig> configs, List<SimulatorStats> statsList) {
+    protected int popCellTable(String testSession, List<SimulatorConfig> configs, List<SimulatorStats> statsList) {
         // Add the data to the data provider, which automatically pushes it to the
         // widget.
         final List<SimInfo> list = dataProvider.getList();
@@ -210,10 +235,12 @@ public class SimManagerWidget2 extends Composite {
                                 for (int idx = 0; idx < SimInfo.TOP_TRANSACTION_CT; idx++) {
                                     if (result.size() > idx) {
                                         simInfo.getTopThreeTransInstances().add(TransactionInstance.copy(result.get(idx)));
-                                        try {
-                                            newSimTable.redraw();
-                                        } catch (Exception ex) {
-                                        }
+//                                        try {
+                                            // xx
+//                                            newSimTable.redraw();
+//                                            actionTable.redraw();
+//                                        } catch (Exception ex) {
+//                                        }
                                     }
                                 }
                             }
@@ -233,6 +260,8 @@ public class SimManagerWidget2 extends Composite {
             }
         }
 
+        multiSelect.setEnabled(rows>1);
+        return rows;
 
     }
 
@@ -625,13 +654,30 @@ public class SimManagerWidget2 extends Composite {
 //                        deleteSimInfo.setSimInfoList(Arrays.asList(new SimInfo[]{simInfo}));
 //                        deleteSimInfo.delete();
 
-                        Set<SimInfo> mySelection = ((MultiSelectionModel) newSimTable.getSelectionModel()).getSelectedSet();
+                        Set<SimInfo> mySelection = null;
+                        boolean multiple = false;
+                        if (getSelectionModel() instanceof MultiSelectionModel) {
+                            multiple = true;
+                            mySelection = ((MultiSelectionModel) newSimTable.getSelectionModel()).getSelectedSet();
+                        } else {
+                           mySelection = new HashSet<SimInfo>(actionDataProvider.getList());
+                        }
 
                         DeleteSimInfo deleteSimInfo = new DeleteSimInfo(containerPanel,hostTab);
                         deleteSimInfo.setSimInfoList(new ArrayList<SimInfo>(mySelection));
                         deleteSimInfo.delete();
 
-                        ((MultiSelectionModel) newSimTable.getSelectionModel()).clear();
+                        if (multiple)
+                            ((MultiSelectionModel) newSimTable.getSelectionModel()).clear();
+                        else
+                            ((SingleSelectionModel) newSimTable.getSelectionModel()).clear();
+
+                        // When the newSimTable selection model list gets cleared, the object is also removed from the actionDataProvider. Insert a placeholder into the actionData.
+                        actionDataProvider.getList().clear();
+                        actionDataProvider.getList().add(placeHolderSimInfo);
+                        // xx
+                        actionTable.redraw();
+
                     }
 
 
@@ -670,48 +716,8 @@ public class SimManagerWidget2 extends Composite {
                     }
                 };
 
-
-
-
-
-        // Add a selection model so we can select cells.
-        final SelectionModel<SimInfo> selectionModel =
-                new MultiSelectionModel<SimInfo>(KEY_PROVIDER);
-
-            newSimTable.setSelectionModel(selectionModel,
-                    DefaultSelectionEventManager.createCustomManager(
-                            new DefaultSelectionEventManager.CheckboxEventTranslator<SimInfo>() {
-                                @Override
-                                public DefaultSelectionEventManager.SelectAction translateSelectionEvent(CellPreviewEvent<SimInfo> event) {
-                                    DefaultSelectionEventManager.SelectAction action = super.translateSelectionEvent(event);
-                                    if (action.equals(DefaultSelectionEventManager.SelectAction.IGNORE)) {
-//                                    selectionModel.clear();
-                                        return DefaultSelectionEventManager.SelectAction.TOGGLE;
-                                    }
-                                    return action;
-//                                return DefaultSelectionEventManager.SelectAction.DEFAULT;
-                                }
-                            }
-                    ));
-
-
-        selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
-            @Override
-            public void onSelectionChange(SelectionChangeEvent selectionChangeEvent) {
-                final List<SimInfo> list = actionDataProvider.getList();
-                Set<SimInfo> mySelection = ((MultiSelectionModel) newSimTable.getSelectionModel()).getSelectedSet();
-                list.clear();
-                if (mySelection.size()==1) {
-
-                    for (SimInfo simInfo : mySelection) {
-                        list.add(simInfo);
-                    }
-
-                } else if (mySelection.size()==0 || mySelection.size()>1) {
-                    list.add(placeHolderSimInfo);
-                }
-            }
-        });
+        // Selection model can be coded here
+        setupSingleSelectionMode();
 
 
         Column<SimInfo, Boolean> checkColumn =
@@ -807,43 +813,48 @@ public class SimManagerWidget2 extends Composite {
         dataProvider.addDataDisplay(newSimTable);
 
 //        actionTable.getElement().getStyle().setMarginLeft(40, Style.Unit.PCT);
-        actionTableTop.addColumn(logActionCol, "Action(s)");
-        actionTableTop.addColumn(pidActionCol,"");
-        actionTableTop.addColumn(editActionCol,"");
-        actionTableTop.addColumn(trashBinActionCol,"");
-        actionTableTop.addColumn(downloadActionCol,"");
+        actionTable.addColumn(logActionCol, "Action(s)");
+        actionTable.addColumn(pidActionCol,"");
+        actionTable.addColumn(editActionCol,"");
+        actionTable.addColumn(trashBinActionCol,"");
+        actionTable.addColumn(downloadActionCol,"");
 
-        actionDataProvider.addDataDisplay(actionTableTop);
+        actionDataProvider.addDataDisplay(actionTable);
 
 
-        actionTableBottom.addColumn(logActionCol, "Action(s)");
-        actionTableBottom.addColumn(pidActionCol,"");
+//        actionTableBottom.addColumn(logActionCol, "Action(s)");
+//        actionTableBottom.addColumn(pidActionCol,"");
 //        actionTableBottom.addColumn(editActionCol,"");
-        actionTableBottom.addColumn(trashBinActionCol,"");
-        actionTableBottom.addColumn(downloadActionCol,"");
-
+//        actionTableBottom.addColumn(trashBinActionCol,"");
+//        actionTableBottom.addColumn(downloadActionCol,"");
 //        actionDataProvider.addDataDisplay(actionTableBottom);
     }
 
     SafeHtml getImgHtml(String iconFilePath, String title, boolean supportsMultiple) {
-        Set<SimInfo> mySelection = ((MultiSelectionModel) newSimTable.getSelectionModel()).getSelectedSet();
+//        Set<SimInfo> mySelection = ((MultiSelectionModel) newSimTable.getSelectionModel()).getSelectedSet();
+        Set<SimInfo> mySelection = null;
+        if (getSelectionModel() instanceof MultiSelectionModel) {
+             mySelection = ((MultiSelectionModel) getSelectionModel()).getSelectedSet();
 //        Window.alert("selection size is " + mySelection.size() + "; icon is " + iconFilePath + "; supportsMultiple " + supportsMultiple);
-        if (mySelection.size()>1) {
+         if (mySelection!=null) {
 
-            if (supportsMultiple)
+            if (mySelection.size() == 1 || (mySelection.size() > 1 && supportsMultiple))
                 return new SafeHtmlBuilder().appendHtmlConstant("<img style=\"width: 24px; height: 24px;\" title=\"" + title + "\" src=\"" + iconFilePath + "\">").toSafeHtml();
             else
                 return new SafeHtmlBuilder().appendHtmlConstant("<input type=\"image\" style=\"width: 24px; height: 24px; opacity:0.5\" src=\"" + iconFilePath + "\" border=0 disabled/>").toSafeHtml();
-
-        } else {
-            final List<SimInfo> list = actionDataProvider.getList();
-            if (list.get(0).getSimulatorConfig()==null) {
+         }
+        }
+        else if (getSelectionModel() instanceof SingleSelectionModel) {
+//            final List<SimInfo> list =
+                    // actionDataProvider.getList();
+             SimInfo selectedObj =  (SimInfo)((SingleSelectionModel) getSelectionModel()).getSelectedObject();
+            if (selectedObj==null) {
                 return new SafeHtmlBuilder().appendHtmlConstant("<input type=\"image\" style=\"width: 24px; height: 24px; opacity:0.5\" src=\"" + iconFilePath + "\" border=0 disabled/>").toSafeHtml();
             } else {
                 return new SafeHtmlBuilder().appendHtmlConstant("<img style=\"width: 24px; height: 24px;\" title=\"" + title +"\" src=\"" + iconFilePath + "\">").toSafeHtml();
             }
         }
-
+        return new SafeHtmlBuilder().appendHtmlConstant("<input type=\"image\" style=\"width: 24px; height: 24px; opacity:0.5\" src=\"" + iconFilePath + "\" border=0 disabled/>").toSafeHtml();
     }
 
 
@@ -1021,11 +1032,17 @@ public class SimManagerWidget2 extends Composite {
 
             float tableHeight = 100F;
             if (rows>0)
-                tableHeight =  (rowHeight * (rows>PAGE_SIZE?PAGE_SIZE:rows) + ROW_BUFFER);
+                tableHeight = calcTableHeight(rowHeight);
 
             newSimTable.setHeight("" + tableHeight + "px");
+            // xx
             newSimTable.redraw();
+            actionTable.redraw();
         }
+    }
+
+    protected float calcTableHeight(float rowHeight) {
+        return rowHeight * (rows>PAGE_SIZE?PAGE_SIZE:rows) + ROW_BUFFER;
     }
 
 
@@ -1055,6 +1072,69 @@ public class SimManagerWidget2 extends Composite {
         }
     }
 
+    protected void setupSingleSelectionMode() {
+        GWT.log("setting up single selection model.");
+        getActionDataProvider().getList().clear();
+        getActionDataProvider().getList().add(placeHolderSimInfo);
+        setSelectionModel(new SingleSelectionModel<SimInfo>(SimManagerWidget2.getKeyProvider()));
+        getNewSimTable().setSelectionModel(getSelectionModel());
+        getSelectionModel().addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+            @Override
+            public void onSelectionChange(SelectionChangeEvent selectionChangeEvent) {
+                final List<SimInfo> list = getActionDataProvider().getList();
+                SimInfo mySelection = ((SingleSelectionModel<SimInfo>) getSelectionModel()).getSelectedObject();
+                list.clear();
+                if (mySelection!=null) {
+                    list.add(mySelection);
+                } else {
+                    list.add(placeHolderSimInfo);
+                }
+            }
+        });
+    }
+    protected void setupMultiSelectionMode() {
+        GWT.log("setting up multiple selection model.");
+        // Add a selection model so we can select cells.
+        getActionDataProvider().getList().clear();
+        getActionDataProvider().getList().add(placeHolderSimInfo);
+        setSelectionModel(new MultiSelectionModel<SimInfo>(SimManagerWidget2.getKeyProvider()));
+
+        getNewSimTable().setSelectionModel(getSelectionModel(),
+                DefaultSelectionEventManager.createCustomManager(
+                        new DefaultSelectionEventManager.CheckboxEventTranslator<SimInfo>() {
+                            @Override
+                            public DefaultSelectionEventManager.SelectAction translateSelectionEvent(CellPreviewEvent<SimInfo> event) {
+                                DefaultSelectionEventManager.SelectAction action = super.translateSelectionEvent(event);
+                                if (action.equals(DefaultSelectionEventManager.SelectAction.IGNORE)) {
+//                                    selectionModel.clear();
+                                    return DefaultSelectionEventManager.SelectAction.TOGGLE;
+                                }
+                                return action;
+//                                return DefaultSelectionEventManager.SelectAction.DEFAULT;
+                            }
+                        }
+                ));
+
+
+        getSelectionModel().addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+            @Override
+            public void onSelectionChange(SelectionChangeEvent selectionChangeEvent) {
+                final List<SimInfo> list = getActionDataProvider().getList();
+                Set<SimInfo> mySelection = ((MultiSelectionModel) getSelectionModel()).getSelectedSet();
+                list.clear();
+                if (mySelection.size()==1) {
+
+                    for (SimInfo simInfo : mySelection) {
+                        list.add(simInfo);
+                    }
+
+                } else if (mySelection.size()==0 || mySelection.size()>1) {
+                    list.add(getPlaceHolderSimInfo());
+                }
+            }
+        });
+    }
+
     public String getTestSession() {
         return testSession;
     }
@@ -1062,5 +1142,41 @@ public class SimManagerWidget2 extends Composite {
     public void setTestSession(String testSession) {
         if (testSession!=null)
             this.testSession = testSession;
+    }
+
+    public DataGrid<SimInfo> getNewSimTable() {
+        return newSimTable;
+    }
+
+    public DataGrid<SimInfo> getActionTable() {
+        return actionTable;
+    }
+
+    public static ProvidesKey<SimInfo> getKeyProvider() {
+        return KEY_PROVIDER;
+    }
+
+    public SelectionModel<SimInfo> getSelectionModel() {
+        return selectionModel;
+    }
+
+    public void setSelectionModel(SelectionModel<SimInfo> selectionModel) {
+        this.selectionModel = selectionModel;
+    }
+
+    public ListDataProvider<SimInfo> getActionDataProvider() {
+        return actionDataProvider;
+    }
+
+    public SimInfo getPlaceHolderSimInfo() {
+        return placeHolderSimInfo;
+    }
+
+    public ListDataProvider<SimInfo> getDataProvider() {
+        return dataProvider;
+    }
+
+    public int getRows() {
+        return rows;
     }
 }

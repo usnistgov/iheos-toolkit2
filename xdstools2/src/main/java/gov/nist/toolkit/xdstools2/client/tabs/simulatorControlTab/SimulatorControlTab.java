@@ -6,12 +6,8 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
-import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.LoadingStateChangeEvent;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
-import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -23,7 +19,6 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.ListDataProvider;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.Simulator;
@@ -55,16 +50,10 @@ public class SimulatorControlTab extends GenericQueryTab {
     TextArea        simIdsTextArea = new TextArea();
     TextBox         newSimIdTextBox = new TextBox();
     private Button          createActorSimulatorButton = new Button("Create Actor Simulator");
-    Button          loadSimulatorsButton = new Button("Load Simulators");
     private FlexTable       table = new FlexTable();
-    // Cell table
-    CellTable<SimInfo> newSimTable = new CellTable<SimInfo>();
-    // Create a data provider.
-    ListDataProvider<SimInfo> dataProvider = new ListDataProvider<SimInfo>();
     private FlowPanel simCtrlContainer;
 
     SimConfigSuper simConfigSuper;
-    private SimulatorControlTab self;
     private SimManagerWidget2 simManagerWidget;
 
 
@@ -73,12 +62,12 @@ public class SimulatorControlTab extends GenericQueryTab {
     }
 
     public SimulatorControlTab() {  super(new FindDocumentsSiteActorManager());	}
+    boolean tableRowExists = false;
 
 
     @Override
 	protected Widget buildUI() {
         simCtrlContainer = new FlowPanel();
-        self = this;
 
         ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).addTabSelectedEventHandler(new TabSelectedEvent.TabSelectedEventHandler() {
             @Override
@@ -142,7 +131,9 @@ public class SimulatorControlTab extends GenericQueryTab {
         simConfigWrapperPanel.add(simConfigPanel);
 
 
+
         simManagerWidget = new SimManagerWidget2(getCommandContext(), this);
+
 
         Window.addResizeHandler(new ResizeHandler() {
             @Override
@@ -153,14 +144,53 @@ public class SimulatorControlTab extends GenericQueryTab {
             }
         });
         simCtrlContainer.add(simManagerWidget);
+        simManagerWidget.getNewSimTable().addLoadingStateChangeHandler(new LoadingStateChangeEvent.Handler() {
+            @Override
+            public void onLoadingStateChanged(LoadingStateChangeEvent event) {
+                if(event.getLoadingState() == LoadingStateChangeEvent.LoadingState.LOADED) {
+//                    GWT.log("In onLoaded");
+                    int rows = simManagerWidget.getRows();
+//                    GWT.log("rows: " + rows);
+                    if (rows > 0) {
+                        int rowHeight = 0;
+                        try {
+                            rowHeight = simManagerWidget.getNewSimTable().getRowElement(0).getClientHeight();
+                        } catch (Exception ex) {
+                        }
+//                            GWT.log("rowHeight: " + rowHeight);
+                            String tableHeightInPx = null;
+                            int pxIdx = -1;
+                            try {
+                                tableHeightInPx = simManagerWidget.getNewSimTable().getElement().getStyle().getHeight();
+                                pxIdx = tableHeightInPx.indexOf("px");
+                            } catch (Exception ex) {
+                            }
+//                            GWT.log("tableHeight: " + tableHeightInPx);
+                            if (tableHeightInPx!=null && pxIdx>-1) {
+                                int currentHeight = new Integer(tableHeightInPx.substring(0, pxIdx)).intValue();
+//                                GWT.log("currentHeight: " + currentHeight);
 
-        resizeSimMgrWidget(simConfigWrapperPanel, simManagerWidget);
+                                if (simManagerWidget.calcTableHeight(rowHeight) != currentHeight) {
+                                    resizeSimMgrWidget(simConfigWrapperPanel, simManagerWidget);
+//                                    GWT.log("Table resize complete.");
+                                }
+                            } else {
+                                resizeSimMgrWidget(simConfigWrapperPanel, simManagerWidget);
+//                                GWT.log("Initial table resize complete.");
+                            }
+                    }
+
+                }
+            }
+        });
+
+
 
         return simCtrlContainer;
 	}
 
 
-	protected void resizeSimMgrWidget(HorizontalPanel container, SimManagerWidget2 widget2) {
+    protected void resizeSimMgrWidget(HorizontalPanel container, SimManagerWidget2 widget2) {
 
         int containerWidth;
 
@@ -170,19 +200,7 @@ public class SimulatorControlTab extends GenericQueryTab {
            containerWidth = (int)(Window.getClientWidth() * .80);
         }
 
-//        int containerHeight;
-//        try {
-//            containerHeight = (int)(container.getParent().getElement().getClientHeight() * .50); // Window.getClientHeight()
-//        } catch (Exception ex) {
-//            containerHeight = (int)(Window.getClientHeight() * .5);
-//        }
-
-//        Window.alert(containerWidth + " height: " + containerHeight);
-
         widget2.resizeTable(containerWidth);
-
-//        widget2.setHeightInPx(containerHeight);
-
     }
 
 
@@ -267,12 +285,10 @@ public class SimulatorControlTab extends GenericQueryTab {
                         public void onComplete(final List<SimulatorStats> simulatorStatses) {
 //                        buildTable(configs, simulatorStatses);
 //                            Window.alert("Calling widget " + user);
-                            simManagerWidget.popCellTable(user, configs, simulatorStatses);
+                            int rows =  simManagerWidget.popCellTable(user, configs, simulatorStatses);
                             resizeSimMgrWidget(simConfigWrapperPanel, simManagerWidget);
-
                         }
                     }.run(new GetSimulatorStatsRequest(getCommandContext(), simIds));
-
                 }catch (Exception ex) {}
             }
         }.run(new GetAllSimConfigsRequest(getCommandContext(), user));
