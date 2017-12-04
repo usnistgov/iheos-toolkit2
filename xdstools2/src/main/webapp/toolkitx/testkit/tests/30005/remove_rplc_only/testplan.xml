@@ -25,7 +25,7 @@
 	  <UseId testdir="../rplc" step="rplc" section="AssignedUuids" id="Document01" symbol="$Document01$"  />
 	  <UseId testdir="../rplc" step="rplc" section="AssignedUuids" id="SSHM01Association" symbol="$SSHM01Association$"  />
 	  <UseId testdir="../rplc" step="rplc" section="AssignedUuids" id="SubmissionSet01" symbol="$SubmissionSet01$"  />
-      <MetadataFile>remove_set.xml</MetadataFile>
+      <MetadataFile>remove_rplc_set.xml</MetadataFile>
     </RemoveMetadataTransaction>
   </TestStep> 
   <TestStep id="remove_orig_set">

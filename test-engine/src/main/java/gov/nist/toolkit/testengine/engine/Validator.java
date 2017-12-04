@@ -427,6 +427,17 @@ public class Validator {
 		}
 		return true;
 	}
+	
+	public boolean folsDeprecated() throws MetadataException {
+		for (OMElement fol : m.getFolders()) {
+			String status = m.stripNamespace(fol.getAttributeValue(MetadataSupport.status_qname));
+			if ( status == null || !status.equals("Deprecated")) {
+				err("Folder " + fol.getAttributeValue(MetadataSupport.id_qname) + " has status " + status + " instead of 'Deprecated'");
+				return false;
+			}
+		}
+		return true;
+	}
 
 	public boolean ssApproved() throws MetadataException {
 		OMElement ss = m.getSubmissionSet();
@@ -525,6 +536,9 @@ public class Validator {
 			}
 			else if (ec_name.equals("FolApp")) {
 				folsApproved();
+			}
+			else if (ec_name.equals("FolDep")) {
+				folsDeprecated();
 			}
 			else if (ec_name.equals("SSwithTwoDoc")) {
 				ss2Doc();

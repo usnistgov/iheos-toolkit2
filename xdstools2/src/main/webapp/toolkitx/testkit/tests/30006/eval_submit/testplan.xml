@@ -15,7 +15,7 @@
     </StoredQueryTransaction>
   </TestStep>
   <TestStep id="eval_xfrm_rplc">
-    <Goal>Confirm original submission.</Goal>
+    <Goal>Confirm replacement submission.</Goal>
     <ExpectedStatus>Success</ExpectedStatus>
     <StoredQueryTransaction>
       <XDSb/>
@@ -27,8 +27,8 @@
       </ExpectedContents>
     </StoredQueryTransaction>
   </TestStep>  
-  <TestStep id="eval_xfrm_rplc">
-    <Goal>Confirm original submission.</Goal>
+  <TestStep id="eval_apnd_rplc">
+    <Goal>Confirm append submission.</Goal>
     <ExpectedStatus>Success</ExpectedStatus>
     <StoredQueryTransaction>
       <XDSb/>

@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?><TestPlan>
   <Test>30005/rplc</Test>
   <TestStep id="rplc">
+    <Goal>Submit a Replacement DocumentEntry</Goal>  	
     <ExpectedStatus>Success</ExpectedStatus>
-	<!--
-    <Rule>
-      <Transaction>R</Transaction>
-      <Assertion>Issue RPLC</Assertion>
-    </Rule>
-	-->
     <RegisterTransaction>
       <XDSb/>
       <NoPatientId/>

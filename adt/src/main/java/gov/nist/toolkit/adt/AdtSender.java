@@ -61,6 +61,9 @@ public class AdtSender {
         }
 
         out.print(buf.toString().replace("$pid$", pid));
+        
+        logger.debug("Sending ADT message...");
+        logger.debug(buf.toString());
 
         c = 0x1c;
         out.print(c);
@@ -74,6 +77,9 @@ public class AdtSender {
         out.close();
         in.close();
         echoSocket.close();
+        
+        logger.debug("ADT message response...");
+        logger.debug(output);
  
         isSuccessful(output);
     }

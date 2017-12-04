@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestPlan>
-  <Test>30009/remove_branches</Test>
+  <Test>30008/remove_branches</Test>
   <TestStep id="remove_APND_assoc_only">
 	<Goal>Fail to remove only the APND association.</Goal>
     <ExpectedStatus>Failure</ExpectedStatus>

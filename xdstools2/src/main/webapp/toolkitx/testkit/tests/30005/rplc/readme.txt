@@ -1,3 +1,2 @@
-
-Replace document from step submit/submit_copy
+Submit a replacement document.
 

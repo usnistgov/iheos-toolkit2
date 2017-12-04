@@ -1,1 +1,1 @@
-Use the stored query, GetDocumentsAndAssociations, to verify verify all metadata objects are removed.
+Use the stored query, GetDocumentsAndAssociations, to verify all metadata objects submitted.

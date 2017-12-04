@@ -2,7 +2,7 @@
 <TestPlan>
   <Test>30003/remove</Test>
   <TestStep id="remove_folder_and documententry_only">
-	<Goal>Failure to remove a metadata object with no remaining references.</Goal>
+	<Goal>Failure as a metadata object with no remaining references.</Goal>
     <ExpectedStatus>Failure</ExpectedStatus>
 	<ExpectedErrorCode>XDSUnreferencedObjectException</ExpectedErrorCode>
     <RemoveMetadataTransaction>

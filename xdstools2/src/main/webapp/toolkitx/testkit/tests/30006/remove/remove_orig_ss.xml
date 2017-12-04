@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urn:RemoveObjectsRequest xmlns:urn="urn:oasis:names:tc:ebxml-regrep:xsd:lcm:3.0" xmlns:urn2="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0">
-	<urn2:ObjectRefList >
+	<urn2:ObjectRefList>
 		<!--DE-->
-		<!--SS-FD HM-->
+		<urn2:ObjectRef id="$Document00$"/>
+		<!--SS-DE HM-->
+		<urn2:ObjectRef id="$SSHM00Association$"/>
 		<!--SS-->
-		<urn2:ObjectRef id="$SubmissionSet01$"/>
+        <urn2:ObjectRef id="$SubmissionSet00$"/>
 	</urn2:ObjectRefList>
 </urn:RemoveObjectsRequest>
