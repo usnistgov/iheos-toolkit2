@@ -37,6 +37,7 @@ public abstract class AbstractView<P extends AbstractPresenter<?>> implements Is
 //        cp.setBorders(false);
         pathToWidgetsMap = getPathToWidgetsMap();
         ui = buildUI();
+        cp.setSize("100%","100%");
         cp.setWidget(ui);
         bindUI();
 

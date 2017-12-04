@@ -83,6 +83,9 @@ public abstract class ToolWindow {
 		innerPanel.setWidget(tabTopPanel);
 	}
 
+	public ToolWindow(boolean isWidget) {
+	}
+
 	protected void addEast(Widget w) { eastPanel.add(w); }
 
 	protected void addWest(Widget w) { westPanel.add(w); }

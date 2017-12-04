@@ -57,8 +57,10 @@ import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
+import gov.nist.toolkit.xdstools2.client.inspector.mvp.ResultInspector;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab.ActorConfigTab;
+import gov.nist.toolkit.xdstools2.client.toolLauncher.NewToolLauncher;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.util.InformationLink;
 import gov.nist.toolkit.xdstools2.client.widgets.PidWidget;
@@ -665,8 +667,18 @@ public abstract class GenericQueryTab  extends ToolWindow {
             runnerPanel.add(getInspectButton());
         }
 
-        if (getInspectButton() != null && inspectButtonHandler == null)
-            inspectButtonHandler = getInspectButton().addClickHandler(new InspectorLauncher(me));
+        if (getInspectButton() != null && inspectButtonHandler == null) {
+//            inspectButtonHandler = getInspectButton().addClickHandler(new InspectorLauncher(me));
+           inspectButtonHandler = getInspectButton().addClickHandler(new ClickHandler() {
+               @Override
+               public void onClick(ClickEvent clickEvent) {
+                   ResultInspector resultInspector = new ResultInspector();
+                   resultInspector.setResults(results);
+                   resultInspector.setSiteSpec(getSiteSelection());
+                   new NewToolLauncher().launch(resultInspector);
+               }
+           });
+        }
 
 
         runnerPanel.add(logLaunchButtonPanel);

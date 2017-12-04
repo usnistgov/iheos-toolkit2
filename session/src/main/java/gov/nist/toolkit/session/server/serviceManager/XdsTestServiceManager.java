@@ -898,6 +898,7 @@ public class XdsTestServiceManager extends CommonService {
 						stepResult.section = section;
 						stepResult.stepName = testStepLogContentDTO.getId();
 						stepResult.status = testStepLogContentDTO.getStatus();
+						stepResult.transaction = testStepLogContentDTO.getTransaction();
 						stepResult.setSoapFaults(testStepLogContentDTO.getSoapFaults());
 
 						stepPass = stepResult.status;

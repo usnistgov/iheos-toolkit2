@@ -5,6 +5,7 @@ import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
+import gov.nist.toolkit.xdstools2.client.inspector.mvp.ResultInspector;
 import gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab.SubmitResource;
 import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewer;
 import gov.nist.toolkit.xdstools2.client.util.ClientFactory;
@@ -78,6 +79,11 @@ public class Xdstools2ActivityMapper implements ActivityMapper {
             SubmitResource submitResource = (SubmitResource) place;
             pushHomeTabToBackground();
             return clientFactory.getSubmitResourceActivity();
+        }
+        if (place instanceof ResultInspector) {
+            GWT.log("Launch ResultInspector");
+            pushHomeTabToBackground();
+            return clientFactory.getInspectorActivity((ResultInspector)place);
         }
         return null;
     }

@@ -5,7 +5,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
 import gov.nist.toolkit.xdstools2.client.injector.Injector;
-import gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab.SubmitResource;
+import gov.nist.toolkit.xdstools2.client.inspector.mvp.InspectorActivity;
+import gov.nist.toolkit.xdstools2.client.inspector.mvp.ResultInspector;
 import gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab.SubmitResourceActivity;
 import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewer;
 import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewerActivity;
@@ -71,4 +72,9 @@ public class ClientFactoryImpl implements ClientFactory {
 
     @Override
     public Activity getSubmitResourceActivity() { return SUBMIT_RESOURCE_ACTIVITY; }
+
+    @Override
+    public InspectorActivity getInspectorActivity(ResultInspector place) {
+        return new InspectorActivity(place);
+    }
 }

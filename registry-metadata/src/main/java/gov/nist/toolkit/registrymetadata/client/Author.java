@@ -23,4 +23,8 @@ public class Author implements IsSerializable, Serializable {
 	public List<String> telecom;
 	public List<String> telecomDoc;
 
+	@Override
+	public String toString() {
+		return person;
+	}
 }

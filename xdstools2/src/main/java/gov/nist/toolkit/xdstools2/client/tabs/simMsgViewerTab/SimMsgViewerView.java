@@ -77,7 +77,7 @@ public class SimMsgViewerView extends AbstractView<SimMsgViewerPresenter> {
 
     private SystemSelector systemSelector = new SystemSelector("Simulator") {
         @Override
-        public void doSiteSelected(String label) {
+        public void doSelected(String label) {
             getPresenter().doUpdateChosenSimulator(label);
         }
     };
@@ -384,7 +384,7 @@ public class SimMsgViewerView extends AbstractView<SimMsgViewerPresenter> {
     void clearMessages() { messagePanel.clear(); }
 
     void setSiteNames(List<ASite> sites) {
-        systemSelector.setSiteNames(sites);
+        systemSelector.setNames(sites);
     }
 
     void selectSite(String siteName) {

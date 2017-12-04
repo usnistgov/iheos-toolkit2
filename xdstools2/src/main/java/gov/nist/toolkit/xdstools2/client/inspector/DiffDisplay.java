@@ -74,7 +74,7 @@ public class DiffDisplay {
 
 		tab.selectHistory.setValue(false);
 		tab.selectContents.setValue(false);
-		tab.selectDiff.setValue(true);
+//		tab.selectDiff.setValue(true);
 		
 		FlexTable dispTab = new FlexTable();
 		

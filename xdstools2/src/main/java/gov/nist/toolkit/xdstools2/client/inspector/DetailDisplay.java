@@ -1,8 +1,19 @@
 package gov.nist.toolkit.xdstools2.client.inspector;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import gov.nist.toolkit.registrymetadata.client.*;
+import gov.nist.toolkit.registrymetadata.client.Association;
+import gov.nist.toolkit.registrymetadata.client.Author;
+import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
+import gov.nist.toolkit.registrymetadata.client.Folder;
+import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
+import gov.nist.toolkit.registrymetadata.client.MetadataObject;
+import gov.nist.toolkit.registrymetadata.client.ObjectRef;
+import gov.nist.toolkit.registrymetadata.client.SubmissionSet;
 import gov.nist.toolkit.results.client.AssertionResult;
 import gov.nist.toolkit.results.client.AssertionResults;
 
@@ -150,7 +161,8 @@ public class DetailDisplay {
 
 
 	void displayDetail(SubmissionSet ss, SubmissionSet diff) {
-		detailPanel.add(HyperlinkFactory.addHTML("<h4>Submission Set</h4>"));
+//		detailPanel.add(HyperlinkFactory.addHTML("<h4>Submission Set</h4>"));
+        addTitle(HyperlinkFactory.addHTML("<h4>Submission Set</h4>"));
 		FlexTable ft = new FlexTable();
 		int row=0;
 		boolean b;
@@ -217,8 +229,33 @@ public class DetailDisplay {
 
 	}
 
+	void addTitle(HTML title) {
+		FlowPanel flowPanel = new FlowPanel();
+		title.addStyleName("left");
+		flowPanel.add(title);
+		if (it.dataNotification!=null) {
+		    if (it.dataNotification.inCompare()) {
+		        HTML closeX = new HTML("X");
+		        closeX.setTitle("Close");
+		        closeX.addStyleName("requiredFieldLabel");
+		        closeX.addStyleName("outsetBorder");
+		        closeX.addStyleName("right");
+		        closeX.addClickHandler(new ClickHandler() {
+					@Override
+					public void onClick(ClickEvent clickEvent) {
+						it.dataNotification.onCloseOffDetail(it.currentSelectedTreeItem);
+					}
+				});
+				flowPanel.add(closeX);
+			}
+
+		}
+	    detailPanel.add(flowPanel);
+	}
+
 	void displayDetail(DocumentEntry de, DocumentEntry diff) {
-		detailPanel.add(HyperlinkFactory.addHTML("<h4>Document Entry</h4>"));
+//		detailPanel.add(HyperlinkFactory.addHTML("<h4>Document Entry</h4>"));
+		addTitle(HyperlinkFactory.addHTML("<h4>Document Entry</h4>"));
 		FlexTable ft = new FlexTable();
 		int row=0;
 		boolean b;
@@ -359,7 +396,8 @@ public class DetailDisplay {
 	}
 
 	void displayDetail(Folder fol, Folder diff) {
-		detailPanel.add(HyperlinkFactory.addHTML("<h4>Folder</h4>"));
+//		detailPanel.add(HyperlinkFactory.addHTML("<h4>Folder</h4>"));
+        addTitle(HyperlinkFactory.addHTML("<h4>Folder</h4>"));
 		FlexTable ft = new FlexTable();
 		int row=0;
 		boolean b;
@@ -428,7 +466,8 @@ public class DetailDisplay {
 	}
 
 	void displayDetail(Association assoc) {
-		detailPanel.add(HyperlinkFactory.addHTML("<h4>Association</h4>"));
+//		detailPanel.add(HyperlinkFactory.addHTML("<h4>Association</h4>"));
+        addTitle(HyperlinkFactory.addHTML("<h4>Association</h4>"));
 		FlexTable ft = new FlexTable();
 		int row=0;
 
@@ -487,7 +526,8 @@ public class DetailDisplay {
 	}
 
 	void displayDetail(ObjectRef o) {
-		detailPanel.add(HyperlinkFactory.addHTML("<h4>ObjectRef</h4>"));
+//		detailPanel.add(HyperlinkFactory.addHTML("<h4>ObjectRef</h4>"));
+		addTitle(HyperlinkFactory.addHTML("<h4>ObjectRef</h4>"));
 
 		detailPanel.add(HyperlinkFactory.addHTML("id = " + o.id));
 		detailPanel.add(HyperlinkFactory.addHTML("home = " + o.home));
