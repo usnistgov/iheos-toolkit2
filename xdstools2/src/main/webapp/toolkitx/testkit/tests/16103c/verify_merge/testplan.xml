@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>16103c/verify_merge</Test>
+  <Rule>Find Documents Stored Query for initial XAD-PID</Rule>
+  <TestStep id="verify_doc">
+    <Goal>Verify two Document Entry objects submitted under the initial XAD-PID are approved.</Goal>  	
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>FindDocuments</SQ>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>SQfindDoc.xml</MetadataFile>
+ 	  <UseReport reportName="basePatientId" test="16103c" section="submit" step="load_two_de_fd" useAs="$pid$"/> 
+	  <ExpectedContents>
+        <Documents count="3"/>
+ 	    <!--two approved/one deprecated-->       
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="verify_folder">
+    <Goal>Verify the Folder object is still approved.</Goal>  	
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>FindFolders</SQ>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>SQfindFD.xml</MetadataFile>
+ 	  <UseReport reportName="basePatientId" test="16103c" section="submit" step="load_two_de_fd" useAs="$pid$"/> 
+	  <ExpectedContents>
+        <Folders count="1"/>
+        <FolApp/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>   
+</TestPlan>

@@ -17,7 +17,7 @@ public class A43Sender {
 
 	
 	static {
-		A43[0] = "MSH|^~\\&|$MSH3$|$MSH4$|$MSH5$|$MSH6$|$MSG7$||ADT^A43^ADT_A43|HL7MSG00001|P|2.3|";
+		A43[0] = "MSH|^~\\&|$MSH3$|$MSH4$|$MSH5$|$MSH6$|$MSG7$||ADT^A43^ADT_A43|HL7MSG00001|P|2.5|";
 		A43[1] = "EVN|A43|$EVN2$";
 		A43[2] = "PID|||$NewXADPID$";
 		A43[3] = "MRG|$OldXADPID$";

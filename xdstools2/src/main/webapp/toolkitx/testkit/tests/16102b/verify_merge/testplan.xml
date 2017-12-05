@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>16102b/verify_move</Test>
+  <Rule>Find Documents Stored Query for initial XAD-PID</Rule>
+  <TestStep id="initial_XAD-PID">
+    <Goal>Verify both Document Entry objects originally submitted under the initial XAD-PID are deprecated.</Goal>  	
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>FindDocuments</SQ>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>SQfindDoc.xml</MetadataFile>
+ 	  <UseReport reportName="basePatientId" test="16102b" section="submit" step="loadDE" useAs="$pid$"/> 
+	  <ExpectedContents>
+        <Documents count="2"/>
+ 	    <DocDep/>       
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="new_XAD-PID">
+	<Goal>Verify that two Document Entry objects created by Document Registry under the new XAD-PID are approved.</Goal>  	
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>FindDocuments</SQ>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>SQfindDoc.xml</MetadataFile>
+      <UseReport reportName="$patientid$" test="16102b" section="add_new_XADPID" step="register" useAs="$pid$"/>
+      <ExpectedContents>
+        <Documents count="2"/>
+        <DocApp/>
+      </ExpectedContents>   
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

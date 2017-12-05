@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<TestPlan>
+  <Test>16102b/merge_local_PID</Test>
+  <Rule>Patient Move Feed</Rule>
+  <TestStep id="merge">
+    <Rule>
+      <Transaction>Patient Move Feed</Transaction>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <PatientMoveTransaction>
+      <NoPatientId/>
+      <XDSb/>
+      <NoMetadata/> 
+	  <UseReport reportName="baseSourcePatientId" test="16102b" section="submit" step="loadDE" useAs="$OldLocalPID$"/>        	
+	  <UseReport reportName="basePatientId" test="16102b" section="submit" step="loadDE" useAs="$OldXADPID$"/> 
+	  <UseReport reportName="$patientid$" test="16102b" section="add_new_XADPID" step="register" useAs="$NewXADPID$"/>
+	  <UseReport reportName="$patientid$" test="16102b" section="add_new_XADPID" step="register" useAs="$NewLocalPID$"/>	   
+	</PatientMoveTransaction>
+  </TestStep>
+</TestPlan>
+
