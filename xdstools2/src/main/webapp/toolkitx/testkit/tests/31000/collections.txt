@@ -1,2 +1,0 @@
-reg_xadpid
-reg_xadpid_req
