@@ -73,7 +73,7 @@ public class SimProxyBase {
         targetActorType = actorType
         targetTransactionType = transactionType
 
-        simDb2 = new SimDb(simId2, targetActorType, targetTransactionType)
+        simDb2 = new SimDb(simId2, targetActorType, targetTransactionType, false)
         config2 = simDb.getSimulator(simId2);
         if (config2 == null) throw new BadSimIdException("Simulator " + simId2 +  " does not exist");
     }
@@ -187,7 +187,7 @@ public class SimProxyBase {
 //            clientTransactionType = TransactionType.FHIR  // probably a read
         if (!clientTransactionType) return handleEarlyException(new Exception("TransactionType name was ${endpoint.transactionTypeName}"))
         simId = SimIdParser.parse(uri)
-        simDb = new SimDb(simId, endpoint.actorType, clientTransactionType.shortName)
+        simDb = new SimDb(simId, endpoint.actorType, clientTransactionType.shortName, false)
         config = simDb.getSimulator(simId);
         if (config == null) throw new BadSimIdException("Simulator " + simId +  " does not exist");
 

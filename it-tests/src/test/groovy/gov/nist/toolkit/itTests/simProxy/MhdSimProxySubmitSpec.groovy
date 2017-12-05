@@ -9,6 +9,7 @@ import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.AssertionResult
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
+import gov.nist.toolkit.services.server.orchestration.FhirSupportOrchestrationBuilder
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.testengine.engine.FhirSimulatorTransaction
@@ -44,6 +45,8 @@ class MhdSimProxySubmitSpec extends ToolkitSpecification {
         spi = getSimulatorApi(remoteToolkitPort)
 
         new BuildCollections().init(null)
+
+        new FhirSupportOrchestrationBuilder(api, session, testSession, false).buildTestEnvironment()
     }
 
     def setup() {

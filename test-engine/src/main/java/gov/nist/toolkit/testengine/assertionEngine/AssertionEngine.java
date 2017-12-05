@@ -254,7 +254,15 @@ public class AssertionEngine {
                }
             }
 
-            AXIOMXPath xpathExpression = new AXIOMXPath(assertion.xpath);
+            AXIOMXPath xpathExpression;
+            try {
+               xpathExpression = new AXIOMXPath(assertion.xpath);
+            } catch (Exception e) {
+               err.fail("AssertionEngine: exception " + e.getClass().getName() + ": " + e.getMessage() + '\n'
+                       + ExceptionUtil.exception_details(e));
+               err.fail("Failing expression was " + assertion.id + "(" + assertion.xpath + ")");
+               return;
+            }
             String result = xpathExpression.stringValueOf(data);
 
 

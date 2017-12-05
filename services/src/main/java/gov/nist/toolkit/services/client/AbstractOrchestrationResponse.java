@@ -26,6 +26,10 @@ abstract public class AbstractOrchestrationResponse extends RawResponse {
     public MessageItem addMessage(TestInstance testInstance, boolean success, String message) {
         MessageItem item = new MessageItem(testInstance, success, message);
         messages.add(item);
+        if (!success) {
+            this.errorMessage = message;
+            this.error = true;
+        }
         return item;
     }
 

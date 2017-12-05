@@ -163,6 +163,12 @@ public class SimulatorServiceManager extends CommonService {
 		}
 	}
 
+	/**
+	 *
+	 * @param simid
+	 * @return list of transaction types that have logs
+	 * @throws Exception
+	 */
 	public List<String> getTransactionsForSimulator(SimId simid) throws Exception  {
 		logger.debug(session.id() + ": " + "getTransactionsForSimulator(" + simid + ")");
 		SimDb simdb = new SimDb(simid);
@@ -173,7 +179,7 @@ public class SimulatorServiceManager extends CommonService {
 			String trans, String event) {
 		logger.debug(session.id() + ": " + "getTransactionRequest - " + simid + " - " + actor + " - " + trans + " - " + event);
 		try {
-			SimDb db = new SimDb(simid, actor, trans);
+			SimDb db = new SimDb(simid, actor, trans, true);
 
 			if (actor == null)
 				actor = db.getSimulatorActorType().toString();
@@ -225,7 +231,7 @@ public class SimulatorServiceManager extends CommonService {
 			String trans, String event) {
 		logger.debug(session.id() + ": " + "getTransactionResponse - " + simid + " - " + actor + " - " + trans + " - " + event);
 		try {
-			SimDb db = new SimDb(simid, actor, trans);
+			SimDb db = new SimDb(simid, actor, trans, true);
 
 			if (actor == null)
 				actor = db.getSimulatorActorType().toString();
@@ -237,8 +243,13 @@ public class SimulatorServiceManager extends CommonService {
 			File bodyFile = db
 					.getResponseBodyFile(simid, actor, trans, event);
 
-			String body = new String(Io.bytesFromFile(bodyFile));
-			body = MessageBuilder.formatMessage(body);
+			String body = "";
+			try {
+				body = new String(Io.bytesFromFile(bodyFile));
+				body = MessageBuilder.formatMessage(body);
+			} catch (Exception e) {
+				;
+			}
 			String header;
 			if (headerFile.exists())
 				header = Io.stringFromFile(headerFile);

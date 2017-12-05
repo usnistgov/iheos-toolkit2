@@ -4,6 +4,8 @@ import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.sitemanagement.client.Site;
 
+import java.util.Collection;
+
 /**
  *
  */
@@ -61,5 +63,11 @@ public class RecOrchestrationResponse extends AbstractOrchestrationResponse {
 
     public void setSupportResponse(FhirSupportOrchestrationResponse supportResponse) {
         this.supportResponse = supportResponse;
+        Collection<MessageItem> msgs = supportResponse.getMessages();
+        if (msgs != null && !msgs.isEmpty()) {
+            for (MessageItem item : msgs) {
+                this.addMessage(null, item.isSuccess(), item.getMessage());
+            }
+        }
     }
 }

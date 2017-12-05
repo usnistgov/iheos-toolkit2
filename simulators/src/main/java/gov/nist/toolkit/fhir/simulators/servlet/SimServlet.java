@@ -204,7 +204,7 @@ public class SimServlet  extends HttpServlet {
 
 		SimDb db;
 		try {
-			db = new SimDb(new SimId(simid), actor, transaction);
+			db = new SimDb(new SimId(simid), actor, transaction, true);
 		}
 		catch (Exception e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -296,7 +296,7 @@ public class SimServlet  extends HttpServlet {
 
 		SimDb db;
 		try {
-			db = new SimDb(new SimId(simid), actor, transaction);
+			db = new SimDb(new SimId(simid), actor, transaction, true);
 			response.setContentType("application/zip");
 			db.getMessageLogZip(response.getOutputStream(), message);
 			response.getOutputStream().close();
@@ -379,7 +379,7 @@ public class SimServlet  extends HttpServlet {
 
 		SimDb db;
 		try {
-			db = new SimDb(new SimId(simid), actor, transaction);
+			db = new SimDb(new SimId(simid), actor, transaction, true);
 		} catch (Exception e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
@@ -512,7 +512,7 @@ public class SimServlet  extends HttpServlet {
 		try {
 
 			// DB space for this simulator
-			SimDb db = new SimDb(simid, actor, transaction);
+			SimDb db = new SimDb(simid, actor, transaction, false);
 			request.setAttribute("SimDb", db);
 			db.setClientIpAddess(ipAddress);
 

@@ -464,7 +464,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "gov.nist.toolkit.simcommon.server.factories.SimProxyFactory",
             "gov.nist.toolkit.fhir.simulators.proxy.sim.SimProxySimulator",  // only constructor should be used
             Arrays.asList(TransactionType.PROV_DOC_BUNDLE),
-            true,  // show in config - only partially configured - only used in IT tests
+            false,  // show in config - only partially configured - only used in IT tests
             null,  // actorsFileLabel
             null,   // httpSimulatorClassName
             null,    // http transaction types
@@ -509,7 +509,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "gov.nist.toolkit.simcommon.server.factories.SimProxyFactory",
             "gov.nist.toolkit.fhir.simulators.proxy.sim.SimProxySimulator",  // only constructor should be used
             Arrays.asList(TransactionType.FIND_DOC_REFS),
-            true,  // show in config - only partially configured - only used in IT tests
+            false,  // show in config - only partially configured - only used in IT tests
             null,  // actorsFileLabel
             null,   // httpSimulatorClassName
             null,    // http transaction types

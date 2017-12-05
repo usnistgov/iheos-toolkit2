@@ -527,21 +527,15 @@ public class Soap implements SoapInterface {
 		try {
 		   start = System.nanoTime();
 			operationClient.execute(block); // execute sync or async
-//		} catch (AxisFault e) {
-//            soapFault = e;
-//            operationClient.execute(block); // execute sync or async
         } catch (AxisFault e) {
-           logger.debug("$$$$$ Timeout: " + timeout + ", Elapsed time: " + TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start) / 1000.0 + " milliseconds");
+           logger.debug("$$$$$ AxisFault: with timeout of " + timeout + ", Elapsed time: " + TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start) / 1000.0 + " milliseconds");
            soapFault = e;
+           logger.debug(ExceptionUtil.exception_details(soapFault));
             MessageContext inMsgCtx = getInputMessageContext();
             OMElement soapBody = inMsgCtx.getEnvelope().getBody();
             result = soapBody.getFirstElement();
             logger.info(new OMFormatter(result).toString());
         }
-//        catch (Exception e) {
-//            soapFault = e;
-//            logger.info("SOAP Fault received - " + e.getClass().getName());
-//        }
         finally {
 			log.info(String.format("******************************** AFTER SOAP SEND to %s ****************************", endpoint));
 

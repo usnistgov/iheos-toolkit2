@@ -144,6 +144,9 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
     @Override
     protected void bindUI() {
 
+        inspectorPanel.add(new HTML("Coming Soon."));
+        simLogPanel.add(new HTML("Coming Soon."));
+
         runButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent clickEvent) {

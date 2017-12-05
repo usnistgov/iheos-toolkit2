@@ -111,6 +111,10 @@ class FhirReadTransaction extends BasicFhirTransaction {
                     def theResourceType = returnedResource.class.simpleName
                     if (expectedResourceType != theResourceType) {
                         stepContext.set_error("Expected resource of type ${expectedResourceType} but got ${theResourceType} instead")
+                        if (returnedResource instanceof OperationOutcome) {
+                            def issues = FhirSupport.operationOutcomeIssues(returnedResource)
+                            stepContext.set_error(issues)
+                        }
                     }
                     FhirId requestId = new FhirId(fullEndpoint)
                     FhirId returnedId = new FhirId(returnedResource)

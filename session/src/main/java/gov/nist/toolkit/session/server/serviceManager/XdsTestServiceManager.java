@@ -285,6 +285,10 @@ public class XdsTestServiceManager extends CommonService {
 	 * separate from the current GUI session.
 	 */
 	public TestLogs getRawLogs(TestInstance testInstance) {
+		if (testInstance == null) {
+			logger.error("XdsTestServiceManager:getRawLogs() for testInstance null");
+			return new TestLogs();
+		}
 		if (session != null)
 			logger.debug(session.id() + ": " + "getRawLogs for " + testInstance.describe());
 

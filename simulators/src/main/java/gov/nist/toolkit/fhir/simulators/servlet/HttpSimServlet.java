@@ -125,7 +125,7 @@ public class HttpSimServlet extends HttpServlet {
       MessageValidatorEngine mvc = new MessageValidatorEngine();
       try {
          
-         SimDb db = new SimDb(simid, actor, transaction);
+         SimDb db = new SimDb(simid, actor, transaction, false);
          // These are passed to the validate for logging
          request.setAttribute("SimDb", db);
          logRequest(request, db, actor, transaction);

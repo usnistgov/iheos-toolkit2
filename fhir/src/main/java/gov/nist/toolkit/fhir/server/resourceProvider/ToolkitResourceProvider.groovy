@@ -51,7 +51,7 @@ class ToolkitResourceProvider {
         IResourceProvider provider = findProvider(resource)
         def requestDetails = getRequestDetails()
         Attributes attributes = new Attributes(requestDetails)
-        SimDb simDb = new SimDb(simId, SimDb.BASE_TYPE, SimDb.ANY_TRANSACTION)
+        SimDb simDb = new SimDb(simId, SimDb.BASE_TYPE, SimDb.ANY_TRANSACTION, false)
         attributes.setSimId(simId)
         attributes.setSimDb(simDb)
         return provider.create(resource, requestDetails)

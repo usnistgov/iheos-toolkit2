@@ -64,7 +64,7 @@ public class SimDb {
 			throw new IOException("Simulator " + simid + ", " + actor + " cannot be created");
 		}
 
-		SimDb db = new SimDb(simid, actor, null);
+		SimDb db = new SimDb(simid, actor, null, true);
 		db.setSimulatorType(actor);
 		return db;
 	}
@@ -267,17 +267,17 @@ public class SimDb {
 		return eventDate;
 	}
 
-	SimDb(SimId simId, ActorType actor, TransactionType transaction) {
-		this(simId, actor, transaction, false)
-	}
+//	SimDb(SimId simId, ActorType actor, TransactionType transaction) {
+//		this(simId, actor, transaction, false)
+//	}
 
 	SimDb(SimId simId, ActorType actor, TransactionType transaction, boolean openToLastTransaction) {
 		this(simId, actor.shortName, transaction.shortName, openToLastTransaction)
 	}
 
-	public SimDb(SimId simId, String actor, String transaction) {
-		this(simId, actor, transaction, false)
-	}
+//	public SimDb(SimId simId, String actor, String transaction) {
+//		this(simId, actor, transaction, false)
+//	}
 
 	public SimDb(SimId simId, String actor, String transaction, boolean openToLastTransaction) {
 		this(simId);
@@ -301,7 +301,7 @@ public class SimDb {
 	}
 
 	static SimDb createMarker(SimId simId) {
-		return new SimDb(simId, MARKER, MARKER)
+		return new SimDb(simId, MARKER, MARKER, false)
 	}
 
 	/**
@@ -768,7 +768,8 @@ public class SimDb {
 					TransactionInstance t = buildTransactionInstance(actor, inst, name)
 
 					//logger.debug("Found " + t);
-					transList.add(t);
+					if (!t.isPif)
+						transList.add(t);
 				}
 			}
 		}
@@ -794,6 +795,11 @@ public class SimDb {
 	// This nesses with transactionDir which must be saved before and restored afterwards
 	TransactionInstance buildTransactionInstance(File actor, File inst, String name) {
 		TransactionInstance t = new TransactionInstance();
+		boolean isPif = false
+		if (name == TransactionType.PIF.shortName) {
+			isPif = true
+			t.isPif = true
+		}
 		t.simId = simId.toString();
 		t.actorType = ActorType.findActor(actor.getName());
 		t.messageId = inst.getName();
@@ -813,12 +819,16 @@ public class SimDb {
 
 		String ipAddr = null;
 		File ipAddrFile = new File(inst, "ip.txt");
-		try {
-			ipAddr = Io.stringFromFile(ipAddrFile);
-			if (ipAddr != null && !ipAddr.equals("")) {
-				t.ipAddress = ipAddr;
+		if (isPif) {
+
+		} else {
+			try {
+				ipAddr = Io.stringFromFile(ipAddrFile);
+				if (ipAddr != null && !ipAddr.equals("")) {
+					t.ipAddress = ipAddr;
+				}
+			} catch (IOException e) {
 			}
-		} catch (IOException e) {
 		}
 		t
 	}
@@ -1240,14 +1250,10 @@ public class SimDb {
 	}
 
 	static SimDb mkfSim(SimId simid) throws IOException, NoSimException {
-		return mkfSimi(getResDbFile(), simid, BASE_TYPE)
+		return mkfSimi(getResDbFile(), simid, BASE_TYPE, true)
 	}
 
-	static SimDb mkfSim(SimId simid, String actor) throws IOException, NoSimException {
-		return mkfSimi(getResDbFile(), simid, actor)
-	}
-
-	private static SimDb mkfSimi(File dbRoot, SimId simid, String actor) throws IOException, NoSimException {
+	private static SimDb mkfSimi(File dbRoot, SimId simid, String actor, boolean openToLastEvent) throws IOException, NoSimException {
 		simid.forFhir()
 		validateSimId(simid);
 		if (!dbRoot.exists())
@@ -1262,7 +1268,7 @@ public class SimDb {
 			throw new IOException("Fhir Simulator " + simid + ", " + actor + " cannot be created");
 		}
 
-		SimDb db = new SimDb(simid, BASE_TYPE, null);
+		SimDb db = new SimDb(simid, BASE_TYPE, null, openToLastEvent);
 		db.setSimulatorType(actor);
 		return db;
 	}

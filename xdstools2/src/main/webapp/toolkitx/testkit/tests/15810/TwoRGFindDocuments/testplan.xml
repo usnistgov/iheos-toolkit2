@@ -9,7 +9,7 @@
         <Rule>
             <Transaction>IGQ</Transaction>
             <SQ>XC FindDocuments to two RGs through IG SUT</SQ>
-            <Assertion>LeafClass return</Assertion>
+            <!--<Assertion>LeafClass return</Assertion>-->
         </Rule>
         <IGQTransaction>
             <MetadataFile>query.xml</MetadataFile>
@@ -49,7 +49,10 @@
         <Goal>Verify two Document Entries returned</Goal>
         <NullTransaction>
             <UseReport reportName="$count$"          section="THIS" step="finddocs" useAs="count"/>
-            <Assertions>
+            <Assertions>  <!-- Doing this twice makes the following HomeCommunitId assertions work.  Don't know why. -->
+                <Assert id="">
+                    'count' = '2'
+                </Assert>
                 <Assert id="">
                     'count' = '2'
                 </Assert>
@@ -65,13 +68,13 @@
             <UseReport reportName="$home1$"                      section="THIS"    step="finddocs"          useAs="returnedValue1"/>
             <UseReport reportName="$home2$"                      section="THIS"    step="finddocs"          useAs="returnedValue2"/>
             <Assertions>
-                <Assert id="">
+                <Assert id="A1">
                     'submittedValue1' = 'returnedValue1' or 'submittedValue1' = 'returnedValue2'
                 </Assert>
-                <Assert id="">
+                <Assert id="A2">
                     'submittedValue2' = 'returnedValue1' or 'submittedValue2' = 'returnedValue2'
                 </Assert>
-                <Assert id="">
+                <Assert id="A3">
                     'returnedValue1' != 'returnedValue2'
                 </Assert>
             </Assertions>

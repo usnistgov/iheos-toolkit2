@@ -34,7 +34,7 @@ public class FhirServletFilter implements Filter
         SimDb simDb
         if (simId) {
             try {
-                simDb = new SimDb(simId, SimDb.BASE_TYPE, SimDb.ANY_TRANSACTION)
+                simDb = new SimDb(simId, SimDb.BASE_TYPE, SimDb.ANY_TRANSACTION, false)
                 List<String> headers = theRequest.headerNames.collect { String headerName ->
                     "${headerName}: ${theRequest.getHeader(headerName)}"
                 }
