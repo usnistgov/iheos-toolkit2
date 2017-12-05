@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>16103/verify_merge</Test>
+  <Rule>Find Documents Stored Query for initial XAD-PID</Rule>
+  <TestStep id="verify">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>FindDocuments</SQ>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>SQfindDoc.xml</MetadataFile>
+ 	  <UseReport reportName="basePatientId" test="16103" section="submit" step="loadDE" useAs="$pid$"/> 
+	  <ExpectedContents>
+        <Documents count="1"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

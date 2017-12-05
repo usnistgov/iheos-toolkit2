@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>16101b/submit</Test>
+  <TestStep id="loadDE">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <RegisterTransaction>
+      <AssignUuids/>
+      <XDSb/>
+      <NoPatientId/>
+      <UseReport reportName="$patientid$" test="16101b" section="add_initial_XADPID" step="register" useAs="$basePatientId$"/>
+      <UseReport reportName="$patientid$" test="16101b" section="add_initial_XADPID" step="register" useAs="$baseSourcePatientId$"/>
+      <MetadataFile>single_doc.xml</MetadataFile>
+      <Report name="baseSourcePatientId" section="InputMetadata">
+          //*[local-name()='ExtrinsicObject'][1]/*[local-name()='Slot'][@name="sourcePatientId"]/*[local-name()='ValueList']/*[local-name()='Value']
+      </Report>
+      <Report name="basePatientId" section="InputMetadata">
+          //*[local-name()='ExtrinsicObject'][1]/*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427']/@value
+      </Report>    
+    </RegisterTransaction>
+  </TestStep>
+<!--  
+  <TestStep id="laodAPND">
+    <Goal>Append a DocumentEntry on submission from step submit</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <RegisterTransaction>
+      <XDSb/>
+      <NoPatientId/>
+      <UseReport reportName="$patientid$" test="16101b" section="add_initial_XADPID" step="register" useAs="$basePatientId$"/>
+      <UseReport reportName="$patientid$" test="16101b" section="add_initial_XADPID" step="register" useAs="$baseSourcePatientId$"/>
+      <UseReport reportName="Document01_uuid" test="16101b" section="submit" step="loadDE" useAs="$apnd_doc_uuid$"/>
+      <MetadataFile>metadata.xml</MetadataFile>
+      <Report name="ssuid" section="InputMetadata">
+           //*[local-name()='RegistryPackage']/*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8']/@value
+      </Report>
+    </RegisterTransaction>
+  </TestStep> 
+-->
+</TestPlan>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>16103b/verify_merge</Test>
+  <Rule>Find Documents Stored Query for initial XAD-PID</Rule>
+  <TestStep id="new_XAD-PID">
+	<Goal>NEEDS WORK: Verify that the two Document Entry objects created by Document Registry under the same XAD-PID .</Goal>  	
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>FindDocuments</SQ>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>SQfindDoc.xml</MetadataFile>
+      <UseReport reportName="$patientid$" test="16103b" section="add_initial_XADPID" step="register" useAs="$pid$"/>
+      <ExpectedContents>
+        <Documents count="4"/>
+        <!--two approved/two deprecated-->
+      </ExpectedContents>   
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>
