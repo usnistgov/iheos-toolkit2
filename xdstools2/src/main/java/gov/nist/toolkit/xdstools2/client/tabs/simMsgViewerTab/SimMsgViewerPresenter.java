@@ -8,9 +8,21 @@ import gov.nist.toolkit.services.shared.Message;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractPresenter;
-import gov.nist.toolkit.xdstools2.client.command.command.*;
-import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
-import gov.nist.toolkit.xdstools2.client.util.*;
+import gov.nist.toolkit.xdstools2.client.command.command.GetSimIdForUser;
+import gov.nist.toolkit.xdstools2.client.command.command.GetSimulatorEventRequestCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetSimulatorEventResponseCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionInstancesCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionLogCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionRequestCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionResponseCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionsForSimulatorCommand;
+import gov.nist.toolkit.xdstools2.client.inspector.mvp.ResultInspector;
+import gov.nist.toolkit.xdstools2.client.toolLauncher.NewToolLauncher;
+import gov.nist.toolkit.xdstools2.client.util.ASite;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.util.SimpleCallback;
+import gov.nist.toolkit.xdstools2.client.util.SiteFilter;
+import gov.nist.toolkit.xdstools2.client.util.ToolkitLink;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.SimLog;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSimIdsForUserRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSimulatorEventRequest;
@@ -255,11 +267,18 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
     void inspectResult(Result result) {
         List<Result> results = new ArrayList<Result>();
         results.add(result);
-        MetadataInspectorTab tab = new MetadataInspectorTab();
-        tab.setResults(results);
+
+//        MetadataInspectorTab tab = new MetadataInspectorTab();
+//        tab.setResults(results);
+//        SiteSpec siteSpec = new SiteSpec(currentSimId.toString(), currentTransactionInstance.actorType, null);
+//        tab.setSiteSpec(siteSpec);
+//        tab.onTabLoad(true, "Insp");
+
+        ResultInspector resultInspector = new ResultInspector();
+        resultInspector.setResults(results);
         SiteSpec siteSpec = new SiteSpec(currentSimId.toString(), currentTransactionInstance.actorType, null);
-        tab.setSiteSpec(siteSpec);
-        tab.onTabLoad(true, "Insp");
+        resultInspector.setSiteSpec(siteSpec);
+        new NewToolLauncher().launch(resultInspector);
     }
 
 

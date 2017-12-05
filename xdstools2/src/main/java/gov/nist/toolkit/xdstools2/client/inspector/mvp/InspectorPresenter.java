@@ -20,6 +20,7 @@ import gov.nist.toolkit.xdstools2.client.inspector.MetadataObjectWrapper;
 import gov.nist.toolkit.xdstools2.client.util.AnnotatedItem;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +29,7 @@ import java.util.Map;
  *
  */
 public class InspectorPresenter extends AbstractPresenter<InspectorView> {
-    private List<Result> results;
+    private Collection<Result> results;
     private SiteSpec siteSpec;
     private MetadataCollection metadataCollection;
     List<AnnotatedItem> annotatedItems;
@@ -82,7 +83,6 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
         GWT.log("In setData");
 
         GWT.log("result list size is: " + results.size());
-        // At this point there should be only one Result.TODO: Need to revisit this if there are more!? -- Conformance tests!
         view.metadataInspectorLeft.setDataNotification(new DataNotification() {
             @Override
         public boolean inCompare() {
@@ -106,6 +106,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
 
             @Override
             public void onObjectSelected(MetadataObjectWrapper objectWrapper) {
+                if (objectWrapper==null) return;
                 try {
                     MetadataObjectType requestedObjectType = objectWrapper.getType();
                     String currentObjectTypeSelectionStr = view.metadataObjectSelector.getCurrentSelection();
@@ -140,18 +141,25 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
                 dataTable.lastSelectedObject = toFocus;
                 dataTable.compareObject = null;
                 dataTable.diffSelect.setValue(false,true);
-                TreeItem treeItem = doFocusTreeItem(objectType, view.metadataInspectorLeft.getTreeList(), null, toFocus);
+                TreeItem treeItem = doFocusTreeItem(objectType, view.metadataInspectorLeft.getTreeList(), null, toFocus, view.metadataInspectorLeft.getCurrentSelectedTreeItem());
+                if (treeItem!=null)
+                    view.metadataInspectorLeft.setCurrentSelectedTreeItem(treeItem);
+            }
+
+            @Override
+            public void onHistoryContentModeChanged(MetadataObjectWrapper objectWrapper) {
+                if (objectWrapper==null) return;
+              TreeItem treeItem = doFocusTreeItem(objectWrapper.getType(), view.metadataInspectorLeft.getTreeList(), null, objectWrapper.getObject(), null /* Passing a Null will select/focus even if it is the same node */);
+              if (treeItem!=null)
                 view.metadataInspectorLeft.setCurrentSelectedTreeItem(treeItem);
             }
         });
         view.metadataInspectorRight.setDataNotification(new DataNotification() {
             @Override
-            public void onAddToHistory(MetadataCollection metadataCollection) {
-            }
+            public void onAddToHistory(MetadataCollection metadataCollection) {}
 
             @Override
-            public void onObjectSelected(MetadataObjectWrapper objectWrapper) {
-            }
+            public void onObjectSelected(MetadataObjectWrapper objectWrapper) {}
 
             @Override
             public boolean inCompare() {
@@ -162,6 +170,9 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
             public void onCloseOffDetail(TreeItem currentTreeItem) {
                 view.metadataInspectorLeft.getDataNotification().onCloseOffDetail(currentTreeItem);
             }
+
+            @Override
+            public void onHistoryContentModeChanged(MetadataObjectWrapper objectWrapper) {}
         });
         setupInspectorWidget(view.metadataInspectorRight);
         metadataCollection = setupInspectorWidget(view.metadataInspectorLeft);
@@ -227,10 +238,12 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
        view.metadataInspectorLeft.showHistory(false);
        view.metadataInspectorLeft.showStructure(false);
 
-       TreeItem treeItem = doFocusTreeItem(metadataObjectType, view.metadataInspectorLeft.getTreeList(), null, left);
-       view.metadataInspectorLeft.setCurrentSelectedTreeItem(treeItem);
-       TreeItem compare = doFocusTreeItem(metadataObjectType, view.metadataInspectorRight.getTreeList(), null, right);
-       view.metadataInspectorRight.setCurrentSelectedTreeItem(compare);
+       TreeItem treeItem = doFocusTreeItem(metadataObjectType, view.metadataInspectorLeft.getTreeList(), null, left, view.metadataInspectorLeft.getCurrentSelectedTreeItem());
+       if (treeItem!=null)
+            view.metadataInspectorLeft.setCurrentSelectedTreeItem(treeItem);
+       TreeItem compare = doFocusTreeItem(metadataObjectType, view.metadataInspectorRight.getTreeList(), null, right, view.metadataInspectorLeft.getCurrentSelectedTreeItem());
+       if (compare!=null)
+            view.metadataInspectorRight.setCurrentSelectedTreeItem(compare);
     }
 
     /*
@@ -252,7 +265,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
     }
 
 
-    public void setDataModel(List<Result> results) {
+    public void setDataModel(Collection<Result> results) {
         this.results = results;
     }
 
@@ -265,27 +278,30 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
         doSwitchTable(metadataObjectType);
     }
 
-    public void doSwitchTable(MetadataObjectType objectType) {
-
+    public void doSwitchTable(MetadataObjectType targetObjectType) {
         for (MetadataObjectType key : view.tableMap.keySet()) {
             DataTable dataTable = view.tableMap.get(key);
-            if (key.equals(objectType)) {
-                // Just redisplay current selection in table selection. If there is nothing, clear previous selection.
+            if (key.equals(targetObjectType)) {
+                // Redisplay current selection in table selection. Without this there is no data display.
                 if (dataTable!=null) {
-                    dataTable.setData(dataMap.get(objectType));
+                    dataTable.setData(dataMap.get(targetObjectType));
                     dataTable.asWidget().setVisible(true);
                     if (!dataTable.diffSelect.getValue()) {
                         doSingleMode();
                         MetadataObject lastSelection = (MetadataObject)dataTable.lastSelectedObject;
                         if (lastSelection!=null) {
-                            TreeItem treeItem = doFocusTreeItem(objectType, view.metadataInspectorLeft.getTreeList(), null, lastSelection);
-                            view.metadataInspectorLeft.setCurrentSelectedTreeItem(treeItem);
-                        } else {
+                            TreeItem treeItem = doFocusTreeItem(targetObjectType, view.metadataInspectorLeft.getTreeList(), null, lastSelection, view.metadataInspectorLeft.getCurrentSelectedTreeItem());
+                            if (treeItem!=null) {
+                                  view.metadataInspectorLeft.setCurrentSelectedTreeItem(treeItem);
+                            }
+                        }
+                        // If there is nothing, clear previous selection.
+                        /* else {
                             TreeItem currentSelectedTreeItem = view.metadataInspectorLeft.getCurrentSelectedTreeItem();
                             if (currentSelectedTreeItem!=null) {
                                 currentSelectedTreeItem.getWidget().removeStyleName("insetBorder");
                             }
-                        }
+                        } */
                     } else {
                         doSetupDiffMode(true);
                         doDiffAction(key, (MetadataObject)dataTable.lastSelectedObject, (MetadataObject)dataTable.compareObject);
@@ -316,19 +332,31 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
      * @param target
      * @return True if object was located/found in the tree, selected
      */
-    public TreeItem doFocusTreeItem(MetadataObjectType metadataObjectType, List<Tree> treeList, final TreeItem root, MetadataObject target) {
+    public TreeItem doFocusTreeItem(MetadataObjectType metadataObjectType, List<Tree> treeList, final TreeItem root, MetadataObject target, TreeItem currentSelection) {
+
+        TreeItemSelector treeItemSelector = new TreeItemSelector(metadataObjectType, treeList, currentSelection);
+       // compare existing selectedTreeItem and the target, if compareTo returns true, or meaning they are same, exit focus. There is a case where tree two nodes can have the same id, object type.
+        // Selecting from the tree triggers a custom event to select the corresponding row in the advance option table, then in turn which triggers a selection change event that calls this method.
+        // The effect is the 'duplicate' node may be selected in case if it appears before the one that was actually selected.
+        if (currentSelection!=null && currentSelection.getUserObject()!=null && currentSelection.getUserObject() instanceof MetadataObjectWrapper) {
+           if (treeItemSelector.compareTo((MetadataObjectWrapper)currentSelection.getUserObject(), target) )
+               return null;
+        }
+
         if (target!=null)
-            return new TreeItemSelector(metadataObjectType, treeList).doFocusTreeItem(root, target);
+            return treeItemSelector.doFocusTreeItem(root, target);
         return null;
     }
 
     class TreeItemSelector {
+        private TreeItem currentSelection;
         private List<Tree> treeList;
         private MetadataObjectType metadataObjectType;
 
-        public TreeItemSelector(MetadataObjectType metadataObjectType, List<Tree> treeList) {
+        public TreeItemSelector(MetadataObjectType metadataObjectType, List<Tree> treeList, TreeItem currentSelection) {
             this.metadataObjectType = metadataObjectType;
             this.treeList = treeList;
+            this.currentSelection = currentSelection;
         }
 
         public TreeItem doFocusTreeItem(final TreeItem root, final MetadataObject target) {
@@ -336,12 +364,17 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
             if (root == null) {
 
                 for (Tree tree : treeList) {
-                    // Assume only 1 child at the root level
+                    // In the History mode, there is only 1 child at the root level
 //                    GWT.log("tree has " + tree.getItemCount() + " items.");
-                    TreeItem treeItem = doFocusTreeItem(tree.getItem(0), target);
-                    if (treeItem!=null) {
-                        tree.getItem(0).setState(true);
-                        return treeItem;
+                    // However, In the Compare mode, there is only 1 tree but many items.
+
+                    int childCt = tree.getItemCount();
+                    for (int cx = 0; cx < childCt; cx++) {
+                        TreeItem treeItem = doFocusTreeItem(tree.getItem(cx), target);
+                        if (treeItem!=null) {
+                            tree.getItem(0).setState(true);
+                            return treeItem;
+                        }
                     }
                 }
             } else {
@@ -382,8 +415,8 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
                     ((Hyperlink)treeItem.getWidget()).fireEvent(new ClickEvent() {});
                     treeItem.setSelected(true);
 //                    treeItem.setState(false, true);
-                    if (view.metadataInspectorLeft.getCurrentSelectedTreeItem()!=null) {
-                        view.metadataInspectorLeft.getCurrentSelectedTreeItem().getWidget().removeStyleName("insetBorder");
+                    if (currentSelection!=null) {
+                        currentSelection.getWidget().removeStyleName("insetBorder");
                     }
                     treeItem.getWidget().addStyleName("insetBorder");
                     return treeItem;

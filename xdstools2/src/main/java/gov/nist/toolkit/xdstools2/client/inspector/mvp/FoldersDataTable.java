@@ -235,7 +235,10 @@ abstract class FoldersDataTable extends DataTable<Folder> implements IsWidget {
 
     void setData(List<Folder> folderList) {
         dataProvider.getList().clear();
-        dataProvider.getList().addAll(folderList);
+        if (folderList!=null) {
+            diffSelect.setEnabled(folderList.size()>1);
+            dataProvider.getList().addAll(folderList);
+        }
 
     }
 

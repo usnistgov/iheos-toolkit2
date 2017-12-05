@@ -8,6 +8,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.Tree;
@@ -279,6 +280,10 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 		public void onClick(ClickEvent event) {
 //			groupByPanel.setVisible(selectHistory.getValue().booleanValue());
 			showHistoryOrContents();
+			if (dataNotification!=null) {
+				if (currentSelectedTreeItem!=null && currentSelectedTreeItem.getUserObject()!=null && (currentSelectedTreeItem.getUserObject() instanceof  MetadataObjectWrapper))
+				dataNotification.onHistoryContentModeChanged((MetadataObjectWrapper)currentSelectedTreeItem.getUserObject());
+			}
 		}
 	}
 
@@ -650,8 +655,14 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 						}
 						selectedItem.getWidget().addStyleName("insetBorder");
 						currentSelectedTreeItem = selectedItem;
-						MetadataObjectWrapper userObject = (MetadataObjectWrapper) selectedItem.getUserObject();
-						dataNotification.onObjectSelected(userObject);
+						if (selectedItem.getUserObject()!=null && selectedItem.getUserObject() instanceof MetadataObjectWrapper) {
+							MetadataObjectWrapper userObject = (MetadataObjectWrapper) selectedItem.getUserObject();
+							dataNotification.onObjectSelected(userObject);
+							if (selectedItem.getWidget() !=null && selectedItem.getWidget() instanceof Hyperlink) {
+								((Hyperlink) selectedItem.getWidget()).fireEvent(new ClickEvent() {
+								});
+							}
+						}
 					}
 				}
 			});

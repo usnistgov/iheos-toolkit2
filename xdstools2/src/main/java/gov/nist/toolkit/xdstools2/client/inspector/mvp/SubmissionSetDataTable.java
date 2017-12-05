@@ -290,7 +290,10 @@ abstract class SubmissionSetDataTable extends DataTable<SubmissionSet> implement
 
     void setData(List<SubmissionSet> submissionSetList) {
         dataProvider.getList().clear();
-        dataProvider.getList().addAll(submissionSetList);
+        if (submissionSetList!=null) {
+            diffSelect.setVisible(submissionSetList.size()>1);
+            dataProvider.getList().addAll(submissionSetList);
+        }
 
     }
 
