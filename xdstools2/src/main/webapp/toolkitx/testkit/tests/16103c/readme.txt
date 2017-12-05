@@ -1,4 +1,4 @@
-Merge Local PID to Same XAD-PID: Two Documents and Folder
+Merge Local PID within a Single XAD-PID: Two Documents and Folder
 <br/>
 Local PID/XAD-PID1 Merge To Local PID 2/XAD-PID1<br/>
 </br>

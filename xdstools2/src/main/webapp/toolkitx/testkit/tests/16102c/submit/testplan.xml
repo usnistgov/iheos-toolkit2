@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>IBM16102c/submit</Test>
+  <TestStep id="load_two_de_fd">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <RegisterTransaction>
+      <AssignUuids/>
+      <XDSb/>
+      <NoPatientId/>
+      <UseReport reportName="$patientid$" test="IBM16102c" section="add_initial_XADPID" step="register" useAs="$basePatientId$"/>
+      <UseReport reportName="$patientid$" test="IBM16102c" section="add_initial_XADPID" step="register" useAs="$baseSourcePatientId$"/>
+      <MetadataFile>two_de_fd.xml</MetadataFile>
+      <Report name="baseSourcePatientId" section="InputMetadata">
+          //*[local-name()='ExtrinsicObject'][1]/*[local-name()='Slot'][@name="sourcePatientId"]/*[local-name()='ValueList']/*[local-name()='Value']
+      </Report>
+      <Report name="basePatientId" section="InputMetadata">
+          //*[local-name()='ExtrinsicObject'][1]/*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427']/@value
+      </Report>  
+      <Report name="folid" section="InputMetadata">
+          //*[local-name()='RegistryPackage' and descendant::*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:f64ffdf0-4b97-4e06-b79f-a52b38ec2f8a']]/@id           
+      </Report>
+      <Report name="foluid" section="InputMetadata">
+          //*[local-name()='RegistryPackage']/*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:75df8f67-9973-4fbe-a900-df66cefecc5a']/@value           
+      </Report>
+      <Report name="ssuid" section="InputMetadata">
+         //*[local-name()='RegistryPackage']/*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8']/@value
+      </Report>          
+    </RegisterTransaction>
+  </TestStep> 
+</TestPlan>
