@@ -447,6 +447,10 @@
 			codingScheme="SRT" />
 	</CodeType>
 	<CodeType name="eventCodeList" classScheme="urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4">
+		<Code code="MPQ-eventcode-1" display="MPQ-eventcode-1" codingScheme="1.3.6.1.4.1.21367.2017.3" system="urn:oid:1.3.6.1.4.1.21367.2017.3" valueSet="" valueSetIdentifier="" deprecated="no" submitter="Lynn for MPQ" date="2017.11.30" ref="2017.11.30" comment="" category="eventCodeList"/>
+		<Code code="MPQ-eventcode-2" display="MPQ-eventcode-2" codingScheme="1.3.6.1.4.1.21367.2017.3" system="urn:oid:1.3.6.1.4.1.21367.2017.3" valueSet="" valueSetIdentifier="" deprecated="no" submitter="Lynn for MPQ" date="2017.11.30" ref="2017.11.30" comment="" category="eventCodeList"/>
+		<Code code="1.3.6.1.4.1.21367.2006.7.106" display="OPT-OUT" codingScheme="1.3.6.1.4.1.21367.2017.3" system="urn:oid:1.3.6.1.4.1.21367.2017.3" valueSet="" valueSetIdentifier="" deprecated="no" submitter="Lynn for BPPC" date="2017.11.30" ref="2017.11.30" comment="" category="eventCodeList"/>
+		<Code code="1.3.6.1.4.1.21367.2006.7.108" display="OPT-IN" codingScheme="1.3.6.1.4.1.21367.2017.3" system="urn:oid:1.3.6.1.4.1.21367.2017.3" valueSet="" valueSetIdentifier="" deprecated="no" submitter="Lynn for BPPC" date="2017.11.30" ref="2017.11.30" comment="" category="eventCodeList"/>
 
 		<!--
 			Added For APPC    March 13, 2017
@@ -1300,33 +1304,43 @@
 
 
 	<CodeType name="classCode" classScheme="urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a">
+		<Code code="REPORTS" display="Reports" codingScheme="1.3.6.1.4.1.19376.1.2.6.1" system="urn:ihe:cat:classCode" valueSet="1.3.6.1.4.1.19376.1.2.6.1.1" valueSetIdentifier="urn:oid:1.3.6.1.4.1.19376.1.2.6.1.1" deprecated="no" submitter="moore.stephen.m@wustl.edu" date="2017.10.01" ref="2017.10.01" comment="Suggested by IHE ITI" category="classCode"/>
+		<Code code="SUMMARY" display="Summary" codingScheme="1.3.6.1.4.1.19376.1.2.6.1" system="urn:ihe:cat:classCode" valueSet="1.3.6.1.4.1.19376.1.2.6.1.1" valueSetIdentifier="urn:oid:1.3.6.1.4.1.19376.1.2.6.1.1" deprecated="no" submitter="moore.stephen.m@wustl.edu" date="2017.10.01" ref="2017.10.01" comment="Suggested by IHE ITI" category="classCode"/>
+		<Code code="IMAGES" display="Images" codingScheme="1.3.6.1.4.1.19376.1.2.6.1" system="urn:ihe:cat:classCode" valueSet="1.3.6.1.4.1.19376.1.2.6.1.1" valueSetIdentifier="urn:oid:1.3.6.1.4.1.19376.1.2.6.1.1" deprecated="no" submitter="moore.stephen.m@wustl.edu" date="2017.10.01" ref="2017.10.01" comment="Suggested by IHE ITI" category="classCode"/>
+		<Code code="PRESCRIPTIONS" display="Prescribed Treatments and Diagnoses" codingScheme="1.3.6.1.4.1.19376.1.2.6.1" system="urn:ihe:cat:classCode" valueSet="1.3.6.1.4.1.19376.1.2.6.1.1" valueSetIdentifier="urn:oid:1.3.6.1.4.1.19376.1.2.6.1.1" deprecated="no" submitter="moore.stephen.m@wustl.edu" date="2017.10.01" ref="2017.10.01" comment="Suggested by IHE ITI" category="classCode"/>
+		<Code code="DISPENSATIONS" display="Dispensations" codingScheme="1.3.6.1.4.1.19376.1.2.6.1" system="urn:ihe:cat:classCode" valueSet="1.3.6.1.4.1.19376.1.2.6.1.1" valueSetIdentifier="urn:oid:1.3.6.1.4.1.19376.1.2.6.1.1" deprecated="no" submitter="moore.stephen.m@wustl.edu" date="2017.10.01" ref="2017.10.01" comment="Suggested by IHE ITI" category="classCode"/>
+		<Code code="PLANS" display="Treatment Plan or Protocol" codingScheme="1.3.6.1.4.1.19376.1.2.6.1" system="urn:ihe:cat:classCode" valueSet="1.3.6.1.4.1.19376.1.2.6.1.1" valueSetIdentifier="urn:oid:1.3.6.1.4.1.19376.1.2.6.1.1" deprecated="no" submitter="moore.stephen.m@wustl.edu" date="2017.10.01" ref="2017.10.01" comment="Suggested by IHE ITI" category="classCode"/>
+		<Code code="HEALTH" display="Health Certificates and Notifications" codingScheme="1.3.6.1.4.1.19376.1.2.6.1" system="urn:ihe:cat:classCode" valueSet="1.3.6.1.4.1.19376.1.2.6.1.1" valueSetIdentifier="urn:oid:1.3.6.1.4.1.19376.1.2.6.1.1" deprecated="no" submitter="moore.stephen.m@wustl.edu" date="2017.10.01" ref="2017.10.01" comment="Suggested by IHE ITI" category="classCode"/>
+		<Code code="PATIENT" display="Patient Expression and Preferences" codingScheme="1.3.6.1.4.1.19376.1.2.6.1" system="urn:ihe:cat:classCode" valueSet="1.3.6.1.4.1.19376.1.2.6.1.1" valueSetIdentifier="urn:oid:1.3.6.1.4.1.19376.1.2.6.1.1" deprecated="no" submitter="moore.stephen.m@wustl.edu" date="2017.10.01" ref="2017.10.01" comment="Suggested by IHE ITI" category="classCode"/>
+		<Code code="WORKFLOWS" display="Workflow Management" codingScheme="1.3.6.1.4.1.19376.1.2.6.1" system="urn:ihe:cat:classCode" valueSet="1.3.6.1.4.1.19376.1.2.6.1.1" valueSetIdentifier="urn:oid:1.3.6.1.4.1.19376.1.2.6.1.1" deprecated="no" submitter="moore.stephen.m@wustl.edu" date="2017.10.01" ref="2017.10.01" comment="Suggested by IHE ITI" category="classCode"/>
+
 		<!-- SMM 2016.12.07 DAF -->
-		<Code code="REPORTS" codingScheme="1.3.6.1.4.1.19376.1.2.6.1"
-			display = "Reports" />
+<!--		<Code code="REPORTS" codingScheme="1.3.6.1.4.1.19376.1.2.6.1"
+			display = "Reports" />-->
 		<!-- SMM 2016.12.07 DAF -->
-		<Code code="SUMMARIES" codingScheme="1.3.6.1.4.1.19376.1.2.6.1"
-			display = "Summaries" />
+<!--		<Code code="SUMMARIES" codingScheme="1.3.6.1.4.1.19376.1.2.6.1"
+			display = "Summaries" />-->
 		<!-- SMM 2016.12.07 DAF -->
-		<Code code="IMAGES" codingScheme="1.3.6.1.4.1.19376.1.2.6.1"
-			display = "Images" />
+<!--		<Code code="IMAGES" codingScheme="1.3.6.1.4.1.19376.1.2.6.1"
+			display = "Images" />-->
 		<!-- SMM 2016.12.07 DAF -->
-		<Code code="PRESCRIPTIONS" codingScheme="1.3.6.1.4.1.19376.1.2.6.1"
-			display = "Prescribed Treatments and Diagnoses" />
+<!--		<Code code="PRESCRIPTIONS" codingScheme="1.3.6.1.4.1.19376.1.2.6.1"
+			display = "Prescribed Treatments and Diagnoses" />-->
 		<!-- SMM 2016.12.07 DAF -->
-		<Code code="DISPENSATIONS" codingScheme="1.3.6.1.4.1.19376.1.2.6.1"
-			display = "Dispensations" />
+<!--		<Code code="DISPENSATIONS" codingScheme="1.3.6.1.4.1.19376.1.2.6.1"
+			display = "Dispensations" />-->
 		<!-- SMM 2016.12.07 DAF -->
-		<Code code="PLANS" codingScheme="1.3.6.1.4.1.19376.1.2.6.1"
-			display = "Treatment Plan or Protocol" />
+<!--		<Code code="PLANS" codingScheme="1.3.6.1.4.1.19376.1.2.6.1"
+			display = "Treatment Plan or Protocol" />-->
 		<!-- SMM 2016.12.07 DAF -->
-		<Code code="HEALTH" codingScheme="1.3.6.1.4.1.19376.1.2.6.1"
-			display = "Health Certificates and Notifications" />
+<!--		<Code code="HEALTH" codingScheme="1.3.6.1.4.1.19376.1.2.6.1"
+			display = "Health Certificates and Notifications" />-->
 		<!-- SMM 2016.12.07 DAF -->
-		<Code code="PATIENT" codingScheme="1.3.6.1.4.1.19376.1.2.6.1"
-			display = "Patient Expression and Preferences" />
+<!--		<Code code="PATIENT" codingScheme="1.3.6.1.4.1.19376.1.2.6.1"
+			display = "Patient Expression and Preferences" />-->
 		<!-- SMM 2016.12.07 DAF -->
-		<Code code="WORKFLOWS" codingScheme="1.3.6.1.4.1.19376.1.2.6.1"
-			display = "Workflow Management" />
+<!--		<Code code="WORKFLOWS" codingScheme="1.3.6.1.4.1.19376.1.2.6.1"
+			display = "Workflow Management" />-->
 
 		<!-- SMM 2016.09.21 RSNA ISN -->
 		<Code code="Imaging Exam" codingScheme="RSNA ISN"
@@ -1386,7 +1400,7 @@
 			Added for APPC   March 13, 2017
 
 		-->
-		<Code code="urn:ihe:iti:appc:2016" codingScheme="1.3.6.1.4.1.19376.1.2.3" display="urn:ihe:iti:appc:2016"/>
+		<Code code="urn:ihe:iti:appc:2016:consent" codingScheme="1.3.6.1.4.1.19376.1.2.3" display="urn:ihe:iti:appc:2016"/>
 
 		<!-- SMM 2016.12.07 C-CDA / DAF -->
 		<Code code="urn:hl7-org:sdwg:ccda-structuredBody:2.1"
