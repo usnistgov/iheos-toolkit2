@@ -8,4 +8,5 @@ public interface DataNotification {
     void onObjectSelected(MetadataObjectWrapper objectWrapper);
     boolean inCompare();
     void onCloseOffDetail(TreeItem currentTreeItem);
+    void onHistoryContentModeChanged(MetadataObjectWrapper objectWrapper);
 }

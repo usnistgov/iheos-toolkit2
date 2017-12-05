@@ -370,7 +370,10 @@ abstract class AssocDataTable extends DataTable<Association> implements IsWidget
 
     void setData(List<Association> associationList) {
         dataProvider.getList().clear();
-        dataProvider.getList().addAll(associationList);
+        if (associationList!=null) {
+            diffSelect.setEnabled(associationList.size()>1);
+            dataProvider.getList().addAll(associationList);
+        }
 
     }
 

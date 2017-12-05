@@ -49,8 +49,10 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         @Override
         void defaultSingleClickAction(Association row) {
             getPresenter().doSingleMode();
-            TreeItem treeItem = getPresenter().doFocusTreeItem(MetadataObjectType.valueOf(metadataObjectSelector.getCurrentSelection()), metadataInspectorLeft.getTreeList(), null,row);
-            metadataInspectorLeft.setCurrentSelectedTreeItem(treeItem);
+            TreeItem treeItem = getPresenter().doFocusTreeItem(MetadataObjectType.valueOf(metadataObjectSelector.getCurrentSelection()), metadataInspectorLeft.getTreeList(), null,row, metadataInspectorLeft.getCurrentSelectedTreeItem());
+            if (treeItem!=null) {
+                metadataInspectorLeft.setCurrentSelectedTreeItem(treeItem);
+            }
         }
 
         @Override
@@ -78,8 +80,10 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         @Override
         void defaultSingleClickAction(Folder row) {
             getPresenter().doSingleMode();
-            TreeItem treeItem = getPresenter().doFocusTreeItem(MetadataObjectType.valueOf(metadataObjectSelector.getCurrentSelection()), metadataInspectorLeft.getTreeList(), null,row);
-            metadataInspectorLeft.setCurrentSelectedTreeItem(treeItem);
+            TreeItem treeItem = getPresenter().doFocusTreeItem(MetadataObjectType.valueOf(metadataObjectSelector.getCurrentSelection()), metadataInspectorLeft.getTreeList(), null,row, metadataInspectorLeft.getCurrentSelectedTreeItem());
+            if (treeItem!=null) {
+                metadataInspectorLeft.setCurrentSelectedTreeItem(treeItem);
+            }
         }
 
         @Override
@@ -107,8 +111,10 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         @Override
         void defaultSingleClickAction(SubmissionSet row) {
             getPresenter().doSingleMode();
-            TreeItem treeItem = getPresenter().doFocusTreeItem(MetadataObjectType.valueOf(metadataObjectSelector.getCurrentSelection()), metadataInspectorLeft.getTreeList(), null,row);
-            metadataInspectorLeft.setCurrentSelectedTreeItem(treeItem);
+            TreeItem treeItem = getPresenter().doFocusTreeItem(MetadataObjectType.valueOf(metadataObjectSelector.getCurrentSelection()), metadataInspectorLeft.getTreeList(), null,row, metadataInspectorLeft.getCurrentSelectedTreeItem());
+            if (treeItem!=null) {
+                metadataInspectorLeft.setCurrentSelectedTreeItem(treeItem);
+            }
         }
 
         @Override
@@ -135,8 +141,10 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         @Override
         void defaultSingleClickAction(DocumentEntry row) {
             getPresenter().doSingleMode();
-            TreeItem treeItem = getPresenter().doFocusTreeItem(MetadataObjectType.valueOf(metadataObjectSelector.getCurrentSelection()), metadataInspectorLeft.getTreeList(), null,row);
-            metadataInspectorLeft.setCurrentSelectedTreeItem(treeItem);
+            TreeItem treeItem = getPresenter().doFocusTreeItem(MetadataObjectType.valueOf(metadataObjectSelector.getCurrentSelection()), metadataInspectorLeft.getTreeList(), null,row, metadataInspectorLeft.getCurrentSelectedTreeItem());
+            if (treeItem!=null) {
+                metadataInspectorLeft.setCurrentSelectedTreeItem(treeItem);
+            }
         }
 
         @Override
@@ -174,8 +182,10 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         @Override
         void defaultSingleClickAction(ObjectRef row) {
             getPresenter().doSingleMode();
-           TreeItem treeItem = getPresenter().doFocusTreeItem(MetadataObjectType.valueOf(metadataObjectSelector.getCurrentSelection()), metadataInspectorLeft.getTreeList(), null,row);
-           metadataInspectorLeft.setCurrentSelectedTreeItem(treeItem);
+           TreeItem treeItem = getPresenter().doFocusTreeItem(MetadataObjectType.valueOf(metadataObjectSelector.getCurrentSelection()), metadataInspectorLeft.getTreeList(), null,row, metadataInspectorLeft.getCurrentSelectedTreeItem());
+            if (treeItem!=null) {
+                metadataInspectorLeft.setCurrentSelectedTreeItem(treeItem);
+            }
         }
 
         @Override
@@ -224,7 +234,6 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         int resultPanelHeight = 0;
 
 //        WorkflowDiagram activityDiagram = new WorkflowDiagram(activityItem);
-        // TODO: how to tie the NamedBox ClickHandler to the show-data table?
 //        resultPanel.add(activityDiagram);
 
         final HTML title = new HTML();
@@ -242,6 +251,7 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         topNavPanel.add(advancedOptionPanel);
 
         FlowPanel advancedOptionWrapper = new FlowPanel();
+        metadataObjectSelector.displayShowAll(false);
         advancedOptionWrapper.add(metadataObjectSelector.asWidget());
         advancedOptionWrapper.add(new HTML("<br/>"));
 
@@ -250,6 +260,11 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         advancedOptionWrapper.add(submissionSetDataTable.asWidget());
         advancedOptionWrapper.add(foldersDataTable.asWidget());
         advancedOptionWrapper.add(assocDataTable.asWidget());
+        objectRefTable.asWidget().setVisible(false);
+        docEntryDataTable.asWidget().setVisible(false);
+        submissionSetDataTable.asWidget().setVisible(false);
+        foldersDataTable.asWidget().setVisible(false);
+        assocDataTable.asWidget().setVisible(false);
         advancedOptionPanel.add(advancedOptionWrapper);
         advancedOptionPanel.addStyleName("paddedHorizontalPanel");
 

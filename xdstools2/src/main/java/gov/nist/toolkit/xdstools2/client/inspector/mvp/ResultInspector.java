@@ -6,14 +6,14 @@ import com.google.gwt.place.shared.PlaceTokenizer;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  *
  */
 public class ResultInspector extends Place {
     private String placeName = null;
-    private List<Result> results;
+    private Collection<Result> results;
     private SiteSpec siteSpec;
 
     public ResultInspector() {
@@ -55,11 +55,11 @@ public class ResultInspector extends Place {
         }
     }
 
-    public List<Result> getResults() {
+    public Collection<Result> getResults() {
         return results;
     }
 
-    public void setResults(List<Result> results) {
+    public void setResults(Collection<Result> results) {
         this.results = results;
     }
 

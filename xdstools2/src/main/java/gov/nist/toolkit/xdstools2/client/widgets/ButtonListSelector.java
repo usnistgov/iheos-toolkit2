@@ -134,6 +134,10 @@ abstract public class ButtonListSelector implements IsWidget {
         return showAllCheckBox.getValue();
     }
 
+    public void displayShowAll(boolean isVisible) {
+        showAllCheckBox.setVisible(isVisible);
+    }
+
 
     public String getCurrentSelection() {
         // TODO: Should throw an exception if nothing?

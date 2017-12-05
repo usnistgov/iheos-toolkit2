@@ -250,7 +250,10 @@ abstract class DocEntryDataTable extends DataTable<DocumentEntry> implements IsW
 
     void setData(List<DocumentEntry> objectRefList) {
         dataProvider.getList().clear();
-        dataProvider.getList().addAll(objectRefList);
+        if (objectRefList!=null) {
+            diffSelect.setEnabled(objectRefList.size()>1);
+            dataProvider.getList().addAll(objectRefList);
+        }
     }
 
 
