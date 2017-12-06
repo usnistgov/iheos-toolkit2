@@ -4,7 +4,7 @@ import ca.uhn.fhir.context.FhirContext
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.fhir.resourceMgr.ResourceCache
 import gov.nist.toolkit.fhir.simulators.fhir.OperationOutcomeGenerator
-import gov.nist.toolkit.fhir.simulators.fhir.WrapResourceInHttpResponse
+import gov.nist.toolkit.fhir.utility.WrapResourceInHttpResponse
 import gov.nist.toolkit.fhir.simulators.proxy.exceptions.SimProxyTransformException
 import gov.nist.toolkit.fhir.simulators.proxy.util.ContentResponseTransform
 import gov.nist.toolkit.fhir.simulators.proxy.util.ResponsePartParser
@@ -54,7 +54,7 @@ class RegistryResponseToOperationOutcomeTransform implements ContentResponseTran
                     println "Reason is ${reason}"
                     SoapFault soapFault = new SoapFault(code, reason)
                     OperationOutcome operationOutcome = OperationOutcomeGenerator.translate(soapFault)
-                    return WrapResourceInHttpResponse.wrap(base, operationOutcome, HttpStatus.SC_OK)
+                    return WrapResourceInHttpResponse.wrap(base.chooseContentType(), operationOutcome, HttpStatus.SC_OK)
                 }
                 def body = root?.Body
                 def bodyName = body?.name()
@@ -79,7 +79,7 @@ class RegistryResponseToOperationOutcomeTransform implements ContentResponseTran
                             com.setDetails(cc)
                             oo.addIssue(com)
                         }
-                        return WrapResourceInHttpResponse.wrap(base, oo, HttpStatus.SC_BAD_REQUEST)
+                        return WrapResourceInHttpResponse.wrap(base.chooseContentType(), oo, HttpStatus.SC_BAD_REQUEST)
                     }
                 }
             }
@@ -96,7 +96,7 @@ class RegistryResponseToOperationOutcomeTransform implements ContentResponseTran
                 bundle.addEntry(comp)
             }
 
-            return WrapResourceInHttpResponse.wrap(base, bundle, HttpStatus.SC_OK)
+            return WrapResourceInHttpResponse.wrap(base.chooseContentType(), bundle, HttpStatus.SC_OK)
 
         } catch (Throwable e) {
             OperationOutcome oo = new OperationOutcome()
@@ -105,7 +105,7 @@ class RegistryResponseToOperationOutcomeTransform implements ContentResponseTran
             com.setCode(OperationOutcome.IssueType.EXCEPTION)
             com.setDiagnostics(ExceptionUtil.exception_details(e))
             oo.addIssue(com)
-            return WrapResourceInHttpResponse.wrap(base, oo, HttpStatus.SC_OK)
+            return WrapResourceInHttpResponse.wrap(base.chooseContentType(), oo, HttpStatus.SC_OK)
         }
     }
 

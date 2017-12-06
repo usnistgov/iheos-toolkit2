@@ -2,13 +2,13 @@ package gov.nist.toolkit.fhir.simulators.proxy.transforms
 
 import ca.uhn.fhir.context.FhirContext
 import gov.nist.toolkit.fhir.resourceMgr.ResourceCache
-import gov.nist.toolkit.fhir.simulators.fhir.WrapResourceInHttpResponse
+import gov.nist.toolkit.fhir.utility.WrapResourceInHttpResponse
 import gov.nist.toolkit.fhir.simulators.proxy.exceptions.SimProxyTransformException
 import gov.nist.toolkit.fhir.simulators.proxy.util.ContentResponseTransform
 import gov.nist.toolkit.fhir.simulators.proxy.util.RetrieveResponseParser
 import gov.nist.toolkit.fhir.simulators.proxy.util.SimProxyBase
+import gov.nist.toolkit.testengine.fhir.FhirSupport
 import gov.nist.toolkit.utilities.io.Io
-import gov.nist.toolkit.xdsexception.ExceptionUtil
 import org.apache.commons.httpclient.HttpStatus
 import org.apache.http.Header
 import org.apache.http.HttpResponse
@@ -46,7 +46,7 @@ class RetrieveResponseToFhirTransform implements ContentResponseTransform {
             }
 
             if (base.nonTradionalContentTypeRequested) {
-                String contentType = base.requestedContentType
+                String contentType = base.chooseContentType()
                 boolean wildcard = base.requestedContentTypeWildcarded
                 String mimeType = contents[0].mimeType
                 if (wildcard || mimeType == contentType) {
@@ -63,17 +63,17 @@ class RetrieveResponseToFhirTransform implements ContentResponseTransform {
             binary.setContent(contents[0].content)
             binary.id = contents[0].documentUniqueId
 
-            return WrapResourceInHttpResponse.wrap(base, binary, HttpStatus.SC_OK)
+            return WrapResourceInHttpResponse.wrap(base.chooseContentType(), binary, HttpStatus.SC_OK)
 
 
         } catch (Throwable e) {
-            OperationOutcome oo = new OperationOutcome()
-            OperationOutcome.OperationOutcomeIssueComponent com = new OperationOutcome.OperationOutcomeIssueComponent()
-            com.setSeverity(OperationOutcome.IssueSeverity.FATAL)
-            com.setCode(OperationOutcome.IssueType.EXCEPTION)
-            com.setDiagnostics(ExceptionUtil.exception_details(e))
-            oo.addIssue(com)
-            return WrapResourceInHttpResponse.wrap(base, oo, HttpStatus.SC_OK)
+            OperationOutcome oo = FhirSupport.operationOutcomeFromThrowable(e)
+//            OperationOutcome.OperationOutcomeIssueComponent com = new OperationOutcome.OperationOutcomeIssueComponent()
+//            com.setSeverity(OperationOutcome.IssueSeverity.FATAL)
+//            com.setCode(OperationOutcome.IssueType.EXCEPTION)
+//            com.setDiagnostics(ExceptionUtil.exception_details(e))
+//            oo.addIssue(com)
+            return WrapResourceInHttpResponse.wrap(base.chooseContentType(), oo, HttpStatus.SC_OK)
         }
     }
 

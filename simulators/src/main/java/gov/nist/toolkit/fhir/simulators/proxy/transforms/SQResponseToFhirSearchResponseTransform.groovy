@@ -1,7 +1,7 @@
 package gov.nist.toolkit.fhir.simulators.proxy.transforms
 
 import gov.nist.toolkit.fhir.simulators.fhir.OperationOutcomeGenerator
-import gov.nist.toolkit.fhir.simulators.fhir.WrapResourceInHttpResponse
+import gov.nist.toolkit.fhir.utility.WrapResourceInHttpResponse
 import gov.nist.toolkit.fhir.simulators.mhd.MetadataToDocumentReferenceTranslator
 import gov.nist.toolkit.fhir.simulators.proxy.exceptions.SimProxyTransformException
 import gov.nist.toolkit.fhir.simulators.proxy.util.ContentResponseTransform
@@ -50,14 +50,14 @@ class SQResponseToFhirSearchResponseTransform implements ContentResponseTransfor
                 SoapFault fault = SoapFault.parse(content)
                 if (fault) {
                     OperationOutcome oo = OperationOutcomeGenerator.translate(fault)
-                    return WrapResourceInHttpResponse.wrap(base, oo, HttpStatus.SC_INTERNAL_SERVER_ERROR)
+                    return WrapResourceInHttpResponse.wrap(base.chooseContentType(), oo, HttpStatus.SC_INTERNAL_SERVER_ERROR)
                 }
                 OMElement responseEle = Util.parse_xml(content)
                 List<OMElement> rel = XmlUtil.decendentsWithLocalName(responseEle, 'RegistryErrorList')
                 if (rel && rel.size() > 0) {
                     List<RegistryError> re = new RegistryErrorListParser(rel[0]).getRegistryErrorList()
                     OperationOutcome oo = OperationOutcomeGenerator.translate(re)
-                    return WrapResourceInHttpResponse.wrap(base, oo, HttpStatus.SC_OK)
+                    return WrapResourceInHttpResponse.wrap(base.chooseContentType(), oo, HttpStatus.SC_OK)
                 }
             }
             MetadataToMetadataCollectionParser mmparser = new MetadataToMetadataCollectionParser(metadata, 'Label')
@@ -75,7 +75,7 @@ class SQResponseToFhirSearchResponseTransform implements ContentResponseTransfor
                 response.statusCode = HttpStatus.SC_NOT_FOUND
                 return response
             }
-            return WrapResourceInHttpResponse.wrap(base, returnThing, HttpStatus.SC_OK)
+            return WrapResourceInHttpResponse.wrap(base.chooseContentType(), returnThing, HttpStatus.SC_OK)
 
         } catch (Throwable e) {
             OperationOutcome oo = new OperationOutcome()
@@ -84,7 +84,7 @@ class SQResponseToFhirSearchResponseTransform implements ContentResponseTransfor
             com.setCode(OperationOutcome.IssueType.EXCEPTION)
             com.setDiagnostics(ExceptionUtil.exception_details(e))
             oo.addIssue(com)
-            return WrapResourceInHttpResponse.wrap(base, oo, HttpStatus.SC_OK)
+            return WrapResourceInHttpResponse.wrap(base.chooseContentType(), oo, HttpStatus.SC_OK)
         }
     }
 
@@ -108,11 +108,12 @@ class SQResponseToFhirSearchResponseTransform implements ContentResponseTransfor
 
         @Override
         Map<URI, IBaseResource> search(String base, String resourceType, List params) {
-            def map = new FhirClient().search(base, resourceType, params)
-//            IBaseResource thePatient = ToolkitFhirContext.get().newXmlParser().parseResource(patient)
-//            def map = [:]
-//            map[uri] = theResource
-            map
+            try {
+                def map = new FhirClient().search(base, resourceType, params)
+                return map
+            } catch (Exception e) {
+                return [:]
+            }
         }
     }
 

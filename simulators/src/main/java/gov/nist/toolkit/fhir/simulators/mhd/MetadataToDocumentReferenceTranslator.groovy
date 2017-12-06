@@ -142,8 +142,8 @@ class MetadataToDocumentReferenceTranslator {
         Map<String, IBaseResource> searchResults
         for (String base : bases) {
             searchResults = searcher.search(base, resourceType, params)
-            if (searchResults.size() == 0) break
-            return [searchResults.keySet()[0], searchResults.values()[0]]
+            if (searchResults.size() != 0)
+                return [searchResults.keySet()[0], searchResults.values()[0]]
         }
         throw new Exception("Did not find ${resourceType} identiied by ${params} on servers ${bases}")
     }

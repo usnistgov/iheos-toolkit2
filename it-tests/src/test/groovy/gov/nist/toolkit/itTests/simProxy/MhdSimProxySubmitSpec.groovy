@@ -9,6 +9,7 @@ import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.AssertionResult
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
+import gov.nist.toolkit.services.client.FhirSupportOrchestrationResponse
 import gov.nist.toolkit.services.server.orchestration.FhirSupportOrchestrationBuilder
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.SimDb
@@ -38,7 +39,7 @@ class MhdSimProxySubmitSpec extends ToolkitSpecification {
     @Shared Map<String, SimConfig> simGroup = [:]
 
     def setupSpec() {   // one time setup done when class launched
-        startGrizzly('8889')
+        startGrizzlyWithFhir('8889')
 
         // Initialize remote api for talking to toolkit on Grizzly
         // Needed to build simulators
@@ -46,7 +47,6 @@ class MhdSimProxySubmitSpec extends ToolkitSpecification {
 
         new BuildCollections().init(null)
 
-        new FhirSupportOrchestrationBuilder(api, session, testSession, false).buildTestEnvironment()
     }
 
     def setup() {
@@ -82,6 +82,12 @@ class MhdSimProxySubmitSpec extends ToolkitSpecification {
         spi.update(rrConfig)
 
         when:
+        FhirSupportOrchestrationResponse response = new FhirSupportOrchestrationBuilder(api, session, testSession, false).buildTestEnvironment()
+
+        then:
+        !response.error
+
+        when:
         def sections = ['pdb']
         def params = [ :]
         List<Result> results = api.runTest(testSession, mhdName, testInstance, sections, params, true)
@@ -94,23 +100,8 @@ class MhdSimProxySubmitSpec extends ToolkitSpecification {
         then:
         results.size() == 1
         results.get(0).passed()
-        results[0].assertions.getAssertionsThatContains('Ref =').size() == 2
-
-        when:  // parse ids
-        def ids = results[0].assertions.assertions.findAll {
-            it.assertion.contains('Ref =')
-        }.collect { AssertionResult ar ->
-            ar.assertion.substring('Ref = '.size()).trim()  // collect the References returned
-        }.collect { it.split('=')[1].trim()}  // format is Builder: Ref = DocumentManifest/SubmissionSet_ID02
-
-        then:  'type included'
-        ids.size() == 2
-        ids[1].startsWith('DocumentManifest')
-        ids[0].startsWith('DocumentReference')
-
-        // id's are UUIDs
-        ids[0].split('/')[1].startsWith('urn:uuid:')
-        ids[1].split('/')[1].startsWith('urn:uuid:')
+        results[0].assertions.getAssertionsThatContains('REF_DR').size() == 1
+        results[0].assertions.getAssertionsThatContains('REF_DM').size() == 1
     }
 
     def 'send provide document bundle through simproxy - bad reference to Patient'() {

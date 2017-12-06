@@ -1,9 +1,11 @@
 package gov.nist.toolkit.fhir.simulators.proxy.service;
 
 import gov.nist.toolkit.fhir.simulators.proxy.util.ReturnableErrorException;
+import gov.nist.toolkit.fhir.utility.WrapResourceInHttpResponse;
 import gov.nist.toolkit.simcommon.client.BadSimIdException;
 import gov.nist.toolkit.fhir.simulators.proxy.util.ProxyLogger;
 import gov.nist.toolkit.fhir.simulators.proxy.util.SimProxyBase;
+import gov.nist.toolkit.testengine.fhir.FhirSupport;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.http.*;
@@ -180,8 +182,13 @@ class ProxyHandler implements HttpRequestHandler {
 
     // TODO if this is FHIR return OperationOutcome
     private void returnInternalError(HttpResponse response, ProxyLogger clientLogger, Throwable e) {
-        response.setStatusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
-        response.setReasonPhrase("SimProxy error - " + e.getMessage().replaceAll("\n", "|"));
+        boolean isFhir = true;
+        if (isFhir) {
+            WrapResourceInHttpResponse.inResponse(response, "application/fhir+json", FhirSupport.operationOutcomeFromThrowable(e));
+        } else {
+            response.setStatusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+            response.setReasonPhrase("SimProxy error - " + e.getMessage().replaceAll("\n", "|"));
+        }
         logger.error(ExceptionUtil.exception_details(e));
         clientLogger.logResponse(response);
     }

@@ -65,6 +65,16 @@ class ToolkitSpecification extends Specification {
         Installation.instance().overrideToolkitPort(remoteToolkitPort)  // ignore toolkit.properties
     }
 
+    def startGrizzlyWithFhir(String port) {
+        remoteToolkitPort = port
+        server = new GrizzlyController()
+        server.start(remoteToolkitPort);
+        server.withToolkit()
+        server.withFhirServlet()
+        Installation.instance().overrideToolkitPort(remoteToolkitPort)  // ignore toolkit.properties
+    }
+
+
     SimulatorBuilder getSimulatorApi(String remoteToolkitPort) {
         String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
         new SimulatorBuilder(urlRoot)
