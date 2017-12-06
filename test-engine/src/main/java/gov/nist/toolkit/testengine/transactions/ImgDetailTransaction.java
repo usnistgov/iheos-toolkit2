@@ -1009,7 +1009,7 @@ public class ImgDetailTransaction extends BasicTransaction {
          return linkage.findResultInLog(stepp, testDir).getFirstElement();
       }
       // Get response from simulator transaction
-      OMElement simTransactionElement = XmlUtil.firstChildWithLocalName(a.assertElement, "SimReference");
+      OMElement simTransactionElement = XmlUtil.firstChildWithLocalName(a.assertElement, "SimTransaction");
       if (simTransactionElement != null) {
          String id = simTransactionElement.getAttributeValue(new QName("id"));
          String trans = simTransactionElement.getAttributeValue(new QName("transaction"));
