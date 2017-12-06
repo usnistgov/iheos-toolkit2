@@ -7,9 +7,10 @@ import gov.nist.toolkit.actortransaction.server.EndpointParser
 import gov.nist.toolkit.configDatatypes.client.FhirVerb
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
+import gov.nist.toolkit.fhir.simulators.mhd.CodeTranslator
 import gov.nist.toolkit.fhir.simulators.proxy.exceptions.SimProxyTransformException
-import gov.nist.toolkit.simcommon.server.factories.SimProxyFactory
 import gov.nist.toolkit.fhir.utility.UriBuilder
+import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.simcommon.client.BadSimIdException
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
@@ -17,13 +18,16 @@ import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
 import gov.nist.toolkit.simcommon.server.SimCache
 import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.simcommon.server.SimEndpoint
+import gov.nist.toolkit.simcommon.server.factories.SimProxyFactory
 import gov.nist.toolkit.sitemanagement.client.Site
 import gov.nist.toolkit.sitemanagement.client.TransactionBean
+import gov.nist.toolkit.valsupport.client.ValidationContext
 import org.apache.http.Header
 import org.apache.http.HttpHost
 import org.apache.http.HttpRequest
 import org.apache.http.HttpResponse
 import org.hl7.fhir.dstu3.model.Resource
+
 /**
  *
  */
@@ -52,6 +56,13 @@ public class SimProxyBase {
     List<String> clientContentTypes = []
     List<Resource> resourcesSubmitted = []
     FhirVerb fhirVerb
+    CodeTranslator codeTranslator
+
+    SimProxyBase() {
+        ValidationContext vc = new ValidationContext()
+        vc.codesFilename = Installation.instance().getDefaultCodesFile().toString()
+        codeTranslator = new CodeTranslator(vc)
+    }
 
     String fhirSupportBase() {
         def userName = simId.user

@@ -77,7 +77,7 @@ class MhdSimProxySubmitSpec extends ToolkitSpecification {
 
         //println simGroup
         SimConfig rrConfig = simGroup['bill__mhd_regrep']
-        rrConfig.setProperty(SimulatorProperties.VALIDATE_CODES, false)
+//        rrConfig.setProperty(SimulatorProperties.VALIDATE_CODES, false)
         rrConfig.setProperty(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, false)
         spi.update(rrConfig)
 

@@ -334,6 +334,10 @@ public class Installation {
         return new File(externalCache + sep + "environment");
     }
 
+    public File getDefaultCodesFile() {
+        return new File(environmentFile(defaultEnvironmentName()), "codes.xml");
+    }
+
 	public File getKeystoreDir(String environmentName) {
 		return new File(environmentFile(environmentName), "keystore");
 	}

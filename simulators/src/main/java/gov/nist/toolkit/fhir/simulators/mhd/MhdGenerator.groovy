@@ -226,7 +226,9 @@ class MhdGenerator {
 
     def addClassificationFromCoding(builder, Coding coding, scheme, classifiedObjectId) {
         assert coding
-        addClassification(builder, scheme, rMgr.newId(), classifiedObjectId, coding.code, coding.system, coding.display)
+        def systemCode = proxyBase.codeTranslator.findCodeByClassificationAndSystem(scheme, coding.system, coding.code)
+        assert systemCode, "Cannot find translation for ${coding.system}|${coding.code} into ${scheme}"
+        addClassification(builder, scheme, rMgr.newId(), classifiedObjectId, coding.code, systemCode.codingScheme, coding.display)
     }
 
     def addDocument(builder, drId, contentId) {
