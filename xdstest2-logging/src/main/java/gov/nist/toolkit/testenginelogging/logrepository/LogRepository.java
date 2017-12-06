@@ -91,6 +91,15 @@ public class LogRepository  {
         return dir;
     }
 
+    public boolean isGood() {
+        try {
+            logDir();
+            return true;
+        } catch (Throwable e) {
+            return false;
+        }
+    }
+
     // assign event including filenames - do not touch file system in case the event is never used
     private void assignEvent(TestInstance testInstance) {
         if (idType != LogIdType.TIME_ID) return;  // doesn't use event structure

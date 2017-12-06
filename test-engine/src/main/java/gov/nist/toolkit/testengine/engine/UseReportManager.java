@@ -97,22 +97,6 @@ public class UseReportManager  {
 		return  urm;
 	}
 
-//    public OMElement toXML() {
-//        OMElement top = MetadataSupport.om_factory.createOMElement("UseReports", null);
-//
-//        for (UseReport report : useReports) {
-//            OMElement rep = MetadataSupport.om_factory.createOMElement("UseReport", null);
-//
-//            rep.addAttribute("name", report.reportName, null);
-//            rep.setText(report.value);
-//
-//            top.addChild(rep);
-//        }
-//
-//        return top;
-//    }
-
-
     static QName test_qname = new QName("test");
 	static QName section_qname = new QName("section");
 	static QName step_qname = new QName("step");
@@ -193,14 +177,6 @@ public class UseReportManager  {
 			}
 			if (!satisfied)
                 throw new XdsInternalException("UseReportManager#resolve: cannot find Report for " + useReport.getURI() + "\n");
-
-//			for (OMElement rep : XmlUtil.childrenWithLocalName(reportEles, "Report")) {
-//				ReportDTO r = ReportBuilder.parse(rep);
-//				if (reportName.equals(r.getName())) {
-//					useReport.value = r.getValue();
-//				}
-//			}
-
 		}
 	}
 

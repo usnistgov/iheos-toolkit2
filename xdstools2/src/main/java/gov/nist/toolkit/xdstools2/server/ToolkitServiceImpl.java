@@ -33,7 +33,7 @@ import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
 import gov.nist.toolkit.session.server.Session;
-import gov.nist.toolkit.session.server.serviceManager.FhirServiceManager;
+import gov.nist.toolkit.services.server.testClient.FhirServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
 import gov.nist.toolkit.simcommon.client.SimId;

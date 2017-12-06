@@ -50,6 +50,11 @@ class FhirSupportOrchestrationBuilder {
         this(api, session, requestBuilder(userName, useExistingState))
     }
 
+    FhirSupportOrchestrationBuilder(ToolkitApi api, Session session, boolean useExistingState) {
+        this(api, session, session.getTestSession(), useExistingState)
+    }
+
+
     private static FhirSupportOrchestrationRequest requestBuilder(String userName, boolean useExistingState) {
         FhirSupportOrchestrationRequest request = new FhirSupportOrchestrationRequest()
         request.userName = userName

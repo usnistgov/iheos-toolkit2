@@ -258,7 +258,7 @@ public class TestLogDetails {
 	
 	public File getTestLog(TestInstance testInstance, String section) {
 		File path;
-		if (logRepository == null)
+		if (logRepository == null || !logRepository.isGood())
 			return null;
 		File logdir = logRepository.logDir();
 
