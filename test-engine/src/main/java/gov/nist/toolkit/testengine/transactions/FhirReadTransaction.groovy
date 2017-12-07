@@ -65,13 +65,29 @@ class FhirReadTransaction extends BasicFhirTransaction {
             if (referenceDocument) {
                 File referenceFile = new File(testConfig.testplanDir, referenceDocument)
                 byte[] referenceBytes = referenceFile.bytes
-                if (referenceBytes != contentBytes) {
-                    stepContext.set_error("Returned bytes do not match those sent")
-                    stepContext.set_error("Sent ${referenceBytes.size()}")
-                    stepContext.set_error("Received ${contentBytes.size()}")
+
+                if (returnedContentType.contains('fhir')) {
+                    // returned Binary instead of just the byte stream
+                    IBaseResource returned = FhirSupport.parse(content)
+                    assert returned instanceof Binary, "Since return is type ${returnedContentType}, content must be Binary resource - got ${returned.class.simpleName} instead"
+                    Binary returnedBinary = returned
+                    byte[] returnedBytes = returnedBinary.content
+                    if (referenceBytes !=  returnedBytes) {
+                        stepContext.set_error("Returned bytes do not match those sent")
+                        stepContext.set_error("Sent ${referenceBytes.size()}")
+                        stepContext.set_error("Received ${contentBytes.size()}")
+                        return
+                    }
+                } else {
+                    // natural content returned (not a resource)
+                    if (referenceBytes != contentBytes) {
+                        stepContext.set_error("Returned bytes do not match those sent")
+                        stepContext.set_error("Sent ${referenceBytes.size()}")
+                        stepContext.set_error("Received ${contentBytes.size()}")
+                        return
+                    }
                     return
                 }
-                return
             }
         } else {
             (statusLine, content) = FhirClient.get(new URI(fullEndpoint), acceptType)
@@ -139,6 +155,12 @@ class FhirReadTransaction extends BasicFhirTransaction {
                     Binary referenceBinary = FhirSupport.binaryFromFile(referenceFile)
                     byte[] referenceBytes = referenceBinary.content
                     byte[] returnedBytes = returnedBinary.content
+
+                    String referenceString = new String(referenceBytes)
+                    String returnedString = new String(referenceBytes)
+
+                    assert referenceString == returnedString
+
                     if (referenceBytes != returnedBytes) {
                         stepContext.set_error("Returned bytes do not match those sent")
                         stepContext.set_error("Sent ${referenceBytes.size()}")
