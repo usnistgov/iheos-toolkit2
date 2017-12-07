@@ -228,7 +228,7 @@ class MhdGenerator {
         assert coding
         if (proxyBase) {  // will be null during unit tests - just skip code translation in that case
             def systemCode = proxyBase.codeTranslator.findCodeByClassificationAndSystem(scheme, coding.system, coding.code)
-            assert systemCode, "Cannot find translation for ${coding.system}|${coding.code} into ${scheme}"
+            assert systemCode, "Cannot find translation for code ${coding.system}|${coding.code} (FHIR) into XDS coding scheme ${scheme} in configured codes.xml file"
             addClassification(builder, scheme, rMgr.newId(), classifiedObjectId, coding.code, systemCode.codingScheme, coding.display)
         } else {
             addClassification(builder, scheme, rMgr.newId(), classifiedObjectId, coding.code, coding.system, coding.display)
