@@ -226,9 +226,13 @@ class MhdGenerator {
 
     def addClassificationFromCoding(builder, Coding coding, scheme, classifiedObjectId) {
         assert coding
-        def systemCode = proxyBase.codeTranslator.findCodeByClassificationAndSystem(scheme, coding.system, coding.code)
-        assert systemCode, "Cannot find translation for ${coding.system}|${coding.code} into ${scheme}"
-        addClassification(builder, scheme, rMgr.newId(), classifiedObjectId, coding.code, systemCode.codingScheme, coding.display)
+        if (proxyBase) {  // will be null during unit tests - just skip code translation in that case
+            def systemCode = proxyBase.codeTranslator.findCodeByClassificationAndSystem(scheme, coding.system, coding.code)
+            assert systemCode, "Cannot find translation for ${coding.system}|${coding.code} into ${scheme}"
+            addClassification(builder, scheme, rMgr.newId(), classifiedObjectId, coding.code, systemCode.codingScheme, coding.display)
+        } else {
+            addClassification(builder, scheme, rMgr.newId(), classifiedObjectId, coding.code, coding.system, coding.display)
+        }
     }
 
     def addDocument(builder, drId, contentId) {
@@ -595,7 +599,7 @@ class MhdGenerator {
                 return submission
         } catch (Throwable e) {
             logger.error(ExceptionUtil.exception_details(e))
-            throw new Exception("Provide Document Bundle to Provide and Register translation failed", e)
+            throw new Exception("Provide Document Bundle to Provide and Register translation failed - ${e.message}", e)
         }
         throw new ReturnableErrorException(ErrorLoggerAsHttpResponse.buildHttpResponse(proxyBase, errorLogger))
 

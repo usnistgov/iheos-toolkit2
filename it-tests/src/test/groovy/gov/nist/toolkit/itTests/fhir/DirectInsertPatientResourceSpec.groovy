@@ -37,7 +37,7 @@ class DirectInsertPatientResourceSpec  extends FhirSpecification {
 
         SimDb.mkfSim(simId)
 
-        simDb = new SimDb(simId, SimDb.BASE_TYPE, SimDb.ANY_TRANSACTION)
+        simDb = new SimDb(simId, SimDb.BASE_TYPE, SimDb.ANY_TRANSACTION, false)
     }
 
     def cleanupSpec() {

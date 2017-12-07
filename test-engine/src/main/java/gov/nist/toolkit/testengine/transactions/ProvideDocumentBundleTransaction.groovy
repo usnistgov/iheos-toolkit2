@@ -122,6 +122,7 @@ class ProvideDocumentBundleTransaction extends FhirCreateTransaction {
 
         } else {
             stepContext.set_error("Provide Document Bundle transaction must return bundle - returned ${returnResource.class.simpleName} instead")
+            err(FhirSupport.operationOutcomeIssues(returnResource).join(']n'))
         }
     }
 
