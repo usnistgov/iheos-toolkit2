@@ -9,7 +9,11 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.ObjectSort;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class TransactionSelectionManager {
 	CoupledTransactions couplings;
@@ -106,6 +110,7 @@ public class TransactionSelectionManager {
 			radioGroupName = radioGroupName.replaceAll(" ","");
 			RadioButton rb = new RadioButton(radioGroupName, siteName);
 			rb.addClickHandler(ch);
+
 			RbSite rbs = new RbSite();
 
 			rbs.site = site;
@@ -143,12 +148,21 @@ public class TransactionSelectionManager {
 //	}
 	
 	public void adjustForCurrentSelection(TransactionType selectedTransactionType) {
-		if (!couplings.contains(selectedTransactionType)) 
+		if (!couplings.contains(selectedTransactionType)) {
 			turnOffButtonsNotIn(selectedTransactionType);
-		if (selectedTransactionType == couplings.from())
+			if (couplings.getCoupling().getSelectionInstructions()!=null)
+				couplings.getCoupling().getSelectionInstructions().setVisible(false);
+		}
+		if (selectedTransactionType == couplings.from()) {
 			turnOffButtonsNotIn(selectedTransactionType);
-		if (selectedTransactionType == couplings.to())
+			if (couplings.getCoupling().getSelectionInstructions()!=null)
+				couplings.getCoupling().getSelectionInstructions().setVisible(true);
+		}
+		if (selectedTransactionType == couplings.to()) {
 			turnOffButtonsNotIn(selectedTransactionType, couplings.from());
+			if (couplings.getCoupling().getSelectionInstructions()!=null)
+				couplings.getCoupling().getSelectionInstructions().setVisible(false);
+		}
 	}
 	
 	public String verifySelection() {  // ActorClickHandlerByTransaction handles most of this ...

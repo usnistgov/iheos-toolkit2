@@ -1,5 +1,7 @@
 package gov.nist.toolkit.xdstools2.client;
 
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 
 import java.util.ArrayList;
@@ -21,10 +23,19 @@ import java.util.List;
 public class CoupledTransactions {
 
 	public class And {
+		Widget selectionInstructions;
 		List<TransactionType> trans = new ArrayList<TransactionType>();
 		
 		void add(TransactionType tt) {
 			trans.add(tt);
+		}
+
+		public Widget getSelectionInstructions() {
+			return selectionInstructions;
+		}
+
+		public void setSelectionInstructions(Widget selectionInstructions) {
+			this.selectionInstructions = selectionInstructions;
 		}
 	}
 	
@@ -36,11 +47,17 @@ public class CoupledTransactions {
 		return couplings.size() > 0;
 	}
 	
-	public void add(TransactionType t1, TransactionType t2) {
+	public And add(TransactionType t1, TransactionType t2) {
 		And a = new And();
 		a.add(t1);
 		a.add(t2);
 		couplings.add(a);
+		return a;
+	}
+
+	public void add(TransactionType t1, TransactionType t2, HTML selectionInstructions) {
+		And a = add(t1, t2);
+		a.setSelectionInstructions(selectionInstructions);
 	}
 	
 	public boolean isCoupled(TransactionType tt1, TransactionType tt2) {
@@ -72,5 +89,11 @@ public class CoupledTransactions {
 			return true;
 		return false;
 	}
-	
+
+	public And getCoupling() {
+	    if (hasCouplings())
+			return couplings.get(0);
+	    return null;
+	}
+
 }

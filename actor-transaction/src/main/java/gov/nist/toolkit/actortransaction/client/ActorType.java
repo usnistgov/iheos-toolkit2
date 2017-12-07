@@ -210,6 +210,50 @@ public enum ActorType implements IsSerializable, Serializable {
             IheItiProfile.MHD,
             Arrays.asList(OptionType.REQUIRED, OptionType.XDS_ON_FHIR)
     ),
+
+    INITIATING_GATEWAY(
+            "Initiating Gateway",
+            Arrays.asList("INIT_GATEWAY"),
+            "ig",
+            "gov.nist.toolkit.simcommon.server.factories.IGActorFactory",
+            "gov.nist.toolkit.fhir.simulators.sim.ig.IgActorSimulator",
+            Arrays.asList(TransactionType.IG_QUERY, TransactionType.IG_RETRIEVE),
+            true,
+            null,
+            false,
+            Constants.USE_SHORTNAME,
+            IheItiProfile.XDS,
+            Arrays.asList(OptionType.REQUIRED,OptionType.AFFINITY_DOMAIN,OptionType.XUA)
+    ),
+    INITIATING_IMAGING_GATEWAY(
+       "Initiating Imaging Gateway",
+       Arrays.asList("INIT_IMG_GATEWAY"),
+       "iig",
+            "gov.nist.toolkit.simcommon.server.factories.IigActorFactory",
+       "gov.nist.toolkit.fhir.simulators.sim.iig.IigActorSimulator",
+       Arrays.asList(TransactionType.RET_IMG_DOC_SET_GW),
+       true,
+       null,
+       false,
+       Constants.USE_SHORTNAME,
+       IheItiProfile.XCA_I,
+       Arrays.asList(OptionType.REQUIRED)
+    ),
+
+    COMBINED_INITIATING_GATEWAY(
+       "Combined Initiating Gateway",
+       Arrays.asList("COMB_INIT_GATEWAY"),
+       "cig",
+            "gov.nist.toolkit.simcommon.server.factories.CigActorFactory",
+       "gov.nist.toolkit.fhir.simulators.sim.CigActorSimulator",
+       Arrays.asList(TransactionType.IG_QUERY, TransactionType.IG_RETRIEVE,TransactionType.RET_IMG_DOC_SET_GW),
+       true,
+       null,
+       false,
+       Constants.USE_SHORTNAME,
+       IheItiProfile.XCA_I, // TODO: Is this right?
+       Arrays.asList(OptionType.REQUIRED)
+       ),
     RESPONDING_GATEWAY(
             "Responding Gateway",
             Arrays.asList("RESP_GATEWAY"),
@@ -239,60 +283,32 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList(OptionType.REQUIRED)
     ),
     RESPONDING_IMAGING_GATEWAY(
-       "Responding Imaging Gateway",
-       Arrays.asList("RESP_IMG_GATEWAY"),
-       "rig",
+            "Responding Imaging Gateway",
+            Arrays.asList("RESP_IMG_GATEWAY"),
+            "rig",
             "gov.nist.toolkit.simcommon.server.factories.RigActorFactory",
-       "gov.nist.toolkit.fhir.simulators.sim.rig.RigActorSimulator",
-       Arrays.asList(TransactionType.XC_RET_IMG_DOC_SET),
-       true,
-       null,
-       false,
-       Constants.USE_SHORTNAME,
-       IheItiProfile.XCA_I,
-       Arrays.asList(OptionType.REQUIRED)
-    ),
-    COMBINED_RESPONDING_GATEWAY(
-       "Combined Responding Gateway",
-       Arrays.asList("COMB_RESP_GATEWAY"),
-       "crg",
-            "gov.nist.toolkit.simcommon.server.factories.CrgActorFactory",
-       "gov.nist.toolkit.fhir.simulators.sim.CrgActorSimulator",
-       Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE, TransactionType.XC_RET_IMG_DOC_SET),
-       true,
-       null,
-       false,
-       Constants.USE_SHORTNAME,
-       IheItiProfile.XCA_I, // Is this right?
-       Arrays.asList(OptionType.REQUIRED)
-),
-    INITIATING_GATEWAY(
-            "Initiating Gateway",
-            Arrays.asList("INIT_GATEWAY"),
-            "ig",
-            "gov.nist.toolkit.simcommon.server.factories.IGActorFactory",
-            "gov.nist.toolkit.fhir.simulators.sim.ig.IgActorSimulator",
-            Arrays.asList(TransactionType.IG_QUERY, TransactionType.IG_RETRIEVE),
+            "gov.nist.toolkit.fhir.simulators.sim.rig.RigActorSimulator",
+            Arrays.asList(TransactionType.XC_RET_IMG_DOC_SET),
             true,
             null,
             false,
             Constants.USE_SHORTNAME,
-            IheItiProfile.XDS,
-            Arrays.asList(OptionType.REQUIRED,OptionType.AFFINITY_DOMAIN,OptionType.XUA)
+            IheItiProfile.XCA_I,
+            Arrays.asList(OptionType.REQUIRED)
     ),
-    INITIATING_IMAGING_GATEWAY(
-       "Initiating Imaging Gateway",
-       Arrays.asList("INIT_IMG_GATEWAY"),
-       "iig",
-            "gov.nist.toolkit.simcommon.server.factories.IigActorFactory",
-       "gov.nist.toolkit.fhir.simulators.sim.iig.IigActorSimulator",
-       Arrays.asList(TransactionType.RET_IMG_DOC_SET_GW),
-       true,
-       null,
-       false,
-       Constants.USE_SHORTNAME,
-       IheItiProfile.XCA_I,
-       Arrays.asList(OptionType.REQUIRED)
+    COMBINED_RESPONDING_GATEWAY(
+            "Combined Responding Gateway",
+            Arrays.asList("COMB_RESP_GATEWAY"),
+            "crg",
+            "gov.nist.toolkit.simcommon.server.factories.CrgActorFactory",
+            "gov.nist.toolkit.fhir.simulators.sim.CrgActorSimulator",
+            Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE, TransactionType.XC_RET_IMG_DOC_SET),
+            true,
+            null,
+            false,
+            Constants.USE_SHORTNAME,
+            IheItiProfile.XCA_I, // Is this right?
+            Arrays.asList(OptionType.REQUIRED)
     ),
     RSNA_EDGE_DEVICE(
             "RSNA Image Sharing Source",
@@ -308,20 +324,6 @@ public enum ActorType implements IsSerializable, Serializable {
             IheItiProfile.XDS, // TODO: This is right?
             Arrays.asList(OptionType.REQUIRED)
     ),
-    COMBINED_INITIATING_GATEWAY(
-       "Combined Initiating Gateway",
-       Arrays.asList("COMB_INIT_GATEWAY"),
-       "cig",
-            "gov.nist.toolkit.simcommon.server.factories.CigActorFactory",
-       "gov.nist.toolkit.fhir.simulators.sim.CigActorSimulator",
-       Arrays.asList(TransactionType.IG_QUERY, TransactionType.IG_RETRIEVE,TransactionType.RET_IMG_DOC_SET_GW),
-       true,
-       null,
-       false,
-       Constants.USE_SHORTNAME,
-       IheItiProfile.XCA_I, // TODO: Is this right?
-       Arrays.asList(OptionType.REQUIRED)
-       ),
     INITIALIZE_FOR_STORED_QUERY (  // this is an artificial type used by test indexer
             "Initialize for Stored Query",
             new ArrayList<String>(),
@@ -576,6 +578,9 @@ public enum ActorType implements IsSerializable, Serializable {
     List<String> proxyTransforms;
     String actorCode;
     IheItiProfile profile;
+    /**
+     * Conformance Test Options
+     */
     List<OptionType> options;
 
     ActorType() {
