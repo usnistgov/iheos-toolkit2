@@ -16,7 +16,7 @@
             <MustReturn/>
             <AcceptType>text/plain</AcceptType>
             <ReferenceDocument>../submit/textfile.txt</ReferenceDocument>
-            <RequestType>application/fhir+json</RequestType>
+            <RequestType>text/plain</RequestType>
             <UseReport test="pdb_single_doc_xof" section="read_document_reference" step="read_DR" reportName="BinaryUrl" useAs="Ref"/>
         </FhirReadTransaction>
     </TestStep>

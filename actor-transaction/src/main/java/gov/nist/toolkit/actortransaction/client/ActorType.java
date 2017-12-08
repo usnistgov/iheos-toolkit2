@@ -208,7 +208,7 @@ public enum ActorType implements IsSerializable, Serializable {
             ),
             "rec",   // must match rec from rec(mhd) in collections.txt
             IheItiProfile.MHD,
-            Arrays.asList(OptionType.REQUIRED, OptionType.XDS_ON_FHIR)
+            Arrays.asList(OptionType.REQUIRED, OptionType.DOC_RECIP_RESPNDR)
     ),
     RESPONDING_GATEWAY(
             "Responding Gateway",
@@ -499,7 +499,7 @@ public enum ActorType implements IsSerializable, Serializable {
             ),
             "rec",
             IheItiProfile.MHD,
-            Arrays.asList(OptionType.XDS_ON_FHIR)
+            Arrays.asList(OptionType.DOC_RECIP_RESPNDR)
     ),
     @Obsolete
     XDS_on_FHIR_Responder(
@@ -544,7 +544,7 @@ public enum ActorType implements IsSerializable, Serializable {
             ),
             "rec",
             IheItiProfile.MHD,
-            Arrays.asList(OptionType.XDS_ON_FHIR)
+            Arrays.asList(OptionType.DOC_RECIP_RESPNDR)
     ),
     ANY(
             "Any",

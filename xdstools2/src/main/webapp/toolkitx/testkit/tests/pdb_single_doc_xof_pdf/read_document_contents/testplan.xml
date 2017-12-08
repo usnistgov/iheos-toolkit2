@@ -1,0 +1,14 @@
+<TestPlan>
+    <Test>pdb_single_doc_xof_pdf/read_document_contents</Test>
+    <TestStep id="read_contents">
+        <Goal>
+        </Goal>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <FhirReadTransaction>
+            <MustReturn/>
+            <ReferenceDocument>../submit/pdffile.pdf</ReferenceDocument>
+            <RequestType>application/pdf</RequestType>
+            <UseReport test="pdb_single_doc_xof" section="read_document_reference" step="read_DR" reportName="BinaryUrl" useAs="Ref"/>
+        </FhirReadTransaction>
+    </TestStep>
+</TestPlan>

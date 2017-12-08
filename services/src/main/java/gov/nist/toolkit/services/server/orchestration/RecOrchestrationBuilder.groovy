@@ -45,7 +45,7 @@ class RecOrchestrationBuilder {
         FhirSupportOrchestrationBuilder supportBuilder = new FhirSupportOrchestrationBuilder(api, session, request.userName, request.useExistingState)
         FhirSupportOrchestrationResponse supportResponse = supportBuilder.buildTestEnvironment()
 
-        if (actorOption.optionId == OptionType.XDS_ON_FHIR.toString()) {
+        if (actorOption.optionId == OptionType.DOC_RECIP_RESPNDR.toString()) {
             RawResponse res =  setupXdsOnFhir(supportResponse)
             RecOrchestrationResponse rres = (RecOrchestrationResponse) res
             rres.additionalDocumentation = ProvideDocumentBundleTransaction.additionalDocumentation()
