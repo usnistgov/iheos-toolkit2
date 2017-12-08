@@ -500,8 +500,10 @@ public abstract class GenericQueryTab  extends ToolWindow {
             }
                 if (couplings!=null && couplings.hasCouplings()) {
                     siteGrid.setWidget(siteGridRow, 0, new HTML("&nbsp;")); // spacer
-                     Button clearSelectionBtn = new Button("Clear Selection");
+                     HTML clearSelectionBtn = new HTML("Clear Selection");
                     clearSelectionBtn.getElement().getStyle().setMarginTop(12, Style.Unit.PX);
+                    clearSelectionBtn.addStyleName("roundedButton3");
+                    clearSelectionBtn.addStyleName("right");
                     clearSelectionBtn.addClickHandler(new ClickHandler() {
                     @Override
                     public void onClick(ClickEvent clickEvent) {
