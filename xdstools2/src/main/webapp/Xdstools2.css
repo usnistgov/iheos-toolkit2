@@ -52,21 +52,6 @@ h3 {
   margin: 0;
 }
 
-.roundedButton1 {
-  margin: 0;
-  padding: 1px 3px;
-  text-decoration: none;
-  color:blue;
-  cursor: pointer;
-  cursor: hand;
-  font-weight:normal;font-size:smaller;
-  background: url("images/hborder.png") repeat-x 0px -2077px;
-  border:1px solid #bbb;
-  border-bottom: 1px solid #a0a0a0;
-  border-radius: 16px;
-  -moz-border-radius: 16px;
-}
-
 /** Most GWT widgets already have a style name defined */
 .gwt-DialogBox {
   width: 400px;
@@ -277,6 +262,21 @@ h3 {
   border-top-right-radius: .7em;
 }
 
+.roundedButton1 {
+  margin: 0;
+  padding: 1px 3px;
+  text-decoration: none;
+  color:blue;
+  cursor: pointer;
+  cursor: hand;
+  font-weight:normal;font-size:smaller;
+  background: url("images/hborder.png") repeat-x 0px -2077px;
+  border:1px solid #bbb;
+  border-bottom: 1px solid #a0a0a0;
+  border-radius: 16px;
+  -moz-border-radius: 16px;
+}
+
 .roundedButton2 {
   border-radius:32px;
   border:1px solid #bbb;
@@ -287,6 +287,20 @@ h3 {
   background:#f5f5f5;
   padding:1px 3px;
   color:#4B00FF;
+}
+
+.roundedButton3 {
+  margin: 0;
+  padding: 1px 3px;
+  text-decoration: none;
+  cursor: pointer;
+  cursor: hand;
+  font-weight:normal;font-size:x-small;
+  background: url("images/hborder.png") repeat-x 0px -2077px;
+  border:1px solid #bbb;
+  border-bottom: 1px solid #a0a0a0;
+  border-radius: 16px;
+  -moz-border-radius: 16px;
 }
 
 .gwt-TabBar {

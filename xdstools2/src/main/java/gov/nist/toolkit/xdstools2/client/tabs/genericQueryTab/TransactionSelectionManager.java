@@ -150,18 +150,44 @@ public class TransactionSelectionManager {
 	public void adjustForCurrentSelection(TransactionType selectedTransactionType) {
 		if (!couplings.contains(selectedTransactionType)) {
 			turnOffButtonsNotIn(selectedTransactionType);
-			if (couplings.getCoupling().getSelectionInstructions()!=null)
-				couplings.getCoupling().getSelectionInstructions().setVisible(false);
 		}
 		if (selectedTransactionType == couplings.from()) {
 			turnOffButtonsNotIn(selectedTransactionType);
-			if (couplings.getCoupling().getSelectionInstructions()!=null)
-				couplings.getCoupling().getSelectionInstructions().setVisible(true);
 		}
 		if (selectedTransactionType == couplings.to()) {
 			turnOffButtonsNotIn(selectedTransactionType, couplings.from());
-			if (couplings.getCoupling().getSelectionInstructions()!=null)
-				couplings.getCoupling().getSelectionInstructions().setVisible(false);
+		}
+	}
+
+	public void adjustForCurrentSelection2(TransactionType selectedTransactionType) {
+		if (!couplings.contains(selectedTransactionType)) {
+			if (couplings.getCoupling().getBeginSelectionInstructions()!=null)
+				couplings.getCoupling().getBeginSelectionInstructions().setVisible(false);
+				couplings.getCoupling().getEndSelectionInstruction().setVisible(false);
+		}
+		if (selectedTransactionType == couplings.from()) {
+			if (couplings.getCoupling().getBeginSelectionInstructions()!=null) {
+				couplings.getCoupling().getBeginSelectionInstructions().setVisible(true);
+			}
+
+			if (couplings.getCoupling().getEndSelectionInstruction()!=null && couplings.getCoupling().getPrimaryId()!=null) {
+				String text = couplings.getCoupling().getEndSelectionFormattedString();
+				couplings.getCoupling().getEndSelectionInstruction().setHTML(text.replaceFirst("%s", couplings.getCoupling().getPrimaryId()));
+				couplings.getCoupling().getEndSelectionInstruction().setVisible(false);
+			}
+		}
+		if (selectedTransactionType == couplings.to()) {
+			if (couplings.getCoupling().getBeginSelectionInstructions()!=null) {
+				if (couplings.getCoupling().getEndSelectionInstruction()!=null && couplings.getCoupling().getBeginSelectionInstructions().isVisible()) {
+					couplings.getCoupling().getBeginSelectionInstructions().setVisible(false);
+					String text = couplings.getCoupling().getEndSelectionInstruction().getText();
+					if (couplings.getCoupling().getSecondaryId()!=null) {
+						couplings.getCoupling().getEndSelectionInstruction().setHTML(text.replaceFirst("%s", couplings.getCoupling().getSecondaryId()));
+						couplings.getCoupling().getEndSelectionInstruction().setVisible(true);
+					}
+				}
+			}
+
 		}
 	}
 	

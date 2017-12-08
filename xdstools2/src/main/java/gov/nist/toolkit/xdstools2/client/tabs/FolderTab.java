@@ -30,7 +30,7 @@ public class FolderTab extends GenericQueryTab {
 	
 	static CoupledTransactions couplings = new CoupledTransactions();
 	static {
-		couplings.add(TransactionType.IG_QUERY, TransactionType.XC_QUERY, new HTML("Choose a Responding Gateway so that its homeCommunityId can be included in the request."));
+		couplings.add(TransactionType.IG_QUERY, TransactionType.XC_QUERY, new HTML("Choose a Responding Gateway also, so that its homeCommunityId can be included in the request."));
 	}
 
 	String help = "";

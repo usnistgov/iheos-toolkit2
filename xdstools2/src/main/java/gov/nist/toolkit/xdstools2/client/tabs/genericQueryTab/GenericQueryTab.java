@@ -473,15 +473,24 @@ public abstract class GenericQueryTab  extends ToolWindow {
                         ActorSitesByTran actorSitesByTran = actorSiteMap.get(at);
                         siteGrid.setWidget(siteGridRow++, 1, getSiteTableWidgetforTransactions(at, actorSitesByTran.transactionType, actorSitesByTran.sites));
                         if (couplings!=null && couplings.hasCouplings()) {
-                            if (ActorType.INITIATING_GATEWAY.equals(at) && actorSitesByTran.transactionType == couplings.from() && couplings.to()!=null) {
-                                HTML instruction = (HTML)couplings.getCoupling().getSelectionInstructions();
+                            if (actorSitesByTran.transactionType == couplings.from() && couplings.to()!=null) {
+                                HTML instruction = (HTML)couplings.getCoupling().getBeginSelectionInstructions();
                                 if (instruction!=null) {
                                     instruction.setVisible(false); // Should be enabled only when the From site is selected
                                     instruction.addStyleName("serverResponseLabelError");
                                     siteGrid.setWidget(siteGridRow, 0, new HTML(" ")); // spacer
                                     siteGrid.setWidget(siteGridRow, 1, instruction);
-                                    siteGrid.getFlexCellFormatter().setHorizontalAlignment(0,1, HasHorizontalAlignment.ALIGN_RIGHT);
+                                    siteGrid.getFlexCellFormatter().setHorizontalAlignment(siteGridRow,1, HasHorizontalAlignment.ALIGN_RIGHT);
 //                                    siteGrid.getFlexCellFormatter().setColSpan(siteGridRow, 0, 2);
+                                    siteGridRow++;
+                                }
+                            } else if (actorSitesByTran.transactionType == couplings.to() && couplings.from()!=null) {
+                                HTML instruction = (HTML)couplings.getCoupling().getEndSelectionInstruction();
+                                if (instruction!=null) {
+                                    instruction.setVisible(false); // Should be enabled only when the To site is selected
+                                    siteGrid.setWidget(siteGridRow, 0, new HTML(" ")); // spacer
+                                    siteGrid.setWidget(siteGridRow, 1, instruction);
+                                    siteGrid.getFlexCellFormatter().setHorizontalAlignment(siteGridRow,1, HasHorizontalAlignment.ALIGN_RIGHT);
                                     siteGridRow++;
                                 }
                             }
@@ -491,21 +500,27 @@ public abstract class GenericQueryTab  extends ToolWindow {
             }
                 if (couplings!=null && couplings.hasCouplings()) {
                     siteGrid.setWidget(siteGridRow, 0, new HTML("&nbsp;")); // spacer
-                     Button clearSelectionBtn = new Button("Clear");
-                    clearSelectionBtn.getElement().getStyle().setMarginLeft(6, Style.Unit.PX);
+                     Button clearSelectionBtn = new Button("Clear Selection");
+                    clearSelectionBtn.getElement().getStyle().setMarginTop(12, Style.Unit.PX);
                     clearSelectionBtn.addClickHandler(new ClickHandler() {
                     @Override
                     public void onClick(ClickEvent clickEvent) {
                         transactionSelectionManager.turnOffButtonsNotIn(null);
-                        if (couplings!=null) {
-                            HTML instruction = (HTML) couplings.getCoupling().getSelectionInstructions();
+                            couplings.getCoupling().setPrimaryId(null);
+                            couplings.getCoupling().setSecondaryId(null);
+                            HTML instruction = (HTML) couplings.getCoupling().getBeginSelectionInstructions();
                             if (instruction != null) {
                                 instruction.setVisible(false);
                             }
-                        }
+                            instruction = (HTML) couplings.getCoupling().getEndSelectionInstruction();
+                            if (instruction != null) {
+                                instruction.setVisible(false);
+                            }
+                           getGoButton().setEnabled(false);
                     }
                     });
                     siteGrid.setWidget(siteGridRow, 1, clearSelectionBtn);
+                    siteGrid.getFlexCellFormatter().setHorizontalAlignment(siteGridRow,1, HasHorizontalAlignment.ALIGN_RIGHT);
                     siteGridRow++;
                 }
             }

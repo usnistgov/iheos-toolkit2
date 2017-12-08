@@ -1,7 +1,6 @@
 package gov.nist.toolkit.xdstools2.client;
 
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 
 import java.util.ArrayList;
@@ -21,21 +20,57 @@ import java.util.List;
  *
  */
 public class CoupledTransactions {
-
 	public class And {
-		Widget selectionInstructions;
+		String primaryId;
+		String secondaryId;
+		HTML beginSelectionInstructions;
+		String beginSelectionFormattedString;
+		HTML endSelectionInstruction;
+		String endSelectionFormattedString;
 		List<TransactionType> trans = new ArrayList<TransactionType>();
 		
 		void add(TransactionType tt) {
 			trans.add(tt);
 		}
 
-		public Widget getSelectionInstructions() {
-			return selectionInstructions;
+		public HTML getBeginSelectionInstructions() {
+			return beginSelectionInstructions;
 		}
 
-		public void setSelectionInstructions(Widget selectionInstructions) {
-			this.selectionInstructions = selectionInstructions;
+		public void setBeginSelectionInstructions(HTML beginSelectionInstructions) {
+			this.beginSelectionInstructions = beginSelectionInstructions;
+		}
+
+		public HTML getEndSelectionInstruction() {
+			return endSelectionInstruction;
+		}
+
+		public void setEndSelectionInstruction(HTML endSelectionInstruction) {
+			this.endSelectionInstruction = endSelectionInstruction;
+		}
+
+		public String getPrimaryId() {
+			return primaryId;
+		}
+
+		public void setPrimaryId(String primaryId) {
+			this.primaryId = primaryId;
+		}
+
+		public String getSecondaryId() {
+			return secondaryId;
+		}
+
+		public void setSecondaryId(String secondaryId) {
+			this.secondaryId = secondaryId;
+		}
+
+		public String getEndSelectionFormattedString() {
+			return endSelectionFormattedString;
+		}
+
+		public void setEndSelectionFormattedString(String endSelectionFormattedString) {
+			this.endSelectionFormattedString = endSelectionFormattedString;
 		}
 	}
 	
@@ -55,9 +90,16 @@ public class CoupledTransactions {
 		return a;
 	}
 
-	public void add(TransactionType t1, TransactionType t2, HTML selectionInstructions) {
+	public And add(TransactionType t1, TransactionType t2, HTML beginSelectionInstruction) {
 		And a = add(t1, t2);
-		a.setSelectionInstructions(selectionInstructions);
+		a.setBeginSelectionInstructions(beginSelectionInstruction);
+		return a;
+	}
+	public And add(TransactionType t1, TransactionType t2, HTML beginSelectionInstruction, String formattedString) {
+	    And a = add(t1, t2, beginSelectionInstruction);
+	    a.setEndSelectionInstruction(new HTML(""));
+		a.setEndSelectionFormattedString(formattedString);
+		return a;
 	}
 	
 	public boolean isCoupled(TransactionType tt1, TransactionType tt2) {
