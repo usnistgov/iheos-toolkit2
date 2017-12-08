@@ -21,6 +21,8 @@ class MhdRecipientFactory extends SimProxyFactory {
 
         Simulator regrep = new RepositoryRegistryActorFactory().buildNew(simm, recSimId, true)
 
+        regrep.configs[0].getConfigEle(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED).setBooleanValue(false)
+
         addEditableConfig(config, SimulatorProperties.proxyForwardSite, ParamType.SELECTION, recSimIdName);
 
         return [config, config2, regrep.getConfig(0)]
