@@ -166,15 +166,33 @@ public class TransactionCollection implements IsSerializable, Serializable {
 	}
 
 	public boolean hasTransaction(TransactionType tt) {
-		for (TransactionBean t : transactions) {
-			if (!t.hasEndpoint())
-				continue;
-			try {
-				if (t.isType(tt))
-					return true;
-			} catch (Exception e) {}
+	    if (!isRepositories) {
+			for (TransactionBean t : transactions) {
+				if (!t.hasEndpoint())
+					continue;
+				try {
+					if (t.isType(tt))
+						return true;
+				} catch (Exception e) {
+				}
+			}
+			return false;
+		} else if (isRepositories) {
+			for (TransactionBean t : transactions) {
+				try {
+					if (tt.equals(TransactionType.RETRIEVE))
+				     return RepositoryType.REPOSITORY.equals(t.repositoryType);
+					else if (tt.equals(TransactionType.ODDS_RETRIEVE))
+					    return RepositoryType.ODDS.equals(t.repositoryType);
+					else if (tt.equals(TransactionType.ISR_RETRIEVE))
+						return RepositoryType.IDS.equals(t.repositoryType);
+				} catch (Exception e) {
+				}
+			}
+			return false;
 		}
 		return false;
+
 	}
 
 	public TransactionBean find(TransactionType transType, boolean isSecure, boolean isAsync) {

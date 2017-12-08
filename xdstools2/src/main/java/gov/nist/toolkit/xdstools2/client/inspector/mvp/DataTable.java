@@ -73,6 +73,7 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
     abstract void addActionBtnTableColumns();
 
     protected static final int ROW_BUFFER = 38;
+    SimplePager simplePager = new SimplePager();
     int pageSize;
     protected T placeHolderRow;
 
@@ -382,7 +383,6 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
     }
 
     protected void addPager(int pageSize) {
-        SimplePager simplePager = new SimplePager();
         simplePager.getElement().getStyle().setMarginTop(5, Style.Unit.PX);
         int marginLeftInPx = 50; // getWidthInPx() * .40
         simplePager.getElement().getStyle().setMarginLeft(marginLeftInPx, Style.Unit.PX);
@@ -636,8 +636,33 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
 
 
     public void setSelectedRow(Object item, boolean isSelected) {
-        if (dataTable.getSelectionModel() instanceof SingleSelectionModel)
-            dataTable.getSelectionModel().setSelected((T)item, isSelected);
+        if (dataTable.getSelectionModel() instanceof SingleSelectionModel) {
+            try {
+                dataTable.getSelectionModel().setSelected((T) item, isSelected);
+            } catch (Exception ex) {
+                GWT.log("Table set row failed!" + ex.toString());
+            }
+        }
+    }
+
+    public void pageToBeIn() {
+        try {
+            if (dataTable.getSelectionModel() instanceof SingleSelectionModel) {
+                T item = (T) ((SingleSelectionModel) dataTable.getSelectionModel()).getSelectedObject();
+                if (item != null) {
+                    int index = dataProvider.getList().indexOf(item);
+                    if (index > -1 && simplePager.getPageCount() > 1) {
+                        int pageToBe = index / pageSize;
+                        GWT.log("row index?? " + index + " Page count is: " + simplePager.getPageCount() + " Page tobe: " + pageToBe);
+                        if (simplePager.getPage() != pageToBe && pageToBe < simplePager.getPageCount()) {
+                            simplePager.setPage(pageToBe);
+                        }
+                    }
+                }
+            }
+        } catch (Exception ex) {
+
+        }
     }
 
 }

@@ -43,6 +43,7 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.StringSort;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
+import gov.nist.toolkit.xdsexception.client.TkActorNotFoundException;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.GazelleXuaUsername;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
@@ -69,10 +70,8 @@ import gov.nist.toolkit.xdstools2.shared.command.request.GetStsSamlAssertionRequ
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Infrastructure for any tab that will allow a site to be chosen,
@@ -93,6 +92,9 @@ public abstract class GenericQueryTab  extends ToolWindow {
     public boolean tlsEnabled = true;
     public boolean tlsOptionEnabled = true;
     public ActorType selectByActor = null;
+    /**
+     * The declared transactions to target by the tool.
+     */
     List<TransactionType> transactionTypes;
     public TransactionSelectionManager transactionSelectionManager = null;
     public boolean enableInspectResults = true;
@@ -434,6 +436,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
             siteSelectionPanel.setWidget(1, 1, siteGrid);
 
             int siteGridRow = 1;
+            /*
             Set<String> actorTypeNamesAlreadyDisplayed = new HashSet<>();
             for (TransactionType tt : transactionTypes) {
                 Set<ActorType> ats = ActorType.getActorTypes(tt);
@@ -452,6 +455,77 @@ public abstract class GenericQueryTab  extends ToolWindow {
                     }
                 }
             }
+            */
+
+            Map<ActorType,ActorSitesByTran> actorSiteMap = createSiteSelectionByTransactionList();
+
+            if (actorSiteMap.isEmpty()) {
+                siteGrid.setWidget(siteGridRow, 0, new HTML("&nbsp;")); // spacer
+                siteGrid.setWidget(siteGridRow, 1, new HTML("None available"));
+                siteGridRow++;
+            } else {
+                for (ActorType at : ActorType.values()) {
+                if (actorSiteMap.containsKey(at)) {
+                    if (at.showInConfig()) { // Exclude types like the "Any" ActorType
+                        Label label = new Label(at.getName() + ":");
+                        label.getElement().getStyle().setFontWeight(Style.FontWeight.BOLDER);
+                        siteGrid.setWidget(siteGridRow, 0, label);
+                        ActorSitesByTran actorSitesByTran = actorSiteMap.get(at);
+                        siteGrid.setWidget(siteGridRow++, 1, getSiteTableWidgetforTransactions(at, actorSitesByTran.transactionType, actorSitesByTran.sites));
+                        if (couplings!=null && couplings.hasCouplings()) {
+                            if (actorSitesByTran.transactionType == couplings.from() && couplings.to()!=null) {
+                                HTML instruction = (HTML)couplings.getCoupling().getBeginSelectionInstructions();
+                                if (instruction!=null) {
+                                    instruction.setVisible(false); // Should be enabled only when the From site is selected
+                                    instruction.addStyleName("serverResponseLabelError");
+                                    siteGrid.setWidget(siteGridRow, 0, new HTML(" ")); // spacer
+                                    siteGrid.setWidget(siteGridRow, 1, instruction);
+                                    siteGrid.getFlexCellFormatter().setHorizontalAlignment(siteGridRow,1, HasHorizontalAlignment.ALIGN_RIGHT);
+//                                    siteGrid.getFlexCellFormatter().setColSpan(siteGridRow, 0, 2);
+                                    siteGridRow++;
+                                }
+                            } else if (actorSitesByTran.transactionType == couplings.to() && couplings.from()!=null) {
+                                HTML instruction = (HTML)couplings.getCoupling().getEndSelectionInstruction();
+                                if (instruction!=null) {
+                                    instruction.setVisible(false); // Should be enabled only when the To site is selected
+                                    siteGrid.setWidget(siteGridRow, 0, new HTML(" ")); // spacer
+                                    siteGrid.setWidget(siteGridRow, 1, instruction);
+                                    siteGrid.getFlexCellFormatter().setHorizontalAlignment(siteGridRow,1, HasHorizontalAlignment.ALIGN_RIGHT);
+                                    siteGridRow++;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+                if (couplings!=null && couplings.hasCouplings()) {
+                    siteGrid.setWidget(siteGridRow, 0, new HTML("&nbsp;")); // spacer
+                     HTML clearSelectionBtn = new HTML("Clear Selection");
+                    clearSelectionBtn.getElement().getStyle().setMarginTop(12, Style.Unit.PX);
+                    clearSelectionBtn.addStyleName("roundedButton3");
+                    clearSelectionBtn.addStyleName("right");
+                    clearSelectionBtn.addClickHandler(new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent clickEvent) {
+                        transactionSelectionManager.turnOffButtonsNotIn(null);
+                            couplings.getCoupling().setPrimaryId(null);
+                            couplings.getCoupling().setSecondaryId(null);
+                            HTML instruction = (HTML) couplings.getCoupling().getBeginSelectionInstructions();
+                            if (instruction != null) {
+                                instruction.setVisible(false);
+                            }
+                            instruction = (HTML) couplings.getCoupling().getEndSelectionInstruction();
+                            if (instruction != null) {
+                                instruction.setVisible(false);
+                            }
+                           getGoButton().setEnabled(false);
+                    }
+                    });
+                    siteGrid.setWidget(siteGridRow, 1, clearSelectionBtn);
+                    siteGrid.getFlexCellFormatter().setHorizontalAlignment(siteGridRow,1, HasHorizontalAlignment.ALIGN_RIGHT);
+                    siteGridRow++;
+                }
+            }
 
             DecoratorPanel decoration = new DecoratorPanel();
             decoration.setStyleName("queryBoilerPlate");
@@ -460,6 +534,32 @@ public abstract class GenericQueryTab  extends ToolWindow {
         }
         if (autoAddRunnerButtons)
             addRunnerButtons(mainConfigPanel);
+
+        // Go/Run button should be enabled when a site is selected, so here it is initially disabled.
+        if (getGoButton()!=null)
+            getGoButton().setEnabled(false);
+
+    }
+
+    Map<ActorType,ActorSitesByTran> createSiteSelectionByTransactionList() {
+       Map<ActorType, ActorSitesByTran> actorSitesMap = new HashMap<>();
+        for (TransactionType tt : transactionTypes) { /* declared transaction types by the tool */
+            List<Site> siteList = getSiteList(tt);
+            if (siteList!=null && !siteList.isEmpty()) {
+               for (Site site : siteList)  {
+                   try {
+                       ActorType actorType = site.determineActorTypeByTransactionsInSite(tt);
+                       if (!actorSitesMap.containsKey(actorType)) {
+                           actorSitesMap.put(actorType, new ActorSitesByTran(tt));
+                       }
+                       actorSitesMap.get(actorType).sites.add(site);
+                   } catch (TkActorNotFoundException ex) {
+                      continue;
+                   }
+               }
+            }
+        }
+        return actorSitesMap;
     }
 
     public void tabIsSelected() {
@@ -803,10 +903,10 @@ public abstract class GenericQueryTab  extends ToolWindow {
         return orderedSites;
     }
 
-    Widget getSiteTableWidgetforTransactions(ActorType at, TransactionType tt) {
+    Widget getSiteTableWidgetforTransactions(ActorType at, TransactionType tt, List<Site> sites) {
         if (transactionSelectionManager == null)
             transactionSelectionManager = new TransactionSelectionManager(couplings, this);
-        List<Site> sites = getSiteList(tt);
+//        List<Site> sites = getSiteList(tt);
 
 
         transactionSelectionManager.addTransactionType(at, tt, sites);
@@ -816,6 +916,12 @@ public abstract class GenericQueryTab  extends ToolWindow {
         int col=0;
         Grid grid = new Grid( sites.size()/cols + 1 , cols);
         for (TransactionSelectionManager.RbSite rbSite : transactionSelectionManager.getPerTransRB(at, tt)) {
+            rbSite.rb.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent clickEvent) {
+                    getGoButton().setEnabled(transactionSelectionManager.verifySelection()==null);
+                }
+            });
             grid.setWidget(row, col, rbSite.rb);
             if (selectedSites.contains(rbSite)){
                 rbSite.rb.setValue(true);
@@ -829,6 +935,8 @@ public abstract class GenericQueryTab  extends ToolWindow {
 //		mainGrid.setWidget(majorRow, startingCol, grid);
         return grid;
     }
+
+
     /////////////////////////////////////////////////////////////////////////
     // - GETTERS AND SETTERS
     /////////////////////////////////////////////////////////////////////////
@@ -1011,6 +1119,14 @@ public abstract class GenericQueryTab  extends ToolWindow {
         this.displayTab = displayTab;
     }
 
+    private class ActorSitesByTran {
+        TransactionType transactionType;
+        List<Site> sites = new ArrayList<>();
 
+        public ActorSitesByTran(TransactionType transactionType) {
+            this.transactionType = transactionType;
+        }
+
+    }
 
 }

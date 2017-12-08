@@ -60,6 +60,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
             public boolean execute() {
                 if (isTableCellHeightAvailable()) {
                     view.getTableMap().get(objectType).resizeTable();
+                    view.getTableMap().get(objectType).pageToBeIn();
                     return false;
                 } else return true;
             }
@@ -121,6 +122,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
 
                     view.getTableMap().get(requestedObjectType).diffSelect.setValue(false,true);
                     view.getTableMap().get(requestedObjectType).setSelectedRow(objectWrapper.getObject(), true);
+                    view.getTableMap().get(requestedObjectType).pageToBeIn();
                 } catch (Exception ex) {
                     GWT.log("onObjectSelected" + ex.toString());
                 }
@@ -343,8 +345,9 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
                return null;
         }
 
-        if (target!=null)
+        if (target!=null) {
             return treeItemSelector.doFocusTreeItem(root, target);
+        }
         return null;
     }
 

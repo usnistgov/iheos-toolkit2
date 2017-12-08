@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.client;
 
+import com.google.gwt.user.client.ui.HTML;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 
 import java.util.ArrayList;
@@ -19,12 +20,57 @@ import java.util.List;
  *
  */
 public class CoupledTransactions {
-
 	public class And {
+		String primaryId;
+		String secondaryId;
+		HTML beginSelectionInstructions;
+		String beginSelectionFormattedString;
+		HTML endSelectionInstruction;
+		String endSelectionFormattedString;
 		List<TransactionType> trans = new ArrayList<TransactionType>();
 		
 		void add(TransactionType tt) {
 			trans.add(tt);
+		}
+
+		public HTML getBeginSelectionInstructions() {
+			return beginSelectionInstructions;
+		}
+
+		public void setBeginSelectionInstructions(HTML beginSelectionInstructions) {
+			this.beginSelectionInstructions = beginSelectionInstructions;
+		}
+
+		public HTML getEndSelectionInstruction() {
+			return endSelectionInstruction;
+		}
+
+		public void setEndSelectionInstruction(HTML endSelectionInstruction) {
+			this.endSelectionInstruction = endSelectionInstruction;
+		}
+
+		public String getPrimaryId() {
+			return primaryId;
+		}
+
+		public void setPrimaryId(String primaryId) {
+			this.primaryId = primaryId;
+		}
+
+		public String getSecondaryId() {
+			return secondaryId;
+		}
+
+		public void setSecondaryId(String secondaryId) {
+			this.secondaryId = secondaryId;
+		}
+
+		public String getEndSelectionFormattedString() {
+			return endSelectionFormattedString;
+		}
+
+		public void setEndSelectionFormattedString(String endSelectionFormattedString) {
+			this.endSelectionFormattedString = endSelectionFormattedString;
 		}
 	}
 	
@@ -36,11 +82,24 @@ public class CoupledTransactions {
 		return couplings.size() > 0;
 	}
 	
-	public void add(TransactionType t1, TransactionType t2) {
+	public And add(TransactionType t1, TransactionType t2) {
 		And a = new And();
 		a.add(t1);
 		a.add(t2);
 		couplings.add(a);
+		return a;
+	}
+
+	public And add(TransactionType t1, TransactionType t2, HTML beginSelectionInstruction) {
+		And a = add(t1, t2);
+		a.setBeginSelectionInstructions(beginSelectionInstruction);
+		return a;
+	}
+	public And add(TransactionType t1, TransactionType t2, HTML beginSelectionInstruction, String formattedString) {
+	    And a = add(t1, t2, beginSelectionInstruction);
+	    a.setEndSelectionInstruction(new HTML(""));
+		a.setEndSelectionFormattedString(formattedString);
+		return a;
 	}
 	
 	public boolean isCoupled(TransactionType tt1, TransactionType tt2) {
@@ -72,5 +131,11 @@ public class CoupledTransactions {
 			return true;
 		return false;
 	}
-	
+
+	public And getCoupling() {
+	    if (hasCouplings())
+			return couplings.get(0);
+	    return null;
+	}
+
 }

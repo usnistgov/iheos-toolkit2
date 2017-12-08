@@ -38,7 +38,7 @@ public class GetSubmissionSetAndContentsTab extends GenericQueryTab {
 		// a Responding Gateway (XC_QUERY) must also be selected
 		// to determine the homeCommunityId to put in the
 		// query request to be sent to the Initiating Gateway
-		couplings.add(TransactionType.IG_QUERY, TransactionType.XC_QUERY);
+		couplings.add(TransactionType.IG_QUERY, TransactionType.XC_QUERY, new HTML("Choose a Responding Gateway also, so that its homeCommunityId can be included in the request."),  "This request will be sent to %s and will include the homeCommunityId from %s.");
 	}
 
 	TextBox ssid;
