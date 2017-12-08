@@ -458,12 +458,18 @@ public abstract class GenericQueryTab  extends ToolWindow {
             */
 
             Map<ActorType,ActorSitesByTran> actorSiteMap = createSiteSelectionByTransactionList();
-            for (ActorType at : ActorType.values()) {
+
+            if (actorSiteMap.isEmpty()) {
+                siteGrid.setWidget(siteGridRow, 0, new HTML("&nbsp;")); // spacer
+                siteGrid.setWidget(siteGridRow, 1, new HTML("None available"));
+                siteGridRow++;
+            } else {
+                for (ActorType at : ActorType.values()) {
                 if (actorSiteMap.containsKey(at)) {
                     if (at.showInConfig()) { // Exclude types like the "Any" ActorType
-                      Label label = new Label(at.getName() + ":");
-                      label.getElement().getStyle().setFontWeight(Style.FontWeight.BOLDER);
-                      siteGrid.setWidget(siteGridRow, 0, label);
+                        Label label = new Label(at.getName() + ":");
+                        label.getElement().getStyle().setFontWeight(Style.FontWeight.BOLDER);
+                        siteGrid.setWidget(siteGridRow, 0, label);
                         ActorSitesByTran actorSitesByTran = actorSiteMap.get(at);
                         siteGrid.setWidget(siteGridRow++, 1, getSiteTableWidgetforTransactions(at, actorSitesByTran.transactionType, actorSitesByTran.sites));
                         if (couplings!=null && couplings.hasCouplings()) {
@@ -483,11 +489,6 @@ public abstract class GenericQueryTab  extends ToolWindow {
                     }
                 }
             }
-            if (actorSiteMap.isEmpty()) {
-                siteGrid.setWidget(siteGridRow, 0, new HTML("&nbsp;")); // spacer
-                siteGrid.setWidget(siteGridRow, 1, new HTML("None available"));
-                siteGridRow++;
-            } else {
                 if (couplings!=null && couplings.hasCouplings()) {
                     siteGrid.setWidget(siteGridRow, 0, new HTML("&nbsp;")); // spacer
                      Button clearSelectionBtn = new Button("Clear");

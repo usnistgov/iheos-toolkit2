@@ -202,18 +202,20 @@ public class Site  implements IsSerializable, Serializable {
 
 //        REPOSITORY
 //        pnr | ret -> repository
-		if (targetTransaction.equals(TransactionType.PROVIDE_AND_REGISTER) && transactions.hasTransaction(TransactionType.PROVIDE_AND_REGISTER)
-            || (targetTransaction.equals(TransactionType.RETRIEVE) && transactions.hasTransaction(TransactionType.RETRIEVE)))
+		if ((targetTransaction.equals(TransactionType.PROVIDE_AND_REGISTER) && transactions.hasTransaction(TransactionType.PROVIDE_AND_REGISTER))
+            || (targetTransaction.equals(TransactionType.RETRIEVE) && repositories.hasTransaction(TransactionType.RETRIEVE))) // Notice the Repositories
 			return ActorType.REPOSITORY;
 
 //        ODDS
 //        odds_ret -> odds
-		if (targetTransaction.equals(TransactionType.ODDS_RETRIEVE) && transactions.hasTransaction(TransactionType.ODDS_RETRIEVE))
+		if ((targetTransaction.equals(TransactionType.ODDS_RETRIEVE) && transactions.hasTransaction(TransactionType.ODDS_RETRIEVE))
+		    || (targetTransaction.equals(TransactionType.ODDS_RETRIEVE) && repositories.hasTransaction(TransactionType.ODDS_RETRIEVE))) // Notice the Repositories
 			return ActorType.ONDEMAND_DOCUMENT_SOURCE;
 
 //        ISR
 //        isr_ret -> isr
-		if (targetTransaction.equals(TransactionType.ISR_RETRIEVE) && transactions.hasTransaction(TransactionType.ISR_RETRIEVE))
+		if ((targetTransaction.equals(TransactionType.ISR_RETRIEVE) && transactions.hasTransaction(TransactionType.ISR_RETRIEVE))
+			|| (targetTransaction.equals(TransactionType.ISR_RETRIEVE) && repositories.hasTransaction(TransactionType.ISR_RETRIEVE))) // Notice the Repositories
 			return ActorType.ISR;
 
 //        DOC RECIP
