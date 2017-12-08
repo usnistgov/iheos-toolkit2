@@ -497,9 +497,11 @@ public abstract class GenericQueryTab  extends ToolWindow {
                     @Override
                     public void onClick(ClickEvent clickEvent) {
                         transactionSelectionManager.turnOffButtonsNotIn(null);
-                        HTML instruction = (HTML) couplings.getCoupling().getSelectionInstructions();
-                        if (instruction != null) {
-                            instruction.setVisible(false);
+                        if (couplings!=null) {
+                            HTML instruction = (HTML) couplings.getCoupling().getSelectionInstructions();
+                            if (instruction != null) {
+                                instruction.setVisible(false);
+                            }
                         }
                     }
                     });
