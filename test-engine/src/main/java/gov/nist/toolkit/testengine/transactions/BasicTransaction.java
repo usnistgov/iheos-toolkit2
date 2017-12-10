@@ -15,7 +15,6 @@ import gov.nist.toolkit.testengine.assertionEngine.Assertion;
 import gov.nist.toolkit.testengine.assertionEngine.AssertionEngine;
 import gov.nist.toolkit.testengine.engine.*;
 import gov.nist.toolkit.testenginelogging.LogFileContentBuilder;
-import gov.nist.toolkit.testenginelogging.NotALogFileException;
 import gov.nist.toolkit.testenginelogging.client.ReportDTO;
 import gov.nist.toolkit.testenginelogging.client.SectionLogMapDTO;
 import gov.nist.toolkit.utilities.xml.Util;
@@ -254,16 +253,16 @@ public abstract class BasicTransaction  {
 	protected void reportManagerPreRun(OMElement metadata_element) throws XdsInternalException,
 	XdsInternalException {
 
+		// Extra linkage is a parameter map passed in from the UI
         compileExtraLinkage(metadata_element);
 
 		if (useReportManager != null) {
 
 			SectionLogMapDTO sectionLogs = getPlan().getPreviousSectionLogs();
+
 			// add in current section log so we can reference ourself
 			try {
 				sectionLogs.put("THIS", new LogFileContentBuilder().build(getPlan().getLog(), true /* incomplete is ok */));
-			} catch (NotALogFileException e) {
-				e.printStackTrace();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

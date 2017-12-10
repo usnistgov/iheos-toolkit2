@@ -8,5 +8,6 @@ import java.io.Serializable;
  * Created by bill on 10/3/15.
  */
 public enum LogIdType implements IsSerializable, Serializable {
-    TIME_ID, SPECIFIC_ID
+    TIME_ID,     // used for utilities
+    SPECIFIC_ID  // used for tests - so they overwrite the last instance
 }

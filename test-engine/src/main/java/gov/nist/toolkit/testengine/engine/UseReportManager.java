@@ -9,6 +9,8 @@ import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
 import gov.nist.toolkit.testenginelogging.client.ReportDTO;
 import gov.nist.toolkit.testenginelogging.client.SectionLogMapDTO;
 import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
+import gov.nist.toolkit.testenginelogging.logrepository.InfrastructureLogRepositoryFactory;
+import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
 import gov.nist.toolkit.testkitutilities.TestDefinition;
 import gov.nist.toolkit.testkitutilities.TestKitSearchPath;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
@@ -18,6 +20,7 @@ import org.apache.log4j.Logger;
 
 import javax.xml.namespace.QName;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +52,21 @@ public class UseReportManager  {
 		return ts;
 	}
 
+	/**
+	 * generate list of "alternate" or "infrastructure" log repositories to look for
+	 * logs.  This needs to be fed by a configuration file soon.
+	 * @param ti
+	 * @return
+	 */
+	private List<LogRepository> alternateLogRepositories(TestInstance ti) throws IOException {
+		List<LogRepository> logRepositories = new ArrayList<>();
+
+		logRepositories.add(InfrastructureLogRepositoryFactory.getLogRepository("default", ti));
+		logRepositories.add(InfrastructureLogRepositoryFactory.getLogRepository("cat", ti));
+
+		return logRepositories;
+	}
+
 	public void loadPriorTestSections(TransactionSettings transactionSettings, TestConfig config) throws Exception {
 		TestSections ts = getTestSectionsReferencedInUseReports();
 		for (TestSection tsec : ts.getTestSections()) {
@@ -64,11 +82,19 @@ public class UseReportManager  {
 			TestLogDetails tspec = null;
 			tspec = new TestLogDetails(testDefinition, testInstance);
             System.out.println("TestLogDetails are: " + tspec.toString());
-			tspec.setLogRepository(config.logRepository);
-			File testlogFile = tspec.getTestLog(testInstance, section);
-            System.out.println("Loading log " + testlogFile);
-			if (testlogFile != null)
-				sectionLogMapDTO.put(section, new LogFileContentBuilder().build(testlogFile));
+            List<LogRepository> logRepositories = new ArrayList<>();
+            logRepositories.add(config.logRepository);
+            logRepositories.addAll(alternateLogRepositories(testInstance));
+			File testlogFile;
+            for (LogRepository lr : logRepositories) {
+				tspec.setLogRepository(lr);
+				testlogFile = tspec.getTestLog(testInstance, section);
+				if (testlogFile != null) {
+					System.out.println("Loading log " + testlogFile);
+					sectionLogMapDTO.put(section, new LogFileContentBuilder().build(testlogFile));
+					return;
+				}
+			}
 		}
 	}
 

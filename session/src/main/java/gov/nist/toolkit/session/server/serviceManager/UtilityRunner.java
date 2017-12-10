@@ -187,6 +187,7 @@ public class UtilityRunner {
         }
     }
 
+    // How is this useful since logRepository.id can never be updated?
     private void initializeLogRepository(Session session) throws IOException {
         if (session.transactionSettings.logRepository == null) {
             if (testRunType == TestRunType.UTILITY) {

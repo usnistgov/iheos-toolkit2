@@ -25,4 +25,9 @@ public class TestSection {
 			return true;
 		return false;
 	}
+
+	@Override
+	public String toString() {
+		return testInstance.toString() + " : " + section;
+	}
 }

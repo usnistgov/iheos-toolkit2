@@ -232,6 +232,15 @@ class FhirCreateTransaction extends BasicFhirTransaction {
                     def (id, ext) = filename.split('\\.', 2)
                     Binary binary = new Binary()
                     File contentFile = new File(testConfig.testplanDir, filename)
+                    if (!contentFile.exists()) {
+                        // that was looking in the directory with the testplan.  If this is a utility
+                        // it will be in a different directory
+                        File dir = resourceFile.parentFile
+                        contentFile = new File(dir, filename)
+                        if (!contentFile.exists())
+                            throw new Exception("Binary file reference from Resource (${filename}) cannot be found")
+                    }
+                    // resourceFile
                     binary.setContent(Io.bytesFromFile(contentFile))
                     binary.contentTypeElement = new CodeType(FhirSupport.mimeType(contentFile))
                     toAdd << [id, binary]
