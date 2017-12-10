@@ -85,14 +85,16 @@ public class UseReportManager  {
             List<LogRepository> logRepositories = new ArrayList<>();
             logRepositories.add(config.logRepository);
             logRepositories.addAll(alternateLogRepositories(testInstance));
-            for ()
-
-
-			tspec.setLogRepository(config.logRepository);
-			File testlogFile = tspec.getTestLog(testInstance, section);
-            System.out.println("Loading log " + testlogFile);
-			if (testlogFile != null)  // log available?
-				sectionLogMapDTO.put(section, new LogFileContentBuilder().build(testlogFile));
+			File testlogFile;
+            for (LogRepository lr : logRepositories) {
+				tspec.setLogRepository(lr);
+				testlogFile = tspec.getTestLog(testInstance, section);
+				if (testlogFile != null) {
+					System.out.println("Loading log " + testlogFile);
+					sectionLogMapDTO.put(section, new LogFileContentBuilder().build(testlogFile));
+					return;
+				}
+			}
 		}
 	}
 
