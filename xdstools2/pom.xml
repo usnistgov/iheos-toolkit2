@@ -24,18 +24,24 @@
 	<profiles>
 		<profile>
 			<id>Bill</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
+			<!--<activation>-->
+				<!--<activeByDefault>true</activeByDefault>-->
+			<!--</activation>-->
 			<properties>
 				<build.profile.id>Bill</build.profile.id>
 			</properties>
 		</profile>
 
 		<profile>
-			<id>UbuntuBill</id>
+			<id>UbuntuCmdBill</id>
 			<properties>
-				<build.profile.id>UbuntuBill</build.profile.id>
+				<build.profile.id>UbuntuCmdBill</build.profile.id>
+			</properties>
+		</profile>
+		<profile>
+			<id>UbuntuIdeaBill</id>
+			<properties>
+				<build.profile.id>UbuntuIdeaBill</build.profile.id>
 			</properties>
 		</profile>
 
