@@ -3,6 +3,7 @@ package gov.nist.toolkit.fhir.simulators.mhd
 import gov.nist.toolkit.fhir.simulators.proxy.util.SimProxyBase
 import gov.nist.toolkit.fhir.utility.IFhirSearch
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry
+import org.apache.log4j.Logger
 import org.hl7.fhir.dstu3.model.*
 import org.hl7.fhir.instance.model.api.IBaseResource
 
@@ -10,6 +11,7 @@ class MetadataToDocumentReferenceTranslator {
     List<String> supportServerBases  // FHIR servers to hunt for Patient references
     IFhirSearch searcher
     SimProxyBase base
+    static private final Logger logger = Logger.getLogger(MetadataToDocumentReferenceTranslator.class);
 
     MetadataToDocumentReferenceTranslator(SimProxyBase base, List<String> supportServerBases, IFhirSearch searcher) {
         assert supportServerBases
@@ -18,6 +20,7 @@ class MetadataToDocumentReferenceTranslator {
         this.supportServerBases = supportServerBases
         this.searcher = searcher
         this.base = base
+        logger.info("MetadataToDocumentReferenceTranslator: base is ${base.endpoint.baseAddress}")
     }
 
     DocumentReference run(DocumentEntry de) {
@@ -40,7 +43,7 @@ class MetadataToDocumentReferenceTranslator {
         if (de.size)
             attachment.size = Integer.parseInt(de.size)
         if (base)
-            attachment.url = "${base.endpoint.baseAddress}/Binary/${de.uniqueId}"
+            attachment.url = "${base.endpoint.baseAddress}/fhir/Binary/${de.uniqueId}"   // TODO having to add fhir is a big screwup
         dr.context = new DocumentReference.DocumentReferenceContextComponent()
         if (de.serviceStartTime || de.serviceStopTime) {
             dr.context.period = new Period()

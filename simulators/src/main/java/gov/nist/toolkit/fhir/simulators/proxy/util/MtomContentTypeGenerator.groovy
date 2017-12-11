@@ -46,14 +46,14 @@ class MtomContentTypeGenerator {
 //        StringBuilder buf = new StringBuilder()
         ByteArrayBuffer buf = new ByteArrayBuffer(4000)
 
-        def partHeaderTemplate = getClass().getResource('/templates/part_header.txt').text
+        def partHeaderTemplate = new MtomContentTypeGenerator().class.getResource('/templates/part_header.txt').text
         parts.each {
             def map = [theContentType: it.contentType, theContentId:"${it.contentId}"]
             byte[] m = new StrSubstitutor(map).replace(partHeaderTemplate).bytes
             buf.append(m, 0, m.size())//.append('\n')  // header
             buf.append(it.content, 0, it.content.size())//.append('\n')   // body
         }
-        byte[] m = getClass().getResource('/templates/mtom_close.txt').text.bytes
+        byte[] m = new MtomContentTypeGenerator().class.getResource('/templates/mtom_close.txt').text.bytes
         buf.append(m, 0, m.size())
 
 //        String s = buf.toString()

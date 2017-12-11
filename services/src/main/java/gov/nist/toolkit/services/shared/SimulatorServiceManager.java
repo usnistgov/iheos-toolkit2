@@ -483,7 +483,7 @@ public class SimulatorServiceManager extends CommonService {
                stats.add(rep);
             } else {
                stats.add(new SimulatorStats(simId));
-               logger.debug("Don't recognize actorType - " + db.getSimulatorActorType());
+               logger.debug("Cannot collect stats. Don't recognize actorType - " + db.getSimulatorActorType());
             }
          }
          return stats;

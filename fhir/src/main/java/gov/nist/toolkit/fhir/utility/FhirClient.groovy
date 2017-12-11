@@ -76,9 +76,10 @@ class FhirClient implements IFhirSearch {
             HttpClient client = HttpClientBuilder.create().build()
             HttpGet request = new HttpGet(uri)
             request.addHeader('Accept', contentType)
+            logger.info("GET ${uri} for content type ${contentType}")
             HttpResponse response = client.execute(request)
             def statusLine = response.getStatusLine()
-            logger.info("GET ${uri} for content type ${contentType}")
+            logger.info("==> ${statusLine.statusCode}, ${statusLine.reasonPhrase}")
             return [statusLine, Io.getStringFromInputStream(response.getEntity().content)]
         }
         catch (Throwable e) {

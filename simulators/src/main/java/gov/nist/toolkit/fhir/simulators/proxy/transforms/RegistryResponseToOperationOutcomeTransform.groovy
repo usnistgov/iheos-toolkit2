@@ -84,16 +84,24 @@ class RegistryResponseToOperationOutcomeTransform implements ContentResponseTran
                 }
             }
             // Success
+            def fullUriReturnableResourceTypes = ['DocumentReference', 'DocumentManifest', 'Binary']
             Bundle bundle = new Bundle()
             bundle.type = Bundle.BundleType.TRANSACTIONRESPONSE
+            logger.info("Building response bundle...")
             base.resourcesSubmitted.each { Resource resource ->
+                if (resource instanceof DocumentReference) {
+                    DocumentReference dr = resource
+                    dr.content[0].attachment.url = base.config.getEndpoint(TransactionType.FHIR) + '/' + 'Binary/' + dr.masterIdentifier.value
+                }
                 Bundle.BundleEntryComponent comp = new Bundle.BundleEntryComponent()
                 Bundle.BundleEntryResponseComponent rcomp = new Bundle.BundleEntryResponseComponent()
                 comp.setResponse(rcomp)
-                comp.fullUrl = makeLocalFullUrl(base.config.getEndpoint(TransactionType.FHIR),resource)
+                if (fullUriReturnableResourceTypes.contains(resource.class.simpleName))
+                    comp.fullUrl = makeLocalFullUrl(base.config.getEndpoint(TransactionType.FHIR),resource)
                 comp.resource = resource
                 rcomp.status = '200'
                 bundle.addEntry(comp)
+                logger.info("...${resource.class.simpleName} ${resource.id} ==> ${comp.fullUrl}")
             }
 
             return WrapResourceInHttpResponse.wrap(base.chooseContentType(), bundle, HttpStatus.SC_OK)

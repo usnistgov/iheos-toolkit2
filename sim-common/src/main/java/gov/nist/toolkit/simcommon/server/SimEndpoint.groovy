@@ -31,6 +31,10 @@ class SimEndpoint {
      //       'Patient'
     ]
 
+    String toString() {
+        "service=${service} actorType=${actorType} transactionType=${transactionType} simIdString=${simIdString} resourceType=${resourceType} fhirVerb=${fhirVerb}"
+    }
+
     SimEndpoint(String endpoint) {
         assert endpoint
         assert endpoint.indexOf(' ') == -1

@@ -17,7 +17,7 @@
 		<testkitIn>${project.basedir}/src/main/webapp/toolkitx/testkit</testkitIn>
 		<Default_Environment>default</Default_Environment>
 		<Toolkit_TLS_Port>8443</Toolkit_TLS_Port>
-		<Toolkit_Port>8888</Toolkit_Port>
+		<!--<Toolkit_Port>8888</Toolkit_Port>-->
 		<Image_Cache>/opt/xdsi/storage</Image_Cache>
 	</properties>
 
@@ -29,6 +29,13 @@
 			</activation>
 			<properties>
 				<build.profile.id>Bill</build.profile.id>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>UbuntuBill</id>
+			<properties>
+				<build.profile.id>UbuntuBill</build.profile.id>
 			</properties>
 		</profile>
 
