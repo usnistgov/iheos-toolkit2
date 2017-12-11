@@ -20,7 +20,8 @@ class MetadataToDocumentReferenceTranslator {
         this.supportServerBases = supportServerBases
         this.searcher = searcher
         this.base = base
-        logger.info("MetadataToDocumentReferenceTranslator: base is ${base.endpoint.baseAddress}")
+        if (base)
+            logger.info("MetadataToDocumentReferenceTranslator: base is ${base.endpoint.baseAddress}")
     }
 
     DocumentReference run(DocumentEntry de) {
