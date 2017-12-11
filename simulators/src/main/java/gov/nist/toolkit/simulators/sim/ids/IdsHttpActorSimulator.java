@@ -90,15 +90,18 @@ public class IdsHttpActorSimulator extends BaseHttpActorSimulator {
 
             String accept = httpMsg.getHeaderValue("Accept");
             if (StringUtils.isBlank(accept)) err("Required header 'Accept' absent or empty");
-            String [] types = accept.split(",");
             boolean foundOne = false;
-            for (String type : types) {
-               if (StringUtils.startsWithAny(type, validTypes)) {
+            for (String type : validTypes) {
+               if (accept.contains(type)) {
                   foundOne = true;
                   break;
                }
             }
-            if (!foundOne) err("Accept header must contain one of " + validTypes);
+            if (!foundOne) {
+               StringBuilder s = new StringBuilder();
+               for (String t : validTypes) s.append(t).append(", ");
+               err("Accept header must contain one of " + s);
+            }
             
             if (!"WADO".equals(httpMsg.getQueryParameterValue("requestType")))
                err("Required Request parameter 'requestType=WADO' not found.");
