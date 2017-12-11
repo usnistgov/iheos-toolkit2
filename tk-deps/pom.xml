@@ -801,16 +801,16 @@
         </dependencyManagement>
 
         <distributionManagement>
-            <repository>
-                <id>deployment</id>
-                <name>gazelle 3rd party</name>
-                <url>https://gazelle.ihe.net/nexus/content/repositories/thirdparty</url>
-            </repository>
-            <snapshotRepository>
-                <id>internal</id>
-                <name>Internal Releases</name>
-                <url>https://gazelle.ihe.net/nexus/content/repositories/snapshots/</url>
-            </snapshotRepository>
+            <!--<repository>-->
+                <!--<id>deployment</id>-->
+                <!--<name>gazelle 3rd party</name>-->
+                <!--<url>https://gazelle.ihe.net/nexus/content/repositories/thirdparty</url>-->
+            <!--</repository>-->
+            <!--<snapshotRepository>-->
+                <!--<id>internal</id>-->
+                <!--<name>Internal Releases</name>-->
+                <!--<url>https://gazelle.ihe.net/nexus/content/repositories/snapshots/</url>-->
+            <!--</snapshotRepository>-->
         </distributionManagement>
 
         <build>
