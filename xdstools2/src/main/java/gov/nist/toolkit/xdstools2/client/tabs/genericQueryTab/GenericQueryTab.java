@@ -436,27 +436,6 @@ public abstract class GenericQueryTab  extends ToolWindow {
             siteSelectionPanel.setWidget(1, 1, siteGrid);
 
             int siteGridRow = 1;
-            /*
-            Set<String> actorTypeNamesAlreadyDisplayed = new HashSet<>();
-            for (TransactionType tt : transactionTypes) {
-                Set<ActorType> ats = ActorType.getActorTypes(tt);
-                for (ActorType at : ats) {
-                    String actorTypeName = at.getName();
-                    if (!actorTypeNamesAlreadyDisplayed.contains(actorTypeName) && at.showInConfig()) {
-                        actorTypeNamesAlreadyDisplayed.add(actorTypeName);
-                        Label label = new Label(at.getName() + ":");
-                        label.getElement().getStyle().setFontWeight(Style.FontWeight.BOLDER);
-                        siteGrid.setWidget(siteGridRow, 0, label);
-                        if (getSiteTableForTransactionsSize(tt) == 0) {
-                            siteGrid.setWidget(siteGridRow++, 1, new Label("None Available"));
-                        } else {
-                            siteGrid.setWidget(siteGridRow++, 1, getSiteTableWidgetforTransactions(at,tt));
-                        }
-                    }
-                }
-            }
-            */
-
             Map<ActorType,ActorSitesByTran> actorSiteMap = createSiteSelectionByTransactionList();
 
             if (actorSiteMap.isEmpty()) {
