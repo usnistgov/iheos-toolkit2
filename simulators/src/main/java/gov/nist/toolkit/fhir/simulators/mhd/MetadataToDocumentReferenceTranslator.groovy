@@ -44,7 +44,7 @@ class MetadataToDocumentReferenceTranslator {
         if (de.size)
             attachment.size = Integer.parseInt(de.size)
         if (base)
-            attachment.url = "${base.endpoint.baseAddress}/fhir/Binary/${de.uniqueId}"   // TODO having to add fhir is a big screwup - but only need when deployed to tomcat - under intellij the 'fhir' gets in the way
+            attachment.url = "${base.endpoint.baseAddress}/Binary/${de.uniqueId}"   // TODO having to add fhir is a big screwup - but only need when deployed to tomcat - under intellij the 'fhir' gets in the way
         dr.context = new DocumentReference.DocumentReferenceContextComponent()
         if (de.serviceStartTime || de.serviceStopTime) {
             dr.context.period = new Period()

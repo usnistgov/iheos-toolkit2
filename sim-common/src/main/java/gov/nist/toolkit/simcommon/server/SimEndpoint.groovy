@@ -63,7 +63,11 @@ class SimEndpoint {
         List partsList = parts as List  // index beyond end with list -> returns null instead of exception
         simIdString = partsList[simStart+1]
         actorType = partsList[simStart+2]
-        baseAddress = "${schemeName}://${hostName}:${port}/${partsList.subList(0,3).join('/')}"
+        def contextName = Installation.instance().servletContextName
+        if (contextName)
+            baseAddress = "${schemeName}://${hostName}:${port}/${partsList.subList(0,4).join('/')}"
+        else
+            baseAddress = "${schemeName}://${hostName}:${port}/${partsList.subList(0,3).join('/')}"
 
         transactionTypeName = partsList[simStart+3]// with FHIR this is sometimes null
         if (!transactionTypeName)
