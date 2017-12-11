@@ -35,7 +35,7 @@ abstract class AssocDataTable extends DataTable<Association> implements IsWidget
 
     private static List<AnnotatedItem> columnList = Arrays.asList(
             new AnnotatedItem(true,ID_COLUMN_NAME),
-            new AnnotatedItem(false,HOME_ID_COLUMN_NAME),
+            new AnnotatedItem(true, HOME_ID_COLUMN_NAME),
             new AnnotatedItem(false, VERSION),
             new AnnotatedItem(false, TYPE),
             new AnnotatedItem(false, STATUS),
