@@ -103,6 +103,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
                 setDataMap(metadataCollection);
                 annotatedItems = getMetadataObjectAnnotatedItems(metadataCollection);
                 view.metadataObjectSelector.refreshEnabledStatus(annotatedItems);
+                doRefreshTable();
             }
 
             @Override
@@ -273,6 +274,18 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
 
     public void setSiteSpec(SiteSpec siteSpec) {
         this.siteSpec = siteSpec;
+    }
+
+    void doRefreshTable() {
+        try {
+            String currentObjectType = view.metadataObjectSelector.getCurrentSelection();
+            if (currentObjectType != null) {
+                MetadataObjectType currentObjectTypeSelection = MetadataObjectType.valueOf(currentObjectType);
+                if (currentObjectTypeSelection != null) {
+                    view.getTableMap().get(currentObjectTypeSelection).setData(dataMap.get(currentObjectTypeSelection));
+                }
+            }
+        } catch (Exception ex) {}
     }
 
     void doUpdateChosenMetadataObjectType(String type) {
