@@ -12,7 +12,7 @@ import spock.lang.Specification
 /**
  * Excercise the ability to lookup Patient references in support of DocumentReference searches
  */
-class DocumentReferenceSearchTest extends Specification {
+class DocumentReferenceSearchByPatientTest extends Specification {
     // Two mock fhir servers
     def fhirBase1 = new MyFhirBase('http://example.com/fhir')
     def fhirBase2 = new MyFhirBase('http://target.com/fhir')
@@ -85,6 +85,7 @@ class DocumentReferenceSearchTest extends Specification {
         ToolkitFhirContext.get().newJsonParser().parseResource(patient)
     }
 
+    // patient 12345
     def patient1 = '''
 {
   "resourceType": "Patient",
@@ -135,6 +136,7 @@ class DocumentReferenceSearchTest extends Specification {
 }
 '''
 
+    // patient 123456
     def patient2 = '''
 {
   "resourceType": "Patient",
