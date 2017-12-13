@@ -45,7 +45,7 @@
 
     <filter>
         <filter-name>fhir-request-log</filter-name>
-        <filter-class>gov.nist.toolkit.fhir.servlet.FhirServletFilter</filter-class>
+        <filter-class>gov.nist.toolkit.fhir.server.servlet.FhirServletFilter</filter-class>
     </filter>
 
     <!--  The validate is necessary so the simulator response headers can be captured for the message log -->
@@ -192,7 +192,7 @@
 
     <servlet>
         <servlet-name>fhirServlet</servlet-name>
-        <servlet-class>gov.nist.toolkit.fhir.servlet.RestfulServlet</servlet-class>
+        <servlet-class>gov.nist.toolkit.fhir.server.servlet.RestfulServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
 

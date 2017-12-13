@@ -6,13 +6,10 @@ import gov.nist.toolkit.registrymetadata.client.RegistryObject;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataEditorTab;
-import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.IDSTestTab;
-import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.IGTestTab;
-import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.IIGTestTab;
-import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.RSNAEdgeTestTab;
-import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.RGTestTab;
+import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.*;
 import gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab.ActorConfigTab;
 import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.ConformanceTestTab;
+import gov.nist.toolkit.xdstools2.client.tabs.fhirSearchTab.FhirSearchTab;
 import gov.nist.toolkit.xdstools2.client.tabs.findDocuments2Tab.FindDocuments2Tab;
 import gov.nist.toolkit.xdstools2.client.tabs.getAllTab.GetAllTab;
 import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorTab;
@@ -37,6 +34,7 @@ public class TabLauncher implements ClickHandler {
 	final static public String mpqFindDocumentsTabLabel = "MPQ-FindDocuments";
 	final static public String getSubmissionSetTabLabel = "GetSubmissionSetAndContents";
 	final static public String getAllTabLabel = "GetAll";
+	final static public String fhirQueryTabLabel = "FHIRQuery";
 	final static public String registryDoThisFirstTabLabel = "XDS.b_Registry_Do_This_First";
 	final static public String getRelatedTabLabel = "GetRelated";
 	final static public String connectathonTabLabel = "Connectathon Tools";
@@ -110,6 +108,8 @@ public class TabLauncher implements ClickHandler {
 			new GetRelatedTab().onTabLoad(true, null);
 		else if (tabType.equals(getAllTabLabel))
 			new GetAllTab().onTabLoad(true, null);
+		else if (tabType.equals(fhirQueryTabLabel))
+			new FhirSearchTab().onTabLoad(true, null);
 		else if (tabType.equals(connectathonTabLabel))
 			new ConnectathonTab().onTabLoad(true, null);
 		else if (tabType.equals(srcStoresDocValTabLabel)) 

@@ -1,8 +1,8 @@
 package gov.nist.toolkit.fhir.simulators.proxy.transforms
 
 import ca.uhn.fhir.context.FhirContext
-import gov.nist.toolkit.fhir.resourceMgr.ResourceCache
-import gov.nist.toolkit.fhir.utility.WrapResourceInHttpResponse
+import gov.nist.toolkit.fhir.server.resourceMgr.ResourceCache
+import gov.nist.toolkit.fhir.server.utility.WrapResourceInHttpResponse
 import gov.nist.toolkit.fhir.simulators.proxy.exceptions.SimProxyTransformException
 import gov.nist.toolkit.fhir.simulators.proxy.util.ContentResponseTransform
 import gov.nist.toolkit.fhir.simulators.proxy.util.RetrieveResponseParser

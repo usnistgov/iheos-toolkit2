@@ -313,4 +313,6 @@ public interface ToolkitService extends RemoteService  {
     RawResponse buildSrcTestOrchestration(BuildSrcTestOrchestrationRequest request) throws Exception;
 
     RawResponse buildFhirSupportOrchestration(FhirSupportOrchestrationRequest var1) throws Exception;
+
+    List<Result> fhirSearch(FhirSearchRequest var1);
 }

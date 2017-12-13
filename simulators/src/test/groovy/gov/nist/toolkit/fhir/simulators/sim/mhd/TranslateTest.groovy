@@ -1,13 +1,13 @@
 package gov.nist.toolkit.fhir.simulators.sim.mhd
 
 import ca.uhn.fhir.context.FhirContext
-import gov.nist.toolkit.fhir.resourceMgr.ResourceCache
-import gov.nist.toolkit.fhir.resourceMgr.ResourceCacheMgr
-import gov.nist.toolkit.fhir.resourceMgr.ResourceMgr
-import gov.nist.toolkit.fhir.resourceMgr.TestResourceCacheFactory
+import gov.nist.toolkit.fhir.server.resourceMgr.ResourceCache
+import gov.nist.toolkit.fhir.server.resourceMgr.ResourceCacheMgr
+import gov.nist.toolkit.fhir.server.resourceMgr.ResourceMgr
+import gov.nist.toolkit.fhir.server.resourceMgr.TestResourceCacheFactory
 import gov.nist.toolkit.fhir.simulators.mhd.MhdGenerator
 import gov.nist.toolkit.fhir.simulators.proxy.util.SimProxyBase
-import gov.nist.toolkit.fhir.utility.UriBuilder
+import gov.nist.toolkit.fhir.server.utility.UriBuilder
 import gov.nist.toolkit.installation.Installation
 import groovy.xml.MarkupBuilder
 import org.hl7.fhir.dstu3.model.DocumentReference

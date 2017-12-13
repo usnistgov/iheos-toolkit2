@@ -3,7 +3,7 @@ package gov.nist.toolkit.services.server.orchestration
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.fhir.simulators.proxy.util.SimProxyBase
-import gov.nist.toolkit.fhir.utility.FhirClient
+import gov.nist.toolkit.fhir.server.utility.FhirClient
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest

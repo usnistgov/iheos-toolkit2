@@ -8,7 +8,7 @@ import gov.nist.toolkit.fhir.simulators.mhd.MhdGenerator
 import gov.nist.toolkit.fhir.simulators.mhd.Submission
 import gov.nist.toolkit.http.HttpParser
 import gov.nist.toolkit.installation.Installation
-import gov.nist.toolkit.fhir.resourceMgr.ResourceCache
+import gov.nist.toolkit.fhir.server.resourceMgr.ResourceCache
 import gov.nist.toolkit.fhir.simulators.proxy.util.PartSpec
 import gov.nist.toolkit.fhir.simulators.proxy.util.SoapBuilder
 /**

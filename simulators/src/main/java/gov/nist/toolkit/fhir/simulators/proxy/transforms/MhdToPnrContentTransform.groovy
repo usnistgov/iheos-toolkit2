@@ -2,8 +2,8 @@ package gov.nist.toolkit.fhir.simulators.proxy.transforms
 
 import ca.uhn.fhir.context.FhirContext
 import gov.nist.toolkit.configDatatypes.client.TransactionType
-import gov.nist.toolkit.fhir.resourceMgr.ResourceCache
-import gov.nist.toolkit.fhir.resourceMgr.ResourceCacheMgr
+import gov.nist.toolkit.fhir.server.resourceMgr.ResourceCache
+import gov.nist.toolkit.fhir.server.resourceMgr.ResourceCacheMgr
 import gov.nist.toolkit.fhir.simulators.mhd.Attachment
 import gov.nist.toolkit.fhir.simulators.mhd.MhdGenerator
 import gov.nist.toolkit.fhir.simulators.mhd.Submission

@@ -1,7 +1,7 @@
 package gov.nist.toolkit.testengine.transactions
 
-import gov.nist.toolkit.fhir.utility.FhirClient
-import gov.nist.toolkit.fhir.utility.UriBuilder
+import gov.nist.toolkit.fhir.server.utility.FhirClient
+import gov.nist.toolkit.fhir.server.utility.UriBuilder
 import gov.nist.toolkit.testengine.engine.StepContext
 import gov.nist.toolkit.testengine.fhir.FhirSupport
 import gov.nist.toolkit.xdsexception.client.MetadataException

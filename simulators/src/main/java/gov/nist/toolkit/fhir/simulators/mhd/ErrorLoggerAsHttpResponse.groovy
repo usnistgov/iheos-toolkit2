@@ -1,6 +1,6 @@
 package gov.nist.toolkit.fhir.simulators.mhd
 
-import gov.nist.toolkit.fhir.utility.WrapResourceInHttpResponse
+import gov.nist.toolkit.fhir.server.utility.WrapResourceInHttpResponse
 import gov.nist.toolkit.fhir.simulators.mhd.errors.AbstractError
 import gov.nist.toolkit.fhir.simulators.proxy.util.SimProxyBase
 import org.apache.commons.httpclient.HttpStatus

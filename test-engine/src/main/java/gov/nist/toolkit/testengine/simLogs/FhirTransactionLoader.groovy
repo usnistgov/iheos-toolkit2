@@ -3,7 +3,7 @@ package gov.nist.toolkit.testengine.simLogs
 import ca.uhn.fhir.context.FhirContext
 import edu.wustl.mir.erl.ihe.xdsi.util.Utility
 import gov.nist.toolkit.configDatatypes.client.TransactionType
-import gov.nist.toolkit.fhir.resourceMgr.ResourceCache
+import gov.nist.toolkit.fhir.server.resourceMgr.ResourceCache
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.installation.PropertyManager
 import gov.nist.toolkit.installation.PropertyServiceManager

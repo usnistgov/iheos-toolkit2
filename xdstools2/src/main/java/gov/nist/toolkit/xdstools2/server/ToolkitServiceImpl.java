@@ -537,6 +537,11 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return theResponse;
     }
 
+    @Override
+    public List<Result> fhirSearch(FhirSearchRequest var1) {
+        return null;
+    }
+
     /*
 	@Override
    public RawResponse buildRepTestOrchestration(RepOrchestrationRequest request) {

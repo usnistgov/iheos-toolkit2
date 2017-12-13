@@ -1,10 +1,10 @@
 package gov.nist.toolkit.fhir.simulators.sim.mhd
 
-import gov.nist.toolkit.fhir.resourceMgr.ResourceCacheMgr
-import gov.nist.toolkit.fhir.resourceMgr.ResourceMgr
+import gov.nist.toolkit.fhir.server.resourceMgr.ResourceCacheMgr
+import gov.nist.toolkit.fhir.server.resourceMgr.ResourceMgr
 import gov.nist.toolkit.fhir.simulators.mhd.MhdGenerator
 import gov.nist.toolkit.fhir.simulators.proxy.util.SimProxyBase
-import gov.nist.toolkit.fhir.utility.UriBuilder
+import gov.nist.toolkit.fhir.server.utility.UriBuilder
 import org.hl7.fhir.dstu3.model.DocumentReference
 import spock.lang.Shared
 import spock.lang.Specification
