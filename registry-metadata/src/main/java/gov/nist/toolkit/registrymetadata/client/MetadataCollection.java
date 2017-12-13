@@ -1,19 +1,22 @@
 package gov.nist.toolkit.registrymetadata.client;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 public class MetadataCollection implements IsSerializable, Serializable {
 	private static final long serialVersionUID = 1L;
 	public String label;
-	public List<DocumentEntry> docEntries;
-	public List<SubmissionSet> submissionSets;
-	public List<Folder> folders;
-	public List<Association> assocs;
-	public List<ObjectRef> objectRefs;
+	public List<DocumentEntry> docEntries = new ArrayList<>();
+	public List<SubmissionSet> submissionSets = new ArrayList<>();
+	public List<Folder> folders = new ArrayList<>();
+	public List<Association> assocs = new ArrayList<>();
+	public List<ObjectRef> objectRefs = new ArrayList<>();
+	// if we don't understand the type then only the Stringified version
+	// of it will be included
+	public List<String> others = new ArrayList<>();
 	
 	public MetadataObject findObject(String id) {
 		for (MetadataObject ro : docEntries) {
