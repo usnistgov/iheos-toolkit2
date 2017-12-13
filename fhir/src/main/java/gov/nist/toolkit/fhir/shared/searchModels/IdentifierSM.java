@@ -29,4 +29,9 @@ public class IdentifierSM implements Serializable, IsSerializable {
     public void setCode(String code) {
         this.code = code;
     }
+
+    @Override
+    public String toString() {
+        return system + "|" + code;
+    }
 }

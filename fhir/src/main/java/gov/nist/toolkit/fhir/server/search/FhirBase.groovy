@@ -27,7 +27,11 @@ class FhirBase implements IFhirBase {
      * @param parsms list of name=value
      * @return
      */
-    List<IBaseResource> search(ResourceType resourceType, List<String> params) {
-        new FhirClient().search(baseUrl, resourceType.toString(), params).values()
+    Map<URI, IBaseResource> search(ResourceType resourceType, List<String> params) {
+        new FhirClient().search(baseUrl, resourceType.toString(), params)
+    }
+
+    URI buildURL(ResourceType resourceType, List<String> params) {
+        FhirClient.buildURL(baseUrl, resourceType.toString(), params)
     }
 }

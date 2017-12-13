@@ -147,7 +147,7 @@ class FhirClient implements IFhirSearch {
         }
     }
 
-    private static URI buildURL(String base, String resourceType, List params) {
+    static URI buildURL(String base, String resourceType, List params) {
         def path = "${base}/${resourceType}?${params.join(';')}"
        URI uri = UriBuilder.build(path)
         return uri

@@ -1,6 +1,7 @@
 package gov.nist.toolkit.fhir.simulators.proxy.transforms
 
 import gov.nist.toolkit.fhir.server.utility.FhirClient
+import gov.nist.toolkit.fhir.server.utility.IFhirSearch
 import gov.nist.toolkit.fhir.server.utility.WrapResourceInHttpResponse
 import gov.nist.toolkit.fhir.simulators.fhir.OperationOutcomeGenerator
 import gov.nist.toolkit.fhir.simulators.mhd.MetadataToDocumentReferenceTranslator

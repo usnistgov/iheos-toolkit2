@@ -15,10 +15,12 @@ abstract class BasicSearch {
         this.fhirBase = fhirBase
         this.resourceType = resourceType
         this.logicalId = logicalId
+        assert fhirBase
+        assert resourceType
     }
 
     boolean isValid() {
-        return resourceType != null && logicalId != null;
+        return resourceType != null
     }
 
     boolean isRead() {
@@ -34,5 +36,9 @@ abstract class BasicSearch {
             return "/" + resourceType.toString() + "/" + logicalId.getValue();
         }
         return null;
+    }
+
+    void addSupportFhirServer(FhirBase fhirBase1) {
+        supportingFhirBases << fhirBase1
     }
 }
