@@ -616,7 +616,7 @@ public class DsSimCommon {
         String rn = "\r\n";
         String boundary = "MIMEBoundary112233445566778899";
         StringBuffer body = new StringBuffer();
-        body.append("--").append(boundary).append("--").append(rn);
+        body.append(rn).append("--").append(boundary).append("--").append(rn);
         return body;
     }
 
@@ -684,7 +684,7 @@ public class DsSimCommon {
                     StringBuffer body = new StringBuffer();
                     StoredDocument sd = documentsToAttach.get(cid);
 
-                    body.append("--").append(boundary).append(rn);
+                    body.append(rn).append("--").append(boundary).append(rn);
                     body.append("Content-Type: ").append(sd.getMimeType()).append(rn);
                     body.append("Content-Transfer-Encoding: binary").append(rn);
                     body.append("Content-ID: <" + cid + ">").append(rn);
