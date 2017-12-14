@@ -51,7 +51,7 @@ public class FhirSearchActivity extends AbstractToolkitActivity {
         mvp = buildMVP();
 
         mvp.init();
-        displayer.display(getContainer(), presenter.getTitle(), this, acceptsOneWidget, eventBus);
+        displayer.display(getContainer(), presenter.getTitle(), this, presenter, acceptsOneWidget, eventBus);
     }
 
     private GenericMVP<DatasetModel, FhirSearchView, FhirSearchPresenter> buildMVP() {

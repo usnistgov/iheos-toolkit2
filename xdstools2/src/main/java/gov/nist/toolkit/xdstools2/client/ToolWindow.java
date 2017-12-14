@@ -1,13 +1,8 @@
 package gov.nist.toolkit.xdstools2.client;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.DockLayoutPanel;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
@@ -120,7 +115,7 @@ public abstract class ToolWindow {
 	public void registerTab(boolean select, String tabName) {
 		this.tabName=tabName;
 		assert(tabContainer != null);
-		tabContainer.addTab(tabTopRawPanel, tabName, select);
+		tabContainer.addTab(tabTopRawPanel, null, tabName, select);
 	}
 
 	public TkProps tkProps() {
@@ -143,10 +138,11 @@ public abstract class ToolWindow {
 	 * its view when it is selected (redisplayed)
 	 * Called by TabManager
 	 */
-	public void tabIsSelected() { }
+	public void tabIsSelected() {
+	}
 
 	public void globalTabIsSelected() {
-		System.out.println("Tab " + this.getClass().getName() + " selected");
+		GWT.log("Tab " + this.getClass().getName() + " selected");
 
 		try {
 			tabIsSelected();

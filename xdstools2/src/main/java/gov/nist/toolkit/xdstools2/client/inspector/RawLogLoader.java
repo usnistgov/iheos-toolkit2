@@ -46,7 +46,7 @@ class RawLogLoader implements ClickHandler {
 		loadTestLogs();
 	}
 
-	public void loadTestLogs() {
+	void loadTestLogs() {
 		/*this.metadataInspectorTab.data.*/
 		new GetRawLogsCommand(){
 			@Override

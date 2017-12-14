@@ -6,15 +6,16 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.datasets.shared.DatasetElement;
-import gov.nist.toolkit.datasets.shared.DatasetModel;
 import gov.nist.toolkit.results.client.AssertionResult;
 import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractPresenter;
 import gov.nist.toolkit.xdstools2.client.command.command.FhirReadCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.GetAllDatasetsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetDatasetElementContentCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetRawLogsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionOfferingsCommand;
 import gov.nist.toolkit.xdstools2.client.util.ASite;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
@@ -22,6 +23,7 @@ import gov.nist.toolkit.xdstools2.client.util.SiteFilter;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.shared.command.request.FhirReadRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetDatasetElementContentRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetRawLogsRequest;
 
 import java.util.List;
 
@@ -40,30 +42,32 @@ public class FhirSearchPresenter extends AbstractPresenter<FhirSearchView> {
 
     @Override
     public void init() {
+        loadSystems();
 
-        new GetAllDatasetsCommand() {
-            @Override
-            public void onComplete(List<DatasetModel> result) {
-                getView().setData(result);
-            }
-        }.run(getCommandContext());
+//        getView().getTabTopPanel().add
 
+        getView().lateBindUI();
+    }
+
+    private void loadSystems() {
         new GetTransactionOfferingsCommand() {
             @Override
             public void onComplete(TransactionOfferings to) {
                 List<TransactionType> transactionTypes = TransactionType.asList();
-//                transactionTypes.add(TransactionType.FHIR);
 
                 List<ASite> sites = new SiteFilter(to)
-                  //      .transactionTypesOnly(transactionTypes, false, true)
                         .fhirOnly(transactionTypes)
                         .sorted();
 
                 getView().setSiteNames(sites);
+                GWT.log("Systems reloaded");
             }
         }.run(ClientUtils.INSTANCE.getCommandContext());
+    }
 
-        getView().lateBindUI();
+    @Override
+    public void reveal() {
+        loadSystems();
     }
 
     void doSetResourceReference(String ref) {
@@ -98,9 +102,21 @@ public class FhirSearchPresenter extends AbstractPresenter<FhirSearchView> {
             public void onComplete(List<Result> results) {
                 Result result = results.get(0);
                 displayResult(result);
+                loadTestLogs(result.logId);
             }
         }.run(new FhirReadRequest(getCommandContext(), new SiteSpec(selectedSite), resourceReference));
     }
+
+    private void loadTestLogs(TestInstance testInstance) {
+		/*this.metadataInspectorTab.data.*/
+        new GetRawLogsCommand(){
+            @Override
+            public void onComplete(TestLogs testLogs) {
+                getView().setViewPanel(testLogs.getTestLog(0).result);
+            }
+        }.run(new GetRawLogsRequest(ClientUtils.INSTANCE.getCommandContext(), testInstance));
+    }
+
 
     private void displayResult(Result result) {
         getView().addLog("At " + result.getTimestamp());

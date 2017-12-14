@@ -24,7 +24,7 @@ public class ToolkitAppDisplayer implements ActivityDisplayer {
     }
 
     @Override
-    public void display(Widget w, String title, AbstractToolkitActivity activity, AcceptsOneWidget p, EventBus b) {
+    public void display(Widget w, String title, AbstractToolkitActivity activity, AbstractPresenter presenter, AcceptsOneWidget p, EventBus b) {
         TabContainer tabContainer = Injector.INSTANCE.getTabContainer();
         GWT.log("ToolkitAppDisplayer:display: " + w.getClass().getName());
         assert(tabContainer != null);
@@ -32,7 +32,7 @@ public class ToolkitAppDisplayer implements ActivityDisplayer {
         DockLayoutPanel panel = new DockLayoutPanel(Style.Unit.PX);
         panel.add(w);
 
-        titleHtml = tabContainer.addTab(panel, title, true /* activity*/);
+        titleHtml = tabContainer.addTab(panel, presenter, title, true /* activity*/);
     }
 
     @Override

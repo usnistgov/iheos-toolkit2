@@ -6,17 +6,12 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.cellview.client.CellBrowser;
-import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.*;
-import gov.nist.toolkit.datasets.shared.DatasetElement;
-import gov.nist.toolkit.datasets.shared.DatasetModel;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractView;
 import gov.nist.toolkit.xdstools2.client.abstracts.MessagePanel;
 import gov.nist.toolkit.xdstools2.client.util.ASite;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.client.widgets.SystemSelector;
-import gov.nist.toolkit.xdstools2.client.widgets.datasetTreeModel.DatasetTreeModel;
 
 import java.util.List;
 import java.util.Map;
@@ -28,20 +23,13 @@ public class FhirSearchView extends AbstractView<FhirSearchPresenter> {
     private MessagePanel messagePanel = new MessagePanel();
     private VerticalPanel tabTopPanel = new VerticalPanel();
     private HTML selected = new HTML();
-//    private FlexTable siteTable = new FlexTable();
-    private SimplePanel datasetsPanel = new SimplePanel();
     private Button runButton = new Button("Read Resource");
     TextBox refTextBox = new TextBox();
     private FlowPanel thePanel = new FlowPanel();
-    private FlowPanel siteTablePanel = new FlowPanel();
-    private FlowPanel logPanel = new FlowPanel();
-    private FlowPanel inspectorPanel = new FlowPanel();
-    private FlowPanel viewPanel = new FlowPanel();
-    private FlowPanel simLogPanel = new FlowPanel();
 
-    private HTML datasetLabel = new HTML("Data Set");
-    private HTML resourceTypeLabel = new HTML("Resource Type");
-    private HTML resourceLabel = new HTML("Resource");
+    private FlowPanel logPanel = new FlowPanel();
+    private FlowPanel viewPanel = new FlowPanel();
+
     private FlowPanel contentPanel = new FlowPanel();
 
     private SystemSelector systemSelector = new SystemSelector("To System") {
@@ -123,26 +111,17 @@ public class FhirSearchView extends AbstractView<FhirSearchPresenter> {
         logPanel.setWidth("100%");
         logPanel.setHeight("100%");
         bottomPanel.add(logWrapperPanel, "[Log]");
-        bottomPanel.add(inspectorPanel, "[Inspector]");
 
         ScrollPanel viewScrollPanel = new ScrollPanel();
         viewScrollPanel.add(viewPanel);
         bottomPanel.add(viewScrollPanel, "[Resource]");
 
-        ScrollPanel simLogScrollPanel = new ScrollPanel();
-        simLogScrollPanel.add(simLogPanel);
-        bottomPanel.add(simLogScrollPanel, "[SimLog");
-
-        inspectorPanel.setWidth("100%");
 
         return tabTopPanel;
     }
 
     @Override
     protected void bindUI() {
-
-        inspectorPanel.add(new HTML("Coming Soon."));
-        simLogPanel.add(new HTML("Coming Soon."));
 
         runButton.addClickHandler(new ClickHandler() {
             @Override
@@ -159,32 +138,6 @@ public class FhirSearchView extends AbstractView<FhirSearchPresenter> {
                 getPresenter().doSetResourceReference(refTextBox.getText());
             }
         });
-    }
-
-    void setData(List<DatasetModel> content) {
-
-        DatasetTreeModel datasetTreeModel = new DatasetTreeModel() {
-
-            @Override
-            public void doSelect(DatasetElement datasetElement) {
-                getPresenter().doResourceSelected(datasetElement);
-            }
-        };
-
-        datasetTreeModel.init(content);
-
-        CellBrowser browser = new CellBrowser(datasetTreeModel, null);
-        browser.setKeyboardSelectionPolicy(HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.ENABLED);
-        browser.setHeight("200px");
-        browser.setWidth("640px");
-
-        VerticalPanel panel = new VerticalPanel();
-        panel.add(browser);
-
-        panel.add(selected);
-
-        datasetsPanel.add(panel);
-
     }
 
     void setSiteNames(List<ASite> sites) {
@@ -216,4 +169,13 @@ public class FhirSearchView extends AbstractView<FhirSearchPresenter> {
         contentPanel.setVisible(false);
     }
 
+    void setViewPanel(String text) {
+        HTML h = new HTML("<pre>" + text + "</pre>");
+        viewPanel.clear();
+        viewPanel.add(h);
+    }
+
+    VerticalPanel getTabTopPanel() {
+        return tabTopPanel;
+    }
 }
