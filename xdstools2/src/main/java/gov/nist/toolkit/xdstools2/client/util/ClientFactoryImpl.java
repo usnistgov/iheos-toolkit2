@@ -8,6 +8,7 @@ import gov.nist.toolkit.xdstools2.client.injector.Injector;
 import gov.nist.toolkit.xdstools2.client.inspector.mvp.InspectorActivity;
 import gov.nist.toolkit.xdstools2.client.inspector.mvp.ResultInspector;
 import gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab.SubmitResourceActivity;
+import gov.nist.toolkit.xdstools2.client.tabs.fhirSearchTab.FhirSearchActivity;
 import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewer;
 import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewerActivity;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.ConfActorActivity;
@@ -29,6 +30,7 @@ public class ClientFactoryImpl implements ClientFactory {
     private static final ToolkitServiceAsync TOOLKIT_SERVICES = GWT.create(ToolkitService.class);
 //    private static final SimMsgViewerActivity MSG_VIEWER_ACTIVITY = GWT.create(SimMsgViewerActivity.class);
     private static final SubmitResourceActivity SUBMIT_RESOURCE_ACTIVITY = GWT.create(SubmitResourceActivity.class);
+    private static final FhirSearchActivity FHIR_SEARCH_ACTIVITY = GWT.create(FhirSearchActivity.class);
 
     @Override
     public EventBus getEventBus() {
@@ -72,6 +74,9 @@ public class ClientFactoryImpl implements ClientFactory {
 
     @Override
     public Activity getSubmitResourceActivity() { return SUBMIT_RESOURCE_ACTIVITY; }
+
+    @Override
+    public Activity getFhirSearchActivity() { return FHIR_SEARCH_ACTIVITY; }
 
     @Override
     public InspectorActivity getInspectorActivity(ResultInspector place) {

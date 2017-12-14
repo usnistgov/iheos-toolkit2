@@ -917,6 +917,7 @@ public class XdsTestServiceManager extends CommonService {
 						boolean inRequest = false;
 						try {
 							String input = testStepLogContentDTO.getInputMetadata();
+							stepResult.setRawResults(input);
 							Metadata m = MetadataParser
 									.parseNonSubmission(input);
 							if (m.getAllObjects().size() > 0) {

@@ -4,6 +4,7 @@ import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.place.shared.WithTokenizers;
 import gov.nist.toolkit.xdstools2.client.inspector.mvp.ResultInspector;
 import gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab.SubmitResource;
+import gov.nist.toolkit.xdstools2.client.tabs.fhirSearchTab.FhirSearch;
 import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewer;
 
 /**
@@ -19,6 +20,7 @@ import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewer;
         SimLog.Tokenizer.class,
         SimMsgViewer.Tokenizer.class,
         SubmitResource.Tokenizer.class,
+        FhirSearch.Tokenizer.class,
         ResultInspector.Tokenizer.class
 })
 public interface Xdstools2PlaceHistoryMapper extends PlaceHistoryMapper{

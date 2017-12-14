@@ -273,4 +273,6 @@ public interface ToolkitServiceAsync {
     void buildFhirSupportOrchestration(FhirSupportOrchestrationRequest var1, AsyncCallback<RawResponse> callback);
 
     void fhirSearch(FhirSearchRequest var1, AsyncCallback<List<Result>> callback);
+
+    void fhirRead(FhirReadRequest request, AsyncCallback<List<Result>> async);
 }

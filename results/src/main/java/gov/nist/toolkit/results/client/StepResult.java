@@ -20,6 +20,7 @@ public class StepResult implements IsSerializable, Serializable {
 	public String stepName;
 	public String transaction;
 	MetadataCollection metadata;
+	public String rawResults;
 	public List<Document> documents;
 	public List<ObjectRef> toBeRetrieved;
 	TestLog testLog = null;  // loaded separately by client
@@ -80,6 +81,10 @@ public class StepResult implements IsSerializable, Serializable {
 	public void setMetadata(MetadataCollection mc) {
 		metadata = mc;
 		resetToBeRetrieved();
+	}
+
+	public void setRawResults(String rawResults) {
+		this.rawResults = rawResults;
 	}
 
 	public void resetToBeRetrieved() {

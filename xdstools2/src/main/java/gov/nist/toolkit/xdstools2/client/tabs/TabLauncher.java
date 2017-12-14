@@ -9,7 +9,6 @@ import gov.nist.toolkit.xdstools2.client.inspector.MetadataEditorTab;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.*;
 import gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab.ActorConfigTab;
 import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.ConformanceTestTab;
-import gov.nist.toolkit.xdstools2.client.tabs.fhirSearchTab.FhirSearchTab;
 import gov.nist.toolkit.xdstools2.client.tabs.findDocuments2Tab.FindDocuments2Tab;
 import gov.nist.toolkit.xdstools2.client.tabs.getAllTab.GetAllTab;
 import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorTab;
@@ -108,8 +107,6 @@ public class TabLauncher implements ClickHandler {
 			new GetRelatedTab().onTabLoad(true, null);
 		else if (tabType.equals(getAllTabLabel))
 			new GetAllTab().onTabLoad(true, null);
-		else if (tabType.equals(fhirQueryTabLabel))
-			new FhirSearchTab().onTabLoad(true, null);
 		else if (tabType.equals(connectathonTabLabel))
 			new ConnectathonTab().onTabLoad(true, null);
 		else if (tabType.equals(srcStoresDocValTabLabel)) 

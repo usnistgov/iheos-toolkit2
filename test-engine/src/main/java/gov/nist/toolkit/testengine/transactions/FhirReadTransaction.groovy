@@ -1,6 +1,7 @@
 package gov.nist.toolkit.testengine.transactions
 
 import ca.uhn.fhir.context.FhirContext
+import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.fhir.context.ToolkitFhirContext
 import gov.nist.toolkit.fhir.server.utility.FhirClient
 import gov.nist.toolkit.fhir.server.utility.FhirId
@@ -43,9 +44,18 @@ class FhirReadTransaction extends BasicFhirTransaction {
     @Override
     void doRun(IBaseResource resource, String urlExtension) {
 
-        def fullEndpoint = useReportManager.get('Ref')
-        assert fullEndpoint, 'FhirReadTransaction: Ref is null'
-
+        def fullEndpoint = useReportManager?.get('Ref')
+        if (!fullEndpoint) {
+            if (urlExtension) {
+                if (urlExtension && !urlExtension.startsWith('/'))
+                    urlExtension = "/${urlExtension}"
+                def fhirBase = testConfig.site.getEndpoint(TransactionType.FHIR, false, false)
+                assert fhirBase, "FHIRBase is null"
+                fullEndpoint = "${fhirBase}${urlExtension}"
+            }
+        }
+        assert fullEndpoint, 'FhirReadTransaction: Ref and UrlExtension are null'
+        endpoint = fullEndpoint  // so it shows up on the UI
         reportManager.add('Url', fullEndpoint)
 
         def acceptType = (requestXml) ? 'application/fhir+xml' : 'application/fhir+json'

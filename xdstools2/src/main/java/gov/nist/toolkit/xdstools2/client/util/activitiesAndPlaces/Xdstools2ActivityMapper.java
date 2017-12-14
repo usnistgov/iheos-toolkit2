@@ -7,6 +7,7 @@ import com.google.gwt.place.shared.Place;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.inspector.mvp.ResultInspector;
 import gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab.SubmitResource;
+import gov.nist.toolkit.xdstools2.client.tabs.fhirSearchTab.FhirSearch;
 import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewer;
 import gov.nist.toolkit.xdstools2.client.util.ClientFactory;
 
@@ -79,6 +80,12 @@ public class Xdstools2ActivityMapper implements ActivityMapper {
             SubmitResource submitResource = (SubmitResource) place;
             pushHomeTabToBackground();
             return clientFactory.getSubmitResourceActivity();
+        }
+        if (place instanceof FhirSearch) {
+            GWT.log("Launch FhirSearch");
+            FhirSearch fhirSearch = (FhirSearch) place;
+            pushHomeTabToBackground();
+            return clientFactory.getFhirSearchActivity();
         }
         if (place instanceof ResultInspector) {
             GWT.log("Launch ResultInspector");

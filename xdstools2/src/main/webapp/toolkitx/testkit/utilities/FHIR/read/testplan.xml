@@ -1,0 +1,9 @@
+<TestPlan>
+    <Test>FHIR/read</Test>
+    <TestStep id="read">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <FhirReadTransaction>
+            <UrlExtension>$UrlExtension$</UrlExtension>
+        </FhirReadTransaction>
+    </TestStep>
+</TestPlan>

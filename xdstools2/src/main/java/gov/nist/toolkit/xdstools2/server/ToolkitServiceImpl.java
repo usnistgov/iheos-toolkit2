@@ -537,11 +537,6 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return theResponse;
     }
 
-    @Override
-    public List<Result> fhirSearch(FhirSearchRequest var1) {
-        return null;
-    }
-
     /*
 	@Override
    public RawResponse buildRepTestOrchestration(RepOrchestrationRequest request) {
@@ -1633,6 +1628,19 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         installCommandContext(request);
         logger.debug(sessionID + ": fhirTransaction()");
         List<Result> results = new FhirServiceManager(session()).transaction(request.getSite(), request.getDatasetElement());
+        return results;
+    }
+
+    @Override
+    public List<Result> fhirSearch(FhirSearchRequest var1) {
+        return null;
+    }
+
+    @Override
+    public List<Result> fhirRead(FhirReadRequest request) throws Exception {
+        installCommandContext(request);
+        logger.debug(sessionID + ": fhirTransaction()");
+        List<Result> results = new FhirServiceManager(session()).read(request.getSite(), request.getReference());
         return results;
     }
 

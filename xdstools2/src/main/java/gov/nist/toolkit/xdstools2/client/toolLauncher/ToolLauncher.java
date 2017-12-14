@@ -10,7 +10,7 @@ import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.*;
 import gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab.SubmitResource;
 import gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab.ActorConfigTab;
 import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.ConformanceTestTab;
-import gov.nist.toolkit.xdstools2.client.tabs.fhirSearchTab.FhirSearchTab;
+import gov.nist.toolkit.xdstools2.client.tabs.fhirSearchTab.FhirSearch;
 import gov.nist.toolkit.xdstools2.client.tabs.findDocuments2Tab.FindDocuments2Tab;
 import gov.nist.toolkit.xdstools2.client.tabs.getAllTab.GetAllTab;
 import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorTab;
@@ -36,7 +36,7 @@ public class ToolLauncher implements ClickHandler {
 	final static public String mpqFindDocumentsTabLabel = "MPQ-FindDocuments";
 	final static public String getSubmissionSetTabLabel = "GetSubmissionSetAndContents";
 	final static public String getAllTabLabel = "GetAll";
-	final static public String fhirQueryLabel = "FHIRSearch";
+	final static public String fhirSearchTabLabel = "FHIRSearch";
 	final static public String registryDoThisFirstTabLabel = "XDS.b_Registry_Do_This_First";
 	final static public String getRelatedTabLabel = "GetRelated";
 	final static public String connectathonTabLabel = "Connectathon Tools";
@@ -91,7 +91,6 @@ public class ToolLauncher implements ClickHandler {
 		tools.add(new ToolDef(mpqFindDocumentsTabLabel, "MPQ", "MPQ"));
 		tools.add(new ToolDef(getSubmissionSetTabLabel, "GetSS", "GetSS"));
 		tools.add(new ToolDef(getAllTabLabel, "GetAll", "GetAll"));
-		tools.add(new ToolDef(fhirQueryLabel, "FHIRSearch", "FHIRSearch"));
 		tools.add(new ToolDef(registryDoThisFirstTabLabel, "RegFirst", "RegFirst"));
 		tools.add(new ToolDef(getRelatedTabLabel, "GetRelated", "GetRelated"));
 		tools.add(new ToolDef(connectathonTabLabel, "Connectathon", "Connectathon"));
@@ -128,6 +127,7 @@ public class ToolLauncher implements ClickHandler {
 		tools.add(new ToolDef(homeTabLabel, "Home", "Home"));
 		tools.add(new ToolDef(SysConfigTabLabel, "Admin", "Admin"));
 		tools.add(new ToolDef(submitResourceTabLabel, "Submit Resource", "SubmitResource"));
+		tools.add(new ToolDef(fhirSearchTabLabel, "FhirSearch", "FhirSearch"));
 	}
 
 	private ToolDef getToolDef(String requestedName) {
@@ -160,7 +160,6 @@ public class ToolLauncher implements ClickHandler {
 		if (menuName.equals(registryDoThisFirstTabLabel)) return new RegisterAndQueryTab();
 		if (menuName.equals(getRelatedTabLabel)) return new GetRelatedTab();
 		if (menuName.equals(getAllTabLabel)) return new GetAllTab();
-		if (menuName.equals(fhirQueryLabel)) return new FhirSearchTab();
 		if (menuName.equals(connectathonTabLabel)) return new ConnectathonTab();
 		if (menuName.equals(srcStoresDocValTabLabel)) return new SourceStoredDocValTab();
 		if (menuName.equals(documentRetrieveTabLabel)) return new DocRetrieveTab();
@@ -189,6 +188,7 @@ public class ToolLauncher implements ClickHandler {
 		if (menuName.equals(idsTestsTabLabel)) return new IDSTestTab();
 		if (menuName.equals(rsnaedgeTestsTabLabel)) return new RSNAEdgeTestTab();
 		if (menuName.equals(submitResourceTabLabel)) return new NewToolLauncher().launch(new SubmitResource());
+		if (menuName.equals(fhirSearchTabLabel)) return new NewToolLauncher().launch(new FhirSearch());
 		return null;
 	}
 

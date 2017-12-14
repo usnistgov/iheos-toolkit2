@@ -30,6 +30,7 @@ public interface ClientFactory {
     SimMsgViewerActivity getSimMsgViewerActivity(SimMsgViewer place);
 
     Activity getSubmitResourceActivity();
+    Activity getFhirSearchActivity();
 //    SimMsgViewerView getSimMsgViewerView();
 
     InspectorActivity getInspectorActivity(ResultInspector place);
