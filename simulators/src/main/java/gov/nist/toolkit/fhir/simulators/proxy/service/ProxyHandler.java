@@ -65,7 +65,7 @@ class ProxyHandler implements HttpRequestHandler {
             return;
         }
         catch (final Throwable e) {
-            response.setStatusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+            response.setStatusCode(HttpStatus.SC_NOT_FOUND);
             response.setReasonPhrase(e.getMessage());
             logger.error(ExceptionUtil.exception_details(e));
             return;
