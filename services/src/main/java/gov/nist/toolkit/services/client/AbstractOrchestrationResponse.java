@@ -15,6 +15,7 @@ abstract public class AbstractOrchestrationResponse extends RawResponse {
 //    private List<TestInstance> orchestrationTests = new ArrayList<>();  // test definitions used to build the orchestration
     private List<MessageItem> messages = new ArrayList<>();
     private String additionalDocumentation = null;
+    private boolean wasStarted = true;  // many services do not load this - check first
 
     public AbstractOrchestrationResponse() {}
     /**
@@ -73,5 +74,13 @@ abstract public class AbstractOrchestrationResponse extends RawResponse {
 
     public boolean hasAdditionalDocumentation() {
         return additionalDocumentation != null;
+    }
+
+    public boolean isWasStarted() {
+        return wasStarted;
+    }
+
+    public void setWasStarted(boolean wasStarted) {
+        this.wasStarted = wasStarted;
     }
 }

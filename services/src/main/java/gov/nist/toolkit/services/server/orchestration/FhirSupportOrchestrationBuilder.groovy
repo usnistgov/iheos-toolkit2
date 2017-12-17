@@ -75,6 +75,8 @@ class FhirSupportOrchestrationBuilder {
             simExists = false
         }
 
+        response.wasStarted = !simExists
+
         if (!simExists) {
             simConfig = api.createSimulator(simId).getConfig(0)
             simExists = true

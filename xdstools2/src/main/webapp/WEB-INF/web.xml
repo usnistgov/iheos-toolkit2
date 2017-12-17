@@ -161,6 +161,11 @@
         <servlet-class>gov.nist.toolkit.restTools.RestMessageDisplayServlet</servlet-class>
     </servlet>
 
+    <servlet>
+        <servlet-name>servicesServlet</servlet-name>
+        <servlet-class>gov.nist.toolkit.toolkitServices.httpApi.ToolkitServicesServlet</servlet-class>
+    </servlet>
+
     <!-- ============== Jersey import for REST ============= -->
     <servlet>
         <servlet-name>jersey</servlet-name>
@@ -284,6 +289,17 @@
     <servlet-mapping>   <!-- for running in Intellij -->
         <servlet-name>jersey</servlet-name>
         <url-pattern>/xdstools2/rest/*</url-pattern>
+    </servlet-mapping>
+
+
+
+    <servlet-mapping>
+        <servlet-name>servicesServlet</servlet-name>
+        <url-pattern>/services/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>servicesServlet</servlet-name>
+        <url-pattern>/xdstools2/services/*</url-pattern>
     </servlet-mapping>
 
     <!--
