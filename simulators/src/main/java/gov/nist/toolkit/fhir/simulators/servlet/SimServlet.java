@@ -23,7 +23,6 @@ import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simcommon.server.*;
-import gov.nist.toolkit.simcommon.server.services.ServiceApi;
 import gov.nist.toolkit.sitemanagement.SeparateSiteLoader;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.soap.http.SoapFault;
@@ -68,7 +67,6 @@ public class SimServlet  extends HttpServlet {
 	boolean isFhir;
 	private RequestListenerThread proxyThread = null;
 
-
 	@Override
 	public void init(ServletConfig sConfig) throws ServletException {
 		super.init(sConfig);
@@ -83,11 +81,10 @@ public class SimServlet  extends HttpServlet {
 
 		Installation.instance().setServletContextName(getServletContext().getContextPath());
 
-
 		patientIdentityFeedServlet = new PatientIdentityFeedServlet();
 		patientIdentityFeedServlet.init(config);
 
-//		ServiceApi.startFhirSupportServer("default");
+
 
 		onServiceStart();
 
