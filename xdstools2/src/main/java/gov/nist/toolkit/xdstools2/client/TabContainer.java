@@ -131,7 +131,10 @@ public class TabContainer {
 		x.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent clickEvent) {
-				int i = deck.indexOf(content);
+				GWT.log("Delete tab");
+				TabContents tc = findPanelInDeck(content);
+				int i = deck.indexOf(tc);
+				GWT.log("Delete tab " + i);
 				deck.remove(i);
 				INNER_DECKPANEL.remove(i);
 				TABBAR.removeTab(i);
@@ -145,6 +148,14 @@ public class TabContainer {
 
 		panel.add(titleHtml);
 		return panel;
+	}
+
+	private TabContents findPanelInDeck(DockLayoutPanel panel) {
+		for (TabContents tc : deck) {
+			if (panel == tc.panel)
+				return tc;
+		}
+		return null;
 	}
 
 	public static void setWidth(String width) {
