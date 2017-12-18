@@ -19,6 +19,8 @@ import javax.xml.namespace.QName
 class FhirSearchTransaction extends BasicFhirTransaction {
     boolean requestXml = false
     ExpectedContent ec = null
+    String resourceTypeName = null
+    String queryString = null
 
     FhirSearchTransaction(StepContext s_ctx, OMElement instruction, OMElement instruction_output) {
         super(s_ctx, instruction, instruction_output)
@@ -31,11 +33,13 @@ class FhirSearchTransaction extends BasicFhirTransaction {
      */
     @Override
     void doRun(IBaseResource resource, String urlExtension) {
-        def base = useReportManager.get('Base')
-        assert base, 'FhirSearchTransaction - UseReport Base_Type is null'
-        assert queryParams, 'FhirSearchTransaction - UseReport QueryParams is null'
+//        def base = useReportManager.get('Base')
+        def base = getBaseUrl()
+        assert base, 'FhirSearchTransaction - Base URL is null'
+        assert resourceTypeName, 'ResourceType parameter is missing or empty in TestStep'
+        assert queryString, 'Query parameter is missing or empty in TestStep'
 
-        def fullEndpoint = "${base}${queryParams}"
+        def fullEndpoint = "${base}/${resourceTypeName}?${queryString}"
 
         reportManager.add('Url', fullEndpoint)
 
@@ -105,6 +109,10 @@ class FhirSearchTransaction extends BasicFhirTransaction {
             def dm = part.getAttribute(new QName('dm')).attributeValue
             ec.documentReferenceCount = Integer.parseInt(dr)
             ec.documentManifestCount = Integer.parseInt(dm)
+        } else if (part_name == 'ResourceType') {
+            resourceTypeName = part.getText()
+        } else if (part_name == 'Query') {
+            queryString = part.getText()
         }
         else {
             super.parseInstruction(part)

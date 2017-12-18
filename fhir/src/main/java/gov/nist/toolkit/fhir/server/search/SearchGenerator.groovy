@@ -11,10 +11,10 @@ public class SearchGenerator  {
      * @return instance of search builder class named by resourceType.  For DocumentReference the class name
      * is DocumentReferenceSearch
      */
-    BasicSearch getSearchBuilder(SearchModel model) {
+    BasicSearch getSearchBuilder(FhirBase fhirBase, SearchModel model) {
         assert model.resourceType
         Package pkg = this.class.package
-        def inst = new GroovyClassLoader(this.class.classLoader).loadClass(pkg.name + '.' + model.resourceType.toString() + 'Search', false, true)?.newInstance(model.logicalId)
+        def inst = new GroovyClassLoader(this.class.classLoader).loadClass(pkg.name + '.' + model.resourceType.toString() + 'Search', false, true)?.newInstance(fhirBase, model.logicalId)
         assert inst
         assert inst instanceof BasicSearch
         return inst

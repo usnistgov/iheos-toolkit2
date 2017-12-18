@@ -129,7 +129,17 @@ class SQParamTranslator {
         throw new Exception("Cannot translate code ${param} to XDS, no mapping defined for this code.")
     }
 
+    List<String> addDEStatusIfNotPresent(List<String> params) {
+
+        if (!params.find { it.startsWith('status') }) {
+            params.add('status=current')
+        }
+
+        return params
+    }
+
     Map run(List<String> params) {
+        params = addDEStatusIfNotPresent(params)
         Map result = [:]
         params.each {
             def x = run(it )

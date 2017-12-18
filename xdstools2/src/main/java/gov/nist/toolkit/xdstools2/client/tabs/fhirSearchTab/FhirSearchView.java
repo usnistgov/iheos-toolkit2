@@ -10,6 +10,7 @@ import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractView;
 import gov.nist.toolkit.xdstools2.client.abstracts.MessagePanel;
 import gov.nist.toolkit.xdstools2.client.util.ASite;
+import gov.nist.toolkit.xdstools2.client.util.AnnotatedItem;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.client.widgets.SystemSelector;
 
@@ -23,19 +24,30 @@ public class FhirSearchView extends AbstractView<FhirSearchPresenter> {
     private MessagePanel messagePanel = new MessagePanel();
     private VerticalPanel tabTopPanel = new VerticalPanel();
     private HTML selected = new HTML();
-    private Button runButton = new Button("Read Resource");
-    TextBox refTextBox = new TextBox();
+    private Button readRunButton = new Button("Read Resource");
+    private Button searchRunButton = new Button("Search");
     private FlowPanel thePanel = new FlowPanel();
-
     private FlowPanel logPanel = new FlowPanel();
     private FlowPanel viewPanel = new FlowPanel();
-
     private FlowPanel contentPanel = new FlowPanel();
+
+    // READ Stuff
+    TextBox refTextBox = new TextBox();
+
+    // SEARCH Stuff
+    TextBox patientIdTextBox = new TextBox();
 
     private SystemSelector systemSelector = new SystemSelector("To System") {
         @Override
         public void doSelected(String label) {
             getPresenter().doSiteSelected(label);
+        }
+    };
+
+    private SystemSelector resourceTypeSelector = new SystemSelector("Resource Type", null) {
+        @Override
+        public void doSelected(String label) {
+            getPresenter().doResourceTypeSelected(label);
         }
     };
 
@@ -65,34 +77,20 @@ public class FhirSearchView extends AbstractView<FhirSearchPresenter> {
         datasetWrapper.setWidth("100%");
         thePanel.add(new HTML("<br />"));
 
-        DecoratorPanel readPanel = new DecoratorPanel();
-        readPanel.setWidth("100%");
-        FlowPanel readPanel2 = new FlowPanel();
-        readPanel.add(readPanel2);
+        /**
+         * Read Resource
+         */
 
-        HTML datasetTitle = new HTML("<h2>Read Resource</h2>");
-        datasetTitle.addStyleName("tool-section-header");
-        datasetTitle.setWidth("100%");
-        readPanel2.add(datasetTitle);
 
-        HorizontalFlowPanel referencePanel = new HorizontalFlowPanel();
-        referencePanel.add(new Label("Resource Reference:"));
+        buildReadResourcePanel();
 
-        refTextBox.setVisibleLength(60);
-        referencePanel.add(refTextBox);
-        referencePanel.add(new Label("(ResourceType/ID)"));
-        readPanel2.add(referencePanel);
 
-        HTML buttonPanelTitle = new HTML("Actions");
-        buttonPanelTitle.addStyleName("tool-section-header");
-        buttonPanelTitle.setWidth("100%");
-        readPanel2.add(buttonPanelTitle);
+        /**
+         * Search
+         */
 
-        HorizontalFlowPanel buttonPanel = new HorizontalFlowPanel();
-        runButton.setEnabled(false);
-        buttonPanel.add(runButton);
-        readPanel2.add(buttonPanel);
-        thePanel.add(readPanel);
+
+        buildSearchResourcePanel();
 
 
         thePanel.add(new HTML("<br />"));
@@ -120,13 +118,93 @@ public class FhirSearchView extends AbstractView<FhirSearchPresenter> {
         return tabTopPanel;
     }
 
+    private String backgroundStyle = "my-table-noband";
+    private String actionsBackgroundStyle = "my-table-noband";//"tool-section-header";
+
+    private void buildSearchResourcePanel() {
+        FlowPanel searchPanel = new FlowPanel();
+        searchPanel.setWidth("100%");
+        searchPanel.addStyleName(backgroundStyle);
+        FlowPanel innerPanel = new FlowPanel();
+        searchPanel.add(innerPanel);
+
+        HTML datasetTitle = new HTML("<h2>Search</h2>");
+        datasetTitle.addStyleName("tool-section-header");
+        datasetTitle.setWidth("100%");
+        innerPanel.add(datasetTitle);
+
+        innerPanel.add(resourceTypeSelector.asWidget());
+
+
+        HorizontalFlowPanel referencePanel = new HorizontalFlowPanel();
+        referencePanel.add(new Label("Patient ID:"));
+
+        patientIdTextBox.setVisibleLength(60);
+        referencePanel.add(patientIdTextBox);
+        referencePanel.add(new Label("(system|value or id^^^&oid&ISO)"));
+        innerPanel.add(referencePanel);
+
+
+
+        HTML buttonPanelTitle = new HTML("Actions");
+        buttonPanelTitle.addStyleName(actionsBackgroundStyle);
+        buttonPanelTitle.setWidth("100%");
+        innerPanel.add(buttonPanelTitle);
+
+        HorizontalFlowPanel buttonPanel = new HorizontalFlowPanel();
+        searchRunButton.setEnabled(false);
+        buttonPanel.add(searchRunButton);
+        innerPanel.add(buttonPanel);
+        thePanel.add(searchPanel);
+    }
+
+    private void buildReadResourcePanel() {
+        FlowPanel readPanel = new FlowPanel();
+        readPanel.setWidth("100%");
+        readPanel.addStyleName(backgroundStyle);
+        FlowPanel innerPanel = new FlowPanel();
+        readPanel.add(innerPanel);
+
+        HTML datasetTitle = new HTML("<h2>Read Resource</h2>");
+        datasetTitle.addStyleName("tool-section-header");
+        datasetTitle.setWidth("100%");
+        innerPanel.add(datasetTitle);
+
+        HorizontalFlowPanel referencePanel = new HorizontalFlowPanel();
+        referencePanel.add(new Label("Resource Reference:"));
+
+        refTextBox.setVisibleLength(60);
+        referencePanel.add(refTextBox);
+        referencePanel.add(new Label("(ResourceType/ID)"));
+        innerPanel.add(referencePanel);
+
+        HTML buttonPanelTitle = new HTML("Actions");
+        buttonPanelTitle.addStyleName(actionsBackgroundStyle);
+        buttonPanelTitle.setWidth("100%");
+        innerPanel.add(buttonPanelTitle);
+
+        HorizontalFlowPanel buttonPanel = new HorizontalFlowPanel();
+        readRunButton.setEnabled(false);
+        buttonPanel.add(readRunButton);
+        innerPanel.add(buttonPanel);
+        thePanel.add(readPanel);
+    }
+
     @Override
     protected void bindUI() {
 
-        runButton.addClickHandler(new ClickHandler() {
+        readRunButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent clickEvent) {
-                getPresenter().doRun();
+                getPresenter().doReadRun();
+            }
+        });
+
+
+        searchRunButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent clickEvent) {
+                getPresenter().doSearchRun();
             }
         });
     }
@@ -138,16 +216,32 @@ public class FhirSearchView extends AbstractView<FhirSearchPresenter> {
                 getPresenter().doSetResourceReference(refTextBox.getText());
             }
         });
+
+        patientIdTextBox.addChangeHandler(new ChangeHandler() {
+            @Override
+            public void onChange(ChangeEvent changeEvent) {
+                getPresenter().doSetPatientId(patientIdTextBox.getText());
+            }
+        });
+
     }
 
     void setSiteNames(List<ASite> sites) {
         systemSelector.setNames(sites);
     }
 
+    void setResourceTypeNames(List<AnnotatedItem> names) {
+        resourceTypeSelector.setNames(names);
+    }
+
     MessagePanel getMessagePanel() { return messagePanel; }
 
-    void setRunEnabled(boolean enabled) {
-        runButton.setEnabled(enabled);
+    void setReadEnabled(boolean enabled) {
+        readRunButton.setEnabled(enabled);
+    }
+
+    void setSearchEnabled(boolean enabled) {
+        searchRunButton.setEnabled(enabled);
     }
 
     void addLog(String msg) {

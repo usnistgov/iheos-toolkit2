@@ -25,14 +25,16 @@ abstract public class ButtonListSelector implements IsWidget {
     private CheckBox showAllCheckBox = new CheckBox("Show All");
     private List<? extends AnnotatedItem> items;
     private String currentSelection;
+    private String titleStyleName = null;
 
     abstract public void doSelected(String label);
 
-
-    public ButtonListSelector(String title) {
+    public ButtonListSelector(String title, String titleStyleName) {
+        this.titleStyleName = titleStyleName;
         HTML tableTitle = new HTML("<b>" + title + "</b>");
         tableTitle.setWidth("100%");
-        tableTitle.addStyleName("tool-section-header");
+        if (titleStyleName != null)
+            tableTitle.addStyleName(titleStyleName);
         thePanel.add(tableTitle);
         thePanel.add(tablePanel);
         //siteTablePanel.add(new HTML("No appropriate systems to show"));
@@ -43,6 +45,10 @@ abstract public class ButtonListSelector implements IsWidget {
                 displayItems();
             }
         });
+    }
+
+    public ButtonListSelector(String title) {
+        this(title, "tool-section-header");
     }
 
     public void setNames(List<? extends AnnotatedItem> items) {

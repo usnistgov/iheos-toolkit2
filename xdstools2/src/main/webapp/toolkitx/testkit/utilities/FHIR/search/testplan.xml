@@ -1,0 +1,10 @@
+<TestPlan>
+    <Test>FHIR/search</Test>
+    <TestStep id="search">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <FhirSearchTransaction>
+            <ResourceType>$ResourceType$</ResourceType>
+            <Query>$Query$</Query>
+        </FhirSearchTransaction>
+    </TestStep>
+</TestPlan>

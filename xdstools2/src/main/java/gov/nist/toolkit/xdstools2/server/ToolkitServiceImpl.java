@@ -1632,14 +1632,17 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
 
     @Override
-    public List<Result> fhirSearch(FhirSearchRequest var1) {
-        return null;
+    public List<Result> fhirSearch(FhirSearchRequest request) throws Exception {
+        installCommandContext(request);
+        logger.debug(sessionID + ": fhirSearch()");
+        List<Result> results = new FhirServiceManager(session()).search(request.getSite(), request.getResourceTypeName(), request.getCodesSpec());
+        return results;
     }
 
     @Override
     public List<Result> fhirRead(FhirReadRequest request) throws Exception {
         installCommandContext(request);
-        logger.debug(sessionID + ": fhirTransaction()");
+        logger.debug(sessionID + ": fhirRead()");
         List<Result> results = new FhirServiceManager(session()).read(request.getSite(), request.getReference());
         return results;
     }

@@ -9,12 +9,14 @@ import java.util.Map;
 public class FhirSearchRequest extends CommandContext {
     private Map<String, List<String>> codesSpec;
     private SiteSpec site;
+    private String resourceTypeName;
 
     public FhirSearchRequest(){}
-    public FhirSearchRequest(CommandContext context, SiteSpec site, Map<String, List<String>> codesSpec){
+    public FhirSearchRequest(CommandContext context, SiteSpec site, String resourceTypeName, Map<String, List<String>> codesSpec){
         copyFrom(context);
         this.site=site;
         this.codesSpec=codesSpec;
+        this.resourceTypeName = resourceTypeName;
     }
 
     public Map<String, List<String>> getCodesSpec() {
@@ -33,4 +35,11 @@ public class FhirSearchRequest extends CommandContext {
         return site;
     }
 
+    public String getResourceTypeName() {
+        return resourceTypeName;
+    }
+
+    public void setResourceTypeName(String resourceTypeName) {
+        this.resourceTypeName = resourceTypeName;
+    }
 }

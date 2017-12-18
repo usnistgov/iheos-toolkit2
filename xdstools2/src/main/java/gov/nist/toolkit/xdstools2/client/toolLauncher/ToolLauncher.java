@@ -36,7 +36,7 @@ public class ToolLauncher implements ClickHandler {
 	final static public String mpqFindDocumentsTabLabel = "MPQ-FindDocuments";
 	final static public String getSubmissionSetTabLabel = "GetSubmissionSetAndContents";
 	final static public String getAllTabLabel = "GetAll";
-	final static public String fhirSearchTabLabel = "FHIRSearch";
+	final static public String fhirSearchTabLabel = "FHIR Search";
 	final static public String registryDoThisFirstTabLabel = "XDS.b_Registry_Do_This_First";
 	final static public String getRelatedTabLabel = "GetRelated";
 	final static public String connectathonTabLabel = "Connectathon Tools";
