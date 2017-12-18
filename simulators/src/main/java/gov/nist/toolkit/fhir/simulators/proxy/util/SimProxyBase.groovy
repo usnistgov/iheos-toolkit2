@@ -26,6 +26,7 @@ import org.apache.http.Header
 import org.apache.http.HttpHost
 import org.apache.http.HttpRequest
 import org.apache.http.HttpResponse
+import org.apache.log4j.Logger
 import org.hl7.fhir.dstu3.model.Resource
 
 /**
@@ -33,6 +34,7 @@ import org.hl7.fhir.dstu3.model.Resource
  */
 public class SimProxyBase {
     static final String fhirSupportSimName = 'fhir_support'
+    static Logger logger = Logger.getLogger(SimProxyBase.class);
 
 
     String uri = null
@@ -180,6 +182,8 @@ public class SimProxyBase {
         if (uri) return
         uri = request.requestLine.uri
         endpoint = new SimEndpoint(uri)
+        logger.info("Request on uri ${uri}")
+        logger.info("SimEndpoint parsed as ${endpoint}")
         clientActorType = ActorType.findActor(endpoint.actorType)
         if (!clientActorType) return handleEarlyException(new Exception("ActorType name was ${endpoint.actorType}"))
         if (endpoint.transactionType) {
@@ -198,6 +202,7 @@ public class SimProxyBase {
 //            clientTransactionType = TransactionType.FHIR  // probably a read
         if (!clientTransactionType) return handleEarlyException(new Exception("TransactionType name was ${endpoint.transactionTypeName}"))
         simId = SimIdParser.parse(uri)
+        logger.info("SimId parsed from URI as ${simId}")
         simDb = new SimDb(simId, endpoint.actorType, clientTransactionType.shortName, false)
         config = simDb.getSimulator(simId);
         if (config == null) throw new BadSimIdException("Simulator " + simId +  " does not exist");

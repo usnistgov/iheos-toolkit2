@@ -29,8 +29,8 @@ abstract class FoldersDataTable extends DataTable<Folder> implements IsWidget {
     private FlowPanel columnSelectionPanel = new FlowPanel();
 
     private static List<AnnotatedItem> columnList = Arrays.asList(
-            new AnnotatedItem(true,ID_COLUMN_NAME),
-            new AnnotatedItem(false,HOME_ID_COLUMN_NAME),
+            new AnnotatedItem(true, ID_COLUMN_NAME),
+            new AnnotatedItem(true, HOME_ID_COLUMN_NAME),
             new AnnotatedItem(false, VERSION),
             new AnnotatedItem(false, LAST_UPDATE_TIME),
             new AnnotatedItem(false, CODE_LIST)

@@ -1,5 +1,6 @@
 package gov.nist.toolkit.fhir.simulators.mhd
 
+import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder
 import gov.nist.toolkit.fhir.resourceMgr.ResolverConfig
@@ -569,6 +570,8 @@ class MhdGenerator {
                         er.detail("References Binary ${ref}")
                         assert binary instanceof Binary
                         Binary b = binary
+                        b.id = dr.masterIdentifier.value
+                        dr.content[0].attachment.url = proxyBase.config.getEndpoint(TransactionType.FHIR) + '/' + 'Binary/' + dr.masterIdentifier.value
                         Attachment a = new Attachment()
                         a.contentId = Integer.toString(index) + baseContentId
                         a.contentType = b.contentType

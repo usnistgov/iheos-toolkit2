@@ -328,12 +328,14 @@ public class SimulatorProperties {
      */
     public static final String locked = "Locked";
 
-    public static final String fhirEndpoint = "FHIR Endpoint";
+    public static final String pdbEndpoint = "Provide DocumentBundle Endpoint";
+
+    public static final String pdbTlsEndpoint = "Provide DocumentBundle TLS Endpoint";
 
     public static final String fhirTlsEndpoint = "FHIR TLS Endpoint";
 
-//    public static final String proxyForwardEndpoint = "Proxy Forward Endpoint";
-//    public static final String proxyTlsForwardEndpoint = "Proxy TLS Forward Endpoint";
+    public static final String fhirEndpoint = "FHIR Endpoint";
+
 
     public static final String proxyForwardSite = "Proxy Forward Site";
 

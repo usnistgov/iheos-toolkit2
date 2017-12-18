@@ -96,10 +96,10 @@ public class SimServlet  extends HttpServlet {
 		try {
 			long id = Thread.currentThread().getId();
 			Object it = this;
-			logger.info("Proxy Operation: want to start proxy from SimServlet (" + id + ")");
-			logger.info("Proxy Operation: Starting Proxy from SimServlet (" + Thread.currentThread().getId() + ")");
+			logger.info("Proxy Operation: start proxy from SimServlet on thread " + id + " port " + Installation.instance().propertyServiceManager().getProxyPort());
 			proxyThread = ElementalReverseProxy.start(Installation.instance().propertyServiceManager().getProxyPort());
 		} catch (Exception e) {
+			logger.fatal("Proxy startup on port " +  Thread.currentThread().getId()  + " failed - " + ExceptionUtil.exception_details(e));
 			throw new ServletException(e);
 		}
 	}

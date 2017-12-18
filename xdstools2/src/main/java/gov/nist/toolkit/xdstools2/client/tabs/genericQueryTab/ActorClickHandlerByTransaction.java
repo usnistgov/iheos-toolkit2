@@ -44,22 +44,16 @@ class ActorClickHandlerByTransaction implements ClickHandler {
 		if (couplings!=null && couplings.hasCouplings()) {
 			Object object = event.getSource();
 			if (object!=null && object instanceof RadioButton) {
-				List<TransactionType> selections = transactionSelectionManager.transactionTypes(transactionSelectionManager.selections2());
-				if (selections.size()== 1) {
-					 if (couplings.from() == selections.get(0)) {
-						 if (couplings.getCoupling().getPrimaryId() == null)
-							 couplings.getCoupling().setPrimaryId(((RadioButton) object).getText());
-					 }   else {
-						 couplings.getCoupling().setPrimaryId(null);
-						 couplings.getCoupling().setSecondaryId(null);
+				List<TransactionSelectionManager.RbSite> rbSites = transactionSelectionManager.selections2();
+				if (rbSites.size()== 2) {
+					 if (couplings.from() == rbSites.get(0).actorTran.tt && couplings.to() == rbSites.get(1).actorTran.tt) {
+							 couplings.getCoupling().setPrimaryId(rbSites.get(0).site.getSiteName());
+							 couplings.getCoupling().setSecondaryId(rbSites.get(1).site.getSiteName());
 					 }
-				} else	if (selections.size()>1 && couplings.to() == selections.get(1)) {
-					if (couplings.getCoupling().getSecondaryId()==null)
-						couplings.getCoupling().setSecondaryId(((RadioButton)object).getText());
 				}
 			}
 
-			transactionSelectionManager.adjustForCurrentSelection2(selectedTransactionType);
+			transactionSelectionManager.adjustInstructionMessage(selectedTransactionType);
 		}
 	}
 	

@@ -20,10 +20,11 @@ fi
 SCRIPTNAME=$(basename $0 .sh)
 
 cd $BUILDDIR
-mvn clean package -DskipTests -Dmaven.test.skip=true
+mvn clean package -DskipTests -Dmaven.test.skip=true -PRelease
 
 cd xdstools2/target
 WARNAME=$(basename *.war .war)
+
 
 cd ~/tk
 mkdir xdstools2/target/$WARNAME/javadoc
@@ -34,6 +35,10 @@ mvn -o site
 
 cd target
 rm -r $WARNAME/site
+
+pwd
+echo "warname is $WARNAME"
+
 mv site $WARNAME
 
 cd $WARNAME

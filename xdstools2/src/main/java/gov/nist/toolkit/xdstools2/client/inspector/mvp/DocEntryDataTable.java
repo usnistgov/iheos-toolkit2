@@ -31,7 +31,7 @@ abstract class DocEntryDataTable extends DataTable<DocumentEntry> implements IsW
     private static List<AnnotatedItem> columnList = Arrays.asList(
             new AnnotatedItem(true,ID_COLUMN_NAME),
             new AnnotatedItem(true, TITLE_COLUMN_NAME),
-            new AnnotatedItem(false,HOME_ID_COLUMN_NAME),
+            new AnnotatedItem(true,HOME_ID_COLUMN_NAME),
             new AnnotatedItem(false, REPOSITORY_UNIQUE_ID),
             new AnnotatedItem(false, HASH_COLUMN_NAME),
             new AnnotatedItem(false, SIZE_COLUMN_NAME)

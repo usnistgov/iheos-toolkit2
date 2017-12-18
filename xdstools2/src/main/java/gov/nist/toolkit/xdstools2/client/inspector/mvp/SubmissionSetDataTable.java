@@ -31,8 +31,8 @@ abstract class SubmissionSetDataTable extends DataTable<SubmissionSet> implement
     private FlowPanel columnSelectionPanel = new FlowPanel();
 
     private static List<AnnotatedItem> columnList = Arrays.asList(
-            new AnnotatedItem(true,ID_COLUMN_NAME),
-            new AnnotatedItem(false,HOME_ID_COLUMN_NAME),
+            new AnnotatedItem(true, ID_COLUMN_NAME),
+            new AnnotatedItem(true, HOME_ID_COLUMN_NAME),
             new AnnotatedItem(false, SUBMISSION_TIME_NAME),
             new AnnotatedItem(false, SOURCE_ID_NAME),
             new AnnotatedItem(false, CONTENT_TYPE_CODES_NAME),

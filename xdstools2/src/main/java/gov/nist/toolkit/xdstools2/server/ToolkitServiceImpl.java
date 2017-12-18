@@ -145,7 +145,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 //        response.setToolkitBaseUrl("http://" + props.getToolkitHost()
 //                + ":" + props.getToolkitPort()  + contextName +"/Xdstools2.html");
         response.setToolkitBaseUrl(Installation.instance().getToolkitBaseUrl());
-        logger.info("Base URL is " + response.getToolkitBaseUrl());
+        logger.info("Toolkit Base URL is " + response.getToolkitBaseUrl());
         response.setWikiBaseUrl(Installation.instance().wikiBaseAddress());
         return response;
     }

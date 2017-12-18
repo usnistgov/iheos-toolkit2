@@ -27,7 +27,7 @@ abstract class ObjectRefDataTable extends DataTable<ObjectRef> implements IsWidg
 
     private static List<AnnotatedItem> columnList = Arrays.asList(
             new AnnotatedItem(true,ID_COLUMN_NAME),
-            new AnnotatedItem(false,HOME_ID_COLUMN_NAME));
+            new AnnotatedItem(true,HOME_ID_COLUMN_NAME));
 
     private static final ProvidesKey<ObjectRef> KEY_PROVIDER = new ProvidesKey<ObjectRef>() {
         @Override

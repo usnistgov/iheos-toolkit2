@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>gov.nist.toolkit</groupId>
 		<artifactId>tk-deps</artifactId>
-		<version>5.0.0-SNAPSHOT</version>
+		<version>5.1.0-SNAPSHOT</version>
 		<relativePath>../tk-deps/pom.xml</relativePath>
 	</parent>
 
@@ -17,18 +17,37 @@
 		<testkitIn>${project.basedir}/src/main/webapp/toolkitx/testkit</testkitIn>
 		<Default_Environment>default</Default_Environment>
 		<Toolkit_TLS_Port>8443</Toolkit_TLS_Port>
-		<Toolkit_Port>8888</Toolkit_Port>
+		<!--<Toolkit_Port>8888</Toolkit_Port>-->
 		<Image_Cache>/opt/xdsi/storage</Image_Cache>
 	</properties>
 
 	<profiles>
 		<profile>
 			<id>Bill</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
+			<!--<activation>-->
+				<!--<activeByDefault>true</activeByDefault>-->
+			<!--</activation>-->
 			<properties>
 				<build.profile.id>Bill</build.profile.id>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>UbuntuCmdBill</id>
+			<properties>
+				<build.profile.id>UbuntuCmdBill</build.profile.id>
+			</properties>
+		</profile>
+		<profile>
+			<id>Release</id>
+			<properties>
+				<build.profile.id>Release</build.profile.id>
+			</properties>
+		</profile>
+		<profile>
+			<id>UbuntuIdeaBill</id>
+			<properties>
+				<build.profile.id>UbuntuIdeaBill</build.profile.id>
 			</properties>
 		</profile>
 
@@ -45,52 +64,52 @@
 			</properties>
 		</profile>
 
-		<profile>
-			<id>Diane</id>
-			<properties>
-				<build.profile.id>Diane</build.profile.id>
-			</properties>
+		<!--<profile>-->
+			<!--<id>Diane</id>-->
+			<!--<properties>-->
+				<!--<build.profile.id>Diane</build.profile.id>-->
+			<!--</properties>-->
 
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-jar-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>make-a-jar</id>
-								<phase>compile</phase>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
+			<!--<build>-->
+				<!--<plugins>-->
+					<!--<plugin>-->
+						<!--<groupId>org.apache.maven.plugins</groupId>-->
+						<!--<artifactId>maven-jar-plugin</artifactId>-->
+						<!--<executions>-->
+							<!--<execution>-->
+								<!--<id>make-a-jar</id>-->
+								<!--<phase>compile</phase>-->
+								<!--<goals>-->
+									<!--<goal>jar</goal>-->
+								<!--</goals>-->
+							<!--</execution>-->
+						<!--</executions>-->
+					<!--</plugin>-->
 
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-install-plugin</artifactId>
-						<executions>
-							<execution>
-								<phase>install</phase>
-								<goals>
-									<goal>install-file</goal>
-								</goals>
-								<configuration>
-									<packaging>jar</packaging>
-									<artifactId>${project.artifactId}</artifactId>
-									<groupId>${project.groupId}</groupId>
-									<version>${project.version}</version>
-									<file>
-										${project.build.directory}/${project.artifactId}-${project.version}.jar
-									</file>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
+					<!--<plugin>-->
+						<!--<groupId>org.apache.maven.plugins</groupId>-->
+						<!--<artifactId>maven-install-plugin</artifactId>-->
+						<!--<executions>-->
+							<!--<execution>-->
+								<!--<phase>install</phase>-->
+								<!--<goals>-->
+									<!--<goal>install-file</goal>-->
+								<!--</goals>-->
+								<!--<configuration>-->
+									<!--<packaging>jar</packaging>-->
+									<!--<artifactId>${project.artifactId}</artifactId>-->
+									<!--<groupId>${project.groupId}</groupId>-->
+									<!--<version>${project.version}</version>-->
+									<!--<file>-->
+										<!--${project.build.directory}/${project.artifactId}-${project.version}.jar-->
+									<!--</file>-->
+								<!--</configuration>-->
+							<!--</execution>-->
+						<!--</executions>-->
+					<!--</plugin>-->
+				<!--</plugins>-->
+			<!--</build>-->
+		<!--</profile>-->
 
 
 		<profile>
@@ -157,60 +176,6 @@
 				<build.profile.id>Sunil</build.profile.id>
 			</properties>
 		</profile>
-		<!--
-		<profile>
-			<id>Integration-Tests</id>
-			<properties>
-				<build.profile.id>Integration-Tests</build.profile.id>
-			</properties>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-surefire-plugin</artifactId>
-						<configuration>
-							<includes>
-								<include>**/*IT.java</include>
-							</includes>
-						</configuration>
-						<executions>
-							<execution>
-								<id>run-integration-tests</id>
-								<phase>integration-test</phase>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.tomcat.maven</groupId>
-						<artifactId>tomcat7-maven-plugin</artifactId>
-						<version>2.2</version>
-						<configuration>
-							<path>/</path>
-						</configuration>
-						<executions>
-							<execution>
-								<id>start-tomcat</id>
-								<phase>pre-integration-test</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-								<configuration>
-									<fork>true</fork>
-								</configuration>
-							</execution>
-							<execution>
-								<id>stop-tomcat</id>
-								<phase>post-integration-test</phase>
-								<goals>
-									<goal>shutdown</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		-->
 	</profiles>
 
 	<name>XDS Toolkit</name>
@@ -426,13 +391,6 @@
 			<groupId>org.ow2.asm</groupId>
 			<artifactId>asm</artifactId>
 		</dependency>
-		<!--<dependency> -->
-		<!--<groupId>org.glassfish.jersey.containers</groupId> -->
-		<!--&lt;!&ndash; if your container implements Servlet API older than 3.0, 
-			use "jersey-container-servlet-core" &ndash;&gt; -->
-		<!--<artifactId>jersey-container-servlet</artifactId> -->
-		<!--<version>2.22.1</version> -->
-		<!--</dependency> -->
 		<dependency>
 			<groupId>org.glassfish.jersey.core</groupId>
 			<artifactId>jersey-server</artifactId>
@@ -475,11 +433,6 @@
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-elemental</artifactId>
 		</dependency>
-		<!--<dependency> -->
-		<!--<groupId>com.sun.jersey</groupId> -->
-		<!--<artifactId>jersey-server</artifactId> -->
-		<!--<version>1.9</version> -->
-		<!--</dependency> -->
 	</dependencies>
 
 	<build>
@@ -499,6 +452,17 @@
 
 
 		<plugins>
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+				<version>2.1</version>
+				<configuration>
+					<url>http://localhost:8080/manager/text</url>
+					<username>admin</username>
+					<password></password>
+				</configuration>
+			</plugin>
+
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<!-- 2.8.0-01 and later require maven-compiler-plugin 3.1 or higher -->
@@ -596,47 +560,6 @@
                                         <extraJvmArgs>-Xms1024m -Xmx1024m -XX:MaxPermSize=256m</extraJvmArgs>
 				</configuration>
 			</plugin>
-			<!--<plugin>-->
-				<!--<groupId>org.codehaus.mojo</groupId>-->
-				<!--<artifactId>gwt-maven-plugin</artifactId>-->
-				<!--<version>${gwtVersion}</version>-->
-				<!--<dependencies>-->
-					<!--<dependency>-->
-						<!--<groupId>com.google.gwt</groupId>-->
-						<!--<artifactId>gwt-user</artifactId>-->
-						<!--<version>${gwtVersion}</version>-->
-					<!--</dependency>-->
-					<!--<dependency>-->
-						<!--<groupId>com.google.gwt</groupId>-->
-						<!--<artifactId>gwt-dev</artifactId>-->
-						<!--<version>${gwtVersion}</version>-->
-					<!--</dependency>-->
-				<!--</dependencies>-->
-				<!--&lt;!&ndash; JS is only needed in the package phase, this speeds up testing &ndash;&gt;-->
-				<!--<executions>-->
-					<!--<execution>-->
-						<!--<phase>prepare-package</phase>-->
-						<!--<goals>-->
-							<!--<goal>compile</goal>-->
-							<!--<goal>resources</goal>-->
-						<!--</goals>-->
-					<!--</execution>-->
-				<!--</executions>-->
-
-				<!--&lt;!&ndash; Plugin configuration. There are many available options, see gwt-maven-plugin -->
-					<!--documentation at codehaus.org &ndash;&gt;-->
-				<!--<configuration>-->
-					<!--&lt;!&ndash; URL that should be automatically opened in the GWT shell (gwt:run). &ndash;&gt;-->
-					<!--<runTarget>Xdstools2.html</runTarget>-->
-					<!--&lt;!&ndash; Ask GWT to create the Story of Your Compile (SOYC) (gwt:compile) &ndash;&gt;-->
-					<!--<compileReport>true</compileReport>-->
-					<!--<module>gov.nist.toolkit.xdstools2.Xdstools2</module>-->
-					<!--&lt;!&ndash;<logLevel>INFO</logLevel> &ndash;&gt;-->
-					<!--&lt;!&ndash;<style>${gwt.style}</style> &ndash;&gt;-->
-					<!--<copyWebapp>true</copyWebapp>-->
-					<!--&lt;!&ndash; <genParam>true</genParam> &ndash;&gt;-->
-				<!--</configuration>-->
-			<!--</plugin>-->
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
