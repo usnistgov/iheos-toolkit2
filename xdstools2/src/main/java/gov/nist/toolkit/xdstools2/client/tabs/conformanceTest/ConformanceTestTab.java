@@ -1031,8 +1031,14 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		parms.put("$patientid$",patientId);
 	}
 
+	/**
+	 * this tags the patient id with the test number so the contents in the registry can be tracked
+	 * @param testInstance
+	 * @param parms
+	 * @return
+	 */
 	private String getTestInstancePatientId(TestInstance testInstance, Map<String, String> parms) {
-		if (ActorType.REPOSITORY.getShortName().equals(currentActorOption.actorTypeId)) {
+		if (false && ActorType.REPOSITORY.getShortName().equals(currentActorOption.actorTypeId)) {
 			return testInstance.getId() + "_" + getPatientIdStr(parms);
 		} else
 			return getPatientIdStr(parms);
