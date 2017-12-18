@@ -43,6 +43,18 @@ public class EndpointParser  {
         return buf.toString();
     }
 
+    public String getContext() {
+        if (parts.length > 3)
+            return parts[3];
+        return "null";
+    }
+
+    public void setContext(String context) {
+        if (parts.length > 3) {
+            parts[3] = context;
+        }
+    }
+
     public String getProtocol() {
         String[] cparts = parts[0].split(":");
         if (cparts.length < 1) return "";
@@ -113,4 +125,5 @@ public class EndpointParser  {
 
         return buf.toString();
     }
+
 }

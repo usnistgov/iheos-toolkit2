@@ -26,12 +26,14 @@ public class ReconfigureSimulators extends HttpServlet {
     private String configuredPort;
     private String configuredTlsPort;
     private String configuredProxyPort;
+    private String configuredContext;
 
     // These are used for testing only
     private String overrideHost = null;
     private String overridePort = null;
     private String overrideTlsPort = null;
     private String overrideProxyPort = null;
+    private String overrideContext = null;
 
     private static Logger logger = Logger.getLogger(ReconfigureSimulators.class);
 
@@ -40,6 +42,7 @@ public class ReconfigureSimulators extends HttpServlet {
         configuredPort = Installation.instance().propertyServiceManager().getToolkitPort();
         configuredTlsPort = Installation.instance().propertyServiceManager().getToolkitTlsPort();
         configuredProxyPort = Installation.instance().propertyServiceManager().getProxyPort();
+        configuredContext = Installation.instance().getServletContextName();
 
         for (SimId simId : SimDb.getAllSimIds()) {
             reconfigure(simId);
@@ -78,6 +81,7 @@ public class ReconfigureSimulators extends HttpServlet {
 
             String host = ep.getHost();
             String port = ep.getPort();
+            String context = ep.getContext();
 
             if (isProxy) {
                 if (!isTls) {
@@ -101,6 +105,11 @@ public class ReconfigureSimulators extends HttpServlet {
                         updated = true;
                     }
                 }
+
+                if (!context.equals(getConfiguredContext())) {
+                    ep.setContext(getConfiguredContext());
+                    ele.setStringValue(ep.getEndpoint());
+                }
             }
         }
 
@@ -123,6 +132,15 @@ public class ReconfigureSimulators extends HttpServlet {
 
     public void setOverridePort(String overridePort) {
         this.overridePort = overridePort;
+    }
+
+    public void setOverrideContext(String service) {
+        this.overrideContext = service;
+    }
+
+    public String getConfiguredContext() {
+        if (overrideContext != null) return overrideContext;
+        return configuredContext;
     }
 
     public void setOverrideTlsPort(String overrideTlsPort) {
