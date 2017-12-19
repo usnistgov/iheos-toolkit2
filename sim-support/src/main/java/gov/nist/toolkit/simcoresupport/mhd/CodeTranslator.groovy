@@ -1,7 +1,6 @@
 package gov.nist.toolkit.simcoresupport.mhd
 
 import gov.nist.toolkit.valsupport.client.ValidationContext
-import org.hl7.fhir.dstu3.model.CodeType
 
 class CodeTranslator {
     def codeTypes = []

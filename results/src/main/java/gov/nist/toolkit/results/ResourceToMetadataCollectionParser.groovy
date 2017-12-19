@@ -1,12 +1,14 @@
 package gov.nist.toolkit.results
 
 import gov.nist.toolkit.fhir.context.ToolkitFhirContext
+import gov.nist.toolkit.fhir.resourceMgr.ResourceCacheMgr
 import gov.nist.toolkit.registrymetadata.Metadata
 import gov.nist.toolkit.registrymetadata.MetadataParser
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection
 import gov.nist.toolkit.registrymetadata.client.SubmissionSet
 import gov.nist.toolkit.simcoresupport.mhd.MhdGenerator
+import gov.nist.toolkit.simcoresupport.proxy.util.SimProxyBase
 import groovy.xml.MarkupBuilder
 import org.hl7.fhir.dstu3.model.Binary
 import org.hl7.fhir.dstu3.model.Bundle
@@ -54,7 +56,7 @@ class ResourceToMetadataCollectionParser {
      * @param de
      * @param dr
      */
-    static def DocumentEntry parse(DocumentReference dr) {
+    DocumentEntry parse(DocumentReference dr) {
         // use MhdGenerator.buildSubmission at line 582
         // where it calls addExtrinsicObject
         if (dr instanceof DocumentReference) {
@@ -62,7 +64,7 @@ class ResourceToMetadataCollectionParser {
             def xml = new MarkupBuilder(writer)
 
                             xml.RegistryObjectList(xmlns: 'urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0') {
-                                        MhdGenerator.addExtrinsicObject(xml, dr.getId(), dr)
+                                new MhdGenerator(new SimProxyBase(), new ResourceCacheMgr(null)).addExtrinsicObject(xml, dr.getId(), dr)
                                     }
             Metadata m = MetadataParser
                     .parseNonSubmission(writer.toString())

@@ -241,7 +241,7 @@ class MhdGenerator {
         }
     }
 
-    static def addExtrinsicObject(builder,  fullUrl, dr) {
+    def addExtrinsicObject(builder,  fullUrl, dr) {
         if (fullUrl && (fullUrl instanceof String))
             fullUrl = UriBuilder.build(fullUrl)
         String drId = dr.id // getEntryUuidValue(fullUrl, dr.identifier)
