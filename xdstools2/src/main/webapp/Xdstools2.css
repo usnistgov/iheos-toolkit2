@@ -48,19 +48,8 @@ h3 {
   opacity: .8;
 }
 
-.roundedButton1 {
+.no-margin {
   margin: 0;
-  padding: 1px 3px;
-  text-decoration: none;
-  color:blue;
-  cursor: pointer;
-  cursor: hand;
-  font-weight:normal;font-size:smaller;
-  background: url("images/hborder.png") repeat-x 0px -2077px;
-  border:1px solid #bbb;
-  border-bottom: 1px solid #a0a0a0;
-  border-radius: 16px;
-  -moz-border-radius: 16px;
 }
 
 /** Most GWT widgets already have a style name defined */
@@ -90,6 +79,21 @@ h3 {
 
 .my-table-band {
 	background-color: #D8D8D8
+}
+
+.detail-section-header {
+  font-size: 12pt;
+  font-weight: bold;
+}
+
+.detail-table-header {
+  background-color: #D8D8D8;
+  font-size: 12pt;
+  font-weight: bold;
+}
+
+.error-table-header {
+  background-color: #D8D8D8
 }
 
 .my-table-noband {
@@ -186,6 +190,17 @@ h3 {
   border:2px solid darkslategray;
 }
 
+.border-collapse {
+  border-collapse: collapse;
+  border:2px solid darkslategray;
+  margin: 1px;
+}
+
+.table-header {
+  background-color: wheat;
+  text-align: center;
+}
+
 .list-border {
   border: 1px solid rgba(169, 169, 169, 0.67);
 }
@@ -234,9 +249,32 @@ h3 {
   /*right: 0px;*/
 }
 
+.left {
+  float: left;
+}
+
+.block {
+  display: block;
+}
+
 .gwt-TabBarItem { /* folder-type rounded tab edges */
   border-top-left-radius: .7em;
   border-top-right-radius: .7em;
+}
+
+.roundedButton1 {
+  margin: 0;
+  padding: 1px 3px;
+  text-decoration: none;
+  color:blue;
+  cursor: pointer;
+  cursor: hand;
+  font-weight:normal;font-size:smaller;
+  background: url("images/hborder.png") repeat-x 0px -2077px;
+  border:1px solid #bbb;
+  border-bottom: 1px solid #a0a0a0;
+  border-radius: 16px;
+  -moz-border-radius: 16px;
 }
 
 .roundedButton2 {
@@ -249,6 +287,20 @@ h3 {
   background:#f5f5f5;
   padding:1px 3px;
   color:#4B00FF;
+}
+
+.roundedButton3 {
+  margin: 0;
+  padding: 1px 3px;
+  text-decoration: none;
+  cursor: pointer;
+  cursor: hand;
+  font-weight:normal;font-size:xx-small;
+  background: url("images/hborder.png") repeat-x 0px -2077px;
+  border:1px solid #bbb;
+  border-bottom: 1px solid #a0a0a0;
+  border-radius: 16px;
+  -moz-border-radius: 16px;
 }
 
 .gwt-TabBar {
@@ -368,4 +420,16 @@ h3 {
 table tr td div button {
   border:none;
   background-color:transparent;
+}
+
+.insetBorder {
+  border: inset;
+}
+
+.outsetBorder {
+  border: outset;
+}
+
+.inheritBackground {
+  background: inherit;
 }

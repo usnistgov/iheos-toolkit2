@@ -1,5 +1,6 @@
 package gov.nist.toolkit.fhir.support
 
+import gov.nist.toolkit.xdsexception.ExceptionUtil
 import org.apache.lucene.document.Document
 import org.apache.lucene.document.Field
 import org.apache.lucene.document.StringField
@@ -39,28 +40,35 @@ class ResDbIndexer {
             Directory dir = FSDirectory.open(indexDir.toPath())
             IndexWriterConfig iwc = new IndexWriterConfig()
             iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND)
+            iwc.setCommitOnClose(true)
             indexWriter = new IndexWriter(dir, iwc)
             openForWriting = true
             return true;
         } catch (Exception e) {
-            System.err.println("Error opening the index. " + e.getMessage());
+            System.err.println("Error opening the index. " + ExceptionUtil.exception_details(e));
+            throw new Exception("Error opening the Lucene index", e)
         }
-        return false;
     }
 
     protected commit() {
-        indexWriter.commit();
+//        indexWriter.commit();
+        indexWriter.close()
+        indexWriter = null
     }
 
     protected close() {
-        if (indexWriter)
-            indexWriter.close()
-        indexWriter = null
+        try {
+            if (indexWriter)
+                indexWriter.close()
+            indexWriter = null
 
-        if (indexDirectory) indexDirectory.close()
-        indexDirectory = null
-        if (indexReader) indexReader.close()
-        indexReader = null
+            if (indexDirectory) indexDirectory.close()
+            indexDirectory = null
+            if (indexReader) indexReader.close()
+            indexReader = null
+        } catch (Exception e) {
+
+        }
     }
 
     static String PATH_FIELD = 'path'

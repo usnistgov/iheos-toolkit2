@@ -31,20 +31,23 @@ public class PidWidget implements IsWidget{
         expandBtn.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent clickEvent) {
-                favContainer.add(favoritePidWidget);
+                if (favContainer!=null)
+                    favContainer.add(favoritePidWidget);
             }
         });
         favoritePidWidget.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
             @Override
             public void onSelectionChange(SelectionChangeEvent selectionChangeEvent) {
                 Pid selectedPid=favoritePidWidget.getSelectedPid();
-                pidInput.setText(selectedPid.toString());
+                if (selectedPid!=null)
+                    pidInput.setText(selectedPid.toString());
             }
         });
         pidInput.addFocusHandler(new FocusHandler() {
             @Override
             public void onFocus(FocusEvent focusEvent) {
-                favoritePidWidget.clearSelection();
+                if (favoritePidWidget!=null)
+                    favoritePidWidget.clearSelection();
             }
         });
     }

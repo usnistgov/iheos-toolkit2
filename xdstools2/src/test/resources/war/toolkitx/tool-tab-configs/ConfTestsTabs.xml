@@ -13,7 +13,8 @@
 			<tab label="XDS" type="profile" tcCode="xds">   <!-- If there is only one profile, select it. Then go ahead and show the default option. But if multiple profiles exist, without a default tab setting, show the profile map. -->
 				<tabs label="Options"> 						<!-- Retrofit to ActorAndOption in Build*OrchestrationButton.java -->
 					<tab label="Required"  type="option" tcCode="" externalStart="false"/>
-					<tab label="XUA Option" type="option" tcCode="xua" externalStart="false"/> 
+					<tab label="XUA Option" type="option" tcCode="xua" externalStart="false"/>
+					<tab label="ExternalStart" type="option" tcCode="externalStart" externalStart="true"/>
 				</tabs>
 			</tab>
 		</tabs>

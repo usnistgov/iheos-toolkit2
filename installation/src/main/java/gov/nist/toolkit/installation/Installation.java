@@ -5,6 +5,7 @@ import gov.nist.toolkit.tk.TkLoader;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import org.apache.http.annotation.Obsolete;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
@@ -29,12 +30,38 @@ public class Installation {
     private static Logger logger = Logger.getLogger(Installation.class);
 
     static Installation me = null;
+    static private boolean testIsRunning = false;
+
+
+    public static boolean isTestRunning() {
+        return testIsRunning;
+    }
+
+    public static void setTestRunning(boolean testIsRunning) {
+        Installation.testIsRunning = testIsRunning;
+    }
+
+    /**
+     * will self initialize to the production manager.  For testing purposes
+     * it can be initialized with TestResourceCacheFactory
+     * @return
+     */
+
+    public String getToolkitBaseUrl() {
+        return "http://"
+                + propertyServiceMgr.getToolkitHost()
+                + ":"
+                + propertyServiceMgr.getToolkitPort()
+                + getServletContextName()
+                + "/Xdstools2.html";
+    }
 
     public String toString() {
         return String.format("warHome=%s externalCache=%s", warHome, externalCache);
     }
 
     static {
+        logger.info("Attempting static initialization of WARHOME");
         // This works for unit tests if warhome.txt is installed as part of a unit test environment
         String warhomeTxt = null;
         try {
@@ -42,6 +69,7 @@ public class Installation {
         } catch (Throwable t) {}
         if (warhomeTxt != null) {
             instance().warHome(new File(warhomeTxt).getParentFile());
+            logger.info("WARHOME initialized to " + instance().warHome);
         }
     }
 
@@ -235,7 +263,7 @@ public class Installation {
    }
 
     public File fhirSimDbFile() {
-        return new File(externalCache(), "resdb");
+        return new File(externalCache(), "simdb");
     }
 
     public List<String> getListenerPortRange() {
@@ -306,6 +334,10 @@ public class Installation {
         return new File(externalCache + sep + "environment");
     }
 
+    public File getDefaultCodesFile() {
+        return new File(environmentFile(defaultEnvironmentName()), "codes.xml");
+    }
+
 	public File getKeystoreDir(String environmentName) {
 		return new File(environmentFile(environmentName), "keystore");
 	}
@@ -346,6 +378,12 @@ public class Installation {
 
     public File internalEnvironmentsFile() {
         return new File(toolkitxFile(), "environment");
+    }
+    public File internalDatasetsFile() {
+        return new File(toolkitxFile(), "datasets");
+    }
+    public File internalResourceCacheFile() {
+        return new File(toolkitxFile(), "resourceCache");
     }
 
     public File sessionLogFile(String sessionId) {
@@ -426,4 +464,20 @@ public class Installation {
 		this.servletContextName = servletContextName;
 	}
 
+    public String getToolkitAsFhirServerBaseUrl() {
+        return "http://" +
+                propertyServiceManager().getToolkitHost() + ":" + propertyServiceManager().getToolkitPort() +
+                ((getServletContextName().isEmpty()) ? "" : "/" + getServletContextName() ) +
+                "/fhir";
+    }
+
+
+    // I think this is wrong!!!
+    @Obsolete
+    public String getToolkitProxyBaseUrl() {
+        return "http://" +
+                propertyServiceManager().getToolkitHost() + ":" + propertyServiceManager().getProxyPort() +
+                ((getServletContextName().isEmpty()) ? "" : "/" + getServletContextName() ) +
+                "/fhir";
+    }
 }

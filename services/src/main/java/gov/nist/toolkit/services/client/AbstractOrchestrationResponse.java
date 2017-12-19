@@ -14,7 +14,9 @@ import java.util.List;
 abstract public class AbstractOrchestrationResponse extends RawResponse {
 //    private List<TestInstance> orchestrationTests = new ArrayList<>();  // test definitions used to build the orchestration
     private List<MessageItem> messages = new ArrayList<>();
+    private String additionalDocumentation = null;
 
+    public AbstractOrchestrationResponse() {}
     /**
      * Does vendor initiate first message of test?
      * @return true if they do.
@@ -24,10 +26,22 @@ abstract public class AbstractOrchestrationResponse extends RawResponse {
     public MessageItem addMessage(TestInstance testInstance, boolean success, String message) {
         MessageItem item = new MessageItem(testInstance, success, message);
         messages.add(item);
+        if (!success) {
+            this.errorMessage = message;
+            this.error = true;
+        }
         return item;
     }
 
     public Collection<MessageItem> getMessages() { return messages; }
+
+    public boolean hasError() {
+        for (MessageItem item : messages) {
+            if (!item.isSuccess())
+                return true;
+        }
+        return false;
+    }
 
     /**
      * Tests used to build up test environment
@@ -49,4 +63,15 @@ abstract public class AbstractOrchestrationResponse extends RawResponse {
         return null;
     }
 
+    public String getAdditionalDocumentation() {
+        return additionalDocumentation;
+    }
+
+    public void setAdditionalDocumentation(String additionalDocumentation) {
+        this.additionalDocumentation = additionalDocumentation;
+    }
+
+    public boolean hasAdditionalDocumentation() {
+        return additionalDocumentation != null;
+    }
 }

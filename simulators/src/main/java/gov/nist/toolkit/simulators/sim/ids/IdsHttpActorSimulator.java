@@ -3,20 +3,23 @@
  */
 package gov.nist.toolkit.simulators.sim.ids;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import gov.nist.toolkit.fhir.simulators.sim.ids.WadoRetrieveResponseSim;
+import gov.nist.toolkit.fhir.simulators.support.BaseHttpActorSimulator;
+import gov.nist.toolkit.fhir.simulators.support.DsSimCommon;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.NameValuePair;
+import org.apache.log4j.Logger;
+
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.http.HttpMessageBa;
 import gov.nist.toolkit.http.HttpParserBa;
-import gov.nist.toolkit.simulators.support.BaseHttpActorSimulator;
-import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Simulator for Image Document Source (IDS) receiving WADO (RAD-55)
@@ -51,14 +54,11 @@ public class IdsHttpActorSimulator extends BaseHttpActorSimulator {
       "*/*" 
    };
 
-   private DsSimCommon dsSimCommon = null;
-   public void setDsSimCommon(DsSimCommon ds) {dsSimCommon = ds;}
 
    @Override
-   public boolean run(TransactionType transactionType, MessageValidatorEngine mvc) throws IOException {
-      return run(transactionType, mvc, null);
+   public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
+      return run(transactionType, mvc);
    }
-
    /*
     * (non-Javadoc)
     * 
@@ -68,12 +68,12 @@ public class IdsHttpActorSimulator extends BaseHttpActorSimulator {
     * gov.nist.toolkit.valsupport.engine.MessageValidatorEngine)
     */
    @Override
-   public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
+   public boolean run(TransactionType transactionType, MessageValidatorEngine mvc) throws IOException {
 
       logger.info("IdsHttpActorSimulator: run - transactionType = " + transactionType);
       simCommon.setLogger(logger);
       GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
-      if (dsSimCommon == null) dsSimCommon = new DsSimCommon(simCommon, mvc);
+      DsSimCommon dsSimCommon = new DsSimCommon(simCommon, mvc);
 
       logger.debug(transactionType);
       switch (transactionType) {
@@ -96,15 +96,18 @@ public class IdsHttpActorSimulator extends BaseHttpActorSimulator {
 
             String accept = httpMsg.getHeaderValue("Accept");
             if (StringUtils.isBlank(accept)) err("Required header 'Accept' absent or empty");
-            String [] types = accept.split(",");
             boolean foundOne = false;
-            for (String type : types) {
-               if (StringUtils.startsWithAny(type, validTypes)) {
+            for (String type : validTypes) {
+               if (accept.contains(type)) {
                   foundOne = true;
                   break;
                }
             }
-            if (!foundOne) err("Accept header must contain one of " + validTypes);
+            if (!foundOne) {
+               StringBuilder s = new StringBuilder();
+               for (String t : validTypes) s.append(t).append(", ");
+               err("Accept header must contain one of " + s);
+            }
             
             if (!"WADO".equals(httpMsg.getQueryParameterValue("requestType")))
                err("Required Request parameter 'requestType=WADO' not found.");

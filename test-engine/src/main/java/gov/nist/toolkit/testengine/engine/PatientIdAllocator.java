@@ -152,7 +152,7 @@ public class PatientIdAllocator extends IdAllocator {
 
 	static {
 		patientIdAllocator = new PatientIdAllocator();
-		patientIdAllocator.base = "P" + new Hl7Date().now();
+		patientIdAllocator.base = "P" + new Hl7Date().now().substring(4);  //was too long - chop off the year
 		patientIdAllocator.cnt = 1;
 	}
 

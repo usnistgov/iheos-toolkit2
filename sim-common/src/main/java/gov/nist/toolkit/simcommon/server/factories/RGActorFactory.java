@@ -2,9 +2,9 @@ package gov.nist.toolkit.simcommon.server.factories;
 
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
-import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.Simulator;
@@ -16,9 +16,7 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.NoSessionException;
 import gov.nist.toolkit.xdsexception.NoSimulatorException;
-import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -44,7 +42,7 @@ public class RGActorFactory extends AbstractActorFactory implements IActorFactor
    @Override
    public Simulator buildNew(SimManager simm, @SuppressWarnings("hiding") SimId newID,
                              boolean configureBase)
-         throws EnvironmentNotSelectedException, NoSessionException {
+           throws Exception {
       this.newID = newID;
       ActorType actorType = ActorType.RESPONDING_GATEWAY;
       SimulatorConfig sc;

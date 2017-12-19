@@ -5,7 +5,7 @@
     <parent>
         <groupId>gov.nist.toolkit</groupId>
         <artifactId>tk-deps</artifactId>
-        <version>5.0.0-SNAPSHOT</version>
+        <version>5.1.0-SNAPSHOT</version>
         <relativePath>../tk-deps/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -42,12 +42,6 @@
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/ca.uhn.hapi/hapi-base -->
-        <dependency>
-            <groupId>ca.uhn.hapi</groupId>
-            <artifactId>hapi-base</artifactId>
-            <version>2.3</version>
         </dependency>
     </dependencies>
 

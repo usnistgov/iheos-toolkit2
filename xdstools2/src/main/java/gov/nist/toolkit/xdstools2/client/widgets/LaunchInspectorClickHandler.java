@@ -2,12 +2,12 @@ package gov.nist.toolkit.xdstools2.client.widgets;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTestResultsCommand;
-import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
+import gov.nist.toolkit.xdstools2.client.inspector.mvp.ResultInspector;
+import gov.nist.toolkit.xdstools2.client.toolLauncher.NewToolLauncher;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTestResultsRequest;
 
@@ -45,10 +45,16 @@ public class LaunchInspectorClickHandler implements ClickHandler {
         new GetTestResultsCommand(){
             @Override
             public void onComplete(Map<String, Result> resultMap) {
-                MetadataInspectorTab itab = new MetadataInspectorTab();
-                itab.setResults(resultMap.values());
-                itab.setSiteSpec(siteSpec);
-                itab.onTabLoad(true, "Test:" + testInstance.getId() );
+//                MetadataInspectorTab itab = new MetadataInspectorTab();
+//                itab.setResults(resultMap.values());
+//                itab.setSiteSpec(siteSpec);
+//                itab.onTabLoad(true, "Test:" + testInstance.getId() );
+
+                ResultInspector resultInspector = new ResultInspector();
+                resultInspector.setResults(resultMap.values());
+                resultInspector.setSiteSpec(siteSpec);
+                new NewToolLauncher().launch(resultInspector);
+
             }
         }.run(new GetTestResultsRequest(ClientUtils.INSTANCE.getCommandContext(),testInstances));
     }

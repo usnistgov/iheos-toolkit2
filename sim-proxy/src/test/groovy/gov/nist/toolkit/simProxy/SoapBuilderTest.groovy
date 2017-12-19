@@ -1,7 +1,7 @@
 package gov.nist.toolkit.simProxy
 
-import gov.nist.toolkit.simProxy.server.util.PartSpec
-import gov.nist.toolkit.simProxy.server.util.SoapBuilder
+import gov.nist.toolkit.fhir.simulators.proxy.util.PartSpec
+import gov.nist.toolkit.fhir.simulators.proxy.util.SoapBuilder
 import spock.lang.Specification
 
 /**
@@ -30,8 +30,8 @@ class SoapBuilderTest extends Specification {
         def part1 = getClass().getResource('/sample_part_1.txt').text   // start part
         def part2 = getClass().getResource('/sample_part_2.txt').text   // text attachment
 
-        def part1Spec = new PartSpec(PartSpec.SOAPXOP, part1)
-        def part2Spec = new PartSpec(PartSpec.PLAINTEXT, part2)
+        def part1Spec = new PartSpec(PartSpec.SOAPXOP, part1, '444')
+        def part2Spec = new PartSpec(PartSpec.PLAINTEXT, part2, '555')
         SoapBuilder builder = new SoapBuilder()
 
         when:

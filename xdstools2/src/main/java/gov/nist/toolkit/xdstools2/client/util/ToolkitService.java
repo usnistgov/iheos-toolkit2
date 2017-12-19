@@ -13,6 +13,7 @@ import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.results.shared.Test;
+import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest;
 import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.shared.Message;
@@ -304,4 +305,12 @@ public interface ToolkitService extends RemoteService  {
 	List<DatasetModel> getAllDatasets(CommandContext context) throws Exception;
 
     List<Result> fhirCreate(FhirCreateRequest request) throws Exception;
+
+	List<Result> fhirTransaction(FhirTransactionRequest request) throws Exception;
+
+    String getDatasetContent(GetDatasetElementContentRequest var1);
+
+    RawResponse buildSrcTestOrchestration(BuildSrcTestOrchestrationRequest request) throws Exception;
+
+    RawResponse buildFhirSupportOrchestration(FhirSupportOrchestrationRequest var1) throws Exception;
 }

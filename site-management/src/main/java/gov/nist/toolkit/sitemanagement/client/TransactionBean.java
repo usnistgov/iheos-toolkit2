@@ -37,6 +37,7 @@ public class TransactionBean implements IsSerializable, Serializable {
 	public RepositoryType repositoryType;
 	
 	public String getEndpoint() { return endpoint; }
+	public void setEndpoint(String endpoint) { this.endpoint = endpoint; }
 	
 	public boolean hasSameIndex(TransactionBean b) {
 		return 

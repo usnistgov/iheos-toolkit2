@@ -30,6 +30,10 @@ public class TestSectionView implements IsWidget {
     TestSectionView() {
     }
 
+    public void open(boolean open) {
+        panel.setOpen(open);
+    }
+
     void build() {
         header.build();
 

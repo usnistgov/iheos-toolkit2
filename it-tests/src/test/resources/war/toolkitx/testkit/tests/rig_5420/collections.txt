@@ -1,2 +1,2 @@
 rigtool
-rig
+rig(xca-i)

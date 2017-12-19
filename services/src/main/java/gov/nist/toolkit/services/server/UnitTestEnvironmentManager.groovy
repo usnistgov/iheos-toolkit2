@@ -25,6 +25,7 @@ public class UnitTestEnvironmentManager {
     }
 
     static public Session setupLocalToolkit() {
+        logger.info("UnitTestEnvironmentManager")
         URL warMarker = new UnitTestEnvironmentManager().getClass().getResource('/war/war.txt');
         if (warMarker == null) {
             logger.fatal("Cannot locate WAR root for test environment")

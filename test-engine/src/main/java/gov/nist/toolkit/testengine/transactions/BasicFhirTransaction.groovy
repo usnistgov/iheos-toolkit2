@@ -1,6 +1,7 @@
 package gov.nist.toolkit.testengine.transactions
 
 import ca.uhn.fhir.context.FhirContext
+import gov.nist.toolkit.fhir.context.ToolkitFhirContext
 import gov.nist.toolkit.testengine.engine.StepContext
 import gov.nist.toolkit.xdsexception.client.MetadataException
 import gov.nist.toolkit.xdsexception.client.XdsInternalException
@@ -13,7 +14,7 @@ abstract class BasicFhirTransaction extends BasicTransaction {
     File resourceFile = null
     String urlExtension = ''
     String queryParams = ''
-    FhirContext fhirCtx = FhirContext.forDstu3()
+    FhirContext fhirCtx = ToolkitFhirContext.get()    //FhirContext.forDstu3()
 
     abstract void doRun(IBaseResource resource, String urlExtension)
 
@@ -31,7 +32,15 @@ abstract class BasicFhirTransaction extends BasicTransaction {
         useMtom = false
         IBaseResource resource = null
         if (resourceFile) {
-            resource = fhirCtx.newJsonParser().parseResource(resourceFile.text)
+            String content = resourceFile.text.trim()
+            try {
+                if (content.startsWith('<'))
+                    resource = fhirCtx.newXmlParser().setPrettyPrint(true).parseResource(resourceFile.text)
+                else
+                    resource = fhirCtx.newJsonParser().setPrettyPrint(true).parseResource(resourceFile.text)
+            } catch (Exception e) {
+                throw new Exception("Failed to parse Resource from ${resourceFile}: ${e.getMessage()}", e)
+            }
         }
         doRun(resource, urlExtension)
     }
@@ -42,8 +51,18 @@ abstract class BasicFhirTransaction extends BasicTransaction {
 
         if (part_name == 'ResourceFile') {
             String localPath = part.getText()
-            resourceFile = (localPath.startsWith('/')) ? new File(localPath) : new File(this.testConfig.testplanDir, localPath)
-//            resourceFile = new File(this.testConfig.testplanDir, part.getText())
+            resourceFile = new File(localPath)
+
+            if (!resourceFile.exists()) {
+               // Try the testplanDir
+                File tempFile = new File(this.testConfig.testplanDir, localPath)
+                if (!tempFile.exists()) {
+                    throw new XdsInternalException("resourceFile not found: " + resourceFile)
+                } else {
+                    resourceFile = tempFile
+                }
+            }
+
             testLog.add_name_value(this.instruction_output, "ResourceFile", resourceFile.path)
         } else if (part_name == 'UrlExtension') {
             urlExtension = part.getText()

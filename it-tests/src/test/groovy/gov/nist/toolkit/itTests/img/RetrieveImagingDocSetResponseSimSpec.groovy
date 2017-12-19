@@ -6,10 +6,10 @@ import gov.nist.toolkit.errorrecording.GwtErrorRecorder
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
 import gov.nist.toolkit.simcommon.server.SimDb
-import gov.nist.toolkit.simulators.sim.ids.RetrieveImagingDocSetResponseSim
-import gov.nist.toolkit.simulators.support.DsSimCommon
+import gov.nist.toolkit.fhir.simulators.sim.ids.RetrieveImagingDocSetResponseSim
+import gov.nist.toolkit.fhir.simulators.support.DsSimCommon
 import gov.nist.toolkit.simcommon.server.SimCommon
-import gov.nist.toolkit.simulators.support.StoredDocument
+import gov.nist.toolkit.fhir.simulators.support.StoredDocument
 import gov.nist.toolkit.utilities.xml.XmlUtil
 import gov.nist.toolkit.valregmsg.registry.RetrieveMultipleResponse
 import gov.nist.toolkit.valsupport.client.ValidationContext

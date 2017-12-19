@@ -9,6 +9,8 @@ import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
 import gov.nist.toolkit.testenginelogging.client.ReportDTO;
 import gov.nist.toolkit.testenginelogging.client.SectionLogMapDTO;
 import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
+import gov.nist.toolkit.testenginelogging.logrepository.InfrastructureLogRepositoryFactory;
+import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
 import gov.nist.toolkit.testkitutilities.TestDefinition;
 import gov.nist.toolkit.testkitutilities.TestKitSearchPath;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
@@ -18,8 +20,11 @@ import org.apache.log4j.Logger;
 
 import javax.xml.namespace.QName;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class UseReportManager  {
     private final static Logger logger = Logger.getLogger(UseReportManager.class);
@@ -27,12 +32,12 @@ public class UseReportManager  {
 	RetrievedDocumentModel retrievedDocumentModel;
 	ReportManager reportManager; // things reported from query results
 	TestConfig testConfig;
-	SectionLogMapDTO sectionLogMapDTO;
+	Map<TestSection, SectionLogMapDTO> sectionLogMapDTOs = new HashMap<>();
 
 	public UseReportManager(TestConfig config) {
 		testConfig = config;
 		useReports = new ArrayList<>();
-		sectionLogMapDTO = new SectionLogMapDTO(testConfig.testInstance);
+//		sectionLogMapDTO = new SectionLogMapDTO(testConfig.testInstance);
 	}
 
 	/**
@@ -49,6 +54,21 @@ public class UseReportManager  {
 		return ts;
 	}
 
+	/**
+	 * generate list of "alternate" or "infrastructure" log repositories to look for
+	 * logs.  This needs to be fed by a configuration file soon.
+	 * @param ti
+	 * @return
+	 */
+	private List<LogRepository> alternateLogRepositories(TestInstance ti) throws IOException {
+		List<LogRepository> logRepositories = new ArrayList<>();
+
+		logRepositories.add(InfrastructureLogRepositoryFactory.getLogRepository("default", ti));
+		logRepositories.add(InfrastructureLogRepositoryFactory.getLogRepository("cat", ti));
+
+		return logRepositories;
+	}
+
 	public void loadPriorTestSections(TransactionSettings transactionSettings, TestConfig config) throws Exception {
 		TestSections ts = getTestSectionsReferencedInUseReports();
 		for (TestSection tsec : ts.getTestSections()) {
@@ -56,6 +76,8 @@ public class UseReportManager  {
 			TestKitSearchPath searchPath = new TestKitSearchPath(transactionSettings.environmentName, transactionSettings.testSession);
 			TestDefinition testDefinition = searchPath.getTestDefinition(testInstance.getId());
 			String section = tsec.section;
+			SectionLogMapDTO sectionLogMapDTO = new SectionLogMapDTO(testConfig.testInstance);
+			sectionLogMapDTOs.put(tsec, sectionLogMapDTO);
 			sectionLogMapDTO.setTestInstance(testInstance);
 			if (section != null && section.equals("THIS"))
 				continue;
@@ -64,11 +86,19 @@ public class UseReportManager  {
 			TestLogDetails tspec = null;
 			tspec = new TestLogDetails(testDefinition, testInstance);
             System.out.println("TestLogDetails are: " + tspec.toString());
-			tspec.setLogRepository(config.logRepository);
-			File testlogFile = tspec.getTestLog(testInstance, section);
-            System.out.println("Loading log " + testlogFile);
-			if (testlogFile != null)
-				sectionLogMapDTO.put(section, new LogFileContentBuilder().build(testlogFile));
+            List<LogRepository> logRepositories = new ArrayList<>();
+            logRepositories.add(config.logRepository);
+            logRepositories.addAll(alternateLogRepositories(testInstance));
+			File testlogFile;
+            for (LogRepository lr : logRepositories) {
+				tspec.setLogRepository(lr);
+				testlogFile = tspec.getTestLog(testInstance, section);
+				if (testlogFile != null) {
+					System.out.println("Loading log " + testlogFile);
+					sectionLogMapDTO.put(section, new LogFileContentBuilder().build(testlogFile));
+					break;
+				}
+			}
 		}
 	}
 
@@ -96,22 +126,6 @@ public class UseReportManager  {
 
 		return  urm;
 	}
-
-//    public OMElement toXML() {
-//        OMElement top = MetadataSupport.om_factory.createOMElement("UseReports", null);
-//
-//        for (UseReport report : useReports) {
-//            OMElement rep = MetadataSupport.om_factory.createOMElement("UseReport", null);
-//
-//            rep.addAttribute("name", report.reportName, null);
-//            rep.setText(report.value);
-//
-//            top.addChild(rep);
-//        }
-//
-//        return top;
-//    }
-
 
     static QName test_qname = new QName("test");
 	static QName section_qname = new QName("section");
@@ -173,8 +187,11 @@ public class UseReportManager  {
                 continue;
 
 			LogFileContentDTO logFileContentDTO = previousLogs.get(useReport.section);
-			if (logFileContentDTO == null)
+			if (logFileContentDTO == null) {
+				TestSection testSection = new TestSection(useReport.testInstance, useReport.section);
+				SectionLogMapDTO sectionLogMapDTO = sectionLogMapDTOs.get(testSection);
 				logFileContentDTO = sectionLogMapDTO.get(useReport.section);
+			}
 			if (logFileContentDTO == null)
 				throw new XdsInternalException("UseReportManager#resolve: cannot find Report for " + useReport.getURI() + "\n");
 
@@ -193,14 +210,6 @@ public class UseReportManager  {
 			}
 			if (!satisfied)
                 throw new XdsInternalException("UseReportManager#resolve: cannot find Report for " + useReport.getURI() + "\n");
-
-//			for (OMElement rep : XmlUtil.childrenWithLocalName(reportEles, "Report")) {
-//				ReportDTO r = ReportBuilder.parse(rep);
-//				if (reportName.equals(r.getName())) {
-//					useReport.value = r.getValue();
-//				}
-//			}
-
 		}
 	}
 

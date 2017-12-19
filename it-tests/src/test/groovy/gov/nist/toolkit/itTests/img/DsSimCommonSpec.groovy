@@ -11,9 +11,9 @@ import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
 import gov.nist.toolkit.simcommon.server.SimDb
-import gov.nist.toolkit.simulators.support.DsSimCommon
+import gov.nist.toolkit.fhir.simulators.support.DsSimCommon
 import gov.nist.toolkit.simcommon.server.SimCommon
-import gov.nist.toolkit.simulators.support.StoredDocument
+import gov.nist.toolkit.fhir.simulators.support.StoredDocument
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.valsupport.client.ValidationContext
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine

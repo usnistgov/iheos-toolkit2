@@ -1,6 +1,6 @@
 package gov.nist.toolkit.itTests.support
 
-import gov.nist.toolkit.testengine.fhir.FhirClient
+import gov.nist.toolkit.fhir.utility.FhirClient
 import gov.nist.toolkit.grizzlySupport.GrizzlyController
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.simcommon.client.SimId

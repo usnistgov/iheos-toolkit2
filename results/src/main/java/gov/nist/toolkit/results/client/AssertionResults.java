@@ -102,4 +102,13 @@ public class AssertionResults implements IsSerializable, Serializable {
 		}
 		return null;
 	}
+
+	public List<AssertionResult> getAssertionsThatContains(String text) {
+		List<AssertionResult> as = new ArrayList<>();
+		for (AssertionResult res : assertions) {
+			if (res.assertion.contains(text))
+				as.add(res);
+		}
+		return as;
+	}
 }

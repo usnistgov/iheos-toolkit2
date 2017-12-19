@@ -9,6 +9,7 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
+import gov.nist.toolkit.actortransaction.client.IheItiProfile;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 
 import java.util.HashMap;
@@ -28,12 +29,14 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
     }
 
     public abstract void onMenuSelect(TabConfig actor, Map<String,TabConfig> target);
-    public abstract void setTestStatistics(HTML statsBar, ActorOption actorOption);
+    public abstract void setTestStatistics(HTML statsBar, ActorOptionConfig actorOption);
 
     public boolean displayMenu(Panel destinationPanel) {
         if (tabConfig!=null) {
             destinationPanel .clear();
             destinationPanel.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+
+            destinationPanel.add(new HTML("Tests are organized as: Actor Profile Option. Select the option you are interested in. "));
 
             int colWidth = 100 / menuCols;
             int menuCt = 0;
@@ -91,9 +94,9 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
             // Add legend row
             FlowPanel legendRowPanel = new FlowPanel();
                 legendRowPanel.add(new HTML("<div>Legend:</div>"
-                        + "<div style='margin:3px'><div style=\"width:10px;height:14px;border:1px solid white;float:left;margin-right:2px;background-color:white;\"></div>Not Run</div>"
-                        + "<div style='margin:3px'><div style=\"width:10px;height:14px;border:1px solid;float:left;margin-right:2px;background-color:cyan;\"></div><span>Successes</span></div>\n"
-                        + "<div style='margin:3px'><div style=\"width:10px;height:14px;border:1px solid;float:left;margin-right:2px;background-color:coral;\"></div><span>Failures</span></div>\n"
+                        + "<div style='margin:3px'><div style=\"width:10px;height:13px;border:1px solid white;float:left;margin-right:2px;background-color:white;\"></div>Not Run</div>"
+                        + "<div style='margin:3px'><div style=\"width:10px;height:13px;border:1px solid;float:left;margin-right:2px;background-color:cyan;\"></div><span>Successes</span></div>\n"
+                        + "<div style='margin:3px'><div style=\"width:10px;height:13px;border:1px solid;float:left;margin-right:2px;background-color:coral;\"></div><span>Failures</span></div>\n"
                 ));
             legendRowPanel.getElement().addClassName("tabConfigRow");
             destinationPanel.add(legendRowPanel);
@@ -153,9 +156,9 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
 //                        Window.alert(""+tcCodeMap.get("actor") + tcCodeMap.get("profile") + tcCodeMap.get("option"));
 
                         if (tcCodeMap.get("actor")!=null) {
-                            ActorOption actorOption = new ActorOption(tcCodeMap.get("actor"));
+                            ActorOptionConfig actorOption = new ActorOptionConfig(tcCodeMap.get("actor"));
                             if (tcCodeMap.get("profile")!=null) {
-                                actorOption.setProfileId(tcCodeMap.get("profile"));
+                                actorOption.setProfileId(IheItiProfile.find(tcCodeMap.get("profile")));
 
                                 if (tcCodeMap.get("option")!=null) {
                                     actorOption.setOptionId(tcCodeMap.get("option"));
@@ -170,17 +173,25 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
                         }
                     }
 
-                    HTML label = new HTML("<span style='font-size:14px;'>" + tc.getLabel() + "</span>");
-                    flowPanel.add(label);
-                    ti.setWidget(flowPanel);
-                    ti.setIndex(idx++);
+                    // Do not display group headers in the tree.
+                    if (tc.isHeader()) {
+                        if (tc.hasChildren()) {
+                            flattenedTabConfig(tcCodeMap, treeItem, tc);
+                        }
+                    } else {
+                        HTML label = new HTML("<span style='font-size:14px;'>" + tc.getLabel() + "</span>");
+                        flowPanel.add(label);
+                        ti.setWidget(flowPanel);
+                        ti.setIndex(idx++);
 
-                    if (treeItem!=null)
-                        treeItem.addItem(ti);
+                        if (treeItem!=null)
+                            treeItem.addItem(ti);
 
-                    if (tc.hasChildren()) {
-                        flattenedTabConfig(tcCodeMap, ti, tc);
+                        if (tc.hasChildren()) {
+                            flattenedTabConfig(tcCodeMap, ti, tc);
+                        }
                     }
+
                 }
 
             } else if (!tabConfig.isHeader() && !tabConfig.hasChildren()){

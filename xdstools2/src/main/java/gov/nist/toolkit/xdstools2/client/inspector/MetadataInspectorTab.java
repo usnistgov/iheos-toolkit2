@@ -2,23 +2,41 @@ package gov.nist.toolkit.xdstools2.client.inspector;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Hyperlink;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.RadioButton;
+import com.google.gwt.user.client.ui.Tree;
+import com.google.gwt.user.client.ui.TreeItem;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
+import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
-import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.results.client.AssertionResult;
+import gov.nist.toolkit.results.client.AssertionResults;
+import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.StepResult;
+import gov.nist.toolkit.results.client.TestLog;
+import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * Supports the test results inspector tab 
  */
-public class MetadataInspectorTab extends ToolWindow {
+public class MetadataInspectorTab extends ToolWindow implements IsWidget {
    
    /* 
     * Main panels below tab title display.
@@ -35,13 +53,34 @@ public class MetadataInspectorTab extends ToolWindow {
 	 */
 	RadioButton selectHistory = null;
 	RadioButton selectContents = null;
-	RadioButton selectDiff = null;
-	
+//	RadioButton selectDiff = null;
+//	ListBox groupByListBox;
+//	HorizontalPanel groupByPanel = new HorizontalPanel();
+
 	// Data for test being displayed.
 	DataModel data;
+	DataNotification dataNotification;
 	Logger logger = Logger.getLogger("");
 
-   /**
+	List<Tree> treeList = new ArrayList<>();
+	TreeItem currentSelectedTreeItem;
+
+	public MetadataInspectorTab() {
+	}
+
+	public MetadataInspectorTab(boolean isWidget) {
+		super(isWidget);
+	}
+
+	public void setDataNotification(DataNotification dataNotification) {
+		this.dataNotification = dataNotification;
+	}
+
+	public DataNotification getDataNotification() {
+		return dataNotification;
+	}
+
+	/**
     * Add test results to DataModel and redisplay history
     * @param results to add
     */
@@ -62,12 +101,17 @@ public class MetadataInspectorTab extends ToolWindow {
 		}
 		data.buildCombined();
 		showHistoryOrContents();
+		if (dataNotification!=null) {
+			dataNotification.onAddToHistory(data.combinedMetadata);
+		}
 	}
+
+
+
 	// main panel
-	HorizontalPanel hpanel;
-	
+	HorizontalPanel hpanel = new HorizontalPanel();
 	Collection<Result> results;
-	SiteSpec siteSpec;
+	private SiteSpec siteSpec;
 	
 	public void setResults(Collection<Result> results) { this.results = results; }
 	public void setSiteSpec(SiteSpec ss) { siteSpec = ss; }
@@ -75,16 +119,15 @@ public class MetadataInspectorTab extends ToolWindow {
 	@Override
 	public void onTabLoad(boolean select, String eventName) {
 
-		logger.log(Level.INFO, "Inspector started");
+		logger.log(Level.INFO, "onTabLoad Inspector ");
 
-		data = new DataModel();
-		
-		data.siteSpec = siteSpec;
-		
-		if (siteSpec == null)
-			data.enableActions = false;
+		preInit();
+		tabTitle(select);
+		init();
+	}
 
-//		data.toolkitService = toolkitService;
+	private void tabTitle(boolean select) {
+		//		data.toolkitService = toolkitService;
 		registerTab(select, "Inspector");
 		tabTopPanel.setWidth("100%");
 
@@ -92,37 +135,10 @@ public class MetadataInspectorTab extends ToolWindow {
 		title.setHTML("<h2>Inspector</h2>");
 		tabTopPanel.add(title);
 
-		hpanel = new HorizontalPanel();
 		tabTopPanel.add(hpanel);
 //		tabTopPanel.setCellWidth(hpanel, "100%");
-		hpanel.setBorderWidth(1);
-
-		historyPanel = new VerticalPanel();
-		hpanel.add(historyPanel);
-		hpanel.setCellWidth(historyPanel, "30%");
-
-		detailPanel = new VerticalPanel();
-		detailPanel.add(HyperlinkFactory.addHTML("<h3>Detail</h3>"));
-		hpanel.add(detailPanel);
-
-		structPanel = new VerticalPanel();
-		structPanel.add(HyperlinkFactory.addHTML("<h3>Structure</h3>"));
-		hpanel.add(structPanel);
-
-
-		addToHistory(results);
-
-		if (!data.enableActions) {
-			if (selectHistory != null) selectHistory.setEnabled(false);
-			if (selectContents != null) selectContents.setEnabled(true);
-			if (selectDiff != null) selectDiff.setEnabled(false);
-			
-			if (results.size() == 1 && !hasContents(results))
-				showAssertions(results.iterator().next());
-			else 
-				showHistory();
-		}
 	}
+
 	/**
 	 * Is there any metadata content in Result steps
 	 * @param results
@@ -153,8 +169,9 @@ public class MetadataInspectorTab extends ToolWindow {
 	void showHistoryOrContents() {
 		if (isHistory())
 			showHistory();
-		else if (isDiff())
+		/* else if (isDiff())
 			new DiffDisplay(this, data.combinedMetadata).showDiff(historyPanel);
+		*/
 		else
 			showContents();
 	}
@@ -186,6 +203,7 @@ public class MetadataInspectorTab extends ToolWindow {
 	
 	void showContents() {
 		historyPanel.clear();
+		treeList.clear();
 
 		HTML title = new HTML();
 		title.setHTML("<h3>Contents</h3>");
@@ -195,11 +213,15 @@ public class MetadataInspectorTab extends ToolWindow {
 
 		selectHistory.setValue(false);
 		selectContents.setValue(true);
-		selectDiff.setValue(false);
+//		selectDiff.setValue(false);
 
 		if (data.combinedMetadata != null) {
 
 			Tree contentTree = new Tree();
+			treeList.add(contentTree);
+			if (dataNotification!=null) {
+				addTreeSelectionHandler(contentTree);
+			}
 
 			new ListingDisplay(this, data, new TreeThing(contentTree)).listing();
 
@@ -217,9 +239,9 @@ public class MetadataInspectorTab extends ToolWindow {
 		return false;
 	}
 	
-	boolean isDiff() {
-		return selectDiff.getValue();
-	}
+//	boolean isDiff() {
+//		return selectDiff.getValue();
+//	}
 
 	/**
 	 * Add radio button group "History, Contents, Diff" to passed panel
@@ -230,26 +252,41 @@ public class MetadataInspectorTab extends ToolWindow {
 
 		selectHistory = new RadioButton("historyContents", "History");
 		selectContents = new RadioButton("historyContents", "Contents");
-		selectDiff = new RadioButton("historyContents", "Diff");
+//		selectDiff = new RadioButton("historyContents", "Diff");
 
 		selectHistory.addClickHandler(new HistorySelectChange());
 		selectContents.addClickHandler(new HistorySelectChange());
-		selectDiff.addClickHandler(new HistorySelectChange());
+//		selectDiff.addClickHandler(new HistorySelectChange());
 
 		ft.setWidget(0, 0, selectHistory);
 		ft.setWidget(0, 1, selectContents);
-		ft.setWidget(0, 2, selectDiff);
+//		ft.setWidget(0, 2, selectDiff);
 
 		panel.add(ft);
+
+		/*
+		groupByPanel.clear();
+		groupByPanel.getElement().getStyle().setMargin(2, Style.Unit.PX);
+		groupByPanel.add(new HTML("Group by"));
+		groupByPanel.add(groupByListBox);
+		groupByPanel.add(new HTML("&nbsp;"));
+		groupByPanel.add(new InformationLink("Help with GroupBy feature", "Inspector-GroupBy-feature").asWidget()); // Todo.
+		panel.add(groupByPanel);
+		*/
 	}
 
 	class HistorySelectChange implements ClickHandler {
 
 		public void onClick(ClickEvent event) {
+//			groupByPanel.setVisible(selectHistory.getValue().booleanValue());
 			showHistoryOrContents();
+			if (dataNotification!=null) {
+				if (currentSelectedTreeItem!=null && currentSelectedTreeItem.getUserObject()!=null && (currentSelectedTreeItem.getUserObject() instanceof  MetadataObjectWrapper))
+				dataNotification.onHistoryContentModeChanged((MetadataObjectWrapper)currentSelectedTreeItem.getUserObject());
+			}
 		}
-
 	}
+
    /**
     * Return passed text as HTML in red font
     * @param in text
@@ -296,6 +333,8 @@ public class MetadataInspectorTab extends ToolWindow {
     */
 	void showHistory() {
 		historyPanel.clear();
+		treeList.clear();
+
 		// History panel title
 		HTML title = new HTML();
 		title.setHTML("<h3>History</h3>");
@@ -305,15 +344,20 @@ public class MetadataInspectorTab extends ToolWindow {
       // set history button on, others off
 		selectHistory.setValue(true);
 		selectContents.setValue(false);
-		selectDiff.setValue(false);
+//		selectDiff.setValue(false);
 
 		if (data.results == null)
 			return;
+
       // Pass tests, displaying history results for each test.
 		for (Result res : data.results) {
 			AssertionResults ares = res.assertions;
 			// Tree widget created for each test
 			Tree historyTree = new Tree();
+			treeList.add(historyTree);
+			if (dataNotification!=null) {
+				addTreeSelectionHandler(historyTree);
+			}
 			// tree element for test with test id & time stamp, red if test failed
 			TreeItem historyElement = 
 			   new TreeItem(redAsHTML(res.testInstance.getId() + "   (" + res.timestamp + ")", !ares.isFailed()));
@@ -343,14 +387,23 @@ public class MetadataInspectorTab extends ToolWindow {
 				DataModel dm = new DataModel(data);
 				dm.combinedMetadata = stepResult.getMetadata(); 
 				dm.allDocs = stepResult.documents;
-				
+
+				/*
+				String selectedGroupByValue = groupByListBox.getValue(groupByListBox.getSelectedIndex());
+				if ("(none)".equals(selectedGroupByValue)) {
+					new ListingDisplay(this, dm, new TreeThing(stepTreeItem)).listing();
+				} else if ("homeCommunityId".equals(selectedGroupByValue)) {
+					new HcIdListingDisplay(this, dm, new TreeThing(stepTreeItem), stepResult);
+				} else if ("repositoryId".equals(selectedGroupByValue)) {
+					new RepositoryIdListingDisplay(this, dm, new TreeThing(stepTreeItem)).listing();
+				}
+				*/
+
 				new ListingDisplay(this, dm, new TreeThing(stepTreeItem)).listing();
-				
-//				listing(stepResult.getMetadata(), stepResult.documents, new TreeThing(stepTreeItem));
 
 				if (data.enableActions && stepResult.toBeRetrieved.size() > 0) {
 					ObjectRefs ors = stepResult.nextNObjectRefs(10);
-					TreeItem getNextItem = new TreeItem(HyperlinkFactory.getDocuments(this, stepResult, ors, "Action: Get Full Metadata for next " + ors.objectRefs.size(), false));
+					TreeItem getNextItem = new TreeItem(HyperlinkFactory.getDocuments(this, stepResult, ors, "Action: Get Full Metadata for next " + ors.objectRefs.size(), false, siteSpec));
 					stepTreeItem.addItem(getNextItem);
 				}
 
@@ -493,6 +546,138 @@ public class MetadataInspectorTab extends ToolWindow {
 	boolean isEmpty(String b) { return b == null || b.equals(""); }
 
 
+	public SiteSpec getSiteSpec() {
+		return siteSpec;
+	}
+
+ 	public void preInit() {
+
+		data = new DataModel();
+
+		data.siteSpec = siteSpec;
+
+//		GWT.log("In MetadataInsp siteSpec is " + siteSpec.name);
+
+		if (siteSpec == null)
+			data.enableActions = false;
+	}
+
+	public MetadataCollection init() {
+		treeList.clear();
+		hpanel.clear();
+		hpanel.setBorderWidth(1);
+
+		historyPanel = new VerticalPanel();
+		hpanel.add(historyPanel);
+		hpanel.setCellWidth(historyPanel, "30%");
+
+		detailPanel = new VerticalPanel();
+		detailPanel.add(HyperlinkFactory.addHTML("<h3>Detail</h3>"));
+		hpanel.add(detailPanel);
+
+		structPanel = new VerticalPanel();
+		structPanel.add(HyperlinkFactory.addHTML("<h3>Structure</h3>"));
+		hpanel.add(structPanel);
+
+		/*
+		groupByListBox = new ListBox();
+		groupByListBox.addItem("(none)"); // No group by
+		groupByListBox.addItem("homeCommunityId"); // hcId groups object types
+		groupByListBox.addItem("repositoryId");		// Object type groups repositoryId
+		groupByListBox.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(ChangeEvent changeEvent) {
+				showHistoryOrContents();
+			}
+		});
+		*/
 
 
+		if (results!=null) {
+			addToHistory(results);
+		} else {
+			data.buildCombined();
+			showHistoryOrContents();
+		}
+
+		if (!data.enableActions) {
+			if (selectHistory != null) selectHistory.setEnabled(false);
+			if (selectContents != null) selectContents.setEnabled(true);
+//			if (selectDiff != null) selectDiff.setEnabled(false);
+//			if (groupByListBox != null) groupByListBox.setEnabled(false);
+
+			if (results.size() == 1 && !hasContents(results))
+				showAssertions(results.iterator().next());
+			else
+				showHistory();
+		}
+
+		return data.combinedMetadata;
+	}
+
+	public List<Tree> getTreeList() {
+		return treeList;
+	}
+
+	public void showHistory(boolean show) {
+		if (!show) {
+		    historyPanel.removeFromParent();
+		} else if (!hpanel.getWidget(0).equals(historyPanel)) {
+			hpanel.insert(historyPanel, 0);
+		}
+
+	}
+
+	public void showStructure(boolean show) {
+		if (!show) {
+			structPanel.removeFromParent();
+		} else if (hpanel.getWidgetCount()>0 && !hpanel.getWidget(hpanel.getWidgetCount()-1).equals(structPanel)) {
+			hpanel.add(structPanel);
+		}
+	}
+
+	public DataModel getData() {
+		return new DataModel(data);
+	}
+
+	public void setData(DataModel data) {
+		this.data = data;
+	}
+
+	private void addTreeSelectionHandler(final Tree t) {
+			t.addSelectionHandler(new SelectionHandler<TreeItem>() {
+				@Override
+				public void onSelection(SelectionEvent<TreeItem> selectionEvent) {
+					TreeItem selectedItem = (TreeItem)selectionEvent.getSelectedItem();
+					if (selectedItem.getUserObject()!=null) {
+						if (currentSelectedTreeItem!=null) {
+							currentSelectedTreeItem.getWidget().removeStyleName("insetBorder");
+						}
+						selectedItem.getWidget().addStyleName("insetBorder");
+						currentSelectedTreeItem = selectedItem;
+						if (selectedItem.getUserObject()!=null && selectedItem.getUserObject() instanceof MetadataObjectWrapper) {
+							MetadataObjectWrapper userObject = (MetadataObjectWrapper) selectedItem.getUserObject();
+							dataNotification.onObjectSelected(userObject);
+							if (selectedItem.getWidget() !=null && selectedItem.getWidget() instanceof Hyperlink) {
+								((Hyperlink) selectedItem.getWidget()).fireEvent(new ClickEvent() {
+								});
+							}
+						}
+					}
+				}
+			});
+	}
+
+	public TreeItem getCurrentSelectedTreeItem() {
+		return currentSelectedTreeItem;
+	}
+
+	public void setCurrentSelectedTreeItem(TreeItem currentSelectedTreeItem) {
+		this.currentSelectedTreeItem = currentSelectedTreeItem;
+	}
+
+	@Override
+	public Widget asWidget() {
+	    return hpanel;
+	}
 }

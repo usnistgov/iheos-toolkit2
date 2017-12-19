@@ -233,6 +233,8 @@ public class Session implements SecurityParams {
 
 	public String getMesaSessionName() { return mesaSessionName; }
 
+	public String getTestSession() { getMesaSessionName() }
+
 	public void setSessionProperties(Map<String, String> m) {
 		SessionPropertyManager props = getSessionProperties();
 		if (props == null)

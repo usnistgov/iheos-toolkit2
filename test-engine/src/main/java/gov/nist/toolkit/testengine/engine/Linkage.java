@@ -21,6 +21,7 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
 import java.util.*;
+import java.util.regex.Matcher;
 
 /**
  * Builds a Map {@link #linkage} of key value pairs which can then be applied
@@ -59,7 +60,7 @@ public class Linkage extends BasicLinkage {
     * Add SUT home community id to links, if defined. For cross community
     */
    void addHome() {
-      if (testConfig.configHome != null) {
+      if (testConfig != null && testConfig.configHome != null) {
          addLinkage("$configHome$", testConfig.configHome);
       }
    }
@@ -98,7 +99,8 @@ public class Linkage extends BasicLinkage {
       super(config);
       instruction_output = null;
       m = null;
-      this.debug = testConfig.verbose;
+      if (testConfig != null)
+         this.debug = testConfig.verbose;
       addHome();
    }
 
@@ -282,11 +284,14 @@ public class Linkage extends BasicLinkage {
 
    }
 
+
    private void replaceStringInElement(OMElement e, String old_text, String new_text) {
       // text
       String text = e.getText();
       if (text.contains(old_text)) {
-         text = text.replaceAll(escape_pattern(old_text), new_text);
+         String oldstuff = escape_pattern(old_text);
+         String replacement = Matcher.quoteReplacement(new_text);
+         text = text.replaceAll(oldstuff, replacement);
          e.setText(text);
       }
 
@@ -301,7 +306,7 @@ public class Linkage extends BasicLinkage {
       }
    }
 
-   String escape_pattern(String pattern) {
+   public String escape_pattern(String pattern) {
       // String new_pattern = "\\" + pattern.substring(0, pattern.length()-1) +
       // "\\$";
       StringBuffer buf = new StringBuffer();

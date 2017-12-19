@@ -1,14 +1,15 @@
 package gov.nist.toolkit.itTests.sim
 
-import gov.nist.toolkit.actortransaction.EndpointParser
+import gov.nist.toolkit.actortransaction.server.EndpointParser
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
+import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.client.Simulator
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
-import gov.nist.toolkit.simulators.servlet.ReconfigureSimulators
+import gov.nist.toolkit.fhir.simulators.servlet.ReconfigureSimulators
 import spock.lang.Shared
 import spock.lang.Specification
 /**
@@ -68,5 +69,30 @@ class ReconfigureSpec extends Specification {
         then:
         host == 'home'
         port == '42'
+    }
+
+
+    def 'update endpoint and service and confirm' () {
+        when:
+        ReconfigureSimulators rs = new ReconfigureSimulators()
+        rs.setOverrideHost('home')
+        rs.setOverridePort('42')
+//        rs.setOverrideContext('toolkit45')
+        Installation.instance().setServletContextName('toolkit45')
+        rs.init(null)
+
+
+        and:
+        SimulatorConfig config2 = api.getConfig(simId)
+        String retrieveEndpoint2 = config2.getConfigEle(SimulatorProperties.retrieveEndpoint).asString()
+        EndpointParser ep = new EndpointParser(retrieveEndpoint2)
+        String host = ep.getHost()
+        String port = ep.getPort()
+        String context = ep.context
+
+        then:
+        host == 'home'
+        port == '42'
+        context == 'toolkit45'
     }
 }

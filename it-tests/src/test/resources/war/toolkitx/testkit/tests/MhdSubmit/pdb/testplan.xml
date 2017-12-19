@@ -1,0 +1,30 @@
+<TestPlan>
+    <Test>FHIR/create</Test>
+    <TestStep id="PatientLookup">
+        <Goal>
+            Lookup the Patient resource submitted for Patient ID
+            12345^^^&amp;1.2.36.146.595.217.0.1&amp;ISO in the Supporting FHIR Server.  It was
+            created by section patient1 of test supporting_fhir_patients.
+            The Patient Resource URL is documented in the Reports area of this step as report
+            Url so it can be referenced by later steps.
+        </Goal>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <FhirReadTransaction>
+            <UseReport test="supporting_fhir_patients" reportName="Ref" section="patient1" step="create" useAs="Ref"/>
+            <Report name="pid_system" section="Result">
+                substring(//*[local-name()='Patient']/*[local-name()='identifier'][1]/*[local-name()='system']/@value, 9)
+            </Report>
+            <Report name="pid_value" section="Result">
+                //*[local-name()='Patient']/*[local-name()='identifier'][1]/*[local-name()='value']/@value
+            </Report>
+        </FhirReadTransaction>
+    </TestStep>
+    <TestStep id="pdb">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <ProvideDocumentBundleTransaction>
+            <ResourceFile>singledocsubmit.xml</ResourceFile>
+            <UseReport step="PatientLookup" section="THIS" reportName="Url" useAs="$patient_reference$"/>
+            <UrlExtension>/pdb</UrlExtension>
+        </ProvideDocumentBundleTransaction>
+    </TestStep>
+</TestPlan>

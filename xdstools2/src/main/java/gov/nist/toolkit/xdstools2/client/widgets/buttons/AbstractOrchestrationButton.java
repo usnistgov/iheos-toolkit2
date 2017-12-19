@@ -113,7 +113,7 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
             samlCheckBox.setValue(true);
             samlCheckBox.setEnabled(false);
         } else {
-            samlCheckBox.setTitle("Uses Gazelle STS Username 'Xuagood'");
+            samlCheckBox.setTitle("Uses Gazelle's 'Xuagood' STS Username.");
         }
         panel.add(samlCheckBox);
         enableSaml();

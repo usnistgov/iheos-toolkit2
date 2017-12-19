@@ -24,7 +24,11 @@ public class CustomHttpServletResponseWrapper extends HttpServletResponseWrapper
         this.outputStream = response.getOutputStream();
     }
 
-    public byte[] toByteArray() { return buffer.toByteArray(); }
+    public byte[] toByteArray() {
+        String msg = new String(buffer.toByteArray());
+//        System.out.println("Msg is " + msg);
+        return buffer.toByteArray();
+    }
 
     @Override
     public ServletOutputStream getOutputStream () throws IOException {
@@ -41,7 +45,22 @@ public class CustomHttpServletResponseWrapper extends HttpServletResponseWrapper
         @Override
         public void write(int b) throws IOException {
             buffer.write(b);
+//            System.out.println("write: " + new String(buffer.toByteArray()));
             outputStream.write(b);
+        }
+
+        @Override
+        public void write(byte[] b) throws IOException {
+            buffer.write(b);
+//            System.out.println("write: " + new String(buffer.toByteArray()));
+            outputStream.write(b);
+        }
+
+        @Override
+        public void write(byte[] b, int off, int len) throws IOException {
+            buffer.write(b, off, len);
+//            System.out.println("write: " + new String(buffer.toByteArray()));
+            outputStream.write(b, off, len);
         }
     }
 }

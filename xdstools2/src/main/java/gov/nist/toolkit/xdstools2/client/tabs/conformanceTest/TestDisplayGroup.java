@@ -16,22 +16,24 @@ public class TestDisplayGroup {
     private TestContext testContext;
     private TestContextView testContextView;
     private boolean allowRun = true;
-    private boolean showValidate = false;
+    private boolean allowValidate = false;
     private boolean allowDelete = true;
+    private Controller controller;
 
-    public TestDisplayGroup(TestContext testContext, TestContextView testContextView, TestRunner testRunner) {
+    public TestDisplayGroup(TestContext testContext, TestContextView testContextView, TestRunner testRunner, Controller controller) {
         this.testContext = testContext;
         this.testContextView = testContextView;
         this.testRunner = testRunner;
+        this.controller = controller;
     }
 
     public TestDisplay display(TestOverviewDTO testOverview, InteractionDiagramDisplay diagramDisplay) {
         TestDisplay testDisplay = get(testOverview.getTestInstance());
         if (testDisplay == null) {
-            testDisplay = new TestDisplay(testOverview.getTestInstance(), this, testRunner, testContext, testContextView);
+            testDisplay = new TestDisplay(testOverview.getTestInstance(), this, testRunner, testContext, testContextView, controller);
             testDisplay.allowDelete(allowDelete);
             testDisplay.allowRun(allowRun);
-            testDisplay.showValidate(showValidate);
+            testDisplay.showValidate(allowValidate);
             put(testOverview.getTestInstance(), testDisplay);
         }
         testDisplay.setDiagramDisplay(diagramDisplay);
@@ -61,8 +63,8 @@ public class TestDisplayGroup {
         this.allowDelete = allowDelete;
     }
 
-    public void showValidate(boolean showValidate) {
-        this.showValidate = showValidate;
+    public void allowValidate(boolean allowValidate) {
+        this.allowValidate = allowValidate;
     }
 
 }

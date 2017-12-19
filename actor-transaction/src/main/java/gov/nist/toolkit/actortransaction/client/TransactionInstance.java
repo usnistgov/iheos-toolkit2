@@ -16,6 +16,7 @@ public class TransactionInstance implements IsSerializable {
     public TransactionType nameInterpretedAsTransactionType = null;
     public ActorType actorType = null;
     public String ipAddress;
+    public boolean isPif = false;
 
     public String toString() {
         return labelInterpretedAsDate + " " + nameInterpretedAsTransactionType + " " + ipAddress;

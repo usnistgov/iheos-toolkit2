@@ -4,12 +4,14 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
+import gov.nist.toolkit.xdsexception.client.TkActorNotFoundException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 
 
 /**
@@ -48,7 +50,7 @@ import java.util.Set;
 public class Site  implements IsSerializable, Serializable {
 	private static final long serialVersionUID = 1L;
 	private String name = null;
-	TransactionCollection transactions = new TransactionCollection(false);
+	public TransactionCollection transactions = new TransactionCollection(false);
 	// There can be only one ODDS, one XDS.b, and one IDS repository in a site.
 	// An XDS.b Repository and a ODDS Repository
 	// can have the same repositoryUniqueId and endpoint. But
@@ -182,6 +184,86 @@ public class Site  implements IsSerializable, Serializable {
 	
 	public boolean hasActor(ActorType actorType) {
 		return transactions.hasActor(actorType);
+	}
+
+
+	public ActorType determineActorTypeByTransactionsInSite(TransactionType targetTransaction) throws TkActorNotFoundException {
+		if (targetTransaction==null)
+			throw  new TkActorNotFoundException("TransactionType cannot be null.", "");
+
+		//       REGISTRY
+		//register | register_odde | sq | update | mpq   -> registry
+		if ((targetTransaction.equals(TransactionType.REGISTER) && transactions.hasTransaction(TransactionType.REGISTER))
+				||  (targetTransaction.equals(TransactionType.REGISTER_ODDE) && transactions.hasTransaction(TransactionType.REGISTER_ODDE))
+				||  (targetTransaction.equals(TransactionType.STORED_QUERY) && transactions.hasTransaction(TransactionType.STORED_QUERY))
+				|| (targetTransaction.equals(TransactionType.UPDATE) && transactions.hasTransaction(TransactionType.UPDATE))
+				|| (targetTransaction.equals(TransactionType.MPQ) &&  transactions.hasTransaction(TransactionType.MPQ)))
+			return ActorType.REGISTRY;
+
+//        REPOSITORY
+//        pnr | ret -> repository
+		if ((targetTransaction.equals(TransactionType.PROVIDE_AND_REGISTER) && transactions.hasTransaction(TransactionType.PROVIDE_AND_REGISTER))
+            || (targetTransaction.equals(TransactionType.RETRIEVE) && repositories.hasTransaction(TransactionType.RETRIEVE))) // Notice the Repositories
+			return ActorType.REPOSITORY;
+
+//        ODDS
+//        odds_ret -> odds
+		if ((targetTransaction.equals(TransactionType.ODDS_RETRIEVE) && transactions.hasTransaction(TransactionType.ODDS_RETRIEVE))
+		    || (targetTransaction.equals(TransactionType.ODDS_RETRIEVE) && repositories.hasTransaction(TransactionType.ODDS_RETRIEVE))) // Notice the Repositories
+			return ActorType.ONDEMAND_DOCUMENT_SOURCE;
+
+//        ISR
+//        isr_ret -> isr
+		if ((targetTransaction.equals(TransactionType.ISR_RETRIEVE) && transactions.hasTransaction(TransactionType.ISR_RETRIEVE))
+			|| (targetTransaction.equals(TransactionType.ISR_RETRIEVE) && repositories.hasTransaction(TransactionType.ISR_RETRIEVE))) // Notice the Repositories
+			return ActorType.ISR;
+
+//        DOC RECIP
+//        xdr_pnr -> doc recip
+		if (targetTransaction.equals(TransactionType.XDR_PROVIDE_AND_REGISTER) && transactions.hasTransaction(TransactionType.XDR_PROVIDE_AND_REGISTER))
+			return ActorType.DOCUMENT_RECIPIENT;
+
+
+//        RESPONDING GATEWAY
+//        (xcq | xcr | xcpd) && !xrids -> rg
+		if (((targetTransaction.equals(TransactionType.XC_QUERY) && transactions.hasTransaction(TransactionType.XC_QUERY))
+				|| (targetTransaction.equals(TransactionType.XC_RETRIEVE) && transactions.hasTransaction(TransactionType.XC_RETRIEVE))
+				|| (targetTransaction.equals(TransactionType.XCPD) && transactions.hasTransaction(TransactionType.XCPD)))
+			&& !(transactions.hasTransaction(TransactionType.XC_RET_IMG_DOC_SET)))
+			return ActorType.RESPONDING_GATEWAY;
+//        !(xcq | xcr | xcpd) && xrids -> rig
+        else if ( !((targetTransaction.equals(TransactionType.XC_QUERY) && transactions.hasTransaction(TransactionType.XC_QUERY))
+				|| (targetTransaction.equals(TransactionType.XC_RETRIEVE) && transactions.hasTransaction(TransactionType.XC_RETRIEVE))
+				|| (targetTransaction.equals(TransactionType.XCPD) && transactions.hasTransaction(TransactionType.XCPD)))
+				&& (transactions.hasTransaction(TransactionType.XC_RET_IMG_DOC_SET)))
+			return ActorType.RESPONDING_IMAGING_GATEWAY;
+//        (xcq | xcr | xcpd) && xrids -> combined rg
+		else if (((targetTransaction.equals(TransactionType.XC_QUERY) && transactions.hasTransaction(TransactionType.XC_QUERY))
+				|| (targetTransaction.equals(TransactionType.XC_RETRIEVE) && transactions.hasTransaction(TransactionType.XC_RETRIEVE))
+				|| (targetTransaction.equals(TransactionType.XCPD) && transactions.hasTransaction(TransactionType.XCPD)))
+				&& (transactions.hasTransaction(TransactionType.XC_RET_IMG_DOC_SET)))
+		    return ActorType.COMBINED_RESPONDING_GATEWAY;
+
+
+//        INITIATING GATEWAY
+//        (igq | igr) & !ridsgw-> ig
+		if (((targetTransaction.equals(TransactionType.IG_QUERY) && transactions.hasTransaction(TransactionType.IG_QUERY))
+				|| (targetTransaction.equals(TransactionType.IG_RETRIEVE) && transactions.hasTransaction(TransactionType.IG_RETRIEVE)))
+				&& !(transactions.hasTransaction(TransactionType.RET_IMG_DOC_SET_GW)))
+			return ActorType.INITIATING_GATEWAY;
+//        !igq & !igr && ridsgw-> iig
+		else if (!(targetTransaction.equals(TransactionType.IG_QUERY) && transactions.hasTransaction(TransactionType.IG_QUERY))
+				&& !(targetTransaction.equals(TransactionType.IG_RETRIEVE) && transactions.hasTransaction(TransactionType.IG_RETRIEVE))
+				&& (transactions.hasTransaction(TransactionType.RET_IMG_DOC_SET_GW)))
+			return ActorType.INITIATING_IMAGING_GATEWAY;
+//        (igq | igr) & ridsgw -> combined ig
+		else if (((targetTransaction.equals(TransactionType.IG_QUERY) && transactions.hasTransaction(TransactionType.IG_QUERY))
+				|| (targetTransaction.equals(TransactionType.IG_RETRIEVE) && transactions.hasTransaction(TransactionType.IG_RETRIEVE)))
+				&& (transactions.hasTransaction(TransactionType.RET_IMG_DOC_SET_GW)))
+			return ActorType.COMBINED_INITIATING_GATEWAY;
+
+		throw new TkActorNotFoundException("ActorType could not be determined by TransactionType. ", targetTransaction.toString());
+
 	}
 	
 	public boolean hasTransaction(TransactionType tt) {
@@ -335,6 +417,7 @@ public class Site  implements IsSerializable, Serializable {
 		return name;
 	}
 
+
 	public String getEndpoint(TransactionType transaction, boolean isSecure, boolean isAsync) throws Exception {
 		String endpoint = getRawEndpoint(transaction, isSecure, isAsync);
 		if (endpoint == null) 
@@ -381,4 +464,5 @@ public class Site  implements IsSerializable, Serializable {
 	}
 
 	public boolean isSimulator() { return isASimulator; }
+
 }

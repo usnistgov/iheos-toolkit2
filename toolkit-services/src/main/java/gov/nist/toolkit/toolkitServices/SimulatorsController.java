@@ -18,10 +18,10 @@ import gov.nist.toolkit.services.server.ToolkitApi;
 import gov.nist.toolkit.simcommon.client.*;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
-import gov.nist.toolkit.simulators.sim.cons.DocConsActorSimulator;
-import gov.nist.toolkit.simulators.sim.idc.ImgDocConsActorSimulator;
-import gov.nist.toolkit.simulators.sim.src.XdrDocSrcActorSimulator;
-import gov.nist.toolkit.simulators.support.StoredDocument;
+import gov.nist.toolkit.fhir.simulators.sim.cons.DocConsActorSimulator;
+import gov.nist.toolkit.fhir.simulators.sim.idc.ImgDocConsActorSimulator;
+import gov.nist.toolkit.fhir.simulators.sim.src.XdrDocSrcActorSimulator;
+import gov.nist.toolkit.fhir.simulators.support.StoredDocument;
 import gov.nist.toolkit.soap.DocumentMap;
 import gov.nist.toolkit.toolkitServicesCommon.*;
 import gov.nist.toolkit.toolkitServicesCommon.resource.*;
@@ -169,12 +169,13 @@ public class SimulatorsController {
                 throw new BadSimConfigException(String.format("Create simulator %s - %s", simId.toString(), errors));
             Simulator simulator = api.createSimulator(simId);
             SimConfigResource bean = ToolkitFactory.asSimConfigBean(simulator.getConfig(0));
-            return Response
+            Response r = Response
                     .ok(bean)
                     .header("Location",
                             String.format("%s/%s", _uriInfo.getAbsolutePath().toString(),
                                     simId.getId()))
                     .build();
+            return r;
         }
         catch (Exception e) {
            logger.warn(e.getMessage());
@@ -489,8 +490,8 @@ public class SimulatorsController {
                 throw new BadSimRequestException("Do not understand query ID " + queryId);
             DocConsActorSimulator sim = new DocConsActorSimulator();
 
-            gov.nist.toolkit.simulators.sim.cons.QueryParameters queryParameters =
-                    new gov.nist.toolkit.simulators.sim.cons.QueryParameters();
+            gov.nist.toolkit.fhir.simulators.sim.cons.QueryParameters queryParameters =
+                    new gov.nist.toolkit.fhir.simulators.sim.cons.QueryParameters();
             queryParameters.addParameter(request.getKey1(), request.getValues1());
             queryParameters.addParameter(request.getKey2(), request.getValues2());
             queryParameters.addParameter(request.getKey3(), request.getValues3());

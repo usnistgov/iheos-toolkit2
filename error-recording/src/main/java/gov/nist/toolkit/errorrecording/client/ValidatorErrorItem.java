@@ -99,7 +99,7 @@ public class ValidatorErrorItem implements IsSerializable {
 			break;
 
 		case DETAIL:
-			buf.append("DETAIL\n");
+//			buf.append("DETAIL\n");
 			add(buf);
 //			buf.append(sp).append(getMsg()).append('[').append(completion).append(']').append("\n");
 			break;

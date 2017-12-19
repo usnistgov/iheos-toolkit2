@@ -23,31 +23,24 @@ import gov.nist.toolkit.simcommon.server.GenericSimulatorFactory;
 import gov.nist.toolkit.simcommon.server.SimCache;
 import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.simcommon.server.SimManager;
-import gov.nist.toolkit.simulators.servlet.ServletSimulator;
-import gov.nist.toolkit.simulators.servlet.SimServlet;
-import gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator;
-import gov.nist.toolkit.simulators.sim.rep.RepositoryActorSimulator;
-import gov.nist.toolkit.simulators.sim.rep.od.OddsActorSimulator;
-import gov.nist.toolkit.simulators.support.SimInstanceTerminator;
+import gov.nist.toolkit.fhir.simulators.proxy.util.ResourceParser;
+import gov.nist.toolkit.fhir.simulators.servlet.ServletSimulator;
+import gov.nist.toolkit.fhir.simulators.servlet.SimServlet;
+import gov.nist.toolkit.fhir.simulators.sim.reg.RegistryActorSimulator;
+import gov.nist.toolkit.fhir.simulators.sim.rep.RepositoryActorSimulator;
+import gov.nist.toolkit.fhir.simulators.sim.rep.od.OddsActorSimulator;
+import gov.nist.toolkit.fhir.simulators.support.SimInstanceTerminator;
 import gov.nist.toolkit.utilities.io.Io;
-import gov.nist.toolkit.utilities.message.MultipartFormatter;
 import gov.nist.toolkit.validatorsSoapMessage.engine.ValidateMessageService;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
-import groovy.json.JsonOutput;
-import groovy.util.XmlNodePrinter;
-import groovy.util.XmlParser;
 import org.apache.log4j.Logger;
-import org.xml.sax.SAXException;
+import org.hl7.fhir.instance.model.api.IBaseResource;
 
-
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -170,6 +163,12 @@ public class SimulatorServiceManager extends CommonService {
 		}
 	}
 
+	/**
+	 *
+	 * @param simid
+	 * @return list of transaction types that have logs
+	 * @throws Exception
+	 */
 	public List<String> getTransactionsForSimulator(SimId simid) throws Exception  {
 		logger.debug(session.id() + ": " + "getTransactionsForSimulator(" + simid + ")");
 		SimDb simdb = new SimDb(simid);
@@ -180,68 +179,86 @@ public class SimulatorServiceManager extends CommonService {
 			String trans, String event) {
 		logger.debug(session.id() + ": " + "getTransactionRequest - " + simid + " - " + actor + " - " + trans + " - " + event);
 		try {
-			SimDb db = new SimDb(simid);
+			SimDb db = new SimDb(simid, actor, trans, true);
 
 			if (actor == null)
 				actor = db.getSimulatorActorType().toString();
+
+			db.setEvent(event);
 
 			File headerFile = db.getRequestHeaderFile(simid, actor, trans,
 					event);
 			File bodyFile = db.getRequestBodyFile(simid, actor, trans, event);
 
-			String body = new String(Io.bytesFromFile(bodyFile));
-			body = formatMessage(body);
-			return new Message(Io.stringFromFile(headerFile), body);
-		} catch (Exception e) {
-			return new Message("Error: " + e.getMessage());
+			String body = "";
+			try {
+				body = new String(Io.bytesFromFile(bodyFile));
+				body = MessageBuilder.formatMessage(body);
+			} catch (IOException e) {
+				;
+			}
+			String header;
+			if (headerFile.exists())
+				header = Io.stringFromFile(headerFile);
+			else
+				header = "";
+			File uriFile = db.getRequestURIFile();
+			String uri = "";
+			if (uriFile.exists())
+				uri = Io.stringFromFile(uriFile);
+			return subParseMessage(new Message(uri + "\n" + header, body));
+		} catch (Throwable e) {
+			logger.error(ExceptionUtil.exception_details(e));
+			return new Message("Error: " + ExceptionUtil.exception_details(e));
 		}
 	}
 
-	private String formatMessage(String message) throws IOException, SAXException, ParserConfigurationException {
-		String trimBody = message.trim();
-		boolean isJson = trimBody.startsWith("{");
-		boolean isXml = trimBody.startsWith("<");
-		boolean isMultipart = trimBody.startsWith("--");
-		if (isJson) {
-			// format json but leave embedded HTML alone
-			message = JsonOutput.prettyPrint(message);
-		} else if (isXml) {
-			message = formatXml(message);
-		} else if (isMultipart) {
-			message = MultipartFormatter.format(message);
+	private Message subParseMessage(Message message) {
+		try {
+			IBaseResource resource = ResourceParser.parse(message.getParts().get(1));
+			Message message2 = new MessageBuilder().build(resource);
+			message2.getParts().set(0, message.getParts().get(0));
+			return message2;
+		} catch (Exception e) {
+			logger.info("Message not FHIR format");
 		}
 		return message;
 	}
 
-	private String formatXml(String xml) throws ParserConfigurationException, SAXException, IOException {
-		StringWriter xmlOutput = new StringWriter();
-		XmlNodePrinter printer = new XmlNodePrinter(new PrintWriter(xmlOutput));
-		printer.print(new XmlParser().parseText(xml));
-		xml = xmlOutput.toString();
-		return xml;
-	}
+
 
 	public Message getTransactionResponse(SimId simid, String actor,
 			String trans, String event) {
 		logger.debug(session.id() + ": " + "getTransactionResponse - " + simid + " - " + actor + " - " + trans + " - " + event);
 		try {
-			SimDb db = new SimDb(simid);
+			SimDb db = new SimDb(simid, actor, trans, true);
 
 			if (actor == null)
 				actor = db.getSimulatorActorType().toString();
+
+			db.setEvent(event);
 
 			File headerFile = db.getResponseHeaderFile(simid, actor, trans,
 					event);
 			File bodyFile = db
 					.getResponseBodyFile(simid, actor, trans, event);
 
-			String body = new String(Io.bytesFromFile(bodyFile));
-			body = formatMessage(body);
-			return new Message(
-					((headerFile.exists()) ? Io.stringFromFile(headerFile) : "")
-							, body);
-		} catch (Exception e) {
-			return new Message("Error: " + e.getMessage());
+			String body = "";
+			try {
+				body = new String(Io.bytesFromFile(bodyFile));
+				body = MessageBuilder.formatMessage(body);
+			} catch (Exception e) {
+				;
+			}
+			String header;
+			if (headerFile.exists())
+				header = Io.stringFromFile(headerFile);
+			else
+				header = "";
+			return subParseMessage(new Message(header, body));
+		} catch (Throwable e) {
+			logger.error(ExceptionUtil.exception_details(e));
+			return new Message("Error: " + ExceptionUtil.exception_details(e));
 		}
 	}
 
@@ -360,6 +377,18 @@ public class SimulatorServiceManager extends CommonService {
 //		return "";
 	}
 
+	public String deleteConfigs(List<SimulatorConfig> configs) {
+		String errors = "";
+		for (SimulatorConfig config : configs)	{
+			try {
+				deleteConfig(config);
+			} catch (Exception ex) {
+				errors += ex.getMessage() + ".";
+			}
+		}
+		return errors;
+	}
+
 	/**
 	 * get all SimIds
 	 * @param userFilter - if not null, only return simids for this user
@@ -454,7 +483,7 @@ public class SimulatorServiceManager extends CommonService {
                stats.add(rep);
             } else {
                stats.add(new SimulatorStats(simId));
-               logger.debug("Don't recognize actorType - " + db.getSimulatorActorType());
+               logger.debug("Cannot collect stats. Don't recognize actorType - " + db.getSimulatorActorType());
             }
          }
          return stats;

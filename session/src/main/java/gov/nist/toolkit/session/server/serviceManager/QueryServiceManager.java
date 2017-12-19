@@ -484,7 +484,14 @@ public class QueryServiceManager extends CommonService {
 					String homeName = s.siteSpec.homeName;
 					if (homeName == null || homeName.equals(""))
 						throw new Exception("Cross Community request through IG " + s.siteSpec.name + ". No RG specified");
-					Site rg = SiteServiceManager.getSiteServiceManager().getCommonSites().getSite(homeName);
+					Site rg = null;
+					List<Site> sites = SiteServiceManager.getSiteServiceManager().getAllSites(s.getId());
+					for (Site site : sites) {
+						if (site.getSiteName().equals(homeName)) {
+							rg = site;
+							break;
+						}
+					}
 					if (rg.getHome() == null || rg.getHome().equals(""))
 						throw new Exception("Cross Community request but RG " + homeName + " has no homeCommunityId configured");
 					id.home = rg.home;

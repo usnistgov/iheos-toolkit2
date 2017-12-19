@@ -11,17 +11,18 @@ import gov.nist.toolkit.configDatatypes.client.PidSet;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.datasets.server.DatasetFactory;
 import gov.nist.toolkit.datasets.shared.DatasetModel;
+import gov.nist.toolkit.fhir.simulators.sim.rep.RepIndex;
+import gov.nist.toolkit.fhir.simulators.support.StoredDocument;
+import gov.nist.toolkit.fhir.simulators.support.od.TransactionUtil;
 import gov.nist.toolkit.installation.ExternalCacheManager;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
 import gov.nist.toolkit.interactionmapper.InteractionMapper;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
-import gov.nist.toolkit.results.client.CodesResult;
-import gov.nist.toolkit.results.client.DocumentEntryDetail;
-import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.results.client.TestLogs;
+import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
+import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest;
+import gov.nist.toolkit.services.client.FhirSupportOrchestrationResponse;
 import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.server.RawResponseBuilder;
@@ -32,7 +33,7 @@ import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
 import gov.nist.toolkit.session.server.Session;
-import gov.nist.toolkit.session.server.serviceManager.FhirServiceManager;
+import gov.nist.toolkit.services.server.testClient.FhirServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
 import gov.nist.toolkit.simcommon.client.SimId;
@@ -42,9 +43,6 @@ import gov.nist.toolkit.simcommon.client.SimulatorStats;
 import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.simcommon.server.SimManager;
 import gov.nist.toolkit.simcommon.server.SiteServiceManager;
-import gov.nist.toolkit.simulators.sim.rep.RepIndex;
-import gov.nist.toolkit.simulators.support.StoredDocument;
-import gov.nist.toolkit.simulators.support.od.TransactionUtil;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
@@ -86,13 +84,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class ToolkitServiceImpl extends RemoteServiceServlet implements
@@ -150,9 +142,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
             throw new Exception("Servlet Context Name is null");
 //        response.setToolkitBaseUrl("http://" + props.getToolkitHost()
 //                + ":" + props.getToolkitPort()  + servletContext().getServletContextName() +"Xdstools2.html");
-        response.setToolkitBaseUrl("http://" + props.getToolkitHost()
-                + ":" + props.getToolkitPort()  + contextName +"/Xdstools2.html");
-        logger.info("Base URL is " + response.getToolkitBaseUrl());
+//        response.setToolkitBaseUrl("http://" + props.getToolkitHost()
+//                + ":" + props.getToolkitPort()  + contextName +"/Xdstools2.html");
+        response.setToolkitBaseUrl(Installation.instance().getToolkitBaseUrl());
+        logger.info("Toolkit Base URL is " + response.getToolkitBaseUrl());
         response.setWikiBaseUrl(Installation.instance().wikiBaseAddress());
         return response;
     }
@@ -525,6 +518,25 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
         return new OrchestrationManager().buildRSNAEdgeTestEnvironment(s, request.getRsnaEdgeOrchestrationRequest());
     }
+
+    @Override
+    public RawResponse buildSrcTestOrchestration(BuildSrcTestOrchestrationRequest request) throws Exception {
+        installCommandContext(request);
+        Session s = getSession();
+        if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+        return new OrchestrationManager().buildSrcTestEnvironment(s, request.getSrcOrchestrationRequest());
+    }
+
+
+    @Override
+    public RawResponse buildFhirSupportOrchestration(FhirSupportOrchestrationRequest request) throws Exception {
+        Session s = getSession();
+        if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+        RawResponse response = new OrchestrationManager().buildFhirSupportEnvironment(s, request);
+        FhirSupportOrchestrationResponse theResponse = (FhirSupportOrchestrationResponse) response;
+        return theResponse;
+    }
+
     /*
 	@Override
    public RawResponse buildRepTestOrchestration(RepOrchestrationRequest request) {
@@ -951,9 +963,13 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
     // this deletes a simulator
     @Override
-    public String deleteConfig(SimConfigRequest config) throws Exception {
-        installCommandContext(config);
-        return new SimulatorServiceManager(session()).deleteConfig(config.getConfig());
+    public String deleteConfig(SimConfigRequest request) throws Exception {
+        installCommandContext(request);
+        if (request.getConfig()!=null)
+            return new SimulatorServiceManager(session()).deleteConfig(request.getConfig());
+        else if (request.getConfigList()!=null)
+            return new SimulatorServiceManager(session()).deleteConfigs(request.getConfigList());
+        return "";
     }
     @Override
     public void renameSimFile(RenameSimFileRequest request) throws Exception {
@@ -1174,7 +1190,8 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public Result getSimulatorEventResponse(GetSimulatorEventRequest request) throws Exception {
         installCommandContext(request);
-        return new SimulatorServiceManager(session()).getSimulatorEventResponseAsResult(request.getTransactionInstance());
+        Result result = new SimulatorServiceManager(session()).getSimulatorEventResponseAsResult(request.getTransactionInstance());
+        return result;
     }
     @Override
     public List<String> getTransactionErrorCodeRefs(GetTransactionErrorCodeRefsRequest request) throws Exception {
@@ -1597,11 +1614,31 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return DatasetFactory.getAllDatasets();
     }
 
+
     @Override
     public List<Result> fhirCreate(FhirCreateRequest request) throws Exception {
         installCommandContext(request);
         logger.debug(sessionID + ": fhirCreate()");
-        return new FhirServiceManager(session()).create(request.getSite(), request.getDatasetElement());
+        List<Result> results = new FhirServiceManager(session()).create(request.getSite(), request.getDatasetElement());
+        return results;
     }
+
+    @Override
+    public List<Result> fhirTransaction(FhirTransactionRequest request) throws Exception {
+        installCommandContext(request);
+        logger.debug(sessionID + ": fhirTransaction()");
+        List<Result> results = new FhirServiceManager(session()).transaction(request.getSite(), request.getDatasetElement());
+        return results;
+    }
+
+    @Override
+    public String getDatasetContent(GetDatasetElementContentRequest request)  {
+        try {
+            return DatasetFactory.getContentForDisplay(request.getDatasetElement());
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+    }
+
 
 }

@@ -5,6 +5,8 @@ package gov.nist.toolkit.session.server.markdown;
  */
 public class Markdown {
     static public String toHtml(String markdown) {
+        if (markdown.contains("<p>"))
+            return markdown;
         StringBuilder buf = new StringBuilder();
         boolean lastIsPlain = true;
         String lastLine = "";
@@ -20,35 +22,35 @@ public class Markdown {
                 buf.append("<h4>");
                 line = line.substring(4).trim();
                 buf.append(line);
-                buf.append("</h4>\n");
+                buf.append("</h4>");
             }
             else if (line.startsWith("###")) {
                 lastIsPlain = false;
                 buf.append("<h3>");
                 line = line.substring(3).trim();
                 buf.append(line);
-                buf.append("</h3>\n");
+                buf.append("</h3>");
             }
             else if (line.startsWith("##")) {
                 lastIsPlain = false;
                 buf.append("<h2>");
                 line = line.substring(2).trim();
                 buf.append(line);
-                buf.append("</h2>\n");
+                buf.append("</h2>");
             }
             else if (line.startsWith("#")) {
                 lastIsPlain = false;
                 buf.append("<h1>");
                 line = line.substring(1).trim();
                 buf.append(line);
-                buf.append("</h1>\n");
+                buf.append("</h1>");
             }
             else if (line.startsWith("* ")) {
                 lastIsPlain = false;
-                buf.append("<ul>\n");
+                buf.append("<ul>");
                 while (line.length() > 0 && line.startsWith("* ")) {
                     line = line.substring(2).trim();
-                    buf.append("<li>").append(line).append("\n");
+                    buf.append("<li>").append(line).append("</li>");
                     i++;
                     if (i >= lines.length) {
                         break;
@@ -58,14 +60,14 @@ public class Markdown {
                     }
                 }
                 i--;
-                buf.append("</ul>\n");
+                buf.append("</ul>");
             }
             else if (line.startsWith("1.")) {
                 lastIsPlain = false;
-                buf.append("<ol>\n");
+                buf.append("<ol>");
                 while (line.length() > 0 && Character.isDigit(line.charAt(0))) {
                     line = line.substring(2).trim();
-                    buf.append("<li>").append(line).append("\n");
+                    buf.append("<li>").append(line).append("</li>");
                     i++;
                     if (i >= lines.length) {
                         break;
@@ -75,21 +77,21 @@ public class Markdown {
                     }
                 }
                 i--;
-                buf.append("</ol>\n");
+                buf.append("</ol>");
             } else {
                 if (lastIsPlain && lastLine.equals("") && !line.equals("")) {
-                    buf.append("<p>\n");
-                    buf.append(line).append("\n");
+                    buf.append("<p>");
+                    buf.append(line.trim()).append(' ');
                 }
                 else if (lastIsPlain && !lastLine.equals("") && !line.equals("")) {
-                    buf.append(line).append("\n");
+                    buf.append(line.trim()).append(' ');
                 }
                 else if (lastIsPlain && lastLine.equals("") && line.equals("")) {
 
                 }
                 else if (!lastIsPlain) {
                     lastIsPlain = true;
-                    buf.append(line).append("\n");
+                    buf.append(line.trim()).append(' ');
                 }
                 lastLine = line;
 
@@ -102,7 +104,8 @@ public class Markdown {
             }
         }
 
-        return buf.toString();
+        String result = buf.toString();
+        return result;
     }
 
     static private String processBold(String line) {

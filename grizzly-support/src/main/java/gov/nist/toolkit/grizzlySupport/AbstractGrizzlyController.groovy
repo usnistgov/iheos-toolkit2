@@ -1,9 +1,9 @@
 package gov.nist.toolkit.grizzlySupport
 
 import gov.nist.toolkit.fhir.servlet.FhirServletFilter
-import gov.nist.toolkit.simulators.servlet.HttpSimServlet
+import gov.nist.toolkit.fhir.simulators.servlet.HttpSimServlet
 import gov.nist.toolkit.fhir.servlet.RestfulServlet
-import gov.nist.toolkit.simulators.servlet.SimServlet
+import gov.nist.toolkit.fhir.simulators.servlet.SimServlet
 import groovy.transform.TypeChecked
 import org.apache.log4j.Logger
 import org.glassfish.grizzly.http.server.HttpServer

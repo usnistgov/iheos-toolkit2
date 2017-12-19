@@ -12,7 +12,7 @@ import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.simcommon.client.SimId
-import gov.nist.toolkit.simulators.support.od.TransactionUtil
+import gov.nist.toolkit.fhir.simulators.support.od.TransactionUtil
 import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
@@ -81,6 +81,7 @@ class RgRegOddsConsumerSpec extends ToolkitSpecification {
     def cleanupSpec() {  // one time shutdown when everything is done
 //        spi.delete('rg', testSession)
 //        spi.delete('od', testSession)
+        spi.delete(id, testSession)
         server.stop()
         ListenerFactory.terminateAll()
     }

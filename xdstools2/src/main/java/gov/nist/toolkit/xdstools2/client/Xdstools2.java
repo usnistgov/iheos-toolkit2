@@ -33,7 +33,7 @@ import javax.inject.Inject;
 import java.util.logging.Logger;
 
 
-public class Xdstools2  implements AcceptsOneWidget, IsWidget {
+public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, ProvidesResize {
 	public static final int TRAY_SIZE = 190;
 	public static final int TRAY_CTL_BTN_SIZE = 9; // 23
 
@@ -312,4 +312,8 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 
 	public static HomeTab getHomeTab() { return ht; }
 
+	@Override
+	public void onResize() {
+	 mainSplitPanel.onResize();
+	}
 }

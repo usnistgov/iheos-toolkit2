@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -7,11 +8,34 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.DecoratorPanel;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HTMLTable;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.RadioButton;
+import com.google.gwt.user.client.ui.Tree;
+import com.google.gwt.user.client.ui.TreeItem;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.http.client.HtmlMarkup;
-import gov.nist.toolkit.registrymetadata.client.*;
+import gov.nist.toolkit.registrymetadata.client.AnyId;
+import gov.nist.toolkit.registrymetadata.client.AnyIds;
+import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
+import gov.nist.toolkit.registrymetadata.client.ObjectRef;
+import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.results.client.AssertionResult;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
@@ -19,7 +43,11 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.StringSort;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
-import gov.nist.toolkit.xdstools2.client.*;
+import gov.nist.toolkit.xdsexception.client.TkActorNotFoundException;
+import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
+import gov.nist.toolkit.xdstools2.client.GazelleXuaUsername;
+import gov.nist.toolkit.xdstools2.client.TabContainer;
+import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.command.command.GetStsSamlAssertionCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetToolkitPropertiesCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionOfferingsCommand;
@@ -30,15 +58,20 @@ import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
+import gov.nist.toolkit.xdstools2.client.inspector.mvp.ResultInspector;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab.ActorConfigTab;
+import gov.nist.toolkit.xdstools2.client.toolLauncher.NewToolLauncher;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.util.InformationLink;
 import gov.nist.toolkit.xdstools2.client.widgets.PidWidget;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetStsSamlAssertionRequest;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Infrastructure for any tab that will allow a site to be chosen,
@@ -59,6 +92,9 @@ public abstract class GenericQueryTab  extends ToolWindow {
     public boolean tlsEnabled = true;
     public boolean tlsOptionEnabled = true;
     public ActorType selectByActor = null;
+    /**
+     * The declared transactions to target by the tool.
+     */
     List<TransactionType> transactionTypes;
     public TransactionSelectionManager transactionSelectionManager = null;
     public boolean enableInspectResults = true;
@@ -112,7 +148,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
     private Widget widget;
 
     private boolean displayTab = true;
-    private List<String> selectedSites=new ArrayList<String>();
+    private List<TransactionSelectionManager.RbSite> selectedSites=new ArrayList<>();
 
     // Keep SAML fields off the base class to isolate other tools' preference
     public boolean samlEnabled = true;
@@ -159,8 +195,10 @@ public abstract class GenericQueryTab  extends ToolWindow {
         ClientUtils.INSTANCE.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
             @Override
             public void onTestSessionChanged(TestSessionChangedEvent event) {
-                reloadTransactionOfferings();
-                refreshData();
+                if (event.getChangeType() == TestSessionChangedEvent.ChangeType.SELECT) {
+                    reloadTransactionOfferings();
+                    refreshData();
+                }
             }
         });
         ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).addEnvironmentChangedEventHandler(new EnvironmentChangedEvent.EnvironmentChangedEventHandler() {
@@ -193,16 +231,19 @@ public abstract class GenericQueryTab  extends ToolWindow {
     private void saveSelectedSites() {
         selectedSites.clear();
         if (selectByActor != null) {    // Used in Mesa test tab
+            GWT.log("Mesa tab site selection - TODO?");
+            /*
             for (RadioButton b : byActorButtons) {
                 if (b.getValue()) {
                     selectedSites.add(b.getText());
                 }
             }
+            */
         } else {   // Select by transaction (used in GetDocuments tab)
             if (transactionSelectionManager != null) {
-                SiteSpec site = transactionSelectionManager.generateSiteSpec();
-                if (site != null) {
-                    selectedSites.add(site.getName());
+                List<TransactionSelectionManager.RbSite> rbSites = transactionSelectionManager.selections2();
+                if (rbSites != null) {
+                    selectedSites.addAll(rbSites);
                 }
             }
         }
@@ -238,12 +279,12 @@ public abstract class GenericQueryTab  extends ToolWindow {
             mainGrid.removeRow(mainGrid.getRowCount() - 1);
         row = row_initial;
     }
-
+/*
     void resdisplay2(SiteSpec siteSpec) {
         redisplay(false);
         transactionSelectionManager.selectSite(siteSpec);
     }
-
+*/
     // TODO this is a big method, try to figure out what it is for
     public void redisplay(boolean clearResults) {
         if (resultPanel != null && clearResults)
@@ -395,22 +436,73 @@ public abstract class GenericQueryTab  extends ToolWindow {
             siteSelectionPanel.setWidget(1, 1, siteGrid);
 
             int siteGridRow = 1;
-            Set<String> actorTypeNamesAlreadyDisplayed = new HashSet<>();
-            for (TransactionType tt : transactionTypes) {
-                Set<ActorType> ats = ActorType.getActorTypes(tt);
-                for (ActorType at : ats) {
-                    String actorTypeName = at.getName();
-                    if (!actorTypeNamesAlreadyDisplayed.contains(actorTypeName) && at.showInConfig()) {
-                        actorTypeNamesAlreadyDisplayed.add(actorTypeName);
+            Map<ActorType,ActorSitesByTran> actorSiteMap = createSiteSelectionByTransactionList();
+
+            if (actorSiteMap.isEmpty()) {
+                siteGrid.setWidget(siteGridRow, 0, new HTML("&nbsp;")); // spacer
+                siteGrid.setWidget(siteGridRow, 1, new HTML("None available"));
+                siteGridRow++;
+            } else {
+                for (ActorType at : ActorType.values()) {
+                if (actorSiteMap.containsKey(at)) {
+                    if (at.showInConfig()) { // Exclude types like the "Any" ActorType
                         Label label = new Label(at.getName() + ":");
                         label.getElement().getStyle().setFontWeight(Style.FontWeight.BOLDER);
                         siteGrid.setWidget(siteGridRow, 0, label);
-                        if (getSiteTableForTransactionsSize(tt) == 0) {
-                            siteGrid.setWidget(siteGridRow++, 1, new Label("None Available"));
-                        } else {
-                            siteGrid.setWidget(siteGridRow++, 1, getSiteTableWidgetforTransactions(tt));
+                        ActorSitesByTran actorSitesByTran = actorSiteMap.get(at);
+                        siteGrid.setWidget(siteGridRow++, 1, getSiteTableWidgetforTransactions(at, actorSitesByTran.transactionType, actorSitesByTran.sites));
+                        if (couplings!=null && couplings.hasCouplings()) {
+                            if (actorSitesByTran.transactionType == couplings.from() && couplings.to()!=null) {
+                                HTML instruction = (HTML)couplings.getCoupling().getBeginSelectionInstructions();
+                                if (instruction!=null) {
+                                    instruction.setVisible(false); // Should be enabled only when the From site is selected
+                                    instruction.addStyleName("serverResponseLabelError");
+                                    siteGrid.setWidget(siteGridRow, 0, new HTML(" ")); // spacer
+                                    siteGrid.setWidget(siteGridRow, 1, instruction);
+                                    siteGrid.getFlexCellFormatter().setHorizontalAlignment(siteGridRow,1, HasHorizontalAlignment.ALIGN_RIGHT);
+//                                    siteGrid.getFlexCellFormatter().setColSpan(siteGridRow, 0, 2);
+                                    siteGridRow++;
+                                }
+                            } else if (actorSitesByTran.transactionType == couplings.to() && couplings.from()!=null) {
+                                HTML instruction = (HTML)couplings.getCoupling().getEndSelectionInstruction();
+                                if (instruction!=null) {
+                                    instruction.setVisible(false); // Should be enabled only when the To site is selected
+                                    siteGrid.setWidget(siteGridRow, 0, new HTML(" ")); // spacer
+                                    siteGrid.setWidget(siteGridRow, 1, instruction);
+                                    siteGrid.getFlexCellFormatter().setHorizontalAlignment(siteGridRow,1, HasHorizontalAlignment.ALIGN_RIGHT);
+                                    siteGridRow++;
+                                }
+                            }
                         }
                     }
+                }
+            }
+                if (couplings!=null && couplings.hasCouplings()) {
+                    siteGrid.setWidget(siteGridRow, 0, new HTML("&nbsp;")); // spacer
+                     HTML clearSelectionBtn = new HTML("Clear Selection");
+                    clearSelectionBtn.getElement().getStyle().setMarginTop(12, Style.Unit.PX);
+                    clearSelectionBtn.addStyleName("roundedButton3");
+                    clearSelectionBtn.addStyleName("right");
+                    clearSelectionBtn.addClickHandler(new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent clickEvent) {
+                        transactionSelectionManager.turnOffButtonsNotIn(null);
+                            couplings.getCoupling().setPrimaryId(null);
+                            couplings.getCoupling().setSecondaryId(null);
+                            HTML instruction = (HTML) couplings.getCoupling().getBeginSelectionInstructions();
+                            if (instruction != null) {
+                                instruction.setVisible(false);
+                            }
+                            instruction = (HTML) couplings.getCoupling().getEndSelectionInstruction();
+                            if (instruction != null) {
+                                instruction.setVisible(false);
+                            }
+                           getGoButton().setEnabled(false);
+                    }
+                    });
+                    siteGrid.setWidget(siteGridRow, 1, clearSelectionBtn);
+                    siteGrid.getFlexCellFormatter().setHorizontalAlignment(siteGridRow,1, HasHorizontalAlignment.ALIGN_RIGHT);
+                    siteGridRow++;
                 }
             }
 
@@ -421,6 +513,32 @@ public abstract class GenericQueryTab  extends ToolWindow {
         }
         if (autoAddRunnerButtons)
             addRunnerButtons(mainConfigPanel);
+
+        // Go/Run button should be enabled when a site is selected, so here it is initially disabled.
+        if (getGoButton()!=null)
+            getGoButton().setEnabled(false);
+
+    }
+
+    Map<ActorType,ActorSitesByTran> createSiteSelectionByTransactionList() {
+       Map<ActorType, ActorSitesByTran> actorSitesMap = new HashMap<>();
+        for (TransactionType tt : transactionTypes) { /* declared transaction types by the tool */
+            List<Site> siteList = getSiteList(tt);
+            if (siteList!=null && !siteList.isEmpty()) {
+               for (Site site : siteList)  {
+                   try {
+                       ActorType actorType = site.determineActorTypeByTransactionsInSite(tt);
+                       if (!actorSitesMap.containsKey(actorType)) {
+                           actorSitesMap.put(actorType, new ActorSitesByTran(tt));
+                       }
+                       actorSitesMap.get(actorType).sites.add(site);
+                   } catch (TkActorNotFoundException ex) {
+                      continue;
+                   }
+               }
+            }
+        }
+        return actorSitesMap;
     }
 
     public void tabIsSelected() {
@@ -628,8 +746,18 @@ public abstract class GenericQueryTab  extends ToolWindow {
             runnerPanel.add(getInspectButton());
         }
 
-        if (getInspectButton() != null && inspectButtonHandler == null)
-            inspectButtonHandler = getInspectButton().addClickHandler(new InspectorLauncher(me));
+        if (getInspectButton() != null && inspectButtonHandler == null) {
+//            inspectButtonHandler = getInspectButton().addClickHandler(new InspectorLauncher(me));
+           inspectButtonHandler = getInspectButton().addClickHandler(new ClickHandler() {
+               @Override
+               public void onClick(ClickEvent clickEvent) {
+                   ResultInspector resultInspector = new ResultInspector();
+                   resultInspector.setResults(results);
+                   resultInspector.setSiteSpec(getSiteSelection());
+                   new NewToolLauncher().launch(resultInspector);
+               }
+           });
+        }
 
 
         runnerPanel.add(logLaunchButtonPanel);
@@ -751,24 +879,31 @@ public abstract class GenericQueryTab  extends ToolWindow {
                 }
             }
         }
-        return sites;
+        return orderedSites;
     }
 
-    Widget getSiteTableWidgetforTransactions(TransactionType tt) {
+    Widget getSiteTableWidgetforTransactions(ActorType at, TransactionType tt, List<Site> sites) {
         if (transactionSelectionManager == null)
             transactionSelectionManager = new TransactionSelectionManager(couplings, this);
-        List<Site> sites = getSiteList(tt);
+//        List<Site> sites = getSiteList(tt);
 
-        transactionSelectionManager.addTransactionType(tt, sites);
+
+        transactionSelectionManager.addTransactionType(at, tt, sites);
 
         int cols = 5;
         int row=0;
         int col=0;
         Grid grid = new Grid( sites.size()/cols + 1 , cols);
-        for (RadioButton rb : transactionSelectionManager.getRadioButtons(tt)) {
-            grid.setWidget(row, col, rb);
-            if (selectedSites.contains(rb.getText())){
-                rb.setValue(true);
+        for (TransactionSelectionManager.RbSite rbSite : transactionSelectionManager.getPerTransRB(at, tt)) {
+            rbSite.rb.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent clickEvent) {
+                    getGoButton().setEnabled(transactionSelectionManager.verifySelection()==null);
+                }
+            });
+            grid.setWidget(row, col, rbSite.rb);
+            if (selectedSites.contains(rbSite)){
+                rbSite.rb.setValue(true);
             }
             col++;
             if (col >= cols) {
@@ -779,6 +914,8 @@ public abstract class GenericQueryTab  extends ToolWindow {
 //		mainGrid.setWidget(majorRow, startingCol, grid);
         return grid;
     }
+
+
     /////////////////////////////////////////////////////////////////////////
     // - GETTERS AND SETTERS
     /////////////////////////////////////////////////////////////////////////
@@ -959,6 +1096,16 @@ public abstract class GenericQueryTab  extends ToolWindow {
 
     public void setDisplayTab(boolean displayTab) {
         this.displayTab = displayTab;
+    }
+
+    private class ActorSitesByTran {
+        TransactionType transactionType;
+        List<Site> sites = new ArrayList<>();
+
+        public ActorSitesByTran(TransactionType transactionType) {
+            this.transactionType = transactionType;
+        }
+
     }
 
 }

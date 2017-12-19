@@ -1,16 +1,15 @@
 package gov.nist.toolkit.registrymetadata.client;
 
 
-import java.io.Serializable;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
+
+import java.io.Serializable;
 
 
 public class ObjectRef extends MetadataObject implements IsSerializable, Serializable  {
 	private static final long serialVersionUID = 1L;
-	public String id;
-	public String home;
-	
+//	public String id;
+
 	public String displayName() {
 		return id;
 	}
@@ -44,5 +43,6 @@ public class ObjectRef extends MetadataObject implements IsSerializable, Seriali
 	public String toString() {
 		return "[" + id + " home=" + home + "]";
 	}
+
 
 }

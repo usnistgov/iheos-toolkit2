@@ -4,7 +4,9 @@ import gov.nist.toolkit.simcommon.client.NoSimException
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.utilities.io.Io
+import gov.nist.toolkit.xdsexception.ExceptionUtil
 import groovy.transform.TypeChecked
+import org.apache.log4j.Logger
 import org.apache.lucene.document.Document
 import org.apache.lucene.index.DirectoryReader
 import org.apache.lucene.index.IndexReader
@@ -23,6 +25,7 @@ import org.apache.lucene.store.FSDirectory
  */
 @TypeChecked
 class SimIndexer {
+    static private final Logger logger = Logger.getLogger(SimIndexer.class);
     File indexFile = null  // the directory within the Sim for holding the index
     ResDbIndexer indexer = null
     SimId simId
@@ -42,9 +45,19 @@ class SimIndexer {
     }
 
     def flushIndex(ResourceIndexSet resourceIndexSet) {
-        indexer.openIndexForWriting()  // locks Lucene index
-        indexer.addResource(resourceIndexSet)
-        indexer.commit()    // commit and clear Lucene index lock
+        try {
+            indexer.openIndexForWriting()  // locks Lucene index
+            indexer.addResource(resourceIndexSet)
+        }
+        catch (Exception e) {
+            def error = "Error flushing index:\n${ExceptionUtil.exception_details(e)}"
+            logger.error(error)
+            throw new Exception("Error flushing index", e)
+        }
+        finally {
+            indexer.close()    // commit and clear Lucene index lock
+            initIndexFile()
+        }
     }
 
 //    private indexDir(File dir, ResourceIndexer resourceIndexer, def fileTypes) {

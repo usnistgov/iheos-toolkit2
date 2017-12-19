@@ -17,6 +17,7 @@ public class TestConfig {
 
 	// location of log directory
 	public LogRepository logRepository = null;
+	public LogRepository secondaryLogRepository = null;
 	
 	// Directory holding testplan.xml and its support files
 	 public File testplanDir = null;

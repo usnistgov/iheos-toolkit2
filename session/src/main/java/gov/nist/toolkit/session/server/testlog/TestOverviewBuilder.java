@@ -98,15 +98,20 @@ public class TestOverviewBuilder {
                                 stepOverview = new StepOverviewDTO();
                                 StepDefinitionDAO stepSrc = sectionDef.getStep(stepName);
                                 stepOverview.setName(stepSrc.getId());
-                                stepOverview.setTransaction(stepSrc.getTransaction());
                                 sectionOverview.getStepNames().add(stepName);
                                 sectionOverview.getSteps().put(stepName,stepOverview);
                             }
 
-                            stepOverview.setGoals(sectionDef.getStep(stepName).getGoals());
+                            StringBuilder buf = new StringBuilder();
+                            for (String goal : sectionDef.getStep(stepName).getGoals()) {
+                                buf.append(goal).append(" ");
+//                                buf.append("<br />");
+                            }
+                            stepOverview.setGoals(Markdown.toHtml(buf.toString()));
                             stepOverview.setInteractionSequence(sectionDef.getStep(stepName).getInteractionSequence());
 
                             TestStepLogContentDTO stepDTO = new TestStepLogContentDTO();
+                            stepDTO.setTransaction(stepOverview.getTransaction());
                             StepGoalsDTO goals = new StepGoalsDTO();
                             goals.setStepName(stepName);
                             goals.setGoals(sectionDef.getStep(stepName).getGoals());

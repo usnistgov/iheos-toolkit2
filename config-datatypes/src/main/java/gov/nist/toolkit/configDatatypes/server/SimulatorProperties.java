@@ -27,6 +27,8 @@ public class SimulatorProperties {
      */
     public static final String                      PART_OF_RECIPIENT = "Part_of_Recipient";
 
+    public static final String                      VALIDATE_AS_RECIPIENT = "Validate_as_Recipient";
+
     /**
      * Boolean property controlling whether Registry Simulator validates Affinity Domain codes defined
      * in the Simulator Environment.
@@ -326,16 +328,23 @@ public class SimulatorProperties {
      */
     public static final String locked = "Locked";
 
-    public static final String fhirEndpoint = "FHIR Endpoint";
+    public static final String pdbEndpoint = "Provide DocumentBundle Endpoint";
+
+    public static final String pdbTlsEndpoint = "Provide DocumentBundle TLS Endpoint";
 
     public static final String fhirTlsEndpoint = "FHIR TLS Endpoint";
 
-//    public static final String proxyForwardEndpoint = "Proxy Forward Endpoint";
-//    public static final String proxyTlsForwardEndpoint = "Proxy TLS Forward Endpoint";
+    public static final String fhirEndpoint = "FHIR Endpoint";
+
 
     public static final String proxyForwardSite = "Proxy Forward Site";
 
     public static final String proxyPartner = "Proxy Partner";
 
-    public static final String simProxyTransformations = "SimProxy Sim Transformations";  // dynamic ones for testing
+    public static final String isProxyFrontEnd = "Is Proxy Front End";
+
+    public static final String simProxyTransformations = "SimProxy Transformations";
+    public static final String simProxyResponseTransformations = "SimProxy Response Transformations";
+
+    public static final String simulatorGroup = "Simulator Group";
 }

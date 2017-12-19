@@ -39,7 +39,7 @@ public class SiteLoader {
 //                Xdstools2.DEBUG("tmap(" + t  + ") is " + sitesForTransaction);
                 if (user == null) return sitesForTransaction;
 
-                // filter out sites that represent sims and do not match user
+                // validate out sites that represent sims and do not match user
                 List<Site> sitesForUser = new ArrayList<Site>();
                 for (Site s : sitesForTransaction) {
 //                    Xdstools2.DEBUG("site " + s.getName() + " has user " + s.user);

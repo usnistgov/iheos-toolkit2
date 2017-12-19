@@ -3,6 +3,8 @@ package gov.nist.toolkit.xdstools2.client.util;
 import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
+import gov.nist.toolkit.xdstools2.client.inspector.mvp.InspectorActivity;
+import gov.nist.toolkit.xdstools2.client.inspector.mvp.ResultInspector;
 import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewer;
 import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewerActivity;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.ConfActorActivity;
@@ -29,4 +31,6 @@ public interface ClientFactory {
 
     Activity getSubmitResourceActivity();
 //    SimMsgViewerView getSimMsgViewerView();
+
+    InspectorActivity getInspectorActivity(ResultInspector place);
 }

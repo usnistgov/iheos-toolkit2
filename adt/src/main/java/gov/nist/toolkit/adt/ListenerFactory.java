@@ -37,7 +37,7 @@ public class ListenerFactory {
     static public List<ThreadPoolItem> getAllRunningListeners() {
         List<ThreadPoolItem> listeners = new ArrayList<>();
         for(ThreadPoolItem threadPoolItem : threadPool) {
-            if (threadPoolItem.inUse)
+            if (threadPoolItem.isInUse())
                 listeners.add(threadPoolItem);
         }
 
@@ -75,7 +75,7 @@ public class ListenerFactory {
         tpi.timeoutInMilli = timeoutinMilli;
 //        threadPool.add(tpi);
         logger.info("Launching listener for simId " + simId + " on port " + tpi.port);
-        tpi.inUse = true;
+        tpi.setInUse(true);
         logger.info("Available ports are " + ListenerFactory.availablePorts());
         if (tpi.thread == null) {  // not started
             Thread thread = new Thread(new AdtSocketListener(tpi));
@@ -94,16 +94,20 @@ public class ListenerFactory {
     public static void terminate(String simId) {
         logger.info("terminate patientIdentityFeed listener for sim " + simId + "...");
         ThreadPoolItem tpi = getItem(simId);
-        if (tpi == null) return;
+        if (tpi == null) {
+            logger.info("...none");
+            return;
+        }
         logger.info("...which is port " + tpi.port);
         tpi.thread.interrupt();
-        tpi.inUse = false;
+        tpi.setInUse(false);
     }
 
     public static void terminateAll() {
         for (ThreadPoolItem tpi : threadPool) {
-            if (tpi.getInUse()) {
-                tpi.thread.interrupt();
+            if (tpi.isInUse()) {
+                if (tpi.thread != null)
+                    tpi.thread.interrupt();
                 tpi.release();
             }
         }
@@ -119,8 +123,8 @@ public class ListenerFactory {
 
     static synchronized ThreadPoolItem allocateThreadPoolItem() {
         for (ThreadPoolItem tm : threadPool)
-            if (!tm.inUse) {
-                tm.inUse = true;
+            if (!tm.isInUse()) {
+                tm.setInUse(true);
                 return tm;
             }
         throw new ThreadPoolExhaustedException("Thread pool exhausted - cannot allocate ADT patientIdentityFeed");
@@ -129,7 +133,7 @@ public class ListenerFactory {
     public static List<String> availablePorts() {
         List<String> ports = new ArrayList<>();
         for (ThreadPoolItem tm : threadPool) {
-            if (!tm.inUse)
+            if (!tm.isInUse())
                 ports.add(Integer.toString(tm.getPort()));
         }
         return ports;
@@ -139,9 +143,9 @@ public class ListenerFactory {
         ThreadPoolItem item = getThreadPoolItem(port);
         if (item == null)
             throw new ToolkitRuntimeException("Cannot allocate patientIdentityFeed for port " + port + ". This is not a configured port for Toolkit");
-        if (item.inUse)
+        if (item.isInUse())
             throw new ToolkitRuntimeException("Cannot allocate patientIdentityFeed for port " + port + ". This port is already in use.");
-        item.inUse = true;
+        item.setInUse(true);
         return item;
     }
 }

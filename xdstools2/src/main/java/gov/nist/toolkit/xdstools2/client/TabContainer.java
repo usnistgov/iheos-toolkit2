@@ -68,7 +68,7 @@ public class TabContainer {
 
 		deck.add(w);
 		TABBAR.selectTab(TABBAR.getTabCount() - 1);
-		selectTab();
+//		TABBAR.addSelectionHandler already calls --> selectTab(); Probably need not be called again.
 
 		Xdstools2.getInstance().resizeToolkit();
 
@@ -82,10 +82,11 @@ public class TabContainer {
 		if (INNER_DECKPANEL.getWidgetIndex(dockLp)==-1) {
 			INNER_DECKPANEL.add(dockLp);
 		}else {
-            String tabName=TABBAR.getTab(TABBAR.getSelectedTab()).toString().split("<div class=\"gwt-HTML\">")[1].split("</div>")[0];
+			String tabName=TABBAR.getTab(TABBAR.getSelectedTab()).toString().split("<div class=\"gwt-HTML\">")[1].split("</div>")[0];
 			((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireTabSelectedEvent(tabName);
 		}
 //		INNER_DECKPANEL.getElement().getStyle().setMargin(4, Style.Unit.PX);
+//		GWT.log("Calling showWidget");
 		INNER_DECKPANEL.showWidget(dockLp);
 	}
 

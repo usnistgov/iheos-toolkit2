@@ -46,9 +46,10 @@ import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.SimulatorStats;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionInstancesCommand;
-import gov.nist.toolkit.xdstools2.client.tabs.SimulatorMessageViewTab;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewer;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.od.OddsEditTab;
+import gov.nist.toolkit.xdstools2.client.toolLauncher.NewToolLauncher;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionRequest;
 
@@ -602,8 +603,8 @@ public class SimManagerWidget2 extends Composite {
                     @Override
                     public void execute(SimInfo simInfo) {
                         SimulatorConfig config = simInfo.getSimulatorConfig();
-                        SimulatorMessageViewTab viewTab = new SimulatorMessageViewTab();
-                        viewTab.onTabLoad(config.getId());
+                        // Use the newer Sim Log Viewer
+                        new NewToolLauncher().launch(new SimMsgViewer(config.getId().toString()));
                     }
                 })) {
                     @Override
@@ -765,7 +766,7 @@ public class SimManagerWidget2 extends Composite {
 
         /*
          * Columns
-         * Name	ID	[created dt] [last tran] [last accessed dt == filter on date],  Type	Patient Feed Port	SubmissionSets	DocumentEntries	Folders	Documents	PatientIds	Action
+         * Name	ID	[created dt] [last tran] [last accessed dt == validate on date],  Type	Patient Feed Port	SubmissionSets	DocumentEntries	Folders	Documents	PatientIds	Action
          *
          * Sorting
          * Use the Hl7 date values in the comparator
@@ -903,7 +904,7 @@ public class SimManagerWidget2 extends Composite {
                 SimulatorConfig config = object.getSimulatorConfig();
                 // Generic state-less type simulators
                 GenericQueryTab editTab = new EditTab(hostTab, config);
-                editTab.onTabLoad(true, "SimConfig");
+                editTab.onTabLoad(true, "SimConfig " + config.getId().toString());
             }
 
             @Override
@@ -971,7 +972,7 @@ public class SimManagerWidget2 extends Composite {
         } else {
             // Generic state-less type simulators
             GenericQueryTab editTab = new EditTab(hostTab, config);
-            editTab.onTabLoad(true, "SimConfig");
+            editTab.onTabLoad(true, "SimConfig " + config.getId().toString());
         }
     }
 

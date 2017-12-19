@@ -24,9 +24,11 @@ import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.Simulator;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.SimulatorStats;
-import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.StringSort;
-import gov.nist.toolkit.xdstools2.client.command.command.*;
+import gov.nist.toolkit.xdstools2.client.command.command.GetActorTypeNamesCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetAllSimConfigsCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetNewSimulatorCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetSimulatorStatsCommand;
 import gov.nist.toolkit.xdstools2.client.event.TabSelectedEvent;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
@@ -39,7 +41,6 @@ import gov.nist.toolkit.xdstools2.shared.command.request.GetNewSimulatorRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSimulatorStatsRequest;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class SimulatorControlTab extends GenericQueryTab {
@@ -72,7 +73,7 @@ public class SimulatorControlTab extends GenericQueryTab {
         ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).addTabSelectedEventHandler(new TabSelectedEvent.TabSelectedEventHandler() {
             @Override
             public void onTabSelection(TabSelectedEvent event) {
-                if (event.getTabName().equals(tabName)){
+                if (event.getTabName().equals(tabName) || tabName.equals(event.getTabName().replace(" .",""))){
                     loadSimStatus();
                 }
             }
@@ -206,8 +207,10 @@ public class SimulatorControlTab extends GenericQueryTab {
 
     @Override
 	protected void bindUI() {
+        // This comment looks
 		// force loading of sites in the back end
 		// funny errors occur without this
+        /* Is this really required?
 		new GetAllSitesCommand() {
 
             @Override
@@ -215,6 +218,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 
             }
         }.run(getCommandContext());
+        */
 
 
 		loadSimStatus();
@@ -319,5 +323,9 @@ public class SimulatorControlTab extends GenericQueryTab {
 
     public String getWindowShortName() {
         return "simmgr";
+    }
+
+    public SimManagerWidget2 getSimManagerWidget() {
+        return simManagerWidget;
     }
 }

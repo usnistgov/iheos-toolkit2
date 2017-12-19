@@ -30,11 +30,11 @@ public class BuildIGTestOrchestrationButton extends AbstractOrchestrationButton 
     private TestContext testContext;
     private TestContextView testContextView;
     private TestRunner testRunner;
-    private ActorOption actorOption;
+    private ActorOptionConfig actorOption;
     private Panel initializationPanel;
     private FlowPanel initializationResultsPanel = new FlowPanel();
 
-    public BuildIGTestOrchestrationButton(ConformanceTestTab testTab, Panel initializationPanel, String label, TestContext testContext, TestContextView testContextView, TestRunner testRunner, boolean includeIG, ActorOption actorOption
+    public BuildIGTestOrchestrationButton(ConformanceTestTab testTab, Panel initializationPanel, String label, TestContext testContext, TestContextView testContextView, TestRunner testRunner, boolean includeIG, ActorOptionConfig actorOption
     ) {
         this.initializationPanel = initializationPanel;
         this.testTab = testTab;
@@ -69,7 +69,7 @@ public class BuildIGTestOrchestrationButton extends AbstractOrchestrationButton 
     }
 
     private SiteSpec siteUnderTest(IgOrchestrationResponse orchResponse) {
-        if (AD_OPTION.equals(actorOption.getOptionId())) {
+        if (AD_OPTION.equals(actorOption.getOptionId()) && testContext.getSiteUnderTest() != null) {
             return testContext.getSiteUnderTest().siteSpec();
         }
         return orchResponse.getSupportRG1().siteSpec();
@@ -115,7 +115,7 @@ public class BuildIGTestOrchestrationButton extends AbstractOrchestrationButton 
 
                 initializationResultsPanel.add(new HTML("<br />"));
 
-                initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testContext, testContextView, testRunner ));
+                initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testContext, testContextView, testRunner, testTab ));
 
                 initializationResultsPanel.add(new HTML("<br />"));
 

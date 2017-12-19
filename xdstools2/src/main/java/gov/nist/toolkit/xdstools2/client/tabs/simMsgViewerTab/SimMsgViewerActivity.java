@@ -4,6 +4,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.simcommon.client.SimId;
@@ -20,7 +21,7 @@ import gov.nist.toolkit.xdstools2.shared.command.request.GetFullSimIdRequest;
 /**
  *
  */
-public class SimMsgViewerActivity extends AbstractToolkitActivity {
+public class SimMsgViewerActivity extends AbstractToolkitActivity implements IsWidget {
 
     private SimMsgViewerView view;
     private String simName = null;
@@ -90,12 +91,13 @@ public class SimMsgViewerActivity extends AbstractToolkitActivity {
     }
 
     private void finish(AcceptsOneWidget acceptsOneWidget, EventBus eventBus) {
-        mvp = buildMVP();
-        mvp.init();
 
         if (event != null) {
-            presenter.preselectEvent(event);
+            presenter.setPreSelectEvent(event);
         }
+
+        mvp = buildMVP();
+        mvp.init();
 
         presenter.setActivityDisplayer(displayer);  // so presenter can update tab title
         displayer.display(getContainer(), presenter.getTitle(), this, acceptsOneWidget, eventBus);
@@ -116,4 +118,8 @@ public class SimMsgViewerActivity extends AbstractToolkitActivity {
         new ClientFactoryImpl().getPlaceController().goTo(place);
     }
 
+    @Override
+    public Widget asWidget() {
+        return view.asWidget();
+    }
 }

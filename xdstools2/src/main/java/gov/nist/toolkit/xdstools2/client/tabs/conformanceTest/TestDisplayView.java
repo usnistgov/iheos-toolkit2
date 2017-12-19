@@ -1,6 +1,8 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.xdstools2.client.util.HtmlUtil;
 
@@ -21,6 +23,7 @@ class TestDisplayView extends FlowPanel implements TestStatusDisplay {
     private HTML time = new HTML();
     private Image play = null;
     private Image delete = null;
+    private Image validate = null;
     private Image inspect = null;
     private Image statusIcon = null;
     private Image testKitSourceIcon = null;
@@ -28,7 +31,7 @@ class TestDisplayView extends FlowPanel implements TestStatusDisplay {
     // Parts of the body
     private HTML description = new HTML();
     private Widget interactionDiagram = null;
-    private List<Widget> sections = new ArrayList<>();
+    private List<TestSectionDisplay> sections = new ArrayList<>();
 
     TestDisplayView() {
         header.fullWidth();
@@ -45,6 +48,7 @@ class TestDisplayView extends FlowPanel implements TestStatusDisplay {
         header.add(title);
         header.add(time);
         if (play != null) header.add(play);
+        if (validate != null) header.add(validate);
 
         // flush right stuff
         if (testKitSourceIcon!=null) header.add(testKitSourceIcon);
@@ -55,9 +59,16 @@ class TestDisplayView extends FlowPanel implements TestStatusDisplay {
         body.clear();
         body.add(description);
         if (interactionDiagram != null) body.add(interactionDiagram);
-        for (Widget section : sections) {
-            body.add(section);
+        for (TestSectionDisplay section : sections) {
+            body.add(section.asWidget());
         }
+        panel.addOpenHandler(new OpenHandler<DisclosurePanel>() {
+            @Override
+            public void onOpen(OpenEvent<DisclosurePanel> openEvent) {
+                if (sections.size() == 1)
+                    sections.get(0).open();
+            }
+        });
     }
 
     void setTestTitle(String text) {
@@ -84,6 +95,13 @@ class TestDisplayView extends FlowPanel implements TestStatusDisplay {
         delete.setTitle(title);
     }
 
+    void setValidate(String title, ClickHandler clickHandler) {
+        validate = new Image("icons2/validate-32.png");
+        validate.addStyleName("iconStyle");
+        validate.addClickHandler(clickHandler);
+        validate.setTitle(title);
+    }
+
     void setInspect(String title, ClickHandler clickHandler) {
         inspect = new Image("icons2/visible-32.png");
         inspect.addStyleName("right");
@@ -107,7 +125,7 @@ class TestDisplayView extends FlowPanel implements TestStatusDisplay {
     }
 
     void clearSections() { sections.clear(); }
-    void addSection(Widget section) { sections.add(section); }
+    void addSection(TestSectionDisplay section) { sections.add(section); }
 
     @Override
     public void labelSuccess() {

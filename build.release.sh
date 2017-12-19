@@ -8,6 +8,9 @@
 # This script is generic. If it is named build.vm.sh it will use
 # build.vm.stuff as the update content directory
 
+VERSION=5
+BUILDDIR=~/tk
+
 BASEDIR=$(dirname $0)
 if [ $BASEDIR='.' ];
 then
@@ -16,11 +19,12 @@ fi
 
 SCRIPTNAME=$(basename $0 .sh)
 
-cd ~/tk
-mvn clean package -DskipTests -Dmaven.test.skip=true
+cd $BUILDDIR
+mvn clean package -DskipTests -Dmaven.test.skip=true -PRelease
 
 cd xdstools2/target
 WARNAME=$(basename *.war .war)
+
 
 cd ~/tk
 mkdir xdstools2/target/$WARNAME/javadoc
@@ -31,11 +35,15 @@ mvn -o site
 
 cd target
 rm -r $WARNAME/site
+
+pwd
+echo "warname is $WARNAME"
+
 mv site $WARNAME
 
 cd $WARNAME
-jar cf ../xdstools4.war *
+jar cf ../xdstools$VERSION.war *
 
 cd ${BASEDIR}/${SCRIPTNAME}.stuff
-jar uf ~/tk/xdstools2/target/xdstools4.war WEB-INF
+jar uf ~/tk/xdstools2/target/xdstools$VERSION.war WEB-INF
 
