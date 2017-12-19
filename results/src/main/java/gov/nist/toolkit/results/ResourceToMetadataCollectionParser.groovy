@@ -1,9 +1,13 @@
 package gov.nist.toolkit.results
 
 import gov.nist.toolkit.fhir.context.ToolkitFhirContext
+import gov.nist.toolkit.registrymetadata.Metadata
+import gov.nist.toolkit.registrymetadata.MetadataParser
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection
 import gov.nist.toolkit.registrymetadata.client.SubmissionSet
+import gov.nist.toolkit.simcoresupport.mhd.MhdGenerator
+import groovy.xml.MarkupBuilder
 import org.hl7.fhir.dstu3.model.Binary
 import org.hl7.fhir.dstu3.model.Bundle
 import org.hl7.fhir.dstu3.model.DocumentManifest
@@ -17,9 +21,13 @@ class ResourceToMetadataCollectionParser {
     def add(IBaseResource res) {
         if (res instanceof DocumentReference) {
             initCollection()
-            DocumentEntry de = new DocumentEntry()
-            parse(de, res)
-            col.docEntries.add(de)
+//            DocumentEntry de = new DocumentEntry()
+//            parse(de, res)
+//            col.docEntries.add(de)
+            DocumentEntry de = null // = new DocumentEntry()
+            de = parse(res)
+            if (de!=null)
+               col.docEntries.add(de)
         } else if (res instanceof DocumentManifest) {
             initCollection()
             SubmissionSet ss = new SubmissionSet()
@@ -46,9 +54,27 @@ class ResourceToMetadataCollectionParser {
      * @param de
      * @param dr
      */
-    def parse(DocumentEntry de, DocumentReference dr) {
+    static def DocumentEntry parse(DocumentReference dr) {
         // use MhdGenerator.buildSubmission at line 582
         // where it calls addExtrinsicObject
+        if (dr instanceof DocumentReference) {
+            def writer = new StringWriter()
+            def xml = new MarkupBuilder(writer)
+
+                            xml.RegistryObjectList(xmlns: 'urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0') {
+                                        MhdGenerator.addExtrinsicObject(xml, dr.getId(), dr)
+                                    }
+            Metadata m = MetadataParser
+                    .parseNonSubmission(writer.toString())
+            if (m.getAllObjects().size() > 0) {
+                        MetadataToMetadataCollectionParser mcp = new MetadataToMetadataCollectionParser(
+                                                m, "stepName")
+                        MetadataCollection mc = mcp.get()
+                        if (mc.docEntries.size() > 0)
+                                    return mc.docEntries.get(0)
+                    }
+        }
+        return null
     }
 
     /**
