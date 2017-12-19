@@ -1,0 +1,13 @@
+<TestPlan>
+    <Test>FhirTestClientCreate/search</Test>
+    <TestStep id="query">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <FhirSearchTransaction>
+            <!-- reference FHIR server Base URL -->
+            <UseReport test="FhirTestClientCreate" section="create" step="create" reportName="Base" useAs="Base"/>
+            <ResourceType>Patient</ResourceType>
+            <Query>family=Chalmers</Query>
+            <!--<QueryParams>/Patient?family=Chalmers</QueryParams>-->
+        </FhirSearchTransaction>
+    </TestStep>
+</TestPlan>
