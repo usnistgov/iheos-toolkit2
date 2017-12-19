@@ -22,7 +22,9 @@ import javax.xml.namespace.QName;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class UseReportManager  {
     private final static Logger logger = Logger.getLogger(UseReportManager.class);
@@ -30,12 +32,12 @@ public class UseReportManager  {
 	RetrievedDocumentModel retrievedDocumentModel;
 	ReportManager reportManager; // things reported from query results
 	TestConfig testConfig;
-	SectionLogMapDTO sectionLogMapDTO;
+	Map<TestSection, SectionLogMapDTO> sectionLogMapDTOs = new HashMap<>();
 
 	public UseReportManager(TestConfig config) {
 		testConfig = config;
 		useReports = new ArrayList<>();
-		sectionLogMapDTO = new SectionLogMapDTO(testConfig.testInstance);
+//		sectionLogMapDTO = new SectionLogMapDTO(testConfig.testInstance);
 	}
 
 	/**
@@ -74,6 +76,8 @@ public class UseReportManager  {
 			TestKitSearchPath searchPath = new TestKitSearchPath(transactionSettings.environmentName, transactionSettings.testSession);
 			TestDefinition testDefinition = searchPath.getTestDefinition(testInstance.getId());
 			String section = tsec.section;
+			SectionLogMapDTO sectionLogMapDTO = new SectionLogMapDTO(testConfig.testInstance);
+			sectionLogMapDTOs.put(tsec, sectionLogMapDTO);
 			sectionLogMapDTO.setTestInstance(testInstance);
 			if (section != null && section.equals("THIS"))
 				continue;
@@ -92,7 +96,7 @@ public class UseReportManager  {
 				if (testlogFile != null) {
 					System.out.println("Loading log " + testlogFile);
 					sectionLogMapDTO.put(section, new LogFileContentBuilder().build(testlogFile));
-					return;
+					break;
 				}
 			}
 		}
@@ -183,8 +187,11 @@ public class UseReportManager  {
                 continue;
 
 			LogFileContentDTO logFileContentDTO = previousLogs.get(useReport.section);
-			if (logFileContentDTO == null)
+			if (logFileContentDTO == null) {
+				TestSection testSection = new TestSection(useReport.testInstance, useReport.section);
+				SectionLogMapDTO sectionLogMapDTO = sectionLogMapDTOs.get(testSection);
 				logFileContentDTO = sectionLogMapDTO.get(useReport.section);
+			}
 			if (logFileContentDTO == null)
 				throw new XdsInternalException("UseReportManager#resolve: cannot find Report for " + useReport.getURI() + "\n");
 
