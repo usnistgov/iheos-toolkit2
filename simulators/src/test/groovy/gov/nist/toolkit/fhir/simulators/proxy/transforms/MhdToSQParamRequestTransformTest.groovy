@@ -83,7 +83,8 @@ class MhdToSQParamRequestTransformTest extends Specification {
 
         then:
         xfrm.run([f1, f2]) ==  ['$XDSDocumentEntryCreationTimeFrom' : ['20130114'],
-                         '$XDSDocumentEntryCreationTimeTo' : ['20130217']
+                         '$XDSDocumentEntryCreationTimeTo' : ['20130217'],
+                                $XDSDocumentEntryStatus:['urn:oasis:names:tc:ebxml-regrep:StatusType:Approved']
         ] + fd()
     }
 
@@ -155,7 +156,8 @@ class MhdToSQParamRequestTransformTest extends Specification {
         then:
         xfrm.run([f1, f2]) == [
                 '$XDSDocumentEntryServiceStartTimeFrom' : ['20100314'],
-                '$XDSDocumentEntryServiceStopTimeTo' : ['20110314']
+                '$XDSDocumentEntryServiceStopTimeTo' : ['20110314'],
+                $XDSDocumentEntryStatus:['urn:oasis:names:tc:ebxml-regrep:StatusType:Approved']
         ]+ fd()
     }
     def 'facility'() {
