@@ -5,10 +5,10 @@ import gov.nist.toolkit.fhir.resourceMgr.ResourceCache
 import gov.nist.toolkit.fhir.resourceMgr.ResourceCacheMgr
 import gov.nist.toolkit.fhir.resourceMgr.ResourceMgr
 import gov.nist.toolkit.fhir.resourceMgr.TestResourceCacheFactory
-import gov.nist.toolkit.fhir.simulators.mhd.MhdGenerator
-import gov.nist.toolkit.fhir.simulators.proxy.util.SimProxyBase
 import gov.nist.toolkit.fhir.utility.UriBuilder
 import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.simcoresupport.mhd.MhdGenerator
+import gov.nist.toolkit.simcoresupport.proxy.util.SimProxyBase
 import groovy.xml.MarkupBuilder
 import org.hl7.fhir.dstu3.model.DocumentReference
 import org.hl7.fhir.dstu3.model.Patient

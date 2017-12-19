@@ -1,5 +1,7 @@
 package gov.nist.toolkit.fhir.simulators.mhd
 
+import gov.nist.toolkit.simcoresupport.mhd.Code
+import gov.nist.toolkit.simcoresupport.mhd.CodeTranslator
 import gov.nist.toolkit.valsupport.client.ValidationContext
 import spock.lang.Specification
 

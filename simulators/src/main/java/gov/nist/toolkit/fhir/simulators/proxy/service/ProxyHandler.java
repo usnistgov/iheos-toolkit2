@@ -1,18 +1,29 @@
 package gov.nist.toolkit.fhir.simulators.proxy.service;
 
-import gov.nist.toolkit.fhir.simulators.proxy.util.ReturnableErrorException;
 import gov.nist.toolkit.fhir.utility.WrapResourceInHttpResponse;
 import gov.nist.toolkit.simcommon.client.BadSimIdException;
-import gov.nist.toolkit.fhir.simulators.proxy.util.ProxyLogger;
-import gov.nist.toolkit.fhir.simulators.proxy.util.SimProxyBase;
+import gov.nist.toolkit.simcoresupport.proxy.util.ProxyLogger;
+import gov.nist.toolkit.simcoresupport.proxy.util.ReturnableErrorException;
+import gov.nist.toolkit.simcoresupport.proxy.util.SimProxyBase;
 import gov.nist.toolkit.testengine.fhir.FhirSupport;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import org.apache.http.*;
+import org.apache.http.ConnectionReuseStrategy;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpException;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.impl.DefaultBHttpClientConnection;
 import org.apache.http.impl.DefaultConnectionReuseStrategy;
-import org.apache.http.protocol.*;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.protocol.HttpCoreContext;
+import org.apache.http.protocol.HttpProcessor;
+import org.apache.http.protocol.HttpRequestExecutor;
+import org.apache.http.protocol.HttpRequestHandler;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;

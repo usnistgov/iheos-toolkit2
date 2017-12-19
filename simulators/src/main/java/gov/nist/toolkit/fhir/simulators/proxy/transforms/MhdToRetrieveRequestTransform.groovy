@@ -2,9 +2,13 @@ package gov.nist.toolkit.fhir.simulators.proxy.transforms
 
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.fhir.simulators.mhd.RetrieveRequestTranslator
-import gov.nist.toolkit.fhir.simulators.proxy.exceptions.SimProxyTransformException
-import gov.nist.toolkit.fhir.simulators.proxy.util.*
+import gov.nist.toolkit.fhir.simulators.proxy.util.BinaryPartSpec
+import gov.nist.toolkit.fhir.simulators.proxy.util.ContentRequestTransform
+import gov.nist.toolkit.fhir.simulators.proxy.util.MtomContentTypeGenerator
 import gov.nist.toolkit.simcommon.server.SimEndpoint
+import gov.nist.toolkit.simcoresupport.proxy.exceptions.SimProxyTransformException
+import gov.nist.toolkit.simcoresupport.proxy.util.ReturnableErrorException
+import gov.nist.toolkit.simcoresupport.proxy.util.SimProxyBase
 import gov.nist.toolkit.utilities.io.Io
 import org.apache.http.Header
 import org.apache.http.HttpRequest

@@ -2,10 +2,10 @@ package gov.nist.toolkit.fhir.simulators.proxy.transforms
 
 import gov.nist.toolkit.fhir.simulators.mhd.Query
 import gov.nist.toolkit.fhir.simulators.mhd.SQTranslator
-import gov.nist.toolkit.fhir.simulators.proxy.exceptions.SimProxyTransformException
 import gov.nist.toolkit.fhir.simulators.proxy.util.ContentRequestTransform
-import gov.nist.toolkit.fhir.simulators.proxy.util.ReturnableErrorException
-import gov.nist.toolkit.fhir.simulators.proxy.util.SimProxyBase
+import gov.nist.toolkit.simcoresupport.proxy.exceptions.SimProxyTransformException
+import gov.nist.toolkit.simcoresupport.proxy.util.ReturnableErrorException
+import gov.nist.toolkit.simcoresupport.proxy.util.SimProxyBase
 import gov.nist.toolkit.utilities.io.Io
 import org.apache.http.HttpRequest
 import org.apache.http.RequestLine

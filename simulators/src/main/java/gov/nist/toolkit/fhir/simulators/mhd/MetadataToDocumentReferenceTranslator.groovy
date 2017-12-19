@@ -1,8 +1,8 @@
 package gov.nist.toolkit.fhir.simulators.mhd
 
-import gov.nist.toolkit.fhir.simulators.proxy.util.SimProxyBase
 import gov.nist.toolkit.fhir.utility.IFhirSearch
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry
+import gov.nist.toolkit.simcoresupport.proxy.util.SimProxyBase
 import org.apache.log4j.Logger
 import org.hl7.fhir.dstu3.model.*
 import org.hl7.fhir.instance.model.api.IBaseResource

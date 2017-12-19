@@ -1,13 +1,14 @@
 package gov.nist.toolkit.fhir.simulators.proxy.transforms
 
-import gov.nist.toolkit.simcommon.server.SimEndpoint
 import gov.nist.toolkit.fhir.simulators.proxy.util.HttpRequestBuilder
-import gov.nist.toolkit.fhir.simulators.proxy.util.SimProxyBase
-import gov.nist.toolkit.fhir.simulators.proxy.util.SimpleRequestTransform
+import gov.nist.toolkit.simcommon.server.SimEndpoint
+import gov.nist.toolkit.simcoresupport.proxy.util.SimProxyBase
+import gov.nist.toolkit.simcoresupport.proxy.util.SimpleRequestTransform
 import org.apache.http.HttpRequest
 import org.apache.http.RequestLine
 import org.apache.http.message.BasicRequestLine
 import org.apache.log4j.Logger
+
 /**
  * basic pass through - update endpoint to match target system configuration
  */

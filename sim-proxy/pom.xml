@@ -15,6 +15,10 @@
     <dependencies>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
+            <artifactId>sim-support</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
             <artifactId>simulators</artifactId>
         </dependency>
         <dependency>
