@@ -5,9 +5,7 @@ import gov.nist.toolkit.fhir.server.utility.IFhirSearch
 import gov.nist.toolkit.fhir.server.utility.WrapResourceInHttpResponse
 import gov.nist.toolkit.fhir.simulators.fhir.OperationOutcomeGenerator
 import gov.nist.toolkit.fhir.simulators.mhd.MetadataToDocumentReferenceTranslator
-import gov.nist.toolkit.fhir.simulators.proxy.exceptions.SimProxyTransformException
 import gov.nist.toolkit.fhir.simulators.proxy.util.ContentResponseTransform
-import gov.nist.toolkit.fhir.simulators.proxy.util.SimProxyBase
 import gov.nist.toolkit.registrymetadata.Metadata
 import gov.nist.toolkit.registrymetadata.MetadataParser
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry
@@ -15,6 +13,8 @@ import gov.nist.toolkit.registrymetadata.client.MetadataCollection
 import gov.nist.toolkit.registrymsg.registry.RegistryError
 import gov.nist.toolkit.registrymsg.registry.RegistryErrorListParser
 import gov.nist.toolkit.results.MetadataToMetadataCollectionParser
+import gov.nist.toolkit.simcoresupport.proxy.exceptions.SimProxyTransformException
+import gov.nist.toolkit.simcoresupport.proxy.util.SimProxyBase
 import gov.nist.toolkit.soap.http.SoapFault
 import gov.nist.toolkit.utilities.io.Io
 import gov.nist.toolkit.utilities.xml.Util

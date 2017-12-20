@@ -2,6 +2,11 @@
 
 <!--
 
+        December 2017
+
+        Extended format to include system attribute on Code element which is to be used for MHD.
+        Also added deprecated attribute which is not yet used in Toolkit.
+
         March 13, 2017
 
         Additions for APPC:

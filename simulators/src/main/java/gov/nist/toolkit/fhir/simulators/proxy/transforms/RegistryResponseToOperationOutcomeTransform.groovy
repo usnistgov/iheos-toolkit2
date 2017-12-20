@@ -5,10 +5,10 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.fhir.server.resourceMgr.ResourceCache
 import gov.nist.toolkit.fhir.simulators.fhir.OperationOutcomeGenerator
 import gov.nist.toolkit.fhir.server.utility.WrapResourceInHttpResponse
-import gov.nist.toolkit.fhir.simulators.proxy.exceptions.SimProxyTransformException
 import gov.nist.toolkit.fhir.simulators.proxy.util.ContentResponseTransform
 import gov.nist.toolkit.fhir.simulators.proxy.util.ResponsePartParser
-import gov.nist.toolkit.fhir.simulators.proxy.util.SimProxyBase
+import gov.nist.toolkit.simcoresupport.proxy.exceptions.SimProxyTransformException
+import gov.nist.toolkit.simcoresupport.proxy.util.SimProxyBase
 import gov.nist.toolkit.soap.http.SoapFault
 import gov.nist.toolkit.utilities.io.Io
 import gov.nist.toolkit.xdsexception.ExceptionUtil
@@ -18,6 +18,7 @@ import org.apache.http.HttpResponse
 import org.apache.http.message.BasicHttpResponse
 import org.apache.log4j.Logger
 import org.hl7.fhir.dstu3.model.*
+
 /**
  *
  */

@@ -1,6 +1,6 @@
 package gov.nist.toolkit.fhir.simulators.proxy.service;
 
-import gov.nist.toolkit.fhir.simulators.proxy.util.SimProxyBase;
+import gov.nist.toolkit.simcoresupport.proxy.util.SimProxyBase;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.config.MessageConstraints;
@@ -9,7 +9,20 @@ import org.apache.http.impl.DefaultBHttpClientConnection;
 import org.apache.http.impl.DefaultBHttpServerConnection;
 import org.apache.http.io.HttpMessageParserFactory;
 import org.apache.http.io.HttpMessageWriterFactory;
-import org.apache.http.protocol.*;
+import org.apache.http.protocol.HttpProcessor;
+import org.apache.http.protocol.HttpRequestExecutor;
+import org.apache.http.protocol.HttpService;
+import org.apache.http.protocol.ImmutableHttpProcessor;
+import org.apache.http.protocol.RequestConnControl;
+import org.apache.http.protocol.RequestContent;
+import org.apache.http.protocol.RequestExpectContinue;
+import org.apache.http.protocol.RequestTargetHost;
+import org.apache.http.protocol.RequestUserAgent;
+import org.apache.http.protocol.ResponseConnControl;
+import org.apache.http.protocol.ResponseContent;
+import org.apache.http.protocol.ResponseDate;
+import org.apache.http.protocol.ResponseServer;
+import org.apache.http.protocol.UriHttpRequestHandlerMapper;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;

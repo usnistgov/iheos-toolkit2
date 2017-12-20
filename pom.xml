@@ -35,6 +35,7 @@
         <module>xdstools2</module>
         <module>session</module>
         <module>simulators</module>
+        <module>sim-support</module>
         <module>actorfactory</module>
         <module>validators-registry-message</module>
         <module>validators-registry-metadata</module>

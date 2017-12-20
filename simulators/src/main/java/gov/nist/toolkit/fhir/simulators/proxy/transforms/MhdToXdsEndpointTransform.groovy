@@ -4,8 +4,8 @@ import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.actortransaction.server.EndpointParser
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.fhir.simulators.proxy.util.HttpRequestBuilder
-import gov.nist.toolkit.fhir.simulators.proxy.util.SimProxyBase
-import gov.nist.toolkit.fhir.simulators.proxy.util.SimpleRequestTransform
+import gov.nist.toolkit.simcoresupport.proxy.util.SimProxyBase
+import gov.nist.toolkit.simcoresupport.proxy.util.SimpleRequestTransform
 import org.apache.http.HttpRequest
 import org.apache.http.RequestLine
 import org.apache.http.message.BasicHttpEntityEnclosingRequest

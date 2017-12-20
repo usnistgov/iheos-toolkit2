@@ -2,7 +2,6 @@ package gov.nist.toolkit.services.server.orchestration
 
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
-import gov.nist.toolkit.fhir.simulators.proxy.util.SimProxyBase
 import gov.nist.toolkit.fhir.server.utility.FhirClient
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.results.client.TestInstance
@@ -13,6 +12,7 @@ import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
+import gov.nist.toolkit.simcoresupport.proxy.util.SimProxyBase
 import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import gov.nist.toolkit.xdsexception.ExceptionUtil
 import org.apache.log4j.Logger
