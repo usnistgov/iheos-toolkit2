@@ -1,7 +1,7 @@
 package gov.nist.toolkit.results
 
 import gov.nist.toolkit.fhir.context.ToolkitFhirContext
-import gov.nist.toolkit.fhir.resourceMgr.ResourceCacheMgr
+import gov.nist.toolkit.fhir.server.resourceMgr.ResourceCacheMgr
 import gov.nist.toolkit.registrymetadata.Metadata
 import gov.nist.toolkit.registrymetadata.MetadataParser
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry
