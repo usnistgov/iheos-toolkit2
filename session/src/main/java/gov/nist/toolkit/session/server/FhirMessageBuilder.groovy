@@ -2,8 +2,10 @@ package gov.nist.toolkit.session.server
 
 import ca.uhn.fhir.context.FhirContext
 import gov.nist.toolkit.fhir.context.ToolkitFhirContext
+import gov.nist.toolkit.fhir.server.utility.FhirClient
 import gov.nist.toolkit.session.shared.Message
 import gov.nist.toolkit.session.shared.SubMessage
+import gov.nist.toolkit.testengine.fhir.FhirSupport
 import gov.nist.toolkit.utilities.message.MultipartFormatter
 import groovy.json.JsonOutput
 import org.hl7.fhir.dstu3.model.*
@@ -14,13 +16,44 @@ import org.xml.sax.SAXException
 import javax.xml.parsers.ParserConfigurationException
 
 class FhirMessageBuilder {
+    Bundle bundle  = null;
+    Resource resource = null;
+
+    private IBaseResource findInBundle(String ref) {
+        if (!ref)
+            return null;
+        for (Bundle.BundleEntryComponent c : bundle.getEntry()) {
+            if (ref == c.fullUrl) {
+                return c.getResource()
+            }
+        }
+        return null
+    }
+
+    private IBaseResource findContained(String ref) {
+        if (!ref)
+            return null
+        if (resource instanceof DocumentReference) {
+            DocumentReference dr = resource
+            return dr.contained.find { Resource con ->
+                con.id == ref
+            }
+        }
+        if (resource instanceof DocumentManifest) {
+            DocumentManifest dm = resource
+            return dm.contained.find { Resource con ->
+                con.id == ref
+            }
+        }
+        return null
+    }
 
     Message build(IBaseResource resource) {
         FhirContext ctx = ToolkitFhirContext.get()
         String msgStr = ctx.newJsonParser().encodeResourceToString(resource)
         Message message = new Message('', formatMessage(msgStr))
         if (resource instanceof Bundle) {
-            Bundle bundle = (Bundle) resource;
+            bundle = (Bundle) resource;
             for (Bundle.BundleEntryComponent c : bundle.getEntry()) {
                 String fullUrl = c.getFullUrl();
                 Resource theResource = c.getResource();
@@ -35,6 +68,7 @@ class FhirMessageBuilder {
     }
 
     private List<SubMessage> extractReferences(Resource resource) throws FHIRException {
+        this.resource = resource
         List<SubMessage> subMessages = new ArrayList<>();
         String type = resource.fhirType();
         switch (type) {
@@ -71,11 +105,27 @@ class FhirMessageBuilder {
         if (reference == null)
             return;
         String ref = reference.getReference();
-        if (ref != null && !ref.equals(""))
-            subMessages.add(new SubMessage(type + " " + ref, ""));
-//		Identifier id = reference.getIdentifier();
-//		if (id != null)
-//			subMessages.add(new SubMessage("Id: " + id.toString(),""));
+        if (ref != null && !ref.equals("")) {
+            String refType = 'Ref'
+            String value = "";
+            try {
+                IBaseResource refres
+                refres = findInBundle(ref)
+                refType = 'Bundle'
+                if (!refres) {
+                    refres = findContained(ref)
+                    refType = 'Contained'
+                }
+                if (!refres) {
+                    refres = FhirClient.readResource(ref);
+                    refType = 'External'
+                }
+                value = FhirSupport.format(refres);
+            } catch (Exception e) {
+                value = "Unreadable";
+            }
+            subMessages.add(new SubMessage(type + " (${refType}) " + ref, value));
+        }
     }
 
     static String formatMessage(String message) throws IOException, SAXException, ParserConfigurationException {

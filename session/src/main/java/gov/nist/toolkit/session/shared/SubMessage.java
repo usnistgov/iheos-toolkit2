@@ -8,6 +8,7 @@ import java.util.List;
 
 public class SubMessage implements Serializable, IsSerializable {
     private String name;
+    private String nameHover = null;
     private String value;
 
     List<SubMessage> subMessages = new ArrayList<>();
@@ -16,6 +17,12 @@ public class SubMessage implements Serializable, IsSerializable {
 
     public SubMessage(String name, String value) {
         this.name = name;
+        this.value = value;
+    }
+
+    public SubMessage(String name, String nameHover, String value) {
+        this.name = name;
+        this.nameHover = nameHover;
         this.value = value;
     }
 
@@ -38,6 +45,10 @@ public class SubMessage implements Serializable, IsSerializable {
     public void addSubMessage(String name, String value) {
         SubMessage sm = new SubMessage(name, value);
         subMessages.add(sm);
+    }
+
+    public String getNameHover() {
+        return nameHover;
     }
 
     public void addSubMessage(SubMessage subMessage) {

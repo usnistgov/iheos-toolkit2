@@ -111,7 +111,7 @@ public class FhirSearchView extends AbstractView<FhirSearchPresenter> {
         logPanel.setHeight("100%");
         bottomTabPanel.add(logWrapperPanel, "[Log]");
 
-        bottomTabPanel.add(resourceDisplayOuterPanel, "[Resource]");
+        bottomTabPanel.add(resourceDisplayOuterPanel, "[Content]");
 
         ScrollPanel scrollPanel = new ScrollPanel();
         scrollPanel.add(tabTopPanel);
@@ -140,7 +140,7 @@ public class FhirSearchView extends AbstractView<FhirSearchPresenter> {
         HorizontalFlowPanel referencePanel = new HorizontalFlowPanel();
         referencePanel.add(new Label("Patient ID:"));
 
-        patientTextBox.setVisibleLength(60);
+        patientTextBox.setVisibleLength(90);
         referencePanel.add(patientTextBox);
         referencePanel.add(new Label("(system|value or id^^^&oid&ISO or Patient Resource URL)"));
         innerPanel.add(referencePanel);

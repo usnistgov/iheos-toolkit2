@@ -21,13 +21,13 @@ public class MessageDisplayView implements IsWidget {
         outerPanel.add(scrollPanel);
         scrollPanel.add(contentPanel);
 
-        menuScrollPanel.setWidth("27%");
+        menuScrollPanel.setWidth("37%");
         menuScrollPanel.setHeight("100%");
         menuPanel.setWidth("100%");
         menuPanel.setHeight("100%");
         outerPanel.setWidth("100%");
         outerPanel.setHeight("100%");
-        scrollPanel.setWidth("70%");
+        scrollPanel.setWidth("60%");
         scrollPanel.setHeight("100%");
         contentPanel.setWidth("100%");
         contentPanel.setHeight("100%");

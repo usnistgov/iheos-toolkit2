@@ -23,6 +23,10 @@ class FhirSupport {
         }
     }
 
+    static String format(IBaseResource resource)  {
+        FhirContext ctx = ToolkitFhirContext.get()
+        ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(resource)
+    }
 
     static String format(String content) {
         FhirContext ctx = ToolkitFhirContext.get()

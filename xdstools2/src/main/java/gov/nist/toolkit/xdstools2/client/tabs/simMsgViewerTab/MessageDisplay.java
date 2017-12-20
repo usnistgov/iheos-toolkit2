@@ -1,5 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab;
 
+import com.google.gwt.event.dom.client.MouseMoveEvent;
+import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.session.shared.Message;
 import gov.nist.toolkit.session.shared.SubMessage;
@@ -42,13 +44,6 @@ public class MessageDisplay implements IsWidget {
          **************************************/
         for (SubMessage subMessage : message.getSubMessages()) {
             displaySubMessage(fullMessage, subMessage);
-//            TreeItem item = new TreeItem();
-//            fullMessage.addItem(item);
-//
-//            Anchor a = new Anchor(subMessage.getName());
-//            HTML content = AbstractView.htmlize(subMessage.getValue());
-//            item.setWidget(a);
-//            a.addClickHandler(new MessagePartDisplay(contentPanel, content));
         }
 
         root.setState(true);
@@ -61,6 +56,15 @@ public class MessageDisplay implements IsWidget {
         parent.addItem(item);
 
         Anchor a = new Anchor(subMessage.getName());
+        if (subMessage.getNameHover() != null) {
+            final String mouseOverText = subMessage.getNameHover();
+            a.addMouseMoveHandler(new MouseMoveHandler() {
+                @Override
+                public void onMouseMove(MouseMoveEvent mouseMoveEvent) {
+
+                }
+            });
+        }
         HTML content = AbstractView.htmlize(subMessage.getValue());
         item.setWidget(a);
         a.addClickHandler(new MessagePartDisplay(contentPanel, content));
@@ -84,19 +88,6 @@ public class MessageDisplay implements IsWidget {
         mdv.newMenu().add(getMenuPanel());
         mdv.getContentPanel().add(getContentPanel());
         return mdv.asWidget();
-
-
-//        HorizontalFlowPanel panel = new HorizontalFlowPanel();
-//        FlowPanel menu = getMenuPanel();
-//        FlowPanel content = getContentPanel();
-//        menu.setWidth("30%");
-//        ScrollPanel scrollPanel0 = new ScrollPanel();
-//        scrollPanel0.add(menu);
-//        panel.add(scrollPanel0);
-//        ScrollPanel scrollPanel1 = new ScrollPanel();
-//        scrollPanel1.add(content);
-//        panel.add(scrollPanel1);
-//        return panel;
     }
 
     @Override
@@ -106,9 +97,4 @@ public class MessageDisplay implements IsWidget {
         panel.add(contentPanel);
         return panel;
     }
-
-//    @Override
-//    public Widget asWidget() {
-//        return panel;
-//    }
 }
