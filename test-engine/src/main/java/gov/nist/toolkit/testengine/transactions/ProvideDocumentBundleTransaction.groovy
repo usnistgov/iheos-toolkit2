@@ -1,7 +1,7 @@
 package gov.nist.toolkit.testengine.transactions
 
-import gov.nist.toolkit.fhir.utility.FhirClient
-import gov.nist.toolkit.fhir.utility.FhirId
+import gov.nist.toolkit.fhir.server.utility.FhirClient
+import gov.nist.toolkit.fhir.server.utility.FhirId
 import gov.nist.toolkit.testengine.engine.StepContext
 import gov.nist.toolkit.testengine.fhir.FhirSupport
 import org.apache.axiom.om.OMElement

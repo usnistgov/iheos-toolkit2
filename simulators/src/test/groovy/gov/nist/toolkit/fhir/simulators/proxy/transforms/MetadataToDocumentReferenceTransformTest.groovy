@@ -2,7 +2,7 @@ package gov.nist.toolkit.fhir.simulators.proxy.transforms
 
 import gov.nist.toolkit.fhir.context.ToolkitFhirContext
 import gov.nist.toolkit.fhir.simulators.mhd.MetadataToDocumentReferenceTranslator
-import gov.nist.toolkit.fhir.utility.IFhirSearch
+import gov.nist.toolkit.fhir.server.utility.IFhirSearch
 import gov.nist.toolkit.registrymetadata.Metadata
 import gov.nist.toolkit.registrymetadata.MetadataParser
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry

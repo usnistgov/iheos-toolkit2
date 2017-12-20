@@ -10,7 +10,7 @@ import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest;
 import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
 import gov.nist.toolkit.services.client.RawResponse;
-import gov.nist.toolkit.services.shared.Message;
+import gov.nist.toolkit.session.shared.Message;
 import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
@@ -271,4 +271,10 @@ public interface ToolkitServiceAsync {
     void buildSrcTestOrchestration(BuildSrcTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 
     void buildFhirSupportOrchestration(FhirSupportOrchestrationRequest var1, AsyncCallback<RawResponse> callback);
+
+    void fhirSearch(FhirSearchRequest var1, AsyncCallback<List<Result>> callback);
+
+    void fhirRead(FhirReadRequest request, AsyncCallback<List<Result>> async);
+
+    void getFhirResult(GetRawLogsRequest request, AsyncCallback<Message> async);
 }

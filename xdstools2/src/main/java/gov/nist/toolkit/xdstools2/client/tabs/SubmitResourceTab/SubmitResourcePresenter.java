@@ -36,6 +36,11 @@ public class SubmitResourcePresenter extends AbstractPresenter<SubmitResourceVie
     }
 
     @Override
+    public void reveal() {
+        loadSystems();
+    }
+
+    @Override
     public void init() {
 
         new GetAllDatasetsCommand() {
@@ -45,23 +50,41 @@ public class SubmitResourcePresenter extends AbstractPresenter<SubmitResourceVie
             }
         }.run(getCommandContext());
 
+        loadSystems();
+//        new GetTransactionOfferingsCommand() {
+//            @Override
+//            public void onComplete(TransactionOfferings to) {
+//                List<TransactionType> transactionTypes = TransactionType.asList();
+////                transactionTypes.add(TransactionType.FHIR);
+//
+//                List<ASite> sites = new SiteFilter(to)
+//                  //      .transactionTypesOnly(transactionTypes, false, true)
+//                        .fhirOnly(transactionTypes)
+//                        .sorted();
+//
+//                getView().setSiteNames(sites);
+//            }
+//        }.run(ClientUtils.INSTANCE.getCommandContext());
+
+        getView().lateBindUI();
+    }
+
+    private void loadSystems() {
         new GetTransactionOfferingsCommand() {
             @Override
             public void onComplete(TransactionOfferings to) {
                 List<TransactionType> transactionTypes = TransactionType.asList();
-//                transactionTypes.add(TransactionType.FHIR);
 
                 List<ASite> sites = new SiteFilter(to)
-                  //      .transactionTypesOnly(transactionTypes, false, true)
                         .fhirOnly(transactionTypes)
                         .sorted();
 
                 getView().setSiteNames(sites);
+                GWT.log("Systems reloaded");
             }
         }.run(ClientUtils.INSTANCE.getCommandContext());
-
-        getView().lateBindUI();
     }
+
 
     void doSiteSelected(String siteName) {
         selectedSite = siteName;

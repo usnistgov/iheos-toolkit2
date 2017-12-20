@@ -16,7 +16,7 @@ import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest;
 import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
 import gov.nist.toolkit.services.client.RawResponse;
-import gov.nist.toolkit.services.shared.Message;
+import gov.nist.toolkit.session.shared.Message;
 import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
@@ -172,6 +172,7 @@ public interface ToolkitService extends RemoteService  {
 	List<Result> findDocuments2(FindDocuments2Request request) throws Exception;
 
 	TestLogs getRawLogs(GetRawLogsRequest request) throws Exception ;
+	Message getFhirResult(GetRawLogsRequest request) throws Exception;
 
 	String getAdminPassword(CommandContext context) throws Exception ;
 
@@ -313,4 +314,8 @@ public interface ToolkitService extends RemoteService  {
     RawResponse buildSrcTestOrchestration(BuildSrcTestOrchestrationRequest request) throws Exception;
 
     RawResponse buildFhirSupportOrchestration(FhirSupportOrchestrationRequest var1) throws Exception;
+
+    List<Result> fhirSearch(FhirSearchRequest var1) throws Exception;
+
+    List<Result> fhirRead(FhirReadRequest request) throws Exception;
 }

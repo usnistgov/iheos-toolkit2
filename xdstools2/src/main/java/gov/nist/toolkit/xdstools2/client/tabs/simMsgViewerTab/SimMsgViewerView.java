@@ -8,7 +8,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.http.client.HtmlMarkup;
-import gov.nist.toolkit.services.shared.Message;
+import gov.nist.toolkit.session.shared.Message;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractView;
 import gov.nist.toolkit.xdstools2.client.abstracts.MessagePanel;
@@ -123,7 +123,7 @@ public class SimMsgViewerView extends AbstractView<SimMsgViewerPresenter> {
         return null;
     }
 
-    List<Tab> tabs = new ArrayList<>();
+    List<MessageDisplayView> tabs = new ArrayList<>();
     private TabLayoutPanel detailsTabPanel;
 
     static private final String requestHeaderTabName = "[Request Header]";
@@ -142,67 +142,17 @@ public class SimMsgViewerView extends AbstractView<SimMsgViewerPresenter> {
     }
 
     private void buildTabs() {
-        for (String name : tabNames)
-            new Tab(name);
+        for (String name : tabNames) {
+            MessageDisplayView mdv = new MessageDisplayView(name);
+            detailsTabPanel.add(mdv.asWidget());
+            tabMap.put(name, mdv);
+        }
         detailsTabPanel.selectTab(tabNames.indexOf(requestBodyTabName));
     }
 
-    private Map<String, Tab> tabMap = new HashMap<>();
+    private Map<String, MessageDisplayView> tabMap = new HashMap<>();
 
-    class Tab {
-        String title;
-        HorizontalFlowPanel outerPanel = new HorizontalFlowPanel();
-        ScrollPanel scrollPanel = new ScrollPanel();
-        FlowPanel menuPanel = new FlowPanel();
-        ScrollPanel menuScrollPanel = new ScrollPanel();
-        FlowPanel contentPanel = new FlowPanel();
-
-        Tab(String title) {
-            this.title = title;
-            outerPanel.add(menuScrollPanel);
-            menuScrollPanel.add(menuPanel);
-            outerPanel.add(scrollPanel);
-            scrollPanel.add(contentPanel);
-            detailsTabPanel.add(outerPanel, title);
-
-            menuScrollPanel.setWidth("27%");
-            menuScrollPanel.setHeight("100%");
-            menuPanel.setWidth("100%");
-            menuPanel.setHeight("100%");
-            outerPanel.setWidth("100%");
-            outerPanel.setHeight("100%");
-            scrollPanel.setWidth("70%");
-            scrollPanel.setHeight("100%");
-            contentPanel.setWidth("100%");
-            contentPanel.setHeight("100%");
-
-            menuPanel.addStyleName("with-border");
-            menuPanel.addStyleName("no-margin");
-
-            tabMap.put(title, this);
-        }
-
-        Tab clear() {
-            contentPanel.clear();
-            return this;
-        }
-
-        FlowPanel newContent() {
-            contentPanel.clear();
-            return contentPanel;
-        }
-
-        FlowPanel newMenu() {
-            menuPanel.clear();
-            return menuPanel;
-        }
-
-        FlowPanel getContentPanel() {
-            return contentPanel;
-        }
-    }
-
-    private Tab getTab(String title) {
+    private MessageDisplayView getTab(String title) {
         return tabMap.get(title);
     }
 
@@ -308,7 +258,7 @@ public class SimMsgViewerView extends AbstractView<SimMsgViewerPresenter> {
     }
 
     void clearAllTabs() {
-        for (Tab tab : tabMap.values()) {
+        for (MessageDisplayView tab : tabMap.values()) {
             tab.clear();
         }
     }
@@ -363,14 +313,13 @@ public class SimMsgViewerView extends AbstractView<SimMsgViewerPresenter> {
     }
 
     private void setMessageDetail(String tabName, Message message) {
-        Tab tab = getTab(tabName);
-        tab.menuPanel.clear();
-//        if (message.hasSubMessages()){
-            MessageDisplay messageDisplay = new MessageDisplay(message);
+        MessageDisplayView tab = getTab(tabName);
+//        tab.menuPanel.clear();
+        MessageDisplay messageDisplay = new MessageDisplay(message);
 
-            tab.menuPanel.add(messageDisplay.getMenuPanel());
-            tab.getContentPanel().add(messageDisplay.getContentPanel());
-//        }
+        //tab.menuPanel.add(messageDisplay.getMenuPanel());
+        tab.newMenu().add(messageDisplay.getMenuPanel());
+        tab.getContentPanel().add(messageDisplay.getContentPanel());
     }
 
     void setLogDetail(String details) {

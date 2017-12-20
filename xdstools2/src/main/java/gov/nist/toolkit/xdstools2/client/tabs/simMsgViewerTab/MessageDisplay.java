@@ -1,8 +1,10 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab;
 
+import com.google.gwt.event.dom.client.MouseMoveEvent;
+import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.user.client.ui.*;
-import gov.nist.toolkit.services.shared.Message;
-import gov.nist.toolkit.services.shared.SubMessage;
+import gov.nist.toolkit.session.shared.Message;
+import gov.nist.toolkit.session.shared.SubMessage;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractView;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 
@@ -14,7 +16,7 @@ public class MessageDisplay implements IsWidget {
     private FlowPanel contentPanel = new FlowPanel();
     private Message message;
 
-    MessageDisplay(Message message) {
+    public MessageDisplay(Message message) {
         this.message = message;
         init();
     }
@@ -42,13 +44,6 @@ public class MessageDisplay implements IsWidget {
          **************************************/
         for (SubMessage subMessage : message.getSubMessages()) {
             displaySubMessage(fullMessage, subMessage);
-//            TreeItem item = new TreeItem();
-//            fullMessage.addItem(item);
-//
-//            Anchor a = new Anchor(subMessage.getName());
-//            HTML content = AbstractView.htmlize(subMessage.getValue());
-//            item.setWidget(a);
-//            a.addClickHandler(new MessagePartDisplay(contentPanel, content));
         }
 
         root.setState(true);
@@ -61,6 +56,15 @@ public class MessageDisplay implements IsWidget {
         parent.addItem(item);
 
         Anchor a = new Anchor(subMessage.getName());
+        if (subMessage.getNameHover() != null) {
+            final String mouseOverText = subMessage.getNameHover();
+            a.addMouseMoveHandler(new MouseMoveHandler() {
+                @Override
+                public void onMouseMove(MouseMoveEvent mouseMoveEvent) {
+
+                }
+            });
+        }
         HTML content = AbstractView.htmlize(subMessage.getValue());
         item.setWidget(a);
         a.addClickHandler(new MessagePartDisplay(contentPanel, content));
@@ -79,6 +83,13 @@ public class MessageDisplay implements IsWidget {
         return contentPanel;
     }
 
+    public Widget asSinglePanel() {
+        MessageDisplayView mdv = new MessageDisplayView("");
+        mdv.newMenu().add(getMenuPanel());
+        mdv.getContentPanel().add(getContentPanel());
+        return mdv.asWidget();
+    }
+
     @Override
     public Widget asWidget() {
         HorizontalFlowPanel panel = new HorizontalFlowPanel();
@@ -86,9 +97,4 @@ public class MessageDisplay implements IsWidget {
         panel.add(contentPanel);
         return panel;
     }
-
-//    @Override
-//    public Widget asWidget() {
-//        return panel;
-//    }
 }

@@ -2,7 +2,7 @@ package gov.nist.toolkit.testengine.fhir
 
 import ca.uhn.fhir.context.FhirContext
 import gov.nist.toolkit.fhir.context.ToolkitFhirContext
-import gov.nist.toolkit.fhir.utility.WrapResourceInHttpResponse
+import gov.nist.toolkit.fhir.server.utility.WrapResourceInHttpResponse
 import gov.nist.toolkit.utilities.io.Io
 import gov.nist.toolkit.xdsexception.ExceptionUtil
 import org.apache.commons.httpclient.HttpStatus
@@ -23,6 +23,10 @@ class FhirSupport {
         }
     }
 
+    static String format(IBaseResource resource)  {
+        FhirContext ctx = ToolkitFhirContext.get()
+        ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(resource)
+    }
 
     static String format(String content) {
         FhirContext ctx = ToolkitFhirContext.get()

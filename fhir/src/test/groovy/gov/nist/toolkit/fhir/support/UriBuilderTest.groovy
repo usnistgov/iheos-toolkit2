@@ -1,6 +1,6 @@
 package gov.nist.toolkit.fhir.support
 
-import gov.nist.toolkit.fhir.utility.UriBuilder
+import gov.nist.toolkit.fhir.server.utility.UriBuilder
 import spock.lang.Specification
 
 class UriBuilderTest extends Specification {

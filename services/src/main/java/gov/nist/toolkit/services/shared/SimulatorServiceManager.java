@@ -15,8 +15,10 @@ import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
+import gov.nist.toolkit.session.server.FhirMessageBuilder;
 import gov.nist.toolkit.services.server.SimulatorApi;
 import gov.nist.toolkit.session.server.Session;
+import gov.nist.toolkit.session.shared.Message;
 import gov.nist.toolkit.simcommon.client.*;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simcommon.server.GenericSimulatorFactory;
@@ -176,7 +178,7 @@ public class SimulatorServiceManager extends CommonService {
 	}
 
 	public Message getTransactionRequest(SimId simid, String actor,
-			String trans, String event) {
+										 String trans, String event) {
 		logger.debug(session.id() + ": " + "getTransactionRequest - " + simid + " - " + actor + " - " + trans + " - " + event);
 		try {
 			SimDb db = new SimDb(simid, actor, trans, true);
@@ -193,7 +195,7 @@ public class SimulatorServiceManager extends CommonService {
 			String body = "";
 			try {
 				body = new String(Io.bytesFromFile(bodyFile));
-				body = MessageBuilder.formatMessage(body);
+				body = FhirMessageBuilder.formatMessage(body);
 			} catch (IOException e) {
 				;
 			}
@@ -216,7 +218,7 @@ public class SimulatorServiceManager extends CommonService {
 	private Message subParseMessage(Message message) {
 		try {
 			IBaseResource resource = ResourceParser.parse(message.getParts().get(1));
-			Message message2 = new MessageBuilder().build(resource);
+			Message message2 = new FhirMessageBuilder().build(resource);
 			message2.getParts().set(0, message.getParts().get(0));
 			return message2;
 		} catch (Exception e) {
@@ -246,7 +248,7 @@ public class SimulatorServiceManager extends CommonService {
 			String body = "";
 			try {
 				body = new String(Io.bytesFromFile(bodyFile));
-				body = MessageBuilder.formatMessage(body);
+				body = FhirMessageBuilder.formatMessage(body);
 			} catch (Exception e) {
 				;
 			}

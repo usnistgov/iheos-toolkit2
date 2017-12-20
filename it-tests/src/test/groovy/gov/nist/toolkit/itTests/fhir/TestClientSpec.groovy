@@ -71,6 +71,7 @@ class TestClientSpec extends FhirSpecification {
         when:
         def sections = ['search']
         def params = [ :]
+//        params['ResourceType'] = 'DocumentReference'
         List<Result> results = api.runTest(testSession, siteName, testInstance, sections, params, true)
 
         then:

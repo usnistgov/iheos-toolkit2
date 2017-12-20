@@ -100,7 +100,7 @@ public class SimMsgViewerActivity extends AbstractToolkitActivity implements IsW
         mvp.init();
 
         presenter.setActivityDisplayer(displayer);  // so presenter can update tab title
-        displayer.display(getContainer(), presenter.getTitle(), this, acceptsOneWidget, eventBus);
+        displayer.display(getContainer(), presenter.getTitle(), this, presenter, acceptsOneWidget, eventBus);
     }
 
     private GenericMVP<SimIdsModel, SimMsgViewerView, SimMsgViewerPresenter> buildMVP() {

@@ -1,6 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.tabs.getAllTab;
 
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.results.client.CodesConfiguration;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
@@ -17,7 +18,7 @@ import java.util.Map;
  * since that is handled elsewhere.
  * Use codeFilterBank.addFilter(paramGrid, prow, 1, CodesConfiguration.***Code); to addTest XDS codes as widgets
  */
-public class GetAllParams {
+public class GetAllParams implements IsWidget{
     // container for the composite widget being built
     FlexTable paramGrid = new FlexTable();
     int prow = 0;

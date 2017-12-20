@@ -9,7 +9,10 @@ abstract public class SystemSelector extends ButtonListSelector implements IsWid
 
     public SystemSelector(String title) {
         super(title);
+    }
 
+    public SystemSelector(String title, String style) {
+        super(title, style);
     }
 
 

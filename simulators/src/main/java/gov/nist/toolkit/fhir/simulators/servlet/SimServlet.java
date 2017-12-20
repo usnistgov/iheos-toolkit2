@@ -67,7 +67,6 @@ public class SimServlet  extends HttpServlet {
 	boolean isFhir;
 	private RequestListenerThread proxyThread = null;
 
-
 	@Override
 	public void init(ServletConfig sConfig) throws ServletException {
 		super.init(sConfig);
@@ -80,12 +79,12 @@ public class SimServlet  extends HttpServlet {
 
 		Installation.instance().setServletContextName(getServletContext().getContextPath());
 
-
 		Installation.instance().setServletContextName(getServletContext().getContextPath());
-
 
 		patientIdentityFeedServlet = new PatientIdentityFeedServlet();
 		patientIdentityFeedServlet.init(config);
+
+
 
 		onServiceStart();
 

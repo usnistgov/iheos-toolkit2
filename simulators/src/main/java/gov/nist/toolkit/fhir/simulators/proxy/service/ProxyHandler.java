@@ -2,6 +2,7 @@ package gov.nist.toolkit.fhir.simulators.proxy.service;
 
 import gov.nist.toolkit.fhir.simulators.proxy.util.ProxyLogger;
 import gov.nist.toolkit.fhir.simulators.proxy.util.ReturnableErrorException;
+import gov.nist.toolkit.fhir.server.utility.WrapResourceInHttpResponse;
 import gov.nist.toolkit.fhir.simulators.proxy.util.SimProxyBase;
 import gov.nist.toolkit.fhir.utility.WrapResourceInHttpResponse;
 import gov.nist.toolkit.simcommon.client.BadSimIdException;
@@ -65,7 +66,7 @@ class ProxyHandler implements HttpRequestHandler {
             return;
         }
         catch (final Throwable e) {
-            response.setStatusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+            response.setStatusCode(HttpStatus.SC_NOT_FOUND);
             response.setReasonPhrase(e.getMessage());
             logger.error(ExceptionUtil.exception_details(e));
             return;

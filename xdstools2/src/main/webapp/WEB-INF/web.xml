@@ -45,7 +45,7 @@
 
     <filter>
         <filter-name>fhir-request-log</filter-name>
-        <filter-class>gov.nist.toolkit.fhir.servlet.FhirServletFilter</filter-class>
+        <filter-class>gov.nist.toolkit.fhir.server.servlet.FhirServletFilter</filter-class>
     </filter>
 
     <!--  The validate is necessary so the simulator response headers can be captured for the message log -->
@@ -130,6 +130,12 @@
 	</servlet>
 
     <servlet>
+        <servlet-name>FHIR-Server-init</servlet-name>
+        <servlet-class>gov.nist.toolkit.toolkitServices.httpApi.ToolkitServicesStartup</servlet-class>
+        <load-on-startup>10</load-on-startup>
+    </servlet>
+
+    <servlet>
         <servlet-name>httpSimulatorServlet</servlet-name>
         <servlet-class>gov.nist.toolkit.fhir.simulators.servlet.HttpSimServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
@@ -160,6 +166,7 @@
         <servlet-name>RestDisplay</servlet-name>
         <servlet-class>gov.nist.toolkit.restTools.RestMessageDisplayServlet</servlet-class>
     </servlet>
+
 
     <!-- ============== Jersey import for REST ============= -->
     <servlet>
@@ -192,7 +199,7 @@
 
     <servlet>
         <servlet-name>fhirServlet</servlet-name>
-        <servlet-class>gov.nist.toolkit.fhir.servlet.RestfulServlet</servlet-class>
+        <servlet-class>gov.nist.toolkit.fhir.server.servlet.RestfulServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
 
@@ -272,6 +279,11 @@
     </servlet-mapping>
 
     <servlet-mapping>
+        <servlet-name>FHIR-Server-init</servlet-name>
+        <url-pattern>/init</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
         <servlet-name>Reconfigure Simulators</servlet-name>
         <url-pattern>/mapping2</url-pattern>
     </servlet-mapping>
@@ -286,7 +298,9 @@
         <url-pattern>/xdstools2/rest/*</url-pattern>
     </servlet-mapping>
 
-    <!--
+
+
+   <!--
 		session times out in 15 minutes (default is 30 minutes)
 		<session-config> <session-timeout>15</session-timeout>
 		</session-config>

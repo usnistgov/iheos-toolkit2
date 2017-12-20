@@ -1,6 +1,7 @@
 package gov.nist.toolkit.testengine.transactions
 
 import ca.uhn.fhir.context.FhirContext
+import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.fhir.context.ToolkitFhirContext
 import gov.nist.toolkit.testengine.engine.StepContext
 import gov.nist.toolkit.xdsexception.client.MetadataException
@@ -15,6 +16,10 @@ abstract class BasicFhirTransaction extends BasicTransaction {
     String urlExtension = ''
     String queryParams = ''
     FhirContext fhirCtx = ToolkitFhirContext.get()    //FhirContext.forDstu3()
+
+    String getBaseUrl() {
+        testConfig.site.getEndpoint(TransactionType.FHIR, false, false)
+    }
 
     abstract void doRun(IBaseResource resource, String urlExtension)
 

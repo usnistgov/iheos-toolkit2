@@ -1,6 +1,6 @@
 package gov.nist.toolkit.fhir.simulators.mhd.errors
 
-import gov.nist.toolkit.fhir.resourceMgr.ResourceMgr
+import gov.nist.toolkit.fhir.server.resourceMgr.ResourceMgr
 import gov.nist.toolkit.fhir.simulators.mhd.ErrorLogger
 
 /**

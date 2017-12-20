@@ -4,7 +4,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.HTML;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.services.shared.Message;
+import gov.nist.toolkit.session.shared.Message;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractPresenter;

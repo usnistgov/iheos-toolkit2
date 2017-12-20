@@ -9,7 +9,7 @@ import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.services.shared.Message;
+import gov.nist.toolkit.session.shared.Message;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.Panel1;

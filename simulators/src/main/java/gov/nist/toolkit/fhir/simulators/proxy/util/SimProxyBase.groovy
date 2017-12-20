@@ -9,7 +9,7 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.fhir.simulators.mhd.CodeTranslator
 import gov.nist.toolkit.fhir.simulators.proxy.exceptions.SimProxyTransformException
-import gov.nist.toolkit.fhir.utility.UriBuilder
+import gov.nist.toolkit.fhir.server.utility.UriBuilder
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.simcommon.client.BadSimIdException
 import gov.nist.toolkit.simcommon.client.SimId

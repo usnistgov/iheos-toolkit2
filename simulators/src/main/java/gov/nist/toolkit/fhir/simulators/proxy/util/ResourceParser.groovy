@@ -1,7 +1,7 @@
 package gov.nist.toolkit.fhir.simulators.proxy.util
 
 import ca.uhn.fhir.context.FhirContext
-import gov.nist.toolkit.fhir.resourceMgr.ResourceCache
+import gov.nist.toolkit.fhir.server.resourceMgr.ResourceCache
 import org.hl7.fhir.instance.model.api.IBaseResource
 
 /**

@@ -115,4 +115,7 @@ public abstract class AbstractPresenter<V extends AbstractView<?>> {
     }
 
 
+    // This is meant to be overridden by sub-classes.  Is called when tab is revealed (selected).
+    public void reveal() {}
+
 }

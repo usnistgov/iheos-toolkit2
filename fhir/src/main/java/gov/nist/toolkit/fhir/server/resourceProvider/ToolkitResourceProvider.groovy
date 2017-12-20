@@ -10,8 +10,8 @@ import ca.uhn.fhir.rest.server.IRestfulServerDefaults
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException
 import gov.nist.toolkit.fhir.context.ToolkitFhirContext
 import gov.nist.toolkit.fhir.search.SearchByTypeAndId
-import gov.nist.toolkit.fhir.servlet.Attributes
-import gov.nist.toolkit.fhir.servlet.HttpRequestParser
+import gov.nist.toolkit.fhir.server.servlet.Attributes
+import gov.nist.toolkit.fhir.server.servlet.HttpRequestParser
 import gov.nist.toolkit.fhir.support.ResourceIndex
 import gov.nist.toolkit.fhir.support.SimContext
 import gov.nist.toolkit.fhir.support.SimIndexManager

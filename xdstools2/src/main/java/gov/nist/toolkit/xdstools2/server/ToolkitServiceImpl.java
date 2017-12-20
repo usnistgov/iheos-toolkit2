@@ -27,7 +27,7 @@ import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.server.RawResponseBuilder;
 import gov.nist.toolkit.services.server.orchestration.OrchestrationManager;
-import gov.nist.toolkit.services.shared.Message;
+import gov.nist.toolkit.session.shared.Message;
 import gov.nist.toolkit.services.shared.SimulatorServiceManager;
 import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
@@ -694,6 +694,13 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         installCommandContext(request);
         return session().xdsTestServiceManager().getRawLogs(request.getLogId());
     }
+
+    @Override
+    public Message getFhirResult(GetRawLogsRequest request)  throws Exception {
+        installCommandContext(request);
+        return session().xdsTestServiceManager().getFhirResult(request.getLogId());
+    }
+
     @Override
     public List<String> getTestdataSetListing(GetTestdataSetListingRequest request)  throws Exception {
         installCommandContext(request);
@@ -1628,6 +1635,22 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         installCommandContext(request);
         logger.debug(sessionID + ": fhirTransaction()");
         List<Result> results = new FhirServiceManager(session()).transaction(request.getSite(), request.getDatasetElement());
+        return results;
+    }
+
+    @Override
+    public List<Result> fhirSearch(FhirSearchRequest request) throws Exception {
+        installCommandContext(request);
+        logger.debug(sessionID + ": fhirSearch()");
+        List<Result> results = new FhirServiceManager(session()).search(request.getSite(), request.getResourceTypeName(), request.getCodesSpec());
+        return results;
+    }
+
+    @Override
+    public List<Result> fhirRead(FhirReadRequest request) throws Exception {
+        installCommandContext(request);
+        logger.debug(sessionID + ": fhirRead()");
+        List<Result> results = new FhirServiceManager(session()).read(request.getSite(), request.getReference());
         return results;
     }
 
