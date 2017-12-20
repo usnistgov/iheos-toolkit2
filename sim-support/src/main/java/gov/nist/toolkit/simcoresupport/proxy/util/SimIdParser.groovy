@@ -1,4 +1,4 @@
-package gov.nist.toolkit.fhir.simulators.proxy.util
+package gov.nist.toolkit.simcoresupport.proxy.util
 
 
 import gov.nist.toolkit.simcommon.client.SimId
