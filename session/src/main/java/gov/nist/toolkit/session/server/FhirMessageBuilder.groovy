@@ -19,6 +19,25 @@ class FhirMessageBuilder {
     Bundle bundle  = null;
     Resource resource = null;
 
+    Message build(IBaseResource resource) {
+        FhirContext ctx = ToolkitFhirContext.get()
+        String msgStr = ctx.newJsonParser().encodeResourceToString(resource)
+        Message message = new Message('', formatMessage(msgStr))
+        if (resource instanceof Bundle) {
+            bundle = (Bundle) resource;
+            for (Bundle.BundleEntryComponent c : bundle.getEntry()) {
+                String fullUrl = c.getFullUrl();
+                Resource theResource = c.getResource();
+                String str = ctx.newJsonParser().encodeResourceToString(theResource);
+                SubMessage subMessage = new SubMessage(theResource.fhirType() + ": " + fullUrl, formatMessage(str));
+                message.addSubMessage(subMessage);
+
+                subMessage.addSubMessages(extractReferences(theResource));
+            }
+        }
+        return message
+    }
+
     private IBaseResource findInBundle(String ref) {
         if (!ref)
             return null;
@@ -48,24 +67,6 @@ class FhirMessageBuilder {
         return null
     }
 
-    Message build(IBaseResource resource) {
-        FhirContext ctx = ToolkitFhirContext.get()
-        String msgStr = ctx.newJsonParser().encodeResourceToString(resource)
-        Message message = new Message('', formatMessage(msgStr))
-        if (resource instanceof Bundle) {
-            bundle = (Bundle) resource;
-            for (Bundle.BundleEntryComponent c : bundle.getEntry()) {
-                String fullUrl = c.getFullUrl();
-                Resource theResource = c.getResource();
-                String str = ctx.newJsonParser().encodeResourceToString(theResource);
-                SubMessage subMessage = new SubMessage(theResource.fhirType() + ": " + fullUrl, formatMessage(str));
-                message.addSubMessage(subMessage);
-
-                subMessage.addSubMessages(extractReferences(theResource));
-            }
-        }
-        return message
-    }
 
     private List<SubMessage> extractReferences(Resource resource) throws FHIRException {
         this.resource = resource
