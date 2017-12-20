@@ -1,4 +1,4 @@
-package gov.nist.toolkit.services.shared;
+package gov.nist.toolkit.session.shared;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 

@@ -1,6 +1,6 @@
-package gov.nist.toolkit.services.server;
+package gov.nist.toolkit.session.server;
 
-import gov.nist.toolkit.services.shared.Message;
+import gov.nist.toolkit.session.shared.Message;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 
 import java.util.StringTokenizer;

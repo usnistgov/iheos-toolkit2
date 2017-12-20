@@ -9,11 +9,12 @@ import gov.nist.toolkit.datasets.shared.DatasetElement;
 import gov.nist.toolkit.results.client.AssertionResult;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.results.client.TestLogs;
+import gov.nist.toolkit.session.shared.Message;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractPresenter;
 import gov.nist.toolkit.xdstools2.client.command.command.*;
+import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.MessageDisplay;
 import gov.nist.toolkit.xdstools2.client.util.ASite;
 import gov.nist.toolkit.xdstools2.client.util.AnnotatedItem;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
@@ -38,7 +39,7 @@ public class FhirSearchPresenter extends AbstractPresenter<FhirSearchView> {
     private DatasetElement selectedDatasetElement = null;
 
     private String resourceReference = null;
-    private String patientId = null;
+    private String patient = null;
     private String resourceTypeName = null;
 
     public FhirSearchPresenter() {
@@ -114,8 +115,12 @@ public class FhirSearchPresenter extends AbstractPresenter<FhirSearchView> {
         }.run(new GetDatasetElementContentRequest(ClientUtils.INSTANCE.getCommandContext(), selectedDatasetElement));
     }
 
+    /**
+     *
+     * @param text system|value or id^^^&oid&ISO or Patient Resource URL
+     */
     public void doSetPatientId(String text) {
-        this.patientId = text;
+        this.patient = text;
     }
 
     public void doSetResourceTypeName(String resourceTypeName) {
@@ -150,7 +155,7 @@ public class FhirSearchPresenter extends AbstractPresenter<FhirSearchView> {
         getView().clearLog();
 
         Map<String, List<String>> codesSpec = new HashMap<>();
-        codesSpec.put(patientIdLabel, asList(patientId));
+        codesSpec.put(patientIdLabel, asList(patient));
 //        codesSpec.put(resourceTypeNameLabel, asList(selectedResourceTypeName));
 
         new FhirSearchCommand() {
@@ -164,12 +169,22 @@ public class FhirSearchPresenter extends AbstractPresenter<FhirSearchView> {
         }.run(new FhirSearchRequest(getCommandContext(), new SiteSpec(selectedSite), selectedResourceTypeName, codesSpec));
     }
 
+//    private void loadTestLogs(TestInstance testInstance) {
+//		/*this.metadataInspectorTab.data.*/
+//        new GetRawLogsCommand(){
+//            @Override
+//            public void onComplete(TestLogs testLogs) {
+//                getView().setResourceDisplayPanel(testLogs.getTestLog(0).result);
+//            }
+//        }.run(new GetRawLogsRequest(ClientUtils.INSTANCE.getCommandContext(), testInstance));
+//    }
+
     private void loadTestLogs(TestInstance testInstance) {
 		/*this.metadataInspectorTab.data.*/
-        new GetRawLogsCommand(){
+        new GetFhirResultCommand(){
             @Override
-            public void onComplete(TestLogs testLogs) {
-                getView().setViewPanel(testLogs.getTestLog(0).result);
+            public void onComplete(Message message) {
+                getView().setContent(new MessageDisplay(message).asSinglePanel());
             }
         }.run(new GetRawLogsRequest(ClientUtils.INSTANCE.getCommandContext(), testInstance));
     }

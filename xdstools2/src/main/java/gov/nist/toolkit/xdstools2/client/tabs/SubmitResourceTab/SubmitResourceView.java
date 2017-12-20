@@ -138,7 +138,10 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
 
         inspectorPanel.setWidth("100%");
 
-        return tabTopPanel;
+        ScrollPanel scrollPanel = new ScrollPanel();
+        scrollPanel.add(tabTopPanel);
+
+        return scrollPanel;
     }
 
     @Override

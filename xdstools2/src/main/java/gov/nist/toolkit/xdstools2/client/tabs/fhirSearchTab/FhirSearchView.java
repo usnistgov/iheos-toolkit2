@@ -28,14 +28,15 @@ public class FhirSearchView extends AbstractView<FhirSearchPresenter> {
     private Button searchRunButton = new Button("Search");
     private FlowPanel thePanel = new FlowPanel();
     private FlowPanel logPanel = new FlowPanel();
-    private FlowPanel viewPanel = new FlowPanel();
+    private FlowPanel resourceDisplayOuterPanel = new FlowPanel();
+//    private FlowPanel resourceDisplayPanel = new FlowPanel();
     private FlowPanel contentPanel = new FlowPanel();
 
     // READ Stuff
-    TextBox refTextBox = new TextBox();
+    private TextBox refTextBox = new TextBox();
 
     // SEARCH Stuff
-    TextBox patientIdTextBox = new TextBox();
+    private TextBox patientTextBox = new TextBox();
 
     private SystemSelector systemSelector = new SystemSelector("To System") {
         @Override
@@ -101,21 +102,21 @@ public class FhirSearchView extends AbstractView<FhirSearchPresenter> {
         ScrollPanel logWrapperPanel = new ScrollPanel();
         logWrapperPanel.add(logPanel);
 
-        TabLayoutPanel bottomPanel = new TabLayoutPanel(1.5, Style.Unit.EM);
-        bottomPanel.setWidth("100%");
-//        bottomPanel.setWidth("800px");
-        bottomPanel.setHeight("400px");
-        thePanel.add(bottomPanel);
+        TabLayoutPanel bottomTabPanel = new TabLayoutPanel(1.5, Style.Unit.EM);
+        bottomTabPanel.setWidth("100%");
+//        bottomTabPanel.setWidth("800px");
+        bottomTabPanel.setHeight("400px");
+        thePanel.add(bottomTabPanel);
         logPanel.setWidth("100%");
         logPanel.setHeight("100%");
-        bottomPanel.add(logWrapperPanel, "[Log]");
+        bottomTabPanel.add(logWrapperPanel, "[Log]");
 
-        ScrollPanel viewScrollPanel = new ScrollPanel();
-        viewScrollPanel.add(viewPanel);
-        bottomPanel.add(viewScrollPanel, "[Resource]");
+        bottomTabPanel.add(resourceDisplayOuterPanel, "[Resource]");
 
+        ScrollPanel scrollPanel = new ScrollPanel();
+        scrollPanel.add(tabTopPanel);
 
-        return tabTopPanel;
+        return scrollPanel;
     }
 
     private String backgroundStyle = "my-table-noband";
@@ -139,9 +140,9 @@ public class FhirSearchView extends AbstractView<FhirSearchPresenter> {
         HorizontalFlowPanel referencePanel = new HorizontalFlowPanel();
         referencePanel.add(new Label("Patient ID:"));
 
-        patientIdTextBox.setVisibleLength(60);
-        referencePanel.add(patientIdTextBox);
-        referencePanel.add(new Label("(system|value or id^^^&oid&ISO)"));
+        patientTextBox.setVisibleLength(60);
+        referencePanel.add(patientTextBox);
+        referencePanel.add(new Label("(system|value or id^^^&oid&ISO or Patient Resource URL)"));
         innerPanel.add(referencePanel);
 
 
@@ -217,10 +218,10 @@ public class FhirSearchView extends AbstractView<FhirSearchPresenter> {
             }
         });
 
-        patientIdTextBox.addChangeHandler(new ChangeHandler() {
+        patientTextBox.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent changeEvent) {
-                getPresenter().doSetPatientId(patientIdTextBox.getText());
+                getPresenter().doSetPatientId(patientTextBox.getText());
             }
         });
 
@@ -255,18 +256,15 @@ public class FhirSearchView extends AbstractView<FhirSearchPresenter> {
     void clearLog() { logPanel.clear(); }
 
     void setContent(Widget content) {
-        viewPanel.clear();
-        viewPanel.add(content);
+        resourceDisplayOuterPanel.clear();
+        resourceDisplayOuterPanel.add(content);
     }
 
-    void clearContent() {
-        contentPanel.setVisible(false);
-    }
-
-    void setViewPanel(String text) {
-        HTML h = new HTML("<pre>" + text + "</pre>");
-        viewPanel.clear();
-        viewPanel.add(h);
+    void setContentWithScrollBar(Widget content) {
+        ScrollPanel scrollPanel = new ScrollPanel();
+        scrollPanel.add(content);
+        resourceDisplayOuterPanel.clear();
+        resourceDisplayOuterPanel.add(scrollPanel);
     }
 
     VerticalPanel getTabTopPanel() {

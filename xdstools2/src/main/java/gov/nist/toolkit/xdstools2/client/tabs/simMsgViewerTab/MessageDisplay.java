@@ -1,8 +1,8 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab;
 
 import com.google.gwt.user.client.ui.*;
-import gov.nist.toolkit.services.shared.Message;
-import gov.nist.toolkit.services.shared.SubMessage;
+import gov.nist.toolkit.session.shared.Message;
+import gov.nist.toolkit.session.shared.SubMessage;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractView;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 
@@ -14,7 +14,7 @@ public class MessageDisplay implements IsWidget {
     private FlowPanel contentPanel = new FlowPanel();
     private Message message;
 
-    MessageDisplay(Message message) {
+    public MessageDisplay(Message message) {
         this.message = message;
         init();
     }
@@ -77,6 +77,26 @@ public class MessageDisplay implements IsWidget {
 
     public FlowPanel getContentPanel() {
         return contentPanel;
+    }
+
+    public Widget asSinglePanel() {
+        MessageDisplayView mdv = new MessageDisplayView("");
+        mdv.newMenu().add(getMenuPanel());
+        mdv.getContentPanel().add(getContentPanel());
+        return mdv.asWidget();
+
+
+//        HorizontalFlowPanel panel = new HorizontalFlowPanel();
+//        FlowPanel menu = getMenuPanel();
+//        FlowPanel content = getContentPanel();
+//        menu.setWidth("30%");
+//        ScrollPanel scrollPanel0 = new ScrollPanel();
+//        scrollPanel0.add(menu);
+//        panel.add(scrollPanel0);
+//        ScrollPanel scrollPanel1 = new ScrollPanel();
+//        scrollPanel1.add(content);
+//        panel.add(scrollPanel1);
+//        return panel;
     }
 
     @Override

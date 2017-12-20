@@ -18,15 +18,18 @@ import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
 import gov.nist.toolkit.session.server.CodesConfigurationBuilder;
+import gov.nist.toolkit.session.server.FhirMessageBuilder;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.services.TestLogCache;
 import gov.nist.toolkit.session.server.testlog.TestOverviewBuilder;
+import gov.nist.toolkit.session.shared.Message;
 import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testengine.engine.ResultPersistence;
 import gov.nist.toolkit.testengine.engine.TestLogsBuilder;
 import gov.nist.toolkit.testengine.engine.Xdstest2;
+import gov.nist.toolkit.testengine.fhir.FhirSupport;
 import gov.nist.toolkit.testenginelogging.LogFileContentBuilder;
 import gov.nist.toolkit.testenginelogging.TestLogDetails;
 import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
@@ -48,9 +51,12 @@ import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
+import org.hl7.fhir.instance.model.api.IBaseResource;
+import org.xml.sax.SAXException;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -316,6 +322,16 @@ public class XdsTestServiceManager extends CommonService {
 			testLogs.assertionResult = new AssertionResult(details,false);
 			return testLogs;
 		}
+	}
+
+	public Message getFhirResult(TestInstance testInstance) throws ParserConfigurationException, SAXException, IOException {
+		TestLogs testLogs = getRawLogs(testInstance);
+		if (testLogs.size() == 0) {
+			return new Message();
+		}
+		TestLog testLog = testLogs.getTestLog(0);
+		IBaseResource resource = FhirSupport.parse(testLog.result);
+		return new FhirMessageBuilder().build(resource);
 	}
 
 	public Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception  {

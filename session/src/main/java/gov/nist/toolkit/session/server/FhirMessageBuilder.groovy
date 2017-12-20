@@ -1,7 +1,9 @@
-package gov.nist.toolkit.services.shared
+package gov.nist.toolkit.session.server
 
 import ca.uhn.fhir.context.FhirContext
 import gov.nist.toolkit.fhir.context.ToolkitFhirContext
+import gov.nist.toolkit.session.shared.Message
+import gov.nist.toolkit.session.shared.SubMessage
 import gov.nist.toolkit.utilities.message.MultipartFormatter
 import groovy.json.JsonOutput
 import org.hl7.fhir.dstu3.model.*
@@ -11,7 +13,7 @@ import org.xml.sax.SAXException
 
 import javax.xml.parsers.ParserConfigurationException
 
-class MessageBuilder {
+class FhirMessageBuilder {
 
     Message build(IBaseResource resource) {
         FhirContext ctx = ToolkitFhirContext.get()
