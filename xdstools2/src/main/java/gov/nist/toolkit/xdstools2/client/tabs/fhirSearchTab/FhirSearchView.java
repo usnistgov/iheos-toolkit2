@@ -270,4 +270,8 @@ public class FhirSearchView extends AbstractView<FhirSearchPresenter> {
     VerticalPanel getTabTopPanel() {
         return tabTopPanel;
     }
+
+    public SystemSelector getSystemSelector() {
+        return systemSelector;
+    }
 }

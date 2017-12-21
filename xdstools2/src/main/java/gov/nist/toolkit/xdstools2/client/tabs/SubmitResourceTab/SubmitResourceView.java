@@ -216,4 +216,8 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
     void clearContent() {
         contentPanel.setVisible(false);
     }
+
+    public SystemSelector getSystemSelector() {
+        return systemSelector;
+    }
 }

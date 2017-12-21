@@ -69,6 +69,7 @@ public class FhirSearchPresenter extends AbstractPresenter<FhirSearchView> {
 
                 getView().setSiteNames(sites);
                 GWT.log("Systems reloaded");
+                updateWithCurrentSelection();
             }
         }.run(ClientUtils.INSTANCE.getCommandContext());
     }
@@ -80,6 +81,7 @@ public class FhirSearchPresenter extends AbstractPresenter<FhirSearchView> {
 
         getView().setResourceTypeNames(resourceTypeNames);
     }
+
 
     @Override
     public void reveal() {
@@ -95,6 +97,13 @@ public class FhirSearchPresenter extends AbstractPresenter<FhirSearchView> {
         selectedSite = siteName;
         getView().setReadEnabled(isReadRunable());
         getView().setSearchEnabled(isSearchRunable());
+    }
+
+    void updateWithCurrentSelection() {
+        String currentSelection = getView().getSystemSelector().getCurrentSelection();
+        if (currentSelection!=null) {
+            getView().getSystemSelector().updateSiteSelectedView(currentSelection);
+        }
     }
 
     void doResourceTypeSelected(String name) {

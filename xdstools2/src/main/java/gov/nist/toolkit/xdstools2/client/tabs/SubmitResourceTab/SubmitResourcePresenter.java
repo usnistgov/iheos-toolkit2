@@ -81,6 +81,7 @@ public class SubmitResourcePresenter extends AbstractPresenter<SubmitResourceVie
 
                 getView().setSiteNames(sites);
                 GWT.log("Systems reloaded");
+                updateWithCurrentSelection();
             }
         }.run(ClientUtils.INSTANCE.getCommandContext());
     }
@@ -89,6 +90,13 @@ public class SubmitResourcePresenter extends AbstractPresenter<SubmitResourceVie
     void doSiteSelected(String siteName) {
         selectedSite = siteName;
         getView().setRunEnabled(isRunable());
+    }
+
+    void updateWithCurrentSelection() {
+        String currentSelection = getView().getSystemSelector().getCurrentSelection();
+        if (currentSelection!=null) {
+            getView().getSystemSelector().updateSiteSelectedView(currentSelection);
+        }
     }
 
     void doResourceSelected(DatasetElement datasetElement) {
