@@ -141,7 +141,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "gov.nist.toolkit.simcommon.server.factories.MhdRecipientFactory",
             "gov.nist.toolkit.fhir.simulators.proxy.sim.MhdRecipientSimulator",
 //            Arrays.asList(TransactionType.PROV_DOC_BUNDLE, TransactionType.FHIR),
-            Arrays.asList(TransactionType.PROV_DOC_BUNDLE, TransactionType.FHIR),
+            Arrays.asList(TransactionType.FHIR, TransactionType.PROV_DOC_BUNDLE),
             true,  // show in config - only partially configured - only used in IT tests
             null,  // actorsFileLabel
             null,   // httpSimulatorClassName
@@ -339,6 +339,7 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList(OptionType.REQUIRED)
     ),
 
+    // Is this comment obsolete after the implementing the boolean logic in Site#determineActorTypeByTransactionsInSite ?
     // Issue 78 (ODDS Issue 98)
     // TODO - actorType lookup problem
     // This at the end of the list on purpose.  From the UI actor types are selected by the transactions they support.
