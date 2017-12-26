@@ -165,7 +165,7 @@ public class FhirSearchPresenter extends AbstractPresenter<FhirSearchView> imple
             public void onComplete(List<Result> results) {
                 Result result = results.get(0);
                 ResultDisplay.display(result, getPresenter());
-                ResponseLoader.load(result.logId, "Results", getView());
+                ResponseLoader.load(result.logId, "", getView());
             }
         }.run(new FhirSearchRequest(getCommandContext(), new SiteSpec(selectedSite), selectedResourceTypeName, codesSpec));
     }

@@ -277,25 +277,17 @@ public class FhirSearchView extends AbstractView<FhirSearchPresenter> implements
         return sp;
     }
 
-//    private void addTabContent(Widget w, String title) {
-//        bottomPanel.addTab(w, title);
-//    }
-
     VerticalPanel getTabTopPanel() {
         return tabTopPanel;
     }
 
-
     @Override
     public void addContent(Widget w, String title) {
-        bottomPanel.addTab(w, title);
+        bottomPanel.addTab(inScrollPanel(w), title);
     }
 
     @Override
     public void clearLogContent() {
         bottomPanel.clearContent();
-
-//        while (bottomTabPanel.getWidgetCount() > baseTabCount)
-//            bottomTabPanel.remove(bottomTabPanel.getWidgetCount() - 1);
     }
 }

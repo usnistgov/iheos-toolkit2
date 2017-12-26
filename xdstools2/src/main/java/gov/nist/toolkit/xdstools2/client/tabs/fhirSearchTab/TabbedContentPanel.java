@@ -38,6 +38,7 @@ public class TabbedContentPanel implements IsWidget {
     }
 
     public void addTab(Widget w, String title) {
+
         tabPanel.add(inScrollPanel(w), title);
     }
 

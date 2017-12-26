@@ -115,30 +115,12 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> im
         buttonPanel.add(runButton);
         thePanel.add(buttonPanel);
 
-
-
-
         thePanel.add(new HTML("<br />"));
         bottomPanel = new TabbedContentPanel("Logs", "400px");
         thePanel.add(bottomPanel.asWidget());
 
         bottomPanel.addBaseTab(logPanel, "[Log]");
         bottomPanel.addBaseTab(selectionDisplayPanel, "[Selection]");
-
-
-//        HTML logTitle = new HTML("<b>Logs</b>");
-//        logTitle.addStyleName("tool-section-header");
-//        thePanel.add(logTitle);
-
-//        TabLayoutPanel bottomPanel = new TabLayoutPanel(1.5, Style.Unit.EM);
-//        bottomPanel.setWidth("100%");
-//        bottomPanel.setHeight("400px");
-//        thePanel.add(bottomPanel);
-
-//        bottomPanel.add(inScrollPanel(logPanel), "[Log]");
-//        bottomPanel.add(inScrollPanel(selectionDisplayPanel), "[Selection]");
-//        bottomPanel.add(inScrollPanel(requestDisplayPanel), "[Request]");
-//        bottomPanel.add(inScrollPanel(responseDisplayPanel), "[Response]");
 
         return inScrollPanel(tabTopPanel);
     }

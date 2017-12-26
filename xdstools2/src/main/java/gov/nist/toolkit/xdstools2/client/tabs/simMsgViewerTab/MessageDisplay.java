@@ -84,7 +84,7 @@ public class MessageDisplay implements IsWidget {
         if (message.isEmpty()) {
             return new Label("No content");
         }
-        MessageDisplayView mdv = new MessageDisplayView("");
+        MessageDisplayView mdv = new MessageDisplayView("x");
         mdv.newMenu().add(getMenuPanel());
         mdv.getContentPanel().add(getContentPanel());
         return mdv.asWidget();
