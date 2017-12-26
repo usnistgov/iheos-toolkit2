@@ -208,17 +208,17 @@ public class SimulatorServiceManager extends CommonService {
 			String uri = "";
 			if (uriFile.exists())
 				uri = Io.stringFromFile(uriFile);
-			return subParseMessage(new Message(uri + "\n" + header, body));
+			return subParseMessage(new Message("").add(uri + "\n" + header).add(body));
 		} catch (Throwable e) {
 			logger.error(ExceptionUtil.exception_details(e));
-			return new Message("Error: " + ExceptionUtil.exception_details(e));
+			return new Message("").add("Error: " + ExceptionUtil.exception_details(e));
 		}
 	}
 
 	private Message subParseMessage(Message message) {
 		try {
 			IBaseResource resource = ResourceParser.parse(message.getParts().get(1));
-			Message message2 = new FhirMessageBuilder().build(resource);
+			Message message2 = new FhirMessageBuilder().build("", resource);
 			message2.getParts().set(0, message.getParts().get(0));
 			return message2;
 		} catch (Exception e) {
@@ -257,10 +257,10 @@ public class SimulatorServiceManager extends CommonService {
 				header = Io.stringFromFile(headerFile);
 			else
 				header = "";
-			return subParseMessage(new Message(header, body));
+			return subParseMessage(new Message("").add(header).add(body));
 		} catch (Throwable e) {
 			logger.error(ExceptionUtil.exception_details(e));
-			return new Message("Error: " + ExceptionUtil.exception_details(e));
+			return new Message("").add("Error: " + ExceptionUtil.exception_details(e));
 		}
 	}
 

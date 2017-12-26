@@ -276,5 +276,5 @@ public interface ToolkitServiceAsync {
 
     void fhirRead(FhirReadRequest request, AsyncCallback<List<Result>> async);
 
-    void getFhirResult(GetRawLogsRequest request, AsyncCallback<Message> async);
+    void getFhirResult(GetRawLogsRequest request, AsyncCallback<List<Message>> async);
 }

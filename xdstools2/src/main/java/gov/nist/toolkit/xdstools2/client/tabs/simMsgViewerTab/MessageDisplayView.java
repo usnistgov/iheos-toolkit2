@@ -7,12 +7,12 @@ import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 
 public class MessageDisplayView implements IsWidget {
-    String title;
-    HorizontalFlowPanel outerPanel = new HorizontalFlowPanel();
-    ScrollPanel scrollPanel = new ScrollPanel();
-    FlowPanel menuPanel = new FlowPanel();
-    ScrollPanel menuScrollPanel = new ScrollPanel();
-    FlowPanel contentPanel = new FlowPanel();
+    private String title;
+    private HorizontalFlowPanel outerPanel = new HorizontalFlowPanel();
+    private ScrollPanel scrollPanel = new ScrollPanel();
+    private FlowPanel menuPanel = new FlowPanel();
+    private ScrollPanel menuScrollPanel = new ScrollPanel();
+    private FlowPanel contentPanel = new FlowPanel();
 
     public MessageDisplayView(String title) {
         this.title = title;
@@ -37,9 +37,8 @@ public class MessageDisplayView implements IsWidget {
 
     }
 
-    MessageDisplayView clear() {
+    void clear() {
         contentPanel.clear();
-        return this;
     }
 
     FlowPanel newContent() {
@@ -55,6 +54,8 @@ public class MessageDisplayView implements IsWidget {
     FlowPanel getContentPanel() {
         return contentPanel;
     }
+
+    String getTitle() { return title; }
 
     @Override
     public Widget asWidget() {

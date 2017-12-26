@@ -19,6 +19,7 @@ import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
 import gov.nist.toolkit.session.server.CodesConfigurationBuilder;
 import gov.nist.toolkit.session.server.FhirMessageBuilder;
+import gov.nist.toolkit.session.server.MessageBuilder;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.services.TestLogCache;
 import gov.nist.toolkit.session.server.testlog.TestOverviewBuilder;
@@ -49,10 +50,10 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
+import jdk.internal.org.xml.sax.SAXException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 import org.hl7.fhir.instance.model.api.IBaseResource;
-import org.xml.sax.SAXException;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
@@ -132,15 +133,15 @@ public class XdsTestServiceManager extends CommonService {
 //	}
 	public List<Result> runMesaTest(String environmentName,String mesaTestSessionName, SiteSpec siteSpec, TestInstance testInstance, List<String> sections,
 									Map<String, String> params, Map<String, Object> params2, boolean stopOnFirstFailure) throws Exception {
-        if (session.getMesaSessionName() == null) session.setMesaSessionName(mesaTestSessionName);
-        session.setCurrentEnvName(environmentName);
+		if (session.getMesaSessionName() == null) session.setMesaSessionName(mesaTestSessionName);
+		session.setCurrentEnvName(environmentName);
 		TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, mesaTestSessionName);
 		session.xt = new Xdstest2(Installation.instance().toolkitxFile(), searchPath, session);
 		return new TestRunner(this).run(session, mesaTestSessionName, siteSpec, testInstance, sections, params, params2, stopOnFirstFailure);
 	}
 
 	public TestOverviewDTO runTest(String environmentName, String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections,
-									Map<String, String> params, Map<String, Object> params2, boolean stopOnFirstFailure) throws Exception {
+								   Map<String, String> params, Map<String, Object> params2, boolean stopOnFirstFailure) throws Exception {
 		TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, mesaTestSession);
 		session.xt = new Xdstest2(Installation.instance().toolkitxFile(), searchPath, session);
 		new TestRunner(this).run(session, mesaTestSession, siteSpec, testInstance, sections, params, params2, stopOnFirstFailure);
@@ -324,23 +325,74 @@ public class XdsTestServiceManager extends CommonService {
 		}
 	}
 
-	public Message getFhirResult(TestInstance testInstance) throws ParserConfigurationException, SAXException, IOException {
+	/**
+	 * build structured display content.  Also returns non-FHIR content.  Each test step
+	 * returns a pair of Messages, one for the request and one for the response.  If there is no
+	 * request/response content for a step then an empty Message pair is returned.
+	 * @param testInstance
+	 * @return
+	 * @throws ParserConfigurationException
+	 * @throws SAXException
+	 * @throws IOException
+	 */
+	public List<Message> getFhirResult(TestInstance testInstance) throws ParserConfigurationException, SAXException, IOException {
 		TestLogs testLogs = getRawLogs(testInstance);
+		List<Message> result = new ArrayList<>();
+
 		if (testLogs.size() == 0) {
-			return new Message();
+			result.add(new Message("---"));
+			result.add(new Message("---"));
+			return result;
 		}
-		TestLog testLog = testLogs.getTestLog(0);
-		IBaseResource resource = FhirSupport.parse(testLog.result);
-		return new FhirMessageBuilder().build(resource);
+
+		for (int step=0; step<testLogs.size(); step++) {
+			TestLog testLog = testLogs.getTestLog(step);
+			// inputMetadata
+			String input = deformat(testLog.inputMetadata);
+			if (!input.equals("")) {
+				try {
+					// FHIR content
+					IBaseResource resource = FhirSupport.parse(input);
+					result.add(new FhirMessageBuilder().build("", resource).setName(testLog.stepName + " Request"));
+				} catch (Exception e) {
+					// non-FHIR content (failed parse)
+					result.add(new MessageBuilder().build("", input).setName(testLog.stepName + " Request"));
+				}
+			} else {
+				result.add(new MessageBuilder().build("", testLog.outHeader).setName(testLog.stepName + " Request"));
+			}
+			// result
+			String output = deformat(testLog.result);
+			try {
+				// FHIR content
+				IBaseResource resource = FhirSupport.parse(output);
+				result.add(new FhirMessageBuilder().build("", resource).setName(testLog.stepName + " Response"));
+			} catch (Exception e) {
+				// non-FHIR content (failed parse)
+				result.add(new MessageBuilder().build("", output).setName(testLog.stepName + " Response"));
+			}
+		}
+		return result;
+	}
+
+	String deformat(String xml) {
+		if (xml == null) return xml;
+		if (xml.equals("")) return xml;
+		boolean isXml = xml.trim().startsWith("<");
+		if (!isXml) return xml;
+		xml = xml.replaceAll("<br />", "");
+		xml = xml.replace("&nbsp;", "");
+		xml = xml.replace("&lt;", "<");
+		return xml;
 	}
 
 	public Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception  {
 		if (session != null)
 			logger.debug(session.id() + ": " + "getCollection " + collectionSetName + ":" + collectionName);
 		try {
-            System.out.println("ENVIRONMENT: "+session.getCurrentEnvName()+", SESSION: "+session.getMesaSessionName());
-            Map<String,String> collection=new HashMap<String,String>();
-            for (File testkitFile:Installation.instance().testkitFiles(session.getCurrentEnvName(),session.getMesaSessionName())) {
+			System.out.println("ENVIRONMENT: "+session.getCurrentEnvName()+", SESSION: "+session.getMesaSessionName());
+			Map<String,String> collection=new HashMap<String,String>();
+			for (File testkitFile:Installation.instance().testkitFiles(session.getCurrentEnvName(),session.getMesaSessionName())) {
 				try {
 					TestKit tk = new TestKit(testkitFile);
 					Map<String, String> c = tk.getCollection(collectionSetName, collectionName);
@@ -353,7 +405,7 @@ public class XdsTestServiceManager extends CommonService {
 				} catch (Exception e) {
 					// not a problem until the list is exhausted
 				}
-            }
+			}
 		} catch (Exception e) {
 			logger.error("getCollection", e);
 			throw new Exception(e.getMessage());
@@ -372,36 +424,36 @@ public class XdsTestServiceManager extends CommonService {
 	 * @throws Exception
 	 */
 	public List<TestInstance> getCollectionMembers(String collectionSetName, String collectionName) throws Exception {
-	   try {
-		if (session != null)
-			logger.debug(session.id() + ": " + "getCollectionMembers " + collectionSetName + ":" + collectionName);
-		TestKitSearchPath searchPath = session.getTestkitSearchPath();
-		Collection<String> collec =  searchPath.getCollectionMembers(collectionSetName, collectionName);
-		if (session != null)
-			logger.debug("Return " + collec.size() + " tests");
+		try {
+			if (session != null)
+				logger.debug(session.id() + ": " + "getCollectionMembers " + collectionSetName + ":" + collectionName);
+			TestKitSearchPath searchPath = session.getTestkitSearchPath();
+			Collection<String> collec =  searchPath.getCollectionMembers(collectionSetName, collectionName);
+			if (session != null)
+				logger.debug("Return " + collec.size() + " tests");
 
-		List<TestInstance> tis = new ArrayList<>();
-		for (String testId : collec) {
-			TestInstance ti = new TestInstance(testId);
-			tis.add(ti);
-		}
-
-		for (TestInstance ti : tis) {
-			TestDefinition def = session.getTestkitSearchPath().getTestDefinition(ti.getId());
-			if (def == null)
-				throw new XdsInternalException("Cannot find test definition for " + ti);
-			List<SectionDefinitionDAO> sectionDAOs = def.getSections();
-			boolean sutInitiated = false;
-			for (SectionDefinitionDAO dao : sectionDAOs) {
-				if (dao.isSutInitiated()) sutInitiated = true;
+			List<TestInstance> tis = new ArrayList<>();
+			for (String testId : collec) {
+				TestInstance ti = new TestInstance(testId);
+				tis.add(ti);
 			}
-			ti.setSutInitiated(sutInitiated);
+
+			for (TestInstance ti : tis) {
+				TestDefinition def = session.getTestkitSearchPath().getTestDefinition(ti.getId());
+				if (def == null)
+					throw new XdsInternalException("Cannot find test definition for " + ti);
+				List<SectionDefinitionDAO> sectionDAOs = def.getSections();
+				boolean sutInitiated = false;
+				for (SectionDefinitionDAO dao : sectionDAOs) {
+					if (dao.isSutInitiated()) sutInitiated = true;
+				}
+				ti.setSutInitiated(sutInitiated);
+			}
+			return tis;
+		} catch (Exception e) {
+			logger.error(ExceptionUtil.exception_details(e, "getCollectionsMembers error: "));
+			throw e;
 		}
-		return tis;
-      } catch (Exception e) {
-		   logger.error(ExceptionUtil.exception_details(e, "getCollectionsMembers error: "));
-         throw e;
-      }
 	}
 
 	public List<SectionDefinitionDAO> getTestSectionsDAOs(TestInstance testInstance) throws Exception {
@@ -466,7 +518,7 @@ public class XdsTestServiceManager extends CommonService {
 	 * @param section
 	 * @return
 	 * @throws Exception
-     */
+	 */
 	public String getTestplanAsText(TestInstance testInstance, String section) throws Exception {
 		TestKitSearchPath searchPath = session.getTestkitSearchPath();
 		TestDefinition testDefinition = searchPath.getTestDefinition(testInstance.getId());
@@ -479,7 +531,7 @@ public class XdsTestServiceManager extends CommonService {
 	 * @param section
 	 * @return
 	 * @throws Exception
-     */
+	 */
 	public TestPartFileDTO getTestplanDTO(TestInstance testInstance, String section) throws Exception {
 		try {
 			if (session != null)
@@ -543,7 +595,7 @@ public class XdsTestServiceManager extends CommonService {
 				sectionTpf.getStepTpfMap().put(stepName,stepTpf);
 			}
 		} catch (Throwable t) {
-            throw new Exception("Error traversing metadataFile elements:" + t.toString() + " testplan file: " + testplanFileString + " xmlString: " + testplanXmlString);
+			throw new Exception("Error traversing metadataFile elements:" + t.toString() + " testplan file: " + testplanFileString + " xmlString: " + testplanXmlString);
 		}
 		return sectionTpf;
 	}
@@ -639,7 +691,7 @@ public class XdsTestServiceManager extends CommonService {
 	public TestOverviewDTO getTestOverview(String sessionName, TestInstance testInstance) throws Exception {
 		try {
 			//if (session != null)
-				//logger.debug(session.id() + ": " + "getTestOverview(" + testInstance + ")");
+			//logger.debug(session.id() + ": " + "getTestOverview(" + testInstance + ")");
 
 			testInstance.setUser(sessionName);
 
@@ -801,7 +853,7 @@ public class XdsTestServiceManager extends CommonService {
 		if (badSites.size() == 0) return new ConformanceSessionValidationStatus();
 		StringBuilder buf = new StringBuilder();
 		buf.append("Test Session ").append(testSession).append(" already has results for these sites: ").append(badSites.toString() +
-		" you cannot use it to test " + siteName);
+				" you cannot use it to test " + siteName);
 		return new ConformanceSessionValidationStatus(false, buf.toString());
 	}
 

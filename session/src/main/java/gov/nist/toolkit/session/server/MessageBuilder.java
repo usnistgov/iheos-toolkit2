@@ -12,8 +12,11 @@ import java.util.StringTokenizer;
  */
 public class MessageBuilder {
 
-    public static Message parseMessage(String input) {
-        Message m = new Message();
+    public Message build(String label, String input) {
+        Message m = new Message(label);
+        if (input == null || input.equals(""))
+            return m;
+
         StringBuilder b = new StringBuilder();
         String delims = "\n";
 
@@ -28,23 +31,23 @@ public class MessageBuilder {
                     try {
                         part = new OMFormatter(part).toHtml();
                     } catch (Exception e) {
-                        m.add("*****  Could not XML format this content *****");
+                        m.add("","*****  Could not XML format this content *****");
                     }
                 }
-                m.add(part);
+                m.add("", part);
                 b = new StringBuilder();
                 continue;
             }
             if (ele.startsWith("<")) {  // start of some XML
                 if (b.length() > 0) { // if buffer not empty - create new part and empty buffer
-                    m.add(b.toString());
+                    m.add("", b.toString());
                     b = new StringBuilder();
                 }
             }
             b.append(ele).append("\n");
         }
         if (b.length() > 0) {
-            m.add(b.toString());
+            m.add("", b.toString());
         }
 
         return m;

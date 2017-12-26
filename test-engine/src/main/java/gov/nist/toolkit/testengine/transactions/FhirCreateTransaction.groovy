@@ -186,6 +186,22 @@ class FhirCreateTransaction extends BasicFhirTransaction {
         types
     }
 
+    List<String> resourceTypesFromResponseLocations(Bundle bundle) {
+        def types = []
+
+        bundle.entry.each { Bundle.BundleEntryComponent comp ->
+            String url = comp?.response?.location
+            if (url) {
+                FhirId fhirId = new FhirId(url)
+                types << fhirId.type
+            } else {
+                types << 'None'
+            }
+        }
+
+        types
+    }
+
     def simpleErrorMsg(OperationOutcome oo, StepContext sc) {
         assert oo
         def errs = []

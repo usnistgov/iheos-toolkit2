@@ -1,7 +1,5 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab;
 
-import com.google.gwt.event.dom.client.MouseMoveEvent;
-import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.session.shared.Message;
 import gov.nist.toolkit.session.shared.SubMessage;
@@ -15,10 +13,17 @@ public class MessageDisplay implements IsWidget {
     private FlowPanel menuPanel = new FlowPanel();
     private FlowPanel contentPanel = new FlowPanel();
     private Message message;
+    private String title;
 
     public MessageDisplay(Message message) {
+        this(message, "Structure");
+    }
+
+    public MessageDisplay(Message message, String title) {
         this.message = message;
-        init();
+        this.title = title;
+        if (!message.isEmpty())
+            init();
     }
 
     private void init() {
@@ -26,14 +31,15 @@ public class MessageDisplay implements IsWidget {
         menuPanel.add(tree);
 
         TreeItem root = new TreeItem();
-        root.setText("Structure");
+        root.setText(title);
         tree.addItem(root);
 
         TreeItem fullMessage = new TreeItem();
         root.addItem(fullMessage);
 
         Anchor fullcontentA = new Anchor("Full Message");
-        HTML fullContent = AbstractView.htmlize(message.getParts().get(1));
+        String part = (message.getParts().size() == 2) ?  message.getParts().get(1) : message.getParts().get(0);
+        HTML fullContent = AbstractView.htmlize(part);
         fullMessage.setWidget(fullcontentA);
         MessagePartDisplay fullDisplay = new MessagePartDisplay(contentPanel, fullContent);
         fullcontentA.addClickHandler(fullDisplay);
@@ -56,15 +62,6 @@ public class MessageDisplay implements IsWidget {
         parent.addItem(item);
 
         Anchor a = new Anchor(subMessage.getName());
-        if (subMessage.getNameHover() != null) {
-            final String mouseOverText = subMessage.getNameHover();
-            a.addMouseMoveHandler(new MouseMoveHandler() {
-                @Override
-                public void onMouseMove(MouseMoveEvent mouseMoveEvent) {
-
-                }
-            });
-        }
         HTML content = AbstractView.htmlize(subMessage.getValue());
         item.setWidget(a);
         a.addClickHandler(new MessagePartDisplay(contentPanel, content));
@@ -84,6 +81,9 @@ public class MessageDisplay implements IsWidget {
     }
 
     public Widget asSinglePanel() {
+        if (message.isEmpty()) {
+            return new Label("No content");
+        }
         MessageDisplayView mdv = new MessageDisplayView("");
         mdv.newMenu().add(getMenuPanel());
         mdv.getContentPanel().add(getContentPanel());

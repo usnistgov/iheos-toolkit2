@@ -9,46 +9,43 @@ import java.util.List;
 /**
  *
  */
-public class Message implements Serializable, IsSerializable {
+public class Message implements Serializable, IsSerializable, IMessage {
     // header and body
+    private String name = "";
     private List<String> parts = new ArrayList<>();
 
     // structured representation of the body
-    List<SubMessage> subMessages = new ArrayList<>();
+    private List<SubMessage> subMessages = new ArrayList<>();
 
-    public Message() {
+    public Message() {}
+
+    public Message(String name) {
+        this.name = name;
     }
 
-    public Message(String in) {
-        parts.add(in);
-    }
-
-    public Message(String in, String in2) {
-        parts.add(in);
-        parts.add(in2);
+    public boolean isEmpty() {
+        return parts.isEmpty() && subMessages.isEmpty();
     }
 
     public List<SubMessage> getSubMessages() {
         return subMessages;
     }
 
-    public void add(String part) {
+    public Message add(String part) {
+        return add("", part);
+    }
+
+    public Message setName(String name) { this.name = name; return this; }
+
+    public Message add(String label, String part) {
+//        partLabels.add(label);
         parts.add(part);
+        return this;
     }
 
     public void addSubMessage(String name, String value) {
         SubMessage sm = new SubMessage(name, value);
         subMessages.add(sm);
-    }
-
-    public int getSubMessageCount() { return subMessages.size(); }
-
-    public boolean hasSubMessages() { return getSubMessageCount() > 0; }
-
-    public SubMessage getSubMessage(int i) {
-        if (i >= getSubMessageCount())
-            return new SubMessage("", "");
-        return subMessages.get(i);
     }
 
     public List<String> getParts() { return parts; }
@@ -67,7 +64,7 @@ public class Message implements Serializable, IsSerializable {
         subMessages.add(subMessage);
     }
 
-    public void addSubMessages(List<SubMessage> theSubMessages) {
-        subMessages.addAll(theSubMessages);
+    public String getName() {
+        return name;
     }
 }

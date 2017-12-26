@@ -172,7 +172,7 @@ public interface ToolkitService extends RemoteService  {
 	List<Result> findDocuments2(FindDocuments2Request request) throws Exception;
 
 	TestLogs getRawLogs(GetRawLogsRequest request) throws Exception ;
-	Message getFhirResult(GetRawLogsRequest request) throws Exception;
+	List<Message> getFhirResult(GetRawLogsRequest request) throws Exception;
 
 	String getAdminPassword(CommandContext context) throws Exception ;
 
