@@ -232,14 +232,24 @@ public class ActorConfigTab extends GenericQueryTab {
 
 		for (ActorType actorType : TransactionCollection.getActorTypes()) {
 			
-			// These getRetrievedDocumentsModel configured in other ways
-			if (!actorType.showInConfig())
+			// These actor types need not be shown in the configuration page. Showing these actors causes redundant endpoints in the configuration UI page.
+			if (ActorType.REPOSITORY_REGISTRY.equals(actorType)
+					|| ActorType.COMBINED_INITIATING_GATEWAY.equals(actorType)
+					|| ActorType.COMBINED_RESPONDING_GATEWAY.equals(actorType)
+					|| ActorType.OD_RESPONDING_GATEWAY.equals(actorType)
+					|| ActorType.FHIR_SERVER.equals(actorType) // MHD combines both the FHIR Server and the PDB extension so the basic FHIR (base address) will be made available as part of MHD(displayed in the UI, see the label change below, as FHIR Server).
+					|| (!site.isSimulator() && ActorType.ONDEMAND_DOCUMENT_SOURCE.equals(actorType)))
 				continue;
-			
+
+			// These getRetrievedDocumentsModel configured in other ways
 			String actorTypeName = actorType.getName();
 			HTML actorTypeLabel = new HTML(HtmlMarkup.bold(actorTypeName));
 			actorEditGrid.setWidget(row, 1, actorTypeLabel);
 			row++;
+
+			if (ActorType.MHD_DOC_RECIPIENT.equals(actorType)) {
+				actorTypeLabel.setHTML(HtmlMarkup.bold(ActorType.FHIR_SERVER.getName()));
+			}
 
 			/**
 			 * Prefix entries that are needed before standard entries
@@ -258,7 +268,9 @@ public class ActorConfigTab extends GenericQueryTab {
 
 
 			row = addRepositorySection(row, boxwidth, TLS, actorType);
-			row = addOnDemandRepositorySection(row, boxwidth, TLS, actorType);
+			if (site.isSimulator()) {
+				row = addOnDemandRepositorySection(row, boxwidth, TLS, actorType); // This should be a read-only field. We can only make a this distinction for a simulator. For real SUT of ODDS type, they are configured the same way as a repository so this section is hidden if the site.isSimulator flag is False.
+			}
 
 			if (ActorType.REGISTRY.equals(actorType)) {
 				HorizontalPanel hpanel = new HorizontalPanel();
