@@ -1,5 +1,7 @@
 package gov.nist.toolkit.simProxy
 
+import gov.nist.toolkit.fhir.simulators.proxy.util.BinaryPartSpec
+import gov.nist.toolkit.fhir.simulators.proxy.util.MultipartParser2
 import gov.nist.toolkit.fhir.simulators.proxy.util.PartSpec
 import gov.nist.toolkit.fhir.simulators.proxy.util.SoapBuilder
 import spock.lang.Specification
@@ -26,7 +28,7 @@ class SoapBuilderTest extends Specification {
 
     def 'mtom test' () {
         given:
-        def referenceMsg = getClass().getResource('/sample_mtom_message.txt').text
+        String referenceMsg = getClass().getResource('/sample_mtom_message.txt').text
         def part1 = getClass().getResource('/sample_part_1.txt').text   // start part
         def part2 = getClass().getResource('/sample_part_2.txt').text   // text attachment
 
@@ -35,10 +37,14 @@ class SoapBuilderTest extends Specification {
         SoapBuilder builder = new SoapBuilder()
 
         when:
-        def (header, body) = builder.mtomSoap(service, host, port, action, [part1Spec, part2Spec])
+        def (header, String body) = builder.mtomSoap(service, host, port, action, [part1Spec, part2Spec])
+
+        and:
+        List<BinaryPartSpec> bparts = MultipartParser2.parse(body)
+
 
         then:
-        body == referenceMsg
+        bparts[1].content == part2.bytes
     }
 
 }
