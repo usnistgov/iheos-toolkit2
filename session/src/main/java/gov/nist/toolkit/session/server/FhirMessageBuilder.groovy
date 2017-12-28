@@ -19,20 +19,25 @@ class FhirMessageBuilder {
     Bundle bundle  = null;
     Resource resource = null;
 
-    Message build(IBaseResource resource) {
+    Message build(String name, IBaseResource resource) {
         FhirContext ctx = ToolkitFhirContext.get()
         String msgStr = ctx.newJsonParser().encodeResourceToString(resource)
-        Message message = new Message('', formatMessage(msgStr))
+        Message message = new Message().add('', '').add(name, formatMessage(msgStr))
         if (resource instanceof Bundle) {
             bundle = (Bundle) resource;
             for (Bundle.BundleEntryComponent c : bundle.getEntry()) {
                 String fullUrl = c.getFullUrl();
                 Resource theResource = c.getResource();
-                String str = ctx.newJsonParser().encodeResourceToString(theResource);
-                SubMessage subMessage = new SubMessage(theResource.fhirType() + ": " + fullUrl, formatMessage(str));
-                message.addSubMessage(subMessage);
-
-                subMessage.addSubMessages(extractReferences(theResource));
+                if (theResource) {
+                    String str = ctx.newJsonParser().encodeResourceToString(theResource);
+                    SubMessage subMessage = new SubMessage(theResource.fhirType() + ": " + fullUrl, formatMessage(str));
+                    message.addSubMessage(subMessage);
+                    subMessage.addSubMessages(extractReferences(theResource));
+                }
+                if (c.response?.location) {
+                    SubMessage subMessage = new SubMessage(c.response.location, c.response.status)
+                    message.addSubMessage(subMessage)
+                }
             }
         }
         return message

@@ -31,6 +31,9 @@ class MultipartParser2 {
             if (line.startsWith(boundary)) {
                 if (!contentId)
                     contentId = "Part${partCount++}"
+                // last \n belongs to boundary
+                if (buf.size() > 0)
+                    buf.deleteCharAt(buf.size()-1)
                 parts[contentId] = new ByteArrayEntity(buf.toString().bytes, ContentType.parse(contentType))
                 buf = new StringBuilder()
                 inheader = true

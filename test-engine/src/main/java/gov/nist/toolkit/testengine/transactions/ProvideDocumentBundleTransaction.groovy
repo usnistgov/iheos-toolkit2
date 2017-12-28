@@ -35,12 +35,19 @@ class ProvideDocumentBundleTransaction extends FhirCreateTransaction {
             return
         }
         if (returnResource instanceof Bundle) {
-            Bundle bundle = returnResource
-            if (bundle.type.toCode() != BundleType.TRANSACTIONRESPONSE.toCode())
-                err("Bundle type returned was ${bundle.type}, ${BundleType.TRANSACTIONRESPONSE} is required")
+            Bundle returnBundle = returnResource
+
+            // 3.65.4.2.2 Message Semantics
+            if (returnBundle.type.toCode() != BundleType.TRANSACTIONRESPONSE.toCode())
+                err("Bundle type returned was ${returnBundle.type}, ${BundleType.TRANSACTIONRESPONSE} is required")
+
+            // 3.65.4.2.2 Message Semantics
+            // ...that contains one entry for each entry in the request, in the same order as received
             def sendResourceTypes = resourceTypes(sendResource)
-            def returnResourceTypes = resourceTypes(returnResource)
-            if (sendResourceTypes != returnResourceTypes) {
+            def returnResourceTypes = resourceTypesFromResponseLocations(returnResource)
+            if (sendResourceTypes == returnResourceTypes) {
+                stepContext.addDetail("Bundle contents", sendResourceTypes.toString())
+            } else {
                 stepContext.with {
                     set_error("Provide Document Bundle shall return a Bundle containting one entry for each entry in the request.")
                     set_error("The reqeust bundle contained ${sendResourceTypes}")
@@ -49,35 +56,46 @@ class ProvideDocumentBundleTransaction extends FhirCreateTransaction {
             }
 
             def sendIterator = sendResource.entry.iterator()
-            def responseIterator = returnResource.entry.iterator()
+            def responseIterator = returnBundle.entry.iterator()
+
+            def fullUrlsReturned = []
+            int index = 0
+            boolean hasError = false
 
             def sendEntry = sendIterator.next()
             def returnEntry = responseIterator.next()
-
-            def fullUrls = []
-            int index = 0
-            boolean hasError = false
             while (sendEntry && returnEntry) {
                 def responseEntry = returnEntry.response
                 if (sendEntry.class.simpleName == returnEntry.class.simpleName) {
-                    if (responseEntry.status != '200') {
-                        hasError = true
-                        err("Entry #${index} returned status ${responseEntry.status}")
+                    if (responseEntry.status == '200') {
                         if (responseEntry.outcome) {
-                            if (responseEntry.outcome instanceof OperationOutcome)
+                            hasError = true
+                            err("Entry #${index} (${sendEntry.class.simpleName}) returned status 200 and a response outcome:...")
+                            FhirSupport.operationOutcomeIssues(responseEntry.outcome).each { err(it) }
+                        }
+                    } else {
+                        hasError = true
+                        err("Entry #${index} (${sendEntry.class.simpleName}) returned status ${responseEntry.status}")
+                        if (responseEntry.outcome) {
+                            // http://hl7.org/fhir/STU3/http.html#transaction-response
+                            // For a failed transaction, the server returns a single OperationOutcome instead of a Bundle
+                            if (responseEntry.outcome instanceof OperationOutcome) {
+                                err("Response Bundle returned OperationOutcome for an entry - For a failed transaction, the server returns a single OperationOutcome instead of a Bundle - http://hl7.org/fhir/STU3/http.html#transaction-response")
                                 FhirSupport.operationOutcomeIssues(responseEntry.outcome).each { err(it) }
-                            else
-                                err("Response Bundle entry #${index} outcome is of type ${responseEntry.outcome.class.simpleName}, type OperationOutcome is required")
+                            }
                         }
                     }
 
                     Resource resource1 = returnEntry.getResource()
                     if ((resource1 instanceof DocumentReference) /*|| (resource1 instanceof DocumentManifest)  */) {
-                        String url = returnEntry.fullUrl
-                        if (!url.startsWith('http'))
-                            err("Entry #${index} (${resource1.class.simpleName})in the return bundle does not have an absolute url in the fullUrl attribute - ${url} founc")
+                        String url = returnEntry.response.location
+                        if (!url) {
+                            err("Response Bundle entry #${index} did not return a response.location")
+                        }
+                        else if (!url.startsWith('http'))
+                            err("Entry #${index} (${resource1.class.simpleName})in the return bundle does not have an absolute url in response.location - ${url} found")
                         else
-                            fullUrls << url
+                            fullUrlsReturned << url
                     }
 
                     index++
@@ -88,17 +106,14 @@ class ProvideDocumentBundleTransaction extends FhirCreateTransaction {
                         break
                 }
             }
-            if (hasError) {
-                err("The reqeust bundle contained ${sendResourceTypes}")
-                err("The response bundle contained ${returnResourceTypes}")
-
-            }
             if (sendIterator.hasNext())
                 err("Response has no entries for ${remainingResources(sendIterator)}")
             if (responseIterator.hasNext())
                 err("Response has extra entries ${remainingResources(sendIterator)}")
 
-            fullUrls.each { url ->
+            // verify urls returened by READing each one
+            index = 0
+            fullUrlsReturned.each { url ->
                 try {
                     def (BasicStatusLine statusline, contentReturned) = FhirClient.get(url)
                     if (statusline.statusCode != 200)
@@ -109,20 +124,24 @@ class ProvideDocumentBundleTransaction extends FhirCreateTransaction {
                         FhirId fhirId = new FhirId(url)
                         String typeFromId = fhirId.type
                         if (type != typeFromId) {
-                            err("Bundle entry #${index} has fullUrl ${url} but when READ from FHIR server a ${type} was returned")
+                            err("Bundle entry #${index} has response.location ${url} but when READ from FHIR server a ${type} was returned")
                             if (type == 'OperationOutcome') {
                                 err(FhirSupport.operationOutcomeIssues(br).join('\n'))
                             }
                         }
+                    } else {
+                        err("READ of ${url} returned no content")
                     }
                 } catch (Exception e) {
-                    err("READ of ${url} failed (${e.getMessage()}) - this was the fullURL returned for one of the resources in the response bundle")
+                    err("READ of ${url} failed (${e.getMessage()}) - this was the response.location returned for one of the resources in the response bundle")
                 }
+                index++
             }
 
         } else {
             stepContext.set_error("Provide Document Bundle transaction must return bundle - returned ${returnResource.class.simpleName} instead")
-            err(FhirSupport.operationOutcomeIssues(returnResource).join(']n'))
+            if (returnResource instanceof OperationOutcome)
+                err(FhirSupport.operationOutcomeIssues(returnResource).join(']n'))
         }
     }
 

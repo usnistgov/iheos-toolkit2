@@ -125,27 +125,28 @@ class FhirCreateTransaction extends BasicFhirTransaction {
             } else if (baseResource instanceof Bundle) {
                 testLog.add_name_value(instruction_output, "Result", fhirCtx.newXmlParser().setPrettyPrint(true).encodeResourceToString(baseResource));
                 Bundle bundle = baseResource
+                int eleCount=-1
                 bundle.entry.each { Bundle.BundleEntryComponent comp ->
-                    if (comp?.response?.status != '200')
-                        stepContext.set_error("Response Bundle reported status of ${comp.response.status} for component ${comp.fullUrl} (${comp.id}")
-//                    assert comp.response.status == '200'
-                    if (comp.fullUrl) {
-                        def reportName
-                        IBaseResource resource1 = comp.getResource()
-                        if (resource1 instanceof DocumentManifest) {
-                            reportName = "DM${dmCount++}"
-                        } else if (resource1 instanceof DocumentReference) {
-                            reportName = "DR${drCount++}"
-                        } else {
-                            reportName = "OTHER${otherCount++}"
-                        }
-                        def url = new FhirId(comp.fullUrl).withoutHistory()
-                        reportManager.add(reportName, url)
-                        reportManager.add("REF_${reportName}", "${getBaseUrl()}/${url}")
+                    eleCount++
+                    Bundle.BundleEntryResponseComponent resp = comp.response
+                    if (!resp) {
+                        stepContext.set_error("Return bundle entry #${eleCount} has no response element")
+                        return
                     }
-//                    FhirId myId = new FhirId(comp.response?.outcome?.id)
-//                    if (myId)
-//                        reportManager.add('Ref', myId.withoutHistory())
+                    if (resp.status != '200')
+                        stepContext.set_error("Response Bundle reported status of ${resp.status} (bundle.entry.response.status) for component (location) ${resp.location}")
+                    def reportName
+                    FhirId fhirId1 = new FhirId(resp.location)
+                    def type = fhirId1.type
+                    if (type == 'DocumentManifest') {
+                        reportName = "DM${dmCount++}"
+                    } else if (type == 'DocumentReference') {
+                        reportName = "DR${drCount++}"
+                    } else {
+                        reportName = "OTHER${otherCount++}"
+                    }
+                    reportManager.add(reportName, resp.location)
+                    reportManager.add("REF_${reportName}", resp.location)
                 }
             } else {
                 stepContext.set_error("This transaction must return a transaction-response Bundle that contains one entry " +
@@ -181,6 +182,22 @@ class FhirCreateTransaction extends BasicFhirTransaction {
         bundle.entry.each { Bundle.BundleEntryComponent comp ->
             String type = comp.getResource().class.simpleName
             types << type
+        }
+
+        types
+    }
+
+    List<String> resourceTypesFromResponseLocations(Bundle bundle) {
+        def types = []
+
+        bundle.entry.each { Bundle.BundleEntryComponent comp ->
+            String url = comp?.response?.location
+            if (url) {
+                FhirId fhirId = new FhirId(url)
+                types << fhirId.type
+            } else {
+                types << 'None'
+            }
         }
 
         types

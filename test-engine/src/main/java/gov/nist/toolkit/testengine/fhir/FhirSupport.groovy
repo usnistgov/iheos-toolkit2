@@ -61,7 +61,8 @@ class FhirSupport {
         return binary
     }
 
-    static List<String> operationOutcomeIssues(OperationOutcome oo) {
+    static List<String> operationOutcomeIssues(IBaseResource oo) {
+        assert oo instanceof OperationOutcome
         def issues = []
         oo.issue.each { OperationOutcome.OperationOutcomeIssueComponent issue ->
             issue.with {

@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  *
  */
-public class FhirSearchView extends AbstractView<FhirSearchPresenter> {
+public class FhirSearchView extends AbstractView<FhirSearchPresenter> implements IContentHolder{
     private MessagePanel messagePanel = new MessagePanel();
     private VerticalPanel tabTopPanel = new VerticalPanel();
     private HTML selected = new HTML();
@@ -31,6 +31,10 @@ public class FhirSearchView extends AbstractView<FhirSearchPresenter> {
     private FlowPanel resourceDisplayOuterPanel = new FlowPanel();
 //    private FlowPanel resourceDisplayPanel = new FlowPanel();
     private FlowPanel contentPanel = new FlowPanel();
+    private TabbedContentPanel bottomPanel;
+
+
+    private TabLayoutPanel bottomTabPanel = new TabLayoutPanel(1.5, Style.Unit.EM);
 
     // READ Stuff
     private TextBox refTextBox = new TextBox();
@@ -95,23 +99,28 @@ public class FhirSearchView extends AbstractView<FhirSearchPresenter> {
 
 
         thePanel.add(new HTML("<br />"));
-        HTML logTitle = new HTML("<b>Logs</b>");
-        logTitle.addStyleName("tool-section-header");
-        thePanel.add(logTitle);
+        bottomPanel = new TabbedContentPanel("Logs", "400px");
+        thePanel.add(bottomPanel.asWidget());
 
-        ScrollPanel logWrapperPanel = new ScrollPanel();
-        logWrapperPanel.add(logPanel);
+        bottomPanel.addBaseTab(logPanel, "[Log]");
+        bottomPanel.addBaseTab(resourceDisplayOuterPanel, "[Content]");
 
-        TabLayoutPanel bottomTabPanel = new TabLayoutPanel(1.5, Style.Unit.EM);
-        bottomTabPanel.setWidth("100%");
-//        bottomTabPanel.setWidth("800px");
-        bottomTabPanel.setHeight("400px");
-        thePanel.add(bottomTabPanel);
-        logPanel.setWidth("100%");
-        logPanel.setHeight("100%");
-        bottomTabPanel.add(logWrapperPanel, "[Log]");
 
-        bottomTabPanel.add(resourceDisplayOuterPanel, "[Content]");
+
+
+
+//        HTML logTitle = new HTML("<b>Logs</b>");
+//        logTitle.addStyleName("tool-section-header");
+//        thePanel.add(logTitle);
+//
+//        bottomTabPanel.setWidth("100%");
+//        bottomTabPanel.setHeight("400px");
+//        thePanel.add(bottomTabPanel);
+//        bottomTabPanel.add(inScrollPanel(logPanel), "[Log]");
+//        baseTabCount++;
+//        bottomTabPanel.add(resourceDisplayOuterPanel, "[Content]");
+//        baseTabCount++;
+
 
         ScrollPanel scrollPanel = new ScrollPanel();
         scrollPanel.add(tabTopPanel);
@@ -260,18 +269,25 @@ public class FhirSearchView extends AbstractView<FhirSearchPresenter> {
         resourceDisplayOuterPanel.add(content);
     }
 
-    void setContentWithScrollBar(Widget content) {
-        ScrollPanel scrollPanel = new ScrollPanel();
-        scrollPanel.add(content);
-        resourceDisplayOuterPanel.clear();
-        resourceDisplayOuterPanel.add(scrollPanel);
+    private ScrollPanel inScrollPanel(Widget w) {
+        w.setWidth("100%");
+        w.setHeight("100%");
+        ScrollPanel sp = new ScrollPanel();
+        sp.add(w);
+        return sp;
     }
 
     VerticalPanel getTabTopPanel() {
         return tabTopPanel;
     }
 
-    public SystemSelector getSystemSelector() {
-        return systemSelector;
+    @Override
+    public void addContent(Widget w, String title) {
+        bottomPanel.addTab(inScrollPanel(w), title);
+    }
+
+    @Override
+    public void clearLogContent() {
+        bottomPanel.clearContent();
     }
 }

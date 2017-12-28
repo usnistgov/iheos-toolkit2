@@ -9,7 +9,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.session.shared.Message;
-import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractView;
 import gov.nist.toolkit.xdstools2.client.abstracts.MessagePanel;
 import gov.nist.toolkit.xdstools2.client.util.ASite;
@@ -51,9 +50,29 @@ public class SimMsgViewerView extends AbstractView<SimMsgViewerPresenter> {
     private Button refreshButton = new Button("Refresh");
     private Button inspectRequestButton = new Button("Inspect Request");
     private Button inspectResponseButton = new Button("Inspect Response");
-    private Button deleteButton = new Button("Delete");
+//    private Button deleteButton = new Button("Delete");
+    private Map<String, MessageDisplayView> tabMap = new HashMap<>();
 
     private HTML download = new HTML();
+
+    List<MessageDisplayView> tabs = new ArrayList<>();
+    private TabLayoutPanel detailsTabPanel;
+
+    static private final String requestHeaderTabName = "[Request Header]";
+    static private final String requestBodyTabName = "[Request Body]";
+    static private final String responseHeaderTabName = "[Response Header]";
+    static private final String responseBodyTabName = "[Response Body]";
+    static private final String logTabName = "[Log]";
+
+    static private final List<String> tabNames = new ArrayList<>();
+    static {
+        tabNames.add(requestHeaderTabName);
+        tabNames.add(requestBodyTabName);
+        tabNames.add(responseHeaderTabName);
+        tabNames.add(responseBodyTabName);
+        tabNames.add(logTabName);
+    }
+
 
     ///////////////////////////////////////////////////////
     //
@@ -63,13 +82,10 @@ public class SimMsgViewerView extends AbstractView<SimMsgViewerPresenter> {
     private String currentActor;
     private String currentTransaction;
     private String transName = "";
-//    private SimId simidFinal = new SimId("");
     private String selectedMessageId = null;
 
-    private SimId simid = null;
-
-
-    String selectedEvent;
+//    private SimId simid = null;
+//    String selectedEvent;
 
     void setDownloadLink(String link) {
         download.setHTML(link);
@@ -81,25 +97,6 @@ public class SimMsgViewerView extends AbstractView<SimMsgViewerPresenter> {
             getPresenter().doUpdateChosenSimulator(label);
         }
     };
-
-
-//    class FilterClickHandler implements ClickHandler {
-//
-//        @Override
-//        public void onClick(ClickEvent clickEvent) {
-//            updateTransactionsDisplay();
-//        }
-//    }
-
-//    class FilterKeyDownHandler implements KeyDownHandler {
-//
-//        @Override
-//        public void onKeyDown(KeyDownEvent event) {
-//            if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-//                updateTransactionsDisplay();
-//            }
-//        }
-//    }
 
     private String selectedEvent() {
         return eventListBox.getSelectedValue();
@@ -123,34 +120,15 @@ public class SimMsgViewerView extends AbstractView<SimMsgViewerPresenter> {
         return null;
     }
 
-    List<MessageDisplayView> tabs = new ArrayList<>();
-    private TabLayoutPanel detailsTabPanel;
-
-    static private final String requestHeaderTabName = "[Request Header]";
-    static private final String requestBodyTabName = "[Request Body]";
-    static private final String responseHeaderTabName = "[Response Header]";
-    static private final String responseBodyTabName = "[Response Body]";
-    static private final String logTabName = "[Log]";
-
-    static private final List<String> tabNames = new ArrayList<>();
-    static {
-        tabNames.add(requestHeaderTabName);
-        tabNames.add(requestBodyTabName);
-        tabNames.add(responseHeaderTabName);
-        tabNames.add(responseBodyTabName);
-        tabNames.add(logTabName);
-    }
 
     private void buildTabs() {
         for (String name : tabNames) {
             MessageDisplayView mdv = new MessageDisplayView(name);
-            detailsTabPanel.add(mdv.asWidget());
+            detailsTabPanel.add(mdv.asWidget(), name);
             tabMap.put(name, mdv);
         }
         detailsTabPanel.selectTab(tabNames.indexOf(requestBodyTabName));
     }
-
-    private Map<String, MessageDisplayView> tabMap = new HashMap<>();
 
     private MessageDisplayView getTab(String title) {
         return tabMap.get(title);

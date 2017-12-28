@@ -11,7 +11,7 @@
                 <contained>
                     <!-- To satisfied sourcePatientID (R) -->
                     <Patient>
-                        <id value="a4"/>
+                        <id value="a2"/>
                         <meta>
                             <lastUpdated value="2013-07-01T13:11:33Z"/>
                         </meta>
@@ -38,6 +38,37 @@
                         </name>
                         <birthDate value="1956-05-27"/>
                     </Patient>
+                    <Practitioner>
+                        <id value="a3"/>
+                        <meta>
+                            <lastUpdated value="2013-07-01T13:11:33Z"/>
+                        </meta>
+                        <text>
+                            <status value="generated"/>
+                            <div xmlns="http://www.w3.org/1999/xhtml">Author Gerald Smitty @ Cleveland Clinic</div>
+                        </text>
+                        <name>
+                            <use value="usual"/>
+                            <family value="Smitty"/>
+                            <given value="Gerald"/>
+                        </name>
+                    </Practitioner>
+                    <Practitioner>
+                        <id value="a4"/>
+                        <!--    cid:51b578b4-3ccb-4e67-b0dc-ef519d82ef2d@healthintersections.com.au    -->
+                        <meta>
+                            <lastUpdated value="2013-07-01T13:11:33Z"/>
+                        </meta>
+                        <text>
+                            <status value="generated"/>
+                            <div xmlns="http://www.w3.org/1999/xhtml">Author Person @ Cleveland Clinic</div>
+                        </text>
+                        <name>
+                            <use value="usual"/>
+                            <family value="Dopplemeyer"/>
+                            <given value="Sherry"/>
+                        </name>
+                    </Practitioner>
                 </contained>
                 <meta>
                     <lastUpdated value="2013-07-01T13:11:33Z"/>
@@ -74,10 +105,10 @@
                 <created value="2005-12-24"/>
                 <indexed value="2013-07-01T23:11:33+10:00"/>
                 <author>
-                    <reference value="Practitioner/a3"/>
+                    <reference value="#a3"/>
                 </author>
                 <author>
-                    <reference value="Practitioner/a4"/>
+                    <reference value="#a4"/>
                 </author>
                 <description value="Physical"/>
                 <securityLabel>
@@ -91,7 +122,7 @@
                     <attachment>
                         <contentType value="text/plain"/>
                         <language value="en-us"/>
-                        <url value="file://textfile.txt"/>
+                        <url value="http://localhost:9556/svc/fhir/Binary/1e404af3-077f-4bee-b7a6-a9be97e1ce32"/>
                     </attachment>
                     <format>
                         <system value="urn:oid:1.3.6.1.4.1.21367.2017.3"/>
@@ -100,7 +131,7 @@
                 </content>
                 <context>
                     <sourcePatientInfo>
-                        <reference value="#a4"/>
+                        <reference value="#a2"/>
                     </sourcePatientInfo>
                     <period>
                         <start value="2004-12-23T08:00:00+10:00"/>
@@ -200,52 +231,20 @@
         </resource>
     </entry>
     <entry>
-        <fullUrl value="http://localhost:9556/svc/fhir/Practitioner/a3"/>
+        <fullUrl value="http://localhost:9556/svc/fhir/Binary/1e404af3-077f-4bee-b7a6-a9be97e1ce32"/>
         <resource>
-            <Practitioner>
-                <id value="a3"/>
+            <Binary>
+                <id value="1e404af3-077f-4bee-b7a6-a9be97e1ce32"/>
                 <meta>
                     <lastUpdated value="2013-07-01T13:11:33Z"/>
                 </meta>
-                <text>
-                    <status value="generated"/>
-                    <div xmlns="http://www.w3.org/1999/xhtml">Author Gerald Smitty @ Cleveland Clinic</div>
-                </text>
-                <name>
-                    <use value="usual"/>
-                    <family value="Smitty"/>
-                    <given value="Gerald"/>
-                </name>
-            </Practitioner>
+                <contentType value="text/plain"/>
+                <content value="YXNkYXNkYXNkYXNkYXNk"/>
+            </Binary>
         </resource>
         <request>
             <method value="POST"/>
-            <url value="Practitioner"/>
-        </request>
-    </entry>
-    <entry>
-        <fullUrl value="http://localhost:9556/svc/fhir/Practitioner/a4"/>
-        <resource>
-            <Practitioner>
-                <id value="a4"/>
-                <!--    cid:51b578b4-3ccb-4e67-b0dc-ef519d82ef2d@healthintersections.com.au    -->
-                <meta>
-                    <lastUpdated value="2013-07-01T13:11:33Z"/>
-                </meta>
-                <text>
-                    <status value="generated"/>
-                    <div xmlns="http://www.w3.org/1999/xhtml">Author Person @ Cleveland Clinic</div>
-                </text>
-                <name>
-                    <use value="usual"/>
-                    <family value="Dopplemeyer"/>
-                    <given value="Sherry"/>
-                </name>
-            </Practitioner>
-        </resource>
-        <request>
-            <method value="POST"/>
-            <url value="Practitioner"/>
+            <url value="Binary"/>
         </request>
     </entry>
 </Bundle>

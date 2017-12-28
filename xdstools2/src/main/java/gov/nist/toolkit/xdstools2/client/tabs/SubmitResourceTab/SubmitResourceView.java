@@ -1,7 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.CellBrowser;
@@ -11,10 +10,12 @@ import gov.nist.toolkit.datasets.shared.DatasetElement;
 import gov.nist.toolkit.datasets.shared.DatasetModel;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractView;
 import gov.nist.toolkit.xdstools2.client.abstracts.MessagePanel;
+import gov.nist.toolkit.xdstools2.client.tabs.fhirSearchTab.IContentHolder;
+import gov.nist.toolkit.xdstools2.client.tabs.fhirSearchTab.TabbedContentPanel;
 import gov.nist.toolkit.xdstools2.client.util.ASite;
-import gov.nist.toolkit.xdstools2.client.widgets.datasetTreeModel.DatasetTreeModel;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.client.widgets.SystemSelector;
+import gov.nist.toolkit.xdstools2.client.widgets.datasetTreeModel.DatasetTreeModel;
 
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,7 @@ import java.util.Map;
 /**
  *
  */
-public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
+public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> implements IContentHolder{
     private MessagePanel messagePanel = new MessagePanel();
     private VerticalPanel tabTopPanel = new VerticalPanel();
     private HTML selected = new HTML();
@@ -33,13 +34,17 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
     private FlowPanel siteTablePanel = new FlowPanel();
     private FlowPanel logPanel = new FlowPanel();
     private FlowPanel inspectorPanel = new FlowPanel();
-    private FlowPanel viewPanel = new FlowPanel();
+    private FlowPanel selectionDisplayPanel = new FlowPanel();
+//    private FlowPanel requestDisplayPanel = new FlowPanel();
+//    private FlowPanel responseDisplayPanel = new FlowPanel();
     private FlowPanel simLogPanel = new FlowPanel();
 
     private HTML datasetLabel = new HTML("Data Set");
     private HTML resourceTypeLabel = new HTML("Resource Type");
     private HTML resourceLabel = new HTML("Resource");
     private FlowPanel contentPanel = new FlowPanel();
+    private TabbedContentPanel bottomPanel;
+
 
     private SystemSelector systemSelector = new SystemSelector("To System") {
         @Override
@@ -111,37 +116,13 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
         thePanel.add(buttonPanel);
 
         thePanel.add(new HTML("<br />"));
-        HTML logTitle = new HTML("<b>Logs</b>");
-        logTitle.addStyleName("tool-section-header");
-        thePanel.add(logTitle);
+        bottomPanel = new TabbedContentPanel("Logs", "400px");
+        thePanel.add(bottomPanel.asWidget());
 
-        ScrollPanel logWrapperPanel = new ScrollPanel();
-        logWrapperPanel.add(logPanel);
+        bottomPanel.addBaseTab(logPanel, "[Log]");
+        bottomPanel.addBaseTab(selectionDisplayPanel, "[Selection]");
 
-        TabLayoutPanel bottomPanel = new TabLayoutPanel(1.5, Style.Unit.EM);
-        bottomPanel.setWidth("100%");
-//        bottomPanel.setWidth("800px");
-        bottomPanel.setHeight("400px");
-        thePanel.add(bottomPanel);
-        logPanel.setWidth("100%");
-        logPanel.setHeight("100%");
-        bottomPanel.add(logWrapperPanel, "[Log]");
-        bottomPanel.add(inspectorPanel, "[Inspector]");
-
-        ScrollPanel viewScrollPanel = new ScrollPanel();
-        viewScrollPanel.add(viewPanel);
-        bottomPanel.add(viewScrollPanel, "[Resource]");
-
-        ScrollPanel simLogScrollPanel = new ScrollPanel();
-        simLogScrollPanel.add(simLogPanel);
-        bottomPanel.add(simLogScrollPanel, "[SimLog");
-
-        inspectorPanel.setWidth("100%");
-
-        ScrollPanel scrollPanel = new ScrollPanel();
-        scrollPanel.add(tabTopPanel);
-
-        return scrollPanel;
+        return inScrollPanel(tabTopPanel);
     }
 
     @Override
@@ -209,15 +190,29 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> {
     void clearLog() { logPanel.clear(); }
 
     void setContent(Widget content) {
-        viewPanel.clear();
-        viewPanel.add(content);
+        selectionDisplayPanel.clear();
+        selectionDisplayPanel.add(content);
     }
 
     void clearContent() {
         contentPanel.setVisible(false);
     }
 
-    public SystemSelector getSystemSelector() {
-        return systemSelector;
+    private ScrollPanel inScrollPanel(Widget w) {
+        w.setWidth("100%");
+        w.setHeight("100%");
+        ScrollPanel sp = new ScrollPanel();
+        sp.add(w);
+        return sp;
+    }
+
+    @Override
+    public void addContent(Widget w, String title) {
+        bottomPanel.addTab(w, title);
+    }
+
+    @Override
+    public void clearLogContent() {
+        bottomPanel.clearContent();
     }
 }

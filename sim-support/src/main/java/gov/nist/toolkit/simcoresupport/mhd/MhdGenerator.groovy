@@ -8,6 +8,7 @@ import gov.nist.toolkit.fhir.server.resourceMgr.ResourceCacheMgr
 import gov.nist.toolkit.fhir.server.resourceMgr.ResourceMgr
 import gov.nist.toolkit.fhir.server.utility.UriBuilder
 import gov.nist.toolkit.simcoresupport.mhd.errors.ResourceNotAvailable
+import gov.nist.toolkit.simcoresupport.mhd.errors.ResourceTypeNotAllowedInPDB
 import gov.nist.toolkit.simcoresupport.proxy.util.ReturnableErrorException
 import gov.nist.toolkit.simcoresupport.proxy.util.SimProxyBase
 import gov.nist.toolkit.xdsexception.ExceptionUtil
@@ -535,9 +536,17 @@ class MhdGenerator {
 
     def baseContentId = '.de1e4efca5ccc4886c8528535d2afb251e0d5fa31d58a815@ihexds.nist.gov'
 
+    static acceptableResourceTypes = [DocumentManifest, DocumentReference, Binary, ListResource]
+
     Submission buildSubmission(Bundle bundle) {
         try {
             loadBundle(bundle)
+
+            rMgr.resources.each { URI uri, IBaseResource resource ->
+                if (!acceptableResourceTypes.contains(resource.class)) {
+                    errorLogger.add(new ResourceTypeNotAllowedInPDB(errorLogger, resource.class.simpleName))
+                }
+            }
 
             Submission submission = new Submission()
             submission.contentId = 'm' + baseContentId

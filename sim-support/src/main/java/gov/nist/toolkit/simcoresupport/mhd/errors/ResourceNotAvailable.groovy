@@ -27,6 +27,7 @@ class ResourceNotAvailable extends AbstractError {
             referencedResourceType = ResourceMgr.resourceTypeFromUrl(referencedUrl)
     }
 
+    @Override
     String toString() {
         StringBuilder buf = new StringBuilder()
         buf.append("${referencedResourceType} reference in ${referencingUrl} : ${referencedUrl} cannot be resolved")

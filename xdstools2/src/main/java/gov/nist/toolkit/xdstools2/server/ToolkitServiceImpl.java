@@ -696,7 +696,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
 
     @Override
-    public Message getFhirResult(GetRawLogsRequest request)  throws Exception {
+    public List<Message> getFhirResult(GetRawLogsRequest request)  throws Exception {
         installCommandContext(request);
         return session().xdsTestServiceManager().getFhirResult(request.getLogId());
     }

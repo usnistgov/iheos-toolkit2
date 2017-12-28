@@ -10,7 +10,7 @@ class RetrieveResponseParserTest extends Specification {
 
         then:
         contents.size() == 1
-        new String(contents[0].content) == 'asdasdasdasdasd\n'
+        new String(contents[0].content) == 'asdasdasdasdasd'
     }
 
 
