@@ -219,7 +219,7 @@ public class DocumentEntryValidator implements ObjectValidator {
                     er.err(XdsErrorCode.Code.XDSRegistryMetadataError, mo.identifyingString() + ": Slot " + slotName + " missing", this, table415);
             }
         } else if (!(vc.isXDM || vc.isXDRLimited)) {
-            for (String slotName : mo.requiredSlots) {
+            for (String slotName : mo.limitedRequiredSlots) {
                 if (mo.getSlot(slotName) == null)
                     er.err(XdsErrorCode.Code.XDSRegistryMetadataError, mo.identifyingString() + ": Slot " + slotName + " missing", this, table415);
             }

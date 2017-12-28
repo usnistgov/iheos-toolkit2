@@ -43,6 +43,10 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 			Arrays.asList(
 			);
 
+	public static List<String> limitedRequiredSlots =
+			Arrays.asList(
+			);
+
 	String mimeType = "";
 	String objectType = "";
 

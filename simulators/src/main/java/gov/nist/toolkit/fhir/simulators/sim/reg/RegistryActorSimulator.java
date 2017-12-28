@@ -45,22 +45,27 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 
 	public RegistryActorSimulator() {}
 
-	public boolean isPartOfRecipient() {
+	private boolean isMetadataLimited() {
+		SimulatorConfigElement sce = getSimulatorConfig().get(SimulatorProperties.METADATA_LIMITED);
+		return sce != null && sce.asBoolean();
+	}
+
+	private boolean isPartOfRecipient() {
 		SimulatorConfigElement sce = getSimulatorConfig().get(SimulatorProperties.PART_OF_RECIPIENT);
 		return sce != null && sce.asBoolean();
 	}
 
-	public boolean isValidateAsRecipient() {
+	private boolean isValidateAsRecipient() {
 		SimulatorConfigElement sce = getSimulatorConfig().get(SimulatorProperties.VALIDATE_AS_RECIPIENT);
 		return sce != null && sce.asBoolean();
 	}
 
-	public boolean isValidateCodes() {
+	private boolean isValidateCodes() {
 		SimulatorConfigElement sce = getSimulatorConfig().get(SimulatorProperties.VALIDATE_CODES);
 		return sce != null && sce.asBoolean();
 	}
 
-	public boolean validateAgainstPatientIdentityFeed() {
+	private boolean validateAgainstPatientIdentityFeed() {
 		SimulatorConfigElement sce = getSimulatorConfig().get(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED);
 		return sce != null && sce.asBoolean();
 	}
@@ -104,6 +109,7 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 			common.vc.isRequest = true;
 			common.vc.hasHttp = true;
 			common.vc.hasSoap = true;
+			common.vc.isXDRLimited = isMetadataLimited();
 
 			if (isValidateAsRecipient())
 				common.vc.isPartOfRecipient = true;
