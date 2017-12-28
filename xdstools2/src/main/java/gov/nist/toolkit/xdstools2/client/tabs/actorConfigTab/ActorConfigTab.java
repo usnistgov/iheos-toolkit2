@@ -241,6 +241,9 @@ public class ActorConfigTab extends GenericQueryTab {
 					|| (!site.isSimulator() && ActorType.ONDEMAND_DOCUMENT_SOURCE.equals(actorType)))
 				continue;
 
+			if (actorType.hasTransaction(TransactionType.NONE))
+				continue;
+
 			// These getRetrievedDocumentsModel configured in other ways
 			String actorTypeName = actorType.getName();
 			HTML actorTypeLabel = new HTML(HtmlMarkup.bold(actorTypeName));
@@ -299,6 +302,8 @@ public class ActorConfigTab extends GenericQueryTab {
 			for(TransactionType transType : actorType.getTransactions()) {
 				if (transType == TransactionType.RETRIEVE)
 					continue;   // Handled above
+				if (transType == TransactionType.NONE)
+					continue;
 				HTML transNameLabel = new HTML(transType.getName());
 				actorEditGrid.setWidget(row, 0, transNameLabel);
 

@@ -59,6 +59,10 @@ public class SubmitResourceView extends AbstractView<SubmitResourcePresenter> im
         GWT.log("BuildSubmitResourceView");
     }
 
+    public SystemSelector getSystemSelector() {
+        return systemSelector;
+    }
+
     @Override
     protected Map<String, Widget> getPathToWidgetsMap() {
         return null;

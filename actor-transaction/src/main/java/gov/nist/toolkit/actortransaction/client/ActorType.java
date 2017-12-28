@@ -4,7 +4,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.configDatatypes.client.FhirVerb;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.xdsexception.client.TkActorNotFoundException;
-import org.apache.http.annotation.Obsolete;
 
 import java.io.Serializable;
 import java.util.*;
@@ -430,8 +429,8 @@ public enum ActorType implements IsSerializable, Serializable {
             "fhirsupport",
             "",
             "",
-            Arrays.asList(TransactionType.PIF),  // place holder - transaction types
-            true,  // show in config - only partially configured - only used in IT tests
+            Arrays.asList(TransactionType.NONE),  // place holder - transaction types
+            false,  // show in config - only partially configured - only used in IT tests
             null,  // actorsFileLabel
             null,   // httpSimulatorClassName
             null,    // http transaction types
@@ -448,7 +447,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "simproxy",
             "gov.nist.toolkit.simcommon.server.factories.SimProxyFactory",
             "gov.nist.toolkit.fhir.simulators.proxy.sim.SimProxySimulator",  // only constructor should be used
-            Arrays.asList(TransactionType.PIF),  // place holder - transaction types
+            Arrays.asList(TransactionType.NONE),  // place holder - transaction types
             false,  // show in config - only partially configured - only used in IT tests
             null,  // actorsFileLabel
             null,   // httpSimulatorClassName
@@ -459,103 +458,103 @@ public enum ActorType implements IsSerializable, Serializable {
             IheItiProfile.XDS,
             Arrays.asList(OptionType.REQUIRED)
     ),
-    @Obsolete
-    XDS_on_FHIR_Recipient(   //
-            "XDS on FHIR Recipient",
-            Arrays.asList(""),
-            "mhdfhirrec",
-            "gov.nist.toolkit.simcommon.server.factories.SimProxyFactory",
-            "gov.nist.toolkit.fhir.simulators.proxy.sim.SimProxySimulator",  // only constructor should be used
-            Arrays.asList(TransactionType.PROV_DOC_BUNDLE),
-            false,  // show in config - only partially configured - only used in IT tests
-            null,  // actorsFileLabel
-            null,   // httpSimulatorClassName
-            null,    // http transaction types
-            false,    // is fhir
-            // proxy transform classes
-            Arrays.asList(
-                    new ProxyTransformConfig(TransactionType.PROV_DOC_BUNDLE,
-                            TransactionDirection.REQUEST,
-                            FhirVerb.NONE,
-                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToXdsEndpointTransform").toString(),
-                    new ProxyTransformConfig(TransactionType.PROV_DOC_BUNDLE,
-                            TransactionDirection.REQUEST,
-                            FhirVerb.NONE,
-                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToPnrContentTransform").toString(),
-                    new ProxyTransformConfig(TransactionType.PROV_DOC_BUNDLE,
-                            TransactionDirection.RESPONSE,
-                            FhirVerb.NONE,
-                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.RegistryResponseToOperationOutcomeTransform").toString(),
-
-                    new ProxyTransformConfig(TransactionType.FIND_DOC_REFS,
-                            TransactionDirection.REQUEST,
-                            FhirVerb.NONE,
-                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToXdsEndpointTransform").toString(),
-                    new ProxyTransformConfig(TransactionType.FIND_DOC_REFS,
-                            TransactionDirection.REQUEST,
-                            FhirVerb.NONE,
-                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToSQRequestTransform").toString(),
-                    new ProxyTransformConfig(TransactionType.FIND_DOC_REFS,
-                            TransactionDirection.RESPONSE,
-                            FhirVerb.NONE,
-                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.SQResponseToFhirSearchResponseTransform").toString()
-            ),
-            "rec",
-            IheItiProfile.MHD,
-            Arrays.asList(OptionType.DOC_RECIP_RESPNDR)
-    ),
-    @Obsolete
-    XDS_on_FHIR_Responder(
-            "XDS on FHIR Responder",
-            Arrays.asList(""),
-            "mhdfhirres",
-            "gov.nist.toolkit.simcommon.server.factories.SimProxyFactory",
-            "gov.nist.toolkit.fhir.simulators.proxy.sim.SimProxySimulator",  // only constructor should be used
-            Arrays.asList(TransactionType.FIND_DOC_REFS),
-            false,  // show in config - only partially configured - only used in IT tests
-            null,  // actorsFileLabel
-            null,   // httpSimulatorClassName
-            null,    // http transaction types
-            false,    // is fhir
-            // proxy transform classes
-            Arrays.asList(
-                    new ProxyTransformConfig(TransactionType.PROV_DOC_BUNDLE,
-                            TransactionDirection.REQUEST,
-                            FhirVerb.NONE,
-                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToXdsEndpointTransform").toString(),
-                    new ProxyTransformConfig(TransactionType.PROV_DOC_BUNDLE,
-                            TransactionDirection.REQUEST,
-                            FhirVerb.NONE,
-                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToPnrContentTransform").toString(),
-                    new ProxyTransformConfig(TransactionType.PROV_DOC_BUNDLE,
-                            TransactionDirection.RESPONSE,
-                            FhirVerb.NONE,
-                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.RegistryResponseToOperationOutcomeTransform").toString(),
-
-                    new ProxyTransformConfig(TransactionType.READ_DOC_REF,
-                            TransactionDirection.REQUEST,
-                            FhirVerb.NONE,
-                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToXdsEndpointTransform").toString(),
-                    new ProxyTransformConfig(TransactionType.READ_DOC_REF,
-                            TransactionDirection.REQUEST,
-                            FhirVerb.NONE,
-                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToSQRequestTransform").toString(),
-                    new ProxyTransformConfig(TransactionType.READ_DOC_REF,
-                            TransactionDirection.RESPONSE,
-                            FhirVerb.NONE,
-                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.SQResponseToFhirSearchResponseTransform").toString()
-            ),
-            "rec",
-            IheItiProfile.MHD,
-            Arrays.asList(OptionType.DOC_RECIP_RESPNDR)
-    ),
+//    @Obsolete
+//    XDS_on_FHIR_Recipient(   //
+//            "XDS on FHIR Recipient",
+//            Arrays.asList(""),
+//            "mhdfhirrec",
+//            "gov.nist.toolkit.simcommon.server.factories.SimProxyFactory",
+//            "gov.nist.toolkit.fhir.simulators.proxy.sim.SimProxySimulator",  // only constructor should be used
+//            Arrays.asList(TransactionType.PROV_DOC_BUNDLE),
+//            false,  // show in config - only partially configured - only used in IT tests
+//            null,  // actorsFileLabel
+//            null,   // httpSimulatorClassName
+//            null,    // http transaction types
+//            false,    // is fhir
+//            // proxy transform classes
+//            Arrays.asList(
+//                    new ProxyTransformConfig(TransactionType.PROV_DOC_BUNDLE,
+//                            TransactionDirection.REQUEST,
+//                            FhirVerb.NONE,
+//                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToXdsEndpointTransform").toString(),
+//                    new ProxyTransformConfig(TransactionType.PROV_DOC_BUNDLE,
+//                            TransactionDirection.REQUEST,
+//                            FhirVerb.NONE,
+//                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToPnrContentTransform").toString(),
+//                    new ProxyTransformConfig(TransactionType.PROV_DOC_BUNDLE,
+//                            TransactionDirection.RESPONSE,
+//                            FhirVerb.NONE,
+//                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.RegistryResponseToOperationOutcomeTransform").toString(),
+//
+//                    new ProxyTransformConfig(TransactionType.FIND_DOC_REFS,
+//                            TransactionDirection.REQUEST,
+//                            FhirVerb.NONE,
+//                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToXdsEndpointTransform").toString(),
+//                    new ProxyTransformConfig(TransactionType.FIND_DOC_REFS,
+//                            TransactionDirection.REQUEST,
+//                            FhirVerb.NONE,
+//                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToSQRequestTransform").toString(),
+//                    new ProxyTransformConfig(TransactionType.FIND_DOC_REFS,
+//                            TransactionDirection.RESPONSE,
+//                            FhirVerb.NONE,
+//                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.SQResponseToFhirSearchResponseTransform").toString()
+//            ),
+//            "rec",
+//            IheItiProfile.MHD,
+//            Arrays.asList(OptionType.DOC_RECIP_RESPNDR)
+//    ),
+//    @Obsolete
+//    XDS_on_FHIR_Responder(
+//            "XDS on FHIR Responder",
+//            Arrays.asList(""),
+//            "mhdfhirres",
+//            "gov.nist.toolkit.simcommon.server.factories.SimProxyFactory",
+//            "gov.nist.toolkit.fhir.simulators.proxy.sim.SimProxySimulator",  // only constructor should be used
+//            Arrays.asList(TransactionType.FIND_DOC_REFS),
+//            false,  // show in config - only partially configured - only used in IT tests
+//            null,  // actorsFileLabel
+//            null,   // httpSimulatorClassName
+//            null,    // http transaction types
+//            false,    // is fhir
+//            // proxy transform classes
+//            Arrays.asList(
+//                    new ProxyTransformConfig(TransactionType.PROV_DOC_BUNDLE,
+//                            TransactionDirection.REQUEST,
+//                            FhirVerb.NONE,
+//                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToXdsEndpointTransform").toString(),
+//                    new ProxyTransformConfig(TransactionType.PROV_DOC_BUNDLE,
+//                            TransactionDirection.REQUEST,
+//                            FhirVerb.NONE,
+//                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToPnrContentTransform").toString(),
+//                    new ProxyTransformConfig(TransactionType.PROV_DOC_BUNDLE,
+//                            TransactionDirection.RESPONSE,
+//                            FhirVerb.NONE,
+//                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.RegistryResponseToOperationOutcomeTransform").toString(),
+//
+//                    new ProxyTransformConfig(TransactionType.READ_DOC_REF,
+//                            TransactionDirection.REQUEST,
+//                            FhirVerb.NONE,
+//                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToXdsEndpointTransform").toString(),
+//                    new ProxyTransformConfig(TransactionType.READ_DOC_REF,
+//                            TransactionDirection.REQUEST,
+//                            FhirVerb.NONE,
+//                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.MhdToSQRequestTransform").toString(),
+//                    new ProxyTransformConfig(TransactionType.READ_DOC_REF,
+//                            TransactionDirection.RESPONSE,
+//                            FhirVerb.NONE,
+//                            "gov.nist.toolkit.fhir.simulators.proxy.transforms.SQResponseToFhirSearchResponseTransform").toString()
+//            ),
+//            "rec",
+//            IheItiProfile.MHD,
+//            Arrays.asList(OptionType.DOC_RECIP_RESPNDR)
+//    ),
     ANY(
             "Any",
             Arrays.asList(""),
             "any",
             null,
             null,
-            Arrays.asList(TransactionType.PIF),  // place holder
+            Arrays.asList(TransactionType.NONE),  // place holder
             false,
             null,
             false,

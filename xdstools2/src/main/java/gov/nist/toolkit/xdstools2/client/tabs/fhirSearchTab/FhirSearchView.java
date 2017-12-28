@@ -57,6 +57,10 @@ public class FhirSearchView extends AbstractView<FhirSearchPresenter> implements
     };
 
 
+    public SystemSelector getSystemSelector() {
+        return systemSelector;
+    }
+
     public FhirSearchView() {
         super();
         GWT.log("BuildFhirSearchView");

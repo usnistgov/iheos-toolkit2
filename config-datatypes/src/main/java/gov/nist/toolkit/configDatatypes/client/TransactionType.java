@@ -41,6 +41,7 @@ public enum TransactionType implements Serializable, IsSerializable {
     FIND_DOC_REFS("ITI-67", "DocumentReference", "fdr", "fdr", "fdr.as", false, "fhir", "fhir", false, SimulatorProperties.fhirEndpoint, SimulatorProperties.fhirTlsEndpoint, true, FhirVerb.QUERY),
     READ_DOC_REF("ITI-67", "DocumentReference", "rdr", "rdr", "rdr.as", false, "fhir", "fhir", false, SimulatorProperties.fhirEndpoint, SimulatorProperties.fhirTlsEndpoint, true, FhirVerb.READ),
     READ_BINARY("ITI-68", "Binary", "br", "br", "br.as", false, "fhir", "fhir", false, SimulatorProperties.fhirEndpoint, SimulatorProperties.fhirTlsEndpoint, true, FhirVerb.READ),
+    NONE("NONE", "NONE", "none", "none", "none.as", false, "none", "none", false, null, null, false, FhirVerb.NONE),
     ANY("ANY", "ANY", "any", "any", "any.as", false, "any", "any", false, null, null, false, FhirVerb.NONE);
 
 	private static final long serialVersionUID = 1L;
