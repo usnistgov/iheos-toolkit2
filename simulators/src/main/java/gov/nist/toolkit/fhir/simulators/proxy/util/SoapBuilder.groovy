@@ -45,7 +45,7 @@ class SoapBuilder {
             buf.append(it.content)   // body
             index++
         }
-        buf.append(getClass().getResource('/templates/mtom_close.txt').text)
+        buf.append('\r\n').append(getClass().getResource('/templates/mtom_close.txt').text.trim())
 
         return buf.toString()
     }

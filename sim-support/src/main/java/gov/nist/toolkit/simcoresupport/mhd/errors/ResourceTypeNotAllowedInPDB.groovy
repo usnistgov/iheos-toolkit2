@@ -4,16 +4,16 @@ import gov.nist.toolkit.simcoresupport.mhd.ErrorLogger
 import gov.nist.toolkit.simcoresupport.mhd.MhdGenerator
 
 class ResourceTypeNotAllowedInPDB extends AbstractError {
-    Class resourceClass
+    String resourceClassName
 
-    ResourceTypeNotAllowedInPDB(ErrorLogger errorLogger, Class resourceClass) {
+    ResourceTypeNotAllowedInPDB(ErrorLogger errorLogger, String resourceClassName) {
         super(errorLogger)
-        this.resourceClass = resourceClass
+        this.resourceClassName = resourceClassName
     }
 
     @Override
     String toString() {
-        "Resource of type ${resourceClass.simpleName} is not allowed in ITI-65 Provide Document Bundle transaction\n" +
-                "...only ${MhdGenerator.acceptableResourceTypes} are allowed."
+        "Resource of type ${resourceClassName} is not allowed in ITI-65 Provide Document Bundle transaction\n" +
+                "...only ${MhdGenerator.acceptableResourceTypes.collect { it.simpleName }} are allowed."
     }
 }

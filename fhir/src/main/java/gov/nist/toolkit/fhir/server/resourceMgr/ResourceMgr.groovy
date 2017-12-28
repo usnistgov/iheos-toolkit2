@@ -79,32 +79,23 @@ class ResourceMgr {
             if (component.hasResource()) {
                 assignId(component.getResource())
                 logger.info("...${component.fullUrl}")
-                addResource(component.fullUrl, component.getResource())
+                def duplicate = addResource(component.fullUrl, component.getResource())
+                assert !duplicate, "Duplicate entry in bundle - URL is ${component.fullUrl}"
             }
         }
         if (er) {
             er.sectionHeading('Load Resources')
             er.detail(toString())
         }
-//        bundleValidations(bundle)
     }
-
-//    static bundleValidations(Bundle bundle) {
-//        fullUrlValidation(bundle)
-//    }
-
-//    static fullUrlValidation(Bundle bundle) {
-//        bundle.getEntry().each { Bundle.BundleEntryComponent component ->
-//            new BundleFullUrlValidator(component, null).validate()
-//        }
-//    }
 
     def currentResource(resource) {
         clearContainedResources()
         assert resource instanceof DomainResource
         def contained = resource.contained
         contained?.each { Resource r ->
-            addContainedResource(r)
+            def duplicate = addContainedResource(r)
+            assert !duplicate, "Duplicate contained Resource (${r.id} in Resource ${resource.id})"
         }
 
         fullUrl = url(resource)
@@ -155,43 +146,34 @@ class ResourceMgr {
         buf
     }
 
-//    static URI resolveUrl(URI containingUrl, URI referenceUrl) {
-//        if (isAbsolute(referenceUrl))
-//            return referenceUrl
-//        if (isAbsolute(containingUrl) && isRelative(referenceUrl))
-//            return baseUrlFromUrl(containingUrl) + '/' + referenceUrl
-//        if (isRelative(containingUrl) && isRelative(referenceUrl))
-//            return referenceUrl
-//        if (containingUrl.toString().startsWith('urn')) {
-//            return referenceUrl
-//        }
-//        assert false, 'Impossible'
-//    }
-
     Object getResource(referenceUrl) {
         return resources[referenceUrl]
     }
-
-//    Object getResource(containingUrl, referenceUrl) {
-//        def url = resolveUrl(containingUrl, referenceUrl)
-//        if (url)
-//            return resources[url]
-//        return null
-//    }
 
     List getResourceObjects() {
         resources.values() as List
     }
 
-    def addResource(url, resource) {
+    /**
+     *
+     * @param url
+     * @param resource
+     * @return already present
+     */
+    boolean addResource(url, resource) {
         if (url instanceof String)
             url = UriBuilder.build(url)
+        boolean duplicate = resources.containsKey(url)
         resources[url] = resource
+        return duplicate
     }
 
     def addContainedResource(resource) {
         assert resource instanceof DomainResource
-        containedResources[UriBuilder.build(resource.id)] = resource
+        def id = UriBuilder.build(resource.id)
+        boolean duplicate = containedResources.containsKey(id)
+        containedResources[id] = resource
+        return duplicate
     }
 
     def clearContainedResources() {
@@ -208,7 +190,6 @@ class ResourceMgr {
             entry.value == resource
         }?.key
     }
-
 
     /**
      *

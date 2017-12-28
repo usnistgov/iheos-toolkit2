@@ -544,7 +544,7 @@ class MhdGenerator {
 
             rMgr.resources.each { URI uri, IBaseResource resource ->
                 if (!acceptableResourceTypes.contains(resource.class)) {
-                    errorLogger.add(new ResourceTypeNotAllowedInPDB(errorLogger, resource.class))
+                    errorLogger.add(new ResourceTypeNotAllowedInPDB(errorLogger, resource.class.simpleName))
                 }
             }
 

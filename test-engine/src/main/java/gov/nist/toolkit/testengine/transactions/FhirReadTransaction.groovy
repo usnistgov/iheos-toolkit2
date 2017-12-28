@@ -86,6 +86,7 @@ class FhirReadTransaction extends BasicFhirTransaction {
                         stepContext.set_error("Returned bytes do not match those sent")
                         stepContext.set_error("Sent ${referenceBytes.size()}")
                         stepContext.set_error("Received ${contentBytes.size()}")
+                        stepContext.set_error(describe(referenceBytes, contentBytes))
                         return
                     }
                 } else {
@@ -94,6 +95,7 @@ class FhirReadTransaction extends BasicFhirTransaction {
                         stepContext.set_error("Returned bytes do not match those sent")
                         stepContext.set_error("Sent ${referenceBytes.size()}")
                         stepContext.set_error("Received ${contentBytes.size()}")
+                        stepContext.set_error(describe(referenceBytes, contentBytes))
                         return
                     }
                     return
@@ -175,6 +177,7 @@ class FhirReadTransaction extends BasicFhirTransaction {
                         stepContext.set_error("Returned bytes do not match those sent")
                         stepContext.set_error("Sent ${referenceBytes.size()}")
                         stepContext.set_error("Received ${returnedBytes.size()}")
+                        stepContext.set_error(describe(referenceBytes, returnedBytes))
                         if (referenceDocument.endsWith('.txt')) {
                             stepContext.set_error("Sent ${new String(referenceBytes).replaceAll('\n','\\n')}")
                             stepContext.set_error("Back ${new String(returnedBytes).replaceAll('\n','\\n')} ")
@@ -184,6 +187,19 @@ class FhirReadTransaction extends BasicFhirTransaction {
             }
         }
 
+    }
+
+    String describe(byte[] a, byte[] b) {
+        if (a == b) return ''
+        if (a.size() == b.size()) return 'corrupted'
+        StringBuilder buf = new StringBuilder()
+
+        buf.append('a starts with ').append(a[0]).append(a[1]).append(a[2]).append('\n')
+        buf.append('b starts with ').append(b[0]).append(b[1]).append(b[2]).append('\n')
+        buf.append('a ends with ').append(a[a.size()-1]).append(a[a.size()-2]).append(a[a.size()-3]).append('\n')
+        buf.append('b ends with ').append(b[b.size()-1]).append(b[b.size()-2]).append(b[b.size()-3]).append('\n')
+
+        return buf.toString()
     }
 
     static resourceTypeFromUrl(url) {
