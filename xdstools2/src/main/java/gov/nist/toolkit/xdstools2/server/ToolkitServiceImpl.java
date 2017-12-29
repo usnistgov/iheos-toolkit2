@@ -27,15 +27,15 @@ import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.server.RawResponseBuilder;
 import gov.nist.toolkit.services.server.orchestration.OrchestrationManager;
-import gov.nist.toolkit.session.shared.Message;
+import gov.nist.toolkit.services.server.testClient.FhirServiceManager;
 import gov.nist.toolkit.services.shared.SimulatorServiceManager;
 import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
 import gov.nist.toolkit.session.server.Session;
-import gov.nist.toolkit.services.server.testClient.FhirServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
+import gov.nist.toolkit.session.shared.Message;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.Simulator;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
@@ -251,7 +251,15 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<Result> registerAndQuery(RegisterAndQueryRequest request) throws Exception  {
         installCommandContext(request);
-        return session().queryServiceManager().registerAndQuery(request.getSite(),request.getPid());
+        QueryServiceManager mgr = session().queryServiceManager();
+        List<Result> results = new ArrayList<>();
+
+        for (Submission submission : request.getSubmissions()) {
+            List<Result> myResults = mgr.registerAndQuery(submission.getTestInstance(), request.getSite(), submission.getPid());
+            results.addAll(myResults);
+        }
+
+        return results;
     }
     @Override
     public List<Result> lifecycleValidation(LifecycleValidationRequest request) throws Exception  {

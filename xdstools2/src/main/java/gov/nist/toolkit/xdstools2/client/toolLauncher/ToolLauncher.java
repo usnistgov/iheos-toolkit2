@@ -38,6 +38,7 @@ public class ToolLauncher implements ClickHandler {
 	final static public String getAllTabLabel = "GetAll";
 	final static public String fhirSearchTabLabel = "FHIR Search";
 	final static public String registryDoThisFirstTabLabel = "XDS.b_Registry_Do_This_First";
+	final static public String rmdInitTabLabel = "RMD Test Initialization";
 	final static public String getRelatedTabLabel = "GetRelated";
 	final static public String connectathonTabLabel = "Connectathon Tools";
 	final static public String messageValidatorTabLabel = "Message Validator";
@@ -92,6 +93,7 @@ public class ToolLauncher implements ClickHandler {
 		tools.add(new ToolDef(getSubmissionSetTabLabel, "GetSS", "GetSS"));
 		tools.add(new ToolDef(getAllTabLabel, "GetAll", "GetAll"));
 		tools.add(new ToolDef(registryDoThisFirstTabLabel, "RegFirst", "RegFirst"));
+		tools.add(new ToolDef(rmdInitTabLabel, "RMDInit", "RMDInit"));
 		tools.add(new ToolDef(getRelatedTabLabel, "GetRelated", "GetRelated"));
 		tools.add(new ToolDef(connectathonTabLabel, "Connectathon", "Connectathon"));
 		tools.add(new ToolDef(messageValidatorTabLabel, "MsgVal", "MsgVal"));
@@ -158,6 +160,7 @@ public class ToolLauncher implements ClickHandler {
 		if (menuName.equals(getFolderAndContentsTabLabel)) return new GetFolderAndContentsTab();
 		if (menuName.equals(getSubmissionSetTabLabel)) return new GetSubmissionSetAndContentsTab();
 		if (menuName.equals(registryDoThisFirstTabLabel)) return new RegisterAndQueryTab();
+		if (menuName.equals(rmdInitTabLabel)) return new RMDInitTab();
 		if (menuName.equals(getRelatedTabLabel)) return new GetRelatedTab();
 		if (menuName.equals(getAllTabLabel)) return new GetAllTab();
 		if (menuName.equals(connectathonTabLabel)) return new ConnectathonTab();

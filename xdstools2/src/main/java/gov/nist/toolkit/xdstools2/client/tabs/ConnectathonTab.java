@@ -59,6 +59,8 @@ public class ConnectathonTab extends GenericQueryTab {
 		row++;
 		mainGrid.setWidget(row, col, HyperlinkFactory.link(ToolLauncher.repositoryTestDataTabLabel, new ToolLauncher(ToolLauncher.repositoryTestDataTabLabel)));
 		row++;
+		mainGrid.setWidget(row, col, HyperlinkFactory.link(ToolLauncher.rmdInitTabLabel, new ToolLauncher(ToolLauncher.rmdInitTabLabel)));
+		row++;
 
 		row = 0;
 		col++;

@@ -32,10 +32,10 @@ public class QueryServiceManager extends CommonService {
 		this.session = session;
 	}
 	
-	public List<Result> registerAndQuery(SiteSpec site, String pid)  {
+	public List<Result> registerAndQuery(TestInstance testInstance, SiteSpec site, String pid)  {
 		logger.debug(session.id() + ": " + "registerAndQuery");
 		try {
-			return new RegisterAndQuery(session).run(site, pid);
+			return new RegisterAndQuery(session).run(testInstance, site, pid);
 		} catch (XdsException e) {
 			return buildResultList(e);
 		}

@@ -19,11 +19,11 @@ public class RegisterAndQuery extends CommonService {
 		this.session = session;
 	}
 	
-	public List<Result> run(SiteSpec site, String pid) {
+	public List<Result> run(TestInstance testInstance, SiteSpec site, String pid) {
 		try {
 			session.setSiteSpec(site);
 			session.transactionSettings.assignPatientId = false;
-			TestInstance testInstance = new TestInstance("RegisterAndQuery");
+//			TestInstance testInstance = new TestInstance("RegisterAndQuery");
 			List<String> sections = null;
 			Map<String, String> params = new HashMap<String, String>();
 			params.put("$patientid$", pid);

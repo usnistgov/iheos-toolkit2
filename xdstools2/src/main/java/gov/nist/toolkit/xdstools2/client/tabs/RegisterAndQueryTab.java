@@ -2,15 +2,19 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.command.command.RegisterAndQueryCommand;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.request.RegisterAndQueryRequest;
 
 import java.util.ArrayList;
@@ -81,7 +85,7 @@ public class RegisterAndQueryTab extends GenericQueryTab {
 				public void onComplete(List<Result> result) {
 					queryCallback.onSuccess(result);
 				}
-			}.run(new RegisterAndQueryRequest(getCommandContext(),siteSpec,pidTextBox.getValue().trim()));
+			}.run(new RegisterAndQueryRequest(getCommandContext(), new TestInstance("RegisterAndQuery"), siteSpec,pidTextBox.getValue().trim()));
 		}
 		
 	}
