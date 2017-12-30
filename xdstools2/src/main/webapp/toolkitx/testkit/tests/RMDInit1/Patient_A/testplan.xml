@@ -1,0 +1,21 @@
+
+<TestPlan>
+  <Test>RMDInit1/Patient_A</Test>
+  <TestStep id="submit_doc">
+    <Goal>
+      Load the first of three Provide and Register transactions sent to the selected Repository.
+      This transaction contains a single DocumentEntry with title RMDInit1 - Doc1.
+      The primary Patient ID is used.  A Patient Identity Feed is NOT sent to the 
+      Registry.  You must do this on your own.
+    </Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+  <ProvideAndRegisterTransaction>
+    <XDSb/>
+    <AssignUuids/>
+    <NoPatientId/>
+    <MetadataFile>metadata.xml</MetadataFile>
+    <Document id="Document01">readme.txt</Document>
+  </ProvideAndRegisterTransaction>
+</TestStep>
+
+</TestPlan>

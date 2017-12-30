@@ -1,0 +1,28 @@
+
+<TestPlan>
+  <Test>RMDInit2/Patient_B_Documents_in_Folder</Test>
+  <TestStep id="submit_doc">
+    <Goal>
+      Load the second of three transactions sent to the selected Repository.
+      This transaction contains a two DocumentEntries with titles RMDInit2 - Doc1 
+      and RMDInit2 - Doc2, a Folder with title RMDInit2 Folder. The DocumentEntries
+      are placed into the Folder.
+      The secondary Patient ID is used.  A Patient Identity Feed is NOT sent to the 
+      Registry.  You must do this on your own.
+    </Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+  <ProvideAndRegisterTransaction>
+    <XDSb/>
+    <AssignUuids/>
+    <NoPatientId/>
+    <MetadataFile>metadata.xml</MetadataFile>
+    <Document id="Document01">readme.txt</Document>
+    <Document id="Document02">readme.txt</Document>
+    <Report name="docid" section="InputMetadata">
+      //*[local-name()='ExtrinsicObject']/@id
+    </Report>
+   
+  </ProvideAndRegisterTransaction>
+</TestStep>
+
+</TestPlan>
