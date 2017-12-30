@@ -1,6 +1,7 @@
 package gov.nist.toolkit.fhir.support
 
 import gov.nist.toolkit.xdsexception.ExceptionUtil
+import org.apache.log4j.Logger
 import org.apache.lucene.document.Document
 import org.apache.lucene.document.Field
 import org.apache.lucene.document.StringField
@@ -17,6 +18,7 @@ import org.apache.lucene.store.FSDirectory
  * protected status.
  */
 class ResDbIndexer {
+    static private final Logger logger = Logger.getLogger(ResDbIndexer.class);
     IndexWriter indexWriter
     File indexDir
     boolean openForWriting = false
@@ -36,6 +38,7 @@ class ResDbIndexer {
      * @return
      */
     protected openIndexForWriting() {
+        logger.info("open index for writing ${indexDir}")
         try {
             Directory dir = FSDirectory.open(indexDir.toPath())
             IndexWriterConfig iwc = new IndexWriterConfig()
@@ -57,6 +60,7 @@ class ResDbIndexer {
     }
 
     protected close() {
+        logger.info("close ${indexDir}")
         try {
             if (indexWriter)
                 indexWriter.close()
@@ -67,7 +71,7 @@ class ResDbIndexer {
             if (indexReader) indexReader.close()
             indexReader = null
         } catch (Exception e) {
-
+            logger.fatal("close of ${indexDir} failed - ${e.getMessage()}")
         }
     }
 

@@ -20,4 +20,9 @@ class ResourceIndex {
         items.add(item)
         return this
     }
+
+    @Override
+    String toString() {
+        "${items} ==> ${path}"
+    }
 }

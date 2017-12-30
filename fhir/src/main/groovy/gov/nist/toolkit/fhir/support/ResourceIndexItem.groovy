@@ -12,4 +12,9 @@ class ResourceIndexItem {
         value = _value
     }
 
+    @Override
+    public String toString() {
+        "${field}: ${value}"
+    }
+
 }

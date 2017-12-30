@@ -18,6 +18,7 @@ import gov.nist.toolkit.fhir.support.SimIndexManager
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.utilities.id.UuidAllocator
+import org.apache.log4j.Logger
 import org.hl7.fhir.dstu3.model.DomainResource
 import org.hl7.fhir.dstu3.model.IdType
 
@@ -28,6 +29,7 @@ import java.nio.charset.Charset
  * classes to toolkit ResDb funtions.
  */
 class ToolkitResourceProvider {
+    static Logger logger = Logger.getLogger(ToolkitResourceProvider.class);
     FhirContext fhirContext  // expensive to create so it is built once
     Class<?> resourceType
     RequestDetails requestDetails

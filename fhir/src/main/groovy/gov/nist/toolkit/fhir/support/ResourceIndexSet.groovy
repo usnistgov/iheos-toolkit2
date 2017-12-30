@@ -12,4 +12,9 @@ class ResourceIndexSet {
         items.add(idx)
         idx
     }
+
+    @Override
+    String toString() {
+        items.collect { it.toString() }.join('\n')
+    }
 }
