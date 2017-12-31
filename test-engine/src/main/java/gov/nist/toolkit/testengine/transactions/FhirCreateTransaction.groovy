@@ -66,6 +66,22 @@ class FhirCreateTransaction extends BasicFhirTransaction {
         }
     }
 
+    static updateOriginalDocUrl(def resource, String symbolicReference, String url) {
+        if (resource instanceof DocumentReference) {
+            DocumentReference dr = resource
+            dr.relatesTo.each { DocumentReference.DocumentReferenceRelatesToComponent comp ->
+                if (comp.target.reference == symbolicReference)
+                    comp.target = new Reference(url)
+            }
+        } else if (resource instanceof Bundle) {
+            Bundle bundle = resource
+            bundle.entry.each { Bundle.BundleEntryComponent comp ->
+                Resource res = comp.getResource()
+                updateOriginalDocUrl(res, symbolicReference, url)
+            }
+        }
+    }
+
     @Override
     void doRun(IBaseResource resource, String urlExtension) {
         assert endpoint, 'TestClient:FhirCreateTransaction: endpoint is null'
@@ -73,11 +89,19 @@ class FhirCreateTransaction extends BasicFhirTransaction {
         String pid_value = null
         String pid_system = null
         String patientReference = null
+        Map<String, String> originalDocUrls = [:]
 
         if (useReportManager) {
             pid_value = useReportManager.get('$pid_value$');
             pid_system = useReportManager.get('$pid_system$');
             patientReference = useReportManager.get('$patient_reference$')
+
+            (1..9).each { int index ->
+                def url = useReportManager.get("docref${index}")
+                if (url) {
+                    originalDocUrls["docref${index}"] = url
+                }
+            }
         }
 
         includeLocalReferences(resource)
@@ -91,6 +115,12 @@ class FhirCreateTransaction extends BasicFhirTransaction {
         // assign new new masterIdentifier to all DocumentRefernce and Documeent Manifest objects
         if (resource instanceof Resource)
             updateMasterIdentifier(resource)
+
+        if (originalDocUrls) {
+            originalDocUrls.each { String symbol, String url ->
+                updateOriginalDocUrl(resource, symbol, url)
+            }
+        }
 
         if (urlExtension && !urlExtension.startsWith('/'))
             urlExtension = "/${urlExtension}"

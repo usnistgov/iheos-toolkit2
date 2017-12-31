@@ -113,7 +113,7 @@
                 <relatesTo>
                     <code value="replaces"/>
                     <target>
-                        <reference value="$original_doc_url$"/>
+                        <reference value="docref1"/>
                     </target>
                 </relatesTo>
                 <description value="Physical"/>

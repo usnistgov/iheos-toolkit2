@@ -32,7 +32,7 @@
             <UseReport step="PatientLookup" section="THIS" reportName="pid_value" useAs="$pid_value$"/>
             <UseReport step="PatientLookup" section="THIS" reportName="pid_system" useAs="$pid_system$"/>
             <UseReport step="PatientLookup" section="THIS" reportName="Url" useAs="$patient_reference$"/>
-            <UseReport test="pdb_rplc_recresp" step="SendPdb" section="submit_original" reportName="REF_DR0" useAs="$original_doc_url$"/>
+            <UseReport test="pdb_rplc_recresp" step="SendPdb" section="submit_original" reportName="REF_DR0" useAs="docref1"/>
             <ResourceFile>SingleDocSubmit.xml</ResourceFile>
         </ProvideDocumentBundleTransaction>
     </TestStep>

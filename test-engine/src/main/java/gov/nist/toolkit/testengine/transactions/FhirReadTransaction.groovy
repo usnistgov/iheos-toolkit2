@@ -119,7 +119,7 @@ class FhirReadTransaction extends BasicFhirTransaction {
                 if (returnedResource instanceof DocumentReference) {
                     DocumentReference dr = returnedResource
                     reportManager.add('DR_status', dr.status.toCode())
-                    if (mustBeSuperseded && dr.status != DocumentReferenceStatus.SUPERSEDED)
+                    if (mustBeSuperseded && dr.status.toCode() != DocumentReferenceStatus.SUPERSEDED.toCode())
                         stepContext.set_error("Expected status superseded, got ${dr.status.toCode()} instead")
                 }
                 // content is either JSON or XML

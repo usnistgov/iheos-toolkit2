@@ -6,7 +6,9 @@ import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder
 import gov.nist.toolkit.fhir.server.resourceMgr.ResolverConfig
 import gov.nist.toolkit.fhir.server.resourceMgr.ResourceCacheMgr
 import gov.nist.toolkit.fhir.server.resourceMgr.ResourceMgr
+import gov.nist.toolkit.fhir.server.utility.FhirId
 import gov.nist.toolkit.fhir.server.utility.UriBuilder
+import gov.nist.toolkit.simcoresupport.mhd.Attachment
 import gov.nist.toolkit.simcoresupport.mhd.errors.ResourceNotAvailable
 import gov.nist.toolkit.simcoresupport.mhd.errors.ResourceTypeNotAllowedInPDB
 import gov.nist.toolkit.simcoresupport.proxy.util.ReturnableErrorException
@@ -19,6 +21,7 @@ import org.hl7.fhir.dstu3.model.codesystems.DocumentReferenceStatus
 import org.hl7.fhir.instance.model.api.IBaseResource
 
 import java.text.SimpleDateFormat
+
 /**
  *
  */
@@ -130,6 +133,7 @@ class MhdGenerator {
             }
         }
     }
+
 
     def addExternalIdentifier(builder, scheme, value, id, registryObject, name) {
         builder.ExternalIdentifier(
@@ -464,10 +468,30 @@ class MhdGenerator {
             Reference ref = component.PReference
             def (url, res) = rMgr.resolveReference(null, ref.reference, new ResolverConfig().internalRequired())
             assert res
-            def assoc = addAssociation(xml, 'urn:oasis:names:tc:ebxml-regrep:AssociationType:HasMember', dm.id, res.id, 'SubmissionSetStatus', ['Original'])
+            addAssociation(xml, 'urn:oasis:names:tc:ebxml-regrep:AssociationType:HasMember', dm.id, res.id, 'SubmissionSetStatus', ['Original'])
         }
     }
 
+    Map typeMap = [
+            replaces: 'urn:ihe:iti:2007:AssociationType:RPLC',
+            transforms: 'urn:ihe:iti:2007:AssociationType:XFRM',
+            signs: 'urn:ihe:iti:2007:AssociationType:signs',
+            appends: 'urn:ihe:iti:2007:AssociationType:APND'
+    ]
+
+    def addRelationshipAssociations(xml, DocumentReference dr) {
+        if (!dr.relatesTo || dr.relatesTo.size() == 0) return
+        String drId = dr.getId()
+        dr.relatesTo.each { DocumentReference.DocumentReferenceRelatesToComponent comp ->
+            Reference ref = comp.target
+            String targetId = new FhirId(ref.reference).id
+            assert targetId, "relatesTo target in DocumentReferece ${drId} is null."
+            String type = comp.getCode().toCode()
+            String xdsType = typeMap[type]
+            assert xdsType, "RelatesTo type (${type}) cannot be translated to XDS."
+            addAssociation(xml, xdsType, drId, "urn:uuid:${targetId}", null, null)
+        }
+    }
 
 
     def loadBundle(IBaseResource bundle) {
@@ -589,6 +613,7 @@ class MhdGenerator {
 
                         addExtrinsicObject(xml, dr.getId(), dr)
                         documents[dr.getId()] = a.contentId
+                        addRelationshipAssociations(xml, dr)
                     } else {
                         proxyBase.resourcesSubmitted << resource
 
