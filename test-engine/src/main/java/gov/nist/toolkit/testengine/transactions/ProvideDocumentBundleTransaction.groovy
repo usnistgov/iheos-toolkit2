@@ -152,9 +152,9 @@ class ProvideDocumentBundleTransaction extends FhirCreateTransaction {
 <li>bundle.type is transaction-response
 <li>Same number of resources are returned in the Bundle as were sent
 <li>The resource types returned match what was sent
-<li>bundle.entry.status is 200 for each entry in the Bundle returned
-<li>All DocumentReference resources returned have an absolute URL in the entry.fullUrl attribute
-<li>For all these returned entry.fullUrls, a FHIR READ is used to get the contents and verify that the correct type of resource is returned
+<li>bundle.entry.response.status is 200 for each entry in the Bundle returned
+<li>All DocumentReference resources returned have an absolute URL in the bundle.entry.response.location attribute
+<li>For all these returned bundle.entry.response.location's, a FHIR READ is used to verify the resource is available at that location
 </ul>
 '''
     }

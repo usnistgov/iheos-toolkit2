@@ -1,0 +1,14 @@
+<TestPlan>
+    <Test>pdb_single_doc_xof/read_document_reference</Test>
+    <TestStep id="read_DR">
+        <Goal>
+            Send a Find Document References query to the FHIR Base address.  A single Document
+            Reference resource is expected back.
+        </Goal>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <FhirReadTransaction>
+            <MustReturn/>
+            <UseReport test="pdb_single_doc_xof" section="submit" step="SendPdb" reportName="REF_DR0" useAs="Ref"/>
+        </FhirReadTransaction>
+    </TestStep>
+</TestPlan>

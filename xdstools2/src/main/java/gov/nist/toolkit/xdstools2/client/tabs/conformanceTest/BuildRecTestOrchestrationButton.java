@@ -95,7 +95,11 @@ public class BuildRecTestOrchestrationButton extends AbstractOrchestrationButton
                 testTab.setOrchestrationResponse(orchResponse);
                 testTab.setRecOrchestrationResponse(orchResponse);
 
-                initializationResultsPanel.add(new HTML("Initialization Complete"));
+                initializationResultsPanel.add(new HTML("Initialization Complete" +
+                "<h2>Organization</h2>" +
+                "The MHD Recipient/Responder must be configured as a single system in toolkit (one FHIR Base Address). " +
+                "except that the Provide Document Bundle transaction has a separate configuration so it can have a " +
+                "different URL."));
 
                 if (testContext.getSiteUnderTest() != null) {
                     initializationResultsPanel.add(new SiteDisplay("System Under Test Configuration", testContext.getSiteUnderTest()));
@@ -103,7 +107,8 @@ public class BuildRecTestOrchestrationButton extends AbstractOrchestrationButton
 
                 if (orchResponse.getRRSite() != null) {
                     HTML seDoc = new HTML("<p>This is a Registry and Repository that should receive resulting " +
-                    "Provide and Register transactions.");
+                    "Provide and Register transactions. <b>Configure your MHD Document Recipient/XDS Document Source " +
+                    "and your MHD Document Responder/XDS Document Consumer to forward XDS requests to these endpoints.</b>");
                     initializationResultsPanel.add(new SiteDisplay("Supporting Environment Configuration", seDoc, orchResponse.getRRSite()));
                 }
 

@@ -15,7 +15,9 @@ public enum OptionType {
             "CAT Lifecycle"),
     AFFINITY_DOMAIN("ad",
             "Affinity Domain"),
-    DOC_RECIP_RESPNDR("docreciprespndr","Document Recipient/Responder");
+    DOC_RECIP_RESPNDR("docreciprespndr","MHD Document Recipient/Responder"),
+    MHD_DOC_RECIP("mhddocrecip", "MHD Document Recipient"),
+    XDS_ON_FHIR("xdsonfhir", "XDS on FHIR");
 
 
 

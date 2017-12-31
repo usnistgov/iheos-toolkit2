@@ -76,6 +76,8 @@ See collections.txt file for indexing.
 				<tabs label="Options">
 					<!--<tab label="Required" type="option" tcCode="" externalStart="false"/>-->
 					<tab label="Combined Recipient/Responder" type="option" tcCode="docreciprespndr" externalStart="false"/>
+					<tab label="Recipient" type="option" tcCode="mhddocrecip" externalStart="false"/>
+					<tab label="XDSonFHIR" type="option" tcCode="xdsonfhir" externalStart="false"/>
 				</tabs>
 			</tab>
 		</tabs>
