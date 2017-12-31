@@ -16,6 +16,7 @@ import org.hl7.fhir.dstu3.model.Binary
 import org.hl7.fhir.dstu3.model.DocumentReference
 import org.hl7.fhir.dstu3.model.OperationOutcome
 import org.hl7.fhir.dstu3.model.Resource
+import org.hl7.fhir.dstu3.model.codesystems.DocumentReferenceStatus
 import org.hl7.fhir.instance.model.api.IBaseResource
 /**
  *
@@ -28,6 +29,7 @@ class FhirReadTransaction extends BasicFhirTransaction {
     String requestAcceptType = null
 
     boolean mustReturn = false
+    boolean mustBeSuperseded = false
     FhirContext ctx = ToolkitFhirContext.get()
 
     FhirReadTransaction(StepContext s_ctx, OMElement instruction, OMElement instruction_output) {
@@ -114,6 +116,12 @@ class FhirReadTransaction extends BasicFhirTransaction {
                 baseResource = FhirSupport.parse(content)
                 if (baseResource instanceof Resource)
                     returnedResource = baseResource
+                if (returnedResource instanceof DocumentReference) {
+                    DocumentReference dr = returnedResource
+                    reportManager.add('DR_status', dr.status.toCode())
+                    if (mustBeSuperseded && dr.status != DocumentReferenceStatus.SUPERSEDED)
+                        stepContext.set_error("Expected status superseded, got ${dr.status.toCode()} instead")
+                }
                 // content is either JSON or XML
                 if (requestXml) {
                     OMElement f = testLog.add_simple_element(instruction_output, "Format")
@@ -221,6 +229,9 @@ class FhirReadTransaction extends BasicFhirTransaction {
         }
         else if (part_name == 'MustReturn') {
             mustReturn = true;
+        }
+        else if (part_name == 'MustBeSuperseded') {
+            mustBeSuperseded = true;
         }
         else if (part_name == 'RequestType') {
             requestType = part.text;

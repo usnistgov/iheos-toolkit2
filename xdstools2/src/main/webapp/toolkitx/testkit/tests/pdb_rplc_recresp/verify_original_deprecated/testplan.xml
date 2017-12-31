@@ -1,0 +1,14 @@
+<TestPlan>
+    <Test>pdb_rplc_recresp/verify_original_deprecated</Test>
+    <TestStep id="read_DR">
+        <Goal>
+            READ original Document Reference and verify that its status has been changed to superseded
+        </Goal>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <FhirReadTransaction>
+            <MustReturn/>
+            <MustBeSuperseded/>
+            <UseReport test="pdb_rplc_recresp" section="submit_original" step="SendPdb" reportName="REF_DR0" useAs="Ref"/>
+        </FhirReadTransaction>
+    </TestStep>
+</TestPlan>

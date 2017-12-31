@@ -1,0 +1,18 @@
+<TestPlan>
+    <Test>pdb_single_doc_xof/read_document_contents</Test>
+    <TestStep id="read_Contents">
+        <Goal>
+            Send a FHIR READ for the Binary resource submitted in the submit section.  The
+            requested mime type is text/plain so the text content without the Binary resource wrapper is expected back.
+            The contents are compared to what was submitted.  They must match.
+        </Goal>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <FhirReadTransaction>
+            <MustReturn/>
+            <AcceptType>text/plain</AcceptType>
+            <ReferenceDocument>../submit/textfile.txt</ReferenceDocument>
+            <RequestType>text/plain</RequestType>
+            <UseReport test="pdb_single_doc_xof" section="read_document_reference" step="read_DR" reportName="BinaryUrl" useAs="Ref"/>
+        </FhirReadTransaction>
+    </TestStep>
+</TestPlan>
