@@ -207,7 +207,7 @@ public enum ActorType implements IsSerializable, Serializable {
             ),
             "rec",   // must match rec from rec(mhd) in collections.txt
             IheItiProfile.MHD,
-            Arrays.asList(OptionType.REQUIRED, OptionType.DOC_RECIP_RESPNDR)
+            Arrays.asList(OptionType.REQUIRED, OptionType.DOC_RECIP_RESPNDR, OptionType.MHD_DOC_RECIP, OptionType.XDS_ON_FHIR)
     ),
 
     INITIATING_GATEWAY(

@@ -25,7 +25,8 @@
             contains a DocumentManifest, a single DocumentReference which references an included
             Binary resource (content of type text/plain) and two Practitioner resources which are referenced as
             Document authors.  Both the DocumentManifest and the DocumentReference reference
-            the Patient Resource described in the previous step.
+            the Patient Resource described in the previous step.  The DocumentReference includes a relatesTo
+            reference to the DocumentReference in the previous submission.
         </Goal>
         <ExpectedStatus>Success</ExpectedStatus>
         <ProvideDocumentBundleTransaction>
