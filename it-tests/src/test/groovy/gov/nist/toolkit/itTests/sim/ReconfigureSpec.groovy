@@ -77,7 +77,6 @@ class ReconfigureSpec extends Specification {
         ReconfigureSimulators rs = new ReconfigureSimulators()
         rs.setOverrideHost('home')
         rs.setOverridePort('42')
-//        rs.setOverrideContext('toolkit45')
         Installation.instance().setServletContextName('toolkit45')
         rs.init(null)
 
@@ -94,5 +93,29 @@ class ReconfigureSpec extends Specification {
         host == 'home'
         port == '42'
         context == 'toolkit45'
+    }
+
+    def 'empty service' () {
+        when:
+        ReconfigureSimulators rs = new ReconfigureSimulators()
+        rs.setOverrideHost('home')
+        rs.setOverridePort('42')
+        Installation.instance().setServletContextName('')
+        rs.init(null)
+
+
+        and:
+        SimulatorConfig config2 = api.getConfig(simId)
+        String retrieveEndpoint2 = config2.getConfigEle(SimulatorProperties.retrieveEndpoint).asString()
+        EndpointParser ep = new EndpointParser(retrieveEndpoint2)
+        String host = ep.getHost()
+        String port = ep.getPort()
+        String context = ep.context
+
+        then:
+        host == 'home'
+        port == '42'
+        context == ''
+        retrieveEndpoint2 == 'http://home:42/sim/bill__mysim/rep/ret'
     }
 }

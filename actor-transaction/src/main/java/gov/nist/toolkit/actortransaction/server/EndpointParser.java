@@ -2,6 +2,9 @@ package gov.nist.toolkit.actortransaction.server;
 
 import org.apache.http.HttpHost;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Parse and validqte SOAP endpoints and HTTP urls
  */
@@ -44,9 +47,15 @@ public class EndpointParser  {
     }
 
     public String getContext() {
-        if (parts.length > 3)
-            return parts[3];
-        return "null";
+        if (parts.length <= 3)
+            return "";
+
+        // if running as tomcat root there is no context
+        if (parts[3].equals("sim") || parts[3].equals("fsim"))
+            return "";
+
+        return parts[3];
+
     }
 
     public void setContext(String context) {
@@ -115,12 +124,24 @@ public class EndpointParser  {
         parts[2] = r;
     }
 
+    /**
+     * 0 - http
+     * 1 - ""
+     * 2 - host:port
+     * 3 - service
+     * if service is "" do not include double //
+     * @return
+     */
     public String getEndpoint() {
         StringBuilder buf = new StringBuilder();
 
-        buf.append(parts[0]);
-        for (int i=1; i<parts.length; i++) {
-            buf.append("/").append(parts[i]);
+        List<String> lst = Arrays.asList(parts);
+
+        buf.append(lst.get(0));
+        for (int i=1; i<lst.size(); i++) {
+            if (i == 3 && lst.get(i).equals("") )
+                continue;
+            buf.append("/").append(lst.get(i));
         }
 
         return buf.toString();

@@ -39,6 +39,12 @@
 			</properties>
 		</profile>
 		<profile>
+			<id>MacCmdBill</id>
+			<properties>
+				<build.profile.id>MacCmdBill</build.profile.id>
+			</properties>
+		</profile>
+		<profile>
 			<id>Release</id>
 			<properties>
 				<build.profile.id>Release</build.profile.id>
