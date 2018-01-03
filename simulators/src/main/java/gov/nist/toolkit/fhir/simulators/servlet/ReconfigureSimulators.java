@@ -43,9 +43,17 @@ public class ReconfigureSimulators extends HttpServlet {
         configuredTlsPort = Installation.instance().propertyServiceManager().getToolkitTlsPort();
         configuredProxyPort = Installation.instance().propertyServiceManager().getProxyPort();
         configuredContext = Installation.instance().getServletContextName();
+        if (configuredContext.startsWith("/"))
+            configuredContext = configuredContext.substring(1);
+
+        logger.info("Reconfiguring Simulators to host " + configuredHost + " port " + configuredPort + " context " + configuredContext);
 
         for (SimId simId : SimDb.getAllSimIds()) {
-            reconfigure(simId);
+            try {
+                reconfigure(simId);
+            } catch (Throwable e) {
+                logger.fatal("Reconfigure of sim " + simId + " failed - " + ExceptionUtil.exception_details(e));
+            }
         }
     }
 
@@ -73,6 +81,7 @@ public class ReconfigureSimulators extends HttpServlet {
             boolean isTls = SimulatorProperties.isTlsEndpoint(ele.getName());
             String existingEndpoint = ele.asString();
             EndpointParser ep = new EndpointParser(existingEndpoint);
+            logger.info("From " + existingEndpoint);
             if (!ep.validate()) {
                 error = true;
                 logger.error("    " + ele.getName() + ": " + existingEndpoint + " - does not validate - " + ep.getError());
@@ -88,6 +97,7 @@ public class ReconfigureSimulators extends HttpServlet {
                     if (!port.equals(getConfiguredPort())) {
                         ep.updateHostAndPort(getConfiguredHost(), getConfiguredProxyPort());
                         ele.setStringValue(ep.getEndpoint());
+                        logger.info("...to " + ep.getEndpoint());
                         updated = true;
                     }
                 }
@@ -96,19 +106,23 @@ public class ReconfigureSimulators extends HttpServlet {
                     if (!host.equals(getConfiguredHost()) || !port.equals(getConfiguredTlsPort())) {
                         ep.updateHostAndPort(getConfiguredHost(), getConfiguredTlsPort());
                         ele.setStringValue(ep.getEndpoint());
+                        logger.info("...to " + ep.getEndpoint());
                         updated = true;
                     }
                 } else {
                     if (!host.equals(getConfiguredHost()) || !port.equals(getConfiguredPort())) {
                         ep.updateHostAndPort(getConfiguredHost(), getConfiguredPort());
                         ele.setStringValue(ep.getEndpoint());
+                        logger.info("...to " + ep.getEndpoint());
                         updated = true;
                     }
                 }
 
                 if (!context.equals(getConfiguredContext())) {
                     ep.setContext(getConfiguredContext());
+                    logger.info("...to " + ep.getEndpoint());
                     ele.setStringValue(ep.getEndpoint());
+                    updated = true;
                 }
             }
         }

@@ -2,6 +2,7 @@ package gov.nist.toolkit.actortransaction.server;
 
 import org.apache.http.HttpHost;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -10,19 +11,23 @@ import java.util.List;
  */
 public class EndpointParser  {
     private String endpoint;
-    private String[] parts;
+    private List<String> parts;
     private String error = null;
 
     public EndpointParser(String endpoint) {
         this.endpoint = endpoint;
-        if (endpoint != null)
-            this.parts = endpoint.split("\\/");
+        if (endpoint != null) {
+            List<String> theList = Arrays.asList(endpoint.split("\\/"));
+            parts = new ArrayList<String>();
+            for (String x : theList)
+                parts.add(x);
+        }
     }
 
     public String toString() { return endpoint; }
 
     public boolean validate() {
-        if (endpoint == null || endpoint.equals("") || parts == null || parts.length < 1) {
+        if (endpoint == null || endpoint.equals("") || parts == null || parts.size() < 1) {
             error = "null or empty endpoint";
             return false;
         }
@@ -39,33 +44,37 @@ public class EndpointParser  {
     public String getService() {
         StringBuilder buf = new StringBuilder();
 
-        for (int i=3; i<parts.length; i++) {
-            buf.append("/").append(parts[i]);
+        for (int i=3; i<parts.size(); i++) {
+            buf.append("/").append(parts.get(i));
         }
 
         return buf.toString();
     }
 
     public String getContext() {
-        if (parts.length <= 3)
+        if (parts.size() <= 3)
             return "";
 
         // if running as tomcat root there is no context
-        if (parts[3].equals("sim") || parts[3].equals("fsim"))
+        if (parts.get(3).equals("sim") || parts.get(3).equals("fsim"))
             return "";
 
-        return parts[3];
+        return parts.get(3);
 
     }
 
     public void setContext(String context) {
-        if (parts.length > 3) {
-            parts[3] = context;
+        if (parts.size() > 3) {
+            if (parts.get(3).equals("sim") || parts.get(3).equals("fsim")) {
+                parts.add(3, context);
+            } else {
+                parts.set(3, context);
+            }
         }
     }
 
     public String getProtocol() {
-        String[] cparts = parts[0].split(":");
+        String[] cparts = parts.get(0).split(":");
         if (cparts.length < 1) return "";
         return cparts[0];
     }
@@ -81,8 +90,8 @@ public class EndpointParser  {
     }
 
     private boolean validateNoEmptyParts() {
-        for (int i=2; i<parts.length; i++) {
-            if (parts[i].equals("")) {
+        for (int i=2; i<parts.size(); i++) {
+            if (parts.get(i).equals("")) {
                 error = "Endpoint contains empty path element";
                 return false;
             }
@@ -91,7 +100,7 @@ public class EndpointParser  {
     }
 
     private boolean validateNoParms() {
-        if (parts[parts.length-1].contains("?")) {
+        if (parts.get(parts.size()-1).contains("?")) {
             error = "Endpoint contains parameters";
             return false;
         }
@@ -103,25 +112,25 @@ public class EndpointParser  {
     }
 
     public EndpointParser updateHostAndPort(String host, String port) {
-        parts[2] = host + ":" + port;
+        parts.set(2, host + ":" + port);
         return this;
     }
 
     public String getHost() {
-        String[] hp = parts[2].split(":");
+        String[] hp = parts.get(2).split(":");
         return hp[0];
     }
 
     public String getPort() {
-        String[] hp = parts[2].split(":");
+        String[] hp = parts.get(2).split(":");
         if (hp.length < 2) return "80";
         return hp[1];
     }
 
     public void setPort(String port) {
-        String[] hp = parts[2].split(":");
+        String[] hp = parts.get(2).split(":");
         String r = hp[0] + ':' + port;
-        parts[2] = r;
+        parts.set(2, r);
     }
 
     /**
@@ -135,13 +144,11 @@ public class EndpointParser  {
     public String getEndpoint() {
         StringBuilder buf = new StringBuilder();
 
-        List<String> lst = Arrays.asList(parts);
-
-        buf.append(lst.get(0));
-        for (int i=1; i<lst.size(); i++) {
-            if (i == 3 && lst.get(i).equals("") )
+        buf.append(parts.get(0));
+        for (int i=1; i<parts.size(); i++) {
+            if (i == 3 && parts.get(i).equals("") )
                 continue;
-            buf.append("/").append(lst.get(i));
+            buf.append("/").append(parts.get(i));
         }
 
         return buf.toString();
