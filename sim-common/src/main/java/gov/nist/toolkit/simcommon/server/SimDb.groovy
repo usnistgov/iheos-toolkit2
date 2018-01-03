@@ -17,6 +17,7 @@ import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException
 import groovy.transform.TypeChecked
 import org.apache.http.annotation.Obsolete
 import org.apache.log4j.Logger
+import org.apache.lucene.store.FSDirectory
 /**
  * Each simulator has an on-disk presence that keeps track of its long
  * term status and a log of its input/output messages. This class
@@ -438,8 +439,30 @@ public class SimDb {
 	 * Delete simulator
 	 */
 	public void delete() {
-		if (isSim())
+		if (isSim()) {
+			if (simId != null) {
+				File indexFile = getIndexFile(simId);
+//				deleteLuceneIndex(indexFile)
+			}
 			delete(simDir);
+		}
+	}
+
+	private void deleteLuceneIndex(File indexFile) {
+		try {
+			if (indexFile != null && indexFile.exists()) {
+				FSDirectory dir = FSDirectory.open(indexFile.toPath())
+				for (String s : dir.listAll(indexFile.toPath())) {
+					dir.deleteFile(s)
+				}
+                if (dir.checkPendingDeletions()) {
+					dir.deletePendingFiles()
+				}
+				dir.close()
+			}
+		} catch (Exception ex) {
+			logger.error(ex.toString())
+		}
 	}
 
 	public List<String> getActorsForSimulator() {

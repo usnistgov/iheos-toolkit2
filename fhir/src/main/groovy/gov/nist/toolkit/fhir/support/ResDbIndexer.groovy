@@ -19,6 +19,7 @@ import org.apache.lucene.store.FSDirectory
  */
 class ResDbIndexer {
     static private final Logger logger = Logger.getLogger(ResDbIndexer.class);
+    FSDirectory indexDirectory = null
     IndexWriter indexWriter
     File indexDir
     boolean openForWriting = false
@@ -45,8 +46,9 @@ class ResDbIndexer {
             iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND)
             iwc.setCommitOnClose(true)
             indexWriter = new IndexWriter(dir, iwc)
+            indexDirectory = dir
             openForWriting = true
-            return true;
+            return true
         } catch (Exception e) {
             System.err.println("Error opening the index. " + ExceptionUtil.exception_details(e));
             throw new Exception("Error opening the Lucene index", e)
@@ -66,10 +68,15 @@ class ResDbIndexer {
                 indexWriter.close()
             indexWriter = null
 
-            if (indexDirectory) indexDirectory.close()
-            indexDirectory = null
+
             if (indexReader) indexReader.close()
             indexReader = null
+            if (indexDirectory) {
+                indexDirectory.close()
+                if (indexDirectory.checkPendingDeletions())
+                    indexDirectory.deletePendingFiles()
+                indexDirectory = null
+            }
         } catch (Exception e) {
             logger.fatal("close of ${indexDir} failed - ${e.getMessage()}")
         }
@@ -100,7 +107,6 @@ class ResDbIndexer {
         resourceIndexSet.items.each { addResource(it)}
     }
 
-    FSDirectory indexDirectory = null
     IndexReader indexReader = null
 
     /**

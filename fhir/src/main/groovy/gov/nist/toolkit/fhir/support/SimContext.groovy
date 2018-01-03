@@ -54,6 +54,15 @@ public class SimContext {
         }
     }
 
+    void closeIndex() {
+        try {
+            SimIndexer indexer = SimIndexManager.getIndexer(simId)
+//            indexer.indexSearcher.indexReader.close()
+            indexer.close()
+        } finally {
+        }
+    }
+
     /**
      * Link the ResDbIndexer to the Lucene directory inside the simulator
      * @return
@@ -114,5 +123,6 @@ public class SimContext {
      */
     void flushIndex() {
         SimIndexManager.getIndexer(simId).flushIndex(resourceIndexSet)
+        SimIndexManager.getIndexer(simId).close()
     }
 }

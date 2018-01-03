@@ -47,6 +47,9 @@ class SimIndexer {
     def flushIndex(ResourceIndexSet resourceIndexSet) {
         logger.info("Flushing index: ${resourceIndexSet}...")
         try {
+            if (indexer==null) {
+                indexer = SimIndexManager.getIndexer(simId).indexer
+            }
             indexer.openIndexForWriting()  // locks Lucene index
             indexer.addResource(resourceIndexSet)
         }
@@ -56,7 +59,8 @@ class SimIndexer {
             throw new Exception("Error flushing index", e)
         }
         finally {
-            indexer.close()    // commit and clear Lucene index lock
+            if (indexer)
+                indexer.close()    // commit and clear Lucene index lock
             initIndexFile()
             logger.info("Flushing index: Done")
         }
