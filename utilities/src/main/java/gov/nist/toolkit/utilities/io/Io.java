@@ -223,15 +223,18 @@ public class Io {
 	
 	/**
 	 * Delete file, recursively if file represents a directory.
-	 * @param f
+	 * @param f File or folder to delete.
+	 * @param skipStartsWithName Skip file names starting with skipFn.
 	 */
-	static public void delete(File f) {
+	static public void delete(File f, String skipStartsWithName) {
 		if (!f.exists())
 			return;
 		if (f.isDirectory()) {
 			String[] contents = f.list();
 			for (int i=0; i<contents.length; i++) {
 				File fn = new File(f, contents[i]);
+				if (skipStartsWithName!=null && fn.getName().startsWith(skipStartsWithName))
+					continue;
 				delete(fn);
 			}
 			f.delete();
@@ -239,6 +242,10 @@ public class Io {
 		} else if (f.isFile()){
 			f.delete();
 		}
+	}
+
+	static public void delete(File f) {
+		delete(f, null);
 	}
 
 	static public void deleteContents(File f) {

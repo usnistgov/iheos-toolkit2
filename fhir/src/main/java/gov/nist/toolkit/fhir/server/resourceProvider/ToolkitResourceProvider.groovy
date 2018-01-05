@@ -224,7 +224,14 @@ class ToolkitResourceProvider {
 
         items = paths.collect { String path ->
             File f = new File(path)
-            (DomainResource) jsonParser.parseResource(resourceType, new FileReader(f))
+            FileReader fr = null
+            try {
+                fr = new FileReader(f)
+                (DomainResource) jsonParser.parseResource(resourceType, fr)
+            } finally {
+                if (fr)
+                    fr.close()
+            }
         }
 
         return (List<DomainResource>) items

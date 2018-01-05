@@ -10,7 +10,6 @@ import org.apache.lucene.index.IndexReader
 import org.apache.lucene.index.IndexWriter
 import org.apache.lucene.index.IndexWriterConfig
 import org.apache.lucene.search.IndexSearcher
-import org.apache.lucene.store.Directory
 import org.apache.lucene.store.FSDirectory
 /**
  * Lucene index for a single Simulator
@@ -39,14 +38,15 @@ class ResDbIndexer {
      * @return
      */
     protected openIndexForWriting() {
-        logger.info("open index for writing ${indexDir}")
+        logger.info("*** index open for writing ${indexDir}")
         try {
-            Directory dir = FSDirectory.open(indexDir.toPath())
+            if (!indexDirectory)
+                indexDirectory = FSDirectory.open(indexDir.toPath())
             IndexWriterConfig iwc = new IndexWriterConfig()
             iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND)
             iwc.setCommitOnClose(true)
-            indexWriter = new IndexWriter(dir, iwc)
-            indexDirectory = dir
+            if (!indexWriter)
+                indexWriter = new IndexWriter(indexDirectory, iwc)
             openForWriting = true
             return true
         } catch (Exception e) {
@@ -61,8 +61,8 @@ class ResDbIndexer {
         indexWriter = null
     }
 
-    protected close() {
-        logger.info("close ${indexDir}")
+    protected void close() {
+        logger.info("*** index close ${indexDir}")
         try {
             if (indexWriter)
                 indexWriter.close()
@@ -115,8 +115,11 @@ class ResDbIndexer {
      * @return
      */
     IndexSearcher openIndexForSearching(File index) {
-        indexDirectory = FSDirectory.open(index.toPath())
-        indexReader = DirectoryReader.open(indexDirectory)
+        logger.info("*** index open for searching ${indexDir}")
+        if (!indexDirectory)
+            indexDirectory = FSDirectory.open(index.toPath())
+        if (!indexReader)
+            indexReader = DirectoryReader.open(indexDirectory)
         IndexSearcher indexSearcher = new IndexSearcher(indexReader);
         return indexSearcher
     }

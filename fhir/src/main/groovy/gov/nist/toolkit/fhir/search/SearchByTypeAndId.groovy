@@ -27,7 +27,11 @@ class SearchByTypeAndId extends BaseQuery {
             builder.add(termQuery2, BooleanClause.Occur.MUST)
         }
 
-        return execute(builder)
+        try {
+            return execute(builder)
+        } finally {
+            close()
+        }
 
     }
 

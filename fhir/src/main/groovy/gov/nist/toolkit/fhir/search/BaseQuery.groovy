@@ -13,8 +13,10 @@ import org.apache.lucene.search.TopDocs
  */
 class BaseQuery {
     IndexSearcher indexSearcher
+    SimContext simContext
 
     BaseQuery(SimContext simContext) {
+        this.simContext = simContext
         indexSearcher = simContext.indexSearcher
     }
 
@@ -43,5 +45,10 @@ class BaseQuery {
             // the location in the ResDb
         }
         return paths
+    }
+
+    void close() {
+        if (simContext)
+            simContext.closeIndex()
     }
 }

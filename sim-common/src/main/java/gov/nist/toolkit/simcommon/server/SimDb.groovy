@@ -11,10 +11,14 @@ import gov.nist.toolkit.simcommon.client.BadSimIdException
 import gov.nist.toolkit.simcommon.client.NoSimException
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
+import gov.nist.toolkit.simcommon.server.index.SiTypeWrapper
+import gov.nist.toolkit.simcommon.server.index.SimIndex
 import gov.nist.toolkit.utilities.io.Io
 import gov.nist.toolkit.utilities.io.ZipDir
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException
 import groovy.transform.TypeChecked
+import org.apache.commons.io.comparator.NameFileComparator
+import org.apache.commons.io.filefilter.PrefixFileFilter
 import org.apache.http.annotation.Obsolete
 import org.apache.log4j.Logger
 import org.apache.lucene.store.FSDirectory
@@ -38,6 +42,7 @@ public class SimDb {
 	private String transaction = null;
 	private File transactionDir = null;
 	static private final Logger logger = Logger.getLogger(SimDb.class);
+	static String luceneIndexDirectoryName = 'simindex'
 
 	static final String MARKER = 'MARKER';
 
@@ -153,6 +158,11 @@ public class SimDb {
 	 */
 	static public boolean exists(SimId simId) {
 		File f = new File(getSimDbFile(simId), simId.toString())
+        // Lucene walkaround
+        if (countFoldersByName(luceneIndexDirectoryName,f)>0) {
+			return (isSimDir(f)) // Safety file should not exist when it is deleted minus the simindex folder(s)
+		}
+		// end
 		return f.exists();
 	}
 
@@ -192,18 +202,19 @@ public class SimDb {
 		if (!simDir.isDirectory())
 			throw new ToolkitRuntimeException("Cannot create content in Simulator database, creation of " + simDir.toString() + " failed");
 
-
-		int retry=3;
-		boolean hasSafetyFile = false;
-		while (!hasSafetyFile && retry-->0) {
-			try {
-				// add this for safety when deleting simulators -
-				Io.stringToFile(simSafetyFile(), simId.toString());
-				hasSafetyFile=true;
-			} catch (Exception ex) {
-				Thread.sleep(1000);
-			}
+//		int retry=3;
+//		boolean hasSafetyFile = false;
+//		while (!hasSafetyFile && retry-->0) {
+//			try {
+		// add this for safety when deleting simulators -
+		if (!isSimDir(simDir)) {
+			Io.stringToFile(simSafetyFile(), simId.toString());
 		}
+//				hasSafetyFile=true;
+//			} catch (Exception ex) {
+//				Thread.sleep(1000);
+//			}
+//		}
 
 	}
 
@@ -442,27 +453,76 @@ public class SimDb {
 		if (isSim()) {
 			if (simId != null) {
 				File indexFile = getIndexFile(simId);
-//				deleteLuceneIndex(indexFile)
+				if (indexFile != null && indexFile.exists()) {
+					stopLuceneIndex(indexFile)
+					/*
+					On Windows, there a problem with deleting Lucene indexes.
+					See https://lucene.apache.org/core/7_0_1/core/org/apache/lucene/store/FSDirectory.htm
+					deleteLuceneIndex(indexFile).
+					Walkaround is to use a new index folder on every delete and pickup the most recent folder on new-sim index.
+					 */
+//                    delete(simDir)
+					Io.delete(simDir, luceneIndexDirectoryName)
+					if (isSimDir(simDir)) { // This should not happen
+						throw new RuntimeException("delete failed for " + simDir)
+					}
+					int folderCt = countFoldersByName(luceneIndexDirectoryName, simDir)
+					File newIndexDir = new File(getSimBase(simId), luceneIndexDirectoryName + String.format("%03d", (folderCt + 1)))
+					if (!newIndexDir.exists()) {
+						newIndexDir.mkdirs()
+					} else {
+						delete(newIndexDir)
+						newIndexDir.mkdirs()
+					}
+				} else {
+					delete(simDir)
+				}
 			}
-			delete(simDir);
+		}
+	}
+
+	static private int countFoldersByName(String prefixFn, File path) {
+		String[] names = path.list(new PrefixFileFilter(prefixFn))
+		if (names!=null)
+			return names.length
+		else
+			return 0
+	}
+
+	private void stopLuceneIndex(File indexFile) {
+		if (indexFile != null && indexFile.exists()) {
+            if (SimIndex.getIndexMap().containsKey(simId)) {
+                logger.info("SimIndex map contains " + simId)
+				SiTypeWrapper typeWrapper = SimIndex.getIndexMap().get(simId)
+				if (typeWrapper.getIndexer() instanceof Closeable) {
+					logger.info("SimIndex map object is an instance of Closeable")
+					typeWrapper.getIndexer().close()
+					SimIndex.getIndexMap().remove(simId)
+				} else {
+					logger.info("SimIndex map object is Not an instance of Closeable")
+				}
+			}
 		}
 	}
 
 	private void deleteLuceneIndex(File indexFile) {
+	 if (indexFile != null && indexFile.exists()) {
+		FSDirectory dir = null
 		try {
-			if (indexFile != null && indexFile.exists()) {
-				FSDirectory dir = FSDirectory.open(indexFile.toPath())
-				for (String s : dir.listAll(indexFile.toPath())) {
-					dir.deleteFile(s)
-				}
+				dir = FSDirectory.open(indexFile.toPath())
+//				for (String s : dir.listAll(indexFile.toPath())) {
+//					dir.deleteFile(s)
+//				}
                 if (dir.checkPendingDeletions()) {
 					dir.deletePendingFiles()
 				}
-				dir.close()
-			}
 		} catch (Exception ex) {
 			logger.error(ex.toString())
+		} finally {
+			if (dir)
+				dir.close()
 		}
+	 }
 	}
 
 	public List<String> getActorsForSimulator() {
@@ -803,7 +863,7 @@ public class SimDb {
 
 		event = event_save;
 		transactionDir = transDir_save;
-		logger.debug("returning " + transList);
+//		logger.debug("returning " + transList);
 		return transList;
 	}
 
@@ -1231,7 +1291,6 @@ public class SimDb {
 		return Installation.instance().fhirSimDbFile()
 	}
 
-	static String luceneIndexDirectoryName = 'simindex'
 
 	/**
 	 * Get location of Lucene index for this simulator
@@ -1239,6 +1298,15 @@ public class SimDb {
 	 * @return
 	 */
 	static File getIndexFile(SimId simId) {
+        // Lucene walkaround
+		int count = countFoldersByName(luceneIndexDirectoryName, getSimBase(simId))
+		if (count>0) {
+			File[] files = getSimBase(simId).listFiles((FilenameFilter)new PrefixFileFilter(luceneIndexDirectoryName))
+			if (files!=null && files.length>0) {
+				Arrays.sort(files, NameFileComparator.NAME_REVERSE)
+				return files[0]
+			}
+		}
 		return new File(getSimBase(simId), luceneIndexDirectoryName)
 	}
 

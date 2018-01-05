@@ -24,7 +24,7 @@ import org.apache.lucene.store.FSDirectory
  * provides that
  */
 @TypeChecked
-class SimIndexer {
+class SimIndexer implements Closeable {
     static private final Logger logger = Logger.getLogger(SimIndexer.class);
     File indexFile = null  // the directory within the Sim for holding the index
     ResDbIndexer indexer = null
@@ -44,10 +44,21 @@ class SimIndexer {
         initIndexFile()
     }
 
+    private boolean useLatestIndexFile() {
+        File f = SimDb.getIndexFile(simId)
+        if (indexFile==null || (indexFile!=null && !indexFile.equals(f))) {
+            indexFile = f
+            initIndexFile()
+            SimIndexManager.getIndexer(simId).indexer = indexer
+            return true
+        }
+        return false
+    }
+
     def flushIndex(ResourceIndexSet resourceIndexSet) {
         logger.info("Flushing index: ${resourceIndexSet}...")
         try {
-            if (indexer==null) {
+            if (!useLatestIndexFile()) {
                 indexer = SimIndexManager.getIndexer(simId).indexer
             }
             indexer.openIndexForWriting()  // locks Lucene index
@@ -90,18 +101,19 @@ class SimIndexer {
         indexer = new ResDbIndexer(indexFile)
     }
 
-    def close() {
-        if (indexer) indexer.close()
-        indexer = null
-    }
 
-    /**
+    @Override
+    void close() throws IOException {
+        logger.info("SimIndexer close() was called.")
+        if (indexer) indexer.close()
+//        indexer = null
+    }
+/**
      * display contents of ResDb index
      * @return
      */
     def dump() {
-        if (!indexFile)
-            indexFile = SimDb.getIndexFile(simId)
+        useLatestIndexFile()
         IndexReader indexReader = DirectoryReader.open(FSDirectory.open(indexFile.toPath()))
         (0..indexReader.numDocs()-1).each { int doci ->
             println "Document ${doci}"
@@ -145,6 +157,9 @@ class SimIndexer {
 //    }
 
     IndexSearcher getIndexSearcher() {
+        if (!useLatestIndexFile()) {
+            indexer = SimIndexManager.getIndexer(simId).indexer
+        }
         indexer.openIndexForSearching(indexFile)
     }
 

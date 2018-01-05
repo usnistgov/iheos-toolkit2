@@ -9,7 +9,6 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil
 import org.apache.log4j.Logger
 import org.apache.lucene.search.IndexSearcher
 import org.hl7.fhir.dstu3.model.DomainResource
-
 /**
  *
  */
@@ -123,6 +122,5 @@ public class SimContext {
      */
     void flushIndex() {
         SimIndexManager.getIndexer(simId).flushIndex(resourceIndexSet)
-        SimIndexManager.getIndexer(simId).close()
     }
 }
