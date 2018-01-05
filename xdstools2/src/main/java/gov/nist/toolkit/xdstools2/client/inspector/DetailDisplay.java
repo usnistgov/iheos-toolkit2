@@ -551,5 +551,9 @@ public class DetailDisplay {
 
 	}
 
+	void displayText(String title, String html) {
+		addTitle(HyperlinkFactory.addHTML("<h4>" + title + "</h4>"));
+		detailPanel.add(new HTML(html));
+	}
 
 }

@@ -39,7 +39,10 @@ class ResourceToMetadataCollectionParser {
             }
         } else {
             // not a resource we have a GWT model for - add the JSON
-            String json = ToolkitFhirContext.get().newJsonParser().encodeResourceToString(res)
+            initCollection()
+//            String json = ToolkitFhirContext.get().newJsonParser().encodeResourceToString(res)
+            String json = ToolkitFhirContext.get().newJsonParser().setPrettyPrint(true).encodeResourceToString(res);
+            json = formatJson(json)
             col.others.add(json)
         }
     }

@@ -50,6 +50,17 @@ public class HyperlinkFactory {
 		return h;
 	}
 
+	static Hyperlink linkMainXMLView(MetadataInspectorTab it, String linkText, String xml) {
+		if (xml == null)
+			xml = "";
+		if (linkText == null)
+			linkText = "";
+		Hyperlink h = new Hyperlink();
+		h.setText(linkText);
+		h.addClickHandler(new XMLMainViewSelector(it, xml));
+		return h;
+	}
+
 	static Hyperlink link(MetadataInspectorTab it, MetadataObject mo) {
 		Hyperlink h = new Hyperlink();
 		h.setText(prefix(mo.displayName(), 40));

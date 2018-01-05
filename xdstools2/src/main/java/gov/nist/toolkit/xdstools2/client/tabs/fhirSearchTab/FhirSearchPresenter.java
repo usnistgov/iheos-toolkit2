@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.fhirSearchTab;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
+import com.sun.org.apache.bcel.internal.generic.POP;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.datasets.shared.DatasetElement;
 import gov.nist.toolkit.results.client.Result;
@@ -21,6 +22,7 @@ import gov.nist.toolkit.xdstools2.client.util.ASite;
 import gov.nist.toolkit.xdstools2.client.util.AnnotatedItem;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.util.SiteFilter;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.request.FhirReadRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.FhirSearchRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetDatasetElementContentRequest;
@@ -144,6 +146,21 @@ public class FhirSearchPresenter extends AbstractPresenter<FhirSearchView> imple
     void doReadRun() {
         getView().clearLog();
 
+        if (resourceReference == null) {
+            new PopupMessage("Enter resourceReference");
+            return;
+        }
+
+        if (selectedSite == null && !resourceReference.startsWith("http")) {
+            new PopupMessage("Select system above or enter fullUrl");
+            return;
+        }
+
+        if (!resourceReference.contains("/")) {
+            new PopupMessage("Invalid resource reference - minumum value is ResourceType/ID");
+            return;
+        }
+
         new FhirReadCommand() {
 
             @Override
@@ -151,6 +168,7 @@ public class FhirSearchPresenter extends AbstractPresenter<FhirSearchView> imple
                 Result result = results.get(0);
                 ResultDisplay.display(result, getPresenter());
                 ResponseLoader.load(result.logId, "Results", getView());
+                resultsForInspector = results;
             }
         }.run(new FhirReadRequest(getCommandContext(), new SiteSpec(selectedSite), resourceReference));
     }
@@ -186,7 +204,11 @@ public class FhirSearchPresenter extends AbstractPresenter<FhirSearchView> imple
 
 
 
-    private boolean isReadRunable() { return selectedSite != null ; }
+    private boolean isReadRunable() {
+        return true;
+//        (selectedSite != null && resourceReference != null) ||
+//                (resourceReference != null && resourceReference.startsWith("http:"));
+    }
 
     private boolean isSearchRunable() { return selectedSite != null && selectedResourceTypeName != null ; }
 
@@ -201,6 +223,15 @@ public class FhirSearchPresenter extends AbstractPresenter<FhirSearchView> imple
     }
 
     public void doSearchInspect() {
+        if (resultsForInspector != null) {
+            ResultInspector resultInspector = new ResultInspector();
+            resultInspector.setResults(resultsForInspector);
+            resultInspector.setSiteSpec(new SiteSpec(selectedSite));
+            new NewToolLauncher().launch(resultInspector);
+        }
+    }
+
+    public void doReadInspect() {
         if (resultsForInspector != null) {
             ResultInspector resultInspector = new ResultInspector();
             resultInspector.setResults(resultsForInspector);

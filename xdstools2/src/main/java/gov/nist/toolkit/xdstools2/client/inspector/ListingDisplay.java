@@ -57,6 +57,8 @@ public class ListingDisplay {
 
 		allDocs();
 
+		others();
+
 	}
 
 	void allDocs() {
@@ -92,9 +94,23 @@ public class ListingDisplay {
 			boolean hasHcIds = false;
 			for (ObjectRef o : data.combinedMetadata.objectRefs) {
 				Hyperlink h = HyperlinkFactory.link(tab, o);
-//				HTML h = HyperlinkFactory.html(tab, o);
 				TreeItem item = new TreeItem(h);
 				item.setUserObject(new MetadataObjectWrapper(MetadataObjectType.ObjectRefs,o));
+				ti.addItem(item);
+			}
+		}
+	}
+
+	void others() {
+		if (data.combinedMetadata.others.size() > 0) {
+			TreeItem ti = new TreeItem();
+			ti.setHTML(Integer.toString(data.combinedMetadata.others.size()) + " Resources");
+			root.addItem(ti);
+
+			for (String o : data.combinedMetadata.others) {
+				Hyperlink h = HyperlinkFactory.linkMainXMLView(tab, "Resource", o);
+				TreeItem item = new TreeItem(h);
+				item.setUserObject(null);
 				ti.addItem(item);
 			}
 		}
@@ -121,21 +137,22 @@ public class ListingDisplay {
 		item.setUserObject(new MetadataObjectWrapper(MetadataObjectType.DocEntries,de));
 
 		if (data.enableActions) {
-            TreeItem getRelatedItem = new TreeItem(HyperlinkFactory.getRelated(tab, new ObjectRef(de.id, de.home), "Action: Get Related Documents"));
-            item.addItem(getRelatedItem);
+			if (!de.isFhir) {
+				TreeItem getRelatedItem = new TreeItem(HyperlinkFactory.getRelated(tab, new ObjectRef(de.id, de.home), "Action: Get Related Documents"));
+				item.addItem(getRelatedItem);
 
-            TreeItem getSubmissionSetItem = new TreeItem(HyperlinkFactory.getSubmissionSets(tab, new ObjectRef(de.id, de.home), "Action: Get Submission Set"));
-            item.addItem(getSubmissionSetItem);
+				TreeItem getSubmissionSetItem = new TreeItem(HyperlinkFactory.getSubmissionSets(tab, new ObjectRef(de.id, de.home), "Action: Get Submission Set"));
+				item.addItem(getSubmissionSetItem);
 
-            TreeItem getAssociationItem = new TreeItem(HyperlinkFactory.getAssociations(tab, new ObjectRef(de.id, de.home), "Action: Get Associations"));
-            item.addItem(getAssociationItem);
+				TreeItem getAssociationItem = new TreeItem(HyperlinkFactory.getAssociations(tab, new ObjectRef(de.id, de.home), "Action: Get Associations"));
+				item.addItem(getAssociationItem);
 
-            TreeItem getFoldersItem = new TreeItem(HyperlinkFactory.getFoldersForDocument(tab, new ObjectRef(de.id, de.home), "Action: Get Folders"));
-            item.addItem(getFoldersItem);
+				TreeItem getFoldersItem = new TreeItem(HyperlinkFactory.getFoldersForDocument(tab, new ObjectRef(de.id, de.home), "Action: Get Folders"));
+				item.addItem(getFoldersItem);
 
-            TreeItem getLogicalItem = new TreeItem(HyperlinkFactory.getDocuments(tab, null, new ObjectRefs(new ObjectRef(de.lid, de.home)), "Action: Get All Versions", true, data.siteSpec));
-            item.addItem(getLogicalItem);
-
+				TreeItem getLogicalItem = new TreeItem(HyperlinkFactory.getDocuments(tab, null, new ObjectRefs(new ObjectRef(de.lid, de.home)), "Action: Get All Versions", true, data.siteSpec));
+				item.addItem(getLogicalItem);
+			}
             TreeItem retrieveItem = new TreeItem(HyperlinkFactory.retrieve(tab, de, "Action: Retrieve"));
             item.addItem(retrieveItem);
 
