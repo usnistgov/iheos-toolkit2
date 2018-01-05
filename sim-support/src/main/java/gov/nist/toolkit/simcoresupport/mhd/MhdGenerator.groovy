@@ -51,6 +51,8 @@ class MhdGenerator {
     GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
     GwtErrorRecorder er = gerb.buildNewErrorRecorder()
     ResourceMgr rMgr
+    boolean translateCodes = true
+    boolean translateForDisplay = false
 
     MhdGenerator(SimProxyBase proxyBase, ResourceCacheMgr resourceCacheMgr1) {
         this.proxyBase = proxyBase
@@ -58,6 +60,16 @@ class MhdGenerator {
         er.sectionHeading('MhdGenerator started')
         rMgr = new ResourceMgr()
         rMgr.addResourceCacheMgr(resourceCacheMgr)
+    }
+
+    MhdGenerator setTranslateCodes(boolean tr) {
+        translateCodes = tr
+        this
+    }
+
+    MhdGenerator setTranslateForDisplay(boolean tr) {
+        translateForDisplay = tr
+        this
     }
 
     def clear() {
@@ -231,7 +243,7 @@ class MhdGenerator {
 
     def addClassificationFromCoding(builder, Coding coding, scheme, classifiedObjectId) {
         assert coding
-        if (proxyBase) {  // will be null during unit tests - just skip code translation in that case
+        if (proxyBase && translateCodes) {  // will be null during unit tests - just skip code translation in that case
             def systemCode = proxyBase.codeTranslator.findCodeByClassificationAndSystem(scheme, coding.system, coding.code)
             assert systemCode, "Cannot find translation for code ${coding.system}|${coding.code} (FHIR) into XDS coding scheme ${scheme} in configured codes.xml file"
             addClassification(builder, scheme, rMgr.newId(), classifiedObjectId, coding.code, systemCode.codingScheme, coding.display)
@@ -270,6 +282,9 @@ class MhdGenerator {
 
             if (dr.content?.attachment?.language)
                 addSlot(builder, 'languageCode', dr.content.attachment.language)
+
+            if (dr.content?.attachment?.url && translateForDisplay)
+                addSlot(builder, 'repositoryUniqueId', dr.content.attachment.url)
 
             if (dr.context?.sourcePatientInfo)
                 this.addSourcePatient(builder, dr.context.sourcePatientInfo)

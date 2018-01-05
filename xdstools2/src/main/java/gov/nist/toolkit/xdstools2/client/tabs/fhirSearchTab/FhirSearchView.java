@@ -32,6 +32,7 @@ public class FhirSearchView extends AbstractView<FhirSearchPresenter> implements
 //    private FlowPanel resourceDisplayPanel = new FlowPanel();
     private FlowPanel contentPanel = new FlowPanel();
     private TabbedContentPanel bottomPanel;
+    private Button searchInspectButton = new Button("Inspect");
 
 
     private TabLayoutPanel bottomTabPanel = new TabLayoutPanel(1.5, Style.Unit.EM);
@@ -109,23 +110,6 @@ public class FhirSearchView extends AbstractView<FhirSearchPresenter> implements
         bottomPanel.addBaseTab(logPanel, "[Log]");
         bottomPanel.addBaseTab(resourceDisplayOuterPanel, "[Content]");
 
-
-
-
-
-//        HTML logTitle = new HTML("<b>Logs</b>");
-//        logTitle.addStyleName("tool-section-header");
-//        thePanel.add(logTitle);
-//
-//        bottomTabPanel.setWidth("100%");
-//        bottomTabPanel.setHeight("400px");
-//        thePanel.add(bottomTabPanel);
-//        bottomTabPanel.add(inScrollPanel(logPanel), "[Log]");
-//        baseTabCount++;
-//        bottomTabPanel.add(resourceDisplayOuterPanel, "[Content]");
-//        baseTabCount++;
-
-
         ScrollPanel scrollPanel = new ScrollPanel();
         scrollPanel.add(tabTopPanel);
 
@@ -168,6 +152,8 @@ public class FhirSearchView extends AbstractView<FhirSearchPresenter> implements
         HorizontalFlowPanel buttonPanel = new HorizontalFlowPanel();
         searchRunButton.setEnabled(false);
         buttonPanel.add(searchRunButton);
+        buttonPanel.add(searchInspectButton);
+        searchInspectButton.setEnabled(false);
         innerPanel.add(buttonPanel);
         thePanel.add(searchPanel);
     }
@@ -219,6 +205,14 @@ public class FhirSearchView extends AbstractView<FhirSearchPresenter> implements
             @Override
             public void onClick(ClickEvent clickEvent) {
                 getPresenter().doSearchRun();
+                searchInspectButton.setEnabled(true);
+            }
+        });
+
+        searchInspectButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent clickEvent) {
+                getPresenter().doSearchInspect();
             }
         });
     }

@@ -53,11 +53,19 @@ public class TestLogsBuilder {
 			try {
 				IBaseResource res = ToolkitFhirContext.get().newJsonParser().parseResource(xml);
 				xml = ToolkitFhirContext.get().newJsonParser().setPrettyPrint(true).encodeResourceToString(res);
+				xml = formatJson(xml);
 			} catch (Exception e) {
 				return xml;
 			}
 		}
 		return xml;
+	}
+
+	public static String formatJson(String json) {
+		json = json.replaceAll(" ", "&nbsp;");
+		json = json.replaceAll("<", "&lt;");
+		json = json.replaceAll("\\n", "<br />");
+		return json;
 	}
 
 	static String listAsString(List<String> lst) {

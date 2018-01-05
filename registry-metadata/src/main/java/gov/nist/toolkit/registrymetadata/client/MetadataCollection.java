@@ -17,6 +17,16 @@ public class MetadataCollection implements IsSerializable, Serializable {
 	// if we don't understand the type then only the Stringified version
 	// of it will be included
 	public List<String> others = new ArrayList<>();
+	public boolean isFhir = false;
+
+	public void setAllIsFhir(boolean fhir) {
+		isFhir = fhir;
+		for (DocumentEntry de : docEntries) de.isFhir = true;
+		for (SubmissionSet ss : submissionSets) ss.isFhir = true;
+		for (Folder f : folders) f.isFhir = true;
+		for (Association as : assocs) as.isFhir = true;
+		for (ObjectRef o : objectRefs) o.isFhir = true;
+	}
 	
 	public MetadataObject findObject(String id) {
 		for (MetadataObject ro : docEntries) {

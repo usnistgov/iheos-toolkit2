@@ -106,6 +106,9 @@ public class DocumentEntry extends RegistryObject implements IsSerializable, Ser
 		String name = title;
 		if (name == null || name.equals(""))
 			name = id;
+		if (isFhir) {
+			return "DocumentReference(" + name + ")";
+		}
 		return "DocumentEntry(" + name + ")";
 	}
 

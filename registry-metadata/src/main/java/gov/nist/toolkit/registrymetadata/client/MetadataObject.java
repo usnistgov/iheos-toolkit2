@@ -27,6 +27,9 @@ public abstract class MetadataObject implements IsSerializable, Serializable {
 	public Map<String, List<String>> extra;
 	public Map<String, String> extraX;
 
+	public boolean isFhir = false;
+	public String fullUrl = null;
+
 
 	abstract public String displayName();
 

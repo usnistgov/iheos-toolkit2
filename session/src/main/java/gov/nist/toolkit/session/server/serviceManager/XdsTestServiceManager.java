@@ -11,6 +11,7 @@ import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel;
 import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.MetadataToMetadataCollectionParser;
+import gov.nist.toolkit.results.ResourceToMetadataCollectionParser;
 import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
@@ -379,9 +380,9 @@ public class XdsTestServiceManager extends CommonService {
 		if (xml == null) return xml;
 		if (xml.equals("")) return xml;
 		boolean isXml = xml.trim().startsWith("<");
-		if (!isXml) return xml;
-		xml = xml.replaceAll("<br />", "");
-		xml = xml.replace("&nbsp;", "");
+//		if (!isXml) return xml;
+		xml = xml.replaceAll("<br />", "\n");
+		xml = xml.replace("&nbsp;", " ");
 		xml = xml.replace("&lt;", "<");
 		return xml;
 	}
@@ -963,6 +964,7 @@ public class XdsTestServiceManager extends CommonService {
 				LogFileContentDTO logFileContentDTO = testLogDetails.sectionLogMapDTO.get(section);
 				for (int i = 0; i < logFileContentDTO.size(); i++) {
 					StepResult stepResult = new StepResult();
+
 					boolean stepPass = false;
 					result.stepResults.add(stepResult);
 					try {
@@ -986,28 +988,45 @@ public class XdsTestServiceManager extends CommonService {
 						try {
 							String input = testStepLogContentDTO.getInputMetadata();
 							stepResult.setRawResults(input);
-							Metadata m = MetadataParser
-									.parseNonSubmission(input);
-							if (m.getAllObjects().size() > 0) {
-								MetadataToMetadataCollectionParser mcp = new MetadataToMetadataCollectionParser(
-										m, stepResult.stepName);
-								stepResult.setMetadata(mcp.get());
-								inRequest = true;
-							}
+								try {
+									IBaseResource resource = FhirSupport.parse(input);
+									ResourceToMetadataCollectionParser parser = new ResourceToMetadataCollectionParser();
+									parser.add(resource, null);
+									stepResult.setMetadata(parser.get());
+									inRequest = true;
+								} catch (Throwable e) {
+									Metadata m = MetadataParser
+											.parseNonSubmission(input);
+									if (m.getAllObjects().size() > 0) {
+										MetadataToMetadataCollectionParser mcp = new MetadataToMetadataCollectionParser(
+												m, stepResult.stepName);
+										stepResult.setMetadata(mcp.get());
+										inRequest = true;
+									}
+								}
 						} catch (Exception e) {
+							logger.warn("Cannot convert logs for section " + section + " for UI");
 						}
 
 						boolean inResponse = false;
-						if (inRequest == false) {
+						if (!inRequest) {
 							try {
 								String reslt = testStepLogContentDTO.getResult();
-								Metadata m = MetadataParser
-										.parseNonSubmission(reslt);
-								MetadataToMetadataCollectionParser mcp = new MetadataToMetadataCollectionParser(
-										m, stepResult.stepName);
-								stepResult.setMetadata(mcp.get());
+								try {
+									IBaseResource resource = FhirSupport.parse(reslt);
+									ResourceToMetadataCollectionParser parser = new ResourceToMetadataCollectionParser();
+									parser.add(resource, null);
+									stepResult.setMetadata(parser.get());
+								} catch (Throwable e) {
+									Metadata m = MetadataParser
+											.parseNonSubmission(reslt);
+									MetadataToMetadataCollectionParser mcp = new MetadataToMetadataCollectionParser(
+											m, stepResult.stepName);
+									stepResult.setMetadata(mcp.get());
+								}
 								inResponse = true;
 							} catch (Exception e) {
+								logger.warn("Cannot convert logs for section " + section + " for UI");
 							}
 						}
 

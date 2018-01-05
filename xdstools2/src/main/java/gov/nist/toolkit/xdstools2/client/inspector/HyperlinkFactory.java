@@ -42,6 +42,8 @@ public class HyperlinkFactory {
 	static Hyperlink linkXMLView(MetadataInspectorTab it, String linkText, String xml) {
 		if (xml == null)
 			xml = "";
+		if (linkText == null)
+			linkText = "";
 		Hyperlink h = new Hyperlink();
 		h.setText(linkText);
 		h.addClickHandler(new XMLViewSelector(it, xml));

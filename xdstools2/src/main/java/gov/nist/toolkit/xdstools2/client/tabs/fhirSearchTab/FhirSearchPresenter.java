@@ -13,8 +13,10 @@ import gov.nist.toolkit.xdstools2.client.command.command.FhirReadCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.FhirSearchCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetDatasetElementContentCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionOfferingsCommand;
+import gov.nist.toolkit.xdstools2.client.inspector.mvp.ResultInspector;
 import gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab.ILogger;
 import gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab.ResultDisplay;
+import gov.nist.toolkit.xdstools2.client.toolLauncher.NewToolLauncher;
 import gov.nist.toolkit.xdstools2.client.util.ASite;
 import gov.nist.toolkit.xdstools2.client.util.AnnotatedItem;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
@@ -162,6 +164,8 @@ public class FhirSearchPresenter extends AbstractPresenter<FhirSearchView> imple
         return theList;
     }
 
+    List<Result> resultsForInspector = null;
+
     void doSearchRun() {
         getView().clearLog();
 
@@ -175,6 +179,7 @@ public class FhirSearchPresenter extends AbstractPresenter<FhirSearchView> imple
                 Result result = results.get(0);
                 ResultDisplay.display(result, getPresenter());
                 ResponseLoader.load(result.logId, "", getView());
+                resultsForInspector = results;
             }
         }.run(new FhirSearchRequest(getCommandContext(), new SiteSpec(selectedSite), selectedResourceTypeName, codesSpec));
     }
@@ -193,5 +198,14 @@ public class FhirSearchPresenter extends AbstractPresenter<FhirSearchView> imple
     @Override
     public void addLog(Widget content) {
         getView().addLog(content);
+    }
+
+    public void doSearchInspect() {
+        if (resultsForInspector != null) {
+            ResultInspector resultInspector = new ResultInspector();
+            resultInspector.setResults(resultsForInspector);
+            resultInspector.setSiteSpec(new SiteSpec(selectedSite));
+            new NewToolLauncher().launch(resultInspector);
+        }
     }
 }

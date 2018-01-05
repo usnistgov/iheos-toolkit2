@@ -100,7 +100,7 @@ public class FhirSearch {
                 throw new Exception("Do not understand Patient reference");
             }
             String id = idAndRest[0];
-            String amp = (patient.contains("&amp;")) ? "&amp;" : ";";
+            String amp = (patient.contains("&amp;")) ? "&amp;" : "&";
             String[] oidPlus = idAndRest[1].split(amp);
             if (oidPlus.length < 2) {
                 throw new Exception("Do not understand Patient reference");
