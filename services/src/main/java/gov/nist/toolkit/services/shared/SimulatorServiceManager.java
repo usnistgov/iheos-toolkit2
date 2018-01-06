@@ -369,8 +369,8 @@ public class SimulatorServiceManager extends CommonService {
         GenericSimulatorFactory.delete(config.getId());
         // This looks like it's redundant??
 		// Both GenericSimulatorFactory.delete and SimulatorApi(session).delete
-		// call gov.nist.toolkit.simcommon.server.AbstractActorFactor#delete(SimId) ??
-//        new SimulatorApi(session).delete(config.getId());
+		// call gov.nist.toolkit.simcommon.server.AbstractActorFactory#delete(SimId) ??
+		//        new SimulatorApi(session).delete(config.getId());
 		SimServlet.deleteSim(config.getId());
 		return "";
 //		try {
