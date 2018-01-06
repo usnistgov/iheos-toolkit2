@@ -29,11 +29,11 @@ class ResourceToMetadataCollectionParserTest extends Specification {
 
     def 'test 1' () {
         when:
-        parser.add(documentReference)
+        parser.add(documentReference, null)
 
         then:
         parser.col.docEntries.size() == 1
-        parser.col.docEntries[0].uniqueId == '1.2.129.6.58.92.88336'
+        parser.col.docEntries[0].uniqueId == 'urn:oid:1.2.129.6.58.92.88336'
     }
 
 }

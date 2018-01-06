@@ -12,11 +12,7 @@ import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.Widget;
-import gov.nist.toolkit.registrymetadata.client.Association;
-import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
-import gov.nist.toolkit.registrymetadata.client.Folder;
-import gov.nist.toolkit.registrymetadata.client.ObjectRef;
-import gov.nist.toolkit.registrymetadata.client.SubmissionSet;
+import gov.nist.toolkit.registrymetadata.client.*;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractView;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataObjectType;
@@ -204,6 +200,42 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         }
     };
 
+    ResourceDataTable resourceDataTable = new ResourceDataTable(rowsPerPage) {
+        @Override
+        void doGetDocuments(List<ResourceItem> objectRefs) { // TODO: remove this
+//            getPresenter().do
+        }
+
+        @Override
+        void defaultDoubleClickAction(ResourceItem row) {
+//            getPresenter().do
+        }
+
+        @Override
+        void defaultSingleClickAction(ResourceItem row) {
+            getPresenter().doSingleMode();
+            TreeItem treeItem = getPresenter().doFocusTreeItem(MetadataObjectType.valueOf(metadataObjectSelector.getCurrentSelection()), metadataInspectorLeft.getTreeList(), null,row, metadataInspectorLeft.getCurrentSelectedTreeItem());
+            if (treeItem!=null) {
+                metadataInspectorLeft.setCurrentSelectedTreeItem(treeItem);
+            }
+        }
+
+        @Override
+        void setupDiffMode(boolean isSelected) {
+            getPresenter().doSetupDiffMode(isSelected);
+        }
+
+        @Override
+        void diffAction(ResourceItem left, ResourceItem right) {
+            getPresenter().doDiffAction(MetadataObjectType.valueOf(metadataObjectSelector.getCurrentSelection()), left, right);
+        }
+
+        @Override
+        int getWidthInPx() {
+            return getParentContainerWidth();
+        }
+    };
+
     private int getParentContainerWidth() {
         int width;
         try {
@@ -288,6 +320,7 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         tableMap.put(MetadataObjectType.SubmissionSets, submissionSetDataTable);
         tableMap.put(MetadataObjectType.Folders, foldersDataTable);
         tableMap.put(MetadataObjectType.Assocs, assocDataTable);
+        tableMap.put(MetadataObjectType.Resources, resourceDataTable);
 
         advancedOptionCtl.addClickHandler(new ClickHandler() {
             @Override

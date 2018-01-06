@@ -3,14 +3,7 @@ package gov.nist.toolkit.xdstools2.client.inspector;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.TreeItem;
-import gov.nist.toolkit.registrymetadata.client.Association;
-import gov.nist.toolkit.registrymetadata.client.Document;
-import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
-import gov.nist.toolkit.registrymetadata.client.Folder;
-import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
-import gov.nist.toolkit.registrymetadata.client.ObjectRef;
-import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
-import gov.nist.toolkit.registrymetadata.client.SubmissionSet;
+import gov.nist.toolkit.registrymetadata.client.*;
 import gov.nist.toolkit.results.client.Result;
 
 import java.util.ArrayList;
@@ -59,6 +52,8 @@ public class ListingDisplay {
 
 		others();
 
+		resources();
+
 	}
 
 	void allDocs() {
@@ -101,7 +96,7 @@ public class ListingDisplay {
 		}
 	}
 
-	void others() {
+	void others() {   // no longer used for resources
 		if (data.combinedMetadata.others.size() > 0) {
 			TreeItem ti = new TreeItem();
 			ti.setHTML(Integer.toString(data.combinedMetadata.others.size()) + " Resources");
@@ -111,6 +106,21 @@ public class ListingDisplay {
 				Hyperlink h = HyperlinkFactory.linkMainXMLView(tab, "Resource", o);
 				TreeItem item = new TreeItem(h);
 				item.setUserObject(null);
+				ti.addItem(item);
+			}
+		}
+	}
+
+	void resources() {
+		if (data.combinedMetadata.resources.size() > 0) {
+			TreeItem ti = new TreeItem();
+			ti.setHTML(Integer.toString(data.combinedMetadata.resources.size()) + " Resources");
+			root.addItem(ti);
+
+			for (ResourceItem ri : data.combinedMetadata.resources) {
+				Hyperlink h = HyperlinkFactory.link(tab, ri);
+				TreeItem item = new TreeItem(h);
+				item.setUserObject(new MetadataObjectWrapper(MetadataObjectType.Resources,ri));
 				ti.addItem(item);
 			}
 		}

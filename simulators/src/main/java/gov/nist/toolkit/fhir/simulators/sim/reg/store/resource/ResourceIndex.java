@@ -8,7 +8,7 @@ import java.io.*;
 import java.util.Calendar;
 
 /**
- * Manages ResourceCollection into and out of memory.
+ * Manages ResourceItem into and out of memory.
  */
 public class ResourceIndex implements Serializable {
     private static Logger logger = Logger.getLogger(ResourceIndex.class);

@@ -17,6 +17,8 @@ public class MetadataCollection implements IsSerializable, Serializable {
 	// if we don't understand the type then only the Stringified version
 	// of it will be included
 	public List<String> others = new ArrayList<>();
+	// this is for resources other than those that map to XDS
+	public List<ResourceItem> resources = new ArrayList<>();
 	public boolean isFhir = false;
 
 	public void setAllIsFhir(boolean fhir) {

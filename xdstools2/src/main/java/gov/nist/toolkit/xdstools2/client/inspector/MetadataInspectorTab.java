@@ -359,8 +359,11 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 				addTreeSelectionHandler(historyTree);
 			}
 			// tree element for test with test id & time stamp, red if test failed
-			TreeItem historyElement = 
-			   new TreeItem(redAsHTML(res.testInstance.getId() + "   (" + res.timestamp + ")", !ares.isFailed()));
+			TreeItem historyElement =
+			   new TreeItem(redAsHTML(res.testInstance.getId()
+					   + ((res.testInstance.getSection() != null) ? ":" + res.testInstance.getSection() : "")
+					   + "   (" + res.timestamp + ")",
+					   !ares.isFailed()));
 			historyTree.addItem(historyElement);
 
 			int stepCount = res.stepResults.size();

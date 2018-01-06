@@ -60,6 +60,8 @@ public class DetailDisplay {
 			displayDetail((Association) mo);
 		if (mo instanceof ObjectRef) 
 			displayDetail((ObjectRef) mo);
+		if (mo instanceof ResourceItem)
+			displayDetail((ResourceItem) mo);
 	}
 
 	int displayDetail(FlexTable ft, int row, boolean bold, String label, List<String> values, String xml) {
@@ -257,7 +259,13 @@ public class DetailDisplay {
 	    detailPanel.add(flowPanel);
 	}
 
-	void displayDetail(DocumentEntry de, DocumentEntry diff) {
+	private void displayDetail(ResourceItem ri) {
+		String title = "<h4>" + ri.getType() + "</h4>";
+		addTitle(HyperlinkFactory.addHTML(title));
+		detailPanel.add(new HTML(ri.getHtmlizedJson()));
+	}
+
+	private void displayDetail(DocumentEntry de, DocumentEntry diff) {
 //		detailPanel.add(HyperlinkFactory.addHTML("<h4>Document Entry</h4>"));
 		String title = (de.isFhir) ? "<h4>Document Entry (translated from DocumentReference)</h4>" : "<h4>Document Entry</h4>";
 		addTitle(HyperlinkFactory.addHTML(title));

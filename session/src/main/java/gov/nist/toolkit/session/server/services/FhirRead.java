@@ -28,7 +28,7 @@ public class FhirRead {
         try {
             session.setSiteSpec(site);
             session.transactionSettings.assignPatientId = false;
-            TestInstance testInstance = new TestInstance("FHIR");
+            TestInstance testInstance = new TestInstance("FHIR", "read");
             List<String> sections = new ArrayList<>();
             sections.add("read");
             Map<String, String> params = new HashMap<String, String>();
