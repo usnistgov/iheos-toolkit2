@@ -4,12 +4,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Hyperlink;
-import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
-import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
-import gov.nist.toolkit.registrymetadata.client.MetadataObject;
-import gov.nist.toolkit.registrymetadata.client.ObjectRef;
-import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
-import gov.nist.toolkit.registrymetadata.client.Uid;
+import gov.nist.toolkit.registrymetadata.client.*;
 import gov.nist.toolkit.results.client.AssertionResults;
 import gov.nist.toolkit.results.client.StepResult;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
@@ -50,10 +45,28 @@ public class HyperlinkFactory {
 		return h;
 	}
 
+	static Hyperlink linkMainXMLView(MetadataInspectorTab it, String linkText, String xml) {
+		if (xml == null)
+			xml = "";
+		if (linkText == null)
+			linkText = "";
+		Hyperlink h = new Hyperlink();
+		h.setText(linkText);
+		h.addClickHandler(new XMLMainViewSelector(it, xml));
+		return h;
+	}
+
 	static Hyperlink link(MetadataInspectorTab it, MetadataObject mo) {
 		Hyperlink h = new Hyperlink();
 		h.setText(prefix(mo.displayName(), 40));
 		h.addClickHandler(new HistorySelector(it, mo));
+		return h;
+	}
+
+	static Hyperlink link(MetadataInspectorTab it, ResourceItem ri) {
+		Hyperlink h = new Hyperlink();
+		h.setText(prefix(ri.displayName(), 40));
+		h.addClickHandler(new HistorySelector(it, ri));
 		return h;
 	}
 

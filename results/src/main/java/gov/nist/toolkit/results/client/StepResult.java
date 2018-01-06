@@ -68,7 +68,9 @@ public class StepResult implements IsSerializable, Serializable {
                         metadata.assocs.size() +
                 " Associations  " +
                         metadata.folders.size() +
-                " Folders"
+                " Folders" +
+						metadata.resources.size() +
+						" Resources"
                 ;
     }
 	

@@ -50,6 +50,8 @@ public class StructureDisplay {
 			displayStructure((Association) mo, ft);
 		if (mo instanceof ObjectRef) 
 			displayStructure((ObjectRef) mo, ft);
+		if (mo instanceof ResourceItem)
+			displayStructure((ResourceItem) mo, ft);
 
 		structPanel.add(ft);
 	}
@@ -67,7 +69,7 @@ public class StructureDisplay {
 	}
 
 
-	void displayStructure(Association assoc, FlexTable ft) {
+	private void displayStructure(Association assoc, FlexTable ft) {
 		int row=0;
 
 		ft.setWidget(row, 0, HyperlinkFactory.link(it, metadataCollection, assoc.id, assoc.type));
@@ -83,7 +85,7 @@ public class StructureDisplay {
 
 	}
 
-	void displayStructure(DocumentEntry de, FlexTable ft) {
+	private void displayStructure(DocumentEntry de, FlexTable ft) {
 		int row=0;
 
 		ft.setWidget(row, 0, HyperlinkFactory.link(it, metadataCollection, de.id, de.displayName()));
@@ -103,7 +105,7 @@ public class StructureDisplay {
 		}
 	}
 
-	void displayStructure(Folder fol, FlexTable ft) {
+	private void displayStructure(Folder fol, FlexTable ft) {
 		int row=0;
 
 		ft.setWidget(row, 0, HyperlinkFactory.link(it, metadataCollection, fol.id, fol.displayName()));
@@ -124,7 +126,7 @@ public class StructureDisplay {
 
 	}
 
-	void displayStructure(SubmissionSet ss, FlexTable ft) {
+	private void displayStructure(SubmissionSet ss, FlexTable ft) {
 		int row=0;
 
 		ft.setWidget(row, 0, HyperlinkFactory.link(it, metadataCollection, ss.id, ss.displayName()));
@@ -145,13 +147,19 @@ public class StructureDisplay {
 
 	}
 
-	void displayStructure(ObjectRef o, FlexTable ft) {
+	private void displayStructure(ObjectRef o, FlexTable ft) {
 		int row=0;
 
 		ft.setText(row, 0, o.id);
 	}
 
-	String reverseAssociationType(String type) {
+	private void displayStructure(ResourceItem ri, FlexTable ft) {
+		int row=0;
+
+		ft.setText(row, 0, ri.id);
+	}
+
+	private String reverseAssociationType(String type) {
 		if ("HasMember".equals(type)) return "MemberOf";
 		if ("RPLC".equals(type)) return "ReplacedBy";
 		return "Reverse " + type;

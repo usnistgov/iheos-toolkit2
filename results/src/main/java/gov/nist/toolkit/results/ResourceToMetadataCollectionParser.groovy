@@ -3,6 +3,7 @@ package gov.nist.toolkit.results
 import gov.nist.toolkit.fhir.context.ToolkitFhirContext
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection
+import gov.nist.toolkit.registrymetadata.client.ResourceItem
 import gov.nist.toolkit.registrymetadata.client.SubmissionSet
 import gov.nist.toolkit.simcoresupport.mhd.MhdGenerator
 import org.apache.log4j.Logger
@@ -39,8 +40,13 @@ class ResourceToMetadataCollectionParser {
             }
         } else {
             // not a resource we have a GWT model for - add the JSON
-            String json = ToolkitFhirContext.get().newJsonParser().encodeResourceToString(res)
-            col.others.add(json)
+            initCollection()
+//            String json = ToolkitFhirContext.get().newJsonParser().encodeResourceToString(res)
+            String json = ToolkitFhirContext.get().newJsonParser().setPrettyPrint(true).encodeResourceToString(res);
+            String htmljson = formatJson(json)
+            ResourceItem item = new ResourceItem(res.class.simpleName, json, htmljson)
+            item.id = res.id
+            col.resources.add(item)
         }
     }
 
@@ -218,6 +224,7 @@ class ResourceToMetadataCollectionParser {
 
             if (dr.masterIdentifier) {
                 de.uniqueId = dr.masterIdentifier.value
+//                de.uniqueId = "${dr.masterIdentifier.system.toString()}|${dr.masterIdentifier.id.toString()}"
                 de.uniqueIdX = json
             }
 

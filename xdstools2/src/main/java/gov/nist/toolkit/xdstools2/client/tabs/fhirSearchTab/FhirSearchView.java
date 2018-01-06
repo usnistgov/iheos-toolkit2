@@ -33,6 +33,7 @@ public class FhirSearchView extends AbstractView<FhirSearchPresenter> implements
     private FlowPanel contentPanel = new FlowPanel();
     private TabbedContentPanel bottomPanel;
     private Button searchInspectButton = new Button("Inspect");
+    private Button readInspectButton = new Button("Inspect");
 
 
     private TabLayoutPanel bottomTabPanel = new TabLayoutPanel(1.5, Style.Unit.EM);
@@ -76,7 +77,7 @@ public class FhirSearchView extends AbstractView<FhirSearchPresenter> implements
     protected Widget buildUI() {
         tabTopPanel.setWidth("100%");
         tabTopPanel.add(messagePanel);
-        tabTopPanel.add(new HTML("<h2>FHIR Search</h2>"));
+        tabTopPanel.add(new HTML("<h2>FHIR Search/Read</h2>"));
 
         thePanel.add(systemSelector.asWidget());
 
@@ -173,9 +174,9 @@ public class FhirSearchView extends AbstractView<FhirSearchPresenter> implements
         HorizontalFlowPanel referencePanel = new HorizontalFlowPanel();
         referencePanel.add(new Label("Resource Reference:"));
 
-        refTextBox.setVisibleLength(60);
+        refTextBox.setVisibleLength(90);
         referencePanel.add(refTextBox);
-        referencePanel.add(new Label("(ResourceType/ID)"));
+        referencePanel.add(new Label("(fullURL or ResourceType/ID - ResourceType/ID requires system selection above)"));
         innerPanel.add(referencePanel);
 
         HTML buttonPanelTitle = new HTML("Actions");
@@ -184,8 +185,10 @@ public class FhirSearchView extends AbstractView<FhirSearchPresenter> implements
         innerPanel.add(buttonPanelTitle);
 
         HorizontalFlowPanel buttonPanel = new HorizontalFlowPanel();
-        readRunButton.setEnabled(false);
+        readRunButton.setEnabled(true);
         buttonPanel.add(readRunButton);
+        buttonPanel.add(readInspectButton);
+        readInspectButton.setEnabled(false);
         innerPanel.add(buttonPanel);
         thePanel.add(readPanel);
     }
@@ -197,6 +200,7 @@ public class FhirSearchView extends AbstractView<FhirSearchPresenter> implements
             @Override
             public void onClick(ClickEvent clickEvent) {
                 getPresenter().doReadRun();
+                readInspectButton.setEnabled(true);
             }
         });
 
@@ -213,6 +217,13 @@ public class FhirSearchView extends AbstractView<FhirSearchPresenter> implements
             @Override
             public void onClick(ClickEvent clickEvent) {
                 getPresenter().doSearchInspect();
+            }
+        });
+
+        readInspectButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent clickEvent) {
+                getPresenter().doReadInspect();
             }
         });
     }

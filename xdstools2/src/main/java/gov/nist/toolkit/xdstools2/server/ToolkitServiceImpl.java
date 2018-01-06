@@ -27,7 +27,7 @@ import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.server.RawResponseBuilder;
 import gov.nist.toolkit.services.server.orchestration.OrchestrationManager;
-import gov.nist.toolkit.services.server.testClient.FhirServiceManager;
+import gov.nist.toolkit.session.server.serviceManager.FhirServiceManager;
 import gov.nist.toolkit.services.shared.SimulatorServiceManager;
 import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
@@ -349,6 +349,15 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<Result> retrieveDocument(RetrieveDocumentRequest request) throws Exception {
         installCommandContext(request);
+        String uid = request.getUids().uids.get(0).repositoryUniqueId;
+        if (uid.startsWith("http")) {
+            // fhir read
+            return session().fhirServiceManager().read(request.getSite(), uid);
+        }
+        if (uid.startsWith("[http")) {
+            uid = uid.substring(1, uid.length()-1);
+            return session().fhirServiceManager().read(request.getSite(), uid);
+        }
         return session().queryServiceManager().retrieveDocument(request.getSite(), request.getUids());
     }
     @Override

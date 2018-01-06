@@ -187,7 +187,7 @@ public class PlanContext extends BasicContext {
 			results_document.addChild(timeEle);
 
 			OMElement siteEle = MetadataSupport.om_factory.createOMElement("Site", null);
-			siteEle.setText(testConfig.site.getName());
+			siteEle.setText((testConfig.site == null) ? "" : testConfig.site.getName());
 			results_document.addChild(siteEle);
 
 			testLog.add_name_value(results_document, "Xdstest2_version", testConfig.testkitVersion);

@@ -31,7 +31,7 @@ public class FhirSearch {
         try {
             session.setSiteSpec(site);
             session.transactionSettings.assignPatientId = false;
-            TestInstance testInstance = new TestInstance("FHIR");
+            TestInstance testInstance = new TestInstance("FHIR", "search");
             List<String> sections = new ArrayList<>();
             sections.add("search");
             Map<String, String> params = new HashMap<String, String>();

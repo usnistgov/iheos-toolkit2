@@ -28,11 +28,14 @@ public class FhirRead {
         try {
             session.setSiteSpec(site);
             session.transactionSettings.assignPatientId = false;
-            TestInstance testInstance = new TestInstance("FHIR");
+            TestInstance testInstance = new TestInstance("FHIR", "read");
             List<String> sections = new ArrayList<>();
             sections.add("read");
             Map<String, String> params = new HashMap<String, String>();
-            params.put("$UrlExtension$", '/' + reference);
+            if (reference.startsWith("http"))
+                params.put("$UrlExtension$", reference);
+            else
+                params.put("$UrlExtension$", '/' + reference);
 
             List<Result> results = asList(new XdsTestServiceManager(session).xdstest(testInstance, sections, params, null, null, true));
             return results;

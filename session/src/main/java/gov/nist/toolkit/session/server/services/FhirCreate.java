@@ -31,7 +31,7 @@ public class FhirCreate {
         try {
             session.setSiteSpec(site);
             session.transactionSettings.assignPatientId = false;
-            TestInstance testInstance = new TestInstance("FHIR");
+            TestInstance testInstance = new TestInstance("FHIR", "create");
             List<String> sections = new ArrayList<>();
             sections.add("create");
             Map<String, String> params = new HashMap<String, String>();

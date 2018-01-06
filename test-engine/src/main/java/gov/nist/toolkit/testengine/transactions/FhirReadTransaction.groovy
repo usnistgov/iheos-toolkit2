@@ -49,11 +49,20 @@ class FhirReadTransaction extends BasicFhirTransaction {
         def fullEndpoint = useReportManager?.get('Ref')
         if (!fullEndpoint) {
             if (urlExtension) {
-                if (urlExtension && !urlExtension.startsWith('/'))
+                if (urlExtension && !urlExtension.startsWith('/') && !urlExtension.startsWith('http'))
                     urlExtension = "/${urlExtension}"
-                def fhirBase = testConfig.site.getEndpoint(TransactionType.FHIR, false, false)
-                assert fhirBase, "FHIRBase is null"
-                fullEndpoint = "${fhirBase}${urlExtension}"
+                if (urlExtension.startsWith('http'))
+                    fullEndpoint = urlExtension
+                else if (testConfig.site) {
+                    def fhirBase = testConfig.site.getEndpoint(TransactionType.FHIR, false, false)
+                    assert fhirBase, "FHIRBase is null"
+                    fullEndpoint = "${fhirBase}${urlExtension}"
+                } else if (urlExtension.startsWith('http')){
+                    fullEndpoint = urlExtension
+                } else if (urlExtension.startsWith('/http')) {
+                    // the leading / is an artifact of the testplan
+                    fullEndpoint = urlExtension.substring(1)
+                }
             }
         }
         assert fullEndpoint, 'FhirReadTransaction: Ref and UrlExtension are null'

@@ -1,12 +1,9 @@
-package gov.nist.toolkit.services.server.testClient
+package gov.nist.toolkit.session.server.services
 
 import gov.nist.toolkit.datasets.shared.DatasetElement
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
-import gov.nist.toolkit.services.client.FhirSupportOrchestrationResponse
-import gov.nist.toolkit.services.server.ToolkitApi
-import gov.nist.toolkit.services.server.orchestration.FhirSupportOrchestrationBuilder
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager
 import gov.nist.toolkit.sitemanagement.client.SiteSpec
@@ -28,9 +25,9 @@ public class ProvideDocumentBundle {
         try {
 
             // make sure the FHIR Support server is running
-            ToolkitApi api = ToolkitApi.forNormalUse(session)
-            FhirSupportOrchestrationResponse response = new FhirSupportOrchestrationBuilder(api, session,true).buildTestEnvironment()
-            assert !response.error
+//            ToolkitApi api = ToolkitApi.forNormalUse(session)
+//            FhirSupportOrchestrationResponse response = new FhirSupportOrchestrationBuilder(api, session,true).buildTestEnvironment()
+//            assert !response.error
 
             session.setSiteSpec(site);
             session.transactionSettings.assignPatientId = false;
