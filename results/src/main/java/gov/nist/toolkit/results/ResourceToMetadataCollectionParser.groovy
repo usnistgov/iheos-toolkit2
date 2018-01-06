@@ -217,7 +217,7 @@ class ResourceToMetadataCollectionParser {
             }
 
             if (dr.masterIdentifier) {
-                de.uniqueId = "${dr.masterIdentifier.system.toString()}|${dr.masterIdentifier.id.toString()}"
+                de.uniqueId = dr.masterIdentifier.value
                 de.uniqueIdX = json
             }
 
