@@ -61,11 +61,16 @@ public class PatientResourceProvider implements IToolkitResourceProvider {
         ToolkitResourceProvider tk = new ToolkitResourceProvider(getResourceType(), requestDetails)
 
         File f = tk.readOperation(theId)
+        FileReader fr = null
 
         try {
-            return tk.jsonParser.parseResource(Patient.class, new FileReader(f));
+            fr = new FileReader(f)
+            return tk.jsonParser.parseResource(Patient.class, fr);
         } catch (FileNotFoundException e) {
             throw new InternalErrorException("File " + f + " not found");
+        } finally {
+           if (fr)
+               fr.close()
         }
     }
 
@@ -109,7 +114,14 @@ public class PatientResourceProvider implements IToolkitResourceProvider {
             builder.add(termQuery, BooleanClause.Occur.SHOULD)
         }
 
-        return tk.searchResults(new BaseQuery(tk.simContext).execute(builder))
+        BaseQuery bq = null
+        try {
+            bq = new BaseQuery(tk.simContext)
+           return tk.searchResults(bq.execute(builder))
+        } finally {
+            bq.close()
+        }
+//        return tk.searchResults(new BaseQuery(tk.simContext).execute(builder))
     }
 
     @Search()
@@ -130,7 +142,14 @@ public class PatientResourceProvider implements IToolkitResourceProvider {
         termQuery = new TermQuery(term)
         builder.add ( termQuery, BooleanClause.Occur.MUST )
 
-        return tk.searchResults(new BaseQuery(tk.simContext).execute(builder))
+//        return tk.searchResults(new BaseQuery(tk.simContext).execute(builder))
+        BaseQuery bq = null
+        try {
+           bq = new BaseQuery(tk.simContext)
+            return tk.searchResults(bq.execute(builder))
+        } finally {
+            bq.close()
+        }
     }
 
     @Search
@@ -140,8 +159,17 @@ public class PatientResourceProvider implements IToolkitResourceProvider {
 
         BooleanQuery.Builder builder = new BooleanQuery.Builder()
 
-        List<Patient> patients = tk.searchResults(new BaseQuery(tk.simContext).execute())
-        return patients;
+//        List<Patient> patients = tk.searchResults(new BaseQuery(tk.simContext).execute())
+//        return patients;
+
+        BaseQuery bq = null
+        try {
+            bq = new BaseQuery(tk.simContext)
+               List<Patient> patients = tk.searchResults(bq.execute())
+                return patients;
+        } finally {
+            bq.close()
+        }
     }
 
     /**  NOT LINKED TO RESDB YET

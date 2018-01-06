@@ -10,7 +10,6 @@ import org.apache.lucene.index.IndexReader
 import org.apache.lucene.index.IndexWriter
 import org.apache.lucene.index.IndexWriterConfig
 import org.apache.lucene.search.IndexSearcher
-import org.apache.lucene.store.Directory
 import org.apache.lucene.store.FSDirectory
 /**
  * Lucene index for a single Simulator
@@ -19,6 +18,7 @@ import org.apache.lucene.store.FSDirectory
  */
 class ResDbIndexer {
     static private final Logger logger = Logger.getLogger(ResDbIndexer.class);
+    FSDirectory indexDirectory = null
     IndexWriter indexWriter
     File indexDir
     boolean openForWriting = false
@@ -38,15 +38,17 @@ class ResDbIndexer {
      * @return
      */
     protected openIndexForWriting() {
-        logger.info("open index for writing ${indexDir}")
+        logger.info("*** index open for writing ${indexDir}")
         try {
-            Directory dir = FSDirectory.open(indexDir.toPath())
+            if (!indexDirectory)
+                indexDirectory = FSDirectory.open(indexDir.toPath())
             IndexWriterConfig iwc = new IndexWriterConfig()
             iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND)
             iwc.setCommitOnClose(true)
-            indexWriter = new IndexWriter(dir, iwc)
+            if (!indexWriter)
+                indexWriter = new IndexWriter(indexDirectory, iwc)
             openForWriting = true
-            return true;
+            return true
         } catch (Exception e) {
             System.err.println("Error opening the index. " + ExceptionUtil.exception_details(e));
             throw new Exception("Error opening the Lucene index", e)
@@ -59,17 +61,22 @@ class ResDbIndexer {
         indexWriter = null
     }
 
-    protected close() {
-        logger.info("close ${indexDir}")
+    protected void close() {
+        logger.info("*** index close ${indexDir}")
         try {
             if (indexWriter)
                 indexWriter.close()
             indexWriter = null
 
-            if (indexDirectory) indexDirectory.close()
-            indexDirectory = null
+
             if (indexReader) indexReader.close()
             indexReader = null
+            if (indexDirectory) {
+                indexDirectory.close()
+                if (indexDirectory.checkPendingDeletions())
+                    indexDirectory.deletePendingFiles()
+                indexDirectory = null
+            }
         } catch (Exception e) {
             logger.fatal("close of ${indexDir} failed - ${e.getMessage()}")
         }
@@ -100,7 +107,6 @@ class ResDbIndexer {
         resourceIndexSet.items.each { addResource(it)}
     }
 
-    FSDirectory indexDirectory = null
     IndexReader indexReader = null
 
     /**
@@ -109,8 +115,11 @@ class ResDbIndexer {
      * @return
      */
     IndexSearcher openIndexForSearching(File index) {
-        indexDirectory = FSDirectory.open(index.toPath())
-        indexReader = DirectoryReader.open(indexDirectory)
+        logger.info("*** index open for searching ${indexDir}")
+        if (!indexDirectory)
+            indexDirectory = FSDirectory.open(index.toPath())
+        if (!indexReader)
+            indexReader = DirectoryReader.open(indexDirectory)
         IndexSearcher indexSearcher = new IndexSearcher(indexReader);
         return indexSearcher
     }

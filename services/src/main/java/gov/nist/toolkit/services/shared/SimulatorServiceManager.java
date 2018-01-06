@@ -367,7 +367,10 @@ public class SimulatorServiceManager extends CommonService {
 	public String deleteConfig(SimulatorConfig config) throws Exception  {
 		logger.debug(session.id() + ": " + "deleteConfig " + config.getId());
         GenericSimulatorFactory.delete(config.getId());
-        new SimulatorApi(session).delete(config.getId());
+        // This looks like it's redundant??
+		// Both GenericSimulatorFactory.delete and SimulatorApi(session).delete
+		// call gov.nist.toolkit.simcommon.server.AbstractActorFactory#delete(SimId) ??
+		//        new SimulatorApi(session).delete(config.getId());
 		SimServlet.deleteSim(config.getId());
 		return "";
 //		try {

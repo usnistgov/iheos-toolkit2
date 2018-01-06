@@ -9,7 +9,6 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil
 import org.apache.log4j.Logger
 import org.apache.lucene.search.IndexSearcher
 import org.hl7.fhir.dstu3.model.DomainResource
-
 /**
  *
  */
@@ -51,6 +50,15 @@ public class SimContext {
         } catch (Exception e) {
             logger.error("Error getting index searcher for Lucene: ${ExceptionUtil.exception_details(e)}")
             throw new Exception("Error getting index searcher for Lucene", e)
+        }
+    }
+
+    void closeIndex() {
+        try {
+            SimIndexer indexer = SimIndexManager.getIndexer(simId)
+//            indexer.indexSearcher.indexReader.close()
+            indexer.close()
+        } finally {
         }
     }
 
