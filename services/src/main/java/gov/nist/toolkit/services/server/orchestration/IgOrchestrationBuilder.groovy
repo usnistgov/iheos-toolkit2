@@ -84,7 +84,7 @@ class IgOrchestrationBuilder {
                 MessageItem itemOneDoc3 = response.addMessage(testInstance15807, true, "")
                 MessageItem itemRegistryError = response.addMessage(testInstance15807, true, "")
 
-//                TestInstance testInstance12318 = TestInstanceManager.initializeTestInstance(request.getUserName(), new TestInstance('12318'))
+                TestInstance testInstance12318 = TestInstanceManager.initializeTestInstance(request.getUserName(), new TestInstance('12318'))
 //                MessageItem item12318 = response.addMessage(testInstance12318, true, "")
 
                 // Submit test data

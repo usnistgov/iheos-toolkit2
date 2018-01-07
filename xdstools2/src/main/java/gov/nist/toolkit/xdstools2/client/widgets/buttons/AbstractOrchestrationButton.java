@@ -173,12 +173,16 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
                 }.run(new GetStsSamlAssertionRequest(ClientUtils.INSTANCE.getCommandContext(), xuaUsername, getStsTestInstance(), getStsSpec(), getSamlParams()));
             } catch (Throwable t) {
                 handleError(t);
+            } finally {
+                resetCheckBox.setValue(false);
             }
         } else {
             try {
                 orchestrate();
             } catch (Throwable t) {
                 handleError(t);
+            } finally {
+                resetCheckBox.setValue(false);
             }
         }
     }
