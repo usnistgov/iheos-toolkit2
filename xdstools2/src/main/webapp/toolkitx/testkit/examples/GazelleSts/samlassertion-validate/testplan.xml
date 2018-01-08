@@ -3,6 +3,7 @@
   <TestStep id="validate">
     <ExpectedStatus>Success</ExpectedStatus>
     <StsTransaction stsQuery="validate">
+      <NoMetadata/>
       <Headers>
         Content-Type: application/soap+xml;charset=UTF-8
       </Headers>

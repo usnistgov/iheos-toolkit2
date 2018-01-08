@@ -16,7 +16,7 @@ public class ReportBuilder  {
 		ReportDTO r = new ReportDTO();
 
 		r.setName(rep.getAttributeValue(name_qname));
-		r.setValue(rep.getText());
+		r.setValue(rep.toString()); // Was: r.setValue(rep.getText()); -- This caused &amp;amp; to be dropped out and appear simply as &amp; Which caused wstxlazyexception unexpected character error.
 
 		if (r.getName() == null || r.getName().equals(""))
 			throw new XdsInternalException("Cannot parse Report: " + rep.toString());
