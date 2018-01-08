@@ -54,8 +54,8 @@ public class RunClickHandler implements ClickHandler {
             else
                 Window.alert(msg);
         }
-        if (controller != null) {
-            controller.getRefreshTestCollectionClickHandler().onClick(null);
-        }
+//        if (controller != null) {
+//            controller.getRefreshTestCollectionClickHandler().onClick(null);
+//        }
     }
 }
