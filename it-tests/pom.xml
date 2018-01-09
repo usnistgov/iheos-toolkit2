@@ -115,6 +115,11 @@
             <artifactId>fhir</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+        </dependency>
+
 
         <!-- These two needed by dcm4che -->
         <dependency>
