@@ -66,7 +66,7 @@ class GenerateSingleSystem {
         // Recipient
         //*************************************************************
         Site recipientSite = null
-        elements.findAll { it.isRecipient() && it.approved }.each { ConfigDef config ->
+        elements.findAll { (it.isRecipient() || it.isResponder())  && it.approved }.each { ConfigDef config ->
             String system = config.system
             String tkSystem = "${system} - REC"
             if (recipientSite == null) {
@@ -84,7 +84,41 @@ class GenerateSingleSystem {
             logit(log, transactionType, null, endpoint, isSecure)
 
             recipientSite.addTransaction(transactionId, endpoint, isSecure, isAsync)
+
+            if (transactionType == TransactionType.FIND_DOC_REFS) {
+                [TransactionType.READ_DOC_REF, TransactionType.READ_BINARY]
+                        .each { TransactionType tt ->
+                    logit(log, tt, null, endpoint, isSecure)
+                    recipientSite.addTransaction(tt.shortName, endpoint, isSecure, isAsync)
+                }
+            }
         }
+
+        //*************************************************************
+        // PDB
+        //*************************************************************
+        Site pdbSite = null
+//        elements.findAll { it.isPDB() && it.approved }.each { ConfigDef config ->
+//            String system = config.system
+//            String tkSystem = "${system} - MHD"
+//            if (pdbSite == null) {
+//                log.append(tab).append('Toolkit system: ').append(tkSystem).append(' (MHD Document Recipient)').append(nl)
+//                pdbSite = new Site(tkSystem)
+//            }
+//            String transactionId = config.getTransaction()
+//            if (!transactionId) return
+//            TransactionType transactionType = TransactionType.find(transactionId)
+//
+//            String endpoint = config.url
+//            boolean isSecure = config.secured
+//            boolean isAsync = false
+//
+//            logit(log, transactionType, null, endpoint, isSecure)
+//
+//            pdbSite.addTransaction(transactionId, endpoint, isSecure, isAsync)
+//        }
+
+
 
         //*************************************************************
         // Register On Demand
@@ -298,6 +332,8 @@ class GenerateSingleSystem {
             systems.systems.add(oddsSite)
         if (otherSite)
             systems.systems.add(otherSite)
+        if (pdbSite)
+            systems.systems.add(pdbSite)
         systems.log = log
 
         return systems

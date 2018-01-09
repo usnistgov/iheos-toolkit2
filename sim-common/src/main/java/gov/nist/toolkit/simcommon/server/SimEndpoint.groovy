@@ -92,8 +92,16 @@ class SimEndpoint {
                     fhirVerb = FhirVerb.TRANSACTION
             }
         }
-        if (transactionTypeName)
-            transactionType = TransactionType.find(transactionTypeName, fhirVerb)
+        if (transactionTypeName){
+            if (fhirVerb == FhirVerb.READ && transactionTypeName == 'DocumentReference')
+                transactionType = TransactionType.READ_DOC_REF
+            else  if (fhirVerb == FhirVerb.READ && transactionTypeName == 'Binary')
+                transactionType = TransactionType.READ_BINARY
+            else if (fhirVerb == FhirVerb.QUERY && transactionTypeName == 'DocumentReference')
+                transactionType = TransactionType.FIND_DOC_REFS
+            else
+                transactionType = TransactionType.find(transactionTypeName, fhirVerb)
+        }
 
         def x = 0
     }

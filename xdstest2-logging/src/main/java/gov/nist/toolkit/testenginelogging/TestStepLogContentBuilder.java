@@ -180,7 +180,14 @@ public class TestStepLogContentBuilder {
                 return;
             }
             if (!hasChildElement(result)) {
-                c.setResult(result.toString()); // Was c.setResult(result.getText());
+                String text = result.getText();
+                if (text != null) {
+                    text = text.trim();
+                    if (text.startsWith("{"))
+                        c.setResult(text);
+                }
+                else
+                    c.setResult(result.toString()); // Was c.setResult(result.getText());
                 return;
             }
             OMElement copy = Util.deep_copy(result.getFirstElement());

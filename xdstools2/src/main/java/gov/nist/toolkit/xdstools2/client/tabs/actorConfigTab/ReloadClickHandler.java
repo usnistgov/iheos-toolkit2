@@ -3,7 +3,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 
-class ReloadClickHandler implements ClickHandler {
+public class ReloadClickHandler implements ClickHandler {
 
 	/**
 	 * 
@@ -13,7 +13,7 @@ class ReloadClickHandler implements ClickHandler {
 	/**
 	 * @param actorConfigTab
 	 */
-	ReloadClickHandler(ActorConfigTab actorConfigTab) {
+	public ReloadClickHandler(ActorConfigTab actorConfigTab) {
 		this.actorConfigTab = actorConfigTab;
 	}
 

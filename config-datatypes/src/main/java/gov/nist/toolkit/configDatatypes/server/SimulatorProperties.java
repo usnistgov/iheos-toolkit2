@@ -338,6 +338,17 @@ public class SimulatorProperties {
 
     public static final String fhirEndpoint = "FHIR Endpoint";
 
+    public static final String fdrEndpoint = "Find Document Reference Endpoint";
+
+    public static final String fdrTlsEndpoint = "Find Document Reference Endpoint";
+
+    public static final String rdrEndpoint = "Read Document Reference Endpoint";
+
+    public static final String rdrTlsEndpoint = "Read Document Reference Endpoint";
+
+    public static final String rdBinaryEndpoint = "Read Binary Endpoint";
+
+    public static final String rdBinaryTlsEndpoint = "Read Binary Endpoint";
 
     public static final String proxyForwardSite = "Proxy Forward Site";
 

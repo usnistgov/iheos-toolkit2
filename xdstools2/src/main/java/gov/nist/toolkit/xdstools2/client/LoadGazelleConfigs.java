@@ -2,14 +2,19 @@ package gov.nist.toolkit.xdstools2.client;
 
 import gov.nist.toolkit.xdstools2.client.command.command.ReloadSystemFromGazelleCommand;
 import gov.nist.toolkit.xdstools2.client.tabs.TextViewerTab;
+import gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab.ActorConfigTab;
+import gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab.ReloadClickHandler;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.shared.command.request.ReloadSystemFromGazelleRequest;
 
 
 public class LoadGazelleConfigs  {
 	String type;
+	ActorConfigTab actorConfigTab;
+
 	
-	public LoadGazelleConfigs(String type) {
+	public LoadGazelleConfigs(ActorConfigTab actorConfigTab, String type) {
+		this.actorConfigTab = actorConfigTab;
 		this.type = type;  // System name or ALL
 	}
 
@@ -22,6 +27,8 @@ public class LoadGazelleConfigs  {
 			@Override
 			public void onComplete(String result) {
 				launchTextViewer("Gazelle Log", result, false);
+				if (actorConfigTab != null)
+					new ReloadClickHandler(actorConfigTab).onClick(null);
 			}
 		}.run(new ReloadSystemFromGazelleRequest(ClientUtils.INSTANCE.getCommandContext(),type));
 	}

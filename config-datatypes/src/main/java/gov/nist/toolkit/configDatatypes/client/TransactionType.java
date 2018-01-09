@@ -38,9 +38,9 @@ public enum TransactionType implements Serializable, IsSerializable {
     PROV_DOC_BUNDLE("ITI-65", "Provide Document Bundle", "pdb", "pdb", "pdb.as", false, "fhir", "fhir", false, SimulatorProperties.pdbEndpoint, SimulatorProperties.pdbTlsEndpoint, true, FhirVerb.TRANSACTION),
     // for these FHIR types, the name field here matches the resource type
     // should only be looked for with the FhirVerb option on find()
-    FIND_DOC_REFS("ITI-67", "DocumentReference", "fdr", "fdr", "fdr.as", false, "fhir", "fhir", false, SimulatorProperties.fhirEndpoint, SimulatorProperties.fhirTlsEndpoint, true, FhirVerb.QUERY),
-    READ_DOC_REF("ITI-67", "DocumentReference", "rdr", "rdr", "rdr.as", false, "fhir", "fhir", false, SimulatorProperties.fhirEndpoint, SimulatorProperties.fhirTlsEndpoint, true, FhirVerb.READ),
-    READ_BINARY("ITI-68", "Binary", "br", "br", "br.as", false, "fhir", "fhir", false, SimulatorProperties.fhirEndpoint, SimulatorProperties.fhirTlsEndpoint, true, FhirVerb.READ),
+    FIND_DOC_REFS("ITI-67", "Find DocumentReference", "fdr", "fdr", "fdr.as", false, "fhir", "fhir", false, SimulatorProperties.fdrEndpoint, SimulatorProperties.fdrTlsEndpoint, true, FhirVerb.QUERY),
+    READ_DOC_REF("ITI-67", "Read DocumentReference", "rdr", "rdr", "rdr.as", false, "fhir", "fhir", false, SimulatorProperties.rdrEndpoint, SimulatorProperties.rdrTlsEndpoint, true, FhirVerb.READ),
+    READ_BINARY("ITI-68", "Binary", "br", "br", "br.as", false, "fhir", "fhir", false, SimulatorProperties.rdBinaryEndpoint, SimulatorProperties.rdBinaryTlsEndpoint, true, FhirVerb.READ),
     NONE("NONE", "NONE", "none", "none", "none.as", false, "none", "none", false, null, null, false, FhirVerb.NONE),
     ANY("ANY", "ANY", "any", "any", "any.as", false, "any", "any", false, null, null, false, FhirVerb.NONE);
 

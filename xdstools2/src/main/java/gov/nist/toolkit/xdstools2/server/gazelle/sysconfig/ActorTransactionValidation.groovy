@@ -16,6 +16,7 @@ class ActorTransactionValidation {
             'ITI-57': ['DOC_REGISTRY'],
             'ITI-61': [],
             'ITI-62': ['DOC_REGISTRY'],   // delete document set
+            'ITI-67': ['DOC_RESPONDER'],
 
 
             'RAD-55': ['IMG_DOC_SOURCE'],   // WADO Retrieve

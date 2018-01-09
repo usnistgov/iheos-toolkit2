@@ -63,7 +63,7 @@ class ProxyThread extends Thread {
             System.err.println("I/O error: " + ex.getMessage());
         } catch (final HttpException ex) {
             System.err.println("Unrecoverable HTTP protocol violation: " + ex.getMessage());
-        } catch (final Exception e) {
+        } catch (final Throwable e) {
             System.err.println("Unknown Exception: " + ExceptionUtil.exception_details(e));
         } finally {
             try {

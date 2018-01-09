@@ -38,6 +38,8 @@ class ConfigDef {
     boolean isRecipient() { actor == 'DOC_RECIPIENT' }
     boolean isRespondingGateway() { actor == 'RESP_GATEWAY' }
     boolean isInitiatingGateway() { actor == 'INIT_GATEWAY' }
+    boolean isPDB() { wsType.contains('ITI-65')}
+    boolean isResponder() { actor == 'DOC_RESPONDER'}
 
     boolean isRetrieve() { 'Retrieve.b' == getTransactionName() }
 
@@ -142,7 +144,7 @@ ITI-69:Create/Destroy Pull Point
     */
     // Transactions to process
     static final TRANSACTIONS_TO_PROCESS = [
-            'ITI-39', 'ITI-43', 'ITI-18', 'ITI-57', 'ITI-38', 'ITI-41', 'ITI-51', 'ITI-42', 'ITI-61',
+            'ITI-39', 'ITI-43', 'ITI-18', 'ITI-57', 'ITI-38', 'ITI-41', 'ITI-51', 'ITI-42', 'ITI-61', 'ITI-65', 'ITI-67',
             'RAD-68', 'RAD-69', 'RAD-75', 'RAD-55'   // imaging
     ]
 }

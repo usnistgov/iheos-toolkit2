@@ -12,7 +12,7 @@ public class LoadGazelleConfigsClickHandler implements ClickHandler {
 
 	@Override
 	public void onClick(ClickEvent event) {
-		new LoadGazelleConfigs(type).load();
+		new LoadGazelleConfigs(null, type).load();
 	}
 
 }

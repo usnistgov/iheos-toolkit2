@@ -133,14 +133,14 @@ public enum ActorType implements IsSerializable, Serializable {
             IheItiProfile.XDS,
             Arrays.asList(OptionType.REQUIRED,OptionType.XUA)
     ),
-    MHD_DOC_RECIPIENT(
+    MHD_DOC_RECIPIENT(    // needs to be split into responder and recipient
             "MHD Document Recipient",
             Arrays.asList(""),
             "mhddocrec",
             "gov.nist.toolkit.simcommon.server.factories.MhdRecipientFactory",
             "gov.nist.toolkit.fhir.simulators.proxy.sim.MhdRecipientSimulator",
 //            Arrays.asList(TransactionType.PROV_DOC_BUNDLE, TransactionType.FHIR),
-            Arrays.asList(TransactionType.FHIR, TransactionType.PROV_DOC_BUNDLE),
+            Arrays.asList(TransactionType.FHIR, TransactionType.PROV_DOC_BUNDLE, TransactionType.FIND_DOC_REFS, TransactionType.READ_DOC_REF, TransactionType.READ_BINARY),
             true,  // show in config - only partially configured - only used in IT tests
             null,  // actorsFileLabel
             null,   // httpSimulatorClassName
