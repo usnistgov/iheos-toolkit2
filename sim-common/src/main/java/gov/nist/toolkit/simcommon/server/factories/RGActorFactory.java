@@ -110,7 +110,7 @@ public class RGActorFactory extends AbstractActorFactory implements IActorFactor
          String siteName = sc.getDefaultName();
 
          if (site == null) site = new Site(siteName);
-         site.setTestSession(sc.getId().getUser()); // labels this site as coming from a sim
+         site.setTestSession(sc.getId().getTestSession()); // labels this site as coming from a sim
 
          boolean isAsync = false;
 

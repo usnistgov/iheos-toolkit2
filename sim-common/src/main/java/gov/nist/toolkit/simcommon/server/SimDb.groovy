@@ -81,7 +81,7 @@ public class SimDb {
 	 * @return
 	 */
 	static SimId getFullSimId(SimId simId) {
-		SimId ssimId = new SimId(simId.getUser(), simId.getId())
+		SimId ssimId = new SimId(simId.getTestSession(), simId.getId())
 		if (exists(ssimId)) {
 			// soap based sim
 			SimDb simDb = new SimDb(ssimId)
@@ -606,7 +606,7 @@ public class SimDb {
 		List<SimId> ids = getAllSimIds();
 		List<SimId> selectedIds = new ArrayList<>();
 		for (SimId id : ids) {
-			if (user.equals(id.getUser()))
+			if (user.equals(id.getTestSession()))
 				selectedIds.add(id);
 		}
 		return selectedIds;

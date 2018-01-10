@@ -77,7 +77,7 @@ public class RetrieveOnDemandDocumentResponseSim extends TransactionSimulator im
 
 
 			// ---------------------------------------------------------------------------------------------------------
-			String sessionName = getSimulatorConfig().getId().getUser();
+			String sessionName = getSimulatorConfig().getId().getTestSession();
 			Session mySession = new Session(Installation.instance().warHome(), sessionName);
 			getSimulatorConfig().getId().setEnvironmentName(Installation.instance().defaultEnvironmentName());
 			mySession.setEnvironment(getSimulatorConfig().getId().getEnvironmentName());

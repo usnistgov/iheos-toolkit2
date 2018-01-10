@@ -61,7 +61,7 @@ class MhdSimProxySearchSpec extends ToolkitSpecification {
 
             mhdSimConfig.asList(SimulatorProperties.simulatorGroup).each { String simIdString ->
                 SimId theSimId = new SimId(simIdString)
-                SimConfig config = spi.get(spi.get(theSimId.user, theSimId.id))
+                SimConfig config = spi.get(spi.get(theSimId.testSession, theSimId.id))
                 simGroup[simIdString] = config
             }
 

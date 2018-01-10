@@ -17,7 +17,7 @@ public class SimId implements Serializable, IsSerializable {
     private static final String SEPARATOR = "__";
     private static final String SLASH = "/";
 
-    private String user = null;
+    private String testSession = null;
     private String id = null;
     private String actorType = null;
     private String environmentName = null;
@@ -77,15 +77,15 @@ public class SimId implements Serializable, IsSerializable {
     private void build(String user, String id) throws BadSimIdException {
         user = cleanId(user);
         id = cleanId(id);
-        if (user.contains(SEPARATOR)) throw new BadSimIdException(SEPARATOR + " is illegal in simulator user name");
-        if (user.contains(SLASH)) throw new BadSimIdException(SLASH + " is illegal in simulator user name");
+        if (user.contains(SEPARATOR)) throw new BadSimIdException(SEPARATOR + " is illegal in simulator testSession name");
+        if (user.contains(SLASH)) throw new BadSimIdException(SLASH + " is illegal in simulator testSession name");
         if (id.contains(SLASH)) throw new BadSimIdException(SLASH + " is illegal in simulator id");
-        this.user = user;
+        this.testSession = user;
         this.id = id;
     }
 
 //    public boolean equals(SimId simId) {
-//        return this.user.equals(simId.user) && this.id.equals(simId.id);
+//        return this.testSession.equals(simId.testSession) && this.id.equals(simId.id);
 //    }
 
     // equals and hashCode ignore FHIR status on purpose
@@ -96,23 +96,23 @@ public class SimId implements Serializable, IsSerializable {
 
         SimId simId = (SimId) o;
 
-        if (user != null ? !user.equals(simId.user) : simId.user != null) return false;
+        if (testSession != null ? !testSession.equals(simId.testSession) : simId.testSession != null) return false;
         return id != null ? id.equals(simId.id) : simId.id == null;
     }
 
     @Override
     public int hashCode() {
-        int result = user != null ? user.hashCode() : 0;
+        int result = testSession != null ? testSession.hashCode() : 0;
         result = 31 * result + (id != null ? id.hashCode() : 0);
         return result;
     }
 
-    public String toString() { return user + SEPARATOR + id; }
+    public String toString() { return testSession + SEPARATOR + id; }
 
     public String validateState() {
         StringBuilder buf = new StringBuilder();
 
-        if (user == null || user.equals("")) buf.append("No user specified\n");
+        if (testSession == null || testSession.equals("")) buf.append("No testSession specified\n");
         if (id == null || id.equals("")) buf.append("No id specified\n");
         if (actorType == null || actorType.equals("")) buf.append("No actorType specified\n");
         if (environmentName == null || environmentName.equals("")) buf.append("No environmentName specified");
@@ -139,8 +139,8 @@ public class SimId implements Serializable, IsSerializable {
         this.environmentName = environmentName;
     }
 
-    public String getUser() {
-        return user;
+    public String getTestSession() {
+        return testSession;
     }
 
     public String getId() {
@@ -148,9 +148,9 @@ public class SimId implements Serializable, IsSerializable {
     }
 
     public boolean isUser(String user) {
-        return user != null && user.equals(this.user);
+        return user != null && user.equals(this.testSession);
     }
-    public boolean isValid() { return (!isEmpty(user)) && (!isEmpty(id)); }
+    public boolean isValid() { return (!isEmpty(testSession)) && (!isEmpty(id)); }
     public void setValid(boolean x) { }
     boolean isEmpty(String x) { return x == null || x.trim().equals(""); }
 

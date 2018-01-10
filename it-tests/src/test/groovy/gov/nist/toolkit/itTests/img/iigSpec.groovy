@@ -42,7 +42,7 @@ class iigSpec extends ToolkitSpecification {
         // builds his test collections. mimics startup of tomcat
         new BuildCollections().init(null)
 
-        // creates the special user/session for this test
+        // creates the special testSession/session for this test
         api.createTestSession(testSession)
     }
 

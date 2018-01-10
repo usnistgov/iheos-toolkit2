@@ -96,7 +96,7 @@ public class OnDemandDocumentSourceActorFactory extends AbstractActorFactory imp
 		if (site == null)
 			site = new Site(siteName);
 
-		site.setTestSession(asc.getId().getUser());  // labels this site as coming from a sim
+		site.setTestSession(asc.getId().getTestSession());  // labels this site as coming from a sim
 
 		boolean isAsync = false;
 

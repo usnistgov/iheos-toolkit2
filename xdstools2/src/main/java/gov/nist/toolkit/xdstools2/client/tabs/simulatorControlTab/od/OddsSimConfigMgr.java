@@ -629,7 +629,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
                 }
             }
         }.run(new RegisterRequest(ClientUtils.INSTANCE.getCommandContext(),
-                getConfig().getId().getUser(),new TestInstance(contentBundleLbx.getSelectedValue()),
+                getConfig().getId().getTestSession(),new TestInstance(contentBundleLbx.getSelectedValue()),
                 new SiteSpec(regSSP.getSelected().get(0), ActorType.REGISTRY, null),params, getConfig().getId()));
     }
 

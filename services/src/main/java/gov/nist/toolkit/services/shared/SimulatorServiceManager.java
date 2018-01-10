@@ -405,7 +405,7 @@ public class SimulatorServiceManager extends CommonService {
 		if (userFilter == null) return all;
 		List<SimId> filtered = new ArrayList<>();
 		for (SimId sid : all) {
-			if (userFilter.equals(sid.getUser()))
+			if (userFilter.equals(sid.getTestSession()))
 				filtered.add(sid);
 		}
 		return filtered;

@@ -40,7 +40,7 @@ class SimulatorServiceManagerTest extends Specification {
 
         then:
         notThrown BadSimIdException
-        simId.user == 'xx'
+        simId.testSession == 'xx'
         simId.id == 'xx__yy'
     }
 
@@ -50,7 +50,7 @@ class SimulatorServiceManagerTest extends Specification {
 
         then:
         notThrown BadSimIdException
-        simId.user == 'xx'
+        simId.testSession == 'xx'
         simId.id == 'yy__zz'
     }
 
@@ -76,7 +76,7 @@ class SimulatorServiceManagerTest extends Specification {
 
         then:
         notThrown BadSimIdException
-        simId.user == 'x_y'
+        simId.testSession == 'x_y'
         simId.id == 'z'
     }
 
@@ -93,7 +93,7 @@ class SimulatorServiceManagerTest extends Specification {
         SimId simId = new SimId('x__y.z')
 
         then:
-        simId.user == 'x'
+        simId.testSession == 'x'
         simId.id == 'y_z'
     }
 
@@ -102,7 +102,7 @@ class SimulatorServiceManagerTest extends Specification {
         SimId simId = new SimId('HI__bill')
 
         then:
-        simId.user == 'hi'
+        simId.testSession == 'hi'
         simId.id == 'bill'
     }
 
@@ -111,7 +111,7 @@ class SimulatorServiceManagerTest extends Specification {
         SimId simId = new SimId('HI__BIll')
 
         then:
-        simId.user == 'hi'
+        simId.testSession == 'hi'
         simId.id == 'bill'
     }
 

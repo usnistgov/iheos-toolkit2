@@ -23,7 +23,7 @@ public class ToolkitFactory {
     static public SimIdResource asSimIdBean(gov.nist.toolkit.simcommon.client.SimId simId) {
         SimIdResource bean = new SimIdResource();
         bean.setId(simId.getId());
-        bean.setUser(simId.getUser());
+        bean.setUser(simId.getTestSession());
         bean.setActorType(simId.getActorType());
         bean.setEnvironmentName(simId.getEnvironmentName());
         return bean;
@@ -32,7 +32,7 @@ public class ToolkitFactory {
     static public SimConfigResource asSimConfigBean(SimulatorConfig config) {
         SimConfigResource bean = new SimConfigResource();
         bean.setId(config.getId().getId());
-        bean.setUser(config.getId().getUser());
+        bean.setUser(config.getId().getTestSession());
         bean.setActorType(config.getActorType());
 
         for (SimulatorConfigElement ele : config.getElements()) {

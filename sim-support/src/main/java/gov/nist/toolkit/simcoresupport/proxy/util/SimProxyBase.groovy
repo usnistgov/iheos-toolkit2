@@ -67,7 +67,7 @@ public class SimProxyBase {
     }
 
     String fhirSupportBase() {
-        def userName = simId.user
+        def userName = simId.testSession
         SimId supportId = new SimId(userName, fhirSupportSimName)
         SimDb simDb = new SimDb(supportId)
         SimulatorConfig config = simDb.getSimulator(supportId)

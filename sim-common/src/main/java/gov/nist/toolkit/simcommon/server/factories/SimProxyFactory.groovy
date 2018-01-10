@@ -42,7 +42,7 @@ class SimProxyFactory extends AbstractActorFactory implements IActorFactory{
         else
             config = new SimulatorConfig()
 
-        SimId simId2 = new SimId(simId.user, simId.id + '_be')   // 'be' for back end
+        SimId simId2 = new SimId(simId.testSession, simId.id + '_be')   // 'be' for back end
         SimulatorConfig config2
         if (configureBase)
             config2 = configureBaseElements(actorType, simId2)

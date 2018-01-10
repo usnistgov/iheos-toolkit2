@@ -72,7 +72,7 @@ class SpiSpec extends FhirSpecification {
         !SimDb.fexists(simId)
 
         when:
-        spi.createFhirServer(simId.id, simId.user, 'default')
+        spi.createFhirServer(simId.id, simId.testSession, 'default')
 
         then:
         SimDb.fexists(simId)
@@ -87,7 +87,7 @@ class SpiSpec extends FhirSpecification {
         !SimDb.fexists(simId)
 
         when:
-        spi.createFhirServer(simId.id, simId.user, 'default')
+        spi.createFhirServer(simId.id, simId.testSession, 'default')
 
         then:
         SimDb.fexists(simId)

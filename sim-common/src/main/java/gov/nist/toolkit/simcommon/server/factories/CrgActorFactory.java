@@ -60,7 +60,7 @@ public class CrgActorFactory extends AbstractActorFactory implements IActorFacto
 
       if (site == null)
          site = new Site(siteName);
-      site.setTestSession(sc.getId().getUser());  // labels this site as coming from a sim
+      site.setTestSession(sc.getId().getTestSession());  // labels this site as coming from a sim
 
       boolean isAsync = false;
 

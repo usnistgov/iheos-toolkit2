@@ -41,7 +41,7 @@ class TestClientSpec extends FhirSpecification {
         // SimId must be translated into SPI variety
         spi.delete(spiSimId(simId))   // if you use the form spi.delete(simIdName, testSession) it will look in the SimDb instead of ResDb
 
-        spi.createFhirServer(simId.id, simId.user, 'default')
+        spi.createFhirServer(simId.id, simId.testSession, 'default')
 
     }
 
