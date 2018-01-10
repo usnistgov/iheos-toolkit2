@@ -102,7 +102,7 @@ public class SiteSelectionComponent extends Composite implements IsWidget, HasVa
                 // validate out sites that represent sims and do not match user
                 List<Site> sitesForUser = new ArrayList<Site>();
                 for (Site s : sitesForTransaction) {
-                    if (user.equals(s.user))
+                    if (user.equals(s.getTestSession()))
                         sitesForUser.add(s);
                 }
 

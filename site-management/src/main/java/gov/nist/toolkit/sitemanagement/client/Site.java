@@ -62,7 +62,7 @@ public class Site  implements IsSerializable, Serializable {
 
 	public String pidAllocateURI = null;
 	transient public boolean changed = false;
-	public String user = null;  // loaded from SimId - when non-null this site represents a sim
+	private String testSession = null;  // loaded from SimId - when non-null this site represents a sim
 	private String orchestrationSiteName = null;
 	private boolean isASimulator = false;
 
@@ -96,7 +96,7 @@ public class Site  implements IsSerializable, Serializable {
 		Site s = (Site) o;
 		return
 				((name == null) ? s.name == null : name.equals(s.name)) &&
-						((user == null) ? s.user == null : user.equals(s.user)) &&
+						((testSession == null) ? s.testSession == null : testSession.equals(s.testSession)) &&
 				((home == null) ? s.home == null : home.equals(s.home)) &&
 				((pifHost == null) ? s.pifHost == null : pifHost.equals(s.pifHost)) &&
 				((pifPort == null) ? s.pifPort == null : pifPort.equals(s.pifPort)) &&
@@ -465,4 +465,11 @@ public class Site  implements IsSerializable, Serializable {
 
 	public boolean isSimulator() { return isASimulator; }
 
+	public void setTestSession(String testSession) {
+		this.testSession = testSession;
+	}
+
+	public String getTestSession() {
+		return testSession;
+	}
 }

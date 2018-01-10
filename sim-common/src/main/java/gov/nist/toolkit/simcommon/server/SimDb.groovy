@@ -76,7 +76,7 @@ public class SimDb {
 	}
 
 	/**
-	 * Given partial information (user and id) build the full simId
+	 * Given partial information (testSession and id) build the full simId
 	 * @param simId1
 	 * @return
 	 */

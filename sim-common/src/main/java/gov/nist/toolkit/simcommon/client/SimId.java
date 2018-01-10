@@ -17,8 +17,8 @@ public class SimId implements Serializable, IsSerializable {
     private static final String SEPARATOR = "__";
     private static final String SLASH = "/";
 
-    public String user = null;
-    public String id = null;
+    private String user = null;
+    private String id = null;
     private String actorType = null;
     private String environmentName = null;
     private boolean fhir = false;

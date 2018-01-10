@@ -103,7 +103,7 @@ public class ODRGActorFactory extends AbstractActorFactory implements IActorFact
          String siteName = sc.getDefaultName();
 
          if (site == null) site = new Site(siteName);
-         site.user = sc.getId().user; // labels this site as coming from a sim
+         site.setTestSession(sc.getId().getUser()); // labels this site as coming from a sim
 
          boolean isAsync = false;
 

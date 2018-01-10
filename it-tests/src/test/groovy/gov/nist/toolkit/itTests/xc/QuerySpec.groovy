@@ -72,7 +72,7 @@ class QuerySpec extends ToolkitSpecification {
         RGParams.user = testSession
         RGParams.actorType = SimulatorActorType.RESPONDING_GATEWAY
         RGParams.environmentName = spiEnvironment
-//        RGSiteName = RGParams.user + '__' + RGParams.id
+//        RGSiteName = RGParams.testSession + '__' + RGParams.id
 
         IGParams.id = 'ig'
         IGParams.user = testSession
