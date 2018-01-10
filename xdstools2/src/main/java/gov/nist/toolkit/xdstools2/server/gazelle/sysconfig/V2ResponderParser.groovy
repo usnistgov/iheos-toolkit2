@@ -39,8 +39,8 @@ class V2ResponderParser {
                                  approved : asBoolean(record.'is approved'),
                                  comment : record.comment,
                                  assigningAuthority : record.assigningAuthority,
-                                 rcvApplication : record.'receiving application',
-                                 rcvFacility : record.'receiving facility',
+//                                 rcvApplication : record.'receiving application',
+//                                 rcvFacility : record.'receiving facility',
                                  port : record.port,
                                  proxyPort : record.'port proxy',
                                  portSecured : record.'port secured'
