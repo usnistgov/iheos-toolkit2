@@ -314,7 +314,7 @@ public class SimulatorServiceManager extends CommonService {
 
 		List<SimId> userSimIds = new ArrayList<>();
 		for (SimId simId : simIds) {
-			if (simId.isUser(user))
+			if (simId.isTestSession(user))
 				userSimIds.add(simId);
 		}
 

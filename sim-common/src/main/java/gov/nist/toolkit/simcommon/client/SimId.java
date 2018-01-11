@@ -24,21 +24,21 @@ public class SimId implements Serializable, IsSerializable {
     private boolean fhir = false;
 
     // server only
-    public SimId(String user, String id, String actorType, String environmentName, boolean fhir) throws BadSimIdException {
-        this(user, id, actorType);
+    public SimId(String testSession, String id, String actorType, String environmentName, boolean fhir) throws BadSimIdException {
+        this(testSession, id, actorType);
         this.environmentName = environmentName;
         this.fhir = fhir;
     }
 
     // server only
-    public SimId(String user, String id, String actorType, String environmentName) throws BadSimIdException {
-        this(user, id, actorType);
+    public SimId(String testSession, String id, String actorType, String environmentName) throws BadSimIdException {
+        this(testSession, id, actorType);
         this.environmentName = environmentName;
     }
 
     // client only
-    public SimId(String user, String id, String actorType) throws BadSimIdException {
-        this(user, id);
+    public SimId(String testSession, String id, String actorType) throws BadSimIdException {
+        this(testSession, id);
         this.actorType = actorType;
     }
 
@@ -49,8 +49,8 @@ public class SimId implements Serializable, IsSerializable {
     }
 
     // client and server
-    public SimId(String user, String id) throws BadSimIdException {
-        build(user, id);
+    public SimId(String testSession, String id) throws BadSimIdException {
+        build(testSession, id);
     }
 
     // server  ?????? why ???????
@@ -74,13 +74,13 @@ public class SimId implements Serializable, IsSerializable {
 
     public boolean isFhir() { return fhir; }
 
-    private void build(String user, String id) throws BadSimIdException {
-        user = cleanId(user);
+    private void build(String testSession, String id) throws BadSimIdException {
+        testSession = cleanId(testSession);
         id = cleanId(id);
-        if (user.contains(SEPARATOR)) throw new BadSimIdException(SEPARATOR + " is illegal in simulator testSession name");
-        if (user.contains(SLASH)) throw new BadSimIdException(SLASH + " is illegal in simulator testSession name");
+        if (testSession.contains(SEPARATOR)) throw new BadSimIdException(SEPARATOR + " is illegal in simulator testSession name");
+        if (testSession.contains(SLASH)) throw new BadSimIdException(SLASH + " is illegal in simulator testSession name");
         if (id.contains(SLASH)) throw new BadSimIdException(SLASH + " is illegal in simulator id");
-        this.testSession = user;
+        this.testSession = testSession;
         this.id = id;
     }
 
@@ -147,8 +147,8 @@ public class SimId implements Serializable, IsSerializable {
         return id;
     }
 
-    public boolean isUser(String user) {
-        return user != null && user.equals(this.testSession);
+    public boolean isTestSession(String testSession) {
+        return testSession != null && testSession.equals(this.testSession);
     }
     public boolean isValid() { return (!isEmpty(testSession)) && (!isEmpty(id)); }
     public void setValid(boolean x) { }
