@@ -26,20 +26,6 @@ public class TransactionOfferings implements IsSerializable {
 		}
 	}
 
-	public String getRepUidForSite(String siteName) {
-		List<Site> sites = map.get(TransactionType.RETRIEVE);
-		for (Site site : sites) {
-			if (siteName.equals(site.getName())) {
-				try {
-					return site.getRepositoryUniqueId(TransactionBean.RepositoryType.REPOSITORY);
-				} catch (Exception e) {
-					continue;
-				}
-			}
-		}
-		return null;
-	}
-	
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 		

@@ -85,20 +85,13 @@ public class DocRetrieveTab extends GenericQueryTab {
 				return;
 			}
 
-			String repuid = transactionOfferings.getRepUidForSite(siteSpec.name);
-
-
 			List<String> values = formatIds(textArea.getValue());
-
 			Uids uids = new Uids();
-
 
 			for (String value : values) {
 				Uid uid = new Uid(value.trim());
-				uid.repositoryUniqueId = repuid;
 				uids.add(uid);
 			}
-
 
 			addStatusBox();
 			getGoButton().setEnabled(false);
