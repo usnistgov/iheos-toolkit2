@@ -350,6 +350,8 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     public List<Result> retrieveDocument(RetrieveDocumentRequest request) throws Exception {
         installCommandContext(request);
         String uid = request.getUids().uids.get(0).repositoryUniqueId;
+        if (uid == null)
+            throw new Exception("Illegal request from UI, repositoryUniqueId is null");
         if (uid.startsWith("http")) {
             // fhir read
             return session().fhirServiceManager().read(request.getSite(), uid);
