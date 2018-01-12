@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestPlan>
     <Test>MultipleDocument</Test>
-    <RegistryEndpoint>http://localhost:9280/xdstools2/sim/test__rr/rep/prb</RegistryEndpoint>
+    <RegistryEndpoint>http://localhost:8080/xdstools2/sim/test__rr/rep/prb</RegistryEndpoint>
     <TestStep id="submit_doc">
         <ExpectedStatus>Success</ExpectedStatus>
         <ProvideAndRegisterTransaction>

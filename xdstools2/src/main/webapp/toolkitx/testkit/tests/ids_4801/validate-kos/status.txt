@@ -1,3 +1,0 @@
-ids_4801/validate-kos
-
-kos.dcm is IDS-DEPT001-a/kos/kos.dcm

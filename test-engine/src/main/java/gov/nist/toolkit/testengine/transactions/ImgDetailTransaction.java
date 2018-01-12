@@ -1038,9 +1038,9 @@ public class ImgDetailTransaction extends BasicTransaction {
 
    private SimulatorTransaction getSimulatorTransaction(Assertion a) throws XdsInternalException {
       try {
-      OMElement simTransactionElement = XmlUtil.firstChildWithLocalName(a.assertElement, "SimReference");
+      OMElement simTransactionElement = XmlUtil.firstChildWithLocalName(a.assertElement, "SimTransaction");
       if (simTransactionElement == null)
-         throw new XdsInternalException(a.toString() + " has no SimReference element");
+         throw new XdsInternalException(a.toString() + " has no SimTransaction element");
       String id = simTransactionElement.getAttributeValue(new QName("id"));
       String trans = simTransactionElement.getAttributeValue(new QName("transaction"));
       String pid = simTransactionElement.getAttributeValue(new QName("pid"));
