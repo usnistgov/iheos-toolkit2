@@ -1,7 +1,7 @@
 package gov.nist.toolkit.fhir.server.utility
 
 import ca.uhn.fhir.context.FhirContext
-import gov.nist.toolkit.fhir.server.resourceMgr.ResourceCache
+import gov.nist.toolkit.fhir.server.resourceMgr.FileSystemResourceCache
 import org.apache.http.HttpResponse
 import org.apache.http.ProtocolVersion
 import org.apache.http.entity.StringEntity
@@ -21,7 +21,7 @@ class WrapResourceInHttpResponse {
 
 
     static BasicHttpResponse wrap(String contentType, IBaseResource resource, int httpCode, String reason) {
-        FhirContext ctx = ResourceCache.ctx
+        FhirContext ctx = FileSystemResourceCache.ctx
 //        String httpCodeString = EnglishReasonPhraseCatalog.INSTANCE.getReason(httpCode, Locale.ENGLISH)
         BasicHttpResponse outcome = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion('HTTP', 1, 1), httpCode, reason))
         inResponse(outcome, contentType, resource)
@@ -39,7 +39,7 @@ class WrapResourceInHttpResponse {
     }
 
     static void inResponse(HttpResponse response, String contentType, IBaseResource resource) {
-        FhirContext ctx = ResourceCache.ctx
+        FhirContext ctx = FileSystemResourceCache.ctx
         response.addHeader('Content-Type', contentType)
         response.addHeader('Date', new HttpDateGenerator().currentDate)
         String content

@@ -1,7 +1,7 @@
 package gov.nist.toolkit.fhir.simulators.proxy.transforms
 
 import ca.uhn.fhir.context.FhirContext
-import gov.nist.toolkit.fhir.server.resourceMgr.ResourceCache
+import gov.nist.toolkit.fhir.server.resourceMgr.FileSystemResourceCache
 import gov.nist.toolkit.fhir.server.utility.WrapResourceInHttpResponse
 import gov.nist.toolkit.fhir.simulators.proxy.util.ContentResponseTransform
 import gov.nist.toolkit.fhir.simulators.proxy.util.RetrieveResponseParser
@@ -26,7 +26,7 @@ class RetrieveResponseToFhirTransform implements ContentResponseTransform {
     static private final Logger logger = Logger.getLogger(RetrieveResponseToFhirTransform.class);
     @Override
     HttpResponse run(SimProxyBase base, BasicHttpResponse response) {
-        FhirContext ctx = ResourceCache.ctx
+        FhirContext ctx = FileSystemResourceCache.ctx
         try {
             logger.info('Running RetrieveResponseToFhirTransform')
             String xmlBody

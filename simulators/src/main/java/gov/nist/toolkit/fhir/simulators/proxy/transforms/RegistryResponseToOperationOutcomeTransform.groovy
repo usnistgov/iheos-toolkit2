@@ -2,7 +2,7 @@ package gov.nist.toolkit.fhir.simulators.proxy.transforms
 
 import ca.uhn.fhir.context.FhirContext
 import gov.nist.toolkit.configDatatypes.client.TransactionType
-import gov.nist.toolkit.fhir.server.resourceMgr.ResourceCache
+import gov.nist.toolkit.fhir.server.resourceMgr.FileSystemResourceCache
 import gov.nist.toolkit.fhir.simulators.fhir.OperationOutcomeGenerator
 import gov.nist.toolkit.fhir.server.utility.WrapResourceInHttpResponse
 import gov.nist.toolkit.fhir.simulators.proxy.util.ContentResponseTransform
@@ -32,7 +32,7 @@ class RegistryResponseToOperationOutcomeTransform implements ContentResponseTran
 
     @Override
     HttpResponse run(SimProxyBase base, BasicHttpResponse response) {
-        FhirContext ctx = ResourceCache.ctx
+        FhirContext ctx = FileSystemResourceCache.ctx
 
         try {
             logger.info('Running RegistryResponseToOperationOutcomeTransform')

@@ -69,8 +69,21 @@ class ResourceMgr {
             parseBundle()
     }
 
+    ResourceMgr(Map<URI, IBaseResource> resourceMap, ErrorRecorder er) {
+        this.er = er;
+        logger = new InternalLogger(er, logger1)
+        parseResourceMap(resourceMap)
+    }
+
     def addResourceCacheMgr(ResourceCacheMgr resourceCacheMgr) {
         this.resourceCacheMgr = resourceCacheMgr
+    }
+
+    def parseResourceMap(Map<URI, IBaseResource> resourceMap) {
+        resourceMap.each { URI fullUrl, IBaseResource resource ->
+            assignId(resource)
+            addResource(fullUrl, resource)
+        }
     }
 
     def parseBundle() {
@@ -121,13 +134,12 @@ class ResourceMgr {
         }
     }
 
-    // TODO needs to be real UUID
     String assignId(Resource resource) {
         if (!resource.id || isUUID(resource.id)) {
             if (resource instanceof DocumentReference)
-                resource.id = UuidAllocator.allocate()  //'Document_' + newId()
+                resource.id = UuidAllocator.allocate()
             else if (resource instanceof DocumentManifest)
-                resource.id = UuidAllocator.allocate()   // 'SubmissionSet_' + newId()
+                resource.id = UuidAllocator.allocate()
             else
                 resource.id = newId()
         }
@@ -216,6 +228,7 @@ class ResourceMgr {
      * @param referenceUrl   (reference)
      * @return [url, Resource]
      */
+    // TODO - needs toughening - containingURL could be null if referenceURL is absolute
     def resolveReference(containingUrl, referenceUrl, ResolverConfig config) {
         assert referenceUrl, "Reference from ${containingUrl} is null"
         logger.info("Resolver: Resolve URL ${referenceUrl}... ${config}")
@@ -361,6 +374,7 @@ class ResourceMgr {
      */
     static URI baseUrlFromUrl(URI fullUrl) {
         if (fullUrl.toString().startsWith('urn')) return fullUrl
+        assert fullUrl.toString().startsWith('http')
         List<String> parts = fullUrl.toString().split('/')
         parts.remove(parts.size() - 1)
         parts.remove(parts.size() - 1)
