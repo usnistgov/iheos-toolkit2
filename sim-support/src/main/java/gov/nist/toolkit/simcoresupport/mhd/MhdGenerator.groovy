@@ -12,6 +12,7 @@ import gov.nist.toolkit.simcoresupport.mhd.errors.ResourceNotAvailable
 import gov.nist.toolkit.simcoresupport.mhd.errors.ResourceTypeNotAllowedInPDB
 import gov.nist.toolkit.simcoresupport.proxy.util.ReturnableErrorException
 import gov.nist.toolkit.simcoresupport.proxy.util.SimProxyBase
+import gov.nist.toolkit.utilities.id.UuidAllocator
 import gov.nist.toolkit.xdsexception.ExceptionUtil
 import groovy.xml.MarkupBuilder
 import org.apache.log4j.Logger
@@ -256,9 +257,8 @@ class MhdGenerator {
         }
     }
 
-    int symbolicIdKey = 1
     String allocateSymbolicId() {
-        return "SymbolicId${symbolicIdKey++}"
+        return UuidAllocator.allocate();
     }
 
     @Override
@@ -340,6 +340,12 @@ class MhdGenerator {
             entryUUID = allocateSymbolicId()
             logger.info("Assigning ${entryUUID} to ${fullUrl} in addExtrinsicObject")
             setEntryUUID(dr, entryUUID)  // updating in-memory copy
+        } else {
+            // there was an entryUUID - verify it is of valid format unless it is
+            // a symbolic ID we assigned
+            String id = getEntryUUID(dr)
+            if (!id.startsWith('SymbolicId'))
+                checkEntryUUID(dr)
         }
 
         builder.ExtrinsicObject(
@@ -624,6 +630,7 @@ class MhdGenerator {
     // only used for unit test
     def translateResource(def xml, Resource resource) {
         assert (resource instanceof DocumentManifest) || (resource instanceof DocumentReference)
+        assignEntryUUIDifNeeded(resource)
         rMgr.currentResource(resource)
         if (resource instanceof DocumentManifest) {
             rMgr.assignId(resource)
@@ -634,6 +641,13 @@ class MhdGenerator {
         }
     }
 
+    def assignEntryUUIDifNeeded(IBaseResource dr) {
+        if (!getEntryUUID(dr)) {
+            String id = allocateSymbolicId()
+            logger.info("Assigning ${id} to ${dr.class.simpleName} in buildRegistryobjectList")
+            setEntryUUID(dr, id)
+        }
+    }
 
     //**************************************************************************
     //
@@ -647,6 +661,7 @@ class MhdGenerator {
 
         xml.RegistryObjectList(xmlns: 'urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0') {
             rMgr.getResourcesByType('DocumentManifest').each { url, resource ->
+                assignEntryUUIDifNeeded(resource)
                 rMgr.assignId(resource)
                 rMgr.currentResource(resource)
                 DocumentManifest dm = (DocumentManifest) resource
@@ -655,6 +670,7 @@ class MhdGenerator {
                     addSubmissionSetAssociations(xml, dm)
             }
             rMgr.getResourcesByType('DocumentReference').each { url, resource ->
+                assignEntryUUIDifNeeded(resource)
                 rMgr.assignId(resource)
                 rMgr.currentResource(resource)
                 DocumentReference dr = (DocumentReference) resource

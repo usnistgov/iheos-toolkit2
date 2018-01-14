@@ -29,7 +29,7 @@ class DocumentReferenceEntryUUIDTest extends Specification {
         def eo = new XmlSlurper().parseText(eoString)
 
         then:
-        eo.@id == 'SymbolicId1'
+        eo.@id.text().startsWith('urn:uuid:')  // one is added
     }
 
     def 'submitted with entryUUID'() {
@@ -76,8 +76,7 @@ class DocumentReferenceEntryUUIDTest extends Specification {
 '''
 
         when:
-        def eoString = Utils.DocumentReferenceToExtrinsicObject(gen, 'http://home.com/fhir/DocumentReference/1', docRefNonUUIDEntryUUID)
-        def eo = new XmlSlurper().parseText(eoString)
+        Utils.DocumentReferenceToExtrinsicObject(gen, 'http://home.com/fhir/DocumentReference/1', docRefNonUUIDEntryUUID)
 
         then:
         thrown AssertionError

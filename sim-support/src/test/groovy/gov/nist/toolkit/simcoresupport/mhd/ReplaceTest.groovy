@@ -89,7 +89,7 @@ class ReplaceTest extends Specification {
 
         then:
         rol.ExtrinsicObject.@id == rol.Association.@sourceObject
-        rol.Association.@targetObject == 'urn:uuid:urn:uuid:1e404af3-077f-4bee-b7a6-a9be97e1ce34'
+        rol.Association.@targetObject == 'urn:uuid:1e404af3-077f-4bee-b7a6-a9be97e1ce34'
 
 
     }

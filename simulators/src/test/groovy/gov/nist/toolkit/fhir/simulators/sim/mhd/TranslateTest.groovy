@@ -25,6 +25,7 @@ class TranslateTest extends Specification {
     @Shared ResourceMgr r
 
     def setupSpec() {
+        Installation.setTestRunning(true)
         resourceCacheMgr = TestResourceCacheFactory.getResourceCacheMgr()
 //        Installation.instance().resourceCacheMgr(resourceCacheMgr)
         u = new MhdGenerator(proxyBase, resourceCacheMgr)
@@ -259,6 +260,7 @@ class TranslateTest extends Specification {
         println '================   Error Logger output  =================='
         println u.errorLogger.asString()
         println '=========================================================='
+        println u.rMgr
 
         then:
         u.errorLogger.size() == 0
