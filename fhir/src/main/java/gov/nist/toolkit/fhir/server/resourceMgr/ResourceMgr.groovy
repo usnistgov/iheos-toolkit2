@@ -80,9 +80,9 @@ class ResourceMgr {
     }
 
     def parseResourceMap(Map<URI, IBaseResource> resourceMap) {
-        resourceMap.each { URI fullUrl, IBaseResource resource ->
-            assignId(resource)
-            addResource(fullUrl, resource)
+        resourceMap.each { URI fullUrl, IBaseResource res ->
+            assignId(res)
+            addResource(fullUrl, res)
         }
     }
 
@@ -172,7 +172,7 @@ class ResourceMgr {
      * @param resource
      * @return already present
      */
-    boolean addResource(url, resource) {
+    boolean addResource(url, IBaseResource resource) {
         if (url instanceof String)
             url = UriBuilder.build(url)
         boolean duplicate = resources.containsKey(url)

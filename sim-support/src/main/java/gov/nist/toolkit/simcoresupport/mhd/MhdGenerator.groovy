@@ -335,8 +335,11 @@ class MhdGenerator {
 
         String entryUUID = getEntryUUID(dr)
 
-        if (!entryUUID)
+        if (!entryUUID) {
             entryUUID = allocateSymbolicId()
+            logger.info("Assigning ${entryUUID} to ${fullUrl} in addExtrinsicObject")
+            setEntryUUID(dr, entryUUID)  // updating in-memory copy
+        }
 
         builder.ExtrinsicObject(
                 id: entryUUID,
@@ -577,8 +580,11 @@ class MhdGenerator {
     def addRelationshipAssociations(xml, fullurl, DocumentReference dr) {
         if (!dr.relatesTo || dr.relatesTo.size() == 0) return
 
-        if (!checkEntryUUID(dr))
-            setEntryUUID(dr, allocateSymbolicId())
+        if (!getEntryUUID(dr)) {  // can be symbolic or uuid
+            String id = allocateSymbolicId()
+            logger.info("Assigning ${id} to ${fullurl} in addRelationshipAssociations")
+            setEntryUUID(dr, id)
+        }
 
         // GET relatesTo reference, extract entryUUID, assemble Association
         dr.relatesTo.each { DocumentReference.DocumentReferenceRelatesToComponent comp ->
@@ -679,7 +685,29 @@ class MhdGenerator {
         buildRegistryObjectList()
     }
 
+    Submission submission
+    def documents = [:]
+
+
     String buildRegistryObjectList() {
+        submission = new Submission()
+        submission.contentId = 'm' + baseContentId
+
+        int index = 1
+
+        // assign entryUUIDs to all DocumentManifests and DocumentReferences
+        // if they already have one, leave it
+        // othewise assign symbolic id
+        rMgr.resources.findAll { resource ->
+            resource instanceof DocumentReference || resource instanceof DocumentManifest
+        }.each { dr ->
+            if (!getEntryUUID(dr)) {
+                String id = allocateSymbolicId()
+                logger.info("Assigning ${id} to ?? in buildRegistryobjectList")
+                setEntryUUID(dr, id)
+            }
+        }
+
         def writer = new StringWriter()
         def xml = new MarkupBuilder(writer)
         xml.RegistryObjectList(xmlns: 'urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0') {
@@ -696,15 +724,19 @@ class MhdGenerator {
                 else if (resource instanceof DocumentReference) {
                     rMgr.assignId(resource)
                     er.sectionHeading("DocumentReference(${resource.id})  URL is ${url}")
-                    proxyBase.resourcesSubmitted << resource
+                    if (proxyBase)
+                        proxyBase.resourcesSubmitted << resource
                     rMgr.currentResource(resource)
                     DocumentReference dr = (DocumentReference) resource
                     def (ref, binary) = rMgr.resolveReference(url, UriBuilder.build(dr.content[0].attachment.url), new ResolverConfig().internalRequired())
                     er.detail("References Binary ${ref}")
-                    assert binary instanceof Binary
+                    assert binary instanceof Binary, "Binary ${dr.content[0].attachment.url} is not available."
                     Binary b = binary
                     b.id = dr.masterIdentifier.value
-                    dr.content[0].attachment.url = proxyBase.config.getEndpoint(TransactionType.FHIR) + '/' + 'Binary/' + dr.masterIdentifier.value
+                    String proxyFhirBase = ''
+                    if (proxyBase)
+                        proxyFhirBase = proxyBase.config.getEndpoint(TransactionType.FHIR)
+                    dr.content[0].attachment.url = proxyFhirBase + '/' + 'Binary/' + dr.masterIdentifier.value
                     Attachment a = new Attachment()
                     a.contentId = Integer.toString(index) + baseContentId
                     a.contentType = b.contentType
@@ -716,12 +748,14 @@ class MhdGenerator {
                     documents[dr.getId()] = a.contentId
                     addRelationshipAssociations(xml, rMgr.url(dr), dr)
                 } else {
-                    proxyBase.resourcesSubmitted << resource
+                    if (proxyBase)
+                        proxyBase.resourcesSubmitted << resource
 
                 }
             }
         }
-        writer.toString()
+        submission.registryObjectList = writer.toString()
+        submission.registryObjectList
     }
 
     Submission buildSubmission(Bundle bundle) {
@@ -733,69 +767,10 @@ class MhdGenerator {
                     errorLogger.add(new ResourceTypeNotAllowedInPDB(errorLogger, resource.class.simpleName))
                 }
             }
-
-            Submission submission = new Submission()
-            submission.contentId = 'm' + baseContentId
-
-            int index = 1
-
-            def documents = [:]
-
-            // assign entryUUIDs to all DocumentManifests and DocumentReferences
-            // if they already have one, leave it
-            // othewise assign symbolic id
-            rMgr.resources.findAll { resource ->
-                resource instanceof DocumentReference || resource instanceof DocumentManifest
-            }.each { dr ->
-                if (!getEntryUUID(dr))
-                    setEntryUUID(dr, allocateSymbolicId())
-            }
+            buildRegistryObjectList()
 
             def writer = new StringWriter()
             def xml = new MarkupBuilder(writer)
-            xml.RegistryObjectList(xmlns: 'urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0') {
-                rMgr.resources.each { URI url, IBaseResource resource ->
-                    if (resource instanceof DocumentManifest) {
-                        rMgr.assignId(resource)
-                        er.sectionHeading("DocumentManifest(${resource.id})  URL is ${url}")
-                        proxyBase.resourcesSubmitted << resource
-                        rMgr.currentResource(resource)
-                        DocumentManifest dm = (DocumentManifest) resource
-                        addSubmissionSet(xml, dm.getId(), dm)
-                        addSubmissionSetAssociations(xml, dm)
-                    }
-                    else if (resource instanceof DocumentReference) {
-                        rMgr.assignId(resource)
-                        er.sectionHeading("DocumentReference(${resource.id})  URL is ${url}")
-                        proxyBase.resourcesSubmitted << resource
-                        rMgr.currentResource(resource)
-                        DocumentReference dr = (DocumentReference) resource
-                        def (ref, binary) = rMgr.resolveReference(url, UriBuilder.build(dr.content[0].attachment.url), new ResolverConfig().internalRequired())
-                        er.detail("References Binary ${ref}")
-                        assert binary instanceof Binary
-                        Binary b = binary
-                        b.id = dr.masterIdentifier.value
-                        dr.content[0].attachment.url = proxyBase.config.getEndpoint(TransactionType.FHIR) + '/' + 'Binary/' + dr.masterIdentifier.value
-                        Attachment a = new Attachment()
-                        a.contentId = Integer.toString(index) + baseContentId
-                        a.contentType = b.contentType
-                        a.content = b.content
-                        submission.attachments << a
-                        index++
-
-                        addExtrinsicObject(xml, dr.getId(), dr)
-                        documents[dr.getId()] = a.contentId
-                        addRelationshipAssociations(xml, rMgr.url(dr), dr)
-                    } else {
-                        proxyBase.resourcesSubmitted << resource
-
-                    }
-                }
-            }
-            submission.registryObjectList = writer.toString()
-
-            writer = new StringWriter()
-            xml = new MarkupBuilder(writer)
             documents.each { id, contentId ->
                 addDocument(xml, id, contentId)
             }
