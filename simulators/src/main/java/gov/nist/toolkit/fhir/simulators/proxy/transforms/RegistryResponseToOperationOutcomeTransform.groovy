@@ -18,6 +18,7 @@ import org.apache.http.HttpResponse
 import org.apache.http.message.BasicHttpResponse
 import org.apache.log4j.Logger
 import org.hl7.fhir.dstu3.model.*
+import org.hl7.fhir.instance.model.api.IBaseResource
 
 /**
  *
@@ -119,7 +120,19 @@ class RegistryResponseToOperationOutcomeTransform implements ContentResponseTran
     }
 
     String makeLocalFullUrl(String baseUrl, Resource resource) {
-        return baseUrl + '/' + resource.getClass().getSimpleName() + '/' + withoutUrnUuid(resource.id)
+        String id = getEntryUUID(resource)
+        if (!id)
+            id = resource.id
+        return baseUrl + '/' + resource.getClass().getSimpleName() + '/' + withoutUrnUuid(id)
+    }
+
+    String getEntryUUID(IBaseResource resource) {
+        if (resource instanceof DocumentManifest || resource instanceof DocumentReference) {
+            List<Identifier> identifiers = resource?.identifier
+            Identifier identifier = identifiers.find { Identifier ident -> ident.use == Identifier.IdentifierUse.OFFICIAL }
+            return identifier?.value
+        }
+        return null
     }
 
     def withoutUrnUuid(String str) {

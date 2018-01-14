@@ -282,6 +282,7 @@ class MhdGenerator {
                     found = true
                     assert !entryUUID, "Multiple Official identifiers found on ${resourceTypeName} - ${entryUUID} and ${ident.value}"
                     entryUUID = ident.value
+                    assert entryUUID, "${resourceTypeName} Official identifier has null value"
                     assert ident.system == 'urn:ietf:rfc:3986', "${resourceTypeName} Official identifier must be labeled as a a globally unique URI (urn:ietf:rfc:3986)"
                     assert entryUUID.startsWith('urn:uuid:'), "${resourceTypeName} Official identifier must be UUID (urn:uuid: prefix) - found ${entryUUID}"
                 }
@@ -331,7 +332,7 @@ class MhdGenerator {
         assert dr.content[0]
         assert dr.content[0].attachment
 
-        checkEntryUUID(dr)  // verify entryUUID
+//        checkEntryUUID(dr)  // verify entryUUID
 
         String entryUUID = getEntryUUID(dr)
 
@@ -493,7 +494,7 @@ class MhdGenerator {
         if (fullUrl && (fullUrl instanceof String))
             fullUrl = UriBuilder.build(fullUrl)
 
-        checkEntryUUID(dm)
+        assert getEntryUUID(dm), "Internal error - DocumentManifest has not been assigned an entryUUID"
 
         String entryUUID = getEntryUUID(dm)
 
@@ -601,7 +602,7 @@ class MhdGenerator {
             assert hasEntryUUID, "Referenced ${refResource.class.simpleName} ${ref.reference} does not have an Official Identifier (entryUUID)"
             String targetEntryUUID = getEntryUUID(refResource)
 
-            addAssociation(xml, xdsType, getEntryUUID(dr), "urn:uuid:${targetEntryUUID}", null, null)
+            addAssociation(xml, xdsType, getEntryUUID(dr), "${targetEntryUUID}", null, null)
         }
     }
 
@@ -698,12 +699,12 @@ class MhdGenerator {
         // assign entryUUIDs to all DocumentManifests and DocumentReferences
         // if they already have one, leave it
         // othewise assign symbolic id
-        rMgr.resources.findAll { resource ->
+        rMgr.resources.findAll { URI uri, IBaseResource resource ->
             resource instanceof DocumentReference || resource instanceof DocumentManifest
-        }.each { dr ->
+        }.each { URI uri, IBaseResource dr ->
             if (!getEntryUUID(dr)) {
                 String id = allocateSymbolicId()
-                logger.info("Assigning ${id} to ?? in buildRegistryobjectList")
+                logger.info("Assigning ${id} to ${dr.class.simpleName} in buildRegistryobjectList")
                 setEntryUUID(dr, id)
             }
         }
@@ -745,7 +746,8 @@ class MhdGenerator {
                     index++
 
                     addExtrinsicObject(xml, dr.getId(), dr)
-                    documents[dr.getId()] = a.contentId
+//                    documents[dr.getId()] = a.contentId
+                    documents[getEntryUUID(dr)] = a.contentId
                     addRelationshipAssociations(xml, rMgr.url(dr), dr)
                 } else {
                     if (proxyBase)
