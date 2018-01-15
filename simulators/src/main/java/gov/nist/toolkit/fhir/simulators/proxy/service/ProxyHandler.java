@@ -69,6 +69,7 @@ class ProxyHandler implements HttpRequestHandler {
             }
                 //throw new Exception("ProxyHandler - SimProxyBase has not been initialized");
             clientLogger = proxyBase.getClientLogger();
+            clientLogger.logRequestSourceAddress(proxyBase.getClientAddress());
         }
         catch (BadSimIdException e) {
             response.setStatusCode(HttpStatus.SC_NOT_FOUND);

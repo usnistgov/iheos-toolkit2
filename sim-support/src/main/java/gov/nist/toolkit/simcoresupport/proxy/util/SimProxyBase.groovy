@@ -59,6 +59,7 @@ public class SimProxyBase {
     List<Resource> resourcesSubmitted = []
     FhirVerb fhirVerb
     CodeTranslator codeTranslator
+    String clientAddress = null
 
     SimProxyBase() {
         ValidationContext vc = new ValidationContext()
@@ -74,8 +75,10 @@ public class SimProxyBase {
         config.getConfigEle(SimulatorProperties.fhirEndpoint).asString()
     }
 
-
-    /**
+    String getClientAddress() {
+        return clientAddress
+    }
+/**
      * called by the first transform when something is known about the target system transaction
      * @param actorType
      * @param transactionType
