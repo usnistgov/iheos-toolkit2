@@ -40,14 +40,18 @@ class WrapResourceInHttpResponse {
 
     static void inResponse(HttpResponse response, String contentType, IBaseResource resource) {
         FhirContext ctx = FileSystemResourceCache.ctx
-        response.addHeader('Content-Type', contentType)
-        response.addHeader('Date', new HttpDateGenerator().currentDate)
         String content
         if (contentType.contains('json')) {
             content = ctx.newJsonParser().encodeResourceToString(resource)
         } else {
             content = ctx.newXmlParser().encodeResourceToString(resource)
         }
+        inResponse(response, contentType, content)
+    }
+
+        static void inResponse(HttpResponse response, String contentType, String content) {
+        response.addHeader('Content-Type', contentType)
+        response.addHeader('Date', new HttpDateGenerator().currentDate)
         response.setEntity(new StringEntity(content))
     }
 }
