@@ -76,7 +76,7 @@ public class DashboardDaemon {
 //		SiteServiceManager siteServiceManager = new SiteServiceManager(null);
 //		siteServiceManager.loadExternalSites();
 		sites = null;
-		sites = new SeparateSiteLoader().load(new File(externalCache, "actors"), sites);
+		sites = new SeparateSiteLoader().load(Installation.instance().actorsDir(), sites);
         println 'sites are ' + sites
 //		sites = siteServiceManager.getSites();
 		// experimental

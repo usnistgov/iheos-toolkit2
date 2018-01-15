@@ -44,7 +44,7 @@ public class GazelleServiceManager extends CommonService {
             externalCacheFile = new File("/Users/bmajur/tmp/toolkit2");
         } else {
             gazelleUrl = Installation.instance().propertyServiceManager().getPropertyManager().getToolkitGazelleConfigURL();
-            actorsDir = new File(Installation.instance().propertyServiceManager().getPropertyManager().getExternalCache() + File.separator + "actors");
+            actorsDir = Installation.instance().actorsDir();
             externalCacheFile = new File(Installation.instance().propertyServiceManager().getPropertyManager().getExternalCache());
         }
 
