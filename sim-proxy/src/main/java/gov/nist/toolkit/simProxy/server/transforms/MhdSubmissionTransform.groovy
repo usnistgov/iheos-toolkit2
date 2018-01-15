@@ -3,7 +3,7 @@ package gov.nist.toolkit.simProxy.server.transforms
 import ca.uhn.fhir.context.FhirContext
 import gov.nist.toolkit.actortransaction.server.AbstractProxyTransform
 import gov.nist.toolkit.configDatatypes.client.TransactionType
-import gov.nist.toolkit.fhir.server.resourceMgr.ResourceCache
+import gov.nist.toolkit.fhir.server.resourceMgr.FileSystemResourceCache
 import gov.nist.toolkit.fhir.simulators.proxy.util.PartSpec
 import gov.nist.toolkit.fhir.simulators.proxy.util.SoapBuilder
 import gov.nist.toolkit.http.HttpParser
@@ -18,7 +18,7 @@ import gov.nist.toolkit.simcoresupport.mhd.Submission
 class MhdSubmissionTransform extends AbstractProxyTransform {
     @Override
     TransactionType run() {
-        FhirContext ctx = ResourceCache.ctx
+        FhirContext ctx = FileSystemResourceCache.ctx
         StringBuilder buf = new StringBuilder()
 
         String body = new String(inputBody)

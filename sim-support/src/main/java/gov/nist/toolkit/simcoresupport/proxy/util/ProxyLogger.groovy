@@ -14,6 +14,10 @@ class ProxyLogger {
         this.simDb = simDb
     }
 
+    def logRequestSourceAddress(String addr) {
+        simDb.clientIpAddess = addr
+    }
+
     def logRequest(HttpRequest request) {
         simDb.putRequestHeaderFile(asString(request).bytes)
     }

@@ -348,17 +348,24 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
     @Override
     public List<Result> retrieveDocument(RetrieveDocumentRequest request) throws Exception {
-        installCommandContext(request);
-        String uid = request.getUids().uids.get(0).repositoryUniqueId;
-        if (uid.startsWith("http")) {
-            // fhir read
-            return session().fhirServiceManager().read(request.getSite(), uid);
+        try {
+            installCommandContext(request);
+            String uid = request.getUids().uids.get(0).repositoryUniqueId;
+            if (uid==null)  // For XDS tools, the repository UID is set in the RetrieveDocument#run method's setSiteSpec call.
+                return session().queryServiceManager().retrieveDocument(request.getSite(), request.getUids());
+            if (uid.startsWith("http")) {
+                    // fhir read
+                return session().fhirServiceManager().read(request.getSite(), uid);
+            } else if (uid.startsWith("[http")) {
+                uid = uid.substring(1, uid.length()-1);
+                return session().fhirServiceManager().read(request.getSite(), uid);
+            } else {
+                return session().queryServiceManager().retrieveDocument(request.getSite(), request.getUids());
+            }
+        } catch (Exception e) {
+            throw new Exception("retrieveDocument failed: " + e.toString());
         }
-        if (uid.startsWith("[http")) {
-            uid = uid.substring(1, uid.length()-1);
-            return session().fhirServiceManager().read(request.getSite(), uid);
-        }
-        return session().queryServiceManager().retrieveDocument(request.getSite(), request.getUids());
+        //return null;
     }
     @Override
     public List<Result> retrieveImagingDocSet(RetrieveImagingDocSetRequest request) throws Exception {

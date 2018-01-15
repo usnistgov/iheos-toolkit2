@@ -1,6 +1,7 @@
 package gov.nist.toolkit.fhir.server.servlet;
 
 import ca.uhn.fhir.rest.server.IServerAddressStrategy;
+import gov.nist.toolkit.installation.Installation;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -31,7 +32,10 @@ public class ToolkitServerAddressStrategy implements IServerAddressStrategy {
         index++;
         index = uri.indexOf("/", index);  // / following "fhir"
 
-        base = "http://localhost:8888" + uri.substring(0, index);
+        String host = Installation.instance().propertyServiceManager().getToolkitHost();
+        String port = Installation.instance().propertyServiceManager().getToolkitPort();
+
+        base = "http://" + host + ":" + port + uri.substring(0, index);
         return base;
     }
 }

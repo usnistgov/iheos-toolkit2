@@ -2,7 +2,7 @@ package gov.nist.toolkit.fhir.simulators.proxy.transforms
 
 import ca.uhn.fhir.context.FhirContext
 import gov.nist.toolkit.configDatatypes.client.TransactionType
-import gov.nist.toolkit.fhir.server.resourceMgr.ResourceCache
+import gov.nist.toolkit.fhir.server.resourceMgr.FileSystemResourceCache
 import gov.nist.toolkit.fhir.simulators.fhir.OperationOutcomeGenerator
 import gov.nist.toolkit.fhir.server.utility.WrapResourceInHttpResponse
 import gov.nist.toolkit.fhir.simulators.proxy.util.ContentResponseTransform
@@ -18,6 +18,7 @@ import org.apache.http.HttpResponse
 import org.apache.http.message.BasicHttpResponse
 import org.apache.log4j.Logger
 import org.hl7.fhir.dstu3.model.*
+import org.hl7.fhir.instance.model.api.IBaseResource
 
 /**
  *
@@ -32,7 +33,7 @@ class RegistryResponseToOperationOutcomeTransform implements ContentResponseTran
 
     @Override
     HttpResponse run(SimProxyBase base, BasicHttpResponse response) {
-        FhirContext ctx = ResourceCache.ctx
+        FhirContext ctx = FileSystemResourceCache.ctx
 
         try {
             logger.info('Running RegistryResponseToOperationOutcomeTransform')
@@ -119,7 +120,19 @@ class RegistryResponseToOperationOutcomeTransform implements ContentResponseTran
     }
 
     String makeLocalFullUrl(String baseUrl, Resource resource) {
-        return baseUrl + '/' + resource.getClass().getSimpleName() + '/' + withoutUrnUuid(resource.id)
+        String id = getEntryUUID(resource)
+        if (!id)
+            id = resource.id
+        return baseUrl + '/' + resource.getClass().getSimpleName() + '/' + withoutUrnUuid(id)
+    }
+
+    String getEntryUUID(IBaseResource resource) {
+        if (resource instanceof DocumentManifest || resource instanceof DocumentReference) {
+            List<Identifier> identifiers = resource?.identifier
+            Identifier identifier = identifiers.find { Identifier ident -> ident.use == Identifier.IdentifierUse.OFFICIAL }
+            return identifier?.value
+        }
+        return null
     }
 
     def withoutUrnUuid(String str) {

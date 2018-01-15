@@ -3,6 +3,8 @@ package gov.nist.toolkit.registrymetadata.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+import java.io.Serializable;
+
 /**
  * This class represents either an Object uid (DocumentEntry, Folder, SubmissionSet)
  * or a repositoryUniqueId. Attribute home is only useful if Cross-Community is
@@ -11,7 +13,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @author bill
  *
  */
-public class Uid  implements IsSerializable {
+public class Uid  implements Serializable, IsSerializable {
 	public String uid;
 	public String home;
 	public String repositoryUniqueId;

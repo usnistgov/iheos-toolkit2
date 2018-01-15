@@ -2,9 +2,8 @@ package gov.nist.toolkit.fhir.simulators.proxy.transforms
 
 import ca.uhn.fhir.context.FhirContext
 import gov.nist.toolkit.configDatatypes.client.TransactionType
-import gov.nist.toolkit.fhir.server.resourceMgr.ResourceCache
+import gov.nist.toolkit.fhir.server.resourceMgr.FileSystemResourceCache
 import gov.nist.toolkit.fhir.server.resourceMgr.ResourceCacheMgr
-import gov.nist.toolkit.fhir.simulators.proxy.util.*
 import gov.nist.toolkit.fhir.simulators.proxy.util.BinaryPartSpec
 import gov.nist.toolkit.fhir.simulators.proxy.util.ContentRequestTransform
 import gov.nist.toolkit.fhir.simulators.proxy.util.MtomContentTypeGenerator
@@ -39,7 +38,7 @@ class MhdToPnrContentTransform implements ContentRequestTransform {
         byte[] clientContent = base.clientLogger.content
         assert clientContent, "Content is null"
 
-        FhirContext ctx = ResourceCache.ctx
+        FhirContext ctx = FileSystemResourceCache.ctx
 
         IBaseResource resource = null
         if (contentType.contains('+xml'))

@@ -1,7 +1,7 @@
 package gov.nist.toolkit.fhir.simulators.sim.mhd
 
 import ca.uhn.fhir.context.FhirContext
-import gov.nist.toolkit.fhir.server.resourceMgr.ResourceCache
+import gov.nist.toolkit.fhir.server.resourceMgr.FileSystemResourceCache
 import gov.nist.toolkit.fhir.server.resourceMgr.ResourceCacheMgr
 import gov.nist.toolkit.fhir.server.resourceMgr.ResourceMgr
 import gov.nist.toolkit.fhir.server.resourceMgr.TestResourceCacheFactory
@@ -18,13 +18,14 @@ import spock.lang.Specification
  *
  */
 class TranslateTest extends Specification {
-    @Shared FhirContext ctx = ResourceCache.ctx
+    @Shared FhirContext ctx = FileSystemResourceCache.ctx
     @Shared ResourceCacheMgr resourceCacheMgr
     @Shared MhdGenerator u
     @Shared SimProxyBase proxyBase
     @Shared ResourceMgr r
 
     def setupSpec() {
+        Installation.setTestRunning(true)
         resourceCacheMgr = TestResourceCacheFactory.getResourceCacheMgr()
 //        Installation.instance().resourceCacheMgr(resourceCacheMgr)
         u = new MhdGenerator(proxyBase, resourceCacheMgr)
@@ -259,6 +260,7 @@ class TranslateTest extends Specification {
         println '================   Error Logger output  =================='
         println u.errorLogger.asString()
         println '=========================================================='
+        println u.rMgr
 
         then:
         u.errorLogger.size() == 0

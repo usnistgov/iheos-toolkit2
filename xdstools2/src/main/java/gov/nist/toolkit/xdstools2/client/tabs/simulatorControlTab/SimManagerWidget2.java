@@ -185,80 +185,76 @@ public class SimManagerWidget2 extends Composite {
         // widget.
         final List<SimInfo> list = dataProvider.getList();
 
-        boolean reload = (!this.testSession.equals(testSession)) ||  (list!=null && configs!=null && list.size()!=configs.size());
-//        Window.alert(" testSession: " + testSession + " reload " + reload);
-        if (reload) {
-            setTestSession(testSession);
-            list.clear();
-            rows = 0;
-            int rowCt = 0;
-            for (SimulatorConfig config : configs) {
-                final SimInfo simInfo = new SimInfo(config, statsList.get(rowCt));
-                if (simInfo.getSimulatorConfig()!=null && simInfo.getSimulatorConfig().get(SimulatorProperties.creationTime)!=null) {
-                    String creationTime = simInfo.getSimulatorConfig().get(SimulatorProperties.creationTime).asString();
-                    String dateParts[] = creationTime.split(" ");
-                    String newTimeWoTz = null;
-                    if (dateParts.length==6) {// Expected format Mon Jul 31 18:18:27 EDT 2017
-                        newTimeWoTz = dateParts[0] + " " + dateParts[1] + " " + dateParts[2] + " " + dateParts[3] + " " + dateParts[5];
-                        Date newTime = DateTimeFormat.getFormat("EEE MMM dd HH:mm:ss yyyy").parse(newTimeWoTz); // Local Tz
-                        String hl7TimeWoTz = DateTimeFormat.getFormat("yyyyMMddHHmmss").format(newTime).toString();
-                        /**
-                         * TODO: fix this later when GWT supports timezone parsing.
-                         * Assumption
-                         * As of August 2017, using GWT 2.7 and according to the latest docs
-                         * In the current implementation, timezone parsing only supports GMT:hhmm, GMT:+hhmm, and GMT:-hhmm.
-                         *
-                         * Since GWT doesn't fully support timezone parsing at the client side,
-                         * for comparison purposes, assume all timestamps are local.
-                         *
-                         http://www.gwtproject.org/javadoc/latest/com/google/gwt/i18n/client/DateTimeFormat.html
+        setTestSession(testSession);
+        list.clear();
+        rows = 0;
+        int rowCt = 0;
+        for (SimulatorConfig config : configs) {
+            final SimInfo simInfo = new SimInfo(config, statsList.get(rowCt));
+            if (simInfo.getSimulatorConfig()!=null && simInfo.getSimulatorConfig().get(SimulatorProperties.creationTime)!=null) {
+                String creationTime = simInfo.getSimulatorConfig().get(SimulatorProperties.creationTime).asString();
+                String dateParts[] = creationTime.split(" ");
+                String newTimeWoTz = null;
+                if (dateParts.length==6) {// Expected format Mon Jul 31 18:18:27 EDT 2017
+                    newTimeWoTz = dateParts[0] + " " + dateParts[1] + " " + dateParts[2] + " " + dateParts[3] + " " + dateParts[5];
+                    Date newTime = DateTimeFormat.getFormat("EEE MMM dd HH:mm:ss yyyy").parse(newTimeWoTz); // Local Tz
+                    String hl7TimeWoTz = DateTimeFormat.getFormat("yyyyMMddHHmmss").format(newTime).toString();
+                    /**
+                     * TODO: fix this later when GWT supports timezone parsing.
+                     * Assumption
+                     * As of August 2017, using GWT 2.7 and according to the latest docs
+                     * In the current implementation, timezone parsing only supports GMT:hhmm, GMT:+hhmm, and GMT:-hhmm.
+                     *
+                     * Since GWT doesn't fully support timezone parsing at the client side,
+                     * for comparison purposes, assume all timestamps are local.
+                     *
+                     http://www.gwtproject.org/javadoc/latest/com/google/gwt/i18n/client/DateTimeFormat.html
 
-                         This throws an Exception.
-                         Window.alert(DateTimeFormat.getFormat("EEE MMM dd HH:mm:ss Z").parse("Mon Jul 31 18:18:27 EDT").toString());
-                         */
-                        simInfo.setCreatedDtHl7fmt(hl7TimeWoTz);
-                    }
-
+                     This throws an Exception.
+                     Window.alert(DateTimeFormat.getFormat("EEE MMM dd HH:mm:ss Z").parse("Mon Jul 31 18:18:27 EDT").toString());
+                     */
+                    simInfo.setCreatedDtHl7fmt(hl7TimeWoTz);
                 }
 
-                /*
+            }
 
-                 */
+            /*
 
-                try {
+             */
 
-                    new GetTransactionInstancesCommand() {
-                        @Override
-                        public void onComplete(List<TransactionInstance> result) {
-                            if (result != null && result.size() > 0) {
+            try {
+
+                new GetTransactionInstancesCommand() {
+                    @Override
+                    public void onComplete(List<TransactionInstance> result) {
+                        if (result != null && result.size() > 0) {
 
 
-                                for (int idx = 0; idx < SimInfo.TOP_TRANSACTION_CT; idx++) {
-                                    if (result.size() > idx) {
-                                        simInfo.getTopThreeTransInstances().add(TransactionInstance.copy(result.get(idx)));
+                            for (int idx = 0; idx < SimInfo.TOP_TRANSACTION_CT; idx++) {
+                                if (result.size() > idx) {
+                                    simInfo.getTopThreeTransInstances().add(TransactionInstance.copy(result.get(idx)));
 //                                        try {
-                                            // xx
+                                        // xx
 //                                            newSimTable.redraw();
 //                                            actionTable.redraw();
 //                                        } catch (Exception ex) {
 //                                        }
-                                    }
                                 }
                             }
-
                         }
-                    }.run(new GetTransactionRequest(commandContext, simInfo.getSimulatorConfig().getId(), "", null));
-                } catch (Exception ex) {}
+
+                    }
+                }.run(new GetTransactionRequest(commandContext, simInfo.getSimulatorConfig().getId(), "", null));
+            } catch (Exception ex) {}
 
 
 //                Window.alert("adding " + simInfo.getSimulatorConfig().getId().toString());
 
-                list.add(simInfo);
-                rowCt++;
-            }
-            if (rowCt>0) {
-                rows = rowCt;
-            }
+            list.add(simInfo);
+            rowCt++;
+        }
+        if (rowCt>0) {
+            rows = rowCt;
         }
 
         multiSelect.setEnabled(rows>1);

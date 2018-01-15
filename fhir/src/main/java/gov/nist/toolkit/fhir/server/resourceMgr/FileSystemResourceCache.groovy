@@ -8,14 +8,14 @@ import org.hl7.fhir.instance.model.api.IBaseResource
 /**
  * Local cache of FHIR resources
  */
-class ResourceCache {
-    private static final Logger logger = Logger.getLogger(ResourceCache.class)
+class FileSystemResourceCache implements ResourceCache {
+    private static final Logger logger = Logger.getLogger(FileSystemResourceCache.class)
     static FhirContext ctx = FhirContext.forDstu3()
 
-    File cacheDir
-    URI baseUrl
+    private File cacheDir
+    private URI baseUrl
 
-    ResourceCache(File cacheDir) {
+    FileSystemResourceCache(File cacheDir) {
         this.cacheDir = cacheDir
         File propFile = new File(cacheDir, 'cache.properties')
         assert propFile
@@ -26,14 +26,14 @@ class ResourceCache {
         logger.info("New Resource cache: ${base}  --> ${cacheDir}")
     }
 
-    IBaseResource readResource(relativeUrl) {
-        File cacheFile = cacheFile(relativeUrl, 'xml')
+    IBaseResource readResource(URI url) {
+        File cacheFile = cacheFile(url, 'xml')
         if (!cacheFile.exists())
             return null
         return ctx.newXmlParser().parseResource(cacheFile.text)
     }
 
-    File cacheFile(URI relativeUrl, fileType) {
+    private File cacheFile(URI relativeUrl, fileType) {
         assert ResourceMgr.isRelative(relativeUrl)
         def type = ResourceMgr.resourceTypeFromUrl(relativeUrl)
         def id = ResourceMgr.id(relativeUrl) + ((fileType) ? ".${fileType}" : '')

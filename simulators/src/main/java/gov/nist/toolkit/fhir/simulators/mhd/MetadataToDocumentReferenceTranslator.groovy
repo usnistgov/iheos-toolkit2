@@ -134,7 +134,8 @@ class MetadataToDocumentReferenceTranslator {
         if (de.id) {
             Identifier idr = new Identifier()
             idr.setSystem('urn:ietf:rfc:3986')
-            idr.setId("urn:uuid:${de.id}")
+            idr.setValue(de.id)
+            idr.setUse(Identifier.IdentifierUse.OFFICIAL)
             dr.setIdentifier([idr])
         }
 

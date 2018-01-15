@@ -85,17 +85,13 @@ public class DocRetrieveTab extends GenericQueryTab {
 				return;
 			}
 
-
 			List<String> values = formatIds(textArea.getValue());
-
 			Uids uids = new Uids();
-
 
 			for (String value : values) {
 				Uid uid = new Uid(value.trim());
 				uids.add(uid);
 			}
-
 
 			addStatusBox();
 			getGoButton().setEnabled(false);

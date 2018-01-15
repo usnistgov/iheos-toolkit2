@@ -25,7 +25,7 @@ public class TransactionOfferings implements IsSerializable {
 			return map.containsKey(tt);
 		}
 	}
-	
+
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 		

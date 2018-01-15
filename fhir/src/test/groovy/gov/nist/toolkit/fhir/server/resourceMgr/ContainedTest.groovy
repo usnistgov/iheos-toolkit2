@@ -8,7 +8,7 @@ import spock.lang.Shared
 import spock.lang.Specification
 
 class ContainedTest extends Specification {
-    @Shared FhirContext ctx = ResourceCache.ctx
+    @Shared FhirContext ctx = FileSystemResourceCache.ctx
 
     def 'relative url'() {
         setup:

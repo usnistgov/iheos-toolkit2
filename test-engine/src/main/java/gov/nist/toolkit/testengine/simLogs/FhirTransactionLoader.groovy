@@ -3,7 +3,7 @@ package gov.nist.toolkit.testengine.simLogs
 import ca.uhn.fhir.context.FhirContext
 import edu.wustl.mir.erl.ihe.xdsi.util.Utility
 import gov.nist.toolkit.configDatatypes.client.TransactionType
-import gov.nist.toolkit.fhir.server.resourceMgr.ResourceCache
+import gov.nist.toolkit.fhir.server.resourceMgr.FileSystemResourceCache
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.installation.PropertyManager
 import gov.nist.toolkit.installation.PropertyServiceManager
@@ -29,7 +29,7 @@ class FhirTransactionLoader {
     private static SimpleDateFormat timeOfTransactionFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
     private static String externalCache = Paths.get(installation.externalCache().getAbsolutePath()).toString();
 
-    private static FhirContext ctx = ResourceCache.ctx
+    private static FhirContext ctx = FileSystemResourceCache.ctx
 
     static List<FhirSimulatorTransaction> loadTransactions(SimId simId, TransactionType transactionType) {
         SimDb simDb = new SimDb(simId)

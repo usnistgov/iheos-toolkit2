@@ -18,7 +18,7 @@ import spock.lang.Shared
 /**
  *
  */
-class WriteReadSpec extends FhirSpecification {
+class WriteReadPatientSpec extends FhirSpecification {
     @Shared SimulatorBuilder spi
 
     @Shared def testSession = 'default'

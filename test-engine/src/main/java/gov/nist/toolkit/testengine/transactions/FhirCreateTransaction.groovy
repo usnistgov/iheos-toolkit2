@@ -34,22 +34,22 @@ class FhirCreateTransaction extends BasicFhirTransaction {
         }
     }
 
-    def updatePidIdentifier(def resource, String value, String system) {
-        if ((resource instanceof DocumentManifest) || (resource instanceof DocumentReference)) {
-            List<Identifier> ids = resource.getIdentifier()
-            if (ids.size() > 0) {
-                Identifier id = ids[0]
-                id.system = system
-                id.value = value
-            }
-        } else if (resource instanceof Bundle) {
-            Bundle bundle = resource
-            bundle.entry.each { Bundle.BundleEntryComponent comp ->
-                Resource res = comp.getResource()
-                updatePidIdentifier(res, value, system)
-            }
-        }
-    }
+//    def updatePidIdentifier(def resource, String value, String system) {
+//        if ((resource instanceof DocumentManifest) || (resource instanceof DocumentReference)) {
+//            List<Identifier> ids = resource.getIdentifier()
+//            if (ids.size() > 0) {
+//                Identifier id = ids[0]
+//                id.system = system
+//                id.value = value
+//            }
+//        } else if (resource instanceof Bundle) {
+//            Bundle bundle = resource
+//            bundle.entry.each { Bundle.BundleEntryComponent comp ->
+//                Resource res = comp.getResource()
+//                updatePidIdentifier(res, value, system)
+//            }
+//        }
+//    }
 
     def updatePatientReference(def resource, String patientReference) {
         if ((resource instanceof DocumentManifest)) {
@@ -109,8 +109,8 @@ class FhirCreateTransaction extends BasicFhirTransaction {
         if (patientReference)
             updatePatientReference(resource, patientReference)
 
-        if (pid_value && pid_system)
-            updatePidIdentifier(resource, pid_value, pid_system)
+//        if (pid_value && pid_system)
+//            updatePidIdentifier(resource, pid_value, pid_system)
 
         // assign new new masterIdentifier to all DocumentRefernce and Documeent Manifest objects
         if (resource instanceof Resource)

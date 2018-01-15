@@ -91,6 +91,7 @@ public class RequestListenerThread extends Thread {
                 SimProxyBase proxyBase = new SimProxyBase();
                 final DefaultBHttpServerConnection inconn = new ServerConnection(bufsize, proxyBase);    //new DefaultBHttpServerConnection(bufsize);
                 System.out.println("Incoming connection from " + insocket.getInetAddress());
+                proxyBase.setClientAddress(insocket.getInetAddress().toString());
                 inconn.bind(insocket);
 
                 // Set up outgoing HTTP connection
