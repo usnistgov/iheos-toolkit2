@@ -180,7 +180,10 @@ class GenerateSingleSystem {
             if (embedSite == null) {
                 log.append(tab).append('Toolkit system: ').append(tkSystem).append(' (Embedded Repository)').append(nl)
                 embedOid = oparser.getOid(system, OidDef.IntSrcRepoUidOid)
-                if (embedOid == null) return
+                if (embedOid == null) {
+                    log.append(tab).append('No OID registered for this system - skipping').append(nl)
+                    return
+                }
                 embedSite = new Site(tkSystem)
             }
             String transactionId = config.getTransaction()
