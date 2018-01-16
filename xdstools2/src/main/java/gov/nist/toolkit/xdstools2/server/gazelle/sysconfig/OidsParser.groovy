@@ -21,13 +21,22 @@ class OidsParser {
         java.nio.file.Paths.get(input).withReader { reader ->
             org.apache.commons.csv.CSVParser csv = new org.apache.commons.csv.CSVParser(reader, DEFAULT.withHeader())
             csv.iterator().each { record ->
-                def item =     ([system         : record.'system',
-                             type        : record.'oid requirement',
-                             oid     : record.OID
+                def item =     ([system         : trim(record.'system'),
+                             type        : trim(record.'oid requirement'),
+                             oid     : trim(record.OID)
                 ])
                 values.add(new OidDef(item))
             }
         }
+    }
+
+    def trim(String s) {
+        String omits = '\n\t\r '
+        while (s.size() > 0 && omits.indexOf(new String(s.charAt(0))) != -1)
+            s = s.substring(1)
+        while (s.size() > 0 && omits.indexOf(new String(s.charAt(s.size()-1))) != -1)
+            s = s.substring(0, s.size()-1)
+        return s
     }
 
     boolean hasDef(String system, String type) {

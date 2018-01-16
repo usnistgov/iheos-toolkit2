@@ -11,7 +11,7 @@ public class UuidFormat extends FormatValidator {
 
 	public void validate(String input) {
 		if (!isUuid(input)) {
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, context + ": " + input + " is not in UUID format", this, getResource("ITI TF-3: Table 4.1-3 and section 4.1.12.3"));
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, context + ": " + input + " is not in UUID format (hex characters must be lower case)", this, getResource("ITI TF-3: Table 4.1-3 and section 4.1.12.3"));
 		}
 	}
 

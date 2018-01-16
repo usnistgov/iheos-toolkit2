@@ -191,7 +191,7 @@ public class RegistryObjectValidator {
             er.err(XdsErrorCode.Code.XDSRegistryMetadataError, mo.identifyingString() + ": " + attName + " attribute empty or missing", this, (resource!=null) ? resource : defaultResource);
         } else {
             if (vc.isSQ && vc.isResponse) {
-                new UuidFormat(er, mo.identifyingString() + " " + attName + " attribute must be a UUID", (resource!=null) ? resource : defaultResource).validate(mo.getId());
+                new UuidFormat(er, mo.identifyingString() + " " + attName + " attribute must be a UUID (all lower case)", (resource!=null) ? resource : defaultResource).validate(mo.getId());
             } else if(mo.getId().startsWith("urn:uuid:")) {
                 new UuidFormat(er, mo.identifyingString() + " " + attName + " attribute", (resource!=null) ? resource : defaultResource).validate(mo.getId());
             }
