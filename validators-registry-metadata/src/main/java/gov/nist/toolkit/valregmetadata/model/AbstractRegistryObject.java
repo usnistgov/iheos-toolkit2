@@ -313,7 +313,7 @@ public abstract class AbstractRegistryObject {
 	public List<Classification> getClassificationsByClassificationScheme(String classificationScheme) {
 		List<Classification> cls = new ArrayList<Classification>();
 		for (Classification c : classifications) {
-			if (c.getClassificationScheme().equals(classificationScheme))
+			if (c.getClassificationScheme() != null && c.getClassificationScheme().equals(classificationScheme))
 				cls.add(c);
 		}
 		return cls;

@@ -117,7 +117,7 @@ class MhdGenerator {
     }
 
     static unURN(def uuid) {
-        assert uuid instanceof String
+        assert uuid instanceof String, 'Internal Error: MhdGenerator#unURN() expects a String parameter'
         if (uuid.startsWith('urn:uuid:')) return uuid.substring(9)
         if (uuid.startsWith('urn:oid:')) return uuid.substring(8)
         return uuid
@@ -216,15 +216,15 @@ class MhdGenerator {
      * @return
      */
     static cxiFromPatient(patient) {
-        assert patient instanceof Patient
+        assert patient instanceof Patient, 'Internal Error: MhdGenerator#cxiFromPatient() expects a Patient resource parameter'
         List<Identifier> identifiers = patient.getIdentifier()
         Identifier identifier = getOfficial(identifiers)
-        assert identifier
+        assert identifier, 'MhdGenerator#cxiFromPatient() Patient resource must have an official identifier'
         def cxi_1 = identifier.value
         def cxi_4 = identifier.system
         List<Coding> codings = identifier.type.coding
         Coding theCoding = codings.find {it.system == 'urn:ietf:rfc:3986'}
-        assert theCoding
+        assert theCoding, 'MhdGenerator#cxiFromPatient() Patient resource must have system \'urn:ietf:rfc:3986\' on its official identifier'
         def cxi_5 = theCoding.code
 
         def val = cxi_1 + '^^^&' + unURN(cxi_4) + '&ISO'+ ( (cxi_5) ? "^${cxi_5}" : '')
@@ -234,14 +234,14 @@ class MhdGenerator {
     // TODO - no profile guidance on how to convert coding.system URL to existing OIDs
 
     def addClassificationFromCodeableConcept(builder, CodeableConcept cc, scheme, classifiedObjectId) {
-        assert cc
+        assert cc, 'Internal Error: MhdGenerator#addClassificationFromCodeableConcept() expects a CodeableConcept parameter'
         Coding coding = cc.coding[0]
         if (coding)
             addClassificationFromCoding(builder, coding, scheme, classifiedObjectId)
     }
 
     def addClassificationFromCoding(builder, Coding coding, scheme, classifiedObjectId) {
-        assert coding
+        assert coding, 'Internal Error: MhdGenerator#addClassificationFromCoding() expects a Coding parameter'
         if (proxyBase && translateCodes) {  // will be null during unit tests - just skip code translation in that case
             def systemCode = proxyBase.codeTranslator.findCodeByClassificationAndSystem(scheme, coding.system, coding.code)
             assert systemCode, "Cannot find translation for code ${coding.system}|${coding.code} (FHIR) into XDS coding scheme ${scheme} in configured codes.xml file"
@@ -327,12 +327,9 @@ class MhdGenerator {
     def addExtrinsicObject(builder,  fullUrl, DocumentReference dr) {
         if (fullUrl && (fullUrl instanceof String))
             fullUrl = UriBuilder.build(fullUrl)
-        assert dr.content
-        assert dr.content.size() == 1
-        assert dr.content[0]
-        assert dr.content[0].attachment
-
-//        checkEntryUUID(dr)  // verify entryUUID
+        assert dr.content, 'DocumentReference has no content section'
+        assert dr.content.size() == 1, 'DocumentReference has multiple content sections'
+        assert dr.content[0].attachment, 'DocumentReference has no content/attachment'
 
         String entryUUID = getEntryUUID(dr)
 
@@ -473,16 +470,16 @@ class MhdGenerator {
             new ResourceNotAvailable(errorLogger, fullUrl, ref1, 'All DocumentReference.subject and DocumentManifest.subject values shall be\nReferences to FHIR Patient Resources identified by an absolute external reference (URL).', '3.65.4.1.2.2 Patient Identity')
             return
         }
-        assert ref instanceof Patient
+        assert ref instanceof Patient, "Dereferenced ${fullUrl} and got a ${ref.class.simpleName} instead"
 
         Patient patient = (Patient) ref
 
         List<Identifier> identifiers = patient.getIdentifier()
         Identifier official = getOfficial(identifiers)
-        assert official, 'Appendix Z, section E.3 Identifier Type'
+        assert official, 'Patient has no official identifier'
 
-        assert official.value, 'Appendix Z, section E.3 Identifier Type'
-        assert official.system, 'Appendix Z, section E.3 Identifier Type'
+        assert official.value, 'Patient resource has no value on its official identifier (${url})'
+        assert official.system, 'Patient resource has no system on its official identifier (${url})'
 
         String value = official.value
         String system = official.system
@@ -500,7 +497,7 @@ class MhdGenerator {
         if (fullUrl && (fullUrl instanceof String))
             fullUrl = UriBuilder.build(fullUrl)
 
-        assert getEntryUUID(dm), "Internal error - DocumentManifest has not been assigned an entryUUID"
+        assert getEntryUUID(dm), "Internal error: DocumentManifest has not been assigned an entryUUID"
 
         String entryUUID = getEntryUUID(dm)
 
@@ -509,24 +506,6 @@ class MhdGenerator {
                 id: entryUUID,
                 objectType: 'urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:RegistryPackage',
                 status: 'urn:oasis:names:tc:ebxml-regrep:StatusType:Approved') {
-
-//            if (dm.recipient) {
-//                List<Reference> refs = dm.recipient
-//                def values = []
-//                refs.each {  r ->
-//                    String reference = r.reference
-//                    def (url, resource) = resolveReference(fullUrl, reference, true)
-//                    if (!resource) {
-//                        new ResourceNotAvailable(errorLogger, fullUrl, reference)
-//                        return // really continue
-//                    }
-//                    assert (resource instanceof Patient) || (resource instanceof Practitioner) || (resource instanceof Group) || (resource instanceof Device)
-//                    // TODO - does this work if not a patient?
-//                    assert resource instanceof Patient//XON XCN XTN
-//                    values << cxiFromPatient(resource)
-//                }
-//                addSlot(builder, 'intendedRecipient', values)
-//            }
 
             if (dm.created)
                 addSlot(builder, 'submissionTime', [translateDateTime(dm.created)])
@@ -572,7 +551,7 @@ class MhdGenerator {
         dm.content.each { DocumentManifest.DocumentManifestContentComponent component ->
             Reference ref = component.PReference
             def (url, res) = rMgr.resolveReference(null, ref.reference, new ResolverConfig().internalRequired())
-            assert res
+            assert res, "DocumentManifest references ${ref.resource} - ${url} is not included in the bundle"
             addAssociation(xml, 'urn:oasis:names:tc:ebxml-regrep:AssociationType:HasMember', getEntryUUID(dm), getEntryUUID(res), 'SubmissionSetStatus', ['Original'])
         }
     }
@@ -614,9 +593,9 @@ class MhdGenerator {
 
 
     def loadBundle(IBaseResource bundle) {
-        assert bundle
-        assert bundle instanceof Bundle
-        assert bundle.type == Bundle.BundleType.TRANSACTION
+        assert bundle, 'InternalError: bundle is null'
+        assert bundle instanceof Bundle, "InternalError: cannot parse resource ${bundle.class.simpleName} as a Bundle"
+        assert bundle.type == Bundle.BundleType.TRANSACTION, "Bundle is not labeled as a Transaction"
 
         rMgr = new ResourceMgr(bundle, er)
         rMgr.addResourceCacheMgr(resourceCacheMgr)
@@ -675,7 +654,7 @@ class MhdGenerator {
                 rMgr.currentResource(resource)
                 DocumentReference dr = (DocumentReference) resource
                 def (ref, binary) = rMgr.resolveReference(url, dr.content[0].attachment.url, new ResolverConfig().internalRequired())
-                assert binary instanceof Binary
+                assert binary instanceof Binary, "Cannot access Binary in Bundle at ${dr.content[0].attachment.url}"
                 addExtrinsicObject(xml, dr.getId(), dr)
             }
         }
@@ -747,7 +726,7 @@ class MhdGenerator {
                     DocumentReference dr = (DocumentReference) resource
                     def (ref, binary) = rMgr.resolveReference(url, UriBuilder.build(dr.content[0].attachment.url), new ResolverConfig().internalRequired())
                     er.detail("References Binary ${ref}")
-                    assert binary instanceof Binary, "Binary ${dr.content[0].attachment.url} is not available."
+                    assert binary instanceof Binary, "Binary ${dr.content[0].attachment.url} is not available in Bundle."
                     Binary b = binary
                     b.id = dr.masterIdentifier.value
                     String proxyFhirBase = ''
@@ -800,7 +779,8 @@ class MhdGenerator {
                 return submission
         } catch (Throwable e) {
             logger.error(ExceptionUtil.exception_details(e))
-            throw new Exception("Provide Document Bundle to Provide and Register translation failed - ${e.message}", e)
+            //throw new Exception("Provide Document Bundle to Provide and Register translation failed - ${e.message}", e)
+            throw e
         }
         throw new ReturnableErrorException(ErrorLoggerAsHttpResponse.buildHttpResponse(proxyBase, errorLogger))
 

@@ -34,13 +34,13 @@ public class ClassificationValidator implements ObjectValidator {
         else if (!mo.getClassificationScheme().startsWith("urn:uuid:"))
             er.err(XdsErrorCode.Code.XDSRegistryMetadataError, mo.identifyingString() + ": classificationScheme attribute value is not have urn:uuid: prefix", this, "ITI TF-3: 4.3.1");
 
-        if (mo.getCodeValue().equals(""))
+        if (mo.getCodeValue() == null || mo.getCodeValue().equals(""))
             er.err(XdsErrorCode.Code.XDSRegistryMetadataError, mo.identifyingString() + ": nodeRepresentation attribute is missing or empty", this, "ebRIM 3.0 section 4.3.1");
 
-        if (mo.getCodeDisplayName().equals(""))
+        if (mo.getCodeDisplayName() == null || mo.getCodeDisplayName().equals(""))
             er.err(XdsErrorCode.Code.XDSRegistryMetadataError, mo.identifyingString() + ": no name attribute", this, "ITI TF-3: 4.1.12.2");
 
-        if (mo.getCodeScheme().equals(""))
+        if (mo.getCodeScheme() == null || mo.getCodeScheme().equals(""))
             er.err(XdsErrorCode.Code.XDSRegistryMetadataError, mo.identifyingString() + ": no codingScheme Slot", this, "ITI TF-3: 4.1.12.2");
 
     }
