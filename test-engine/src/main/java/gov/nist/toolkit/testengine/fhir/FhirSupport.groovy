@@ -4,7 +4,6 @@ import ca.uhn.fhir.context.FhirContext
 import gov.nist.toolkit.fhir.context.ToolkitFhirContext
 import gov.nist.toolkit.fhir.server.utility.WrapResourceInHttpResponse
 import gov.nist.toolkit.utilities.io.Io
-import gov.nist.toolkit.xdsexception.ExceptionUtil
 import org.apache.commons.httpclient.HttpStatus
 import org.apache.http.HttpResponse
 import org.hl7.fhir.dstu3.model.Binary
@@ -78,10 +77,32 @@ class FhirSupport {
         OperationOutcome.OperationOutcomeIssueComponent com = new OperationOutcome.OperationOutcomeIssueComponent()
         com.setSeverity(OperationOutcome.IssueSeverity.FATAL)
         com.setCode(OperationOutcome.IssueType.EXCEPTION)
-        com.setDiagnostics(ExceptionUtil.exception_details(e))
+        com.setDiagnostics(e.message)
+        exception_details(e).each { com.addLocation(it)}
         oo.addIssue(com)
         oo
     }
+
+    static List<String> exception_details(Throwable e) {
+        def trace = []
+        if (e == null)
+            return trace
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos);
+        e.printStackTrace(ps);
+
+        String stackTrace = new String(baos.toByteArray());
+        trace << e.class.simpleName
+        Scanner scanner = new Scanner(stackTrace);
+        while (scanner.hasNextLine()) {
+            String line = scanner.nextLine().trim();
+            if (!line.contains("gov.nist.toolkit")) continue;
+            trace << line
+        }
+
+        return trace
+    }
+
 
     static HttpResponse operationOutcomeFromThrowableInHttpResponse(Throwable e) {
         WrapResourceInHttpResponse.wrap('application/fhir+json', operationOutcomeFromThrowable(e), HttpStatus.SC_OK)
