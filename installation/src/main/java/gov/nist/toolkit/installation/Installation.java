@@ -263,7 +263,7 @@ public class Installation {
    }
 
     public File fhirSimDbFile() {
-        return new File(externalCache(), "simdb");
+        return simDbFile();
     }
 
     public List<String> getListenerPortRange() {
