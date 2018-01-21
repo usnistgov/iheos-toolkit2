@@ -91,6 +91,22 @@ public class PropertyServiceManager {
 		return getPropertyManager().getToolkitTlsPort();
 	}
 
+	boolean getMultiuserMode() {
+		getPropertyManager().multiuserMode
+	}
+
+	boolean getCasMode() {
+		getPropertyManager().casMode
+	}
+
+	int getNonceSize() {
+		getPropertyManager().nonceSize
+	}
+
+	String getGazelleTestingSession() {
+		getPropertyManager().gazelleTestingSession
+	}
+
 	public List<String> getListenerPortRange() {
 //		logger.debug(": " + "getListenerPortRange");
 		return getPropertyManager().getListenerPortRange();
