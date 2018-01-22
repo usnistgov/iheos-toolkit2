@@ -12,7 +12,7 @@ import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.http.HttpHeader;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.http.ParseException;
-import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.simcommon.client.BadSimIdException;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;

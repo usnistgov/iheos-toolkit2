@@ -1,4 +1,4 @@
-package gov.nist.toolkit.installation
+package gov.nist.toolkit.installation.server
 
 import gov.nist.toolkit.utilities.io.Io
 import gov.nist.toolkit.xdsexception.ExceptionUtil
@@ -197,7 +197,7 @@ public class PropertyServiceManager {
 
 
 	public File getTestLogCache() throws IOException {
-		File testLogCache = Installation.instance().testLogCache();
+		File testLogCache = Installation.instance().testLogCacheDir();
 		File f;
 		
 		f = testLogCache;

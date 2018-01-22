@@ -2,8 +2,8 @@ package gov.nist.toolkit.services.server.orchestration
 
 import gov.nist.toolkit.actorfactory.PatientIdentityFeedServlet
 import gov.nist.toolkit.simcommon.server.SimDb
-import gov.nist.toolkit.installation.ExternalCacheManager
-import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.server.ExternalCacheManager
+import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.services.client.IgOrchestrationRequest
 import gov.nist.toolkit.services.client.IgOrchestrationResponse
 import gov.nist.toolkit.services.client.RawResponse

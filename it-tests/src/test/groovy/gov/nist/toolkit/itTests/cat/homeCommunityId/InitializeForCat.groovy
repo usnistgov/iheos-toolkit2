@@ -2,7 +2,7 @@ package gov.nist.toolkit.itTests.cat.homeCommunityId
 
 import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
-import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.itSupport.xc.GatewayBuilder
 import gov.nist.toolkit.results.client.TestLogs

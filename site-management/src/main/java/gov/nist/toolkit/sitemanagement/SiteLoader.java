@@ -2,11 +2,13 @@ package gov.nist.toolkit.sitemanagement;
 
 import gov.nist.toolkit.actortransaction.client.ATFactory;
 import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionCollection;
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
@@ -16,8 +18,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 public abstract class SiteLoader {
+	protected TestSession testSession;
 
 	protected HashMap<String, Site> siteMap = new HashMap<String, Site>();
+
+	public SiteLoader(TestSession testSession) {
+		if (testSession == null) throw new ToolkitRuntimeException("TestSession is null");
+		this.testSession = testSession;
+	}
 
 	public Site parseSite(OMElement ele) throws Exception {
 		String site_name = ele.getAttributeValue(new QName("name"));
@@ -25,7 +33,7 @@ public abstract class SiteLoader {
 			throw new Exception("Cannot parse Site with empty name from actors config file");
 //		if (sites.containsKey(site_name))
 //			throw new Exception("Site " + site_name + " is multiply defined in configuration file");
-		Site site = new Site(site_name);
+		Site site = new Site(site_name, testSession);
 		parseSite(site, ele);
 		putSite(site);
 		return site;

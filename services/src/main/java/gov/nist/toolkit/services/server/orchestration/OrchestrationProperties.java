@@ -1,7 +1,7 @@
 package gov.nist.toolkit.services.server.orchestration;
 
 import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.session.server.Session;
 
 import java.io.File;

@@ -4,6 +4,7 @@ import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.Simulator;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
@@ -43,7 +44,7 @@ public class RepositoryActorFactory extends AbstractActorFactory implements IAct
 //		logger.debug("Creating " + actorType.getName() + " with id " + simId);
 		SimulatorConfig sc;
 		if (configureBase)
-			sc = configureBaseElements(actorType, simId);
+			sc = configureBaseElements(actorType, simId, simId.getTestSession());
 		else
 			sc = new SimulatorConfig();
 
@@ -51,7 +52,7 @@ public class RepositoryActorFactory extends AbstractActorFactory implements IAct
 			addFixedEndpoint(sc, SimulatorProperties.pnrEndpoint, actorType, TransactionType.XDR_PROVIDE_AND_REGISTER, false);
 			addFixedEndpoint(sc, SimulatorProperties.pnrTlsEndpoint, actorType, TransactionType.XDR_PROVIDE_AND_REGISTER, true);
 		} else {   // Repository
-			addEditableConfig(sc, SimulatorProperties.repositoryUniqueId, ParamType.TEXT, getNewRepositoryUniqueId());
+			addEditableConfig(sc, SimulatorProperties.repositoryUniqueId, ParamType.TEXT, getNewRepositoryUniqueId(simId.getTestSession()));
 			addFixedEndpoint(sc, SimulatorProperties.pnrEndpoint, actorType, TransactionType.PROVIDE_AND_REGISTER, false);
 			addFixedEndpoint(sc, SimulatorProperties.pnrTlsEndpoint, actorType, TransactionType.PROVIDE_AND_REGISTER, true);
 			addFixedEndpoint(sc, SimulatorProperties.retrieveEndpoint, actorType, TransactionType.RETRIEVE, false);
@@ -63,10 +64,10 @@ public class RepositoryActorFactory extends AbstractActorFactory implements IAct
 		return new Simulator(sc);
 	}
 	
-	static synchronized String getNewRepositoryUniqueId() {
+	static synchronized String getNewRepositoryUniqueId(TestSession testSession) {
 		Collection<String> existingIds;
 		try {
-			existingIds = SimCache.getAllRepositoryUniqueIds();
+			existingIds = SimCache.getAllRepositoryUniqueIds(testSession);
 		} catch (Throwable t) {
 			existingIds = new ArrayList<>();
 		}
@@ -89,7 +90,7 @@ public class RepositoryActorFactory extends AbstractActorFactory implements IAct
 		String siteName = asc.getDefaultName();
 
 		if (site == null)
-			site = new Site(siteName);
+			site = new Site(siteName, asc.getId().getTestSession());
 
 		site.setTestSession(asc.getId().getTestSession());  // labels this site as coming from a sim
 

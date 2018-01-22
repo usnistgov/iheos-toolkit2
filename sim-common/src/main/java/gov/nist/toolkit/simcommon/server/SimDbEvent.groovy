@@ -2,10 +2,9 @@ package gov.nist.toolkit.simcommon.server
 
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.configDatatypes.client.TransactionType
-import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.client.SimLogEventLinkBuilder
-
+import gov.nist.toolkit.installation.server.Installation
 /**
  * See SimDbEvents for how this is used
  */

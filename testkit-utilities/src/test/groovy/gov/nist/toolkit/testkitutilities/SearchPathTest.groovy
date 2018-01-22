@@ -1,7 +1,7 @@
 package gov.nist.toolkit.testkitutilities
 
-import gov.nist.toolkit.installation.ExternalCacheManager
-import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.server.ExternalCacheManager
+import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException
 import spock.lang.Specification
 /**

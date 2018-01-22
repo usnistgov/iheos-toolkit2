@@ -1,7 +1,7 @@
 package gov.nist.toolkit.session.server.services
 
 import gov.nist.toolkit.datasets.shared.DatasetElement
-import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.session.server.Session

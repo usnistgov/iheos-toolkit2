@@ -1,6 +1,6 @@
 package gov.nist.toolkit.session.server.serviceManager;
 
-import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.client.LogIdIOFormat;
 import gov.nist.toolkit.results.client.LogIdType;

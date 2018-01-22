@@ -2,7 +2,7 @@ package gov.nist.toolkit.actorfactory
 
 import gov.nist.toolkit.actorfactory.testSupport.InitEC
 import gov.nist.toolkit.actortransaction.client.ActorType
-import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.utilities.io.Io

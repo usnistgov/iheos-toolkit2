@@ -1,6 +1,6 @@
 package gov.nist.toolkit.testengine.engine;
 
-import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.utilities.io.Io;

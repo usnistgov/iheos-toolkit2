@@ -2,6 +2,7 @@ package gov.nist.toolkit.sitemanagement.test;
 
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
 import org.junit.Before;
@@ -25,7 +26,7 @@ public class SiteBuilderTest {
 //		work.delete();
 //		work.mkdir();
 		
-		site = new Site("mysite");
+		site = new Site("mysite", TestSession.DEFAULT_TEST_SESSION);
 	}
 	
 	@Test

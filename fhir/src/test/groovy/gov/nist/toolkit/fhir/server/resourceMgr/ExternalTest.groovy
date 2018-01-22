@@ -1,7 +1,7 @@
 package gov.nist.toolkit.fhir.server.resourceMgr
 
 import ca.uhn.fhir.context.FhirContext
-import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.server.Installation
 import org.hl7.fhir.dstu3.model.Bundle
 import org.hl7.fhir.dstu3.model.Observation
 import org.hl7.fhir.dstu3.model.Patient

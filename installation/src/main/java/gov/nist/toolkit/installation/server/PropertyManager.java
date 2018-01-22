@@ -1,4 +1,4 @@
-package gov.nist.toolkit.installation;
+package gov.nist.toolkit.installation.server;
 
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;

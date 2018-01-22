@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.server.serviceManager;
 
 import gov.nist.toolkit.simcommon.server.SiteServiceManager;
-import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.utilities.io.Io;

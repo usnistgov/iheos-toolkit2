@@ -1,6 +1,6 @@
 package gov.nist.toolkit.testenginelogging;
 
-import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
 import gov.nist.toolkit.testenginelogging.client.SectionLogMapDTO;

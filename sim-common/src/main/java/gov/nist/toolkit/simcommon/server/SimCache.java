@@ -1,6 +1,7 @@
 package gov.nist.toolkit.simcommon.server;
 
 
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
@@ -19,14 +20,14 @@ import java.util.*;
 public class SimCache {
     static private Logger logger = Logger.getLogger(SimCache.class);
 
-    static public Collection<Site> getAllSites() throws Exception {
+    static public Collection<Site> getAllSites(TestSession testSession) throws Exception {
         Set<Site> sitesSet = new HashSet<>();
-        sitesSet.addAll(SimManager.getAllSites().asCollection());
+        sitesSet.addAll(SimManager.getAllSites(testSession).asCollection());
         return sitesSet;
     }
 
-    public static Collection<String> getAllRepositoryUniqueIds() throws Exception {
-        Collection<Site> sites = getAllSites();
+    public static Collection<String> getAllRepositoryUniqueIds(TestSession testSession) throws Exception {
+        Collection<Site> sites = getAllSites(testSession);
         Set<String> ids = new HashSet<>();
         for (Site site : sites) {
             Set<String> siteIds = site.repositoryUniqueIds();
@@ -40,16 +41,16 @@ public class SimCache {
         return getSimManagerForSession(sessionId, false);
     }
 
-    static public Site getSite(String sessionId, String siteName) {
+    static public Site getSite(String sessionId, String siteName, TestSession testSession) {
         try {
-            Sites sites = SiteServiceManager.getSiteServiceManager().getCommonSites();
-            Site site = sites.getSite(siteName);
+            Sites sites = SiteServiceManager.getSiteServiceManager().getCommonSites(testSession);
+            Site site = sites.getSite(siteName, testSession);
             if (site != null) return site;
-            SimId simId = new SimId(siteName);
+            SimId simId = new SimId(testSession, siteName);
             return SimManager.getSite(simId);
         } catch (Exception e) {
             try {
-                SimId simId = new SimId(siteName);
+                SimId simId = new SimId(testSession, siteName);
                 Site s = SimManager.getSite(simId);
                 return s;
             } catch (Exception e1) {
@@ -58,8 +59,8 @@ public class SimCache {
         }
     }
 
-    static public Site getSite(String siteName) {
-        return getSite(null, siteName);
+    static public Site getSite(String siteName, TestSession testSession) {
+        return getSite(null, siteName, testSession);
     }
 
     static public SimManager getSimManagerForSession(String sessionId, boolean create) {

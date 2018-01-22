@@ -3,7 +3,7 @@ package gov.nist.toolkit.fhir.simulators.servlet;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.server.EndpointParser;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
-import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;

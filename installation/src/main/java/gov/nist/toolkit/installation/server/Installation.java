@@ -1,12 +1,14 @@
-package gov.nist.toolkit.installation;
+package gov.nist.toolkit.installation.server;
 
 
 import gov.nist.toolkit.tk.TkLoader;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import org.apache.http.annotation.Obsolete;
 import org.apache.log4j.Logger;
+import gov.nist.toolkit.installation.shared.TestSession;
 
 import javax.servlet.ServletContext;
 import java.io.File;
@@ -215,7 +217,7 @@ public class Installation {
 
     public List<String> getTestSessionNames() {
         List<String> names = new ArrayList<>();
-        File tlsFile = testLogCache();
+        File tlsFile = testLogCacheDir();
 
         for (File tlFile : tlsFile.listFiles()) {
             if (tlFile.isDirectory())
@@ -242,8 +244,9 @@ public class Installation {
         return propertyServiceMgr;
     }
 
-    public File actorsDir() {
-        File f = new File(externalCache() + File.separator + "actors");
+    public File actorsDir(TestSession testSession) {
+        if (testSession == null) throw new ToolkitRuntimeException("TestSession is null");
+        File f = new File(new File(externalCache() + File.separator + "actors"), testSession.getValue());
         f.mkdirs();
         return f;
     }
@@ -252,8 +255,9 @@ public class Installation {
     * @return a {@link File} object representing the simdb directory, that is,
     * the directory in which information for simulators is maintained on disc.
     */
-   public File simDbFile() {
-        return new File(externalCache(), "simdb");
+   public File simDbFile(TestSession testSession) {
+       if (testSession == null) throw new ToolkitRuntimeException("TestSession is null");
+        return new File(new File(externalCache(), "simdb"), testSession.getValue());
     }
 
     public File resourceCacheFile() {
@@ -262,8 +266,8 @@ public class Installation {
        return f;
    }
 
-    public File fhirSimDbFile() {
-        return simDbFile();
+    public File fhirSimDbFile(TestSession testSession) {
+        return simDbFile(testSession);
     }
 
     public List<String> getListenerPortRange() {
@@ -394,20 +398,20 @@ public class Installation {
         return new File(warHome + sep + "SessionCache");
     }
 
-    public File testLogCache() {
+    protected File testLogCacheDir() {
         return new File(externalCache + sep + "TestLogCache");
     }
 
-    public File testLogCache(String testSessionName) {
-        return new File(testLogCache(), testSessionName);
+    public File testLogCache(TestSession testSession) {
+        return new File(new File(externalCache + sep + "TestLogCache"), testSession.getValue());
     }
 
-    public File orchestrationCache(String testSessionName, String actorType) {
-        return new File(new File(testLogCache(testSessionName), "orchestration"), actorType);
+    public File orchestrationCache(TestSession testSession, String actorType) {
+        return new File(new File(testLogCache(testSession), "orchestration"), actorType);
     }
 
-    public File orchestrationPropertiesFile(String testSessionName, String actorType) {
-        File orchestrationCacheDir = orchestrationCache(testSessionName, actorType);
+    public File orchestrationPropertiesFile(TestSession testSession, String actorType) {
+        File orchestrationCacheDir = orchestrationCache(testSession, actorType);
         File propFile = new File(orchestrationCacheDir, "orchestration.properties");
         return propFile;
     }
@@ -480,4 +484,5 @@ public class Installation {
                 ((getServletContextName().isEmpty()) ? "" : "/" + getServletContextName() ) +
                 "/fhir";
     }
+
 }

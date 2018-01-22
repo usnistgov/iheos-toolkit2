@@ -1,6 +1,6 @@
 package gov.nist.toolkit.testkitutilities;
 
-import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.installation.server.Installation;
 
 import java.io.File;
 import java.util.*;

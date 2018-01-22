@@ -4,7 +4,7 @@ import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
-import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.registrymsg.registry.Response;
 import gov.nist.toolkit.results.client.DocumentEntryDetail;
 import gov.nist.toolkit.session.server.Session;

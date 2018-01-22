@@ -1,8 +1,8 @@
 package gov.nist.toolkit.sitemanagement.client;
 
-import gov.nist.toolkit.actortransaction.client.ActorType;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.installation.shared.TestSession;
 
 import java.io.Serializable;
 
@@ -36,6 +36,7 @@ public class SiteSpec implements Serializable, IsSerializable {
 	String gazelleXuaUsername;
 	String stsAssertion;
 	public boolean isAsync = false;
+	public TestSession testSession;
 
     /**
      * Create a site spec. This is a data transfer model (DTO) used to manage Sites in the UI.
@@ -44,7 +45,7 @@ public class SiteSpec implements Serializable, IsSerializable {
      * @param toClone if set it is another SiteSpec to get the TLS, SAML, and ASYNC settings from.  If this
      *                parameter is null then default values are used.
      */
-	public SiteSpec(String name, ActorType actorType, SiteSpec toClone) {
+	public SiteSpec(String name, ActorType actorType, SiteSpec toClone, TestSession testSession) {
 		this.name = name;
 		this.actorType = actorType;
 		
@@ -52,19 +53,21 @@ public class SiteSpec implements Serializable, IsSerializable {
 			isTls = false;
 			isSaml = false;
 			isAsync = false;
+			this.testSession = testSession;
 		} else {
 			isTls = toClone.isTls;
 			isSaml = toClone.isSaml;
 			isAsync = toClone.isAsync;
+			this.testSession = toClone.testSession;
 		}
 	}
 
-    public SiteSpec(String name) {
-        this(name, null, null);
+    public SiteSpec(String name, TestSession testSession) {
+        this(name, null, null, testSession);
     }
 	
-	public SiteSpec() {
-		this("", null, null);
+	public SiteSpec(TestSession testSession) {
+		this("", null, null, testSession);
 	}
 
 	public boolean isNullSite() { return name.equals(""); }

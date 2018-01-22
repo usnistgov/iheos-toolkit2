@@ -2,11 +2,13 @@ package gov.nist.toolkit.sitemanagement;
 
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
 import gov.nist.toolkit.sitemanagement.client.TransactionCollection;
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdsexception.client.XdsException;
 
 import java.util.*;
@@ -15,6 +17,7 @@ public class Sites {
 	HashMap<String, Site> siteMap = new HashMap<String, Site>();   // siteName -> Site
 	String defaultSiteName;
 	static String all = "allRepositories";
+	TestSession testSession = null;
 	
 	public boolean equals(Sites s) {
 		if (s == null)
@@ -58,7 +61,7 @@ public class Sites {
 	}
 	
 	public Sites clone() {
-		Sites s = new Sites();
+		Sites s = new Sites(testSession);
 		s.siteMap = new HashMap<String, Site>();
 		for (String key: siteMap.keySet()) {
 			Site value = siteMap.get(key);
@@ -87,21 +90,28 @@ public class Sites {
 		}
 	}
 	
-	public Sites() {
-		
+	public Sites(TestSession testSession) {
+		this.testSession = testSession;
 	}
 	
 	public Sites(Site site) {
+		if (!testSession.equals(site.getTestSession()))
+			throw new ToolkitRuntimeException("TestSession mismatch - trying to add " + site + " to Sites/" + testSession);
 		siteMap.put(site.getName(), site);
 	}
 	
 	public Sites(Collection<Site> sites) {
 		for (Site site : sites) {
+			if (!testSession.equals(site.getTestSession()))
+				throw new ToolkitRuntimeException("TestSession mismatch - trying to add " + site + " to Sites/" + testSession);
 			siteMap.put(site.getName(), site);
 		}
 	}
 	
 	public void add(Site site) {
+		if (!testSession.equals(site.getTestSession()))
+			throw new ToolkitRuntimeException("TestSession mismatch - trying to add " + site + " to Sites/" + testSession);
+
 		siteMap.put(site.getName(), site);
 	}
 
@@ -128,8 +138,8 @@ public class Sites {
 	// repositories in the configuration.  This allows any repository
 	// to be targetted at a Connectathon. The GUI tool xdstools2 knows
 	// about this special site.
-	public void buildRepositoriesSite() throws XdsException {
-		Site repSite = new Site(getAllRepositoriesSiteName());
+	public void buildRepositoriesSite(TestSession testSession) throws XdsException {
+		Site repSite = new Site(getAllRepositoriesSiteName(), testSession);
 		TransactionCollection repSiteReps = repSite.repositories();
 		for (String siteName : siteMap.keySet()) {
 			Site site = siteMap.get(siteName);
@@ -161,11 +171,11 @@ public class Sites {
 		return buf.toString();
 	}
 	
-	public List<Site> getSitesWithActor(ActorType actorType) throws Exception {
+	public List<Site> getSitesWithActor(ActorType actorType, TestSession testSession) throws Exception {
 		List<Site> rs = new ArrayList<Site>();
 
 		for (String siteName : siteMap.keySet()) {
-			Site site = getSite(siteName);
+			Site site = getSite(siteName, testSession);
 			if (site.hasActor(actorType))
 				rs.add(site);
 		}
@@ -174,11 +184,11 @@ public class Sites {
 		
 	}
 	
-	public List<Site> getSitesWithTransaction(TransactionType tt) throws Exception {
+	public List<Site> getSitesWithTransaction(TransactionType tt, TestSession testSession) throws Exception {
 		List<Site> rs = new ArrayList<Site>();
 
 		for (String siteName : siteMap.keySet()) {
-			Site site = getSite(siteName);
+			Site site = getSite(siteName, testSession);
 			if (site.hasTransaction(tt))
 				rs.add(site);
 		}
@@ -208,31 +218,31 @@ public class Sites {
       return null;
    }
 
-	public List<String> getSiteNamesWithActor(ActorType actorType) throws Exception {
+	public List<String> getSiteNamesWithActor(ActorType actorType, TestSession testSession) throws Exception {
 		List<String> rs = new ArrayList<String>();
 				
-		for (Site s : getSitesWithActor(actorType)) {
+		for (Site s : getSitesWithActor(actorType, testSession)) {
 			rs.add(s.getName());
 		}
 
 		return rs;
 	}
 
-	public List<String> getSiteNamesWithTransaction(TransactionType tt) throws Exception {
+	public List<String> getSiteNamesWithTransaction(TransactionType tt, TestSession testSession) throws Exception {
 		List<String> rs = new ArrayList<String>();
 				
-		for (Site s : getSitesWithTransaction(tt)) {
+		for (Site s : getSitesWithTransaction(tt, testSession)) {
 			rs.add(s.getName());
 		}
 
 		return rs;
 	}
 
-	public List<String> getSiteNamesWithRepository() throws Exception {
+	public List<String> getSiteNamesWithRepository(TestSession testSession) throws Exception {
 		List<String> rs = new ArrayList<String>();
 
 		for (String siteName : siteMap.keySet()) {
-			Site site = getSite(siteName);
+			Site site = getSite(siteName, testSession);
 			if (site.hasRepositoryB()) 
 				rs.add(siteName);
 		}
@@ -247,17 +257,17 @@ public class Sites {
 		return lst;
 	}
 
-	public Site getDefaultSite() throws Exception {
+	public Site getDefaultSite(TestSession testSession) throws Exception {
 		if (defaultSiteName == null || defaultSiteName.equals(""))
 			throw new Exception("No Default Site");
-		return getSite(defaultSiteName);
+		return getSite(defaultSiteName, testSession);
 	}
 
-	public Site getSite(String siteName) throws Exception {
+	public Site getSite(String siteName, TestSession testSession) throws Exception {
 		if (siteName == null)
 			throw new Exception("Internal error: null site requested");
-		if (siteName.equals("client"))
-			return new Site("client");
+		if (siteName.equals("gov/nist/toolkit/installation/shared"))
+			return new Site("gov/nist/toolkit/installation/shared", testSession);
 		List<String> sitenames = getSiteNames();
 		if ( !sitenames.contains(siteName)) {
 			// System.out.println(sitenames + " - " + siteName);
@@ -312,12 +322,12 @@ public class Sites {
 	 */
 	public Site getOrchestrationLinkedSites(SiteSpec siteSpec) throws Exception {
 		if (siteSpec.orchestrationSiteName != null) {
-			Site oSite = getSite(siteSpec.orchestrationSiteName);
-			Site sutSite = getSite(siteSpec.name);
+			Site oSite = getSite(siteSpec.orchestrationSiteName, siteSpec.testSession);
+			Site sutSite = getSite(siteSpec.name, siteSpec.testSession);
 			oSite.addLinkedSite(sutSite);
 			return oSite;
 		}
-		return getSite(siteSpec.name);
+		return getSite(siteSpec.name, siteSpec.testSession);
 	}
 
 }

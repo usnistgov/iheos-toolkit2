@@ -1,8 +1,9 @@
-package gov.nist.toolkit.installation;
+package gov.nist.toolkit.installation.server;
 
 import gov.nist.toolkit.xdsexception.client.XdsException;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import gov.nist.toolkit.installation.shared.TestSession;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,9 +42,9 @@ public class ExternalCacheManager {
         // initialize environment
         initializeExternalCacheWithInternalData(location);
         // initialize test log cache
-        Installation.instance().testLogCache().mkdirs();
+        Installation.instance().testLogCache(TestSession.DEFAULT_TEST_SESSION).mkdirs();
         // initialize SimDb
-        Installation.instance().simDbFile().mkdirs();
+        Installation.instance().simDbFile(TestSession.DEFAULT_TEST_SESSION).mkdirs();
     }
 
     private static void initializeExternalCacheWithInternalData(File externalCache) throws XdsException {
@@ -91,7 +92,7 @@ public class ExternalCacheManager {
             File internalActorsDir = Installation.instance().internalActorsDir();
             String[] list = internalActorsDir.list();
             if (list == null) return;
-            File externalDir = Installation.instance().actorsDir();
+            File externalDir = Installation.instance().actorsDir(TestSession.DEFAULT_TEST_SESSION);
             for (String internalName : list) {
                 if (!internalName.endsWith("xml")) continue;
                 File internalFile = new File(internalActorsDir, internalName);

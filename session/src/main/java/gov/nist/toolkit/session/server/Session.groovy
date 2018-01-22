@@ -2,9 +2,9 @@ package gov.nist.toolkit.session.server
 
 import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.envSetting.EnvSetting
-import gov.nist.toolkit.installation.ExternalCacheManager
-import gov.nist.toolkit.installation.Installation
-import gov.nist.toolkit.installation.PropertyServiceManager
+import gov.nist.toolkit.installation.server.ExternalCacheManager
+import gov.nist.toolkit.installation.server.Installation
+import gov.nist.toolkit.installation.server.PropertyServiceManager
 import gov.nist.toolkit.registrymetadata.Metadata
 import gov.nist.toolkit.results.client.AssertionResults
 import gov.nist.toolkit.results.client.CodesConfiguration

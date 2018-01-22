@@ -4,9 +4,9 @@ import ca.uhn.fhir.context.FhirContext
 import edu.wustl.mir.erl.ihe.xdsi.util.Utility
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.fhir.server.resourceMgr.FileSystemResourceCache
-import gov.nist.toolkit.installation.Installation
-import gov.nist.toolkit.installation.PropertyManager
-import gov.nist.toolkit.installation.PropertyServiceManager
+import gov.nist.toolkit.installation.server.Installation
+import gov.nist.toolkit.installation.server.PropertyManager
+import gov.nist.toolkit.installation.server.PropertyServiceManager
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.simcommon.server.SimDbEvent

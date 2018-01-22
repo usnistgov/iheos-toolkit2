@@ -1,6 +1,7 @@
 package gov.nist.toolkit.simcommon.server;
 
 import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.sitemanagement.Sites;
@@ -74,17 +75,17 @@ public class SimManager {
 	 * @return
 	 * @throws Exception
 	 */
-	static public Sites getAllSites() throws Exception {
-		return getAllSites(SiteServiceManager.getSiteServiceManager().getCommonSites());
+	static public Sites getAllSites(TestSession testSession) throws Exception {
+		return getAllSites(SiteServiceManager.getSiteServiceManager().getCommonSites(testSession), testSession);
 	}
 
-	static public Sites getAllSites(Sites commonSites)  throws Exception {
+	static public Sites getAllSites(Sites commonSites, TestSession testSession)  throws Exception {
 		Sites sites;
 
-		List<SimId> simIds = SimDb.getAllSimIds();
+		List<SimId> simIds = SimDb.getAllSimIds(testSession);
 
 		if (commonSites == null)
-			sites = new Sites();
+			sites = new Sites(testSession);
 		else
 			sites = commonSites.clone();
 
@@ -94,16 +95,16 @@ public class SimManager {
 				sites.putSite(site);
 		}
 
-		sites.buildRepositoriesSite();
+		sites.buildRepositoriesSite(testSession);
 
 		return sites;
 	}
 
-	public boolean exists(String siteName) {
+	public boolean exists(String siteName, TestSession testSession) {
 		try {
-			if (siteName.equals("client")) return true;
-			if (SiteServiceManager.getSiteServiceManager().getCommonSites().exists(siteName)) return true;
-			for (SimId simId : SimDb.getAllSimIds()) {
+			if (siteName.equals("gov/nist/toolkit/installation/shared")) return true;
+			if (SiteServiceManager.getSiteServiceManager().getCommonSites(testSession).exists(siteName)) return true;
+			for (SimId simId : SimDb.getAllSimIds(testSession)) {
 				if (siteName.equals(simId.toString())) return true;
 			}
 			return false;
@@ -112,10 +113,10 @@ public class SimManager {
 		}
 	}
 
-    public List<Site> getSites(List<String> siteNames) throws Exception {
+    public List<Site> getSites(List<String> siteNames, TestSession testSession) throws Exception {
         List<Site> siteList = new ArrayList<>();
 
-        Collection<Site> sites = getAllSites().asCollection();
+        Collection<Site> sites = getAllSites(testSession).asCollection();
         for (Site site : sites) {
             if (siteNames.contains(site.getName()))
                 siteList.add(site);

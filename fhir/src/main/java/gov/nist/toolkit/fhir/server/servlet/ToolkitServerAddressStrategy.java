@@ -1,7 +1,7 @@
 package gov.nist.toolkit.fhir.server.servlet;
 
 import ca.uhn.fhir.rest.server.IServerAddressStrategy;
-import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.installation.server.Installation;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;

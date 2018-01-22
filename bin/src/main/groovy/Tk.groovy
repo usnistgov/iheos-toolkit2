@@ -1,6 +1,6 @@
 import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.fhir.support.ResDb
-import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.server.Installation
 import org.apache.log4j.ConsoleAppender
 import org.apache.log4j.Logger
 import org.apache.log4j.PatternLayout

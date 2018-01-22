@@ -3,6 +3,7 @@ package gov.nist.toolkit.sitemanagement.client;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
 import gov.nist.toolkit.xdsexception.client.TkActorNotFoundException;
 
@@ -62,7 +63,7 @@ public class Site  implements IsSerializable, Serializable {
 
 	public String pidAllocateURI = null;
 	transient public boolean changed = false;
-	private String testSession = null;  // loaded from SimId - when non-null this site represents a sim
+	private TestSession testSession = null;  // loaded from SimId - when non-null this site represents a sim
 	private String orchestrationSiteName = null;
 	private boolean isASimulator = false;
 
@@ -389,9 +390,7 @@ public class Site  implements IsSerializable, Serializable {
 	}
 	
 	public String toString() {
-		StringBuffer buf = new StringBuffer();
-		buf.append(name);
-		return buf.toString();
+		return testSession + "/" + name;
 	}
 
     public String describe() {
@@ -401,10 +400,11 @@ public class Site  implements IsSerializable, Serializable {
         return buf.toString();
     }
 
-	public Site() {}
+	public Site(TestSession testSession) { this.testSession = testSession;}
 
-	public Site(String name) {
+	public Site(String name, TestSession testSession) {
 		setName(name);
+		this.testSession = testSession;
 	}
 
 	public void setName(String name) {
@@ -444,8 +444,8 @@ public class Site  implements IsSerializable, Serializable {
 		return name;
 	}
 
-	public SiteSpec siteSpec() {
-		SiteSpec siteSpec = new SiteSpec(getSiteName());
+	public SiteSpec siteSpec(TestSession testSession) {
+		SiteSpec siteSpec = new SiteSpec(getSiteName(), testSession);
 		siteSpec.orchestrationSiteName = orchestrationSiteName;
 		return siteSpec;
 	}
@@ -465,11 +465,11 @@ public class Site  implements IsSerializable, Serializable {
 
 	public boolean isSimulator() { return isASimulator; }
 
-	public void setTestSession(String testSession) {
+	public void setTestSession(TestSession testSession) {
 		this.testSession = testSession;
 	}
 
-	public String getTestSession() {
+	public TestSession getTestSession() {
 		return testSession;
 	}
 }

@@ -5,7 +5,7 @@ import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.configDatatypes.client.PidBuilder
 import gov.nist.toolkit.configDatatypes.client.TransactionType
-import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.results.shared.SiteBuilder
 import gov.nist.toolkit.services.client.*

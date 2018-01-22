@@ -1,6 +1,6 @@
 package gov.nist.toolkit.actorfactory.testSupport
 
-import gov.nist.toolkit.installation.ExternalCacheManager
+import gov.nist.toolkit.installation.server.ExternalCacheManager
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException
 
 /**

@@ -8,7 +8,7 @@ import gov.nist.toolkit.configDatatypes.client.FhirVerb
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.fhir.server.utility.UriBuilder
-import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.simcommon.client.BadSimIdException
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.client.SimulatorConfig

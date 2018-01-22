@@ -84,7 +84,7 @@ public class TestkitStructure extends TestkitWalker {
 	}
 
 	public boolean isServerTest(String testnum) throws Exception {
-		return "server".equals(getArea(testnum));
+		return "gov/nist/toolkit/installation/server".equals(getArea(testnum));
 	}
 
 	public String getArea(String testnum) throws Exception {
@@ -321,7 +321,7 @@ public class TestkitStructure extends TestkitWalker {
 
 
 	public void begin() throws Exception {
-		String[] areas = { "tests", "testdata", "server" };
+		String[] areas = { "tests", "testdata", "gov/nist/toolkit/installation/server"};
 		setAreas(areas);
 	}
 

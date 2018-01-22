@@ -1,7 +1,7 @@
 package gov.nist.toolkit.simcoresupport.mhd
 
 import gov.nist.toolkit.fhir.server.resourceMgr.ResourceCacheMgr
-import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.server.Installation
 import spock.lang.Specification
 
 class DocumentReferenceEntryUUIDTest extends Specification {

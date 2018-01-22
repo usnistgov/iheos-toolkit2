@@ -1,7 +1,7 @@
 package gov.nist.toolkit.fhir.server.resourceMgr
 
 import gov.nist.toolkit.fhir.server.utility.UriBuilder
-import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.server.Installation
 import org.apache.log4j.Logger
 import org.hl7.fhir.instance.model.api.IBaseResource
 

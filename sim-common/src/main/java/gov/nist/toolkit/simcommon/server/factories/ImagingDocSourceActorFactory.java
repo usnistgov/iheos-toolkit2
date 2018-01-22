@@ -35,7 +35,7 @@ public class ImagingDocSourceActorFactory extends AbstractActorFactory implement
 		ActorType actorType = ActorType.IMAGING_DOC_SOURCE;
 		SimulatorConfig sc;
 		if (configureBase)
-			sc = configureBaseElements(actorType, newID);
+			sc = configureBaseElements(actorType, newID, newID.getTestSession());
 		else
 			sc = new SimulatorConfig();
 
@@ -63,7 +63,7 @@ public class ImagingDocSourceActorFactory extends AbstractActorFactory implement
 		String siteName = sc.getDefaultName();
 		
 		if (site == null)
-			site = new Site(siteName);
+			site = new Site(siteName, sc.getId().getTestSession());
 
 		site.setTestSession(sc.getId().getTestSession());  // labels this site as coming from a sim
 

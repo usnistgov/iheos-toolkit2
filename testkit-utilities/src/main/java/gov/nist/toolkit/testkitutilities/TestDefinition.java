@@ -1,6 +1,6 @@
 package gov.nist.toolkit.testkitutilities;
 
-import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.interactionmodel.server.InteractionSequences;
 import gov.nist.toolkit.testkitutilities.client.Gather;

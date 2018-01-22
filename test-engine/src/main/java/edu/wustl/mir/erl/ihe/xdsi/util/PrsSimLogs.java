@@ -3,9 +3,9 @@
  */
 package edu.wustl.mir.erl.ihe.xdsi.util;
 
-import gov.nist.toolkit.installation.Installation;
-import gov.nist.toolkit.installation.PropertyManager;
-import gov.nist.toolkit.installation.PropertyServiceManager;
+import gov.nist.toolkit.installation.server.Installation;
+import gov.nist.toolkit.installation.server.PropertyManager;
+import gov.nist.toolkit.installation.server.PropertyServiceManager;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.testengine.engine.SimulatorTransaction;
 import gov.nist.toolkit.utilities.xml.XmlUtil;

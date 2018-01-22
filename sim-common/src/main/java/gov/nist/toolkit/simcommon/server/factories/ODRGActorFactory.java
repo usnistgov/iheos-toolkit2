@@ -42,7 +42,7 @@ public class ODRGActorFactory extends AbstractActorFactory implements IActorFact
       this.newID = newID;
       ActorType actorType = ActorType.OD_RESPONDING_GATEWAY;
       SimulatorConfig sc;
-      if (configureBase) sc = configureBaseElements(actorType, newID);
+      if (configureBase) sc = configureBaseElements(actorType, newID, newID.getTestSession());
       else sc = new SimulatorConfig();
 
       SimId simId = sc.getId();
@@ -102,7 +102,7 @@ public class ODRGActorFactory extends AbstractActorFactory implements IActorFact
       try {
          String siteName = sc.getDefaultName();
 
-         if (site == null) site = new Site(siteName);
+         if (site == null) site = new Site(siteName, sc.getId().getTestSession());
          site.setTestSession(sc.getId().getTestSession()); // labels this site as coming from a sim
 
          boolean isAsync = false;

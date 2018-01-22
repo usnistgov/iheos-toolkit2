@@ -2,7 +2,7 @@ package gov.nist.toolkit.datasets.server
 
 import gov.nist.toolkit.datasets.shared.DatasetElement
 import gov.nist.toolkit.datasets.shared.DatasetModel
-import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.utilities.xml.OMFormatter
 
 /**

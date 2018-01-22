@@ -1,6 +1,6 @@
 package gov.nist.toolkit.services.server.orchestration
 
-import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.results.client.LogIdType
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.services.client.AbstractOrchestrationRequest

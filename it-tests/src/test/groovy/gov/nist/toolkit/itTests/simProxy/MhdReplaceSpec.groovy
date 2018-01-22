@@ -3,7 +3,7 @@ package gov.nist.toolkit.itTests.simProxy
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
-import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.AssertionResult
 import gov.nist.toolkit.results.client.Result

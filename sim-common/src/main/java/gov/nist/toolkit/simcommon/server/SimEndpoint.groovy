@@ -2,7 +2,7 @@ package gov.nist.toolkit.simcommon.server
 
 import gov.nist.toolkit.configDatatypes.client.FhirVerb
 import gov.nist.toolkit.configDatatypes.client.TransactionType
-import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.server.Installation
 import org.apache.http.HttpHost
 
 /**

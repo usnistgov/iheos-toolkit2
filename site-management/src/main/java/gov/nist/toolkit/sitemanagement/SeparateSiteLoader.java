@@ -1,23 +1,27 @@
 package gov.nist.toolkit.sitemanagement;
 
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.Util;
+import org.apache.axiom.om.OMElement;
 
 import java.io.File;
 
-import org.apache.axiom.om.OMElement;
-
 public class SeparateSiteLoader extends SiteLoader {
+
+	public SeparateSiteLoader(TestSession testSession) {
+		super(testSession);
+	}
 
 	public Sites load(OMElement conf, Sites sites) throws Exception {
 		parseSite(conf);
 		
 		if (sites == null)
-			sites = new Sites();
+			sites = new Sites(testSession);
 		
 		sites.setSites(siteMap);
-		sites.buildRepositoriesSite();
+		sites.buildRepositoriesSite(testSession);
 		
 		return sites;
 	}
@@ -31,7 +35,7 @@ public class SeparateSiteLoader extends SiteLoader {
 				continue;
 			OMElement conf = Util.parse_xml(file);
 			if (sites == null)
-				sites = new Sites();
+				sites = new Sites(testSession);
 			sites = load(conf, sites);
 		}
 		return sites;

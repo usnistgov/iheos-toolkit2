@@ -15,7 +15,7 @@ import gov.nist.toolkit.fhir.simulators.sim.reg.SoapWrapperRegistryResponseSim;
 import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.fhir.simulators.sim.rep.RepIndex;
 import gov.nist.toolkit.http.HttpParserBa;
-import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponse;
 import gov.nist.toolkit.registrymsg.registry.Response;

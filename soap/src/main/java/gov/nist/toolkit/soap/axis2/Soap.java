@@ -2,7 +2,7 @@ package gov.nist.toolkit.soap.axis2;
 
 import gov.nist.toolkit.docref.WsDocRef;
 import gov.nist.toolkit.dsig.XMLDSigProcessor;
-import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.securityCommon.SecurityParamsImpl;
 import gov.nist.toolkit.utilities.xml.OMFormatter;

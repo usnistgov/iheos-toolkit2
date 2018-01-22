@@ -3,7 +3,7 @@ package gov.nist.toolkit.testengine.transactions;
 import gov.nist.toolkit.common.datatypes.Hl7Date;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.registrymetadata.IdParser;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;

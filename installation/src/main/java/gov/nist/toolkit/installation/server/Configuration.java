@@ -1,4 +1,4 @@
-package gov.nist.toolkit.installation;
+package gov.nist.toolkit.installation.server;
 
 import org.apache.log4j.Logger;
 

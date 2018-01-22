@@ -7,7 +7,7 @@ import edu.wustl.mir.erl.ihe.xdsi.util.PfnType;
 import edu.wustl.mir.erl.ihe.xdsi.util.PrsSimLogs;
 import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.commons.lang3.StringUtils;

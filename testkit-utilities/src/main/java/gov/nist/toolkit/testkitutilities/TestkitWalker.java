@@ -17,7 +17,7 @@ abstract public class TestkitWalker {
 	static boolean debug = false;
 	protected static int errors = 0;
 	protected String area;
-	String[] areas = { "examples", "testdata", "tests", "server" };
+	String[] areas = { "examples", "testdata", "tests", "gov/nist/toolkit/installation/server"};
 
 
 	abstract public void startSection(File section) throws Exception;
@@ -93,7 +93,7 @@ abstract public class TestkitWalker {
 				if (!test.isDirectory())
 					continue;
 
-				if ("server".equals(area)) {
+				if ("gov/nist/toolkit/installation/server".equals(area)) {
 					startServer(test);
 					endServer(test);
 				}

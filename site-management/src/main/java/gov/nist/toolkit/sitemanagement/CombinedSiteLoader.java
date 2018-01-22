@@ -1,30 +1,34 @@
 package gov.nist.toolkit.sitemanagement;
 
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.utilities.xml.Util;
+import org.apache.axiom.om.OMElement;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
-
-import org.apache.axiom.om.OMElement;
 
 
 
 public class CombinedSiteLoader extends SiteLoader {
 	String defaultSiteName = null;
 
+	public CombinedSiteLoader(TestSession testSession) {
+		super(testSession);
+	}
+
 	public Sites load(OMElement conf, Sites sites) throws Exception {
 		if (sites == null)
-			sites = new Sites();
+			sites = new Sites(testSession);
 		siteMap = sites.getSiteMap();
 
 		parse(conf);
 
 		sites.setDefaultSite(defaultSiteName);
 		sites.setSites(siteMap);
-		sites.buildRepositoriesSite();
+		sites.buildRepositoriesSite(testSession);
 
 		return sites;
 	}
@@ -64,7 +68,7 @@ public class CombinedSiteLoader extends SiteLoader {
 			if (name.equals(sites.getAllRepositoriesSiteName()))
 				continue;
 			Site s = sites.siteMap.get(name);
-			OMElement site_ele = new SeparateSiteLoader().siteToXML(s);
+			OMElement site_ele = new SeparateSiteLoader(testSession).siteToXML(s);
 			sites_ele.addChild(site_ele);
 		}
 

@@ -1,7 +1,7 @@
 package gov.nist.toolkit.itTests.fhir.utility
 
 import ca.uhn.fhir.context.FhirContext
-import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.itTests.support.FhirSpecification
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.simcommon.client.SimId

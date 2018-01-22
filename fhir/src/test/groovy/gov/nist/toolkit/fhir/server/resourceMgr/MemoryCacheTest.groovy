@@ -1,6 +1,6 @@
 package gov.nist.toolkit.fhir.server.resourceMgr
 
-import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.server.Installation
 import org.hl7.fhir.dstu3.model.DocumentReference
 import spock.lang.Shared
 import spock.lang.Specification

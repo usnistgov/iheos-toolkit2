@@ -3,10 +3,12 @@ package gov.nist.toolkit.simcommon.server
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.actortransaction.client.TransactionInstance
 import gov.nist.toolkit.configDatatypes.client.Pid
+
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder
 import gov.nist.toolkit.http.*
-import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.server.Installation
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.simcommon.client.BadSimIdException
 import gov.nist.toolkit.simcommon.client.NoSimException
 import gov.nist.toolkit.simcommon.client.SimId
@@ -43,10 +45,12 @@ public class SimDb {
 	private File transactionDir = null;
 	static private final Logger logger = Logger.getLogger(SimDb.class);
 	static String luceneIndexDirectoryName = 'simindex'
+	private TestSession testSession = null;
 
 	static final String MARKER = 'MARKER';
 
-	public SimDb mkSim(SimId simid, String actor) throws IOException, NoSimException {
+	SimDb mkSim(SimId simid, String actor) throws IOException, NoSimException {
+		assert simid?.testSession?.value
 
 		// if this is a FHIR sim there is a different factory method to use
 		ActorType actorType = ActorType.findActor(actor);
@@ -56,7 +60,7 @@ public class SimDb {
 			return mkfSim(simid)
 		}
 
-		File dbRoot = getSimDbFile();
+		File dbRoot = getSimDbFile(simid.testSession);
 		validateSimId(simid);
 		if (!dbRoot.exists())
 			dbRoot.mkdir();
@@ -81,17 +85,18 @@ public class SimDb {
 	 * @return
 	 */
 	static SimId getFullSimId(SimId simId) {
+		assert simId?.testSession?.value
 		SimId ssimId = new SimId(simId.getTestSession(), simId.getId())
 		if (exists(ssimId)) {
 			// soap based sim
 			SimDb simDb = new SimDb(ssimId)
-			return simIdBuilder(simDb.getSimDir())
+			return simIdBuilder(simDb.getSimDir(), simId.testSession)
 		} else {
 			ssimId = ssimId.forFhir()
 			if (exists(ssimId)) {
 				// FHIR based sim
 				SimDb simDb = new SimDb(ssimId)
-				return simIdBuilder(simDb.getSimDir())
+				return simIdBuilder(simDb.getSimDir(), simId.testSession)
 			}
 		}
 		throw new BadSimIdException("Simulator " + simId.toString() + " does not exist.")
@@ -104,18 +109,18 @@ public class SimDb {
 	 * @return
 	 */
 	static public File getSimDbFile(SimId simId) {
-//		System.out.println("Using SimDb:getSimDbFile()");
+		assert simId?.testSession?.value
 		if (simId.isFhir())
-			return Installation.instance().fhirSimDbFile();
-		return Installation.instance().simDbFile();
+			return Installation.instance().fhirSimDbFile(simId.testSession);
+		return Installation.instance().simDbFile(simId.testSession);
 	}
 
-	static public File getSimDbFile() {
-		return Installation.instance().simDbFile()
+	static public File getSimDbFile(TestSession testSession) {
+		return Installation.instance().simDbFile(testSession)
 	}
 
-	static public File getFSimDbFile() {
-		return Installation.instance().fhirSimDbFile()
+	static public File getFSimDbFile(TestSession testSession) {
+		return Installation.instance().fhirSimDbFile(testSession)
 	}
 
 	static boolean isSim(File simRoot) {
@@ -178,6 +183,7 @@ public class SimDb {
 	 * @throws NoSimException
 	 */
 	public SimDb(SimId simId) throws NoSimException {
+		assert simId?.testSession?.value
 		File dbRoot = getSimDbFile(simId);
 		this.simId = simId;
 		validateSimId(simId);
@@ -263,6 +269,8 @@ public class SimDb {
 					throw new IOException(String.format("Simulator User (testSession) contains bad character at position %d", i));
 			}
 		}
+		if (simId.testSession == null)
+			throw new IOException("Simulator ID TestSession is null");
 	}
 
 	private void validateCurrentSimId() throws IOException { validateSimId(simId);}
@@ -418,8 +426,8 @@ public class SimDb {
 		return null;
 	}
 
-	public SimDb(TransactionInstance ti) throws IOException, NoSimException, BadSimIdException {
-		this(getFullSimId(new SimId(ti.simId)));
+	public SimDb(TransactionInstance ti, TestSession testSession) throws IOException, NoSimException, BadSimIdException {
+		this(getFullSimId(new SimId(testSession, ti.simId)));
 
 		this.actor = ti.actorType.getShortName();
 		this.transaction = ti.trans;
@@ -550,8 +558,8 @@ public class SimDb {
 		return newExpiration.getTime();
 	}
 
-	public void deleteAllSims() throws IOException, NoSimException {
-		List<SimId> allSimIds = getAllSimIds();
+	public void deleteAllSims(TestSession testSession) throws IOException, NoSimException {
+		List<SimId> allSimIds = getAllSimIds(testSession);
 		for (SimId simId : allSimIds) {
 			SimDb db = new SimDb(simId);
 			db.delete();
@@ -568,25 +576,25 @@ public class SimDb {
 		}
 	}
 
-	static SimId simIdBuilder(File simDefDir) {
-		SimId simId = new SimId(simDefDir.name)
+	static SimId simIdBuilder(File simDefDir, TestSession testSession) {
+		SimId simId = new SimId(testSession, simDefDir.name)
 		if (isFSim(simDefDir)) simId.forFhir()
 		simId.actorType = new SimDb(simId).getSimulatorType()
 		simId
 	}
 
-	static List<SimId> getAllSimIds() throws BadSimIdException {
+	static List<SimId> getAllSimIds(TestSession testSession) throws BadSimIdException {
 
-		List soapSimIds = getSimDbFile().listFiles().findAll { File file ->
+		List soapSimIds = getSimDbFile(testSession).listFiles().findAll { File file ->
 			isSimDir(file)
 		}.collect { File dir ->
-			simIdBuilder (dir)
+			simIdBuilder (dir, testSession)
 		}
 
-		List fhirSimIds = getFSimDbFile().listFiles().findAll { File file ->
+		List fhirSimIds = getFSimDbFile(testSession).listFiles().findAll { File file ->
 			isSimDir(file)
 		}.collect { File dir ->
-			simIdBuilder(dir)
+			simIdBuilder(dir, testSession)
 		}
 
 		def ids = (soapSimIds + fhirSimIds) as Set<SimId>
@@ -598,12 +606,12 @@ public class SimDb {
 	 * @return
 	 */
 	@Obsolete
-	static List<String> getAllSimNames() {
-		getAllSimIds().collect { it.toString()}
+	static List<String> getAllSimNames(TestSession testSession) {
+		getAllSimIds(testSession).collect { it.toString()}
 	}
 
-	static List<SimId> getSimIdsForUser(String user) throws BadSimIdException {
-		List<SimId> ids = getAllSimIds();
+	static List<SimId> getSimIdsForUser(TestSession user) throws BadSimIdException {
+		List<SimId> ids = getAllSimIds(user);
 		List<SimId> selectedIds = new ArrayList<>();
 		for (SimId id : ids) {
 			if (user.equals(id.getTestSession()))
@@ -757,8 +765,8 @@ public class SimDb {
 		return ActorType.findActor(name);
 	}
 
-	public List<SimId> getSimulatorIdsforActorType(ActorType actorType) throws IOException, NoSimException {
-		List<SimId> allSimIds = getAllSimIds();
+	public List<SimId> getSimulatorIdsforActorType(ActorType actorType, TestSession testSession) throws IOException, NoSimException {
+		List<SimId> allSimIds = getAllSimIds(testSession);
 		List<SimId> simIdsOfType = new ArrayList<>();
 		for (SimId simId : allSimIds) {
 			if (actorType.equals(getSimulatorActorType(simId)))
@@ -1287,8 +1295,8 @@ public class SimDb {
 	 * @return
 	 */
 
-	static File getResDbFile() {
-		return Installation.instance().fhirSimDbFile()
+	static File getResDbFile(TestSession testSession) {
+		return Installation.instance().fhirSimDbFile(testSession)
 	}
 
 
@@ -1316,7 +1324,8 @@ public class SimDb {
 	 * @return
 	 */
 	static File getSimBase(SimId simId) {
-		return new File(getResDbFile(), simId.toString())
+		assert simId?.testSession?.value
+		return new File(getResDbFile(simId.testSession), simId.toString())
 	}
 
 
@@ -1341,7 +1350,8 @@ public class SimDb {
 	}
 
 	static SimDb mkfSim(SimId simid) throws IOException, NoSimException {
-		return mkfSimi(getResDbFile(), simid, BASE_TYPE, true)
+		assert simid?.testSession?.value
+		return mkfSimi(getResDbFile(simid.testSession), simid, BASE_TYPE, true)
 	}
 
 	private static SimDb mkfSimi(File dbRoot, SimId simid, String actor, boolean openToLastEvent) throws IOException, NoSimException {
