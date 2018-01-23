@@ -74,8 +74,8 @@ class IgOrchestrationBuilder {
             if (!request.useExistingState) {
                 // send necessary Patient ID Feed messages
                 request.setPifType(PifType.V2)
-                new PifSender(api, request.testSession, rg1Site.siteSpec(request.testSession), orchProps).send(PifType.V2, pidNameMap)
-                new PifSender(api, request.testSession, rg2Site.siteSpec(request.testSession), orchProps).send(PifType.V2, pidNameMap)
+                new PifSender(api, request.testSession, rg1Site.siteSpec(), orchProps).send(PifType.V2, pidNameMap)
+                new PifSender(api, request.testSession, rg2Site.siteSpec(), orchProps).send(PifType.V2, pidNameMap)
 
                 TestInstance testInstance15807 = TestInstanceManager.initializeTestInstance(request.testSession, new TestInstance('15807'))
                 MessageItem itemOneDoc1 = response.addMessage(testInstance15807, true, "")

@@ -8,6 +8,7 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.ObjectSort;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -212,7 +213,7 @@ public class TransactionSelectionManager {
 //	}
 	
 	public SiteSpec generateSiteSpec() {
-		SiteSpec ss = new SiteSpec();
+		SiteSpec ss = new SiteSpec(ClientUtils.INSTANCE.getCurrentTestSession());
 
 		if (genericQueryTab.samlEnabled)
 			ss.setStsAssertion(genericQueryTab.samlAssertion);

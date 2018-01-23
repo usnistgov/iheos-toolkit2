@@ -76,7 +76,7 @@ public class BuildRecTestOrchestrationButton extends AbstractOrchestrationButton
         request.setUseExistingState(!isResetRequested());
         request.getActorOption().copyFrom(testTab.getCurrentActorOption());
         if (!testingAClient && testContext.getSiteUnderTest() != null) {
-            SiteSpec sutSiteSpec = testContext.getSiteUnderTest().siteSpec(new TestSession(testTab.getCurrentTestSession()));
+            SiteSpec sutSiteSpec = testContext.getSiteUnderTest().siteSpec();
             if (isSaml()) {
                 setSamlAssertion(sutSiteSpec);
             }

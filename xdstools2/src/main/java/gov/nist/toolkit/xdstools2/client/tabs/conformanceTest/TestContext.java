@@ -119,7 +119,7 @@ public class TestContext implements SiteManager {
     }
 
     public SiteSpec getSiteUnderTestAsSiteSpec() {
-        return (siteUnderTest == null) ? null : siteUnderTest.siteSpec(new TestSession(getTestSession()));
+        return (siteUnderTest == null) ? null : siteUnderTest.siteSpec();
     }
 
     public void setSiteUnderTest(Site siteUnderTest) {

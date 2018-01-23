@@ -5,6 +5,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.services.client.IdsOrchestrationRequest;
 import gov.nist.toolkit.services.client.IdsOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
@@ -36,7 +37,7 @@ class BuildIDSTestOrchestrationButton extends AbstractOrchestrationButton {
             return;
         }
         IdsOrchestrationRequest request = new IdsOrchestrationRequest();
-        request.setUserName(testTab.getCurrentTestSession());
+        request.setTestSession(new TestSession(testTab.getCurrentTestSession()));
         new BuildIdsTestOrchestrationCommand(){
             @Override
             public void onComplete(RawResponse rawResponse) {

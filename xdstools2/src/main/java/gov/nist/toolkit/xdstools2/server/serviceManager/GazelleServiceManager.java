@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.server.serviceManager;
 
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.simcommon.server.SiteServiceManager;
 import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.results.CommonService;
@@ -44,7 +45,7 @@ public class GazelleServiceManager extends CommonService {
             externalCacheFile = new File("/Users/bmajur/tmp/toolkit2");
         } else {
             gazelleUrl = Installation.instance().propertyServiceManager().getPropertyManager().getToolkitGazelleConfigURL();
-            actorsDir = Installation.instance().actorsDir();
+            actorsDir = Installation.instance().actorsDir(TestSession.DEFAULT_TEST_SESSION);
             externalCacheFile = new File(Installation.instance().propertyServiceManager().getPropertyManager().getExternalCache());
         }
 
@@ -93,7 +94,7 @@ public class GazelleServiceManager extends CommonService {
 
             // force reload of all actor definitions
             if (!unitTest) {
-                SiteServiceManager.getSiteServiceManager().reloadCommonSites();
+                SiteServiceManager.getSiteServiceManager().reloadCommonSites(TestSession.DEFAULT_TEST_SESSION);
             }
             if (unitTest)
                 return null;

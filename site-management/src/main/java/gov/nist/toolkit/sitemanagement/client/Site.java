@@ -444,8 +444,9 @@ public class Site  implements IsSerializable, Serializable {
 		return name;
 	}
 
-	public SiteSpec siteSpec(TestSession testSession) {
-		SiteSpec siteSpec = new SiteSpec(getSiteName(), testSession);
+	public SiteSpec siteSpec() {
+		TestSession thisTestSession = (testSession != null) ? testSession : TestSession.DEFAULT_TEST_SESSION;
+		SiteSpec siteSpec = new SiteSpec(getSiteName(), thisTestSession);
 		siteSpec.orchestrationSiteName = orchestrationSiteName;
 		return siteSpec;
 	}

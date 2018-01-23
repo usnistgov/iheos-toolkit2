@@ -57,7 +57,7 @@ class BuildRepTestOrchestrationButton extends AbstractOrchestrationButton {
 
         RepOrchestrationRequest request = new RepOrchestrationRequest();
         if (testContext.getSiteUnderTest()!=null) {
-            SiteSpec sutSiteSpec = testContext.getSiteUnderTest().siteSpec(new TestSession(testTab.getCurrentTestSession()));
+            SiteSpec sutSiteSpec = testContext.getSiteUnderTest().siteSpec();
             if (isSaml()) {
                 setSamlAssertion(sutSiteSpec);
             }
@@ -98,7 +98,7 @@ class BuildRepTestOrchestrationButton extends AbstractOrchestrationButton {
                         "Then Reset Testing Environment (above) with Reset to properly initialize the testing environment (Patient ID is needed).</h3><hr />"));
 
                 // test will be run out of support site so pass it back to conformance test tab
-                testTab.setSiteToIssueTestAgainst(orchResponse.getSupportSite().siteSpec(new TestSession(testTab.getCurrentTestSession())));
+                testTab.setSiteToIssueTestAgainst(orchResponse.getSupportSite().siteSpec());
 
                 testTab.displayTestCollection(testTab.getMainView().getTestsPanel());
             }
