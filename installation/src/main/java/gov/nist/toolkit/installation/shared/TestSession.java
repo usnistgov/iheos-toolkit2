@@ -10,6 +10,7 @@ public class TestSession implements Serializable, IsSerializable {
     private String value;
     public static final TestSession DEFAULT_TEST_SESSION = new TestSession("default");
 
+    public TestSession() {}
 
     public TestSession(String value) {
         this.value = value;
@@ -19,8 +20,9 @@ public class TestSession implements Serializable, IsSerializable {
         return value;
     }
 
+    @Override
     public String toString() {
-        return "TestSession " + value;
+        return value;
     }
 
     public void clean() { value = value.replaceAll("\\.", "_").toLowerCase(); }

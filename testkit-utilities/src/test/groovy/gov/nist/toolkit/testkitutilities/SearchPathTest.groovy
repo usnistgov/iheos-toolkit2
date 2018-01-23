@@ -2,6 +2,7 @@ package gov.nist.toolkit.testkitutilities
 
 import gov.nist.toolkit.installation.server.ExternalCacheManager
 import gov.nist.toolkit.installation.server.Installation
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException
 import spock.lang.Specification
 /**
@@ -9,7 +10,7 @@ import spock.lang.Specification
  */
 class SearchPathTest extends Specification {
     String environment = 'default'
-    String testSession = 'default'
+    TestSession testSession = new TestSession('default')
 
     def setup() {
         org.apache.log4j.BasicConfigurator.configure()

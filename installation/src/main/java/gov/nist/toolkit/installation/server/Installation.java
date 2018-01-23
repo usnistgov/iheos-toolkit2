@@ -315,7 +315,7 @@ public class Installation {
             }
             // path to the environment specific testkit (generated from Code Update)
             File environmentDefaultTestkit = new File(environmentTestkitsFile, "default");
-            if (usrTestkit != null && usrTestkit.exists() && !testSession.equals("default"))
+            if (usrTestkit != null && usrTestkit.exists() && !testSession.equals(new TestSession("default")))
                 testkits.add(usrTestkit);
             if (environmentDefaultTestkit.exists()) {
                 testkits.add(environmentDefaultTestkit);

@@ -512,7 +512,8 @@ public class SimulatorServiceManager extends CommonService {
 	public Result getSimulatorEventRequestAsResult(TransactionInstance ti) throws Exception {
 		SimDb db = null;
 		try {
-			db = new SimDb(ti);
+			SimId simId = SimIdFactory.simIdBuilder(ti.simId);
+			db = new SimDb(simId);
 		} catch (Exception e) {
 			throw new Exception("Cannot load simulator event - " + e.getMessage(), e);
 		}
@@ -531,7 +532,8 @@ public class SimulatorServiceManager extends CommonService {
 	public Result getSimulatorEventResponseAsResult(TransactionInstance ti) throws Exception {
 		SimDb db = null;
 		try {
-			db = new SimDb(ti);
+			SimId simId = SimIdFactory.simIdBuilder(ti.simId);
+			db = new SimDb(simId);
 		} catch (Exception e) {
 			throw new Exception("Cannot load simulator event - " + e.getMessage(), e);
 		}

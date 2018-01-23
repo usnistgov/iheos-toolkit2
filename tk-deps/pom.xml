@@ -19,9 +19,10 @@
         <jersey.version>2.22.1</jersey.version>
         <jackson.version>2.6.3</jackson.version>
         <!--<groovyVersion>2.1.1</groovyVersion>-->
-        <groovyVersion>2.4.5</groovyVersion>
+        <groovyVersion>2.6.0-alpha-2</groovyVersion>   <!-- 2.4.5 -->
         <gwtVersion>2.8.0</gwtVersion>    <!-- 2.7.0 -->
         <!-- <gwtVersion>2.6.1</gwtVersion> -->
+        <spock.version>0.7-groovy-2.0</spock.version>   <!-- 0.7-groovy-2.0   -->
         <mavenCompilerPluginVersion>3.1</mavenCompilerPluginVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
@@ -458,7 +459,7 @@
             <dependency>
                 <groupId>org.spockframework</groupId>
                 <artifactId>spock-core</artifactId>
-                <version>0.7-groovy-2.0</version>
+                <version>${spock.version}</version>
                 <scope>test</scope>
             </dependency>
             <!-- the following two go together.
@@ -466,7 +467,7 @@
             <dependency>
                 <groupId>org.spockframework</groupId>
                 <artifactId>spock-maven</artifactId>
-                <version>0.7-groovy-2.0</version>
+                <version>${spock.version}</version>
                 <exclusions>
                     <exclusion>  <!-- exclude so we can pick up surefire-junit4 2.17 version for failsafe integration tests  -->
                         <groupId>org.apache.maven.surefire</groupId>

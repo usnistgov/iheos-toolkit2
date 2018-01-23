@@ -6,8 +6,10 @@ import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.simcommon.client.BadSimIdException
 import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.client.SimIdFactory
 import gov.nist.toolkit.simcommon.client.Simulator
 import gov.nist.toolkit.simcommon.server.SimDb
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException
 import spock.lang.Specification
 
 /**
@@ -22,41 +24,38 @@ class SimulatorServiceManagerTest extends Specification {
     }
 
     def setup() {
-        mgr.deleteConfig(new SimId('bill', 'aa'))
-        mgr.deleteConfig(new SimId('bill', 'AA'))
+        mgr.deleteConfig(SimIdFactory.simIdBuilder('bill__aa'))
+        mgr.deleteConfig(SimIdFactory.simIdBuilder('bill__AA'))
     }
 
     def 'user with __ in name is illegal'() {
         when:
-        new SimId("foo__bar", "x")
+        SimIdFactory.simIdBuilder("foo__bar__x")
 
         then:
-        thrown BadSimIdException
+        thrown ToolkitRuntimeException
     }
 
-    def 'id with __ in name is ok'() {
+    def 'no test session is illegal'() {
         when:
-        SimId simId = new SimId("xx", "xx__yy")
+        SimIdFactory.simIdBuilder("x")
 
         then:
-        notThrown BadSimIdException
-        simId.testSession == 'xx'
-        simId.id == 'xx__yy'
+        thrown ToolkitRuntimeException
     }
 
-    def 'id with __ in name is ok 2'() {
+    def 'id with __ in name is not ok'() {
         when:
-        SimId simId = new SimId("xx__yy__zz")
+        SimId simId = SimIdFactory.simIdBuilder("xx__xx__yy")
 
         then:
-        notThrown BadSimIdException
-        simId.testSession == 'xx'
-        simId.id == 'yy__zz'
+        thrown ToolkitRuntimeException
     }
+
 
     def 'user with / in name is illegal'() {
         when:
-        SimId simId = new SimId("x/y__x")
+        SimId simId = SimIdFactory.simIdBuilder("x/y__x")
 
         then:
         thrown BadSimIdException
@@ -64,7 +63,7 @@ class SimulatorServiceManagerTest extends Specification {
 
     def 'id with / in name is illegal'() {
         when:
-        SimId simId = new SimId("xy__x/y")
+        SimId simId = SimIdFactory.simIdBuilder("xy__x/y")
 
         then:
         thrown BadSimIdException
@@ -72,17 +71,16 @@ class SimulatorServiceManagerTest extends Specification {
 
     def 'user with . in name is translated'() {
         when:
-        SimId simId = new SimId("x.y", "z")
+        SimId simId = SimIdFactory.simIdBuilder("x.y__z")
 
         then:
-        notThrown BadSimIdException
-        simId.testSession == 'x_y'
+        simId.testSession.value == 'x_y'
         simId.id == 'z'
     }
 
     def 'user with ._ is illegal'() {
         when:
-        new SimId('x._y', 'y')
+        SimIdFactory.simIdBuilder('x._y__y')
 
         then:
         thrown BadSimIdException
@@ -90,28 +88,28 @@ class SimulatorServiceManagerTest extends Specification {
 
     def 'id with . is translated'() {
         when:
-        SimId simId = new SimId('x__y.z')
+        SimId simId = SimIdFactory.simIdBuilder('x__y.z')
 
         then:
-        simId.testSession == 'x'
+        simId.testSession.value == 'x'
         simId.id == 'y_z'
     }
 
     def 'user with upper case is translated'() {
         when:
-        SimId simId = new SimId('HI__bill')
+        SimId simId = SimIdFactory.simIdBuilder('HI__bill')
 
         then:
-        simId.testSession == 'hi'
+        simId.testSession.value == 'hi'
         simId.id == 'bill'
     }
 
     def 'id with upper case is translated'() {
         when:
-        SimId simId = new SimId('HI__BIll')
+        SimId simId = SimIdFactory.simIdBuilder('HI__BIll')
 
         then:
-        simId.testSession == 'hi'
+        simId.testSession.value == 'hi'
         simId.id == 'bill'
     }
 
@@ -120,7 +118,7 @@ class SimulatorServiceManagerTest extends Specification {
         println "External Cache is " + Installation.instance().externalCache()
 
         when:
-        SimId simId = new SimId('bill', 'aa')
+        SimId simId = SimIdFactory.simIdBuilder('bill__aa')
         mgr.deleteConfig(simId)
 
         then:
@@ -132,7 +130,7 @@ class SimulatorServiceManagerTest extends Specification {
         println "External Cache is " + Installation.instance().externalCache()
 
         when:
-        SimId simId = new SimId('bill', 'aa')
+        SimId simId = SimIdFactory.simIdBuilder('bill__aa')
         mgr.deleteConfig(simId)
         Simulator sim = mgr.getNewSimulator(ActorType.REPOSITORY.name, simId)
 
@@ -147,7 +145,7 @@ class SimulatorServiceManagerTest extends Specification {
         println "External Cache is " + Installation.instance().externalCache()
 
         when:
-        SimId simId = new SimId('bill', 'AA')
+        SimId simId = SimIdFactory.simIdBuilder('bill__AA')
         mgr.deleteConfig(simId)
         Simulator sim = mgr.getNewSimulator(ActorType.REPOSITORY.name, simId)
 

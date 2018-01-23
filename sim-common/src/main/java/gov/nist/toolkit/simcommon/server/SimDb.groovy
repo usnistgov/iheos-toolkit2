@@ -175,8 +175,7 @@ public class SimDb {
 	/**
 	 * Base constructor Loads the simulator db directory 
 	 */
-	public SimDb() {
-	}
+	SimDb() {}
 
 	/**
 	 * open existing sim
@@ -265,7 +264,7 @@ public class SimDb {
 			for (int i = 0; i < badChars.length(); i++) {
 				String c = new String(badChars.charAt(i));
 				if (id.indexOf(c) != -1)
-					throw new IOException(String.format("Simulator ID contains bad character at position %d", i));
+					throw new IOException(String.format("Simulator ID contains bad character at position %d (%s)(%04x)", i, c, (int) c.charAt(0)));
 				if (id.indexOf(c) != -1)
 					throw new IOException(String.format("Simulator User (testSession) contains bad character at position %d", i));
 			}
@@ -427,17 +426,17 @@ public class SimDb {
 		return null;
 	}
 
-	SimDb(TransactionInstance ti) throws IOException, NoSimException, BadSimIdException {
-		this(getFullSimId(new SimId(testSession, ti.simId)))
-
-		this.actor = ti.actorType.getShortName();
-		this.transaction = ti.trans;
-
-		if (actor != null && transaction != null) {
-			configureTransactionDir()
-		}
-		event = ti.messageId;
-	}
+//	SimDb(TransactionInstance ti) throws IOException, NoSimException, BadSimIdException {
+//		this(getFullSimId(new SimId(testSession, ti.simId)))
+//
+//		this.actor = ti.actorType.getShortName();
+//		this.transaction = ti.trans;
+//
+//		if (actor != null && transaction != null) {
+//			configureTransactionDir()
+//		}
+//		event = ti.messageId;
+//	}
 
 	private void configureTransactionDir() {
 		String transdir = new File(new File(simDir, actor), transaction).path;
@@ -578,7 +577,7 @@ public class SimDb {
 	}
 
 	static SimId simIdBuilder(File simDefDir, TestSession testSession) {
-		SimId simId = new SimId(testSession, simDefDir.name)
+		SimId simId = SimIdFactory.simIdBuilder(simDefDir.name)//new SimId(testSession, simDefDir.name)
 		if (isFSim(simDefDir)) simId.forFhir()
 		simId.actorType = new SimDb(simId).getSimulatorType()
 		simId
