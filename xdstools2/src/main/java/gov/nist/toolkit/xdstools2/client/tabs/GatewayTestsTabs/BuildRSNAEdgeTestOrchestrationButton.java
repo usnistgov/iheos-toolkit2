@@ -5,6 +5,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.services.client.RSNAEdgeOrchestrationRequest;
 import gov.nist.toolkit.services.client.RSNAEdgeOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
@@ -37,7 +38,7 @@ class BuildRSNAEdgeTestOrchestrationButton extends AbstractOrchestrationButton {
            return;
        }
        RSNAEdgeOrchestrationRequest request = new RSNAEdgeOrchestrationRequest();
-       request.setUserName(testTab.getCurrentTestSession());
+       request.setTestSession(new TestSession(testTab.getCurrentTestSession()));
        new BuildRSNAEdgeTestOrchestrationCommand(){
            @Override
            public void onComplete(RawResponse rawResponse) {

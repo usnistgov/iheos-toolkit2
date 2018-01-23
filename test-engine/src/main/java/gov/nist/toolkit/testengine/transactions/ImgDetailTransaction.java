@@ -1017,7 +1017,7 @@ public class ImgDetailTransaction extends BasicTransaction {
          if (tType == null) throw new XdsInternalException(a.toString() + " invalid transaction");
          ActorType aType = ActorType.getActorType(tType);
          TestInstance ti = testConfig.testInstance;
-         SimId simId = new SimId(ti.getUser(), id, aType.getShortName());
+         SimId simId = new SimId(ti.getTestSession(), id, aType.getShortName());
          SimulatorTransaction simulatorTransaction = SimulatorTransaction.get(simId, tType, pid, null);
          try {
             switch (piece.toUpperCase()) {
@@ -1047,7 +1047,7 @@ public class ImgDetailTransaction extends BasicTransaction {
       if (tType == null) throw new XdsInternalException(a.toString() + " invalid transaction");
       ActorType aType = ActorType.getActorType(tType);
       TestInstance ti = testConfig.testInstance;
-      SimId simId = new SimId(ti.getUser(), id, aType.getShortName());
+      SimId simId = new SimId(ti.getTestSession(), id, aType.getShortName());
       return SimulatorTransaction.get(simId, tType, pid, null);
       } catch (XdsInternalException ie) {
          errs.add("Error loading simulator transaction" + ie.getMessage());

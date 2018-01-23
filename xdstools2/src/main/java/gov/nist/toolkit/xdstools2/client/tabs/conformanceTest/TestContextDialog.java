@@ -5,6 +5,7 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.ErrorHandler;
 import gov.nist.toolkit.sitemanagement.client.StringSort;
@@ -165,7 +166,7 @@ class TestContextDialog extends DialogBox {
             if (TestContext.NONE.equals(selectedSite))
                 selectedSite = null;
             if (siteSelectionValidator != null)
-                siteSelectionValidator.validate(new SiteSpec(selectedSite));
+                siteSelectionValidator.validate(new SiteSpec(selectedSite, new TestSession(toolWindow.getCurrentTestSession())));
             siteManager.setSiteName(selectedSite);
             toolWindow.setCurrentTestSession(getSelectedTestSession());
             siteManager.update();

@@ -1,6 +1,7 @@
 package gov.nist.toolkit.xdstools2.server.test.java.simulatorServiceManager;
 
 import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.services.shared.SimulatorServiceManager;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.simcommon.client.Simulator;
@@ -30,7 +31,7 @@ public class SimManagerTest {
 		
 		try {
 			beforeSites = new SimCache().getSimManagerForSession(session.getId())
-					.getAllSites();
+					.getAllSites(TestSession.DEFAULT_TEST_SESSION);
 		} catch (Exception e) {
 			Assert.fail(ExceptionUtil.exception_details(e));
 		}
@@ -49,7 +50,7 @@ public class SimManagerTest {
 		createNewRegistry();
 		try {
 			afterSites = new SimCache().getSimManagerForSession(session.getId())
-					.getAllSites();
+					.getAllSites(TestSession.DEFAULT_TEST_SESSION);
 		} catch (Exception e) {
 			Assert.fail(ExceptionUtil.exception_details(e));
 		}

@@ -4,23 +4,23 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.services.client.RgOrchestrationResponse;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
+import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTestResultsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.RunMesaTestCommand;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTestResultsRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.RunTestRequest;
 
@@ -310,7 +310,8 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
             }
 
             TestInstance testInstance = new TestInstance(testToRun);
-            testInstance.setUser(getCurrentTestSession());
+            TestSession testSession = new TestSession(getCurrentTestSession());
+            testInstance.setTestSession(testSession);
             new RunMesaTestCommand(){
                 @Override
                 public void onComplete(List<Result> result) {
@@ -322,6 +323,7 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
     }
 
     Button addTestEnvironmentInspectorButton(final String siteName) {
+        final TestSession testSession = new TestSession(getCurrentTestSession());
         Button button = new Button("Inspect Test Data - " + siteName);
         button.addClickHandler(new ClickHandler() {
             @Override
@@ -336,7 +338,7 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
                             new PopupMessage("Results not available");
                             return;
                         }
-                        SiteSpec siteSpec = new SiteSpec(siteName, ActorType.RESPONDING_GATEWAY, null);
+                        SiteSpec siteSpec = new SiteSpec(siteName, ActorType.RESPONDING_GATEWAY, null, testSession);
 
                         MetadataInspectorTab itab = new MetadataInspectorTab();
                         List<Result> results = new ArrayList<Result>();

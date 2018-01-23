@@ -1,6 +1,7 @@
 package gov.nist.toolkit.testenginelogging.logrepository;
 
 import gov.nist.toolkit.installation.server.Installation;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.results.client.LogIdIOFormat;
 import gov.nist.toolkit.results.client.LogIdType;
 import gov.nist.toolkit.results.client.TestInstance;
@@ -18,15 +19,15 @@ public class LogRepository  {
     // Both of these are initialized by LogRepositoryFactory
     ILoggerIO logger;
     File location;
-    String user;
+    String testSession;
     TestInstance id;
     LogIdIOFormat format;
     LogIdType idType;
 
     // Create through LogRepositoryFactory only
-    LogRepository(File location, String user, LogIdIOFormat format, LogIdType idType, TestInstance id) {
+    LogRepository(File location, TestSession testSession, LogIdIOFormat format, LogIdType idType, TestInstance id) {
         this.location = location;
-        this.user = user;
+        this.testSession = testSession.getValue();
         this.format = format;
         this.idType = idType;
         this.id = id;
@@ -34,7 +35,23 @@ public class LogRepository  {
         if (id != null) {
             if (location != null)
                 id.setLocation(location.toString());
-            id.setUser(user);
+            id.setTestSession(testSession);
+            id.setFormat(format);
+            id.setIdType(idType);
+        }
+    }
+
+    LogRepository(File location, String sessionId, LogIdIOFormat format, LogIdType idType, TestInstance id) {
+        this.location = location;
+        this.testSession = testSession;
+        this.format = format;
+        this.idType = idType;
+        this.id = id;
+
+        if (id != null) {
+            if (location != null)
+                id.setLocation(location.toString());
+            id.setTestSession(new TestSession(sessionId));
             id.setFormat(format);
             id.setIdType(idType);
         }
@@ -66,7 +83,7 @@ public class LogRepository  {
         }
         try {
             LogRepository repo = LogRepositoryFactory.getLogRepository(new File(testInstance.getLocation()),
-                    testInstance.getUser(),
+                    testInstance.getTestSession(),
                     testInstance.getFormat(),
                     testInstance.getIdType(),
                     testInstance);
@@ -107,19 +124,19 @@ public class LogRepository  {
         String event = Installation.nowAsFilenameBase();
         testInstance.setInternalEvent(event);
         File dir = new File(
-                location + File.separator + user +
+                location + File.separator + testSession +
                         File.separator + event);
         log.debug(String.format("Assigning SimResource Dir to test instance %s - %s", testInstance, dir));
         testInstance.setEventDir(dir.toString());
         testInstance.setLocation(location.toString());
-        testInstance.setUser(user);
+        testInstance.setTestSession(new TestSession(testSession));
         testInstance.setFormat(format);
         testInstance.setIdType(idType);
     }
 
     private File getLogDir(/*File location, String user, LogIdType idType,*/ TestInstance id) {
         if (location == null) throw new ToolkitRuntimeException("Internal Error: location is null");
-        if (user == null) throw new ToolkitRuntimeException("Internal Error: user is null");
+        if (testSession == null) throw new ToolkitRuntimeException("Internal Error: TestSession is null");
         assignEvent(id);
         if (idType == LogIdType.TIME_ID) {
             File logDir = new File(id.getEventDir());
@@ -130,7 +147,7 @@ public class LogRepository  {
                 throw new ToolkitRuntimeException("Cannot create log directory " + logDir.toString());
             return logDir;
         } else if (idType == LogIdType.SPECIFIC_ID) {
-            File logDir = new File(location, user);
+            File logDir = new File(location, testSession);
             if (id != null)  // if null then it cannot be used with logDir() call, must use logDir(String)
                 logDir = new File(logDir, id.getId());
             logDir.mkdirs();
@@ -143,7 +160,7 @@ public class LogRepository  {
         return null;
     }
 
-    public String getUser() {
-        return user;
+    public TestSession getTestSession() {
+        return new TestSession(testSession);
     }
 }

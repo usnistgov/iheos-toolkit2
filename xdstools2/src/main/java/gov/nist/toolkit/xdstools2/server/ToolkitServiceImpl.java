@@ -17,6 +17,7 @@ import gov.nist.toolkit.fhir.simulators.support.od.TransactionUtil;
 import gov.nist.toolkit.installation.server.ExternalCacheManager;
 import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.installation.server.PropertyServiceManager;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.interactionmapper.InteractionMapper;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.results.client.*;
@@ -27,12 +28,12 @@ import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.server.RawResponseBuilder;
 import gov.nist.toolkit.services.server.orchestration.OrchestrationManager;
-import gov.nist.toolkit.session.server.serviceManager.FhirServiceManager;
 import gov.nist.toolkit.services.shared.SimulatorServiceManager;
 import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
 import gov.nist.toolkit.session.server.Session;
+import gov.nist.toolkit.session.server.serviceManager.FhirServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
 import gov.nist.toolkit.session.shared.Message;
@@ -153,13 +154,13 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public String getAssignedSiteForTestSession(CommandContext context) throws Exception {
         installCommandContext(context);
-        return session().xdsTestServiceManager().getAssignedSiteForTestSession(context.getTestSessionName());
+        return session().xdsTestServiceManager().getAssignedSiteForTestSession(context.getTestSession());
     }
 
     @Override
     public void setAssignedSiteForTestSession(SetAssignedSiteForTestSessionRequest request) throws Exception {
         installCommandContext(request);
-        session().xdsTestServiceManager().setAssignedSiteForTestSession(request.getSelecetedTestSession(), request.getSelectedSite());
+        session().xdsTestServiceManager().setAssignedSiteForTestSession(new TestSession(request.getSelecetedTestSession()), request.getSelectedSite());
     }
 
 
@@ -171,20 +172,23 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<String> getSiteNames(GetSiteNamesRequest request) throws Exception {
         installCommandContext(request);
-        return siteServiceManager.getSiteNames(session().getId(), request.getReload(), request.getSimAlso());
+        return siteServiceManager.getSiteNames(session().getId(), request.getReload(), request.getSimAlso(), request.getTestSession());
     }
     @Override
     public Collection<Site> getAllSites(CommandContext commandContext) throws Exception {
         installCommandContext(commandContext);
-        return siteServiceManager.getAllSites(session().getId());
+        return siteServiceManager.getAllSites(session().getId(), commandContext.getTestSession());
     }
 
     @Override
-    public List<String> reloadSites(boolean simAlso) throws FactoryConfigurationError, Exception { return siteServiceManager.reloadSites(session().getId(), simAlso); }
+    public List<String> reloadSites(boolean simAlso) throws FactoryConfigurationError, Exception {
+        return siteServiceManager.reloadSites(session().getId(), simAlso, session().getTestSession());
+    }
+
     @Override
     public Site getSite(GetSiteRequest request) throws Exception {
         installCommandContext(request);
-        return siteServiceManager.getSite(session().getId(), request.getSiteName());
+        return siteServiceManager.getSite(session().getId(), request.getSiteName(), request.getTestSession());
     }
     @Override
     public String saveSite(SaveSiteRequest request) throws Exception {
@@ -194,29 +198,29 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public String deleteSite(DeleteSiteRequest request) throws Exception {
         installCommandContext(request);
-        return siteServiceManager.deleteSite(session().getId(), request.getSiteName());
+        return siteServiceManager.deleteSite(session().getId(), request.getSiteName(), request.getTestSession());
     }
     //	public String getHome() throws Exception { return session().getHome(); }
     @Override
-    public List<String> getUpdateNames()  throws NoServletSessionException { return siteServiceManager.getUpdateNames(session().getId()); }
+    public List<String> getUpdateNames()  throws NoServletSessionException { return siteServiceManager.getUpdateNames(session().getId(), session().getTestSession()); }
     @Override
     public TransactionOfferings getTransactionOfferings(CommandContext commandContext) throws Exception {
         installCommandContext(commandContext);
-        return siteServiceManager.getTransactionOfferings(session().getId());
+        return siteServiceManager.getTransactionOfferings(session().getId(), commandContext.getTestSession());
     }
     @Override
     public List<String> reloadExternalSites(CommandContext context) throws FactoryConfigurationError, Exception {
         installCommandContext(context);
-        return siteServiceManager.reloadCommonSites();
+        return siteServiceManager.reloadCommonSites(context.getTestSession());
     }
     @Override
-    public List<String> getRegistryNames()  throws NoServletSessionException { return siteServiceManager.getRegistryNames(session().getId()); }
+    public List<String> getRegistryNames()  throws NoServletSessionException { return siteServiceManager.getRegistryNames(session().getId(), session().getTestSession()); }
     @Override
-    public List<String> getRepositoryNames()  throws NoServletSessionException { return siteServiceManager.getRepositoryNames(session().getId()); }
+    public List<String> getRepositoryNames()  throws NoServletSessionException { return siteServiceManager.getRepositoryNames(session().getId(), session().getTestSession()); }
     @Override
-    public List<String> getRGNames()  throws NoServletSessionException { return siteServiceManager.getRGNames(session().getId()); }
+    public List<String> getRGNames()  throws NoServletSessionException { return siteServiceManager.getRGNames(session().getId(), session().getTestSession()); }
     @Override
-    public List<String> getIGNames()  throws NoServletSessionException { return siteServiceManager.getIGNames(session().getId()); }
+    public List<String> getIGNames()  throws NoServletSessionException { return siteServiceManager.getIGNames(session().getId(), session().getTestSession()); }
     @Override
     public List<String> getActorTypeNames(CommandContext context)  throws Exception {
         installCommandContext(context);
@@ -225,22 +229,22 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<String> getSiteNamesWithRG(CommandContext context) throws Exception {
         installCommandContext(context);
-        return siteServiceManager.getSiteNamesWithRG(session().getId());
+        return siteServiceManager.getSiteNamesWithRG(session().getId(), context.getTestSession());
     }
     @Override
     public List<String> getSiteNamesWithRepository(CommandContext context) throws Exception {
         installCommandContext(context);
-        return siteServiceManager.getSiteNamesWithRepository(session().getId());
+        return siteServiceManager.getSiteNamesWithRepository(session().getId(), context.getTestSession());
     }
     @Override
     public List<String> getSiteNamesWithRIG(CommandContext context) throws Exception {
         installCommandContext(context);
-        return siteServiceManager.getSiteNamesWithRIG(session().getId());
+        return siteServiceManager.getSiteNamesWithRIG(session().getId(), context.getTestSession());
     }
     @Override
     public List<String> getSiteNamesWithIDS(CommandContext context) throws Exception {
         installCommandContext(context);
-        return siteServiceManager.getSiteNamesWithIDS(session().getId());
+        return siteServiceManager.getSiteNamesWithIDS(session().getId(), context.getTestSession());
     }
 
     //------------------------------------------------------------------------
@@ -274,17 +278,17 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<Result> submitRegistryTestdata(SubmitTestdataRequest request) throws Exception  {
         installCommandContext(request);
-        return session().queryServiceManager().submitRegistryTestdata(request.getTestSessionName(),request.getSite(), request.getDataSetName(), request.getPid());
+        return session().queryServiceManager().submitRegistryTestdata(request.getSite(), request.getDataSetName(), request.getPid());
     }
     @Override
     public List<Result> submitRepositoryTestdata(SubmitTestdataRequest request) throws Exception  {
         installCommandContext(request);
-        return session().queryServiceManager().submitRepositoryTestdata(request.getTestSessionName(),request.getSite(), request.getDataSetName(), request.getPid());
+        return session().queryServiceManager().submitRepositoryTestdata(request.getSite(), request.getDataSetName(), request.getPid());
     }
     @Override
     public List<Result> submitXDRTestdata(SubmitTestdataRequest request) throws Exception  {
         installCommandContext(request);
-        return session().queryServiceManager().submitXDRTestdata(request.getTestSessionName(),request.getSite(),request.getDataSetName(), request.getPid());
+        return session().queryServiceManager().submitXDRTestdata(request.getSite(),request.getDataSetName(), request.getPid());
     }
     @Override
     public List<Result> provideAndRetrieve(ProvideAndRetrieveRequest request) throws Exception  {
@@ -424,14 +428,14 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public Map<String, Result> getTestResults(GetTestResultsRequest request)  throws Exception {
         installCommandContext(request);
-        return session().xdsTestServiceManager().getTestResults(request.getTestIds(), request.getEnvironmentName(), request.getTestSessionName());
+        return session().xdsTestServiceManager().getTestResults(request.getTestIds(), request.getEnvironmentName(), request.getTestSession());
     }
     @Override
     public String setMesaTestSession(String sessionName)  throws NoServletSessionException {
-        session().xdsTestServiceManager().setMesaTestSession(sessionName); return sessionName;
-    }
-    public String getMesaTestSession(String sessionName) throws NoServletSessionException {
-        return session().xdsTestServiceManager().getMesaTestSession();
+        TestSession testSession = new TestSession(sessionName);
+        session().xdsTestServiceManager().setTestSession(testSession);
+        session().setTestSession(testSession);
+        return sessionName;
     }
     @Override
     public List<String> getMesaTestSessionNames(CommandContext request) throws Exception {
@@ -439,14 +443,14 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return session().xdsTestServiceManager().getMesaTestSessionNames();
     }
     @Override
-    public boolean addMesaTestSession(CommandContext context) throws Exception { return session().xdsTestServiceManager().addMesaTestSession(context.getTestSessionName()); }
+    public boolean addMesaTestSession(CommandContext context) throws Exception { return session().xdsTestServiceManager().addTestSession(context.getTestSession()); }
     @Override
-    public boolean delMesaTestSession(CommandContext context) throws Exception { return session().xdsTestServiceManager().delMesaTestSession(context.getTestSessionName()); }
+    public boolean delMesaTestSession(CommandContext context) throws Exception { return session().xdsTestServiceManager().delMesaTestSession(context.getTestSession()); }
     @Override
     public String getNewPatientId(String assigningAuthority)  throws NoServletSessionException { return session().xdsTestServiceManager().getNewPatientId(assigningAuthority); }
-    public String delTestResults(List<TestInstance> testInstances, String testSession )  throws NoServletSessionException {
-        session().xdsTestServiceManager().delTestResults(testInstances, getCurrentEnvironment(), testSession); return "";
-    }
+//    public String delTestResults(List<TestInstance> testInstances, String testSession )  throws NoServletSessionException {
+//        session().xdsTestServiceManager().delTestResults(testInstances, getCurrentEnvironment(), testSession); return "";
+//    }
     @Override
     public List<Test> deleteAllTestResults(AllTestRequest request) throws Exception {
         installCommandContext(request);
@@ -455,8 +459,8 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public TestOverviewDTO deleteSingleTestResult(DeleteSingleTestRequest request) throws Exception {
         installCommandContext(request);
-        request.getTestInstance().setUser(request.getTestSessionName());
-        return session().xdsTestServiceManager().deleteSingleTestResult(request.getEnvironmentName(), session().getMesaSessionName(),request.getTestInstance());
+        request.getTestInstance().setTestSession(request.getTestSession());
+        return session().xdsTestServiceManager().deleteSingleTestResult(request.getEnvironmentName(), session().getTestSession(),request.getTestInstance());
     }
     @Override
     public List<Test> runAllTests(AllTestRequest request) throws Exception {
@@ -469,7 +473,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
 
     public String getTestReadme(String testSession,String test) throws Exception {
-        session().setMesaSessionName(testSession);
+        session().setTestSession(new TestSession(testSession));
         return session().xdsTestServiceManager().getTestReadme(test);
     }
     @Override
@@ -619,13 +623,13 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
      * @throws Exception if something goes wrong
      */
     public List<String> getTestIndex(String testSession,String test) throws Exception {
-        session().setMesaSessionName(testSession);
+        session().setTestSession(new TestSession(testSession));
         return session().xdsTestServiceManager().getTestSections(test);
     }
 
     //	public List<Result> getLogContent(String sessionName, TestInstance testInstance) throws Exception { return session().xdsTestServiceManager().getLogContent(sessionName, testInstance); }
     public List<Result> runMesaTest(String environmentName,String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure)  throws Exception {
-        return session().xdsTestServiceManager().runMesaTest(environmentName, mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
+        return session().xdsTestServiceManager().runMesaTest(environmentName, new TestSession(mesaTestSession), siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
     }
     /**
      * Get list of section names defined for the test in the order they should be executed
@@ -655,19 +659,19 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<TestOverviewDTO> getTestsOverview(GetTestsOverviewRequest request) throws Exception {
         installCommandContext(request);
-        List<TestOverviewDTO> o = session().xdsTestServiceManager().getTestsOverview(request.getTestSessionName(), request.getTestInstances());
+        List<TestOverviewDTO> o = session().xdsTestServiceManager().getTestsOverview(request.getTestSession(), request.getTestInstances());
         return o;
     }
     public List<SectionDefinitionDAO> getTestSectionsDAOs(GetTestSectionsDAOsRequest request) throws Exception {
         installCommandContext(request);
         Session session = session().xdsTestServiceManager().session;
-        session.setMesaSessionName(request.getTestSessionName());
+        session.setTestSession(request.getTestSession());
         return session().xdsTestServiceManager().getTestSectionsDAOs(request.getTestInstance());
     }
     @Override
     public LogFileContentDTO getTestLogDetails(GetTestLogDetailsRequest request) throws Exception {
         installCommandContext(request);
-        LogFileContentDTO o = session().xdsTestServiceManager().getTestLogDetails(request.getTestSessionName(), request.getTestInstance());
+        LogFileContentDTO o = session().xdsTestServiceManager().getTestLogDetails(request.getTestSession(), request.getTestInstance());
         return o;
     }
     @Override
@@ -691,7 +695,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<Result> runMesaTest(RunTestRequest request)  throws Exception {
         installCommandContext(request);
-        return session().xdsTestServiceManager().runMesaTest(request.getEnvironmentName(), request.getTestSessionName(), request.getSiteSpec(), request.getTestInstance(), request.getSections(), request.getParams(), null, request.isStopOnFirstFailure());
+        return session().xdsTestServiceManager().runMesaTest(request.getEnvironmentName(), request.getTestSession(), request.getSiteSpec(), request.getTestInstance(), request.getSections(), request.getParams(), null, request.isStopOnFirstFailure());
     }
     @Override
     public TestOverviewDTO runTest(RunTestRequest request) throws Exception {
@@ -701,12 +705,12 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         setEnvironment(request.getEnvironmentName());
         Session session = session().xdsTestServiceManager().session;
         session.setCurrentEnvName(request.getEnvironmentName());
-        session.setMesaSessionName(request.getTestSessionName());
+        session.setTestSession(request.getTestSession());
         if (request.getSiteSpec() == null)
             throw new Exception("No site selected");
-        if (!new SimManager(request.getTestSessionName()).exists(request.getSiteSpec().name))
+        if (!new SimManager(request.getTestSessionName()).exists(request.getSiteSpec().name, request.getTestSession()))
             throw new Exception("Site " + request.getSiteSpec().name + " does not exist");
-        TestOverviewDTO testOverviewDTO = session().xdsTestServiceManager().runTest(request.getEnvironmentName(), request.getTestSessionName(), request.getSiteSpec(), request.getTestInstance(), sections, request.getParams(), null, request.isStopOnFirstFailure());
+        TestOverviewDTO testOverviewDTO = session().xdsTestServiceManager().runTest(request.getEnvironmentName(), request.getTestSession(), request.getSiteSpec(), request.getTestInstance(), sections, request.getParams(), null, request.isStopOnFirstFailure());
         return testOverviewDTO;
     }
     // TODO remove this once command pattern is implemented for every single call
@@ -728,18 +732,18 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<String> getTestdataSetListing(GetTestdataSetListingRequest request)  throws Exception {
         installCommandContext(request);
-        return session().xdsTestServiceManager().getTestdataSetListing(request.getEnvironmentName(),request.getTestSessionName(),request.getTestdataSetName());
+        return session().xdsTestServiceManager().getTestdataSetListing(request.getEnvironmentName(),request.getTestSession(),request.getTestdataSetName());
     }
     @Override
     public String getTestplanAsText(GetTestplanAsTextRequest request) throws Exception {
         installCommandContext(request);
-        session().setMesaSessionName(request.getTestSessionName());
+        session().setTestSession(request.getTestSession());
         return session().xdsTestServiceManager().getTestplanAsText(request.getTestInstance(), request.getSection());
     }
     @Override
     public TestPartFileDTO getSectionTestPartFile(GetSectionTestPartFileRequest request) throws Exception {
         installCommandContext(request);
-        session().setMesaSessionName(request.getTestSessionName());
+        session().setTestSession(request.getTestSession());
         return session().xdsTestServiceManager().getSectionTestPartFile(request.getTestInstance(), request.getSection());
     }
     @Override
@@ -768,7 +772,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
      * @throws Exception if something goes wrong
      */
     public Map<String, String> getCollection(String testsessionName,String collectionSetName, String collectionName) throws Exception {
-        session().setMesaSessionName(testsessionName);
+        session().setTestSession(new TestSession(testsessionName));
         return session().xdsTestServiceManager().getCollection(collectionSetName, collectionName);
     }
     @Override
@@ -776,7 +780,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<Result> sendPidToRegistry(SendPidToRegistryRequest request) throws Exception {
         installCommandContext(request);
-        return session().xdsTestServiceManager().sendPidToRegistry(request.getSiteSpec(), request.getPid(), request.getEnvironmentName(), request.getTestSessionName());
+        return session().xdsTestServiceManager().sendPidToRegistry(request.getSiteSpec(), request.getPid(), request.getEnvironmentName(), request.getTestSession());
     }
 
     @Override
@@ -932,7 +936,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 
     @Override
     public ConformanceSessionValidationStatus validateConformanceSession(String testSession, String siteName) throws Exception {
-        return session().xdsTestServiceManager().validateConformanceSession(testSession, siteName);
+        return session().xdsTestServiceManager().validateConformanceSession(new TestSession(testSession), siteName);
     }
 
     @Override
@@ -940,7 +944,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         installCommandContext(context);
         if (context.getTestSessionName()== null)
             return new ArrayList<>();
-        return session().xdsTestServiceManager().getSitesForTestSession(context.getTestSessionName());
+        return session().xdsTestServiceManager().getSitesForTestSession(context.getTestSession());
     }
 
     @Override
@@ -1049,7 +1053,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public int removeOldSimulators(CommandContext context) throws Exception {
         installCommandContext(context);
-        return new SimulatorServiceManager(session()).removeOldSimulators();
+        return new SimulatorServiceManager(session()).removeOldSimulators(context.getTestSession());
     }
     @Override
     public List<Result> getSelectedMessage(GetSelectedMessageRequest request) throws Exception {
@@ -1091,7 +1095,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<SimulatorConfig> getAllSimConfigs(GetAllSimConfigsRequest request) throws Exception {
         installCommandContext(request);
-        return new SimulatorServiceManager(session()).getAllSimConfigs(request.getUser());
+        return new SimulatorServiceManager(session()).getAllSimConfigs(request.getTestSession());
     }
     @Override
     public Simulator getNewSimulator(GetNewSimulatorRequest request) throws Exception {
@@ -1481,14 +1485,14 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public Result register(RegisterRequest request) throws Exception{
         installCommandContext(request);
-        return TransactionUtil.register(getSession(),request.getUsername(),request.getTestInstance(),
+        return TransactionUtil.register(getSession(),request.getTestSession(),request.getTestInstance(),
                 request.getRegistry(),request.getParams(), new ArrayList<String>());
     }
     @Override
     public Map<String, String> registerWithLocalizedTrackingInODDS(RegisterRequest request) throws Exception{
         installCommandContext(request);
         try {
-            return TransactionUtil.registerWithLocalizedTrackingInODDS(getSession(),request.getUsername(),
+            return TransactionUtil.registerWithLocalizedTrackingInODDS(getSession(),request.getTestSession(),
                     request.getTestInstance(),request.getRegistry(),request.getOddsSimId(), request.getParams());
         } catch (Exception ex) {
             Map<String, String> errorMap = new HashMap<>();
@@ -1506,7 +1510,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<String> getSiteNamesByTranType(GetSiteNamesByTranTypeRequest request) throws Exception {
         installCommandContext(request);
-        return siteServiceManager.getSiteNamesByTran(request.getTransactionTypeName(), session().getId());
+        return siteServiceManager.getSiteNamesByTran(request.getTransactionTypeName(), session().getId(), request.getTestSession());
     }
 
     @Override
@@ -1554,7 +1558,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         String sessionName = request.getTestSessionName();
         String step = "issue";
         String query = request.getTestInstance().getSection();
-        List<Result> results = xtsm.querySts("GazelleSts",sessionName,query,request.getParams(), false);
+        List<Result> results = xtsm.querySts("GazelleSts",sessionName,query,request.getParams(), false, request.getTestSession());
 
         if (results!=null) {
             if (results.size() == 1) {
@@ -1570,7 +1574,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
                     }
 
                 } else {
-                    LogFileContentDTO logFileContentDTO = xtsm.getTestLogDetails(sessionName,request.getTestInstance());
+                    LogFileContentDTO logFileContentDTO = xtsm.getTestLogDetails(new TestSession(sessionName),request.getTestInstance());
                     TestStepLogContentDTO testStepLogContentDTO = logFileContentDTO.getStep(step);
                     List<ReportDTO> reportDTOs = testStepLogContentDTO.getReportDTOs();
                     String assertionResultId = "saml-assertion";
@@ -1623,7 +1627,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public String clearTestSession(CommandContext context) throws Exception {
         installCommandContext(context);
-        return session().xdsTestServiceManager().clearTestSession(context.getTestSessionName());
+        return session().xdsTestServiceManager().clearTestSession(context.getTestSession());
     }
 
     @Override

@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.shared.command.request;
 
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
 /**
@@ -18,4 +19,6 @@ public class GetAllSimConfigsRequest extends CommandContext {
     public String getUser() {
         return user;
     }
+
+    public TestSession getTestSession() { return new TestSession(user); }
 }

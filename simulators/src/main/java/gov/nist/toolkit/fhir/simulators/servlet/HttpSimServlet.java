@@ -13,6 +13,7 @@ import gov.nist.toolkit.http.HttpHeader;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.http.ParseException;
 import gov.nist.toolkit.installation.server.Installation;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.simcommon.client.BadSimIdException;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
@@ -90,11 +91,11 @@ public class HttpSimServlet extends HttpServlet {
          // simulator being accessed
          String simulatorName = uriParts[index + 1];
          try {
-            simid = new SimId(simulatorName);
+            simid = SimDb.simIdBuilder(simulatorName);
          } catch (BadSimIdException bsie) {
             throw new Exception("invalid simulator id [" + simulatorName + "]");
          }
-         simDbFile = Installation.instance().simDbFile();
+         simDbFile = Installation.instance().simDbFile(simid.getTestSession());
          try {
             simConfig = GenericSimulatorFactory.getSimConfig(simid);
          } catch (IOException ioe) {
@@ -195,14 +196,17 @@ public class HttpSimServlet extends HttpServlet {
    
    public static void onServiceStart()  {
       try {
-         List<SimId> simIds = new SimDb().getAllSimIds();
-         for (SimId simId : simIds) {
-            BaseHttpActorSimulator sim = (BaseHttpActorSimulator) RuntimeManager.getHttpSimulatorRuntime(simId);
-            if (sim == null) continue;
+         for (TestSession testSession : Installation.instance().getTestSessions()) {
 
-            SimulatorConfig asc = GenericSimulatorFactory.getSimConfig(simId);
-            sim.init(asc);
-            sim.onServiceStart(asc);
+            List<SimId> simIds = new SimDb().getAllSimIds(testSession);
+            for (SimId simId : simIds) {
+               BaseHttpActorSimulator sim = (BaseHttpActorSimulator) RuntimeManager.getHttpSimulatorRuntime(simId);
+               if (sim == null) continue;
+
+               SimulatorConfig asc = GenericSimulatorFactory.getSimConfig(simId);
+               sim.init(asc);
+               sim.onServiceStart(asc);
+            }
          }
       } catch (Exception e) {
          logger.fatal(ExceptionUtil.exception_details(e));
@@ -211,14 +215,16 @@ public class HttpSimServlet extends HttpServlet {
 
    public static void onServiceStop() {
       try {
-         List<SimId> simIds = new SimDb().getAllSimIds();
-         for (SimId simId : simIds) {
-            BaseHttpActorSimulator sim = (BaseHttpActorSimulator) RuntimeManager.getHttpSimulatorRuntime(simId);
-            if (sim == null) continue;
+         for (TestSession testSession : Installation.instance().getTestSessions()) {
+            List<SimId> simIds = new SimDb().getAllSimIds(testSession);
+            for (SimId simId : simIds) {
+               BaseHttpActorSimulator sim = (BaseHttpActorSimulator) RuntimeManager.getHttpSimulatorRuntime(simId);
+               if (sim == null) continue;
 
-            SimulatorConfig asc = GenericSimulatorFactory.getSimConfig(simId);
-            sim.init(asc);
-            sim.onServiceStop(asc);
+               SimulatorConfig asc = GenericSimulatorFactory.getSimConfig(simId);
+               sim.init(asc);
+               sim.onServiceStop(asc);
+            }
          }
       } catch (Exception e) {
          logger.fatal(ExceptionUtil.exception_details(e));

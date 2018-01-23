@@ -108,7 +108,7 @@ public class RigImgDocSetRet extends AbstractMessageValidator {
          // Get list of configured IDSs
          List<String> siteNames = asc.getConfigEle(SimulatorProperties.imagingDocumentSources).asList();  
          SimManager simMgr = new SimManager("ignored");
-         List<Site> sites = simMgr.getSites(siteNames);
+         List<Site> sites = simMgr.getSites(siteNames, asc.getId().getTestSession());
          if (sites == null || sites.size() == 0) {
             er.err(XdsErrorCode.Code.XDSRepositoryError, "No Imaging Document Sources configured", this, null);
             throw new NonException();

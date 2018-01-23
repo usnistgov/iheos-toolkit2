@@ -35,7 +35,7 @@ public class SiteFilter {
     public SiteFilter(List<SimId> simIds) {
         sites = new ArrayList<>();
         for (SimId simId : simIds) {
-            sites.add(new Site(simId.toString()));
+            sites.add(new Site(simId.toString(), simId.getTestSession()));
         }
         selected.addAll(sites);
     }

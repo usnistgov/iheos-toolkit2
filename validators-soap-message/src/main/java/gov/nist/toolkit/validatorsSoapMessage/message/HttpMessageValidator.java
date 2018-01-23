@@ -5,6 +5,7 @@ import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.http.HttpParseException;
 import gov.nist.toolkit.http.HttpParserBa;
 import gov.nist.toolkit.http.ParseException;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
@@ -23,6 +24,7 @@ public class HttpMessageValidator extends AbstractMessageValidator {
 	ErrorRecorderBuilder erBuilder;
 	MessageValidatorEngine mvc;
 	RegistryValidationInterface rvi;
+	TestSession testSession;
 	
 	public HttpParserBa getHttpParserBa() {
 	   return hparser;
@@ -30,23 +32,25 @@ public class HttpMessageValidator extends AbstractMessageValidator {
 
 	public HttpMessageValidator(ValidationContext vc, String header, byte[] body, 
 	   ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, 
-	   RegistryValidationInterface rvi) {
+	   RegistryValidationInterface rvi, TestSession testSession) {
 		super(vc);
 		this.header = header;
 		this.body = body;
 		this.erBuilder = erBuilder;
 		this.mvc = mvc;
 		this.rvi = rvi;
+		this.testSession = testSession;
 	}
 
 	public HttpMessageValidator(ValidationContext vc, HttpParserBa hparser, 
 	   ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, 
-	   RegistryValidationInterface rvi) {
+	   RegistryValidationInterface rvi, TestSession testSession) {
 		super(vc);
 		this.hparser = hparser;
 		this.erBuilder = erBuilder;
 		this.mvc = mvc;
 		this.rvi = rvi;
+		this.testSession = testSession;
 	}
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
@@ -77,7 +81,7 @@ public class HttpMessageValidator extends AbstractMessageValidator {
 				} else {
                     er.success("", "Message format", "Multipart", "Multipart", "ITI TF Volumes 2a and 2b");
 				}
-				mvc.addMessageValidator("Validate MTOM", new MtomMessageValidator(vc, hparser, body, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+				mvc.addMessageValidator("Validate MTOM", new MtomMessageValidator(vc, hparser, body, erBuilder, mvc, rvi, testSession), erBuilder.buildNewErrorRecorder());
 			} else {
 				boolean mt = vc.requiresMtom();
                 if (mt) {
@@ -86,7 +90,7 @@ public class HttpMessageValidator extends AbstractMessageValidator {
                     er.success("", "Message format", "SIMPLE Format", "SIMPLE Format", "ITI TF Volumes 2a and 2b");
                 }
                 if (!vc.isRad55)
-				mvc.addMessageValidator("Parse SIMPLE SOAP message", new SimpleSoapHttpHeaderValidator(vc, hparser, body, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+				mvc.addMessageValidator("Parse SIMPLE SOAP message", new SimpleSoapHttpHeaderValidator(vc, hparser, body, erBuilder, mvc, rvi, testSession), erBuilder.buildNewErrorRecorder());
 			}
 		} catch (HttpParseException e) {
 			er.err(vc.getBasicErrorCode(), e);

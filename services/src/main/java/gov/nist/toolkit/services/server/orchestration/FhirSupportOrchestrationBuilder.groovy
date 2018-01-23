@@ -4,6 +4,7 @@ import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.fhir.server.utility.FhirClient
 import gov.nist.toolkit.installation.server.Installation
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationResponse
@@ -15,13 +16,14 @@ import gov.nist.toolkit.simcommon.client.SimulatorConfig
 import gov.nist.toolkit.simcoresupport.proxy.util.SimProxyBase
 import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import gov.nist.toolkit.xdsexception.ExceptionUtil
+import groovy.transform.TypeChecked
 import org.apache.log4j.Logger
 import org.hl7.fhir.dstu3.model.Bundle
 import org.hl7.fhir.dstu3.model.Identifier
 import org.hl7.fhir.dstu3.model.Patient
 import org.hl7.fhir.dstu3.model.Resource
 import org.hl7.fhir.instance.model.api.IBaseResource
-
+@TypeChecked
 class FhirSupportOrchestrationBuilder {
     static private final Logger logger = Logger.getLogger(FhirSupportOrchestrationBuilder.class);
     ToolkitApi api
@@ -42,12 +44,12 @@ class FhirSupportOrchestrationBuilder {
         this.session = session
         this.request = request
         this.util = new Util(api)
-        this.siteName = "${request.userName}__${simName}"
-        this.siteSpec = new SiteSpec(siteName)
+        this.siteName = "${request.testSession.value}__${simName}"
+        this.siteSpec = new SiteSpec(siteName, request.testSession)
     }
 
-    FhirSupportOrchestrationBuilder(ToolkitApi api, Session session, String userName, boolean useExistingState) {
-        this(api, session, requestBuilder(userName, useExistingState))
+    FhirSupportOrchestrationBuilder(ToolkitApi api, Session session, TestSession testSession, boolean useExistingState) {
+        this(api, session, requestBuilder(testSession, useExistingState))
     }
 
     FhirSupportOrchestrationBuilder(ToolkitApi api, Session session, boolean useExistingState) {
@@ -55,19 +57,19 @@ class FhirSupportOrchestrationBuilder {
     }
 
 
-    private static FhirSupportOrchestrationRequest requestBuilder(String userName, boolean useExistingState) {
+    private static FhirSupportOrchestrationRequest requestBuilder(TestSession testSession, boolean useExistingState) {
         FhirSupportOrchestrationRequest request = new FhirSupportOrchestrationRequest()
-        request.userName = userName
+        request.testSession = testSession
         request.useExistingState = useExistingState
         return request
     }
 
     FhirSupportOrchestrationResponse buildTestEnvironment() {
         FhirSupportOrchestrationResponse response = new FhirSupportOrchestrationResponse()
-        FhirOrchestrationProperties orchProps = new FhirOrchestrationProperties(request.userName, !request.useExistingState)
+        FhirOrchestrationProperties orchProps = new FhirOrchestrationProperties(request.testSession, !request.useExistingState)
         SimulatorConfig simConfig
 
-        simId = new SimId(request.userName, simName, ActorType.FHIR_SERVER.shortName)
+        simId = new SimId(request.testSession, simName, ActorType.FHIR_SERVER.shortName)
         boolean simExists = api.simulatorExists(simId)
         boolean needsLoading
         if (simExists && !request.useExistingState) {
@@ -88,7 +90,7 @@ class FhirSupportOrchestrationBuilder {
 
         try {
             if (needsLoading)
-                util.submit(request.userName, siteSpec, testInstance)
+                util.submit(request.testSession, siteSpec, testInstance)
         } catch (Exception e) {
             String error = "Error submiting Patients to FHIR server ${simId.toString()} \n ${ExceptionUtil.exception_details(e)}"
             response.addMessage(testInstance, false, error)
@@ -152,8 +154,8 @@ class FhirSupportOrchestrationBuilder {
         private boolean updated = false;
         private Session session;
 
-        FhirOrchestrationProperties(String userName, boolean reinitialize) {
-            orchestrationPropFile = Installation.instance().orchestrationPropertiesFile(userName, actorType.getShortName());
+        FhirOrchestrationProperties(TestSession testSession1, boolean reinitialize) {
+            orchestrationPropFile = Installation.instance().orchestrationPropertiesFile(testSession1, actorType.getShortName());
             if (orchestrationPropFile.exists())
                 orchProps.load(new FileInputStream(orchestrationPropFile))
         }

@@ -5,6 +5,7 @@ package gov.nist.toolkit.services.server.orchestration;
 
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.services.client.RSNAEdgeOrchestrationRequest;
 import gov.nist.toolkit.services.client.RSNAEdgeOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
@@ -48,12 +49,12 @@ public class RSNAEdgeOrchestrationBuilder {
    public RawResponse buildTestEnvironment() {
 
       String supportIdName = "rr";
-      String user = request.getUserName();
+      TestSession testSession = request.getTestSession();
       String env = request.getEnvironmentName();
       
       try {
 
-         SimId supportId = new SimId(user, supportIdName, ActorType.REPOSITORY_REGISTRY.getName(), env);
+         SimId supportId = new SimId(testSession, supportIdName, ActorType.REPOSITORY_REGISTRY.getName(), env);
          api.deleteSimulatorIfItExists(supportId);
          SimulatorConfig supportSimConfig = api.createSimulator(supportId).getConfig(0);
 

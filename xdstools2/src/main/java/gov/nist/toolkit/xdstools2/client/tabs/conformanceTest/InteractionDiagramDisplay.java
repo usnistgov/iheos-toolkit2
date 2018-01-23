@@ -6,7 +6,7 @@ import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.interactiondiagram.client.widgets.InteractionDiagram;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
-import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.simcommon.client.SimIdFactory;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.command.command.SetSutInitiatedTransactionInstanceCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
@@ -64,7 +64,7 @@ public class InteractionDiagramDisplay extends FlowPanel {
                                     diagram.setEntityList(result);
                                     diagram.draw();
                                 }
-                            }.run(new SetSutInitiatedTransactionInstanceRequest(ClientUtils.INSTANCE.getCommandContext(), diagram.getEntityList(), new SimId(getTestTarget().getName()), getPid()));
+                            }.run(new SetSutInitiatedTransactionInstanceRequest(ClientUtils.INSTANCE.getCommandContext(), diagram.getEntityList(), SimIdFactory.simIdBuilder(getTestTarget().getName()), getPid()));
                         } else {
                             diagram.draw();
                         }

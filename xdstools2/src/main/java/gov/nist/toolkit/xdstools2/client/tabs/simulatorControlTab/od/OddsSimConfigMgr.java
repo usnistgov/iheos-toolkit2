@@ -9,12 +9,12 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.results.client.DocumentEntryDetail;
 import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.simcommon.client.SimIdFactory;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
@@ -407,7 +407,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
                                             new PopupMessage("Reset for document UniqueId ["+ded.getUniqueId()+"] failed!");
                                         }
                                     }
-                                }.run(new SetOdSupplyStateIndexRequest(ClientUtils.INSTANCE.getCommandContext(),new SimId(config.getId().toString()),ded,0));
+                                }.run(new SetOdSupplyStateIndexRequest(ClientUtils.INSTANCE.getCommandContext(), SimIdFactory.simIdBuilder(config.getId().toString()),ded,0));
                             }
                         });
                         supplyStateHPanel.add(resetLnk);
@@ -629,8 +629,8 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
                 }
             }
         }.run(new RegisterRequest(ClientUtils.INSTANCE.getCommandContext(),
-                getConfig().getId().getTestSession(),new TestInstance(contentBundleLbx.getSelectedValue()),
-                new SiteSpec(regSSP.getSelected().get(0), ActorType.REGISTRY, null),params, getConfig().getId()));
+                getConfig().getId().getTestSession().getValue(),new TestInstance(contentBundleLbx.getSelectedValue()),
+                new SiteSpec(regSSP.getSelected().get(0), ActorType.REGISTRY, null, getConfig().getId().getTestSession()),params, getConfig().getId()));
     }
 
     private void setRegButton(String initialize, boolean enabled) {

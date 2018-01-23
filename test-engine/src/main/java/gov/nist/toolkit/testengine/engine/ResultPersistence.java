@@ -1,6 +1,7 @@
 package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.installation.server.Installation;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.utilities.io.Io;
@@ -13,7 +14,7 @@ import java.util.List;
 public class ResultPersistence {
 	static Logger logger = Logger.getLogger(ResultPersistence.class);
 
-	public void write(Result result, String testSession) throws IOException, XdsException {
+	public void write(Result result, TestSession testSession) throws IOException, XdsException {
 
 		if (result.testInstance == null || result.testInstance.isEmpty())
 			throw new XdsException("No test name specified in Result - cannot persist", null);
@@ -28,7 +29,7 @@ public class ResultPersistence {
 
 	}
 
-    public void delete(TestInstance testInstance, String testSession, List<String> sectionNames) throws IOException, XdsException {
+    public void delete(TestInstance testInstance, TestSession testSession, List<String> sectionNames) throws IOException, XdsException {
         File file = getFilePath(testInstance, testSession, null, true); // if test run as single entity
         if (file.exists()) file.delete();
 		// if test run as individual sections
@@ -40,7 +41,7 @@ public class ResultPersistence {
 		if (file.exists()) Io.delete(file);
     }
 
-	public Result read(TestInstance testInstance, List<String> sectionNames, String testSession) throws XdsException  {
+	public Result read(TestInstance testInstance, List<String> sectionNames, TestSession testSession) throws XdsException  {
 		try {
 			File resultFile = getFilePath(testInstance, testSession, null, false);
 			if (resultFile.exists()) {
@@ -84,7 +85,7 @@ public class ResultPersistence {
 		}
 	}
 
-	private File getFilePath(TestInstance testInstance,String testSession, String sectionName, boolean write) throws IOException {
+	private File getFilePath(TestInstance testInstance,TestSession testSession, String sectionName, boolean write) throws IOException {
 		File dir = new File(
 				Installation.instance().propertyServiceManager().getTestLogCache().toString() + File.separator +
 				testSession + File.separator + 
@@ -97,7 +98,7 @@ public class ResultPersistence {
 		return new File(dir.toString() + File.separator + testInstance.toString().replace(":","") + sectionName + ".ser");
 	}
 
-	private File getFilePath2(TestInstance testInstance,String testSession) throws IOException {
+	private File getFilePath2(TestInstance testInstance,TestSession testSession) throws IOException {
 		File dir = new File(
 				Installation.instance().propertyServiceManager().getTestLogCache().toString() + File.separator +
 						testSession

@@ -1,6 +1,7 @@
 package gov.nist.toolkit.session.server.serviceManager;
 
 import gov.nist.toolkit.installation.server.Installation;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.client.LogIdIOFormat;
 import gov.nist.toolkit.results.client.LogIdType;
@@ -26,7 +27,7 @@ public class TestRunner {
         this.xdsTestServiceManager = xdsTestServiceManager;
     }
 
-    public List<Result> run(Session session, String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections,
+    public List<Result> run(Session session, TestSession mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections,
                             Map<String, String> params, Map<String, Object> params2, boolean stopOnFirstFailure) {
         XdsTestServiceManager.logger.info(session.id() + ": " + "run" + " " + mesaTestSession + " " + testInstance + " " + sections + " " + siteSpec + " " + params + " " + stopOnFirstFailure);
         try {
@@ -37,7 +38,7 @@ public class TestRunner {
             if ((mesaTestSession == null || mesaTestSession.equals("")))
                 throw new TestSessionNotSelectedException("Must choose test session");
             session.setSiteSpec(siteSpec);
-            session.transactionSettings.testSession = session.getMesaSessionName();
+            session.transactionSettings.testSession = session.getTestSession();
             session.transactionSettings.environmentName = session.getCurrentEnvName();
 
             // if testId is actually a test collection then let a lower level fill in the logRepository
@@ -46,7 +47,7 @@ public class TestRunner {
             if (session.transactionSettings.logRepository == null && !testInstance.getId().startsWith("tc:")) {
                 session.transactionSettings.logRepository = LogRepositoryFactory.
                         getLogRepository(
-                                Installation.instance().testLogCache(),
+                                Installation.instance().testLogCache(mesaTestSession),
                                 mesaTestSession,
                                 LogIdIOFormat.JAVA_SERIALIZATION,
                                 LogIdType.SPECIFIC_ID,

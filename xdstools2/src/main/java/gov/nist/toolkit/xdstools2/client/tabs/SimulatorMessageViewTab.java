@@ -2,8 +2,6 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.*;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.http.client.*;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
@@ -11,15 +9,14 @@ import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.session.shared.Message;
 import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.simcommon.client.SimIdFactory;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
-import gov.nist.toolkit.xdstools2.client.Panel1;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.util.ToolkitLink;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.SimLog;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
-import gov.nist.toolkit.xdstools2.client.widgets.RadioButtonGroup;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSimIdsForUserRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSimulatorEventRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionRequest;
@@ -201,7 +198,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 			if (parts.length == 2)
 				currentActor = parts[1];
 
-			loadTransactionNames(getServerSimId(new SimId(simName)));
+			loadTransactionNames(getServerSimId(SimIdFactory.simIdBuilder(simName)));
 		}
 	}
 
@@ -236,7 +233,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 				// Auto-load if there is only one entry
 				if (result.size()==1) {
 					simulatorNamesListBox.setSelectedIndex(0);
-					simid = new SimId(simulatorNamesListBox.getSelectedValue());
+					simid = SimIdFactory.simIdBuilder(simulatorNamesListBox.getSelectedValue());
 					loadTransactionNames(simid);
 				}
 			}
@@ -466,7 +463,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 		results.add(result);
 		MetadataInspectorTab tab = new MetadataInspectorTab();
 		tab.setResults(results);
-		SiteSpec siteSpec = new SiteSpec(getSimid().toString(), currentTransactionInstance.actorType, null);
+		SiteSpec siteSpec = new SiteSpec(getSimid().toString(), currentTransactionInstance.actorType, null, getSimid().getTestSession());
 		tab.setSiteSpec(siteSpec);
 		tab.onTabLoad(true, "Insp");
 	}
@@ -530,45 +527,45 @@ public class SimulatorMessageViewTab extends ToolWindow {
 	}
 
 	private String transName = "";
-	private SimId simidFinal = new SimId("");
+	private SimId simidFinal = null;
 
-	class TransactionNamesRadioButtonGroup extends RadioButtonGroup {
-		SimId simid;
-
-		TransactionNamesRadioButtonGroup(Panel1 p, SimId simid) {
-			super("TransactionNamesGroup", p);
-			this.simid = simid;
-			simidFinal = simid;
-
-			choiceChangedHandler  = new ValueChangeHandler<Boolean>() {
-
-				public void onValueChange(ValueChangeEvent<Boolean> ignored) {
-
-					RadioButton rb = null;
-					for (RadioButton r : buttons) {
-						if (r.getValue()) {
-							rb = r;
-							break;
-						}
-					}
-
-					if (rb == null)
-						return;
-
-					transName = getNameForRadioButton(rb);
-					if (transName == null)
-						return;
-
-					if ("All".equals(transName))
-						transName = null;
-
-					transactionChosen(simidFinal, transName);
-
-				}
-			};
-		}
-
-	}
+//	class TransactionNamesRadioButtonGroup extends RadioButtonGroup {
+//		SimId simid;
+//
+//		TransactionNamesRadioButtonGroup(Panel1 p, SimId simid) {
+//			super("TransactionNamesGroup", p);
+//			this.simid = simid;
+//			simidFinal = simid;
+//
+//			choiceChangedHandler  = new ValueChangeHandler<Boolean>() {
+//
+//				public void onValueChange(ValueChangeEvent<Boolean> ignored) {
+//
+//					RadioButton rb = null;
+//					for (RadioButton r : buttons) {
+//						if (r.getValue()) {
+//							rb = r;
+//							break;
+//						}
+//					}
+//
+//					if (rb == null)
+//						return;
+//
+//					transName = getNameForRadioButton(rb);
+//					if (transName == null)
+//						return;
+//
+//					if ("All".equals(transName))
+//						transName = null;
+//
+//					transactionChosen(simidFinal, transName);
+//
+//				}
+//			};
+//		}
+//
+//	}
 
 	public void setActor(String actor) {
 		currentActor = actor;

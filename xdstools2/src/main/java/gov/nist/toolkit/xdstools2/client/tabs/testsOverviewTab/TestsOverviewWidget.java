@@ -7,6 +7,7 @@ import com.google.gwt.user.cellview.client.RowStyles;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdstools2.client.command.command.ReloadAllTestResultsCommand;
@@ -153,7 +154,7 @@ public class TestsOverviewWidget extends CellTable<Test> {
                 dataModel.updateSingleTestResult(result);
                 refreshUIData();
             }
-        }.run(new RunSingleTestRequest(ClientUtils.INSTANCE.getCommandContext(),new Site("testEHR"),testId));
+        }.run(new RunSingleTestRequest(ClientUtils.INSTANCE.getCommandContext(),new Site(new TestSession("testEHR")),testId));
     }
 
 

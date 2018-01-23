@@ -1,6 +1,7 @@
 package gov.nist.toolkit.testenginelogging.logrepository;
 
 import gov.nist.toolkit.installation.server.Installation;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.results.client.LogIdIOFormat;
 import gov.nist.toolkit.results.client.LogIdType;
 import gov.nist.toolkit.results.client.TestInstance;
@@ -21,11 +22,11 @@ public class InfrastructureLogRepositoryFactory {
      * @return
      * @throws IOException
      */
-    static public LogRepository getLogRepository(String user, TestInstance id) throws IOException {
+    static public LogRepository getLogRepository(TestSession testSession, TestInstance id) throws IOException {
         return LogRepositoryFactory.
                 getLogRepository(
-                        Installation.instance().testLogCache(),
-                        user,
+                        Installation.instance().testLogCache(testSession),
+                        testSession,
                         LogIdIOFormat.JAVA_SERIALIZATION,
                         LogIdType.SPECIFIC_ID,
                         id

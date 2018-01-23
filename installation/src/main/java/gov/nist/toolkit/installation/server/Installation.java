@@ -215,15 +215,15 @@ public class Installation {
         return names;
     }
 
-    public List<String> getTestSessionNames() {
-        List<String> names = new ArrayList<>();
+    public List<TestSession> getTestSessions() {
+        List<TestSession> ts = new ArrayList<>();
         File tlsFile = testLogCacheDir();
 
         for (File tlFile : tlsFile.listFiles()) {
             if (tlFile.isDirectory())
-                names.add(tlFile.getName());
+                ts.add(new TestSession(tlFile.getName()));
         }
-        return names;
+        return ts;
     }
 
     public void overrideToolkitPort(String port) {
@@ -298,24 +298,24 @@ public class Installation {
      * It always contains at least the default testkit of the toolkit. The presence of the other
      * two depends on the existence.
      * @param environmentName name of the environment to look into for the environment specific testkits.
-     * @param mesaSessionName name of the test session for the user specific testkit.
+     * @param testSession name of the test session for the user specific testkit.
      * @return list of testkit files
      */
-    public List<File> testkitFiles(String environmentName,String mesaSessionName) {
+    public List<File> testkitFiles(String environmentName,TestSession testSession) {
         List<File> testkits=new ArrayList<File>();
         if (environmentName!=null) {
             // paths to the testkit repository in the environment directory
             File environmentTestkitsFile = new File(environmentFile(environmentName), "testkits");
             File usrTestkit=null;
-            if (mesaSessionName!=null) {
+            if (testSession!=null) {
                 // path to the user's testkit (based on the name of the test session)
-                usrTestkit = new File(environmentTestkitsFile, mesaSessionName);
+                usrTestkit = new File(environmentTestkitsFile, testSession.getValue());
             }else {
                 LOGGER.info("Mesa session name is null");
             }
             // path to the environment specific testkit (generated from Code Update)
             File environmentDefaultTestkit = new File(environmentTestkitsFile, "default");
-            if (usrTestkit != null && usrTestkit.exists() && !mesaSessionName.equals("default"))
+            if (usrTestkit != null && usrTestkit.exists() && !testSession.equals("default"))
                 testkits.add(usrTestkit);
             if (environmentDefaultTestkit.exists()) {
                 testkits.add(environmentDefaultTestkit);

@@ -5,6 +5,7 @@ import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.installation.server.Installation;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
@@ -23,7 +24,10 @@ import gov.nist.toolkit.xdsexception.client.ThreadPoolExhaustedException;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * This is a second attempt to start a real API.  ClientAPI has not
@@ -190,7 +194,7 @@ public class ToolkitApi {
      */
     public Site getActorConfig(String id) throws Exception {
         logger.debug("ToolkitApi#getActorConfig for ID: " + id);
-        SimId simId = new SimId(id);
+        SimId simId = SimDb.simIdBuilder(id);
         return getSiteForSimulator(simId);
     }
 
@@ -209,35 +213,42 @@ public class ToolkitApi {
         return runTest(testSessionName,siteName,false,testInstance,sections,params,stopOnFirstFailure);
     }
 
+    public List<Result> runTest(TestSession testSession, String siteName, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws Exception {
+        return runTest(testSession.getValue(),siteName,false,testInstance,sections,params,stopOnFirstFailure);
+    }
+
     public List<Result> runTest(String testSessionName, String siteName, boolean isTls, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws Exception {
         if (testSessionName == null) {
             testSessionName = "API";
-            xdsTestServiceManager().addMesaTestSession(testSessionName);
         }
-        SiteSpec siteSpec = new SiteSpec();
+        TestSession testSession = new TestSession(testSessionName);
+        xdsTestServiceManager().addTestSession(testSession);
+        SiteSpec siteSpec = new SiteSpec(testSession);
         siteSpec.setName(siteName);
         siteSpec.setTls(isTls);
-        if (session.getMesaSessionName() == null) session.setMesaSessionName(testSessionName);
+        if (session.getTestSession() == null) session.setTestSession(testSession);
         // TODO add environment name in following call?
-        return xdsTestServiceManager().runMesaTest(environmentName,testSessionName, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
+        return xdsTestServiceManager().runMesaTest(environmentName,testSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
     }
 
     public List<Result> runTest(String testSessionName, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws Exception {
         if (testSessionName == null) {
             testSessionName = "API";
-            xdsTestServiceManager().addMesaTestSession(testSessionName);
         }
-        if (session.getMesaSessionName() == null) session.setMesaSessionName(testSessionName);
+        TestSession testSession = new TestSession(testSessionName);
+        xdsTestServiceManager().addTestSession(testSession);
+        if (session.getTestSession() == null) session.setTestSession(testSession);
         // TODO add environment name in following call?
-        return xdsTestServiceManager().runMesaTest(environmentName,testSessionName, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
+        return xdsTestServiceManager().runMesaTest(environmentName,testSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
     }
+
 
     public TestLogs getTestLogs(TestInstance testInstance) {
         return xdsTestServiceManager().getRawLogs(testInstance);
     }
 
-    public List<String> getSiteNames(boolean simAlso) {
-        return siteServiceManager().getSiteNames(session.getId(), true, simAlso);
+    public List<String> getSiteNames(boolean simAlso, TestSession testSession) {
+        return siteServiceManager().getSiteNames(session.getId(), true, simAlso, testSession);
     }
 
     public void setConfig(SimulatorConfig config, String parameterName, String value) {
@@ -252,7 +263,7 @@ public class ToolkitApi {
         new SimulatorApi(session).setConfig(config, parameterName, value);
     }
 
-    public void createTestSession(String name) throws Exception { xdsTestServiceManager().addMesaTestSession(name); }
+    public void createTestSession(String name) throws Exception { xdsTestServiceManager().addTestSession(new TestSession(name)); }
 
     private SimulatorServiceManager simulatorServiceManager() { return  new SimulatorServiceManager(session); }
     private XdsTestServiceManager xdsTestServiceManager() { return session.xdsTestServiceManager(); }

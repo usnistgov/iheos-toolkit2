@@ -1,6 +1,7 @@
 package gov.nist.toolkit.testkitutilities;
 
 import gov.nist.toolkit.installation.server.Installation;
+import gov.nist.toolkit.installation.shared.TestSession;
 
 import java.io.File;
 import java.util.*;
@@ -10,10 +11,10 @@ import java.util.*;
  */
 public class TestKitSearchPath {
     String environment;
-    String testSession;
+    TestSession testSession;
     List<TestKit> testkits = new ArrayList<>();
 
-    public TestKitSearchPath(String environment, String testSession) {
+    public TestKitSearchPath(String environment, TestSession testSession) {
         this.environment = environment;
         this.testSession = testSession;
         List<File> testKitRoots = Installation.instance().testkitFiles(environment, testSession);

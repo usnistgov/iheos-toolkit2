@@ -1,6 +1,7 @@
 package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.testenginelogging.LogFileContentBuilder;
@@ -63,8 +64,8 @@ public class UseReportManager  {
 	private List<LogRepository> alternateLogRepositories(TestInstance ti) throws IOException {
 		List<LogRepository> logRepositories = new ArrayList<>();
 
-		logRepositories.add(InfrastructureLogRepositoryFactory.getLogRepository("default", ti));
-		logRepositories.add(InfrastructureLogRepositoryFactory.getLogRepository("cat", ti));
+		logRepositories.add(InfrastructureLogRepositoryFactory.getLogRepository(TestSession.DEFAULT_TEST_SESSION, ti));
+		logRepositories.add(InfrastructureLogRepositoryFactory.getLogRepository(new TestSession("cat"), ti));
 
 		return logRepositories;
 	}

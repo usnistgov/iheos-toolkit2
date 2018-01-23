@@ -6,6 +6,7 @@ import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.factories.TextErrorRecorderBuilder;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
@@ -82,7 +83,7 @@ public class CommonMessageValidatorFactory implements MessageValidatorFactory2I 
 	 * at least the first validation step so calling engine.run() will kick start the validation. Note that no
 	 * ValidationContext is created so the goals of the validation are not yet known.
 	 */
-	public MessageValidatorEngine getValidator(ErrorRecorderBuilder erBuilder, byte[] input, byte[] directCertInput, ValidationContext vc, RegistryValidationInterface rvi) {
+	public MessageValidatorEngine getValidator(ErrorRecorderBuilder erBuilder, byte[] input, byte[] directCertInput, ValidationContext vc, RegistryValidationInterface rvi, TestSession testSession) {
 
 		MessageValidatorEngine mvc = new MessageValidatorEngine();
 		if (erBuilder != null) {

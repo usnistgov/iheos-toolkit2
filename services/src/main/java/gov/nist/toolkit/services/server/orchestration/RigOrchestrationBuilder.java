@@ -6,6 +6,7 @@ package gov.nist.toolkit.services.server.orchestration;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.client.RigOrchestrationRequest;
 import gov.nist.toolkit.services.client.RigOrchestrationResponse;
@@ -49,13 +50,13 @@ public class RigOrchestrationBuilder {
    
    public RawResponse buildTestEnvironment() {
       
-      String user = request.getUserName();
+      TestSession testSession = request.getTestSession();
       String env = request.getEnvironmentName();
-      
+
       try {
          for (Orchestra sim : Orchestra.values()) {
             SimulatorConfig simConfig = null;
-            SimId simId = new SimId(user, sim.name(), sim.actorType.getName(), env);
+            SimId simId = new SimId(testSession, sim.name(), sim.actorType.getName(), env);
             if (!request.isUseExistingState()) {
                log.debug("Deleting: " + simId);
                api.deleteSimulatorIfItExists(simId);
@@ -71,7 +72,7 @@ public class RigOrchestrationBuilder {
                      List <String> list = chg.asList();
                      for (int i = 0; i < list.size(); i++ ) {
                         String s = list.get(i);
-                        s = StringUtils.replace(s, "${user}", user);
+                        s = StringUtils.replace(s, "${user}", testSession.getValue());
                         list.set(i, s);
                      }
                      chg.setStringListValue(list);

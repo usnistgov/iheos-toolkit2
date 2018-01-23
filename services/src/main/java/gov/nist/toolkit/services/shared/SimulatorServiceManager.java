@@ -5,26 +5,6 @@ import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
-import gov.nist.toolkit.http.HttpHeader;
-import gov.nist.toolkit.http.HttpParseException;
-import gov.nist.toolkit.http.ParseException;
-import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.registrymetadata.MetadataParser;
-import gov.nist.toolkit.results.CommonService;
-import gov.nist.toolkit.results.ResultBuilder;
-import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
-import gov.nist.toolkit.session.server.FhirMessageBuilder;
-import gov.nist.toolkit.services.server.SimulatorApi;
-import gov.nist.toolkit.session.server.Session;
-import gov.nist.toolkit.session.shared.Message;
-import gov.nist.toolkit.simcommon.client.*;
-import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
-import gov.nist.toolkit.simcommon.server.GenericSimulatorFactory;
-import gov.nist.toolkit.simcommon.server.SimCache;
-import gov.nist.toolkit.simcommon.server.SimDb;
-import gov.nist.toolkit.simcommon.server.SimManager;
 import gov.nist.toolkit.fhir.simulators.proxy.util.ResourceParser;
 import gov.nist.toolkit.fhir.simulators.servlet.ServletSimulator;
 import gov.nist.toolkit.fhir.simulators.servlet.SimServlet;
@@ -32,12 +12,33 @@ import gov.nist.toolkit.fhir.simulators.sim.reg.RegistryActorSimulator;
 import gov.nist.toolkit.fhir.simulators.sim.rep.RepositoryActorSimulator;
 import gov.nist.toolkit.fhir.simulators.sim.rep.od.OddsActorSimulator;
 import gov.nist.toolkit.fhir.simulators.support.SimInstanceTerminator;
+import gov.nist.toolkit.http.HttpHeader;
+import gov.nist.toolkit.http.HttpParseException;
+import gov.nist.toolkit.http.ParseException;
+import gov.nist.toolkit.installation.shared.TestSession;
+import gov.nist.toolkit.registrymetadata.Metadata;
+import gov.nist.toolkit.registrymetadata.MetadataParser;
+import gov.nist.toolkit.results.CommonService;
+import gov.nist.toolkit.results.ResultBuilder;
+import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
+import gov.nist.toolkit.services.server.SimulatorApi;
+import gov.nist.toolkit.session.server.FhirMessageBuilder;
+import gov.nist.toolkit.session.server.Session;
+import gov.nist.toolkit.session.shared.Message;
+import gov.nist.toolkit.simcommon.client.*;
+import gov.nist.toolkit.simcommon.server.GenericSimulatorFactory;
+import gov.nist.toolkit.simcommon.server.SimCache;
+import gov.nist.toolkit.simcommon.server.SimDb;
+import gov.nist.toolkit.simcommon.server.SimManager;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.validatorsSoapMessage.engine.ValidateMessageService;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 
@@ -304,17 +305,17 @@ public class SimulatorServiceManager extends CommonService {
 		return configs;
 	}
 
-	public List<SimulatorConfig> getAllSimConfigs(String user) throws Exception {
-		logger.debug(session.id() + ": " + "getAllSimConfigs for " + user);
-		if (user == null) return new ArrayList<>();
+	public List<SimulatorConfig> getAllSimConfigs(TestSession testSession) throws Exception {
+		logger.debug(session.id() + ": " + "getAllSimConfigs for " + testSession);
+		if (testSession == null) throw new ToolkitRuntimeException("TestSession is null");
 
 		GenericSimulatorFactory simFact = new GenericSimulatorFactory(SimCache.getSimManagerForSession(session.id()));
 
-		List<SimId> simIds = SimDb.getAllSimIds();
+		List<SimId> simIds = SimDb.getAllSimIds(testSession);
 
 		List<SimId> userSimIds = new ArrayList<>();
 		for (SimId simId : simIds) {
-			if (simId.isTestSession(user))
+			if (simId.isTestSession(testSession))
 				userSimIds.add(simId);
 		}
 
@@ -323,19 +324,19 @@ public class SimulatorServiceManager extends CommonService {
 		return configs;
 	}
 
-	public void updateAllSimulatorsHostAndPort(String host, String port) throws Exception, IOException, ClassNotFoundException {
-		GenericSimulatorFactory simFact = new GenericSimulatorFactory(SimCache.getSimManagerForSession(session.id()));
-
-		List<SimId> simIds = new SimDb().getAllSimIds();
-
-		List<SimulatorConfig> configs = GenericSimulatorFactory.loadSimulators(simIds);
-		for (SimulatorConfig config : configs) {
-			List<SimulatorConfigElement> endpointElements = config.getEndpointConfigs();
-			for (SimulatorConfigElement endpointElement : endpointElements) {
-
-			}
-		}
-	}
+//	public void updateAllSimulatorsHostAndPort(String host, String port) throws Exception, IOException, ClassNotFoundException {
+//		GenericSimulatorFactory simFact = new GenericSimulatorFactory(SimCache.getSimManagerForSession(session.id()));
+//
+//		List<SimId> simIds = new SimDb().getAllSimIds();
+//
+//		List<SimulatorConfig> configs = GenericSimulatorFactory.loadSimulators(simIds);
+//		for (SimulatorConfig config : configs) {
+//			List<SimulatorConfigElement> endpointElements = config.getEndpointConfigs();
+//			for (SimulatorConfigElement endpointElement : endpointElements) {
+//
+//			}
+//		}
+//	}
 
 	public String saveSimConfig(SimulatorConfig config) throws Exception  {
 		logger.debug(session.id() + ": " + "saveSimConfig");
@@ -401,20 +402,14 @@ public class SimulatorServiceManager extends CommonService {
 	 */
 	public List<SimId> getSimIds(String userFilter) {
 		logger.debug(session.id() + ": " + "getSimIds for " + userFilter);
-		List<SimId> all = SimDb.getAllSimIds();
-		if (userFilter == null) return all;
-		List<SimId> filtered = new ArrayList<>();
-		for (SimId sid : all) {
-			if (userFilter.equals(sid.getTestSession()))
-				filtered.add(sid);
-		}
-		return filtered;
+		if (userFilter == null) throw new ToolkitRuntimeException("TestSession is null");
+		return SimDb.getAllSimIds(new TestSession(userFilter));
 	}
 
-	public int removeOldSimulators() {
+	public int removeOldSimulators(TestSession testSession) {
 		logger.debug(session.id() + ": " + "removeOldSimulators");
 		try {
-			return new SimInstanceTerminator().run();
+			return new SimInstanceTerminator().run(testSession);
 		} catch (Exception e) {
 			logger.error("removeOldSimulators failed", e);
 			return 0;

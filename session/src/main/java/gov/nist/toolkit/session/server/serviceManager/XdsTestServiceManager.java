@@ -3,6 +3,7 @@ package gov.nist.toolkit.session.server.serviceManager;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.installation.server.Installation;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrymetadata.client.Document;
@@ -103,10 +104,11 @@ public class XdsTestServiceManager extends CommonService {
 	public Result xdstest(TestInstance testInstance, List<String> sections,
 						  Map<String, String> params, Map<String, Object> params2, String[] areas,
 						  boolean stopOnFirstFailure) {
+		if (testInstance.getTestSession() == null) throw new ToolkitRuntimeException("TestSession is null");
 
 		TestKitSearchPath searchPath = session.getTestkitSearchPath();
 		try {
-			session.xt = new Xdstest2(Installation.instance().toolkitxFile(), searchPath, session);
+			session.xt = new Xdstest2(Installation.instance().toolkitxFile(), searchPath, session, testInstance.getTestSession());
 		} catch (Exception e) {
 			Result result = new Result();
 			result.addAssertion(e.getMessage(), false);
@@ -132,28 +134,31 @@ public class XdsTestServiceManager extends CommonService {
 //
 //		return utilityRunner.run(session, params, params2, SECTIONS, testId, areas, stopOnFirstFailure);
 //	}
-	public List<Result> runMesaTest(String environmentName,String mesaTestSessionName, SiteSpec siteSpec, TestInstance testInstance, List<String> sections,
+	public List<Result> runMesaTest(String environmentName,TestSession testSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections,
 									Map<String, String> params, Map<String, Object> params2, boolean stopOnFirstFailure) throws Exception {
-		if (session.getMesaSessionName() == null) session.setMesaSessionName(mesaTestSessionName);
+		if (testInstance.getTestSession() == null) throw new ToolkitRuntimeException("TestSession is null");
+
+		if (session.getTestSession() == null) session.setTestSession(testSession);
 		session.setCurrentEnvName(environmentName);
-		TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, mesaTestSessionName);
-		session.xt = new Xdstest2(Installation.instance().toolkitxFile(), searchPath, session);
-		return new TestRunner(this).run(session, mesaTestSessionName, siteSpec, testInstance, sections, params, params2, stopOnFirstFailure);
+		TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, testSession);
+		session.xt = new Xdstest2(Installation.instance().toolkitxFile(), searchPath, session, testInstance.getTestSession());
+		return new TestRunner(this).run(session, testSession, siteSpec, testInstance, sections, params, params2, stopOnFirstFailure);
 	}
 
-	public TestOverviewDTO runTest(String environmentName, String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections,
+	public TestOverviewDTO runTest(String environmentName, TestSession mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections,
 								   Map<String, String> params, Map<String, Object> params2, boolean stopOnFirstFailure) throws Exception {
+		if (testInstance.getTestSession() == null) throw new ToolkitRuntimeException("TestSession is null");
 		TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, mesaTestSession);
-		session.xt = new Xdstest2(Installation.instance().toolkitxFile(), searchPath, session);
+		session.xt = new Xdstest2(Installation.instance().toolkitxFile(), searchPath, session, testInstance.getTestSession());
 		new TestRunner(this).run(session, mesaTestSession, siteSpec, testInstance, sections, params, params2, stopOnFirstFailure);
 		return getTestOverview(mesaTestSession, testInstance);
 	}
 
-	static public List<Result> runTestplan(String environment, String sessionName, SiteSpec siteSpec, TestInstance testId, List<String> sections, Map<String, String> params, boolean stopOnFirstError, Session myTestSession, XdsTestServiceManager xdsTestServiceManager, boolean persistResult) {
+	static public List<Result> runTestplan(String environment, TestSession testSession, SiteSpec siteSpec, TestInstance testId, List<String> sections, Map<String, String> params, boolean stopOnFirstError, Session myTestSession, XdsTestServiceManager xdsTestServiceManager, boolean persistResult) {
 
 		List<Result> results; // This wrapper does two important things of interest: 1) Set patient id if it is available in the Params map and 2) Eventually calls the UtilityRunner
 		try {
-			results = xdsTestServiceManager.runMesaTest(environment, sessionName, siteSpec, testId, sections, params, null, stopOnFirstError);
+			results = xdsTestServiceManager.runMesaTest(environment, testSession, siteSpec, testId, sections, params, null, stopOnFirstError);
 		} catch (Exception e) {
 			results = new ArrayList<>();
 			Result result = new Result();
@@ -170,7 +175,7 @@ public class XdsTestServiceManager extends CommonService {
 
 			for (Result result : results) {
 				try {
-					rPer.write(result, sessionName);
+					rPer.write(result, testSession);
 				} catch (Exception e) {
 					result.assertions.add(ExceptionUtil.exception_details(e), false);
 				}
@@ -199,17 +204,17 @@ public class XdsTestServiceManager extends CommonService {
 		}
 	}
 
-	public List<Result> querySts(String siteName, String sessionName, String query, Map<String, String> params, boolean persistResult) {
+	public List<Result> querySts(String siteName, String sessionid, String query, Map<String, String> params, boolean persistResult, TestSession testSession) {
 		setGazelleTruststore();
 
 		String environmentName = "default";
-		Session mySession = new Session(Installation.instance().warHome(), sessionName);
+		Session mySession = new Session(Installation.instance().warHome(), sessionid);
 		mySession.setEnvironment(environmentName);
 
 		// This must exist in the EC Dir. ex. GazelleSts
-		SiteSpec stsSpec =  new SiteSpec(siteName);
-		if (mySession.getMesaSessionName() == null)
-			mySession.setMesaSessionName(sessionName);
+		SiteSpec stsSpec =  new SiteSpec(siteName, testSession);
+		if (mySession.getTestSession() == null)
+			mySession.setTestSession(testSession);
 		mySession.setSiteSpec(stsSpec);
 		mySession.setTls(true); // Required for Gazelle
 
@@ -219,7 +224,7 @@ public class XdsTestServiceManager extends CommonService {
 		sections.add(query);
 
 		XdsTestServiceManager xtsm = new XdsTestServiceManager(mySession);
-		List<Result> results =  runTestplan(environmentName,sessionName,stsSpec,testInstance,sections,params,true,mySession,xtsm, persistResult);
+		List<Result> results =  runTestplan(environmentName,testSession,stsSpec,testInstance,sections,params,true,mySession,xtsm, persistResult);
 
 		return results;
 	}
@@ -231,7 +236,7 @@ public class XdsTestServiceManager extends CommonService {
 	 * @param testSession
 	 * @return
 	 */
-	public Map<String, Result> getTestResults(List<TestInstance> testInstances, String environmentName, String testSession) {
+	public Map<String, Result> getTestResults(List<TestInstance> testInstances, String environmentName, TestSession testSession) {
 		if (session != null)
 			logger.debug(session.id() + ": " + "getTestResults() ids=" + testInstances + " testSession=" + testSession);
 
@@ -253,7 +258,7 @@ public class XdsTestServiceManager extends CommonService {
 		return map;
 	}
 
-	public void delTestResults(List<TestInstance> testInstances, String environmentName, String testSession) {
+	public void delTestResults(List<TestInstance> testInstances, String environmentName, TestSession testSession) {
 		if (session != null)
 			logger.debug(session.id() + ": " + "delTestResults() ids=" + testInstances + " testSession=" + testSession);
 		TestKitSearchPath testKitSearchPath = new TestKitSearchPath(environmentName, testSession);
@@ -391,9 +396,9 @@ public class XdsTestServiceManager extends CommonService {
 		if (session != null)
 			logger.debug(session.id() + ": " + "getCollection " + collectionSetName + ":" + collectionName);
 		try {
-			System.out.println("ENVIRONMENT: "+session.getCurrentEnvName()+", SESSION: "+session.getMesaSessionName());
+			System.out.println("ENVIRONMENT: "+session.getCurrentEnvName()+", SESSION: "+session.getTestSession());
 			Map<String,String> collection=new HashMap<String,String>();
-			for (File testkitFile:Installation.instance().testkitFiles(session.getCurrentEnvName(),session.getMesaSessionName())) {
+			for (File testkitFile:Installation.instance().testkitFiles(session.getCurrentEnvName(),session.getTestSession())) {
 				try {
 					TestKit tk = new TestKit(testkitFile);
 					Map<String, String> c = tk.getCollection(collectionSetName, collectionName);
@@ -663,12 +668,12 @@ public class XdsTestServiceManager extends CommonService {
 		return testInstances;
 	}
 
-	public List<TestOverviewDTO> getTestsOverview(String sessionName, List<TestInstance> testInstances) throws Exception {
+	public List<TestOverviewDTO> getTestsOverview(TestSession testSession, List<TestInstance> testInstances) throws Exception {
 		List<TestOverviewDTO> results = new ArrayList<>();
 		try {
 			for (TestInstance testInstance : testInstances) {
 				try {
-					results.add(getTestOverview(sessionName, testInstance));
+					results.add(getTestOverview(testSession, testInstance));
 				} catch (Exception e) {
 					logger.error("Test " + testInstance + " does not exist");
 				}
@@ -683,20 +688,20 @@ public class XdsTestServiceManager extends CommonService {
 	 * Return the contents of all the log.xml files found under external_cache/TestLogCache/&lt;sessionName&gt;.  If there
 	 * are multiple SECTIONS to the test then load them all. Each element of the
 	 * returned list (Result model) represents the output of all steps in a single section of the test.
-	 * @param sessionName - not the servlet session but instead the dir name
+	 * @param testSession - not the servlet session but instead the dir name
 	 * under external_cache/TestLogCache identifying the user of the service
 	 * @param testInstance like 12355
 	 * @return
 	 * @throws Exception
 	 */
-	public TestOverviewDTO getTestOverview(String sessionName, TestInstance testInstance) throws Exception {
+	public TestOverviewDTO getTestOverview(TestSession testSession, TestInstance testInstance) throws Exception {
 		try {
 			//if (session != null)
 			//logger.debug(session.id() + ": " + "getTestOverview(" + testInstance + ")");
 
-			testInstance.setUser(sessionName);
+			testInstance.setTestSession(testSession);
 
-			File testDir = getTestLogCache().getTestDir(sessionName, testInstance);
+			File testDir = getTestLogCache().getTestDir(testSession, testInstance);
 
 			LogMapDTO lm = null;
 			if (testDir != null)
@@ -739,14 +744,14 @@ public class XdsTestServiceManager extends CommonService {
 //		return getTestLogCache().getTestDir(testInstance);
 //	}
 
-	public LogFileContentDTO getTestLogDetails(String sessionName, TestInstance testInstance) throws Exception {
+	public LogFileContentDTO getTestLogDetails(TestSession testSession, TestInstance testInstance) throws Exception {
 		try {
 			if (session != null)
 				logger.debug(session.id() + ": " + "getTestOverview(" + testInstance + ")");
 
-			testInstance.setUser(sessionName);
+			testInstance.setTestSession(testSession);
 
-			File testDir = getTestLogCache().getTestDir(sessionName, testInstance);
+			File testDir = getTestLogCache().getTestDir(testSession, testInstance);
 
 			String sectionName = testInstance.getSection();
 			File logFile;
@@ -806,7 +811,7 @@ public class XdsTestServiceManager extends CommonService {
 		return lm;
 	}
 
-	private List<File> testLogDirsInTestSession(String testSession) throws IOException {
+	private List<File> testLogDirsInTestSession(TestSession testSession) throws IOException {
 		List<File> testLogDirs = new ArrayList<>();
 		TestLogCache testLogCache = getTestLogCache();
 		File sessionDir = testLogCache.getSessionDir(testSession);
@@ -818,7 +823,7 @@ public class XdsTestServiceManager extends CommonService {
 		return testLogDirs;
 	}
 
-	private List<LogMapDTO> getLogsForTestSession(String testSession) throws Exception {
+	private List<LogMapDTO> getLogsForTestSession(TestSession testSession) throws Exception {
 		List<LogMapDTO> logs = new ArrayList<>();
 
 		for (File testLogDir : testLogDirsInTestSession(testSession)) {
@@ -837,7 +842,7 @@ public class XdsTestServiceManager extends CommonService {
 	 * @param siteName
 	 * @return status
 	 */
-	public ConformanceSessionValidationStatus validateConformanceSession(String testSession, String siteName) throws Exception {
+	public ConformanceSessionValidationStatus validateConformanceSession(TestSession testSession, String siteName) throws Exception {
 		List<LogMapDTO> logMapDTOs = getLogsForTestSession(testSession);
 		if (siteName == null || siteName.equals("")) return new ConformanceSessionValidationStatus();
 		Set<String> badSites = new HashSet<>();
@@ -858,7 +863,7 @@ public class XdsTestServiceManager extends CommonService {
 		return new ConformanceSessionValidationStatus(false, buf.toString());
 	}
 
-	public Collection<String> getSitesForTestSession(String testSession) throws Exception {
+	public Collection<String> getSitesForTestSession(TestSession testSession) throws Exception {
 		Set<String> sites = new HashSet<>();
 		List<LogMapDTO> logMapDTOs = getLogsForTestSession(testSession);
 		for (LogMapDTO logMapDTO : logMapDTOs) {
@@ -1138,8 +1143,10 @@ public class XdsTestServiceManager extends CommonService {
 		return names;
 	}
 
-	public boolean addMesaTestSession(String name) throws Exception  {
+	public boolean addTestSession(TestSession testSession) throws Exception  {
+		String name = testSession.getValue();
 		File cache;
+
 		try {
 			cache = Installation.instance().propertyServiceManager().getTestLogCache();
 
@@ -1160,23 +1167,23 @@ public class XdsTestServiceManager extends CommonService {
 		return true;
 	}
 
-	public boolean delMesaTestSession(String name) throws Exception  {
+	public boolean delMesaTestSession(TestSession testSession) throws Exception  {
 		File cache;
 		try {
 			cache = Installation.instance().propertyServiceManager().getTestLogCache();
 
-			if (name == null || name.equals(""))
-				throw new Exception("Cannot add test session with no name");
+			if (testSession == null)
+				return false;
 		} catch (Exception e) {
 			logger.error("delMesaTestSession", e);
 			throw new Exception(e.getMessage());
 		}
-		File dir = new File(cache.toString() + File.separator + name);
+		File dir = new File(cache.toString() + File.separator + testSession.getValue());
 		Io.delete(dir);
 
 		// also delete simulators owned by this test session
 
-		SimDb.deleteSims(SimDb.getSimIdsForUser(name));
+		SimDb.deleteSims(SimDb.getSimIdsForUser(testSession));
 		return true;
 	}
 
@@ -1187,20 +1194,20 @@ public class XdsTestServiceManager extends CommonService {
 	 *
 	 ******************************************************************/
 
-	public void setMesaTestSession(String sessionName) {
+	public void setTestSession(TestSession testSession) {
 		if (session != null)
-			logger.debug(session.id() + ": " + "setMesaTestSession(" + sessionName + ")");
-		session.setMesaSessionName(sessionName);
+			logger.debug(session.id() + ": " + "setTestSession(" + testSession + ")");
+		session.setTestSession(testSession);
 	}
 
-	public String getMesaTestSession() {
-		if (session == null) return "";
-		return session.getMesaSessionName();
+	public TestSession getTestSession() {
+		if (session == null) return null;
+		return session.getTestSession();
 	}
 
-	public List<String> getTestdataSetListing(String environmentName,String testSessionName,String testdataSetName) {
+	public List<String> getTestdataSetListing(String environmentName,TestSession testSession,String testdataSetName) {
 		logger.debug(session.id() + ": " + "getTestdataSetListing:" + testdataSetName);
-		TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, testSessionName);
+		TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, testSession);
 		Collection<String> listing = searchPath.getTestdataSetListing(testdataSetName);
 		return new ArrayList<String>(listing);
 	}
@@ -1232,7 +1239,7 @@ public class XdsTestServiceManager extends CommonService {
 	public Map<String, String> getCollectionNames(String collectionSetName) throws Exception  {
 		logger.debug(session.id() + ": " + "getCollectionNames(" + collectionSetName + ")");
 		Map<String,String> collectionNames=new HashMap<String,String>();
-		List<File> testkitsFiles=Installation.instance().testkitFiles(session.getCurrentEnvName(),session.getMesaSessionName());
+		List<File> testkitsFiles=Installation.instance().testkitFiles(session.getCurrentEnvName(),session.getTestSession());
 		for (File testkitFile:testkitsFiles){
 			TestKit tk=new TestKit(testkitFile);
 			Map<String, String> tmpCollectionNames=tk.getCollectionNames(collectionSetName);
@@ -1245,12 +1252,12 @@ public class XdsTestServiceManager extends CommonService {
 		return collectionNames;
 	}
 
-	public List<Result> sendPidToRegistry(SiteSpec site, Pid pid, String environmentName, String mesaTestSessionName) throws Exception {
+	public List<Result> sendPidToRegistry(SiteSpec site, Pid pid, String environmentName, TestSession testSession) throws Exception {
 		if (session != null)
 			logger.debug(session.id() + ": " + "sendPidToRegistry(" + pid + ")");
 		if (session.xt == null) {
-			TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, mesaTestSessionName);
-			session.xt = new Xdstest2(Installation.instance().toolkitxFile(), searchPath, session);
+			TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, testSession);
+			session.xt = new Xdstest2(Installation.instance().toolkitxFile(), searchPath, session, testSession);
 		}
 		session.setSiteSpec(site);
 		Map<String, String> params = new HashMap<>();
@@ -1351,7 +1358,7 @@ public class XdsTestServiceManager extends CommonService {
 		return new Test(testId, false, "test#", "test name", "returned result test", "05:23 PM EST", "failed");
 	}
 
-	public TestOverviewDTO deleteSingleTestResult(String environmentName, String testSession, TestInstance testInstance) throws Exception {
+	public TestOverviewDTO deleteSingleTestResult(String environmentName, TestSession testSession, TestInstance testInstance) throws Exception {
 		try {
 			TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, testSession);
 			TestDefinition testDef = searchPath.getTestDefinition(testInstance.getId());
@@ -1360,13 +1367,13 @@ public class XdsTestServiceManager extends CommonService {
 		} catch (Exception e) {
 			// oh well
 		}
-		return getTestOverview(testInstance.getUser(), testInstance);
+		return getTestOverview(testInstance.getTestSession(), testInstance);
 
 	}
 
 	private static final String SITEFILE = "site.txt";
 
-	public String getAssignedSiteForTestSession(String testSession) throws IOException {
+	public String getAssignedSiteForTestSession(TestSession testSession) throws IOException {
 		TestLogCache testLogCache = getTestLogCache();
 		File testSessionDir = testLogCache.getSessionDir(testSession);
 		if (!testSessionDir.exists() || !testSessionDir.isDirectory()) return null;
@@ -1378,7 +1385,7 @@ public class XdsTestServiceManager extends CommonService {
 		}
 	}
 
-	public void setAssignedSiteForTestSession(String testSession, String siteName) throws IOException {
+	public void setAssignedSiteForTestSession(TestSession testSession, String siteName) throws IOException {
 		TestLogCache testLogCache = getTestLogCache();
 		File testSessionDir = testLogCache.getSessionDir(testSession);
 		if (!testSessionDir.exists() || !testSessionDir.isDirectory())
@@ -1390,7 +1397,7 @@ public class XdsTestServiceManager extends CommonService {
 		}
 	}
 
-	private void clearAssignedSiteForTestSession(String testSession) throws IOException {
+	private void clearAssignedSiteForTestSession(TestSession testSession) throws IOException {
 		TestLogCache testLogCache = getTestLogCache();
 		File testSessionDir = testLogCache.getSessionDir(testSession);
 		if (!testSessionDir.exists() || !testSessionDir.isDirectory())
@@ -1398,7 +1405,7 @@ public class XdsTestServiceManager extends CommonService {
 		Io.delete(new File(testSessionDir, SITEFILE));
 	}
 
-	public String clearTestSession(String testSession) throws IOException {
+	public String clearTestSession(TestSession testSession) throws IOException {
 		TestLogCache testLogCache = getTestLogCache();
 		File testSessionDir = testLogCache.getSessionDir(testSession);
 		Io.deleteContents(testSessionDir);

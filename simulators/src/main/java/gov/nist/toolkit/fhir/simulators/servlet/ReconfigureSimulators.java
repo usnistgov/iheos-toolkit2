@@ -4,6 +4,7 @@ import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.server.EndpointParser;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.installation.server.Installation;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
@@ -48,11 +49,14 @@ public class ReconfigureSimulators extends HttpServlet {
 
         logger.info("Reconfiguring Simulators to host " + configuredHost + " port " + configuredPort + " context " + configuredContext);
 
-        for (SimId simId : SimDb.getAllSimIds()) {
-            try {
-                reconfigure(simId);
-            } catch (Throwable e) {
-                logger.fatal("Reconfigure of sim " + simId + " failed - " + ExceptionUtil.exception_details(e));
+        for (TestSession testSession : Installation.instance().getTestSessions()) {
+
+            for (SimId simId : SimDb.getAllSimIds(testSession)) {
+                try {
+                    reconfigure(simId);
+                } catch (Throwable e) {
+                    logger.fatal("Reconfigure of sim " + simId + " failed - " + ExceptionUtil.exception_details(e));
+                }
             }
         }
     }

@@ -6,6 +6,7 @@ import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.session.shared.Message;
 import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.simcommon.client.SimIdFactory;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractPresenter;
 import gov.nist.toolkit.xdstools2.client.command.command.GetSimIdForUser;
@@ -237,7 +238,7 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
             assert (simName != null);
             assert (!simName.equals(""));
             // translates to server version of simid
-            currentSimId = getServerSimId(new SimId(simName));
+            currentSimId = getServerSimId(SimIdFactory.simIdBuilder(simName));
             loadEventsForSimulator();
             getView().clearAllTabs();
             currentTransactionInstance = null;
@@ -276,7 +277,7 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
 
         ResultInspector resultInspector = new ResultInspector();
         resultInspector.setResults(results);
-        SiteSpec siteSpec = new SiteSpec(currentSimId.toString(), currentTransactionInstance.actorType, null);
+        SiteSpec siteSpec = new SiteSpec(currentSimId.toString(), currentTransactionInstance.actorType, null, currentSimId.getTestSession());
         resultInspector.setSiteSpec(siteSpec);
         new NewToolLauncher().launch(resultInspector);
     }

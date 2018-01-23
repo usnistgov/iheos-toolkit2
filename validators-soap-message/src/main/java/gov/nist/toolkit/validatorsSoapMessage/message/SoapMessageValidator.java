@@ -5,6 +5,7 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.installation.server.Installation;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valregmsg.validation.factories.ValidationContextValidationFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -34,6 +35,7 @@ public class SoapMessageValidator extends AbstractMessageValidator {
     ErrorRecorderBuilder erBuilder;
     MessageValidatorEngine mvc;
     RegistryValidationInterface rvi;
+    TestSession testSession;
 
     public String getWsAction() {
         return wsaction;
@@ -57,11 +59,12 @@ public class SoapMessageValidator extends AbstractMessageValidator {
 
 
 
-    public SoapMessageValidator(ValidationContext vc, ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, RegistryValidationInterface rvi) {
+    public SoapMessageValidator(ValidationContext vc, ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, RegistryValidationInterface rvi, TestSession testSession) {
         super(vc);
         this.erBuilder = erBuilder;
         this.mvc = mvc;
         this.rvi = rvi;
+        this.testSession = testSession;
     }
 
     // needed for junit testing
@@ -135,7 +138,7 @@ public class SoapMessageValidator extends AbstractMessageValidator {
         if (header!=null && vc.requiresStsSaml && vc.isRequest) {
             boolean samlEnabled = Installation.instance().propertyServiceManager().getPropertyManager().isEnableSaml();
             if (samlEnabled) {
-                mvc.addMessageValidator("STS SAML Validator", new StsSamlValidator(vc, er, mvc, rvi, header), erBuilder.buildNewErrorRecorder());
+                mvc.addMessageValidator("STS SAML Validator", new StsSamlValidator(vc, er, mvc, rvi, header, testSession), erBuilder.buildNewErrorRecorder());
             } else {
                er.detail("SAML bypassed.");
             }

@@ -8,10 +8,9 @@ import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.sitemanagement.client.StringSort;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
-import gov.nist.toolkit.sitemanagement.client.StringSort;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionOfferingsCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
@@ -144,11 +143,11 @@ public class SiteSelectionWidget extends Composite   {
 		return null;
 	}
 
-	public SiteSpec getSelectedSiteSpec() {
-		String siteName = getSelectedSite();
-		if (siteName == null) return null;
-		return new SiteSpec(siteName, actorType, null);
-	}
+//	public SiteSpec getSelectedSiteSpec() {
+//		String siteName = getSelectedSite();
+//		if (siteName == null) return null;
+//		return new SiteSpec(siteName, actorType, null);
+//	}
 
 	void addSitesForTransaction(List<TransactionType> transactionTypes, VerticalPanel parent) {
 		for (TransactionType tt : transactionTypes) {

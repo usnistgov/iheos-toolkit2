@@ -8,6 +8,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.simcommon.client.SimIdFactory;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractToolkitActivity;
 import gov.nist.toolkit.xdstools2.client.abstracts.ActivityDisplayer;
@@ -84,7 +85,7 @@ public class SimMsgViewerActivity extends AbstractToolkitActivity implements IsW
                     finish(acceptsOneWidget, eventBus);
                 }
 
-            }.run(new GetFullSimIdRequest(Xdstools2.getHomeTab().getCommandContext(), new SimId(simName)));
+            }.run(new GetFullSimIdRequest(Xdstools2.getHomeTab().getCommandContext(), SimIdFactory.simIdBuilder(simName)));
         } else {
             finish(acceptsOneWidget, eventBus);
         }

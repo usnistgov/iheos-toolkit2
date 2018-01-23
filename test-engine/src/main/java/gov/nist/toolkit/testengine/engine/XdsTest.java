@@ -1,6 +1,7 @@
 package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.installation.server.Installation;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.sitemanagement.CombinedSiteLoader;
@@ -76,6 +77,7 @@ public class XdsTest {
 		"-s", "--site",
 		"-K", "--toolkit"
 	};
+	TestSession testSession;
 	
 
 	static String[] operationOptions = {
@@ -102,8 +104,9 @@ public class XdsTest {
 		operationOptionList = Arrays.asList(operationOptions);
 	}
 
-	public XdsTest(TestKitSearchPath searchPath) {
+	public XdsTest(TestKitSearchPath searchPath, TestSession testSession) {
 		this.searchPath = searchPath;
+		this.testSession = testSession;
 		noExit = true;
 		testConfig = new TestConfig();
 	}
@@ -139,7 +142,7 @@ public class XdsTest {
 		try {
 			file = new File(mgmt + File.separatorChar + "actors.xml");
 //			sites = new Sites(file);
-			sites = new CombinedSiteLoader().load(file, null);
+			sites = new CombinedSiteLoader(testSession).load(file, null);
 		} catch (XdsInternalException e) {
 			throw new Exception("Error loading actors.xml from path " + file + " : XDSTOOLKIT configuration option not set or incorrect\n" +
 					"specific error is:\n\t" + e.getMessage());
@@ -482,7 +485,7 @@ public class XdsTest {
         if (testConfig.site == null) {
             String siteName = System.getProperty("site");
             if (siteName != null)
-                testConfig.site = loadSites().getSite(siteName);
+                testConfig.site = loadSites().getSite(siteName, testSession);
         }
 
 		if (testConfig.site == null)

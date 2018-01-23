@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
@@ -14,7 +15,7 @@ import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteRequest;
  */
 public class TestContext implements SiteManager {
     private ToolWindow toolWindow;
-    private SiteSpec currentSiteSpec = new SiteSpec();
+    private SiteSpec currentSiteSpec = new SiteSpec(new TestSession(getTestSession()));
     private Site siteUnderTest = null;
     private TestContextView testContextView;
     static final protected String NONE = "--none--";
@@ -118,7 +119,7 @@ public class TestContext implements SiteManager {
     }
 
     public SiteSpec getSiteUnderTestAsSiteSpec() {
-        return (siteUnderTest == null) ? null : siteUnderTest.siteSpec();
+        return (siteUnderTest == null) ? null : siteUnderTest.siteSpec(new TestSession(getTestSession()));
     }
 
     public void setSiteUnderTest(Site siteUnderTest) {

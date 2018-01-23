@@ -6,6 +6,7 @@ import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
@@ -229,7 +230,7 @@ public class IGTestTab extends GenericQueryTab implements GatewayTool {
             }
 
             TestInstance testInstance = new TestInstance(testToRun);
-            testInstance.setUser(getCurrentTestSession());
+            testInstance.setTestSession(new TestSession(getCurrentTestSession()));
             new RunMesaTestCommand(){
                 @Override
                 public void onComplete(List<Result> result) {
@@ -259,7 +260,7 @@ public class IGTestTab extends GenericQueryTab implements GatewayTool {
                             new PopupMessage("Results not available");
                             return;
                         }
-                        SiteSpec siteSpec = new SiteSpec(siteName, ActorType.RESPONDING_GATEWAY, null);
+                        SiteSpec siteSpec = new SiteSpec(siteName, ActorType.RESPONDING_GATEWAY, null, new TestSession(getCurrentTestSession()));
 
                         MetadataInspectorTab itab = new MetadataInspectorTab();
                         List<Result> results = new ArrayList<Result>();

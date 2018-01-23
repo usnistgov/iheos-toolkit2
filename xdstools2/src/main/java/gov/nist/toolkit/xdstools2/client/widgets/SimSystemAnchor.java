@@ -2,6 +2,7 @@ package gov.nist.toolkit.xdstools2.client.widgets;
 
 import com.google.gwt.user.client.ui.HTML;
 import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.simcommon.client.SimIdFactory;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.command.command.GetSimConfigsCommand;
@@ -22,7 +23,7 @@ public class SimSystemAnchor extends HorizontalFlowPanel {
         add(h);
 
         List<SimId> simIds = new ArrayList<>();
-        simIds.add(new SimId(siteSpec));
+        simIds.add(SimIdFactory.simIdBuilder(siteSpec.name));
 
         new GetSimConfigsCommand(){
             @Override

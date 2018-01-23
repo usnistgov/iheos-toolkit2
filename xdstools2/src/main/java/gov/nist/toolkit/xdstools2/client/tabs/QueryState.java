@@ -3,10 +3,11 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 import com.google.gwt.user.client.Cookies;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CookieManager;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 public class QueryState {
 	String patientId = null;
-	SiteSpec siteSpec = new SiteSpec();
+	SiteSpec siteSpec = new SiteSpec(ClientUtils.INSTANCE.getCurrentTestSession());
 
 	public String getPatientId() {
 		if (patientId == null) {

@@ -1,6 +1,7 @@
 package gov.nist.toolkit.results.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.installation.shared.TestSession;
 
 import java.io.Serializable;
 
@@ -17,7 +18,7 @@ public class TestInstance implements IsSerializable, Serializable {
 
    // params to re-create LogRepository
    String location = null;
-   String user = null;
+   TestSession testSession = null;
    LogIdIOFormat format = null;
    LogIdType idType = null;
 
@@ -39,7 +40,7 @@ public class TestInstance implements IsSerializable, Serializable {
          .append("...event = ").append(event).append("\n")
          .append("...eventDir = ").append(eventDir).append("\n")
          .append("...location = ").append(location).append("\n")
-         .append("...user = ").append(user).append("\n")
+         .append("...user = ").append(testSession).append("\n")
          .append("...type = ").append(idType).append("\n").
               append("...sutInitiated = ").append(sutInitiated).append("\n");
       return buf.toString();
@@ -52,7 +53,7 @@ public class TestInstance implements IsSerializable, Serializable {
         x.event = event;
         x.eventDir = eventDir;
         x.location = location;
-        x.user = user;
+        x.testSession = testSession;
         x.format = format;
         x.idType = idType;
 		x.sutInitiated = sutInitiated;
@@ -80,17 +81,17 @@ public class TestInstance implements IsSerializable, Serializable {
     *
     * @return testSession as a string
     */
-   public String getUser() {
-      return user;
+   public TestSession getTestSession() {
+      return testSession;
    }
 
    /**
     * Set the test user, also known as the testSession in the UI
     *
-    * @param user testSession as a string
+    * @param testSession testSession
     */
-   public void setUser(String user) {
-      this.user = user;
+   public void setTestSession(TestSession testSession) {
+      this.testSession = testSession;
    }
 
    public void setFormat(LogIdIOFormat format) {

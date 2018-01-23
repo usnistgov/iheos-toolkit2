@@ -36,7 +36,7 @@ public class ProvideAndRetrieve extends CommonService {
 			Map<String, String> params = new HashMap<String, String>();
 			params.put("$patientid$", pid);
 
-			Site si = SiteServiceManager.getSiteServiceManager().getSite(session.id(), session.siteSpec.name);
+			Site si = SiteServiceManager.getSiteServiceManager().getSite(session.id(), session.siteSpec.name, session.getTestSession());
 //			Site si = session.siteServiceManager().getSites().getSite(session.siteSpec.name);
 			String repuid = si.getRepositoryUniqueId(TransactionBean.RepositoryType.REPOSITORY);
 			if (repuid == null) {

@@ -7,6 +7,7 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.errorrecording.TextErrorRecorder;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.factories.TextErrorRecorderBuilder;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrymsg.registry.AdhocQueryResponse;
@@ -22,6 +23,7 @@ import gov.nist.toolkit.fhir.simulators.sim.cons.DocConsActorSimulator;
 import gov.nist.toolkit.fhir.simulators.sim.idc.ImgDocConsActorSimulator;
 import gov.nist.toolkit.fhir.simulators.sim.src.XdrDocSrcActorSimulator;
 import gov.nist.toolkit.fhir.simulators.support.StoredDocument;
+import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.soap.DocumentMap;
 import gov.nist.toolkit.toolkitServicesCommon.*;
 import gov.nist.toolkit.toolkitServicesCommon.resource.*;
@@ -296,7 +298,7 @@ public class SimulatorsController {
     public Response delete(@PathParam("id") String id) {
         logger.info("Delete " + id);
         try {
-            SimId simId = new SimId(id);
+            SimId simId = SimDb.simIdBuilder(id);
             api.deleteSimulatorIfItExists(simId);
         }
         catch (Throwable e) {
@@ -335,7 +337,7 @@ public class SimulatorsController {
     public Response getSim(@PathParam("id") String id) {
         logger.info("GET simulators/" +  id);
         try {
-            SimId simId = new SimId(id);
+            SimId simId = SimDb.simIdBuilder(id);
             SimulatorConfig config = api.getConfig(simId);
             if (config == null) throw new NoSimException("");
             SimConfigResource bean = ToolkitFactory.asSimConfigBean(config);
@@ -357,7 +359,7 @@ public class SimulatorsController {
     public Response getAllDocs(@PathParam("id") String id, @PathParam("pid") String pid) {
         logger.info(String.format("GET simulators/%s/xds/GetAllDocs/%s", id, pid));
         try {
-            SimId simId = new SimId(id);
+            SimId simId = new SimId(TestSession.DEFAULT_TEST_SESSION, id);
             RegistrySimApi api = new RegistrySimApi(simId);
             List<String> objectRefs = api.findDocsByPidObjectRef(pid);
             RefListResource or = new RefListResource();
@@ -374,7 +376,7 @@ public class SimulatorsController {
     public Response getDoc(@PathParam("id") String id, @PathParam("docId") String docId) {
         logger.info(String.format("GET simulators/%s/xds/GetDoc/%s", id, docId));
         try {
-            SimId simId = new SimId(id);
+            SimId simId = SimDb.simIdBuilder(id);
             RegistrySimApi api = new RegistrySimApi(simId);
             OMElement ele = api.getDocEle(docId);
             String xml = new OMFormatter(ele).toString();
@@ -390,7 +392,7 @@ public class SimulatorsController {
     public Response getEventIds(@PathParam("id") String id, @PathParam("transaction") String transaction) {
         logger.info(String.format("GET simulators/%s/events", id));
         try {
-            SimId simId = new SimId(id);
+            SimId simId = SimDb.simIdBuilder(id);
             List<String> eventIds = api.getSimulatorEventIds(simId, transaction);
             RefListResource resource = new RefListResource();
             resource.setRefs(eventIds);
@@ -406,7 +408,7 @@ public class SimulatorsController {
     public Response getDocument(@PathParam("id") String id, @PathParam("uniqueid") String uniqueId) {
         logger.info(String.format("GET simulators/%s/document/%s", id, uniqueId));
         try {
-            SimId simId = new SimId(id);
+            SimId simId = SimDb.simIdBuilder(id);
             DocumentContentResource resource = new DocumentContentResource();
             RepositorySimApi repoApi = new RepositorySimApi(simId);
             StoredDocument document = repoApi.getDocument(uniqueId);
@@ -425,7 +427,7 @@ public class SimulatorsController {
     public Response getEvent(@PathParam("id") String id, @PathParam("transaction") String transaction, @PathParam("eventid") String eventid) {
         logger.info(String.format("GET simulators/%s/event/%s/%s", id, transaction, eventid));
         try {
-            SimId simId = new SimId(id);
+            SimId simId = SimDb.simIdBuilder(id);
             String event = api.getSimulatorEvent(simId, transaction, eventid);
             RefListResource resource = new RefListResource();
             resource.addRef(event);

@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.client.RepOrchestrationRequest;
 import gov.nist.toolkit.services.client.RepOrchestrationResponse;
@@ -56,14 +57,14 @@ class BuildRepTestOrchestrationButton extends AbstractOrchestrationButton {
 
         RepOrchestrationRequest request = new RepOrchestrationRequest();
         if (testContext.getSiteUnderTest()!=null) {
-            SiteSpec sutSiteSpec = testContext.getSiteUnderTest().siteSpec();
+            SiteSpec sutSiteSpec = testContext.getSiteUnderTest().siteSpec(new TestSession(testTab.getCurrentTestSession()));
             if (isSaml()) {
                 setSamlAssertion(sutSiteSpec);
             }
             request.setSutSite(sutSiteSpec);
         } else
             request.setSutSite(null);
-        request.setUserName(testTab.getCurrentTestSession());
+        request.setTestSession(new TestSession(testTab.getCurrentTestSession()));
         request.setEnvironmentName(testTab.getEnvironmentSelection());
         request.setUseExistingSimulator(!isResetRequested());
 
@@ -97,7 +98,7 @@ class BuildRepTestOrchestrationButton extends AbstractOrchestrationButton {
                         "Then Reset Testing Environment (above) with Reset to properly initialize the testing environment (Patient ID is needed).</h3><hr />"));
 
                 // test will be run out of support site so pass it back to conformance test tab
-                testTab.setSiteToIssueTestAgainst(orchResponse.getSupportSite().siteSpec());
+                testTab.setSiteToIssueTestAgainst(orchResponse.getSupportSite().siteSpec(new TestSession(testTab.getCurrentTestSession())));
 
                 testTab.displayTestCollection(testTab.getMainView().getTestsPanel());
             }

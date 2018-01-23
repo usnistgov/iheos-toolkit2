@@ -93,7 +93,7 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 
             SimManager simMgr = new SimManager("ignored");
 //            List<Site> sites = simMgr.getSites(asc.rgSiteNames);
-            List<Site> sites = simMgr.getSites(asc.getConfigEle(SimulatorProperties.respondingGateways).asList());
+            List<Site> sites = simMgr.getSites(asc.getConfigEle(SimulatorProperties.respondingGateways).asList(), asc.getId().getTestSession());
 
             if (sites == null || sites.size() == 0) {
                 er.err(Code.XDSRegistryError, "No RespondingGateways configured", this, null);

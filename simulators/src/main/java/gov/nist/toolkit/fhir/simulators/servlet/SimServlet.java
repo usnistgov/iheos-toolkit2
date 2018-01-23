@@ -18,6 +18,7 @@ import gov.nist.toolkit.http.HttpHeader;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.http.ParseException;
 import gov.nist.toolkit.installation.server.Installation;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.simcommon.client.NoSimException;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
@@ -188,7 +189,7 @@ public class SimServlet  extends HttpServlet {
 
 		if (actor == null || actor.equals("null")) {
 			try {
-				SimDb sdb = new SimDb(new SimId(simid));
+				SimDb sdb = new SimDb(SimDb.simIdBuilder(simid));
 				actor = sdb.getActorsForSimulator().get(0);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -203,7 +204,7 @@ public class SimServlet  extends HttpServlet {
 
 		SimDb db;
 		try {
-			db = new SimDb(new SimId(simid), actor, transaction, true);
+			db = new SimDb(SimDb.simIdBuilder(simid), actor, transaction, true);
 		}
 		catch (Exception e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -219,7 +220,7 @@ public class SimServlet  extends HttpServlet {
 
 		RegIndex regIndex = null;
 		try {
-			regIndex = getRegIndex(new SimId(simid));
+			regIndex = getRegIndex(SimDb.simIdBuilder(simid));
 		}
 		catch (Exception e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -237,7 +238,7 @@ public class SimServlet  extends HttpServlet {
 		if (docUids.size() > 0) {
 			RepIndex repIndex = null;
 			try {
-				repIndex = getRepIndex(new SimId(simid));
+				repIndex = getRepIndex(SimDb.simIdBuilder(simid));
 			}
 			catch (Exception e) {
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -280,7 +281,7 @@ public class SimServlet  extends HttpServlet {
 
 		if (actor == null || actor.equals("null")) {
 			try {
-				SimDb sdb = new SimDb(new SimId(simid));
+				SimDb sdb = new SimDb(SimDb.simIdBuilder(simid));
 				actor = sdb.getActorsForSimulator().get(0);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -295,7 +296,7 @@ public class SimServlet  extends HttpServlet {
 
 		SimDb db;
 		try {
-			db = new SimDb(new SimId(simid), actor, transaction, true);
+			db = new SimDb(SimDb.simIdBuilder(simid), actor, transaction, true);
 			response.setContentType("application/zip");
 			db.getMessageLogZip(response.getOutputStream(), message);
 			response.getOutputStream().close();
@@ -326,11 +327,11 @@ public class SimServlet  extends HttpServlet {
 
 		SimDb db;
 		try {
-			SimId simId = new SimId(simid);
+			SimId simId = SimDb.simIdBuilder(simid);
 			db = new SimDb(simId);
 			SimulatorConfig config = db.getSimulator(simId);
 			Site site = SimManager.getSite(config);
-			OMElement siteEle = new SeparateSiteLoader().siteToXML(site);
+			OMElement siteEle = new SeparateSiteLoader(simId.getTestSession()).siteToXML(site);
 			String siteString = new OMFormatter(siteEle).toString();
 			logger.debug(siteString);
 
@@ -363,7 +364,7 @@ public class SimServlet  extends HttpServlet {
 
 		if (actor == null || actor.equals("null")) {
 			try {
-				SimDb sdb = new SimDb(new SimId(simid));
+				SimDb sdb = new SimDb(SimDb.simIdBuilder(simid));
 				actor = sdb.getActorsForSimulator().get(0);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -378,7 +379,7 @@ public class SimServlet  extends HttpServlet {
 
 		SimDb db;
 		try {
-			db = new SimDb(new SimId(simid), actor, transaction, true);
+			db = new SimDb(SimDb.simIdBuilder(simid), actor, transaction, true);
 		} catch (Exception e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
@@ -387,7 +388,7 @@ public class SimServlet  extends HttpServlet {
 		if (actor.equals("registry")) {
 			RegIndex regIndex;
 			try {
-				regIndex = getRegIndex(new SimId(simid));
+				regIndex = getRegIndex(SimDb.simIdBuilder(simid));
 			}
 			catch (Exception e) {
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -465,7 +466,7 @@ public class SimServlet  extends HttpServlet {
 		String transaction = null;
 		String validation = null;
 		try {
-			simid = new SimId(uriParts[simIndex + 1]);
+			simid = SimDb.simIdBuilder(uriParts[simIndex + 1]);
 			actor = uriParts[simIndex + 2];
 			if (uriParts.length > simIndex + 3)
 				transaction = uriParts[simIndex + 3];
@@ -717,16 +718,18 @@ public class SimServlet  extends HttpServlet {
 
 	private static void onServiceStart()  {
 		try {
-			List<SimId> simIds = SimDb.getAllSimIds();
-			for (SimId simId : simIds) {
-				BaseActorSimulator baseSim = (BaseActorSimulator) RuntimeManager.getSimulatorRuntime(simId);
-				if (baseSim == null) continue;
-				if (baseSim instanceof  BaseDsActorSimulator) {
-					BaseDsActorSimulator sim = (BaseDsActorSimulator) baseSim;
-					DsSimCommon dsSimCommon = null;
-					SimulatorConfig asc = GenericSimulatorFactory.getSimConfig(simId);
-					sim.init(dsSimCommon, asc);
-					sim.onServiceStart(asc);
+			for (TestSession testSession : Installation.instance().getTestSessions()) {
+				List<SimId> simIds = SimDb.getAllSimIds(testSession);
+				for (SimId simId : simIds) {
+					BaseActorSimulator baseSim = (BaseActorSimulator) RuntimeManager.getSimulatorRuntime(simId);
+					if (baseSim == null) continue;
+					if (baseSim instanceof BaseDsActorSimulator) {
+						BaseDsActorSimulator sim = (BaseDsActorSimulator) baseSim;
+						DsSimCommon dsSimCommon = null;
+						SimulatorConfig asc = GenericSimulatorFactory.getSimConfig(simId);
+						sim.init(dsSimCommon, asc);
+						sim.onServiceStart(asc);
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -736,16 +739,18 @@ public class SimServlet  extends HttpServlet {
 
 	private static void onServiceStop() {
 		try {
-			List<SimId> simIds = SimDb.getAllSimIds();
-			for (SimId simId : simIds) {
-				BaseActorSimulator baseSim = (BaseActorSimulator) RuntimeManager.getSimulatorRuntime(simId);
-				if (baseSim == null) continue;
-				if (baseSim instanceof  BaseDsActorSimulator) {
-					BaseDsActorSimulator sim = (BaseDsActorSimulator) baseSim;
-					DsSimCommon dsSimCommon = null;
-					SimulatorConfig asc = GenericSimulatorFactory.getSimConfig(simId);
-					sim.init(dsSimCommon, asc);
-					sim.onServiceStop(asc);
+			for (TestSession testSession : Installation.instance().getTestSessions()) {
+				List<SimId> simIds = SimDb.getAllSimIds(testSession);
+				for (SimId simId : simIds) {
+					BaseActorSimulator baseSim = (BaseActorSimulator) RuntimeManager.getSimulatorRuntime(simId);
+					if (baseSim == null) continue;
+					if (baseSim instanceof BaseDsActorSimulator) {
+						BaseDsActorSimulator sim = (BaseDsActorSimulator) baseSim;
+						DsSimCommon dsSimCommon = null;
+						SimulatorConfig asc = GenericSimulatorFactory.getSimConfig(simId);
+						sim.init(dsSimCommon, asc);
+						sim.onServiceStop(asc);
+					}
 				}
 			}
 		} catch (Exception e) {

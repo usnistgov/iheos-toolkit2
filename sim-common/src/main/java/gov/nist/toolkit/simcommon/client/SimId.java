@@ -5,6 +5,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 
 import java.io.Serializable;
 
@@ -50,6 +51,8 @@ public class SimId implements Serializable, IsSerializable {
 
     // client and server
     public SimId(TestSession testSession, String id) throws BadSimIdException {
+        if (testSession == null) throw new ToolkitRuntimeException("TestSession is null");
+
         build(testSession, id);
     }
 
@@ -64,6 +67,7 @@ public class SimId implements Serializable, IsSerializable {
 //            }
 //        }
 //    }
+
 
     public SimId() {}
 
@@ -152,7 +156,7 @@ public class SimId implements Serializable, IsSerializable {
         return id;
     }
 
-    public boolean isTestSession(String testSession) {
+    public boolean isTestSession(TestSession testSession) {
         return testSession != null && testSession.equals(this.testSession);
     }
     public boolean isValid() { return (!isEmpty(testSession.getValue())) && (!isEmpty(id)); }

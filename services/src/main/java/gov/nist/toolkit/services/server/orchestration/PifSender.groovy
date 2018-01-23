@@ -2,6 +2,7 @@ package gov.nist.toolkit.services.server.orchestration
 
 import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.configDatatypes.client.PidBuilder
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.services.client.PifType
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.sitemanagement.client.SiteSpec
@@ -17,7 +18,7 @@ class PifSender {
     private Util util
     private String testSession
 
-    public PifSender(ToolkitApi api, String testSession, SiteSpec regSite, OrchestrationProperties orchProps) {
+    public PifSender(ToolkitApi api, TestSession testSession, SiteSpec regSite, OrchestrationProperties orchProps) {
         this.api = api
         this.testSession = testSession
         this.regSite = regSite

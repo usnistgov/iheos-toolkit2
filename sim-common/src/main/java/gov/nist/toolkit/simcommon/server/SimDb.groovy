@@ -12,6 +12,7 @@ import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.simcommon.client.BadSimIdException
 import gov.nist.toolkit.simcommon.client.NoSimException
 import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.client.SimIdFactory
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
 import gov.nist.toolkit.simcommon.server.index.SiTypeWrapper
 import gov.nist.toolkit.simcommon.server.index.SimIndex
@@ -426,8 +427,8 @@ public class SimDb {
 		return null;
 	}
 
-	public SimDb(TransactionInstance ti, TestSession testSession) throws IOException, NoSimException, BadSimIdException {
-		this(getFullSimId(new SimId(testSession, ti.simId)));
+	SimDb(TransactionInstance ti) throws IOException, NoSimException, BadSimIdException {
+		this(getFullSimId(new SimId(testSession, ti.simId)))
 
 		this.actor = ti.actorType.getShortName();
 		this.transaction = ti.trans;
@@ -581,6 +582,10 @@ public class SimDb {
 		if (isFSim(simDefDir)) simId.forFhir()
 		simId.actorType = new SimDb(simId).getSimulatorType()
 		simId
+	}
+
+	static SimId simIdBuilder(String rawId) {
+		SimIdFactory.simIdBuilder(rawId)
 	}
 
 	static List<SimId> getAllSimIds(TestSession testSession) throws BadSimIdException {
@@ -1381,4 +1386,9 @@ public class SimDb {
 	void setTransaction(String transaction) {
 		this.transaction = transaction
 	}
+
+	TestSession getTestSession() {
+		return testSession
+	}
+
 }

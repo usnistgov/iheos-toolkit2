@@ -5,6 +5,7 @@ import gov.nist.toolkit.envSetting.EnvSetting
 import gov.nist.toolkit.installation.server.ExternalCacheManager
 import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.installation.server.PropertyServiceManager
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.registrymetadata.Metadata
 import gov.nist.toolkit.results.client.AssertionResults
 import gov.nist.toolkit.results.client.CodesConfiguration
@@ -53,7 +54,7 @@ import org.apache.log4j.Logger
 public class Session implements SecurityParams {
 	
 	public Xdstest2 xt;
-	public SiteSpec siteSpec = new SiteSpec();
+	public SiteSpec siteSpec = null;
 	public String repUid;
 	public AssertionResults assertionResults;
 	public TransactionSettings transactionSettings = new TransactionSettings();
@@ -82,7 +83,7 @@ public class Session implements SecurityParams {
 	
 	String currentEnvName = null;
 	
-	String mesaSessionName = null;
+	TestSession testSession = null;
 	SessionPropertyManager sessionProperties = null;
 	PropertyServiceManager propertyServiceMgr = null;
 	XdsTestServiceManager xdsTestServiceManager = null;
@@ -143,8 +144,8 @@ public class Session implements SecurityParams {
 		transactionSettings.siteSpec = siteSpec;
 
 		try {
-			Sites sites = new SimCache().getSimManagerForSession(id()).getAllSites();
-			Site st = sites.getSite(siteSpec.name);
+			Sites sites = new SimCache().getSimManagerForSession(id()).getAllSites(testSession);
+			Site st = sites.getSite(siteSpec.name, testSession);
 			String tempRepUid = null;
 
 			logger.info("site is " + st);
@@ -225,8 +226,8 @@ public class Session implements SecurityParams {
 		return fhirServiceManager;
 	}
 	
-	public void setMesaSessionName(String name) {
-		mesaSessionName = name;
+	public void setTestSession(TestSession name) {
+		testSession = name;
 
 		File testLogCache;
 		try {
@@ -235,13 +236,11 @@ public class Session implements SecurityParams {
 			return;
 		}
 		
-		mesaSessionCache = new File(testLogCache, mesaSessionName);
+		mesaSessionCache = new File(testLogCache, testSession.value);
 		mesaSessionCache.mkdirs();
 	}
 
-	public String getMesaSessionName() { return mesaSessionName; }
-
-	public String getTestSession() { getMesaSessionName() }
+	public TestSession getTestSession() { return testSession; }
 
 	public void setSessionProperties(Map<String, String> m) {
 		SessionPropertyManager props = getSessionProperties();
@@ -300,7 +299,7 @@ public class Session implements SecurityParams {
 	}
 	
 	public SimId getDefaultSimId() {
-		return new SimId(ipAddr);
+		return new SimId(testSession, ipAddr);
 	}
 	
 	public void setLastUpload(String filename, byte[] last, String filename2, byte[] last2) {
@@ -483,7 +482,7 @@ public class Session implements SecurityParams {
 	}
 	
 	public SessionPropertyManager getSessionProperties() {
-		if (mesaSessionName == null)
+		if (testSession == null)
 			return null;
 
 		if (sessionProperties == null) {
@@ -561,7 +560,7 @@ public class Session implements SecurityParams {
 	}
 
 	public TestKitSearchPath getTestkitSearchPath() {
-		return new TestKitSearchPath(getCurrentEnvironment(), getMesaSessionName());
+		return new TestKitSearchPath(getCurrentEnvironment(), getTestSession());
 	}
 
 }

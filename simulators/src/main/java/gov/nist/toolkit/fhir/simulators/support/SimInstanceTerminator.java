@@ -1,5 +1,6 @@
 package gov.nist.toolkit.fhir.simulators.support;
 
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.server.SimCommon;
@@ -17,11 +18,11 @@ import java.util.List;
 public class SimInstanceTerminator {
 	static Logger logger = Logger.getLogger(SimInstanceTerminator.class);
 
-	public int run() throws Exception  {
+	public int run(TestSession testSession) throws Exception  {
 		Date now = new Date();
 		int deleted = 0;
 		
-		List<SimId> simIds = SimDb.getAllSimIds();
+		List<SimId> simIds = SimDb.getAllSimIds(testSession);
 		for (SimId simId : simIds) {
 			SimulatorConfig asc;
 			try {

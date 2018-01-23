@@ -109,7 +109,7 @@ public class SubmitResourcePresenter extends AbstractPresenter<SubmitResourceVie
                     ResultDisplay.display(result, getPresenter());
                     ResponseLoader.load(result.logId, "Results", getView());
                 }
-            }.run(new FhirTransactionRequest(getCommandContext(), new SiteSpec(selectedSite), selectedDatasetElement));
+            }.run(new FhirTransactionRequest(getCommandContext(), new SiteSpec(selectedSite, ClientUtils.INSTANCE.getCurrentTestSession()), selectedDatasetElement));
         } else {
             new FhirCreateCommand() {
                 @Override
@@ -118,7 +118,7 @@ public class SubmitResourcePresenter extends AbstractPresenter<SubmitResourceVie
                     ResultDisplay.display(result, getPresenter());
                     ResponseLoader.load(result.logId, "Results", getView());
                 }
-            }.run(new FhirCreateRequest(getCommandContext(), new SiteSpec(selectedSite), selectedDatasetElement));
+            }.run(new FhirCreateRequest(getCommandContext(), new SiteSpec(selectedSite, ClientUtils.INSTANCE.getCurrentTestSession()), selectedDatasetElement));
         }
     }
 

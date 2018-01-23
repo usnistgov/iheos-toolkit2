@@ -223,7 +223,7 @@ public class DsSimCommon {
        MessageValidatorEngine mvc, ErrorRecorderBuilder gerb) throws IOException {
        ValidateMessageService vms = new ValidateMessageService(regIndex);
        MessageValidatorEngine mve = vms.runValidation(vc, 
-           db.getRequestMessageHeader(), db.getRequestMessageBody(), mvc, gerb);
+           db.getRequestMessageHeader(), db.getRequestMessageBody(), mvc, gerb, db.getTestSession());
        hparser = vms.getHttpMessageValidator().getHttpParserBa();
        return mve;
     }

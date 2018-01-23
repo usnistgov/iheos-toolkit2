@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.scripts
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.installation.server.Installation
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.registrymetadata.Metadata
 import gov.nist.toolkit.registrymetadata.MetadataParser
 import gov.nist.toolkit.results.client.LogIdIOFormat
@@ -46,6 +47,7 @@ public class DashboardDaemon {
 	List<RepositoryStatus> repositories = new ArrayList<RepositoryStatus>();
 	Date date = new Date();
     static final int exceptionReportingDepth = 15
+	TestSession testSession = TestSession.DEFAULT_TEST_SESSION
 
 	public File getDashboardDirectory() {
 		return new File(output);
@@ -76,7 +78,7 @@ public class DashboardDaemon {
 //		SiteServiceManager siteServiceManager = new SiteServiceManager(null);
 //		siteServiceManager.loadExternalSites();
 		sites = null;
-		sites = new SeparateSiteLoader().load(Installation.instance().actorsDir(), sites);
+		sites = new SeparateSiteLoader(testSession).load(Installation.instance().actorsDir(testSession), sites);
         println 'sites are ' + sites
 //		sites = siteServiceManager.getSites();
 		// experimental
@@ -92,7 +94,7 @@ public class DashboardDaemon {
 
 		List<String> registrySiteNames;
 		try {
-			registrySiteNames = sites.getSiteNamesWithActor(ActorType.REGISTRY);
+			registrySiteNames = sites.getSiteNamesWithActor(ActorType.REGISTRY, testSession);
 			System.out.println("Registry sites are " + registrySiteNames);
 		} catch (Exception e1) {
 			System.out.println("Exception: " + e1.getMessage());
@@ -100,11 +102,11 @@ public class DashboardDaemon {
 		}
 		for (String regSiteName : registrySiteNames) {
 			RegistryStatus regStatus = new RegistryStatus();
-			SiteSpec siteSpec = new SiteSpec(regSiteName, ActorType.REGISTRY, null);
+			SiteSpec siteSpec = new SiteSpec(regSiteName, ActorType.REGISTRY, null, testSession);
 			regStatus.name = siteSpec.name;
 			Site site;
 			try {
-				site = sites.getSite(siteSpec.name);
+				site = sites.getSite(siteSpec.name, testSession);
 			} catch (Exception e1) {
 				regStatus.status = false;
 				regStatus.fatalError = ExceptionUtil.exception_details(e1, exceptionReportingDepth);
@@ -120,10 +122,10 @@ public class DashboardDaemon {
 				continue;
 			}
 
-			TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, "default");
+			TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, testSession);
 			Xdstest2 xdstest;
 			try {
-				xdstest = new Xdstest2(new File(warHome + File.separator + "toolkitx"), searchPath, null);
+				xdstest = new Xdstest2(new File(warHome + File.separator + "toolkitx"), searchPath, null, testSession);
 			} catch (Exception e) {
 				regStatus.status = false;
 				regStatus.fatalError = ExceptionUtil.exception_details(e, exceptionReportingDepth);
@@ -159,7 +161,7 @@ public class DashboardDaemon {
 			}
 			TransactionSettings ts = new TransactionSettings();
 			ts.assignPatientId = false;
-			ts.siteSpec = new SiteSpec();
+			ts.siteSpec = new SiteSpec(testSession);
 			ts.siteSpec.isAsync = false;
 			ts.securityParams = s;
             ts.logRepository =
@@ -236,7 +238,7 @@ public class DashboardDaemon {
 	void scanRepositories(boolean secure)  {
 		List<String> repositorySiteNames;
 		try {
-			repositorySiteNames = sites.getSiteNamesWithRepository();
+			repositorySiteNames = sites.getSiteNamesWithRepository(testSession);
 			System.out.println("Repository Sites are " + repositorySiteNames);
 		} catch (Exception e1) {
 			System.out.println("Exception: " + e1.getMessage());
@@ -246,11 +248,11 @@ public class DashboardDaemon {
 			RepositoryStatus rstatus = new RepositoryStatus();
 			repositories.add(rstatus);
 			rstatus.date = date.toString();
-			SiteSpec siteSpec = new SiteSpec(repSiteName, ActorType.REPOSITORY, null);
+			SiteSpec siteSpec = new SiteSpec(repSiteName, ActorType.REPOSITORY, null, testSession);
 			rstatus.name = siteSpec.name;
 			Site site;
 			try {
-				site = sites.getSite(siteSpec.name);
+				site = sites.getSite(siteSpec.name, testSession);
 			} catch (Exception e1) {
 				rstatus.status = false;
 				rstatus.fatalError = ExceptionUtil.exception_details(e1, exceptionReportingDepth);
@@ -270,8 +272,8 @@ public class DashboardDaemon {
 
 			Xdstest2 xdstest;
 			try {
-				TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, "default");
-				xdstest = new Xdstest2(new File(warHome + File.separator + "toolkitx"), searchPath, null);
+				TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, testSession);
+				xdstest = new Xdstest2(new File(warHome + File.separator + "toolkitx"), searchPath, null, testSession);
 			} catch (Exception e) {
 				rstatus.status = false;
 				rstatus.fatalError = ExceptionUtil.exception_details(e, exceptionReportingDepth)
@@ -293,7 +295,7 @@ public class DashboardDaemon {
             println logRepository
             List<String> areas = ['testdata-repository']
 			try {
-				TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, "default");
+				TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, testSession);
 				TestKit testKit = searchPath.getTestKitForTest(testInstance.getId());
 				if (testKit == null)
 					throw new Exception("Test " + testInstance + " not found");
@@ -307,7 +309,7 @@ public class DashboardDaemon {
 			Map<String, String> parms = new HashMap<String, String>();
 			parms.put('$patientid$', pid);
 			TransactionSettings ts = new TransactionSettings();
-			ts.siteSpec = new SiteSpec();
+			ts.siteSpec = new SiteSpec(testSession);
 			ts.assignPatientId = false;
 			ts.siteSpec.isAsync = false;
 			ts.securityParams = s;

@@ -1,6 +1,7 @@
 package gov.nist.toolkit.xdstools2.server.test.java.simulatorServiceManager;
 
 import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.services.shared.SimulatorServiceManager;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.simcommon.client.Simulator;
@@ -49,11 +50,11 @@ public class SimulatorServiceManagerConfigsTest {
 	
 	@Test
 	public void simInSimConfigsTest() throws Exception {
-		int beforeSimsSize = sm.getAllSites().size();
+		int beforeSimsSize = sm.getAllSites(TestSession.DEFAULT_TEST_SESSION).size();
 		Assert.assertEquals(0, beforeSimsSize);
 		createNewRegistry();
-		Assert.assertEquals(1, sm.getAllSites().size());
-		Assert.assertEquals(beforeSimsSize + 1, sm.getAllSites().size());
+		Assert.assertEquals(1, sm.getAllSites(TestSession.DEFAULT_TEST_SESSION).size());
+		Assert.assertEquals(beforeSimsSize + 1, sm.getAllSites(TestSession.DEFAULT_TEST_SESSION).size());
 	}
 
 }

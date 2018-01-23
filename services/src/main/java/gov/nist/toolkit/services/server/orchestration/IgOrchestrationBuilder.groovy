@@ -49,7 +49,7 @@ class IgOrchestrationBuilder {
 
             boolean forceNewPatientIds = !request.isUseExistingState()
 
-            orchProps = new OrchestrationProperties(session, request.userName, ActorType.INITIATING_GATEWAY, pidNameMap.keySet(), forceNewPatientIds)
+            orchProps = new OrchestrationProperties(session, request.testSession, ActorType.INITIATING_GATEWAY, pidNameMap.keySet(), forceNewPatientIds)
 
             Pid oneDocPid = PidBuilder.createPid(orchProps.getProperty("oneDocPid"))
             Pid twoDocPid = PidBuilder.createPid(orchProps.getProperty("twoDocPid"))
@@ -63,10 +63,10 @@ class IgOrchestrationBuilder {
             response.setUnknownPid(registryErrorPid)
             response.setNoAdOptionPid(noAdOptionPid)
 
-            List<String> simIds = buildRGs(registryErrorPid)
+            List<SimId> simIds = buildRGs(registryErrorPid)
 
-            Site rg1Site = SimCache.getSite(session.getId(), simIds[0])
-            Site rg2Site = SimCache.getSite(session.getId(), simIds[1])
+            Site rg1Site = SimCache.getSite(session.getId(), simIds[0].toString(), simIds[0].testSession)
+            Site rg2Site = SimCache.getSite(session.getId(), simIds[1].toString(), simIds[1].testSession)
 
             String home0 = rgConfigs.get(0).get(SimulatorProperties.homeCommunityId).asString()
             String home1 = rgConfigs.get(1).get(SimulatorProperties.homeCommunityId).asString()
@@ -74,28 +74,28 @@ class IgOrchestrationBuilder {
             if (!request.useExistingState) {
                 // send necessary Patient ID Feed messages
                 request.setPifType(PifType.V2)
-                new PifSender(api, request.getUserName(), rg1Site.siteSpec(), orchProps).send(PifType.V2, pidNameMap)
-                new PifSender(api, request.getUserName(), rg2Site.siteSpec(), orchProps).send(PifType.V2, pidNameMap)
+                new PifSender(api, request.testSession, rg1Site.siteSpec(request.testSession), orchProps).send(PifType.V2, pidNameMap)
+                new PifSender(api, request.testSession, rg2Site.siteSpec(request.testSession), orchProps).send(PifType.V2, pidNameMap)
 
-                TestInstance testInstance15807 = TestInstanceManager.initializeTestInstance(request.getUserName(), new TestInstance('15807'))
+                TestInstance testInstance15807 = TestInstanceManager.initializeTestInstance(request.testSession, new TestInstance('15807'))
                 MessageItem itemOneDoc1 = response.addMessage(testInstance15807, true, "")
                 MessageItem itemTwoDoc = response.addMessage(testInstance15807, true, "")
                 MessageItem itemOneDoc2 = response.addMessage(testInstance15807, true, "")
                 MessageItem itemOneDoc3 = response.addMessage(testInstance15807, true, "")
                 MessageItem itemRegistryError = response.addMessage(testInstance15807, true, "")
 
-                TestInstance testInstance12318 = TestInstanceManager.initializeTestInstance(request.getUserName(), new TestInstance('12318'))
+                TestInstance testInstance12318 = TestInstanceManager.initializeTestInstance(request.testSession, new TestInstance('12318'))
 //                MessageItem item12318 = response.addMessage(testInstance12318, true, "")
 
                 // Submit test data
                 try {
-                    util.submit(request.userName, SiteBuilder.siteSpecFromSimId(rgConfigs.get(0).id), new TestInstance("15807"), 'onedoc1', oneDocPid, home0)
+                    util.submit(request.testSession, SiteBuilder.siteSpecFromSimId(rgConfigs.get(0).id), new TestInstance("15807"), 'onedoc1', oneDocPid, home0)
                 } catch (Exception e) {
                     itemOneDoc1.setMessage("Initialization of " + rgConfigs.get(0).id + " (section onedoc1) failed:\n" + e.getMessage());
                     itemOneDoc1.setSuccess(false)
                 }
                 try {
-                    util.submit(request.userName, SiteBuilder.siteSpecFromSimId(rgConfigs.get(0).id), new TestInstance("15807"), 'twodoc', twoDocPid, home0)
+                    util.submit(request.testSession, SiteBuilder.siteSpecFromSimId(rgConfigs.get(0).id), new TestInstance("15807"), 'twodoc', twoDocPid, home0)
                 } catch (Exception e) {
                     itemTwoDoc.setMessage("Initialization of " + rgConfigs.get(0).id + " (section twodoc) failed:\n" + e.getMessage());
                     itemTwoDoc.setSuccess(false)
@@ -108,7 +108,7 @@ class IgOrchestrationBuilder {
                         '$testdata_home$' : home0,
                         '$testdata_repid$': rgConfigs[0].getConfigEle(SimulatorProperties.repositoryUniqueId).asString()]
                 try {
-                    util.submit(request.userName, SiteBuilder.siteSpecFromSimId(rgConfigs.get(0).id), new TestInstance("15807"), 'onedoc2', params)
+                    util.submit(request.testSession.value, SiteBuilder.siteSpecFromSimId(rgConfigs.get(0).id), new TestInstance("15807"), 'onedoc2', params)
                 } catch (Exception e) {
                     itemOneDoc2.setMessage("Initialization of " + rgConfigs.get(0).id + " (section onedoc2) failed:\n" + e.getMessage());
                     itemOneDoc2.setSuccess(false)
@@ -119,7 +119,7 @@ class IgOrchestrationBuilder {
                         '$testdata_home$' : home1,
                         '$testdata_repid$': rgConfigs[1].getConfigEle(SimulatorProperties.repositoryUniqueId).asString()]
                 try {
-                    util.submit(request.userName, SiteBuilder.siteSpecFromSimId(rgConfigs.get(1).id), new TestInstance("15807"), 'onedoc3', params)
+                    util.submit(request.testSession.value, SiteBuilder.siteSpecFromSimId(rgConfigs.get(1).id), new TestInstance("15807"), 'onedoc3', params)
                 } catch (Exception e) {
                     itemOneDoc3.setMessage("Initialization of " + rgConfigs.get(1).id + " (section onedoc3) failed:\n" + e.getMessage());
                     itemOneDoc3.setSuccess(false)
@@ -130,7 +130,7 @@ class IgOrchestrationBuilder {
                         '$testdata_home$' : home1,
                         '$testdata_repid$': rgConfigs[1].getConfigEle(SimulatorProperties.repositoryUniqueId).asString()]
                 try {
-                    util.submit(request.userName, SiteBuilder.siteSpecFromSimId(rgConfigs.get(1).id), new TestInstance("15807"), 'registryError', params)
+                    util.submit(request.testSession.value, SiteBuilder.siteSpecFromSimId(rgConfigs.get(1).id), new TestInstance("15807"), 'registryError', params)
                 } catch (Exception e) {
                     itemRegistryError.setMessage("Initialization of " + rgConfigs.get(1).id + " (section registryError) failed:\n" + e.getMessage());
                     itemRegistryError.setSuccess(false)
@@ -153,8 +153,8 @@ class IgOrchestrationBuilder {
             response.noAdOptionPid = noAdOptionPid
             response.simulatorConfigs = rgConfigs
             response.igSimulatorConfig = igConfig
-            response.supportRG1 = SimCache.getSite(session.getId(), simIds[0])
-            response.supportRG2 = SimCache.getSite(session.getId(), simIds[1])
+            response.supportRG1 = SimCache.getSite(simIds[0].toString(), simIds[0].testSession)
+            response.supportRG2 = SimCache.getSite(simIds[1].toString(), simIds[1].testSession)
 
             orchProps.save();
 
@@ -164,12 +164,12 @@ class IgOrchestrationBuilder {
         }
     }
 
-    List<String> buildRGs(Pid unknownPid) {
+    List<SimId> buildRGs(Pid unknownPid) {
         // build and initialize remote communities
         String id1 = 'community1'
         String id2 = 'community2'
-        SimId rgSimId1 = new SimId(request.userName, id1, ActorType.RESPONDING_GATEWAY.name, request.environmentName)
-        SimId rgSimId2 = new SimId(request.userName, id2, ActorType.RESPONDING_GATEWAY.name, request.environmentName)
+        SimId rgSimId1 = new SimId(request.testSession, id1, ActorType.RESPONDING_GATEWAY.name, request.environmentName)
+        SimId rgSimId2 = new SimId(request.testSession, id2, ActorType.RESPONDING_GATEWAY.name, request.environmentName)
         SimulatorConfig rgSimConfig1
         SimulatorConfig rgSimConfig2
         boolean reuse = false  // updated as we progress
@@ -240,7 +240,7 @@ class IgOrchestrationBuilder {
         if (request.includeLinkedIG) {
             // create initiating gateway (SUT) to allow self test
             String igId = 'ig'
-            SimId igSimId = new SimId(request.userName, igId, ActorType.INITIATING_GATEWAY.name, request.environmentName)
+            SimId igSimId = new SimId(request.testSession, igId, ActorType.INITIATING_GATEWAY.name, request.environmentName)
             igConfig = api.createSimulator(igSimId).getConfig(0);
 
             // link all responding gateways to initiating gateway
@@ -250,6 +250,6 @@ class IgOrchestrationBuilder {
             api.saveSimulator(igConfig)
         }
 
-        return [rgSimId1.toString(), rgSimId2.toString()]
+        return [rgSimId1, rgSimId2]
     }
 }

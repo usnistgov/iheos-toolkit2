@@ -39,12 +39,12 @@ class RegOrchestrationBuilder {
 
         SimId selfTestRegId = null
         if (request.selfTest()) {
-            selfTestRegId = new SimId(request.userName, 'reg_sut', ActorType.REGISTRY.name, request.environmentName)
+            selfTestRegId = new SimId(request.testSession, 'reg_sut', ActorType.REGISTRY.name, request.environmentName)
         }
 
         boolean forceNewPatientIds = !request.isUseExistingState()
 
-        OrchestrationProperties orchProps = new OrchestrationProperties(session, request.userName, ActorType.REGISTRY, pidNameMap.keySet(), forceNewPatientIds)
+        OrchestrationProperties orchProps = new OrchestrationProperties(session, request.testSession, ActorType.REGISTRY, pidNameMap.keySet(), forceNewPatientIds)
 
         SiteSpec registrySut
         if (selfTestRegId) {
@@ -68,22 +68,22 @@ class RegOrchestrationBuilder {
         response.setMpq1Pid(mpq1Pid)
         response.setMpq2Pid(mpq2Pid)
 
-        TestInstance testInstance12346 = TestInstanceManager.initializeTestInstance(request.getUserName(), new TestInstance("12346"))
+        TestInstance testInstance12346 = TestInstanceManager.initializeTestInstance(request.testSession, new TestInstance("12346"))
         MessageItem item12346 = response.addMessage(testInstance12346, true, "");
 
-        TestInstance testInstance12374 = TestInstanceManager.initializeTestInstance(request.getUserName(), new TestInstance("12374"))
+        TestInstance testInstance12374 = TestInstanceManager.initializeTestInstance(request.testSession, new TestInstance("12374"))
         MessageItem item12374 = response.addMessage(testInstance12374, true, "");
 
         if (orchProps.updated()) {
             // send necessary Patient ID Feed messages
-            new PifSender(api, request.getUserName(), request.registrySut, orchProps).send(PifType.V2, pidNameMap)
+            new PifSender(api, request.testSession, request.registrySut, orchProps).send(PifType.V2, pidNameMap)
 
             // Initialize Registry for Stored Query testing
             Map<String, String> parms = new HashMap<>();
             parms.put('$patientid$', sqPid.toString())
 
             try {
-                util.submit(request.userName, request.registrySut, testInstance12346, parms);
+                util.submit(request.testSession.value, request.registrySut, testInstance12346, parms);
 
             } catch (Exception e) {
 //                item12346.setMessage("Initialization of " + request.registrySut.name + " failed:\n" + e.getMessage());
@@ -91,7 +91,7 @@ class RegOrchestrationBuilder {
             }
 
             try {
-                util.submit(request.userName, request.registrySut, testInstance12374, parms);
+                util.submit(request.testSession.value, request.registrySut, testInstance12374, parms);
 
             } catch (Exception e) {
 //                item12374.setMessage("Initialization of " + request.registrySut.name + " failed:\n" + e.getMessage());

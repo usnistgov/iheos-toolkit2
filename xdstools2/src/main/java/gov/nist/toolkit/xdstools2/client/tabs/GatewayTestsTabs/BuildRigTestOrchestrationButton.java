@@ -7,6 +7,7 @@ import com.google.gwt.user.client.ui.Panel;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.client.RigOrchestrationRequest;
 import gov.nist.toolkit.services.client.RigOrchestrationResponse;
@@ -40,7 +41,7 @@ class BuildRIGTestOrchestrationButton extends AbstractOrchestrationButton {
          return;
       }
       RigOrchestrationRequest request = new RigOrchestrationRequest();
-      request.setUserName(testTab.getCurrentTestSession());
+      request.setTestSession(new TestSession(testTab.getCurrentTestSession()));
      //  request.setIncludeLinkedRIG(includeRIG);
       new BuildRigTestOrchestrationCommand(){
          @Override

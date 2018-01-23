@@ -16,6 +16,7 @@ import gov.nist.toolkit.actortransaction.client.ActorOption;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.IheItiProfile;
 import gov.nist.toolkit.configDatatypes.client.Pid;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.interactiondiagram.client.events.DiagramClickedEvent;
 import gov.nist.toolkit.interactiondiagram.client.events.DiagramPartClickedEventHandler;
 import gov.nist.toolkit.interactiondiagram.client.widgets.InteractionDiagram;
@@ -159,7 +160,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 			public void onClicked(TestInstance testInstance, InteractionDiagram.DiagramPart part) {
 				if (InteractionDiagram.DiagramPart.RequestConnector.equals(part)
 						|| InteractionDiagram.DiagramPart.ResponseConnector.equals(part)) {
-					new LaunchInspectorClickHandler(testInstance, getCurrentTestSession(), new SiteSpec(testContext.getSiteName())).onClick(null);
+					new LaunchInspectorClickHandler(testInstance, getCurrentTestSession(), new SiteSpec(testContext.getSiteName(), getTestSession())).onClick(null);
 				}
 			}
 		});
@@ -914,7 +915,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 	ClickHandler getInspectClickHandler(TestInstance testInstance) {
 		new PopupMessage("ti=" + testInstance.toString() + " ts=" + getCurrentTestSession() + " sn=" + testContext.getSiteName());
-		return new LaunchInspectorClickHandler(testInstance, getCurrentTestSession(), new SiteSpec(testContext.getSiteName()));
+		return new LaunchInspectorClickHandler(testInstance, getCurrentTestSession(), new SiteSpec(testContext.getSiteName(), getTestSession()));
 	}
 
 	/**
@@ -962,7 +963,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 				// Interface can be refactored to support mulitple run methods such as runTest[WithSamlOption] and runTest.
 				TestInstance stsTestInstance = new TestInstance("GazelleSts");
 				stsTestInstance.setSection("samlassertion-issue");
-				SiteSpec stsSpec =  new SiteSpec("GazelleSts");
+				SiteSpec stsSpec =  new SiteSpec(new TestSession("GazelleSts"));
 				Map<String, String> params = new HashMap<>();
 				String xuaUsername = "Xuagood";
 				if (orchInit.isXuaOption()) {
@@ -1120,7 +1121,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 	@Override
 	public SiteSpec getSiteToIssueTestAgainst() {
-		return (siteToIssueTestAgainst == null ? new SiteSpec("gov/nist/toolkit/installation/shared") : siteToIssueTestAgainst);
+		return (siteToIssueTestAgainst == null ? new SiteSpec("gov/nist/toolkit/installation/shared", getTestSession()) : siteToIssueTestAgainst);
 	}
 
 	public void setSiteToIssueTestAgainst(SiteSpec siteToIssueTestAgainst) {
@@ -1166,5 +1167,9 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 	@Override
 	public ActorOptionConfig getCurrentActorOption() { return currentActorOption; }
+
+	public TestSession getTestSession() {
+		return new TestSession(getCurrentTestSession());
+	}
 
 }

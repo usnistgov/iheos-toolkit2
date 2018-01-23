@@ -1,5 +1,6 @@
 package gov.nist.toolkit.adt;
 
+import gov.nist.toolkit.installation.shared.TestSession;
 import org.apache.log4j.Logger;
 
 /**
@@ -12,7 +13,8 @@ public class ThreadPoolItem {
 
     private boolean inUse = false;
     Thread thread = null;
-    String simId = null;
+    String simId = null;  // string because SimId is not available on classpath from here
+    TestSession testSession;
     int timeoutInMilli = 0;
     PifCallback pifCallback = null;
 
@@ -30,6 +32,7 @@ public class ThreadPoolItem {
         setInUse(false);
         thread = null;
         simId = null;
+        testSession = null;
     }
 
     public boolean isInUse() {

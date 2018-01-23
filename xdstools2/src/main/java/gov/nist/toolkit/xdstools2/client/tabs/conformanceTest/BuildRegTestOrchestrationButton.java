@@ -4,6 +4,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RadioButton;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.services.client.PifType;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.client.RegOrchestrationRequest;
@@ -85,13 +86,14 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
         initializationResultsPanel.clear();
         testTab.getMainView().showLoadingMessage("Initializing...");
 
+        TestSession testSession = new TestSession(testTab.getCurrentTestSession());
         RegOrchestrationRequest request = new RegOrchestrationRequest();
         request.selfTest(isSelfTest());
         request.setPifType((v2Feed.isChecked()) ? PifType.V2 : PifType.NONE);
-        request.setUserName(testTab.getCurrentTestSession());
+        request.setTestSession(testSession);
         request.setEnvironmentName(testTab.getEnvironmentSelection());
         request.setUseExistingState(!isResetRequested());
-        SiteSpec sutSiteSpec = (testContext.getSiteUnderTest() == null) ? null : testContext.getSiteUnderTest().siteSpec();
+        SiteSpec sutSiteSpec = (testContext.getSiteUnderTest() == null) ? null : testContext.getSiteUnderTest().siteSpec(testSession);
         if (isSaml()) {
             setSamlAssertion(sutSiteSpec);
         }
