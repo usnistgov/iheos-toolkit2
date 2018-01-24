@@ -5,10 +5,12 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.installation.server.Installation
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO
 import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.client.SimIdFactory
 import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import gov.nist.toolkit.testengine.scripts.BuildCollections
@@ -29,10 +31,10 @@ class RecipientSpecxx extends ToolkitSpecification {
     @Shared String testSession = 'bill';
     @Shared String id = 'regrep'
     @Shared String rr = "${testSession}__${id}"
-    @Shared SimId simId = new SimId(rr)  // ultimate destination
+    @Shared SimId simId = SimIdFactory.simIdBuilder(rr)  // ultimate destination
     @Shared String proxyId = "simproxy"
     @Shared String simProxyName = "${testSession}__${proxyId}"
-    @Shared SimId simProxyId = new SimId(simProxyName)
+    @Shared SimId simProxyId = SimIdFactory.simIdBuilder(simProxyName)
     @Shared SimConfig rrSimConfig
     @Shared SimConfig proxySimConfig
     @Shared SimConfig updatedProxySimConfig
@@ -93,7 +95,7 @@ class RecipientSpecxx extends ToolkitSpecification {
 
     def setup() {
         println "EC is ${Installation.instance().externalCache().toString()}"
-        println "${api.getSiteNames(true)}"
+        println "${api.getSiteNames(true, new TestSession(testSession))}"
 //        api.createTestSession(testSession)
 //        if (!api.simulatorExists(simId)) {
 //            println "Creating sim ${simId}"
@@ -108,13 +110,13 @@ class RecipientSpecxx extends ToolkitSpecification {
 
     def 'send XDR through simproxy'() {
         when:
-        SiteSpec siteSpec = new SiteSpec(simProxyName)
+        SiteSpec siteSpec = new SiteSpec(new TestSession(testSession))
         TestInstance testInstance = new TestInstance('12360')
         List<String> sections = ['submit']
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', "P20160803215512.2^^^&1.3.6.1.4.1.21367.2005.13.20.1000&ISO");
 
-        TestOverviewDTO testOverviewDTO = session.xdsTestServiceManager().runTest(envName, testSession, siteSpec, testInstance, sections, params, null, true)
+        TestOverviewDTO testOverviewDTO = session.xdsTestServiceManager().runTest(envName, new TestSession(testSession), siteSpec, testInstance, sections, params, null, true)
         SimDb simDb = new SimDb(simProxyId, ActorType.REPOSITORY, TransactionType.PROVIDE_AND_REGISTER, true)
 
         then:

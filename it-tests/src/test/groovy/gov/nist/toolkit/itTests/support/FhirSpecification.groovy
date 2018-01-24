@@ -43,7 +43,7 @@ class FhirSpecification extends ToolkitSpecification {
      * @param simId
      */
     gov.nist.toolkit.toolkitServicesCommon.SimId spiSimId(SimId simId) {
-        ToolkitFactory.newSimId(simId.id, simId.testSession, simId.actorType, simId.environmentName, simId.fhir)
+        ToolkitFactory.newSimId(simId.id, simId.testSession.value, simId.actorType, simId.environmentName, simId.fhir)
     }
 
 

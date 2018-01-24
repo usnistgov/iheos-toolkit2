@@ -126,7 +126,7 @@ class CreateSimSpec extends ToolkitSpecification {
     }
 
     def cleanupSpec() {
-        if (params!=null)
+        if (params && spi)
             spi.delete(params)
     }
 }

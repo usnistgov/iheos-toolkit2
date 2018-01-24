@@ -12,10 +12,12 @@ import gov.nist.toolkit.simcommon.server.SimManager
 import gov.nist.toolkit.sitemanagement.client.Site
 import gov.nist.toolkit.sitemanagement.client.TransactionBean
 import gov.nist.toolkit.xdsexception.NoSimulatorException
+import groovy.transform.TypeChecked
 
 /**
  *
  */
+@TypeChecked
 class FhirActorFactory extends AbstractActorFactory implements IActorFactory {
 
     static final List<TransactionType> incomingTransactions =
@@ -29,7 +31,7 @@ class FhirActorFactory extends AbstractActorFactory implements IActorFactory {
         ActorType actorType = ActorType.FHIR_SERVER
         SimulatorConfig sc
         if (configureBase)
-            sc = configureBaseElements(actorType, simId)
+            sc = configureBaseElements(actorType, simId, simId.testSession)
         else
             sc = new SimulatorConfig()
 
@@ -50,7 +52,7 @@ class FhirActorFactory extends AbstractActorFactory implements IActorFactory {
         String siteName = asc.getDefaultName()
 
         if (site == null)
-            site = new Site(siteName)
+            site = new Site(siteName, asc.id.testSession)
 
         boolean isAsync = false
 

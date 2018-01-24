@@ -5,6 +5,7 @@ import ca.uhn.fhir.rest.api.MethodOutcome
 import gov.nist.toolkit.fhir.server.resourceProvider.ToolkitResourceProvider
 import gov.nist.toolkit.fhir.support.SimIndexManager
 import gov.nist.toolkit.installation.server.Installation
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.FhirSpecification
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.SimDb
@@ -20,7 +21,7 @@ class DirectInsertPatientResourceSpec  extends FhirSpecification {
     @Shared def testSession = 'default'
     @Shared def simIdName = 'test'
 
-    @Shared SimId simId = new SimId(testSession, simIdName).forFhir()
+    @Shared SimId simId = new SimId(new TestSession(testSession), simIdName).forFhir()
     @Shared SimDb simDb
     @Shared FhirContext ourCtx = FhirContext.forDstu3()
 

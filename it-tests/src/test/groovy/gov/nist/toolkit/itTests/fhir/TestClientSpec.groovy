@@ -1,6 +1,7 @@
 package gov.nist.toolkit.itTests.fhir
 
 import ca.uhn.fhir.context.FhirContext
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.FhirSpecification
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
@@ -19,7 +20,7 @@ class TestClientSpec extends FhirSpecification {
     @Shared def simIdName = 'myfhirsys'
     @Shared def siteName = "${testSession}__${simIdName}"
 
-    @Shared SimId simId = new SimId(testSession, simIdName).forFhir()
+    @Shared SimId simId = new SimId(new TestSession(testSession), simIdName).forFhir()
     @Shared FhirContext ourCtx = FhirContext.forDstu3()
 
     @Shared SimDb simDb
@@ -41,7 +42,7 @@ class TestClientSpec extends FhirSpecification {
         // SimId must be translated into SPI variety
         spi.delete(spiSimId(simId))   // if you use the form spi.delete(simIdName, testSession) it will look in the SimDb instead of ResDb
 
-        spi.createFhirServer(simId.id, simId.testSession, 'default')
+        spi.createFhirServer(simId.id, simId.testSession.value, 'default')
 
     }
 

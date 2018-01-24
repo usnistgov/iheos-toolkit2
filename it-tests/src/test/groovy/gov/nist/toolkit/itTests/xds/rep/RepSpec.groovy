@@ -3,6 +3,7 @@ package gov.nist.toolkit.itTests.xds.rep
 import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.services.client.RawResponse
@@ -28,7 +29,7 @@ class RepSpec extends ToolkitSpecification {
     @Shared SimulatorBuilder spi
     @Shared String testSession = 'repspec';
     @Shared String id = 'rep'
-    @Shared SimId simId = new SimId(testSession, id)
+    @Shared SimId simId = new SimId(new TestSession(testSession), id)
     @Shared String envName = 'default'
     @Shared SimConfig repSimConfig
 
@@ -76,7 +77,7 @@ class RepSpec extends ToolkitSpecification {
         request.environmentName = envName
         request.userName = testSession
         request.useExistingSimulator = false
-        request.sutSite = new SiteSpec(simId.toString())
+        request.sutSite = new SiteSpec(simId.testSession)
 
         when: 'build orchestration'
         def builder = new RepOrchestrationBuilder(api, session, request)
@@ -103,15 +104,15 @@ class RepSpec extends ToolkitSpecification {
         siteSpec.orchestrationSiteName = supportConfig.id
 
         SimManager simManager = new SimManager(api.getSession().id)
-        Sites sites = simManager.getAllSites(new Sites())
-        Site sutSite = sites.getSite(siteSpec.name)
+        Sites sites = simManager.getAllSites(new Sites(new TestSession(testSession)), new TestSession(testSession))
+        Site sutSite = sites.getSite(siteSpec.name, new TestSession(testSession))
 
         TestInstance testInstance = new TestInstance('12360')
         List<String> sections = []
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', "P20160803215512.2^^^&1.3.6.1.4.1.21367.2005.13.20.1000&ISO");
 
-        TestOverviewDTO testOverviewDTO = session.xdsTestServiceManager().runTest(envName, testSession, siteSpec, testInstance, sections, params, null, true)
+        TestOverviewDTO testOverviewDTO = session.xdsTestServiceManager().runTest(envName, new TestSession(testSession), siteSpec, testInstance, sections, params, null, true)
 
         then:
         testOverviewDTO.pass

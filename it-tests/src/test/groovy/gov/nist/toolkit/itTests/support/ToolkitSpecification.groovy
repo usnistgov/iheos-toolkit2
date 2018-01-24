@@ -4,11 +4,8 @@ import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.grizzlySupport.GrizzlyController
 import gov.nist.toolkit.installation.server.Installation
-import gov.nist.toolkit.results.client.AssertionResult
-import gov.nist.toolkit.results.client.AssertionResults
-import gov.nist.toolkit.results.client.Result
-import gov.nist.toolkit.results.client.TestInstance
-import gov.nist.toolkit.results.client.TestLogs
+import gov.nist.toolkit.installation.shared.TestSession
+import gov.nist.toolkit.results.client.*
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
 import gov.nist.toolkit.session.server.Session
@@ -19,6 +16,7 @@ import org.junit.Rule
 import org.junit.rules.TestName
 import spock.lang.Shared
 import spock.lang.Specification
+
 /**
  *
  */
@@ -50,10 +48,12 @@ class ToolkitSpecification extends Specification {
             FileUtils.cleanDirectory(testDataDir)
         }
 
-        testDataDir = Installation.instance().simDbFile()
-        if (testDataDir.exists()) {
-            System.out.println("Clearing TEST (simdb) data before testing...")
-            FileUtils.cleanDirectory(testDataDir)
+        Installation.instance().testSessions.each { TestSession testSession ->
+            testDataDir = Installation.instance().simDbFile(testSession)
+            if (testDataDir.exists()) {
+                System.out.println("Clearing TEST (simdb) data before testing...")
+                FileUtils.cleanDirectory(testDataDir)
+            }
         }
     }
 

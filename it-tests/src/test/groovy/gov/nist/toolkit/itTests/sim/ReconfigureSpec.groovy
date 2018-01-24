@@ -1,17 +1,19 @@
 package gov.nist.toolkit.itTests.sim
 
-import gov.nist.toolkit.actortransaction.server.EndpointParser
 import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.actortransaction.server.EndpointParser
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
+import gov.nist.toolkit.fhir.simulators.servlet.ReconfigureSimulators
 import gov.nist.toolkit.installation.server.Installation
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.client.Simulator
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
-import gov.nist.toolkit.fhir.simulators.servlet.ReconfigureSimulators
 import spock.lang.Shared
 import spock.lang.Specification
+
 /**
  * Test updating a simulator with new host:port
  */
@@ -22,7 +24,7 @@ class ReconfigureSpec extends Specification {
     SimulatorConfig config
 
     def setup() {
-        simId = new SimId('bill', 'mysim', ActorType.REPOSITORY.name)
+        simId = new SimId(new TestSession('bill'), 'mysim', ActorType.REPOSITORY.name)
         api.deleteSimulatorIfItExists(simId)
         Simulator sim = api.createSimulator(simId)
         config = sim.getConfig(0)
@@ -54,10 +56,10 @@ class ReconfigureSpec extends Specification {
     def 'update endpoint and confirm' () {
         when:
         ReconfigureSimulators rs = new ReconfigureSimulators()
-        rs.init(null)
         rs.setOverrideHost('home')
         rs.setOverridePort('42')
         rs.reconfigure(simId)
+        rs.init(null)
 
         and:
         SimulatorConfig config2 = api.getConfig(simId)

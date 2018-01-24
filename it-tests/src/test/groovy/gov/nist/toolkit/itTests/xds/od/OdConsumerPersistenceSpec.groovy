@@ -4,6 +4,8 @@ import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
+import gov.nist.toolkit.fhir.simulators.support.od.TransactionUtil
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.registrymetadata.client.Document
 import gov.nist.toolkit.results.client.Result
@@ -11,8 +13,7 @@ import gov.nist.toolkit.results.client.StepResult
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
 import gov.nist.toolkit.session.server.Session
-import gov.nist.toolkit.simcommon.client.SimId
-import gov.nist.toolkit.fhir.simulators.support.od.TransactionUtil
+import gov.nist.toolkit.simcommon.client.SimIdFactory
 import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
@@ -113,10 +114,10 @@ class OdConsumerPersistenceSpec extends ToolkitSpecification {
 
         then:
         Map<String,String> rs = TransactionUtil.registerWithLocalizedTrackingInODDS(tkSession
-                , oddsConfig.getUser()
+                , new TestSession(oddsConfig.getUser())
                 , new TestInstance("15806")
-                , new SiteSpec(rrConfig.getFullId(), ActorType.REGISTRY, null)
-                , new SimId(oddsConfig.getFullId())
+                , new SiteSpec(rrConfig.getFullId(), ActorType.REGISTRY, null, new TestSession(testSession))
+                , SimIdFactory.simIdBuilder(oddsConfig.getFullId())
                 , paramsRegOdde)
 
         for (String key : rs.keySet()) {

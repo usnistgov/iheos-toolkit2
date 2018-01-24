@@ -94,6 +94,7 @@ public class SimId implements Serializable, IsSerializable {
 
     // equals and hashCode ignore FHIR status on purpose
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -102,17 +103,13 @@ public class SimId implements Serializable, IsSerializable {
         SimId simId = (SimId) o;
 
         if (testSession != null ? !testSession.equals(simId.testSession) : simId.testSession != null) return false;
-        if (id != null ? !id.equals(simId.id) : simId.id != null) return false;
-        if (actorType != null ? !actorType.equals(simId.actorType) : simId.actorType != null) return false;
-        return environmentName != null ? environmentName.equals(simId.environmentName) : simId.environmentName == null;
+        return id != null ? id.equals(simId.id) : simId.id == null;
     }
 
     @Override
     public int hashCode() {
         int result = testSession != null ? testSession.hashCode() : 0;
         result = 31 * result + (id != null ? id.hashCode() : 0);
-        result = 31 * result + (actorType != null ? actorType.hashCode() : 0);
-        result = 31 * result + (environmentName != null ? environmentName.hashCode() : 0);
         return result;
     }
 

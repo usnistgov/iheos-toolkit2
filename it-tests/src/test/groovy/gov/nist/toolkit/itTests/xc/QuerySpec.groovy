@@ -4,6 +4,7 @@ import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.commondatatypes.MetadataSupport
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection
 import gov.nist.toolkit.registrymetadata.client.Uid
@@ -163,8 +164,8 @@ class QuerySpec extends ToolkitSpecification {
         when: 'send FindDocuments stored query to IG'
         println 'STEP - SEND FIND DOCUMENTS TO IG'
         SimulatorConfig igSimConfig = ToolkitFactory.asSimulatorConfig(updatedIGConfig)
-        println 'Site names ' + api.getSiteNames(true)
-        def site = new SiteSpec(String.format('%s__%s', IGParams.user, IGParams.id), ActorType.INITIATING_GATEWAY, null)
+        println 'Site names ' + api.getSiteNames(true, new TestSession(testSession))
+        def site = new SiteSpec(String.format('%s__%s', IGParams.user, IGParams.id), ActorType.INITIATING_GATEWAY, null, new TestSession(testSession))
         Map<String, List<String>> selectedCodes = new HashMap<>()
         selectedCodes.put(CodesConfiguration.DocumentEntryStatus, [MetadataSupport.statusType_approved])
         selectedCodes.put(CodesConfiguration.ReturnsType, [QueryReturnType.LEAFCLASS.getReturnTypeString()])

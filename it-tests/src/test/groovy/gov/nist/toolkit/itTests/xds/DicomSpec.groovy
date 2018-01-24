@@ -3,6 +3,7 @@ package gov.nist.toolkit.itTests.xds
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.installation.server.Installation
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
@@ -22,7 +23,7 @@ class DicomSpec extends ToolkitSpecification {
     @Shared String patientId = 'IDS-AD027-a^^^&1.3.6.1.4.1.21367.2005.13.20.1000&ISO'
     @Shared String testSession = 'test'
     @Shared String simName = 'rr'
-    @Shared SimId simId = new SimId(testSession, simName)
+    @Shared SimId simId = new SimId(new TestSession(testSession), simName)
     @Shared String rr = simId.toString()
     @Shared String siteName = rr
 
@@ -37,7 +38,7 @@ class DicomSpec extends ToolkitSpecification {
         new BuildCollections().init(null)
 
         println "EC is ${Installation.instance().externalCache().toString()}"
-        println "${api.getSiteNames(true)}"
+        println "${api.getSiteNames(true, new TestSession(testSession))}"
         api.createTestSession(testSession)
 
         spi.delete('rr', testSession)

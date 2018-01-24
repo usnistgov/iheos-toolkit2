@@ -99,10 +99,20 @@ public class Sites {
 			throw new ToolkitRuntimeException("TestSession mismatch - trying to add " + site + " to Sites/" + testSession);
 		siteMap.put(site.getName(), site);
 	}
+
+	private TestSession testSessionFromCollection(Collection<Site> sites) {
+		for (Site site : sites) {
+			if (site.getTestSession() != null && !site.getTestSession().equals(TestSession.DEFAULT_TEST_SESSION))
+				return site.getTestSession();
+		}
+		return TestSession.DEFAULT_TEST_SESSION;
+	}
 	
 	public Sites(Collection<Site> sites) {
+		if (testSession == null && !sites.isEmpty())
+			testSession = testSessionFromCollection(sites);
 		for (Site site : sites) {
-			if (!testSession.equals(site.getTestSession()))
+			if (!site.getTestSession().equals(TestSession.DEFAULT_TEST_SESSION) && !testSession.equals(site.getTestSession()))
 				throw new ToolkitRuntimeException("TestSession mismatch - trying to add " + site + " to Sites/" + testSession);
 			siteMap.put(site.getName(), site);
 		}

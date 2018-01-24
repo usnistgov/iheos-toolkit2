@@ -6,6 +6,7 @@ import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.errorrecording.ErrorRecorder
 import gov.nist.toolkit.installation.server.Installation
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
@@ -30,7 +31,7 @@ class DsSimCommonSpec extends ToolkitSpecification {
     @Shared SimulatorBuilder spi
     @Shared String testSession = 'dssctest'
     @Shared String id = 'simulator_ids'
-    @Shared SimId simId = new SimId(testSession, id)
+    @Shared SimId simId = new SimId(new TestSession(testSession), id)
     @Shared String actor = "ids"
     @Shared String transaction = "ids.ret"
     @Shared String imageCache

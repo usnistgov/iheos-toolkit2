@@ -104,8 +104,7 @@ public class XdsTestServiceManager extends CommonService {
 	public Result xdstest(TestInstance testInstance, List<String> sections,
 						  Map<String, String> params, Map<String, Object> params2, String[] areas,
 						  boolean stopOnFirstFailure) {
-		if (testInstance.getTestSession() == null) throw new ToolkitRuntimeException("TestSession is null");
-
+		testInstance.setTestSession(session.getTestSession());
 		TestKitSearchPath searchPath = session.getTestkitSearchPath();
 		try {
 			session.xt = new Xdstest2(Installation.instance().toolkitxFile(), searchPath, session, testInstance.getTestSession());
@@ -136,13 +135,14 @@ public class XdsTestServiceManager extends CommonService {
 //	}
 	public List<Result> runMesaTest(String environmentName,TestSession testSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections,
 									Map<String, String> params, Map<String, Object> params2, boolean stopOnFirstFailure) throws Exception {
-		if (testInstance.getTestSession() == null) throw new ToolkitRuntimeException("TestSession is null");
+		testInstance.setTestSession(testSession);
 
-		if (session.getTestSession() == null) session.setTestSession(testSession);
+		session.setTestSession(testSession);
 		session.setCurrentEnvName(environmentName);
 		TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, testSession);
 		session.xt = new Xdstest2(Installation.instance().toolkitxFile(), searchPath, session, testInstance.getTestSession());
-		return new TestRunner(this).run(session, testSession, siteSpec, testInstance, sections, params, params2, stopOnFirstFailure);
+		List<Result> results = new TestRunner(this).run(session, testSession, siteSpec, testInstance, sections, params, params2, stopOnFirstFailure);
+		return results;
 	}
 
 	public TestOverviewDTO runTest(String environmentName, TestSession mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections,

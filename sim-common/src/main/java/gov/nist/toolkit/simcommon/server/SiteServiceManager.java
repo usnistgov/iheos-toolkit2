@@ -62,7 +62,7 @@ public class SiteServiceManager {
 
 		List<Site> sites2 = new ArrayList<>();
 		for (Site s : sites) {
-			if (s.getName().equals("allRepositories")) continue;
+			if (s.getName() != null && s.getName().equals("allRepositories")) continue;
 			sites2.add(s);
 			names.add(s.getName());
 		}

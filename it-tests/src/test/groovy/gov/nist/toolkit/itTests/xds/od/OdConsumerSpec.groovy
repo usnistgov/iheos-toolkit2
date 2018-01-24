@@ -4,6 +4,7 @@ import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.registrymetadata.client.Document
 import gov.nist.toolkit.results.client.Result
@@ -13,6 +14,7 @@ import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.fhir.simulators.support.od.TransactionUtil
+import gov.nist.toolkit.simcommon.client.SimIdFactory
 import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
@@ -29,7 +31,7 @@ class OdConsumerSpec extends ToolkitSpecification {
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
     @Shared String patientId = 'SR14^^^&1.2.460&ISO'
     String reg = 'sunil__rr2'
-    SimId simId = new SimId(reg)
+    SimId simId = SimIdFactory.simIdBuilder(reg)
     @Shared String testSession = 'sunil'
     @Shared SimConfig rrConfig = null
     @Shared SimConfig oddsConfig = null
@@ -112,10 +114,10 @@ class OdConsumerSpec extends ToolkitSpecification {
 
         then:
         Map<String,String> rs = TransactionUtil.registerWithLocalizedTrackingInODDS(tkSession
-                , oddsConfig.getUser()
+                , new TestSession(oddsConfig.getUser())
                 , new TestInstance("15806")
-                , new SiteSpec(rrConfig.getFullId(), ActorType.REGISTRY, null)
-                , new SimId(oddsConfig.getFullId())
+                , new SiteSpec(rrConfig.getFullId(), ActorType.REGISTRY, null, new TestSession(testSession))
+                , SimIdFactory.simIdBuilder(oddsConfig.getFullId())
                 , paramsRegOdde)
 
         for (String key : rs.keySet()) {

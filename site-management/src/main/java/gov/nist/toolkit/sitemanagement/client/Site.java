@@ -6,6 +6,7 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
 import gov.nist.toolkit.xdsexception.client.TkActorNotFoundException;
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -400,14 +401,18 @@ public class Site  implements IsSerializable, Serializable {
         return buf.toString();
     }
 
-	public Site(TestSession testSession) { this.testSession = testSession;}
+	public Site(TestSession testSession) {
+		this.testSession = testSession;
+	}
 
 	public Site(String name, TestSession testSession) {
 		setName(name);
+		if (testSession == null) throw new ToolkitRuntimeException("Site: null TestSession");
 		this.testSession = testSession;
 	}
 
 	public void setName(String name) {
+		if (name == null || name.equals("null")) throw new ToolkitRuntimeException("Site: null name");
 		this.name = name;
 		transactions.setName(name); 
 		repositories.setName(name);

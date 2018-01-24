@@ -239,7 +239,8 @@ public class ToolkitApi {
         xdsTestServiceManager().addTestSession(testSession);
         if (session.getTestSession() == null) session.setTestSession(testSession);
         // TODO add environment name in following call?
-        return xdsTestServiceManager().runMesaTest(environmentName,testSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
+        List<Result> results = xdsTestServiceManager().runMesaTest(environmentName,testSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
+        return results;
     }
 
 

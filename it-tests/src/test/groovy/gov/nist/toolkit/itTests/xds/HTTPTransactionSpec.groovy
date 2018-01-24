@@ -3,6 +3,7 @@ package gov.nist.toolkit.itTests.xds
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.installation.server.Installation
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
@@ -21,7 +22,7 @@ class HTTPTransactionSpec extends ToolkitSpecification {
     @Shared String patientId = 'SR7^^^&1.2.260&ISO'
     @Shared String testSession = 'test'
     @Shared String simName = 'rr'
-    @Shared SimId simId = new SimId(testSession, simName)
+    @Shared SimId simId = new SimId(new TestSession(testSession), simName)
     @Shared String rr = simId.toString()
     @Shared String siteName = rr
 
@@ -36,7 +37,7 @@ class HTTPTransactionSpec extends ToolkitSpecification {
         new BuildCollections().init(null)
 
         println "EC is ${Installation.instance().externalCache().toString()}"
-        println "${api.getSiteNames(true)}"
+        println "${api.getSiteNames(true, new TestSession(testSession))}"
         api.createTestSession(testSession)
 
         spi.delete('rr', testSession)

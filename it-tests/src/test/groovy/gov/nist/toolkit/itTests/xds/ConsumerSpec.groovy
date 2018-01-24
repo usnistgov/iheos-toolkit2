@@ -4,6 +4,7 @@ import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.installation.server.Installation
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.commondatatypes.MetadataSupport
 import gov.nist.toolkit.results.client.TestInstance
@@ -32,7 +33,7 @@ class ConsumerSpec extends ToolkitSpecification {
         startGrizzly('8889')
 
         println "EC is ${Installation.instance().externalCache().toString()}"
-        println "${api.getSiteNames(true)}"
+        println "${api.getSiteNames(true, new TestSession(testSession))}"
         api.createTestSession(testSession)
 
         // Connect to remote API

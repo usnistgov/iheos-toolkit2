@@ -185,7 +185,7 @@ public class FhirSimulatorTransaction {
          // String cache = propertyManager.getExternalCache();
          String cache = installation.externalCache().getAbsolutePath();
          String name = simId.toString();
-         Path simPath = Paths.get(cache, "simdb", name);
+         Path simPath = Paths.get(cache, "simdb", simId.getTestSession().getValue(), name);
          Utility.isValidPfn("simulator " + name, simPath, PfnType.DIRECTORY, "r");
 
          SimDb simDb = new SimDb(simId);

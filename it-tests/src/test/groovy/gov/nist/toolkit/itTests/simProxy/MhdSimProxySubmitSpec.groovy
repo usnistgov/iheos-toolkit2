@@ -5,6 +5,7 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.installation.server.Installation
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.AssertionResult
 import gov.nist.toolkit.results.client.Result
@@ -12,6 +13,7 @@ import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationResponse
 import gov.nist.toolkit.services.server.orchestration.FhirSupportOrchestrationBuilder
 import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.client.SimIdFactory
 import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.testengine.engine.FhirSimulatorTransaction
 import gov.nist.toolkit.testengine.scripts.BuildCollections
@@ -33,7 +35,7 @@ class MhdSimProxySubmitSpec extends ToolkitSpecification {
     @Shared String testSession = 'bill';
     @Shared String mhdId = "mhd"
     @Shared String mhdName = "${testSession}__${mhdId}"
-    @Shared SimId mhdSimId = new SimId(mhdName)
+    @Shared SimId mhdSimId = SimIdFactory.simIdBuilder(mhdName)
     @Shared SimConfig mhdSimConfig
     @Shared TestInstance testInstance = new TestInstance('MhdSubmit')
     @Shared Map<String, SimConfig> simGroup = [:]
@@ -47,16 +49,18 @@ class MhdSimProxySubmitSpec extends ToolkitSpecification {
 
         new BuildCollections().init(null)
 
+        api.createTestSession(testSession)
+
+        new SimDb().deleteAllSims(new TestSession(testSession))
     }
 
     def setup() {
         println "EC is ${Installation.instance().externalCache().toString()}"
-        println "${api.getSiteNames(true)}"
+        println "${api.getSiteNames(true, new TestSession(testSession))}"
     }
 
     def 'send provide document bundle through simproxy'() {
         setup:
-        api.createTestSession(testSession)
 
         spi.delete(ToolkitFactory.newSimId(mhdId, testSession, ActorType.MHD_DOC_RECIPIENT.name, envName, true))
 
@@ -70,8 +74,8 @@ class MhdSimProxySubmitSpec extends ToolkitSpecification {
         )
 
         mhdSimConfig.asList(SimulatorProperties.simulatorGroup).each { String simIdString ->
-            SimId theSimId = new SimId(simIdString)
-            SimConfig config = spi.get(spi.get(theSimId.testSession, theSimId.id))
+            SimId theSimId = SimIdFactory.simIdBuilder(simIdString)
+            SimConfig config = spi.get(spi.get(theSimId.testSession.value, theSimId.id))
             simGroup[simIdString] = config
         }
 
@@ -82,7 +86,7 @@ class MhdSimProxySubmitSpec extends ToolkitSpecification {
         spi.update(rrConfig)
 
         when:
-        FhirSupportOrchestrationResponse response = new FhirSupportOrchestrationBuilder(api, session, testSession, false).buildTestEnvironment()
+        FhirSupportOrchestrationResponse response = new FhirSupportOrchestrationBuilder(api, session, new TestSession(testSession), false).buildTestEnvironment()
 
         then:
         !response.error
@@ -120,8 +124,8 @@ class MhdSimProxySubmitSpec extends ToolkitSpecification {
         )
 
         mhdSimConfig.asList(SimulatorProperties.simulatorGroup).each { String simIdString ->
-            SimId theSimId = new SimId(simIdString)
-            SimConfig config = spi.get(spi.get(theSimId.testSession, theSimId.id))
+            SimId theSimId = SimIdFactory.simIdBuilder(simIdString)
+            SimConfig config = spi.get(spi.get(theSimId.testSession.value, theSimId.id))
             simGroup[simIdString] = config
         }
 
@@ -164,8 +168,8 @@ class MhdSimProxySubmitSpec extends ToolkitSpecification {
         )
 
         mhdSimConfig.asList(SimulatorProperties.simulatorGroup).each { String simIdString ->
-            SimId theSimId = new SimId(simIdString)
-            SimConfig config = spi.get(spi.get(theSimId.testSession, theSimId.id))
+            SimId theSimId = SimIdFactory.simIdBuilder(simIdString)
+            SimConfig config = spi.get(spi.get(theSimId.testSession.value, theSimId.id))
             simGroup[simIdString] = config
         }
 

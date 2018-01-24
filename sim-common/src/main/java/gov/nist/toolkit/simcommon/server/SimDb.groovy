@@ -601,7 +601,16 @@ public class SimDb {
 			simIdBuilder(dir, testSession)
 		}
 
-		def ids = (soapSimIds + fhirSimIds) as Set<SimId>
+		Set defaultSims = []
+		if (testSession != TestSession.DEFAULT_TEST_SESSION) {
+			defaultSims = getSimDbFile(TestSession.DEFAULT_TEST_SESSION).listFiles().findAll { File file ->
+				isSimDir(file)
+			}.collect { File dir ->
+				simIdBuilder (dir, TestSession.DEFAULT_TEST_SESSION)
+			} as Set
+		}
+
+		def ids = (soapSimIds + fhirSimIds + defaultSims) as Set<SimId>
 		return ids as List<SimId>
 	}
 
@@ -615,13 +624,7 @@ public class SimDb {
 	}
 
 	static List<SimId> getSimIdsForUser(TestSession user) throws BadSimIdException {
-		List<SimId> ids = getAllSimIds(user);
-		List<SimId> selectedIds = new ArrayList<>();
-		for (SimId id : ids) {
-			if (user.equals(id.getTestSession()))
-				selectedIds.add(id);
-		}
-		return selectedIds;
+		return getAllSimIds(user)
 	}
 
 	/**

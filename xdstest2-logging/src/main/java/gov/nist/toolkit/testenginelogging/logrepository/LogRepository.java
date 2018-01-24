@@ -136,7 +136,9 @@ public class LogRepository  {
 
     private File getLogDir(/*File location, String user, LogIdType idType,*/ TestInstance id) {
         if (location == null) throw new ToolkitRuntimeException("Internal Error: location is null");
-        if (testSession == null) throw new ToolkitRuntimeException("Internal Error: TestSession is null");
+        testSession = id.getTestSession().getValue();
+        if (testSession == null)
+            throw new ToolkitRuntimeException("Internal Error: TestSession is null");
         assignEvent(id);
         if (idType == LogIdType.TIME_ID) {
             File logDir = new File(id.getEventDir());
@@ -147,7 +149,7 @@ public class LogRepository  {
                 throw new ToolkitRuntimeException("Cannot create log directory " + logDir.toString());
             return logDir;
         } else if (idType == LogIdType.SPECIFIC_ID) {
-            File logDir = new File(location, testSession);
+            File logDir = location; new File(location, testSession);
             if (id != null)  // if null then it cannot be used with logDir() call, must use logDir(String)
                 logDir = new File(logDir, id.getId());
             logDir.mkdirs();

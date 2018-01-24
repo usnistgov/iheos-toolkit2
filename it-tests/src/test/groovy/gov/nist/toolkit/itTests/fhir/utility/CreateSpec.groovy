@@ -2,6 +2,7 @@ package gov.nist.toolkit.itTests.fhir.utility
 
 import ca.uhn.fhir.context.FhirContext
 import gov.nist.toolkit.installation.server.Installation
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.FhirSpecification
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.simcommon.client.SimId
@@ -22,7 +23,7 @@ class CreateSpec extends FhirSpecification {
     @Shared def simIdName = 'myfhirsys'
     @Shared def siteName = "${testSession}__${simIdName}"
 
-    @Shared SimId simId = new SimId(testSession, simIdName).forFhir()
+    @Shared SimId simId = new SimId(new TestSession(testSession), simIdName).forFhir()
     @Shared FhirContext ourCtx = FhirContext.forDstu3()
 
     @Shared SimDb simDb
@@ -41,13 +42,13 @@ class CreateSpec extends FhirSpecification {
         // SimId must be translated into SPI variety
         spi.delete(spiSimId(simId))   // if you use the form spi.delete(simIdName, testSession) it will look in the SimDb instead of ResDb
 
-        spi.createFhirServer(simId.id, simId.testSession, 'default')
+        spi.createFhirServer(simId.id, simId.testSession.value, 'default')
     }
 
     def 'do create'() {
         when:
         Session session = new Session(Installation.instance().warHome())
-        session.xt = new Xdstest2(Installation.instance().toolkitxFile(), null, session)
+        session.xt = new Xdstest2(Installation.instance().toolkitxFile(), null, session, new TestSession(testSession))
         session.transactionSettings = new TransactionSettings()
 
 

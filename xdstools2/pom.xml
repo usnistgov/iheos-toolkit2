@@ -538,6 +538,7 @@
 				<configuration>
 					<style>DETAILED</style>
 					<compileSourcesArtifacts>
+						<compileSourcesArtifact>${project.groupId}:installation</compileSourcesArtifact>
 						<compileSourcesArtifact>${project.groupId}:tk</compileSourcesArtifact>
 						<compileSourcesArtifact>${project.groupId}:results</compileSourcesArtifact>
 						<compileSourcesArtifact>${project.groupId}:services</compileSourcesArtifact>

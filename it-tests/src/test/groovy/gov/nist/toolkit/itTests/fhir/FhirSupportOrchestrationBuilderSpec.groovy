@@ -1,5 +1,6 @@
 package gov.nist.toolkit.itTests.fhir
 
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.FhirSpecification
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationResponse
@@ -7,6 +8,7 @@ import gov.nist.toolkit.services.client.PatientDef
 import gov.nist.toolkit.services.client.RawResponse
 import gov.nist.toolkit.services.server.orchestration.FhirSupportOrchestrationBuilder
 import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.client.SimIdFactory
 import gov.nist.toolkit.simcommon.server.SimDb
 
 class FhirSupportOrchestrationBuilderSpec extends FhirSpecification  {
@@ -19,12 +21,12 @@ class FhirSupportOrchestrationBuilderSpec extends FhirSpecification  {
     def 'test full build' () {
         setup:
         FhirSupportOrchestrationRequest request = new FhirSupportOrchestrationRequest()
-        request.userName = userName
+        request.testSession = new TestSession(userName)
         request.environmentName = 'test'
         request.useExistingState = false
 
         FhirSupportOrchestrationBuilder builder = new FhirSupportOrchestrationBuilder(api, session, request)
-        SimId simId = new SimId(builder.siteName)
+        SimId simId = SimIdFactory.simIdBuilder(builder.siteName)
         println "Simid is ${simId}"
 
         when:

@@ -5,10 +5,12 @@ import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.installation.server.Installation
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.client.SimIdFactory
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.resource.SimConfigResource
@@ -24,7 +26,7 @@ class RetrieveSpec extends ToolkitSpecification {
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
     @Shared String patientId = 'SR7^^^&1.2.260&ISO'
     @Shared String reg = 'sunil__rr'
-    @Shared SimId simId = new SimId(reg)
+    @Shared SimId simId = SimIdFactory.simIdBuilder(reg)
     @Shared String testSession = 'sunil'
     @Shared String repUid = ''
 
@@ -62,7 +64,7 @@ class RetrieveSpec extends ToolkitSpecification {
 
     def setup() {
         println "EC is ${Installation.instance().externalCache().toString()}"
-        println "${api.getSiteNames(true)}"
+        println "${api.getSiteNames(true, new TestSession(testSession))}"
         api.createTestSession(testSession)
         if (!api.simulatorExists(simId)) {
             println "Creating sim ${simId}"

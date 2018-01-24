@@ -47,12 +47,15 @@ public class ReconfigureSimulators extends HttpServlet {
         if (configuredContext.startsWith("/"))
             configuredContext = configuredContext.substring(1);
 
-        logger.info("Reconfiguring Simulators to host " + configuredHost + " port " + configuredPort + " context " + configuredContext);
+        logger.info("Reconfiguring Simulators to host " + getConfiguredHost() + " port " + getConfiguredPort() + " context " + getConfiguredContext());
+
+        logger.info("Reconfiguring simulators in " + Installation.instance().getTestSessions());
 
         for (TestSession testSession : Installation.instance().getTestSessions()) {
 
             for (SimId simId : SimDb.getAllSimIds(testSession)) {
                 try {
+                    logger.info("Reconfiguring " + simId);
                     reconfigure(simId);
                 } catch (Throwable e) {
                     logger.fatal("Reconfigure of sim " + simId + " failed - " + ExceptionUtil.exception_details(e));

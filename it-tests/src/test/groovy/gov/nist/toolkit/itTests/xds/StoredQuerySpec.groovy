@@ -4,10 +4,12 @@ import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.installation.server.Installation
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.client.SimIdFactory
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import spock.lang.Shared
@@ -29,7 +31,7 @@ class StoredQuerySpec extends ToolkitSpecification {
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
     @Shared String patientId2 = 'BR15^^^&1.2.360&ISO'
     @Shared String reg = 'bill__reg'
-    @Shared SimId simId = new SimId(reg)
+    @Shared SimId simId = SimIdFactory.simIdBuilder(reg)
     @Shared String testSession = 'bill';
     @Shared String siteName = 'bill__reg'
 
@@ -63,7 +65,7 @@ class StoredQuerySpec extends ToolkitSpecification {
 
     def setup() {
         println "EC is ${Installation.instance().externalCache().toString()}"
-        println "${api.getSiteNames(true)}"
+        println "${api.getSiteNames(true, new TestSession(testSession))}"
         api.createTestSession(testSession)
         if (!api.simulatorExists(simId)) {
             println "Creating sim ${simId}"

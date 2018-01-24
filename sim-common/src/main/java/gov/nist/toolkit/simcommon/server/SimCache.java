@@ -3,6 +3,7 @@ package gov.nist.toolkit.simcommon.server;
 
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.simcommon.client.SimIdFactory;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import org.apache.log4j.Logger;
@@ -50,7 +51,7 @@ public class SimCache {
             return SimManager.getSite(simId);
         } catch (Exception e) {
             try {
-                SimId simId = new SimId(testSession, siteName);
+                SimId simId = SimIdFactory.simIdBuilder(siteName);
                 Site s = SimManager.getSite(simId);
                 return s;
             } catch (Exception e1) {
