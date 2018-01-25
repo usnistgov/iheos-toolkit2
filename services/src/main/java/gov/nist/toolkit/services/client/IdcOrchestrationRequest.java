@@ -3,16 +3,18 @@
  */
 package gov.nist.toolkit.services.client;
 
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.sitemanagement.client.*;
 
 /**
  * Orchestration request for Image Document Consumer SUT
  */
-public class IdcOrchestrationRequest extends AbstractOrchestrationRequest {
-   private static final long serialVersionUID = 1L;
+public class IdcOrchestrationRequest extends AbstractOrchestrationRequest  {
    private boolean useExistingSimulator = true;
 
    SiteSpec siteUnderTest;
+
+   public IdcOrchestrationRequest() {
+   }
 
    public boolean isUseExistingSimulator() {
        return useExistingSimulator;
@@ -35,4 +37,6 @@ public class IdcOrchestrationRequest extends AbstractOrchestrationRequest {
    public void setSiteUnderTest(SiteSpec siteUnderTest) {
       this.siteUnderTest = siteUnderTest;
    }
+
+
 }

@@ -15,7 +15,7 @@ import gov.nist.toolkit.results.MetadataToMetadataCollectionParser;
 import gov.nist.toolkit.results.ResourceToMetadataCollectionParser;
 import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.*;
-import gov.nist.toolkit.results.shared.Test;
+import gov.nist.toolkit.results.client.Test;
 import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;

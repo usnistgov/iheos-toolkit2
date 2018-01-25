@@ -23,7 +23,7 @@ import gov.nist.toolkit.fhir.simulators.sim.cons.DocConsActorSimulator;
 import gov.nist.toolkit.fhir.simulators.sim.idc.ImgDocConsActorSimulator;
 import gov.nist.toolkit.fhir.simulators.sim.src.XdrDocSrcActorSimulator;
 import gov.nist.toolkit.fhir.simulators.support.StoredDocument;
-import gov.nist.toolkit.simcommon.server.SimDb;
+import gov.nist.toolkit.simcommon.server.*;
 import gov.nist.toolkit.soap.DocumentMap;
 import gov.nist.toolkit.toolkitServicesCommon.*;
 import gov.nist.toolkit.toolkitServicesCommon.resource.*;

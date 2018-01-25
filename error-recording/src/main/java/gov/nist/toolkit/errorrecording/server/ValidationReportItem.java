@@ -1,6 +1,7 @@
-package gov.nist.toolkit.errorrecording.client;
+package gov.nist.toolkit.errorrecording.server;
 
 
+import gov.nist.toolkit.errorrecording.client.*;
 import org.apache.commons.lang.StringEscapeUtils;
 
 public class ValidationReportItem {

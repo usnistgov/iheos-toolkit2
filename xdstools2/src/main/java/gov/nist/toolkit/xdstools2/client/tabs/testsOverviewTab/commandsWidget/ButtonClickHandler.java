@@ -4,7 +4,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
 import gov.nist.toolkit.installation.shared.TestSession;
-import gov.nist.toolkit.results.shared.Test;
+import gov.nist.toolkit.results.client.Test;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdstools2.client.command.command.DeleteAllTestResultsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.ReloadAllTestResultsCommand;

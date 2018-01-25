@@ -3,7 +3,7 @@ package gov.nist.toolkit.itTests.testSession
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
-import gov.nist.toolkit.services.shared.SimulatorServiceManager
+import gov.nist.toolkit.services.server.SimulatorServiceManager
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.client.SimIdFactory
 import gov.nist.toolkit.simcommon.client.Simulator

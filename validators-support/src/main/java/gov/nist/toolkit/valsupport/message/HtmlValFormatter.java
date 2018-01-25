@@ -2,7 +2,7 @@ package gov.nist.toolkit.valsupport.message;
 
 import java.util.ArrayList;
 
-import gov.nist.toolkit.errorrecording.client.ErrorRecorderAdapter;
+import gov.nist.toolkit.errorrecording.server.ErrorRecorderAdapter;
 import gov.nist.toolkit.errorrecording.client.ValidationStepResult;
 import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;

@@ -7,7 +7,7 @@ import gov.nist.toolkit.configDatatypes.client.PidBuilder
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.results.client.TestInstance
-import gov.nist.toolkit.results.shared.SiteBuilder
+import gov.nist.toolkit.results.client.SiteBuilder
 import gov.nist.toolkit.services.client.*
 import gov.nist.toolkit.services.server.RawResponseBuilder
 import gov.nist.toolkit.services.server.ToolkitApi
@@ -72,7 +72,7 @@ class RgOrchestrationBuilder {
             boolean reuse = false  // updated as we progress
 
 
-            Site site = SiteBuilder.siteFromSiteSpec(request.siteUnderTest, session.id)
+            Site site = gov.nist.toolkit.results.server.SiteBuilder.siteFromSiteSpec(request.siteUnderTest, session.id)
             if (site == null) return RawResponseBuilder.build(String.format("Responding Gateway under Test (%s) does not exist in site configurations."))
             rrSite = request.siteUnderTest
             response.siteUnderTest = rrSite

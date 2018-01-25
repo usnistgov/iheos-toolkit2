@@ -1,12 +1,12 @@
 package gov.nist.toolkit.xdstools2.shared.command.request;
 
-import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
+import gov.nist.toolkit.sitemanagement.client.*;
+import gov.nist.toolkit.xdstools2.shared.command.*;
 
 /**
  * Created by onh2 on 11/10/16.
  */
-public class AllTestRequest extends CommandContext{
+public class AllTestRequest extends CommandContext {
     private Site site;
 
     public AllTestRequest(){}

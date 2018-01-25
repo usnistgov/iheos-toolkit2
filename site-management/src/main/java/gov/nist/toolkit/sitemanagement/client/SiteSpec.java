@@ -62,7 +62,10 @@ public class SiteSpec implements Serializable, IsSerializable {
 		}
 	}
 
-    public SiteSpec(String name, TestSession testSession) {
+	public SiteSpec() {
+	}
+
+	public SiteSpec(String name, TestSession testSession) {
         this(name, null, null, testSession);
     }
 	

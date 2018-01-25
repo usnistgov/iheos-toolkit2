@@ -4,7 +4,7 @@ import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.*
 import gov.nist.toolkit.results.client.TestInstance
-import gov.nist.toolkit.results.shared.SiteBuilder
+import gov.nist.toolkit.results.client.SiteBuilder
 import gov.nist.toolkit.services.client.*
 import gov.nist.toolkit.services.server.RawResponseBuilder
 import gov.nist.toolkit.services.server.ToolkitApi

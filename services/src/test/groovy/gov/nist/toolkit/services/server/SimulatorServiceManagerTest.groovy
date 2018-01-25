@@ -1,4 +1,4 @@
-package gov.nist.toolkit.services.shared
+package gov.nist.toolkit.services.server
 
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.installation.server.ExternalCacheManager
@@ -11,7 +11,6 @@ import gov.nist.toolkit.simcommon.client.Simulator
 import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException
 import spock.lang.Specification
-
 /**
  *
  */

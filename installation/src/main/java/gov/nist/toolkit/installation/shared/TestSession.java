@@ -1,16 +1,16 @@
 package gov.nist.toolkit.installation.shared;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.google.gwt.user.client.rpc.IsSerializable;
+import com.fasterxml.jackson.annotation.*;
+import com.google.gwt.user.client.rpc.*;
 
-import java.io.Serializable;
+import java.io.*;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class TestSession implements Serializable, IsSerializable {
     private String value;
-    public static final TestSession DEFAULT_TEST_SESSION = new TestSession("default");
+    public transient static final TestSession DEFAULT_TEST_SESSION = new TestSession("default");
 
-    public TestSession() {}
+    private TestSession() {}
 
     public TestSession(String value) {
         this.value = value;
