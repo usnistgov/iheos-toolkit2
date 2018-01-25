@@ -65,7 +65,7 @@ class IdsSpec extends ToolkitSpecification {
         request.environmentName = envName
         request.testSession = new TestSession(testSession)
         request.useExistingSimulator = false
-        request.siteUnderTest = new SiteSpec(simId.testSession)
+        request.siteUnderTest = new SiteSpec(id, new TestSession(testSession))
 
         when: 'build orchestration'
         def builder = new IdsOrchestrationBuilder(api, session, request)
@@ -89,6 +89,7 @@ class IdsSpec extends ToolkitSpecification {
 //        Site sutSite = sites.getSite(siteSpec.name, new TestSession(testSession))
 
         TestInstance testInstance = new TestInstance(testId)
+        testInstance.testSession = new TestSession(testSession)
         List<String> sections = []
         Map<String, String> params = new HashMap<>()
 

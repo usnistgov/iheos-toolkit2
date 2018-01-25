@@ -721,6 +721,7 @@ public class XdsTestServiceManager extends CommonService {
 
 				// Save the created logs in the SessionCache (or testLogCache if this is a conformance test)
 				TestInstance logid = newTestLogId();
+				logid.setTestSession(testInstance.getTestSession());
 
 				//  -  why is a method named getTestOverview doing a WRITE???????
 				if (session.transactionSettings.logRepository != null)
