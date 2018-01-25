@@ -1,5 +1,7 @@
-package gov.nist.toolkit.errorrecording.client;
+package gov.nist.toolkit.errorrecording.server;
 
+import gov.nist.toolkit.errorrecording.client.*;
+import gov.nist.toolkit.errorrecording.server.*;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -16,7 +18,7 @@ import java.util.regex.Pattern;
 public class ErrorRecorderAdapter {
 
 	ArrayList<gov.nist.toolkit.errorrecording.client.SummaryToken> summary = new ArrayList<gov.nist.toolkit.errorrecording.client.SummaryToken>();
-	ArrayList<gov.nist.toolkit.errorrecording.client.ValidationReportItem> detailed = new ArrayList<gov.nist.toolkit.errorrecording.client.ValidationReportItem>();
+	ArrayList<ValidationReportItem> detailed = new ArrayList<ValidationReportItem>();
 	ArrayList<ArrayList<CCDAValidationReportItem>> ccda = new ArrayList<ArrayList<CCDAValidationReportItem>>();
 	ArrayList<ArrayList<XDMValidationReportItem>> xdm = new ArrayList<ArrayList<XDMValidationReportItem>>();
 	int indexEndSummary = 0;

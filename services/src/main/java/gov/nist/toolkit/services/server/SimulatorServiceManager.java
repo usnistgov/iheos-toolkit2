@@ -1,4 +1,4 @@
-package gov.nist.toolkit.services.shared;
+package gov.nist.toolkit.services.server;
 
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
@@ -23,7 +23,6 @@ import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
-import gov.nist.toolkit.services.server.SimulatorApi;
 import gov.nist.toolkit.session.server.FhirMessageBuilder;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.shared.Message;

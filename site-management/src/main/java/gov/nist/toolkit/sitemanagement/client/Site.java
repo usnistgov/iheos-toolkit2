@@ -68,6 +68,9 @@ public class Site  implements IsSerializable, Serializable {
 	private String orchestrationSiteName = null;
 	private boolean isASimulator = false;
 
+	public Site() {
+	}
+
 	/**
 	 * Site linkage is used to combine two sites into one.  Use case: The SUT is defined in a site. We
 	 * need to add other actors to the mix through orchestration.  Because the vendor controls the SUT site,

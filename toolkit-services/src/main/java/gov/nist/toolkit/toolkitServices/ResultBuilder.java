@@ -2,6 +2,7 @@ package gov.nist.toolkit.toolkitServices;
 
 import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
 import gov.nist.toolkit.simcommon.client.*;
+import gov.nist.toolkit.simcommon.server.*;
 import gov.nist.toolkit.toolkitServicesCommon.resource.OperationResultResource;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.LoadKeystoreException;

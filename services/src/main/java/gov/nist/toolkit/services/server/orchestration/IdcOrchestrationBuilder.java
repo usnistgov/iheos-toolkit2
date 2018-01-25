@@ -8,7 +8,7 @@ import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.results.shared.SiteBuilder;
+import gov.nist.toolkit.results.client.SiteBuilder;
 import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
 import gov.nist.toolkit.services.client.IdcOrchestrationResponse;
 import gov.nist.toolkit.services.client.MessageItem;

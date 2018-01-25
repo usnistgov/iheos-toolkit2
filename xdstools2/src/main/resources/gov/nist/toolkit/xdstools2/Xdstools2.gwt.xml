@@ -47,7 +47,7 @@
     <inherits name="com.google.gwt.inject.Inject"/>
 
     <!-- Specify the app entry point class.                         -->
-    <entry-point class='gov.nist.toolkit.xdstools2.shared.Xdstools2EP'/>
+    <entry-point class='gov.nist.toolkit.xdstools2.client.Xdstools2EP'/>
 
 
     <!-- DEBUG STUFF -->
@@ -64,8 +64,8 @@
     <!-- <inherits name="com.google.gwt.logging.Logging"/> -->
 
     <!-- Use ClientFactoryImpl by default -->
-    <replace-with class="gov.nist.toolkit.xdstools2.shared.util.ClientFactoryImpl">
-        <when-type-is class="gov.nist.toolkit.xdstools2.shared.util.ClientFactory"/>
+    <replace-with class="gov.nist.toolkit.xdstools2.client.util.ClientFactoryImpl">
+        <when-type-is class="gov.nist.toolkit.xdstools2.client.util.ClientFactory"/>
     </replace-with>
 
     <public path="public"/>

@@ -1,4 +1,4 @@
-package gov.nist.toolkit.errorrecording.client;
+package gov.nist.toolkit.errorrecording.server;
 
 import org.apache.velocity.app.VelocityEngine;
 

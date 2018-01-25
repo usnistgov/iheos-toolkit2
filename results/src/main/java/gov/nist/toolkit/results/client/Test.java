@@ -1,4 +1,4 @@
-package gov.nist.toolkit.results.shared;
+package gov.nist.toolkit.results.client;
 
 import java.io.Serializable;
 

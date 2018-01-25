@@ -536,6 +536,8 @@
 					</execution>
 				</executions>
 				<configuration>
+                    <failOnError>true</failOnError>
+					<!--<logLevel>ALL</logLevel>-->
 					<style>DETAILED</style>
 					<compileSourcesArtifacts>
 						<compileSourcesArtifact>${project.groupId}:installation</compileSourcesArtifact>

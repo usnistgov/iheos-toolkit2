@@ -1,4 +1,4 @@
-package gov.nist.toolkit.simcommon.client;
+package gov.nist.toolkit.simcommon.server;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
