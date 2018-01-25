@@ -54,6 +54,7 @@ public class SeparateSiteLoader extends SiteLoader {
 			throw new Exception("Validation Errors: " + errs.toString());
 		OMElement xml = siteToXML(site);
 		String siteName = site.getName();
+		actorsDir.mkdirs();
 		Io.xmlToFile(new File(actorsDir + File.separator + siteName + ".xml"), xml);
 	}
 	

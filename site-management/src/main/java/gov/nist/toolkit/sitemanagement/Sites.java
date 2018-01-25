@@ -16,7 +16,7 @@ import java.util.*;
 public class Sites {
 	HashMap<String, Site> siteMap = new HashMap<String, Site>();   // siteName -> Site
 	String defaultSiteName;
-	static String all = "allRepositories";
+	final public static String ALL_REPOSITORIES = "allRepositories";
 	TestSession testSession = null;
 	
 	public boolean equals(Sites s) {
@@ -24,8 +24,8 @@ public class Sites {
 			return false;
 		HashMap<String, Site> map1 = new HashMap<String, Site>(siteMap);
 		HashMap<String, Site> map2 = new HashMap<String, Site>(s.siteMap);
-		map1.remove(all);
-		map2.remove(all);
+		map1.remove(ALL_REPOSITORIES);
+		map2.remove(ALL_REPOSITORIES);
 		boolean mapped = equals(map1, map2);
 		
 		return
@@ -119,8 +119,9 @@ public class Sites {
 	}
 	
 	public void add(Site site) {
-		if (!testSession.equals(site.getTestSession()))
-			throw new ToolkitRuntimeException("TestSession mismatch - trying to add " + site + " to Sites/" + testSession);
+		if (!site.getTestSession().equals(TestSession.DEFAULT_TEST_SESSION))
+			if (!testSession.equals(site.getTestSession()))
+				throw new ToolkitRuntimeException("TestSession mismatch - trying to add " + site + " to Sites/" + testSession);
 
 		siteMap.put(site.getName(), site);
 	}
