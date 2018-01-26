@@ -23,8 +23,8 @@ class SimulatorServiceManagerTest extends Specification {
     }
 
     def setup() {
-        mgr.deleteConfig(SimIdFactory.simIdBuilder('bill__aa'))
-        mgr.deleteConfig(SimIdFactory.simIdBuilder('bill__AA'))
+        mgr.delete(SimIdFactory.simIdBuilder('bill__aa'))
+        mgr.delete(SimIdFactory.simIdBuilder('bill__AA'))
     }
 
     def 'user with __ in name is illegal'() {
@@ -118,7 +118,7 @@ class SimulatorServiceManagerTest extends Specification {
 
         when:
         SimId simId = SimIdFactory.simIdBuilder('bill__aa')
-        mgr.deleteConfig(simId)
+        mgr.delete(simId)
 
         then:
         !SimDb.exists(simId)
@@ -130,7 +130,7 @@ class SimulatorServiceManagerTest extends Specification {
 
         when:
         SimId simId = SimIdFactory.simIdBuilder('bill__aa')
-        mgr.deleteConfig(simId)
+        mgr.delete(simId)
         Simulator sim = mgr.getNewSimulator(ActorType.REPOSITORY.name, simId)
 
         then:
@@ -145,7 +145,7 @@ class SimulatorServiceManagerTest extends Specification {
 
         when:
         SimId simId = SimIdFactory.simIdBuilder('bill__AA')
-        mgr.deleteConfig(simId)
+        mgr.delete(simId)
         Simulator sim = mgr.getNewSimulator(ActorType.REPOSITORY.name, simId)
 
         then:

@@ -297,6 +297,7 @@ public class SiteServiceManager {
 		return getSiteNames(sessionId, true, simAlso, testSession);
 	}
 
+
 	public Site getSite(String sessionId, String siteName, TestSession testSession) throws Exception {
 		logger.debug(sessionId + ": " + "getSite");
 		try {

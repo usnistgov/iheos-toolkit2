@@ -1,8 +1,10 @@
-package gov.nist.toolkit.simcommon.server
+package gov.nist.toolkit.xdstools2.sites
 
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.installation.shared.TestSession
+import gov.nist.toolkit.simcommon.server.InitEC
+import gov.nist.toolkit.simcommon.server.SiteServiceManager
 import gov.nist.toolkit.sitemanagement.Sites
 import gov.nist.toolkit.sitemanagement.client.Site
 import gov.nist.toolkit.sitemanagement.client.TransactionBean

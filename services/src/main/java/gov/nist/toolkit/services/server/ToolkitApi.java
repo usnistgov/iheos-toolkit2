@@ -147,7 +147,7 @@ public class ToolkitApi {
      * @throws NoSimException - simulator doesn't exist
      */
     public void deleteSimulator(SimId simId) throws Exception, NoSimException {
-        simulatorServiceManager().deleteConfig(simId);
+        simulatorServiceManager().delete(simId);
     }
 
     /**

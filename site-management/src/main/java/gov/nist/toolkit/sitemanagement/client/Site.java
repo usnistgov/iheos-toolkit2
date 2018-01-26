@@ -64,7 +64,7 @@ public class Site  implements IsSerializable, Serializable {
 
 	public String pidAllocateURI = null;
 	transient public boolean changed = false;
-	private TestSession testSession = null;  // loaded from SimId - when non-null this site represents a sim
+	private TestSession testSession = null;  // required to be valid
 	private String orchestrationSiteName = null;
 	private boolean isASimulator = false;
 
@@ -109,6 +109,15 @@ public class Site  implements IsSerializable, Serializable {
 				transactions.equals(s.transactions) &&
 				repositories.equals(s.repositories);
 	}
+
+	public boolean isValid() {
+		return name != null && !name.equals("") && testSession != null;
+	}
+
+	public void validate() {
+		if (!isValid())
+			throw new ToolkitRuntimeException("Site " + toString() + " is not valie");
+	}
 	
 	public TransactionCollection transactions() {
 		return transactions;
@@ -118,7 +127,7 @@ public class Site  implements IsSerializable, Serializable {
 		return repositories;
 	}
 	
-	public boolean validate() {
+	public boolean verify() {
 		StringBuffer buf = new StringBuffer();
 		validate(buf);
 		return buf.length() == 0;
@@ -393,8 +402,13 @@ public class Site  implements IsSerializable, Serializable {
 		this.home = home;
 	}
 	
-	public String toString() {
+	public String getFullName() {
 		return testSession + "/" + name;
+	}
+
+	@Override
+	public String toString() {
+		return getFullName();
 	}
 
     public String describe() {

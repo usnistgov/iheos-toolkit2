@@ -193,7 +193,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public String saveSite(SaveSiteRequest request) throws Exception {
         installCommandContext(request);
-        return siteServiceManager.saveSite(session().getId(), request.getSite());
+        return siteServiceManager.saveSite(session().getId(), request.getSite(), request.getTestSession());
     }
     @Override
     public String deleteSite(DeleteSiteRequest request) throws Exception {
@@ -216,7 +216,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<String> getRegistryNames()  throws NoServletSessionException { return siteServiceManager.getRegistryNames(session().getId(), session().getTestSession()); }
     @Override
-    public List<String> getRepositoryNames()  throws NoServletSessionException { return siteServiceManager.getRepositoryNames(session().getId(), session().getTestSession()); }
+    public List<String> getRepositoryNames()  throws NoServletSessionException, Exception { return siteServiceManager.getRepositoryNames(session().getId(), session().getTestSession()); }
     @Override
     public List<String> getRGNames()  throws NoServletSessionException { return siteServiceManager.getRGNames(session().getId(), session().getTestSession()); }
     @Override
@@ -1001,7 +1001,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     public String deleteConfig(SimConfigRequest request) throws Exception {
         installCommandContext(request);
         if (request.getConfig()!=null)
-            return new SimulatorServiceManager(session()).deleteConfig(request.getConfig());
+            return new SimulatorServiceManager(session()).delete(request.getConfig());
         else if (request.getConfigList()!=null)
             return new SimulatorServiceManager(session()).deleteConfigs(request.getConfigList());
         return "";
