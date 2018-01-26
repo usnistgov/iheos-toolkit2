@@ -1,5 +1,6 @@
 package gov.nist.toolkit.simcommon.server;
 
+import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 
@@ -27,4 +28,9 @@ public class SiteFactory {
         returns.addAll(names);
         return returns;
     }
+
+    static public Site buildSite(SimId simId) {
+        return new Site(simId.getId(), simId.getTestSession());
+    }
+
 }

@@ -3,7 +3,12 @@ package gov.nist.toolkit.xdstools2.sites
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.installation.shared.TestSession
+import gov.nist.toolkit.services.server.SimulatorServiceManager
+import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
+import gov.nist.toolkit.session.server.Session
+import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.InitEC
+import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.simcommon.server.SiteServiceManager
 import gov.nist.toolkit.sitemanagement.Sites
 import gov.nist.toolkit.sitemanagement.client.Site
@@ -17,14 +22,23 @@ class SiteLoaderTest extends Specification {
     @Shared TestSession fooTestSession = new TestSession('foo')
     @Shared SiteServiceManager siteServiceManager = SiteServiceManager.siteServiceManager
     String sessionid = 'session'
+    @Shared SimulatorServiceManager simMgr
+    @Shared Session session
 
     def setupSpec() {
         InitEC.init()
+        session = UnitTestEnvironmentManager.setupLocalToolkit('default')
+        simMgr = new SimulatorServiceManager(session)
     }
 
     def setup() {
         deleteCommonSites(defaultTestSession)
         deleteCommonSites(fooTestSession)
+        [defaultTestSession, fooTestSession]. each { TestSession testSession ->
+            SimDb.getAllSimIds(testSession).each { SimId simId ->
+                simMgr.delete(simId)
+            }
+        }
     }
 
     def addRegistry(TestSession testSession, String name) {

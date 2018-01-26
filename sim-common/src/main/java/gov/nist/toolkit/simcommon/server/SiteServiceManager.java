@@ -198,6 +198,8 @@ public class SiteServiceManager {
 		} else {
 			throw new ToolkitRuntimeException("Combined site (all in one file) no longer supported");
 		}
+		if (commonSites.get(testSession) == null)
+			return new Sites(testSession);
 		return commonSites.get(testSession);
 	}
 

@@ -76,15 +76,7 @@ public class SiteSpec implements Serializable, IsSerializable {
 	public boolean isNullSite() { return name.equals(""); }
 
 	public String toString() {
-		StringBuffer buf = new StringBuffer();
-		
-		buf.append("SiteSpec: ").append(name).append(" (").append(actorType).append(") ");
-		if (orchestrationSiteName != null)
-			buf.append(" (orch=").append(orchestrationSiteName).append(") ");
-		buf.append((isTls) ? " isTLS" : " notTls");
-		buf.append((isSaml) ? " isSaml" : " notSaml");
-				
-		return buf.toString();
+		return testSession.getValue() + "/" + name;
 	}
 	
 	public boolean isGW() {

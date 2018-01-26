@@ -288,8 +288,9 @@ public class Sites {
 			return new Site("gov/nist/toolkit/installation/shared", testSession);
 		List<String> sitenames = getSiteNames();
 		if ( !sitenames.contains(siteName)) {
-			// System.out.println(sitenames + " - " + siteName);
-			throw new Exception("Site [" + siteName + "] is not defined");
+			siteName = testSession.getValue() + "__" + siteName;
+			if (!sitenames.contains(siteName))
+				throw new Exception("Site [" + siteName + "] is not defined");
 		}
 		Site s = siteMap.get(siteName);
 		return s;
@@ -346,6 +347,7 @@ public class Sites {
 			oSite.addLinkedSite(sutSite);
 			return oSite;
 		}
+
 		return getSite(siteSpec.name, siteSpec.testSession);
 	}
 

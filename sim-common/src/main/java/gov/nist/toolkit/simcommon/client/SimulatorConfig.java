@@ -80,21 +80,22 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 //	}
 		
 	public String toString() {
-		StringBuffer buf = new StringBuffer();
-		
-		buf.append("ActorSimulatorConfig:");
-		buf.append(" id=").append(id);
-		buf.append(" type=").append(actorType);
-		buf.append("\n\telements=[");
-		for (SimulatorConfigElement asce : elements) {
-			buf.append("\n\t\t").append(asce);
-		}
-//		buf.append("\n\tuser=[");
-//		for (ActorSimulatorConfigElement asce : user) {
+		return id.toString();
+//		StringBuffer buf = new StringBuffer();
+//
+//		buf.append("ActorSimulatorConfig:");
+//		buf.append(" id=").append(id);
+//		buf.append(" type=").append(actorType);
+//		buf.append("\n\telements=[");
+//		for (SimulatorConfigElement asce : elements) {
 //			buf.append("\n\t\t").append(asce);
 //		}
-		
-		return buf.toString();
+////		buf.append("\n\tuser=[");
+////		for (ActorSimulatorConfigElement asce : user) {
+////			buf.append("\n\t\t").append(asce);
+////		}
+//
+//		return buf.toString();
 	}
 	
 	public SimulatorConfig() {
