@@ -363,7 +363,7 @@ public class PrsSimLogs {
          String simulatorType = simId.getActorType();
          FilenameFilter filter = new PidDateFilenameFilter(pid, timeOfTransaction);
          if (StringUtils.isBlank(transactionCode)) transactionCode = "prb";
-         Path base = Paths.get(externalCache, "simdb", simulatorName, simulatorType, transactionCode);
+         Path base = Paths.get(externalCache, "simdb", simId.getTestSession().getValue(), simulatorName, simulatorType, transactionCode);
          Utility.isValidPfn("xtools log dir", base, PfnType.DIRECTORY, "r");
          String[] logDirs = base.toFile().list(filter);
          Arrays.sort(logDirs);

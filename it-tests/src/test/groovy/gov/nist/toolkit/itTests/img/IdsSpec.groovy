@@ -22,9 +22,9 @@ import spock.lang.Shared
  */
 class IdsSpec extends ToolkitSpecification {
     @Shared SimulatorBuilder spi
-    @Shared String testSession = 'idsspec';
+    @Shared TestSession testSession = new TestSession('idsspec')
     @Shared String id = 'simulator_ids'
-    @Shared SimId simId = new SimId(new TestSession(testSession), id)
+    @Shared SimId simId = new SimId(testSession, id)
     @Shared String envName = 'default'
     @Shared SimConfig sutSimConfig
 
@@ -47,7 +47,7 @@ class IdsSpec extends ToolkitSpecification {
         new BuildCollections().init(null)
 
         // creates the special testSession/session for this test
-        api.createTestSession(testSession)
+        api.createTestSession(testSession.value)
     }
 
     // one time shutdown when everything is done
@@ -63,9 +63,9 @@ class IdsSpec extends ToolkitSpecification {
         setup: 'ids orchestration request is set up'
         IdsOrchestrationRequest request = new IdsOrchestrationRequest()
         request.environmentName = envName
-        request.testSession = new TestSession(testSession)
+        request.testSession = testSession
         request.useExistingSimulator = false
-        request.siteUnderTest = new SiteSpec(simId.testSession)
+        request.siteUnderTest = new SiteSpec(simId.id, simId.testSession)
 
         when: 'build orchestration'
         def builder = new IdsOrchestrationBuilder(api, session, request)
@@ -85,14 +85,14 @@ class IdsSpec extends ToolkitSpecification {
         SiteSpec siteSpec = request.siteUnderTest
 
         SimManager simManager = new SimManager(api.getSession().id)
-        Sites sites = simManager.getAllSites(new Sites(new TestSession(testSession)), new TestSession(testSession))
+        Sites sites = simManager.getAllSites(new Sites(testSession), testSession)
 //        Site sutSite = sites.getSite(siteSpec.name, new TestSession(testSession))
 
-        TestInstance testInstance = new TestInstance(testId)
+        TestInstance testInstance = new TestInstance(testId, testSession)
         List<String> sections = []
         Map<String, String> params = new HashMap<>()
 
-        TestOverviewDTO testOverviewDTO = session.xdsTestServiceManager().runTest(envName, new TestSession(testSession), siteSpec, testInstance, sections, params, null, true)
+        TestOverviewDTO testOverviewDTO = session.xdsTestServiceManager().runTest(envName, testSession, siteSpec, testInstance, sections, params, null, true)
 
         then: 'Returned test status is pass'
         testOverviewDTO.pass

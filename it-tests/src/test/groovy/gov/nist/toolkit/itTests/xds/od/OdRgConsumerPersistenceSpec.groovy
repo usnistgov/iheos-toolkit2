@@ -32,7 +32,7 @@ class OdRgConsumerPersistenceSpec extends ToolkitSpecification {
     @Shared String patientId = 'SRG17^^^&1.2.460&ISO'
     String reg = 'sunil__rg'
     SimId simId = SimIdFactory.simIdBuilder(reg)
-    @Shared String testSession = 'sunil';
+    @Shared TestSession testSession = new TestSession('sunil');
     @Shared SimConfig rgConfig = null
     @Shared SimConfig oddsConfig = null;
     @Shared Session tkSession
@@ -50,19 +50,19 @@ class OdRgConsumerPersistenceSpec extends ToolkitSpecification {
 
         new BuildCollections().init(null)
 
-        spi.delete('rg', testSession)
+        spi.delete('rg', testSession.value)
 
         rgConfig = spi.create(
                 'rg',
-                testSession,
+                testSession.value,
                 SimulatorActorType.RESPONDING_GATEWAY,
                 'test')
 
-        spi.delete('od', testSession)
+        spi.delete('od', testSession.value)
 
         oddsConfig = spi.create(
                 'od',
-                testSession,
+                testSession.value,
                 SimulatorActorType.ONDEMAND_DOCUMENT_SOURCE,
                 'test')
         oddsConfig.setProperty(SimulatorProperties.PERSISTENCE_OF_RETRIEVED_DOCS, true)
@@ -85,8 +85,8 @@ class OdRgConsumerPersistenceSpec extends ToolkitSpecification {
 
     def cleanupSpec() {  // one time shutdown when everything is done
 //        System.gc()
-        spi.delete('rg', testSession)
-        spi.delete('od', testSession)
+        spi.delete('rg', testSession.value)
+        spi.delete('od', testSession.value)
         server.stop()
         ListenerFactory.terminateAll()
     }
@@ -96,7 +96,7 @@ class OdRgConsumerPersistenceSpec extends ToolkitSpecification {
     def 'Submit Pid transaction to Registry simulator'() {
         when:
         String siteName = 'sunil__rg'
-        TestInstance testId = new TestInstance("15804")
+        TestInstance testId = new TestInstance("15804", testSession)
         List<String> sections = new ArrayList<>()
         sections.add("section")
         Map<String, String> params = new HashMap<>()
@@ -122,8 +122,8 @@ class OdRgConsumerPersistenceSpec extends ToolkitSpecification {
         then:
         Map<String,String> rs = TransactionUtil.registerWithLocalizedTrackingInODDS(tkSession
                 , new TestSession(oddsConfig.getUser())
-                , new TestInstance("15806")
-                , new SiteSpec(rgConfig.getFullId(), ActorType.REGISTRY, null, new TestSession(testSession))
+                , new TestInstance("15806", testSession)
+                , new SiteSpec(rgConfig.getFullId(), ActorType.REGISTRY, null, testSession)
                 , SimIdFactory.simIdBuilder(oddsConfig.getFullId())
                 , paramsRegOdde)
 
@@ -140,7 +140,7 @@ class OdRgConsumerPersistenceSpec extends ToolkitSpecification {
     def 'Retrieve from the ODDS with Persistence Option'() {
         when:
         String siteName = 'sunil__rg'
-        TestInstance testId = new TestInstance("15806")
+        TestInstance testId = new TestInstance("15806", testSession)
         List<String> sections = ["Retrieve"]
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId)

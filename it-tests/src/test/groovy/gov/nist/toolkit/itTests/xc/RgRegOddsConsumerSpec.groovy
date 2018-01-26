@@ -30,8 +30,8 @@ class RgRegOddsConsumerSpec extends ToolkitSpecification {
     @Shared String patientId = 'SRG13^^^&1.2.460&ISO'
     @Shared String id = 'odrg'
 //    SimId simId = new SimId(reg)
-    @Shared String testSession = 'billtest'
-    @Shared String siteName = testSession + '__' + id
+    @Shared TestSession testSession = new TestSession('billtest')
+    @Shared String siteName = testSession.value + '__' + id
     @Shared SimConfig rgConfig = null
     @Shared Session tkSession
 
@@ -48,11 +48,11 @@ class RgRegOddsConsumerSpec extends ToolkitSpecification {
 
         new BuildCollections().init(null)
 
-        spi.delete(id, testSession)
+        spi.delete(id, testSession.value)
 
         rgConfig = spi.create(
                 id,
-                testSession,
+                testSession.value,
                 SimulatorActorType.ON_DEMAND_RESPONDING_GATEWAY,
                 'test')
 
@@ -82,7 +82,7 @@ class RgRegOddsConsumerSpec extends ToolkitSpecification {
     def cleanupSpec() {  // one time shutdown when everything is done
 //        spi.delete('rg', testSession)
 //        spi.delete('od', testSession)
-        spi.delete(id, testSession)
+        spi.delete(id, testSession.value)
         server.stop()
         ListenerFactory.terminateAll()
     }

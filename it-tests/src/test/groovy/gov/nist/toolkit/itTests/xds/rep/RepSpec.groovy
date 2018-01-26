@@ -27,9 +27,9 @@ import spock.lang.Shared
  */
 class RepSpec extends ToolkitSpecification {
     @Shared SimulatorBuilder spi
-    @Shared String testSession = 'repspec';
+    @Shared TestSession testSession = new TestSession('repspec')
     @Shared String id = 'rep'
-    @Shared SimId simId = new SimId(new TestSession(testSession), id)
+    @Shared SimId simId = new SimId(testSession, id)
     @Shared String envName = 'default'
     @Shared SimConfig repSimConfig
 
@@ -47,22 +47,22 @@ class RepSpec extends ToolkitSpecification {
 
         new BuildCollections().init(null)
 
-        if (spi.get(id, testSession))
-            spi.delete(id, testSession)
+        if (spi.get(id, testSession.value))
+            spi.delete(id, testSession.value)
 
         api.deleteSimulatorIfItExists(simId)
 
         repSimConfig = spi.create(
                 id,
-                testSession,
+                testSession.value,
                 SimulatorActorType.REPOSITORY,
                 envName)
 
-        api.createTestSession(testSession)
+        api.createTestSession(testSession.value)
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
-        spi.delete(id, testSession)
+        spi.delete(id, testSession.value)
         api.deleteSimulatorIfItExists(simId)
         server.stop()
         ListenerFactory.terminateAll()
@@ -75,9 +75,9 @@ class RepSpec extends ToolkitSpecification {
         setup:
         RepOrchestrationRequest request = new RepOrchestrationRequest()
         request.environmentName = envName
-        request.userName = testSession
+        request.testSession = testSession
         request.useExistingSimulator = false
-        request.sutSite = new SiteSpec(simId.testSession)
+        request.sutSite = new SiteSpec(simId.id, simId.testSession)
 
         when: 'build orchestration'
         def builder = new RepOrchestrationBuilder(api, session, request)
@@ -104,15 +104,15 @@ class RepSpec extends ToolkitSpecification {
         siteSpec.orchestrationSiteName = supportConfig.id
 
         SimManager simManager = new SimManager(api.getSession().id)
-        Sites sites = simManager.getAllSites(new Sites(new TestSession(testSession)), new TestSession(testSession))
-        Site sutSite = sites.getSite(siteSpec.name, new TestSession(testSession))
+        Sites sites = simManager.getAllSites(new Sites(testSession), testSession)
+        Site sutSite = sites.getSite(siteSpec.name, testSession)
 
-        TestInstance testInstance = new TestInstance('12360')
+        TestInstance testInstance = new TestInstance('12360',testSession)
         List<String> sections = []
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', "P20160803215512.2^^^&1.3.6.1.4.1.21367.2005.13.20.1000&ISO");
 
-        TestOverviewDTO testOverviewDTO = session.xdsTestServiceManager().runTest(envName, new TestSession(testSession), siteSpec, testInstance, sections, params, null, true)
+        TestOverviewDTO testOverviewDTO = session.xdsTestServiceManager().runTest(envName, testSession, siteSpec, testInstance, sections, params, null, true)
 
         then:
         testOverviewDTO.pass
