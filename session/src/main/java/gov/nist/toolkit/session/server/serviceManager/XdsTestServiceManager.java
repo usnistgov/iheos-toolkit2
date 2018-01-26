@@ -147,7 +147,8 @@ public class XdsTestServiceManager extends CommonService {
 
 	public TestOverviewDTO runTest(String environmentName, TestSession mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections,
 								   Map<String, String> params, Map<String, Object> params2, boolean stopOnFirstFailure) throws Exception {
-		if (testInstance.getTestSession() == null) throw new ToolkitRuntimeException("TestSession is null");
+		if (testInstance.getTestSession() == null)
+			throw new ToolkitRuntimeException("TestSession is null");
 		TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, mesaTestSession);
 		session.xt = new Xdstest2(Installation.instance().toolkitxFile(), searchPath, session, testInstance.getTestSession());
 		new TestRunner(this).run(session, mesaTestSession, siteSpec, testInstance, sections, params, params2, stopOnFirstFailure);

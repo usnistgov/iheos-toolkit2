@@ -142,6 +142,8 @@ public class Session implements SecurityParams {
 		this.siteSpec = siteSpec;
 		transactionSettings = new TransactionSettings();
 		transactionSettings.siteSpec = siteSpec;
+		siteSpec.validate();
+		testSession = siteSpec.testSession
 
 		try {
 			Sites sites = new SimCache().getSimManagerForSession(id()).getAllSites(testSession);

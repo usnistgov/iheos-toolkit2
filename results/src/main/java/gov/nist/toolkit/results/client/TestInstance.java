@@ -199,6 +199,7 @@ public class TestInstance implements IsSerializable, Serializable {
       buf.append(id);
       buf.append(':');
       if (section != null) buf.append(section);
+      buf.append("  in ").append(testSession);
       return buf.toString();
    }
 

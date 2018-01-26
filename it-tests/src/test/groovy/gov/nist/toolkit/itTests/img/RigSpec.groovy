@@ -88,7 +88,7 @@ class RigSpec extends ToolkitSpecification {
         Sites sites = simManager.getAllSites(new Sites(testSession), testSession)
 //        Site sutSite = sites.getSite(siteSpec.name, new TestSession(testSession))
 
-        TestInstance testInstance = new TestInstance(testId)
+        TestInstance testInstance = new TestInstance(testId, testSession)
         List<String> sections = []
         Map<String, String> params = new HashMap<>()
 

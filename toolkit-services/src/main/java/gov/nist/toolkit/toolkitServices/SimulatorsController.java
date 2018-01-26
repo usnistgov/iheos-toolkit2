@@ -2,12 +2,15 @@ package gov.nist.toolkit.toolkitServices;
 
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
-import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.errorrecording.TextErrorRecorder;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.factories.TextErrorRecorderBuilder;
-import gov.nist.toolkit.installation.shared.TestSession;
+import gov.nist.toolkit.fhir.simulators.sim.cons.DocConsActorSimulator;
+import gov.nist.toolkit.fhir.simulators.sim.idc.ImgDocConsActorSimulator;
+import gov.nist.toolkit.fhir.simulators.sim.src.XdrDocSrcActorSimulator;
+import gov.nist.toolkit.fhir.simulators.support.StoredDocument;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrymsg.registry.AdhocQueryResponse;
@@ -19,11 +22,8 @@ import gov.nist.toolkit.services.server.ToolkitApi;
 import gov.nist.toolkit.simcommon.client.*;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
-import gov.nist.toolkit.fhir.simulators.sim.cons.DocConsActorSimulator;
-import gov.nist.toolkit.fhir.simulators.sim.idc.ImgDocConsActorSimulator;
-import gov.nist.toolkit.fhir.simulators.sim.src.XdrDocSrcActorSimulator;
-import gov.nist.toolkit.fhir.simulators.support.StoredDocument;
-import gov.nist.toolkit.simcommon.server.*;
+import gov.nist.toolkit.simcommon.server.SimDb;
+import gov.nist.toolkit.simcommon.server.SimPropertyTypeConflictException;
 import gov.nist.toolkit.soap.DocumentMap;
 import gov.nist.toolkit.toolkitServicesCommon.*;
 import gov.nist.toolkit.toolkitServicesCommon.resource.*;
@@ -359,7 +359,7 @@ public class SimulatorsController {
     public Response getAllDocs(@PathParam("id") String id, @PathParam("pid") String pid) {
         logger.info(String.format("GET simulators/%s/xds/GetAllDocs/%s", id, pid));
         try {
-            SimId simId = new SimId(TestSession.DEFAULT_TEST_SESSION, id);
+            SimId simId = SimIdFactory.simIdBuilder(id);
             RegistrySimApi api = new RegistrySimApi(simId);
             List<String> objectRefs = api.findDocsByPidObjectRef(pid);
             RefListResource or = new RefListResource();

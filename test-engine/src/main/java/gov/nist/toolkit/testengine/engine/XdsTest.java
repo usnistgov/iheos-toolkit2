@@ -500,6 +500,7 @@ public class XdsTest {
 
         this.status = true;
 		for (TestLogDetails testSpec : testSpecs) {
+			testSpec.getTestInstance().setTestSession(testSession);
 			System.out.println("Test: " + testSpec.getTestInstance().getId());
 			TestDefinition testDefinition = searchPath.getTestDefinition(testSpec.getTestInstance().getId());
 			File testKitFile = searchPath.getTestKitForTest(testSpec.getTestInstance().getId()).getTestKitDir();
