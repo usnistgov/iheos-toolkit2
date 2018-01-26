@@ -1068,7 +1068,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<SimId> getSimIdsForUser(GetSimIdsForUserRequest context) throws Exception {
         installCommandContext(context);
-        return new SimulatorServiceManager(session()).getSimIds(context.getUser());
+        return new SimulatorServiceManager(session()).getSimIds(context.getTestSession().getValue());
     }
 
     @Override
