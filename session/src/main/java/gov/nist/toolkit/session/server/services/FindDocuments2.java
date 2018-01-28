@@ -33,7 +33,7 @@ public class FindDocuments2 extends CommonService {
         try {
             session.setSiteSpec(site);
             session.transactionSettings.assignPatientId = false;
-            TestInstance testInstance = new TestInstance("FindDocuments2");
+            TestInstance testInstance = new TestInstance("FindDocuments2", session.getTestSession());
 
             logger.info("FindDocuments2:  " + selectedCodes);
 

@@ -77,25 +77,25 @@ class IgOrchestrationBuilder {
                 new PifSender(api, request.testSession, rg1Site.siteSpec(), orchProps).send(PifType.V2, pidNameMap)
                 new PifSender(api, request.testSession, rg2Site.siteSpec(), orchProps).send(PifType.V2, pidNameMap)
 
-                TestInstance testInstance15807 = TestInstanceManager.initializeTestInstance(request.testSession, new TestInstance('15807'))
+                TestInstance testInstance15807 = TestInstanceManager.initializeTestInstance(request.testSession, new TestInstance('15807', request.testSession))
                 MessageItem itemOneDoc1 = response.addMessage(testInstance15807, true, "")
                 MessageItem itemTwoDoc = response.addMessage(testInstance15807, true, "")
                 MessageItem itemOneDoc2 = response.addMessage(testInstance15807, true, "")
                 MessageItem itemOneDoc3 = response.addMessage(testInstance15807, true, "")
                 MessageItem itemRegistryError = response.addMessage(testInstance15807, true, "")
 
-                TestInstance testInstance12318 = TestInstanceManager.initializeTestInstance(request.testSession, new TestInstance('12318'))
+                TestInstance testInstance12318 = TestInstanceManager.initializeTestInstance(request.testSession, new TestInstance('12318', request.testSession))
 //                MessageItem item12318 = response.addMessage(testInstance12318, true, "")
 
                 // Submit test data
                 try {
-                    util.submit(request.testSession, SiteBuilder.siteSpecFromSimId(rgConfigs.get(0).id), new TestInstance("15807"), 'onedoc1', oneDocPid, home0)
+                    util.submit(request.testSession, SiteBuilder.siteSpecFromSimId(rgConfigs.get(0).id), new TestInstance("15807", request.testSession), 'onedoc1', oneDocPid, home0)
                 } catch (Exception e) {
                     itemOneDoc1.setMessage("Initialization of " + rgConfigs.get(0).id + " (section onedoc1) failed:\n" + e.getMessage());
                     itemOneDoc1.setSuccess(false)
                 }
                 try {
-                    util.submit(request.testSession, SiteBuilder.siteSpecFromSimId(rgConfigs.get(0).id), new TestInstance("15807"), 'twodoc', twoDocPid, home0)
+                    util.submit(request.testSession, SiteBuilder.siteSpecFromSimId(rgConfigs.get(0).id), new TestInstance("15807", request.testSession), 'twodoc', twoDocPid, home0)
                 } catch (Exception e) {
                     itemTwoDoc.setMessage("Initialization of " + rgConfigs.get(0).id + " (section twodoc) failed:\n" + e.getMessage());
                     itemTwoDoc.setSuccess(false)
@@ -108,7 +108,7 @@ class IgOrchestrationBuilder {
                         '$testdata_home$' : home0,
                         '$testdata_repid$': rgConfigs[0].getConfigEle(SimulatorProperties.repositoryUniqueId).asString()]
                 try {
-                    util.submit(request.testSession.value, SiteBuilder.siteSpecFromSimId(rgConfigs.get(0).id), new TestInstance("15807"), 'onedoc2', params)
+                    util.submit(request.testSession.value, SiteBuilder.siteSpecFromSimId(rgConfigs.get(0).id), new TestInstance("15807", request.testSession), 'onedoc2', params)
                 } catch (Exception e) {
                     itemOneDoc2.setMessage("Initialization of " + rgConfigs.get(0).id + " (section onedoc2) failed:\n" + e.getMessage());
                     itemOneDoc2.setSuccess(false)
@@ -119,7 +119,7 @@ class IgOrchestrationBuilder {
                         '$testdata_home$' : home1,
                         '$testdata_repid$': rgConfigs[1].getConfigEle(SimulatorProperties.repositoryUniqueId).asString()]
                 try {
-                    util.submit(request.testSession.value, SiteBuilder.siteSpecFromSimId(rgConfigs.get(1).id), new TestInstance("15807"), 'onedoc3', params)
+                    util.submit(request.testSession.value, SiteBuilder.siteSpecFromSimId(rgConfigs.get(1).id), new TestInstance("15807", request.testSession), 'onedoc3', params)
                 } catch (Exception e) {
                     itemOneDoc3.setMessage("Initialization of " + rgConfigs.get(1).id + " (section onedoc3) failed:\n" + e.getMessage());
                     itemOneDoc3.setSuccess(false)
@@ -130,7 +130,7 @@ class IgOrchestrationBuilder {
                         '$testdata_home$' : home1,
                         '$testdata_repid$': rgConfigs[1].getConfigEle(SimulatorProperties.repositoryUniqueId).asString()]
                 try {
-                    util.submit(request.testSession.value, SiteBuilder.siteSpecFromSimId(rgConfigs.get(1).id), new TestInstance("15807"), 'registryError', params)
+                    util.submit(request.testSession.value, SiteBuilder.siteSpecFromSimId(rgConfigs.get(1).id), new TestInstance("15807", request.testSession), 'registryError', params)
                 } catch (Exception e) {
                     itemRegistryError.setMessage("Initialization of " + rgConfigs.get(1).id + " (section registryError) failed:\n" + e.getMessage());
                     itemRegistryError.setSuccess(false)

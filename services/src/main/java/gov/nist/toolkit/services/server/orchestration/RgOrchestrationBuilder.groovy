@@ -140,7 +140,7 @@ class RgOrchestrationBuilder {
                     home = rrSite.homeId
                 }
 
-                TestInstance testInstance12318 = new TestInstance('12318')
+                TestInstance testInstance12318 = new TestInstance('12318', request.testSession)
                 MessageItem item12318 = response.addMessage(testInstance12318, true, "")
 
                 if (orchProps.updated()) {

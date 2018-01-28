@@ -31,7 +31,7 @@ public class UpdateDocumentEntry extends CommonService {
 			areas[0] = "testdata-registry";
 
 //			Result r = toolkit.xdstest(testId, SECTIONS, params, areas, true);
-			return asList(ResultBuilder.RESULT(new TestInstance("UpdateDocumentEntry")));
+			return asList(ResultBuilder.RESULT(new TestInstance("UpdateDocumentEntry", session.getTestSession())));
 		} catch (Exception e) {
 			return buildExtendedResultList(e);
 		} finally {

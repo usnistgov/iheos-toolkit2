@@ -83,7 +83,7 @@ public class UtilityRunner {
                     TestCollection testCollection = new TestCollection(Installation.instance().internalTestkitFile(), collectionName);
                     List<String> testIds = testCollection.getTestIds();
                     for (String id : testIds) {
-                        TestInstance ti = new TestInstance(id);
+                        TestInstance ti = new TestInstance(id, session.getTestSession());
                         TestKitSearchPath searchPath = session.getTestkitSearchPath();
                         TestKit testKit = searchPath.getTestKitForTest(id);
                         if (testKit == null)

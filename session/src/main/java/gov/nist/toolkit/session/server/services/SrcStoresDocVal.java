@@ -22,7 +22,7 @@ public class SrcStoresDocVal extends CommonService {
 	public List<Result> run(SiteSpec site, String ssid) {
 		try {
 			session.setSiteSpec(site);
-			TestInstance testInstance = new TestInstance("SourceStoresDocumentValidation");
+			TestInstance testInstance = new TestInstance("SourceStoresDocumentValidation", session.getTestSession());
 			List<String> sections = new ArrayList<String>();
 			sections.add("query");
 			sections.add("retrieve");

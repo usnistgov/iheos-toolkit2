@@ -26,7 +26,7 @@ import java.util.Map;
 			try {
 				session.setSiteSpec(site);
 
-				TestInstance testInstance = new TestInstance("GetFolderAndContents");
+				TestInstance testInstance = new TestInstance("GetFolderAndContents", session.getTestSession());
 				List<String> sections = new ArrayList<String>();
 				Map<String, String> params = new HashMap<String, String>();
 				params.put("$returnType$", returnType);

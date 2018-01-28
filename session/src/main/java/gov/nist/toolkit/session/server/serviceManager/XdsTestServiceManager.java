@@ -219,7 +219,7 @@ public class XdsTestServiceManager extends CommonService {
 		mySession.setSiteSpec(stsSpec);
 		mySession.setTls(true); // Required for Gazelle
 
-		TestInstance testInstance = new TestInstance("GazelleSts");
+		TestInstance testInstance = new TestInstance("GazelleSts", TestSession.DEFAULT_TEST_SESSION);
 
 		List<String> sections = new ArrayList<String>();
 		sections.add(query);
@@ -441,7 +441,7 @@ public class XdsTestServiceManager extends CommonService {
 
 			List<TestInstance> tis = new ArrayList<>();
 			for (String testId : collec) {
-				TestInstance ti = new TestInstance(testId);
+				TestInstance ti = new TestInstance(testId, getTestSession());
 				tis.add(ti);
 			}
 
@@ -664,7 +664,7 @@ public class XdsTestServiceManager extends CommonService {
 		}
 
 		List<TestInstance> testInstances = new ArrayList<TestInstance>();
-		for (String name : names) testInstances.add(new TestInstance(name));
+		for (String name : names) testInstances.add(new TestInstance(name, getTestSession()));
 
 		return testInstances;
 	}
@@ -830,7 +830,7 @@ public class XdsTestServiceManager extends CommonService {
 
 		for (File testLogDir : testLogDirsInTestSession(testSession)) {
 			String testId = testLogDir.getName();
-			LogMapDTO logMapDTO = buildLogMap(testLogDir, new TestInstance(testId));
+			LogMapDTO logMapDTO = buildLogMap(testLogDir, new TestInstance(testId, testSession));
 			logs.add(logMapDTO);
 		}
 
@@ -937,7 +937,7 @@ public class XdsTestServiceManager extends CommonService {
 	//	}
 
 	TestInstance newTestLogId() {
-		return new TestInstance(UuidAllocator.allocate().replaceAll(":", "_"));
+		return new TestInstance(UuidAllocator.allocate().replaceAll(":", "_"), getTestSession());
 	}
 
 	Result buildResult(List<TestLogDetails> testLogDetailses, TestInstance logId) throws Exception {
@@ -945,7 +945,7 @@ public class XdsTestServiceManager extends CommonService {
 		if (testLogDetailses.size() == 1) {
 			testInstance = testLogDetailses.get(0).getTestInstance();
 		} else {
-			testInstance = new TestInstance("Combined_Test");
+			testInstance = new TestInstance("Combined_Test", logId.getTestSession());
 		}
 		Result result = ResultBuilder.RESULT(testInstance);
 		result.logId = logId;
@@ -1264,7 +1264,7 @@ public class XdsTestServiceManager extends CommonService {
 		session.setSiteSpec(site);
 		Map<String, String> params = new HashMap<>();
 		params.put("$pid$", pid.asString());
-		TestInstance testInstance = new TestInstance("PidFeed");
+		TestInstance testInstance = new TestInstance("PidFeed", testSession);
 		return asList(new UtilityRunner(this, TestRunType.UTILITY).run(session, params, null, null, testInstance, null, true));
 	}
 

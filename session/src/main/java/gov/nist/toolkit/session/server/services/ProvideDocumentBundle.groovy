@@ -31,7 +31,7 @@ public class ProvideDocumentBundle {
 
             session.setSiteSpec(site);
             session.transactionSettings.assignPatientId = false;
-            TestInstance testInstance = new TestInstance("FHIR");
+            TestInstance testInstance = new TestInstance("FHIR", site.testSession);
             List<String> sections = new ArrayList<>();
             sections.add("pdb");
             Map<String, String> params = new HashMap<String, String>();

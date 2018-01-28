@@ -45,7 +45,7 @@ public class SiteLoader {
 //                    Xdstools2.DEBUG("site " + s.getName() + " has user " + s.user);
                     if (s.getTestSession() == null)
                         sitesForUser.add(s);
-                    else if (user.equals(s.getTestSession())) {
+                    else if (user.equals(s.getTestSession().getValue())) {
                         sitesForUser.add(s);
                     }
                 }

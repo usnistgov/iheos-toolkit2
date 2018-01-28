@@ -34,7 +34,7 @@ public class GetRelated extends CommonService {
 				return buildResultList(e);
 			}
 
-			TestInstance testName = new TestInstance("GetRelated");
+			TestInstance testName = new TestInstance("GetRelated", session.getTestSession());
 			List<String> sections = new ArrayList<String>();
 			Map<String, String> params = new HashMap<String, String>();
 			params.put("$uuid$", aid.id);

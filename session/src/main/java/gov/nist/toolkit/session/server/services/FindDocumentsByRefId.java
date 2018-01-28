@@ -24,7 +24,7 @@ public class FindDocumentsByRefId extends CommonService {
 		try {
 			session.setSiteSpec(site);
 			session.transactionSettings.assignPatientId = false;
-			TestInstance testName = new TestInstance("FindDocumentsByRefId");
+			TestInstance testName = new TestInstance("FindDocumentsByRefId", session.getTestSession());
 			List<String> sections = new ArrayList<String>();
 
 			Map<String, String> params = new HashMap<String, String>();

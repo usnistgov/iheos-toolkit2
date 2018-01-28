@@ -137,7 +137,7 @@ public class UseReportManager  {
 	public void add(OMElement useRep) throws XdsInternalException {
         logger.info("Parsing " + new OMFormatter(useRep).toString());
 		UseReport u = new UseReport();
-		u.testInstance = new TestInstance(useRep.getAttributeValue(test_qname));
+		u.testInstance = new TestInstance(useRep.getAttributeValue(test_qname), testConfig.testInstance.getTestSession() );
 		u.section = useRep.getAttributeValue(section_qname);
 		u.step = useRep.getAttributeValue(step_qname);
 		u.reportName = useRep.getAttributeValue(reportName_qname);

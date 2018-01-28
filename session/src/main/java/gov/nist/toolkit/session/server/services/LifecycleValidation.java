@@ -22,7 +22,7 @@ public class LifecycleValidation extends CommonService {
 		try {
 			session.setSiteSpec(site);
 			session.transactionSettings.assignPatientId = false;
-			TestInstance testName = new TestInstance("tc:lifecycle");
+			TestInstance testName = new TestInstance("tc:lifecycle", session.getTestSession());
 			List<String> sections = null;
 			Map<String, String> params = new HashMap<String, String>();
 			params.put("$patientid$", pid);

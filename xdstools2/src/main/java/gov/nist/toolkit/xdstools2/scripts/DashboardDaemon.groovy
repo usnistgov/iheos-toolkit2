@@ -135,7 +135,7 @@ public class DashboardDaemon {
 			xdstest.setSites(sites);
 			xdstest.setSite(site);
 			xdstest.setSecure(secure);
-            TestInstance testInstance = new TestInstance("GetDocuments")
+            TestInstance testInstance = new TestInstance("GetDocuments", TestSession.DEFAULT_TEST_SESSION)
 			List<String> areas = ['utilities'];
 			List<String> sections = new ArrayList<String>();
 			sections.add("XDS");
@@ -283,7 +283,7 @@ public class DashboardDaemon {
 			xdstest.setSites(sites);
 			xdstest.setSite(site);
 			xdstest.setSecure(secure);
-            TestInstance testInstance = new TestInstance("SingleDocument-Repository")
+            TestInstance testInstance = new TestInstance("SingleDocument-Repository", TestSession.DEFAULT_TEST_SESSION)
             LogRepository logRepository = LogRepositoryFactory.
                     getLogRepository(
                             Installation.instance().sessionCache(),

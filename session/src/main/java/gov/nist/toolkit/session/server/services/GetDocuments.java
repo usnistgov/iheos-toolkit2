@@ -26,7 +26,7 @@ public class GetDocuments extends CommonService {
 			// load site config into session
 			session.setSiteSpec(site);
 			
-			TestInstance testInstance = new TestInstance("GetDocuments");
+			TestInstance testInstance = new TestInstance("GetDocuments", session.getTestSession());
 			List<String> sections = new ArrayList<String>();
 			Map<String, String> params = new HashMap<String, String>();
 			params.put("$returnType$", returnType);

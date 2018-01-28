@@ -43,8 +43,8 @@ class RunTestsClickHandler implements ClickHandler, TestIterator {
         testTarget.getSiteToIssueTestAgainst().setTls(orchInit.isTls());
 
         if (orchInit.isSaml()) {
-            SiteSpec stsSpec = new SiteSpec(new TestSession("GazelleSts"));
-            TestInstance testInstance = new TestInstance("GazelleSts");
+            SiteSpec stsSpec = new SiteSpec("GazelleSts", TestSession.DEFAULT_TEST_SESSION);
+            TestInstance testInstance = new TestInstance("GazelleSts", TestSession.DEFAULT_TEST_SESSION);
             testInstance.setSection("samlassertion-issue");
             Map<String, String> params = new HashMap<>();
 
