@@ -1,8 +1,11 @@
 package gov.nist.toolkit.xdstools2.server.gazelle.sysconfig
 
+import groovy.transform.TypeChecked
+
 /**
  *
  */
+@TypeChecked
 class GazelleGet {
     GazellePull gazellePull
     File cache

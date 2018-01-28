@@ -1,11 +1,13 @@
 package gov.nist.toolkit.xdstools2.server.gazelle.sysconfig
 
 import groovy.transform.ToString
+import groovy.transform.TypeChecked
 
 /**
  * This matches the WebService configuration offered by Gazelle.
  * Updates to this must be matched in ConfigParser.groovy
  */
+@TypeChecked
 @ToString
 class ConfigDef {
     String configType
