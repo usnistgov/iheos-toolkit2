@@ -15,7 +15,7 @@ import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteRequest;
  */
 public class TestContext implements SiteManager {
     private ToolWindow toolWindow;
-    private SiteSpec currentSiteSpec = new SiteSpec(new TestSession(getTestSession()));
+    private SiteSpec currentSiteSpec = null;
     private Site siteUnderTest = null;
     private TestContextView testContextView;
     static final protected String NONE = "--none--";
@@ -24,6 +24,7 @@ public class TestContext implements SiteManager {
     public TestContext(ToolWindow toolWindow, SiteSelectionValidator siteValidator) {
         this.toolWindow = toolWindow;
         this.siteSelectionValidator = siteValidator;
+        currentSiteSpec = new SiteSpec(new TestSession(getTestSession()));
     }
 
     public void setTestContextView(TestContextView testContextView) {

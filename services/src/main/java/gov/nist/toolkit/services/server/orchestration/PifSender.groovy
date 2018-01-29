@@ -6,17 +6,20 @@ import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.services.client.PifType
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.sitemanagement.client.SiteSpec
+import groovy.transform.TypeChecked
+
 /**
  * Send a Patient Identify Feed.  This relies heavily on OrchestrationProperties. The feed is only sent if
  * orchProps.updated() is true.
  */
+@TypeChecked
 class PifSender {
     private OrchestrationProperties orchProps
 //    AbstractOrchestrationRequest request
     private SiteSpec regSite
     private ToolkitApi api
     private Util util
-    private String testSession
+    private TestSession testSession
 
     public PifSender(ToolkitApi api, TestSession testSession, SiteSpec regSite, OrchestrationProperties orchProps) {
         this.api = api

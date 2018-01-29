@@ -35,10 +35,12 @@ public class ResultPersistence {
 		// if test run as individual sections
 		for (String sectionName : sectionNames) {
 			file = getFilePath(testInstance, testSession, sectionName, true); // if test run as single entity
-			if (file.exists()) file.delete();
+			if (file.exists())
+				file.delete();
 		}
 		file = getFilePath2(testInstance, testSession);
-		if (file.exists()) Io.delete(file);
+		if (file.exists())
+			Io.delete(file);
     }
 
 	public Result read(TestInstance testInstance, List<String> sectionNames, TestSession testSession) throws XdsException  {
@@ -94,8 +96,8 @@ public class ResultPersistence {
 			dir.mkdirs();
 
 		if (sectionName == null)
-			return new File(dir.toString() + File.separator + testInstance.toString().replace(":","") + ".ser");
-		return new File(dir.toString() + File.separator + testInstance.toString().replace(":","") + sectionName + ".ser");
+			return new File(dir.toString() + File.separator + testInstance.getId().replace(":","") + ".ser");
+		return new File(dir.toString() + File.separator + testInstance.getId().replace(":","") + sectionName + ".ser");
 	}
 
 	private File getFilePath2(TestInstance testInstance,TestSession testSession) throws IOException {
@@ -104,6 +106,6 @@ public class ResultPersistence {
 						testSession
 //						+ File.separator + "Results"
 		);
-			return new File(dir.toString() + File.separator + testInstance.toString().replace(":",""));
+			return new File(dir.toString() + File.separator + testInstance.getId().replace(":",""));
 	}
 }

@@ -147,8 +147,10 @@ public class XdsTestServiceManager extends CommonService {
 
 	public TestOverviewDTO runTest(String environmentName, TestSession mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections,
 								   Map<String, String> params, Map<String, Object> params2, boolean stopOnFirstFailure) throws Exception {
-		if (testInstance.getTestSession() == null)
+
+		if (mesaTestSession == null)
 			throw new ToolkitRuntimeException("TestSession is null");
+		testInstance.setTestSession(mesaTestSession);
 		TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, mesaTestSession);
 		session.xt = new Xdstest2(Installation.instance().toolkitxFile(), searchPath, session, testInstance.getTestSession());
 		new TestRunner(this).run(session, mesaTestSession, siteSpec, testInstance, sections, params, params2, stopOnFirstFailure);
@@ -1367,6 +1369,7 @@ public class XdsTestServiceManager extends CommonService {
 			List<String> sectionNames = testDef.getSectionIndex();
 			new ResultPersistence().delete(testInstance, testSession, sectionNames);
 		} catch (Exception e) {
+			logger.info("Cannot delete test " + testInstance + e.getMessage());
 			// oh well
 		}
 		return getTestOverview(testInstance.getTestSession(), testInstance);
