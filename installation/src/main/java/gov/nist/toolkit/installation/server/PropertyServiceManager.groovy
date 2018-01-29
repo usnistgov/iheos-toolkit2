@@ -91,11 +91,15 @@ public class PropertyServiceManager {
 		return getPropertyManager().getToolkitTlsPort();
 	}
 
-	boolean getMultiuserMode() {
+	boolean isSingleUserMode() {
+		!isMultiuserMode() && !isCasMode()
+	}
+
+	boolean isMultiuserMode() {
 		getPropertyManager().multiuserMode
 	}
 
-	boolean getCasMode() {
+	boolean isCasMode() {
 		getPropertyManager().casMode
 	}
 
