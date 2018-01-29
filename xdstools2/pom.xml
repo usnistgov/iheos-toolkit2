@@ -182,6 +182,12 @@
 				<build.profile.id>Sunil</build.profile.id>
 			</properties>
 		</profile>
+		<profile>
+			<id>SunilUbuntu</id>
+			<properties>
+				<build.profile.id>SunilUbuntu</build.profile.id>
+			</properties>
+		</profile>
 	</profiles>
 
 	<name>XDS Toolkit</name>
