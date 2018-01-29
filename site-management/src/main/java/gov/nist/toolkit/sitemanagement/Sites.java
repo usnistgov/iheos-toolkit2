@@ -17,6 +17,8 @@ public class Sites {
 	HashMap<String, Site> siteMap = new HashMap<String, Site>();   // siteName -> Site
 	String defaultSiteName;
 	final public static String ALL_REPOSITORIES = "allRepositories";
+	final public static String FAKE_SITE_NAME = "fake_site";
+	final public static Site FAKE_SITE = new Site(FAKE_SITE_NAME, TestSession.DEFAULT_TEST_SESSION);
 	TestSession testSession = null;
 	
 	public boolean equals(Sites s) {
@@ -282,6 +284,8 @@ public class Sites {
 	}
 
 	public Site getSite(String siteName, TestSession testSession) throws Exception {
+   		if (siteName.equals(FAKE_SITE_NAME))
+   			return FAKE_SITE;
 		if (siteName == null)
 			throw new Exception("Internal error: null site requested");
 		if (siteName.equals("gov/nist/toolkit/installation/shared"))

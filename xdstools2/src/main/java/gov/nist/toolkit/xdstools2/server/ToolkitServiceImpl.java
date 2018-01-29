@@ -1654,6 +1654,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     public List<Result> fhirCreate(FhirCreateRequest request) throws Exception {
         installCommandContext(request);
         logger.debug(sessionID + ": fhirCreate()");
+        request.getSite().testSession = request.getTestSession();
         List<Result> results = new FhirServiceManager(session()).create(request.getSite(), request.getDatasetElement());
         return results;
     }
@@ -1662,6 +1663,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     public List<Result> fhirTransaction(FhirTransactionRequest request) throws Exception {
         installCommandContext(request);
         logger.debug(sessionID + ": fhirTransaction()");
+        request.getSite().testSession = request.getTestSession();
         List<Result> results = new FhirServiceManager(session()).transaction(request.getSite(), request.getDatasetElement());
         return results;
     }
@@ -1670,6 +1672,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     public List<Result> fhirSearch(FhirSearchRequest request) throws Exception {
         installCommandContext(request);
         logger.debug(sessionID + ": fhirSearch()");
+        request.getSite().testSession = request.getTestSession();
         List<Result> results = new FhirServiceManager(session()).search(request.getSite(), request.getResourceTypeName(), request.getCodesSpec());
         return results;
     }
@@ -1678,6 +1681,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     public List<Result> fhirRead(FhirReadRequest request) throws Exception {
         installCommandContext(request);
         logger.debug(sessionID + ": fhirRead()");
+        request.getSite().testSession = request.getTestSession();
         List<Result> results = new FhirServiceManager(session()).read(request.getSite(), request.getReference());
         return results;
     }
