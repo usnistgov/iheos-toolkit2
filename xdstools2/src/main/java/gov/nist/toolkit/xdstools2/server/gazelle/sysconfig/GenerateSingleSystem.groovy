@@ -34,7 +34,7 @@ class GenerateSingleSystem {
             ' - REC'
     ]
     static String withoutExtension(String name) {
-        String extension = nameExtensions.find { name.endsWith(it) }
+        String extension = nameExtensions.find { String it -> name.endsWith(it) }
         if (!extension) return name
         return name.minus(extension)
     }
@@ -71,7 +71,7 @@ class GenerateSingleSystem {
         // Recipient
         //*************************************************************
         Site recipientSite = null
-        elements.findAll { (it.isRecipient() || it.isResponder())  && it.approved }.each { ConfigDef config ->
+        elements.findAll { ConfigDef it ->  (it.isRecipient() || it.isResponder())  && it.approved }.each { ConfigDef config ->
             String system = config.system
             String tkSystem = "${system} - REC"
             if (recipientSite == null) {
@@ -129,7 +129,7 @@ class GenerateSingleSystem {
         // Register On Demand
         //*************************************************************
         Site rodSite = null
-        elements.findAll { it.isROD() && it.approved }.each { ConfigDef config ->
+        elements.findAll { ConfigDef it ->  it.isROD() && it.approved }.each { ConfigDef config ->
             String system = config.system
             String tkSystem = "${system} - ROD"
             if (rodSite == null) {
@@ -153,7 +153,7 @@ class GenerateSingleSystem {
         // Image document source
         //*************************************************************
         Site idsSite = null
-        elements.findAll { it.isIDS() && it.approved }.each { ConfigDef config ->
+        elements.findAll { ConfigDef it ->  it.isIDS() && it.approved }.each { ConfigDef config ->
             String system = config.system
             String tkSystem = "${system} - IDS"
             if (idsSite == null) {
@@ -179,7 +179,7 @@ class GenerateSingleSystem {
         //*************************************************************
         Site embedSite = null
         String embedOid = null
-        elements.findAll { it.isEMBED_REPOS() && it.approved }.each { ConfigDef config ->
+        elements.findAll { ConfigDef it ->  it.isEMBED_REPOS() && it.approved }.each { ConfigDef config ->
             String system = config.system
             String tkSystem = "${system} - EMBED" // in toolkit
             if (embedSite == null) {
@@ -209,7 +209,7 @@ class GenerateSingleSystem {
         //*************************************************************
         Site oddsSite = null
         String oddsOid = null
-        elements.findAll { it.isODDS() && it.approved }.each { ConfigDef config ->
+        elements.findAll { ConfigDef it ->  it.isODDS() && it.approved }.each { ConfigDef config ->
             String system = config.system
             String tkSystem = "${system} - ODDS" // in toolkit
             if (oddsSite == null) {
@@ -240,7 +240,7 @@ class GenerateSingleSystem {
         String homeOid = null
         String pifHost = null
         String pifPort = null
-        elements.findAll { !it.isODDS() && !it.isRecipient() && !it.isEMBED_REPOS() && !it.isROD() && !it.isIDS() && it.approved }.each { ConfigDef config ->
+        elements.findAll { ConfigDef it ->  !it.isODDS() && !it.isRecipient() && !it.isEMBED_REPOS() && !it.isROD() && !it.isIDS() && it.approved }.each { ConfigDef config ->
             boolean forceNotRetrieve = false
             String transactionId = config.getTransaction()
             if (!transactionId) return

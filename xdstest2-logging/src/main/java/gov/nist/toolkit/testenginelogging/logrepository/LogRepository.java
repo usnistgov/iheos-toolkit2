@@ -136,6 +136,8 @@ public class LogRepository  {
 
     private File getLogDir(/*File location, String user, LogIdType idType,*/ TestInstance id) {
         if (location == null) throw new ToolkitRuntimeException("Internal Error: location is null");
+        if (testSession == null && id.getTestSession() != null)
+            testSession = id.getTestSession().getValue();
         if (testSession == null)
             throw new ToolkitRuntimeException("Internal Error: TestInstance is null");
 //        if (id.getTestSession()==null)

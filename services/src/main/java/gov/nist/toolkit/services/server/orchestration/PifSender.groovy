@@ -33,9 +33,9 @@ class PifSender {
         if (orchProps.updated()) {
             if (pifType == PifType.V2) {
                 // register patient ids with registry
-                pidNameMap.each {
-                    String pidId = it.key
-                    TestInstanceManager testInstanceManager = it.value
+                pidNameMap.each { String key, TestInstanceManager value ->
+                    String pidId = key
+                    TestInstanceManager testInstanceManager = value
                     try {
                         Pid pid = PidBuilder.createPid(orchProps.getProperty(pidId))
                         util.submit(testSession, regSite, testInstanceManager.testInstance, 'pif', pid, null)
@@ -47,8 +47,8 @@ class PifSender {
                 }
             }
         } else {  // pass back PIF status
-            pidNameMap.each {
-                TestInstanceManager testInstanceManager = it.value
+            pidNameMap.each { String key, TestInstanceManager value ->
+                TestInstanceManager testInstanceManager = value
                 testInstanceManager.messageItem.setSuccess(api.getTestLogs(testInstanceManager.testInstance).isSuccess())
             }
         }

@@ -1,6 +1,7 @@
 package gov.nist.toolkit.xdstools2.server.gazelle.sysconfig
 
 import gov.nist.toolkit.installation.shared.TestSession
+import gov.nist.toolkit.sitemanagement.client.Site
 import groovy.transform.TypeChecked
 import org.apache.http.annotation.Obsolete
 
@@ -59,7 +60,7 @@ class GenerateSystemNames {
             GenerateSingleSystem singleSystemGenerator = new GenerateSingleSystem(gazellePull, cache, testSession)
             GeneratedSystems gen = singleSystemGenerator.generate(systemName)
             if (!gen) return
-            gen.systems.each { output.systems.add(it) }
+            gen.systems.each { Site it ->output.systems.add(it) }
             log.append(gen.log)
         }
         output.log = log
