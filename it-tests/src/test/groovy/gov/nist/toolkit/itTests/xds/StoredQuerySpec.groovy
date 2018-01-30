@@ -113,7 +113,7 @@ class StoredQuerySpec extends ToolkitSpecification {
 
     def 'Run SQ initialization'() {
         when:
-        TestInstance testId = new TestInstance("tc:Initialize_for_Stored_Query")
+        TestInstance testId = new TestInstance("tc:Initialize_for_Stored_Query", new TestSession(testSession))
         List<String> sections = new ArrayList<>()
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId2)
@@ -129,7 +129,7 @@ class StoredQuerySpec extends ToolkitSpecification {
 
     def 'Run SQ tests'() {
         when:
-        TestInstance testId = new TestInstance("tc:SQ.b")
+        TestInstance testId = new TestInstance("tc:SQ.b", new TestSession(testSession))
         List<String> sections = new ArrayList<>()
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId2)   // not used

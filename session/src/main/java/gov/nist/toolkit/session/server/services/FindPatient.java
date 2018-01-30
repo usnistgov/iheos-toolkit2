@@ -23,7 +23,7 @@ public class FindPatient extends CommonService {
 		try {
 			session.setSiteSpec(site);
 			session.transactionSettings.assignPatientId = false;
-			TestInstance testInstance = new TestInstance("FindPatient");
+			TestInstance testInstance = new TestInstance("FindPatient", session.getTestSession());
 			List<String> sections = new ArrayList<String>();
 			sections.add("XCA");
 			Map<String, String> params = new HashMap<String, String>();

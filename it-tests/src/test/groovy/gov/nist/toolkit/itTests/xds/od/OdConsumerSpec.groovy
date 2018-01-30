@@ -32,7 +32,7 @@ class OdConsumerSpec extends ToolkitSpecification {
     @Shared String patientId = 'SR14^^^&1.2.460&ISO'
     String reg = 'sunil__rr2'
     SimId simId = SimIdFactory.simIdBuilder(reg)
-    @Shared String testSession = 'sunil'
+    @Shared TestSession testSession = new TestSession('sunil')
     @Shared SimConfig rrConfig = null
     @Shared SimConfig oddsConfig = null
     @Shared Session tkSession
@@ -50,19 +50,19 @@ class OdConsumerSpec extends ToolkitSpecification {
 
         new BuildCollections().init(null)
 
-        spi.delete('rr2', testSession)
+        spi.delete('rr2', testSession.value)
 
         rrConfig = spi.create(
                 'rr2',
-                testSession,
+                testSession.value,
                 SimulatorActorType.REPOSITORY_REGISTRY,
                 'test')
 
-        spi.delete('odds2', testSession)
+        spi.delete('odds2', testSession.value)
 
         oddsConfig = spi.create(
                 'odds2',
-                testSession,
+                testSession.value,
                 SimulatorActorType.ONDEMAND_DOCUMENT_SOURCE,
                 'test')
         oddsConfig.setProperty(SimulatorProperties.PERSISTENCE_OF_RETRIEVED_DOCS, false)
@@ -78,8 +78,8 @@ class OdConsumerSpec extends ToolkitSpecification {
 
     def cleanupSpec() {  // one time shutdown when everything is done
 //        System.gc()
-        spi.delete('rr2', testSession)
-        spi.delete('odds2', testSession)
+        spi.delete('rr2', testSession.value)
+        spi.delete('odds2', testSession.value)
         server.stop()
         ListenerFactory.terminateAll()
     }
@@ -116,7 +116,7 @@ class OdConsumerSpec extends ToolkitSpecification {
         Map<String,String> rs = TransactionUtil.registerWithLocalizedTrackingInODDS(tkSession
                 , new TestSession(oddsConfig.getUser())
                 , new TestInstance("15806")
-                , new SiteSpec(rrConfig.getFullId(), ActorType.REGISTRY, null, new TestSession(testSession))
+                , new SiteSpec(rrConfig.getFullId(), ActorType.REGISTRY, null, testSession)
                 , SimIdFactory.simIdBuilder(oddsConfig.getFullId())
                 , paramsRegOdde)
 

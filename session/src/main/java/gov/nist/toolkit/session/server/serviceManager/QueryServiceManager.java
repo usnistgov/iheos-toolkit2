@@ -320,7 +320,7 @@ public class QueryServiceManager extends CommonService {
 	public List<Result> getLastMetadata() {
 		logger.debug(session.id() + ": " + "getLastMetadata");
 		List<Result> results = new ArrayList<Result>();
-		Result result = ResultBuilder.RESULT(new TestInstance("getLastMetadata"));
+		Result result = ResultBuilder.RESULT(new TestInstance("getLastMetadata", testSession));
 		results.add(result);
 
 		try {

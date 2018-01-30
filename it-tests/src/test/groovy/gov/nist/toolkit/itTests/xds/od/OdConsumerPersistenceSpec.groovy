@@ -27,7 +27,7 @@ class OdConsumerPersistenceSpec extends ToolkitSpecification {
 
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
     @Shared String patientId = 'SR15^^^&1.2.460&ISO'
-    @Shared String testSession = 'sunil2'
+    @Shared TestSession testSession = new TestSession('sunil2')
     @Shared SimConfig rrConfig = null
     @Shared SimConfig oddsConfig = null
     @Shared Session tkSession
@@ -45,19 +45,19 @@ class OdConsumerPersistenceSpec extends ToolkitSpecification {
 
         new BuildCollections().init(null)
 
-        spi.delete('rr3', testSession)
+        spi.delete('rr3', testSession.value)
 
         rrConfig = spi.create(
                 'rr3',
-                testSession,
+                testSession.value,
                 SimulatorActorType.REPOSITORY_REGISTRY,
                 'test')
 
-        spi.delete('odds3', testSession)
+        spi.delete('odds3', testSession.value)
 
         oddsConfig = spi.create(
                 'odds3',
-                testSession,
+                testSession.value,
                 SimulatorActorType.ONDEMAND_DOCUMENT_SOURCE,
                 'test')
         oddsConfig.setProperty(SimulatorProperties.PERSISTENCE_OF_RETRIEVED_DOCS, true)
@@ -78,8 +78,8 @@ class OdConsumerPersistenceSpec extends ToolkitSpecification {
 
     def cleanupSpec() {  // one time shutdown when everything is done
 //        System.gc()
-        spi.delete('rr3', testSession)
-        spi.delete('odds3', testSession)
+        spi.delete('rr3', testSession.value)
+        spi.delete('odds3', testSession.value)
         server.stop()
         ListenerFactory.terminateAll()
     }
@@ -116,7 +116,7 @@ class OdConsumerPersistenceSpec extends ToolkitSpecification {
         Map<String,String> rs = TransactionUtil.registerWithLocalizedTrackingInODDS(tkSession
                 , new TestSession(oddsConfig.getUser())
                 , new TestInstance("15806")
-                , new SiteSpec(rrConfig.getFullId(), ActorType.REGISTRY, null, new TestSession(testSession))
+                , new SiteSpec(rrConfig.getFullId(), ActorType.REGISTRY, null, testSession)
                 , SimIdFactory.simIdBuilder(oddsConfig.getFullId())
                 , paramsRegOdde)
 

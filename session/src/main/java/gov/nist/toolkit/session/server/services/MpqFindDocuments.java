@@ -25,7 +25,7 @@ public class MpqFindDocuments extends CommonService {
 		try {
 			session.setSiteSpec(site);
 			session.transactionSettings.assignPatientId = false;
-			TestInstance testInstance = new TestInstance("MPQ-FindDocuments");
+			TestInstance testInstance = new TestInstance("MPQ-FindDocuments", session.getTestSession());
 			List<String> sections = new ArrayList<String>();
 			if (session.siteSpec.actorType.equals(ActorType.REGISTRY))
 				sections.add("XDS");

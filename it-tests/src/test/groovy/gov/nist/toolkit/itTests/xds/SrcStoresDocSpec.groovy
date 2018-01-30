@@ -29,7 +29,7 @@ class SrcStoresDocSpec extends ToolkitSpecification {
     @Shared String patientId = 'SR7^^^&1.2.260&ISO'
     @Shared String rr = 'bill__rr'
     @Shared SimId simId = SimIdFactory.simIdBuilder(rr)
-    @Shared String testSession = 'default'
+    @Shared String testSession = 'bill'
     @Shared String repUid = ''
 
     def setupSpec() {   // one time setup done when class launched

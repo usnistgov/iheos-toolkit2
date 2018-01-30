@@ -3,10 +3,12 @@ package gov.nist.toolkit.itTests.simlog
 import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.installation.server.Installation
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO
 import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.client.SimIdFactory
 import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.simcommon.server.SimDbEvents
 import gov.nist.toolkit.sitemanagement.client.SiteSpec
@@ -25,13 +27,13 @@ class MarkerSpec extends ToolkitSpecification {
     @Shared String patientId = 'BR14^^^&1.2.360&ISO'
     @Shared String patientId2 = 'BR15^^^&1.2.360&ISO'
     @Shared String envName = 'test'
-    @Shared String testSession = 'bill';
+    @Shared TestSession testSession = new TestSession('bill')
     @Shared String id = 'regrep'
     @Shared String id2 = 'rec2'
     @Shared String rec = "${testSession}__${id}"
     @Shared String rec2 = "${testSession}__${id2}"
-    @Shared SimId simId = new SimId(rec)  // ultimate destination
-    @Shared SimId simId2 = new SimId(rec2)
+    @Shared SimId simId = SimIdFactory.simIdBuilder(rec)  // ultimate destination
+    @Shared SimId simId2 = SimIdFactory.simIdBuilder(rec2)
 
     def setupSpec() {   // one time setup done when class launched
         startGrizzly('8889')
@@ -47,22 +49,22 @@ class MarkerSpec extends ToolkitSpecification {
 
         new BuildCollections().init(null)
 
-        api.createTestSession(testSession)
+        api.createTestSession(testSession.value)
 
-        spi.delete(id, testSession)
-        spi.delete(id2, testSession)
+        spi.delete(id, testSession.value)
+        spi.delete(id2, testSession.value)
 
         Installation.instance().defaultEnvironmentName()
 
         spi.create(
                 id,
-                testSession,
+                testSession.value,
                 SimulatorActorType.DOCUMENT_RECIPIENT,
                 envName)
 
         spi.create(
                 id2,
-                testSession,
+                testSession.value,
                 SimulatorActorType.DOCUMENT_RECIPIENT,
                 envName)
 
@@ -75,13 +77,13 @@ class MarkerSpec extends ToolkitSpecification {
 
     def setup() {
         println "EC is ${Installation.instance().externalCache().toString()}"
-        println "${api.getSiteNames(true)}"
+        println "${api.getSiteNames(true, testSession)}"
     }
 
     def 'marker test - single sim'() {
         setup:
-        SiteSpec siteSpec = new SiteSpec(rec)
-        TestInstance testInstance = new TestInstance('12360')
+        SiteSpec siteSpec = new SiteSpec(id, testSession)
+        TestInstance testInstance = new TestInstance('12360', testSession)
         List<String> sections = ['submit']
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', "P20160803215512.2^^^&1.3.6.1.4.1.21367.2005.13.20.1000&ISO");
@@ -119,8 +121,8 @@ class MarkerSpec extends ToolkitSpecification {
 
     def 'marker test - two sim'() {
         setup:
-        SiteSpec siteSpec = new SiteSpec(rec)
-        TestInstance testInstance = new TestInstance('12360')
+        SiteSpec siteSpec = new SiteSpec(id, testSession)
+        TestInstance testInstance = new TestInstance('12360', testSession)
         List<String> sections = ['submit']
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', "P20160803215512.2^^^&1.3.6.1.4.1.21367.2005.13.20.1000&ISO");

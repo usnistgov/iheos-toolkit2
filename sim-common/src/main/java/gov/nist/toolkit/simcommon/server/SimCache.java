@@ -51,7 +51,12 @@ public class SimCache {
             return SimManager.getSite(simId);
         } catch (Exception e) {
             try {
-                SimId simId = SimIdFactory.simIdBuilder(siteName);
+                SimId simId;
+                try {
+                    simId = SimIdFactory.simIdBuilder(siteName);
+                } catch (Exception e1) {
+                    simId = SimIdFactory.simIdBuilder(testSession, siteName);
+                }
                 Site s = SimManager.getSite(simId);
                 return s;
             } catch (Exception e1) {

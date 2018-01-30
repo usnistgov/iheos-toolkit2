@@ -24,7 +24,7 @@ public class GetSSandContents extends CommonService {
 		try {
 			session.setSiteSpec(site);
 
-			TestInstance testInstance = new TestInstance("GetSubmissionSetAndContents");
+			TestInstance testInstance = new TestInstance("GetSubmissionSetAndContents", session.getTestSession());
 			List<String> sections = new ArrayList<String>();
 			Map<String, String> params = new HashMap<String, String>();
 			try {

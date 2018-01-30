@@ -39,7 +39,7 @@ public class RetrieveDocument extends CommonService {
 					uid.repositoryUniqueId = session.repUid;
 			}
 
-			TestInstance testInstance = new TestInstance("RetrieveDocumentSet");
+			TestInstance testInstance = new TestInstance("RetrieveDocumentSet", session.getTestSession());
 			List<String> sections = new ArrayList<String>();
 			Map<String, String> params = new HashMap<String, String>();
 			if (session.siteSpec.isRG()) {

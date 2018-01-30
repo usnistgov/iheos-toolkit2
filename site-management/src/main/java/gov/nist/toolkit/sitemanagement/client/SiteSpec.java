@@ -3,6 +3,7 @@ package gov.nist.toolkit.sitemanagement.client;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.installation.shared.TestSession;
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 
 import java.io.Serializable;
 
@@ -75,18 +76,6 @@ public class SiteSpec implements Serializable, IsSerializable {
 
 	public boolean isNullSite() { return name.equals(""); }
 
-	public String toString() {
-		StringBuffer buf = new StringBuffer();
-		
-		buf.append("SiteSpec: ").append(name).append(" (").append(actorType).append(") ");
-		if (orchestrationSiteName != null)
-			buf.append(" (orch=").append(orchestrationSiteName).append(") ");
-		buf.append((isTls) ? " isTLS" : " notTls");
-		buf.append((isSaml) ? " isSaml" : " notSaml");
-				
-		return buf.toString();
-	}
-	
 	public boolean isGW() {
 		return (actorType != null) && actorType.isGW();
 	}
@@ -162,5 +151,23 @@ public class SiteSpec implements Serializable, IsSerializable {
 
 	public void setStsAssertion(String stsAssertion) {
 		this.stsAssertion = stsAssertion;
+	}
+
+	public void validate() {
+		if (name == null || name.equalsIgnoreCase(""))
+			throw new ToolkitRuntimeException("SiteSpec does not validate - no name - " + toString());
+		if (name.contains("__")) {
+			String[] parts = name.split("__");
+			String theTestSession = parts[0];
+			if (!theTestSession.equals(testSession.getValue()))
+				throw new ToolkitRuntimeException("SiteSpec does not validate - name has embedded testsession which does not match supplied test session is illegal - name is " + name + " testsession is " + testSession);
+		}
+		if (testSession == null)
+			throw new ToolkitRuntimeException("SiteSpec does not validate - no TestSession - " + toString());
+	}
+
+	@Override
+	public String toString() {
+		return testSession.getValue() + "/" + name;
 	}
 }

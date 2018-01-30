@@ -1393,4 +1393,9 @@ public class SimDb {
 		return testSession
 	}
 
+	@Override
+	String toString() {
+		simId.toString()
+	}
+
 }

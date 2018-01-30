@@ -1,6 +1,6 @@
 package gov.nist.toolkit.actorfactory
 
-import gov.nist.toolkit.actorfactory.testSupport.InitEC
+import gov.nist.toolkit.simcommon.server.InitEC
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.installation.shared.TestSession

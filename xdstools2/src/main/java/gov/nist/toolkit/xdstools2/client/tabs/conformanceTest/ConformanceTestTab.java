@@ -961,9 +961,9 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 				// STS SAML assertion
 				// This has to be here because we need to retrieve the assertion just in time before the test executes. Any other way will be confusing to debug and more importantly the assertion will not be fresh.
 				// Interface can be refactored to support mulitple run methods such as runTest[WithSamlOption] and runTest.
-				TestInstance stsTestInstance = new TestInstance("GazelleSts");
+				TestInstance stsTestInstance = new TestInstance("GazelleSts", TestSession.DEFAULT_TEST_SESSION);
 				stsTestInstance.setSection("samlassertion-issue");
-				SiteSpec stsSpec =  new SiteSpec(new TestSession("GazelleSts"));
+				SiteSpec stsSpec =  new SiteSpec("GazelleSts", TestSession.DEFAULT_TEST_SESSION);
 				Map<String, String> params = new HashMap<>();
 				String xuaUsername = "Xuagood";
 				if (orchInit.isXuaOption()) {

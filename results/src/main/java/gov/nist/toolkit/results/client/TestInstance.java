@@ -28,6 +28,11 @@ public class TestInstance implements IsSerializable, Serializable {
       this.id = id;
    }
 
+   public TestInstance(String id, TestSession testSession) {
+      this.id = id;
+      this.testSession = testSession;
+   }
+
    public TestInstance(String id, String section) {
       this.id = id;
       this.section = section;
@@ -194,6 +199,7 @@ public class TestInstance implements IsSerializable, Serializable {
       buf.append(id);
       buf.append(':');
       if (section != null) buf.append(section);
+      buf.append("  in ").append(testSession);
       return buf.toString();
    }
 

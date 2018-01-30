@@ -25,7 +25,7 @@ public class GetFolders extends CommonService {
 		try {
 			session.setSiteSpec(site);
 
-			TestInstance testInstance = new TestInstance("GetFolders");
+			TestInstance testInstance = new TestInstance("GetFolders", session.getTestSession());
 			List<String> sections = new ArrayList<String>();
 			Map<String, String> params = new HashMap<String, String>();
 			params.put("$returnType$", returnType);

@@ -147,7 +147,10 @@ public class XdsTestServiceManager extends CommonService {
 
 	public TestOverviewDTO runTest(String environmentName, TestSession mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections,
 								   Map<String, String> params, Map<String, Object> params2, boolean stopOnFirstFailure) throws Exception {
-		if (testInstance.getTestSession() == null) throw new ToolkitRuntimeException("TestSession is null");
+
+		if (mesaTestSession == null)
+			throw new ToolkitRuntimeException("TestSession is null");
+		testInstance.setTestSession(mesaTestSession);
 		TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, mesaTestSession);
 		session.xt = new Xdstest2(Installation.instance().toolkitxFile(), searchPath, session, testInstance.getTestSession());
 		new TestRunner(this).run(session, mesaTestSession, siteSpec, testInstance, sections, params, params2, stopOnFirstFailure);
@@ -218,7 +221,7 @@ public class XdsTestServiceManager extends CommonService {
 		mySession.setSiteSpec(stsSpec);
 		mySession.setTls(true); // Required for Gazelle
 
-		TestInstance testInstance = new TestInstance("GazelleSts");
+		TestInstance testInstance = new TestInstance("GazelleSts", TestSession.DEFAULT_TEST_SESSION);
 
 		List<String> sections = new ArrayList<String>();
 		sections.add(query);
@@ -440,7 +443,7 @@ public class XdsTestServiceManager extends CommonService {
 
 			List<TestInstance> tis = new ArrayList<>();
 			for (String testId : collec) {
-				TestInstance ti = new TestInstance(testId);
+				TestInstance ti = new TestInstance(testId, getTestSession());
 				tis.add(ti);
 			}
 
@@ -663,7 +666,7 @@ public class XdsTestServiceManager extends CommonService {
 		}
 
 		List<TestInstance> testInstances = new ArrayList<TestInstance>();
-		for (String name : names) testInstances.add(new TestInstance(name));
+		for (String name : names) testInstances.add(new TestInstance(name, getTestSession()));
 
 		return testInstances;
 	}
@@ -721,6 +724,7 @@ public class XdsTestServiceManager extends CommonService {
 
 				// Save the created logs in the SessionCache (or testLogCache if this is a conformance test)
 				TestInstance logid = newTestLogId();
+				logid.setTestSession(testSession);
 
 				//  -  why is a method named getTestOverview doing a WRITE???????
 				if (session.transactionSettings.logRepository != null)
@@ -828,7 +832,7 @@ public class XdsTestServiceManager extends CommonService {
 
 		for (File testLogDir : testLogDirsInTestSession(testSession)) {
 			String testId = testLogDir.getName();
-			LogMapDTO logMapDTO = buildLogMap(testLogDir, new TestInstance(testId));
+			LogMapDTO logMapDTO = buildLogMap(testLogDir, new TestInstance(testId, testSession));
 			logs.add(logMapDTO);
 		}
 
@@ -935,7 +939,7 @@ public class XdsTestServiceManager extends CommonService {
 	//	}
 
 	TestInstance newTestLogId() {
-		return new TestInstance(UuidAllocator.allocate().replaceAll(":", "_"));
+		return new TestInstance(UuidAllocator.allocate().replaceAll(":", "_"), getTestSession());
 	}
 
 	Result buildResult(List<TestLogDetails> testLogDetailses, TestInstance logId) throws Exception {
@@ -943,7 +947,7 @@ public class XdsTestServiceManager extends CommonService {
 		if (testLogDetailses.size() == 1) {
 			testInstance = testLogDetailses.get(0).getTestInstance();
 		} else {
-			testInstance = new TestInstance("Combined_Test");
+			testInstance = new TestInstance("Combined_Test", logId.getTestSession());
 		}
 		Result result = ResultBuilder.RESULT(testInstance);
 		result.logId = logId;
@@ -1262,7 +1266,7 @@ public class XdsTestServiceManager extends CommonService {
 		session.setSiteSpec(site);
 		Map<String, String> params = new HashMap<>();
 		params.put("$pid$", pid.asString());
-		TestInstance testInstance = new TestInstance("PidFeed");
+		TestInstance testInstance = new TestInstance("PidFeed", testSession);
 		return asList(new UtilityRunner(this, TestRunType.UTILITY).run(session, params, null, null, testInstance, null, true));
 	}
 
@@ -1365,6 +1369,7 @@ public class XdsTestServiceManager extends CommonService {
 			List<String> sectionNames = testDef.getSectionIndex();
 			new ResultPersistence().delete(testInstance, testSession, sectionNames);
 		} catch (Exception e) {
+			logger.info("Cannot delete test " + testInstance + e.getMessage());
 			// oh well
 		}
 		return getTestOverview(testInstance.getTestSession(), testInstance);

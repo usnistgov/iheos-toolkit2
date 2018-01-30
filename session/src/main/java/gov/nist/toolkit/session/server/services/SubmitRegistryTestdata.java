@@ -22,7 +22,7 @@ public class SubmitRegistryTestdata extends CommonService {
 		try {
 			session.setSiteSpec(site);
 			session.transactionSettings.assignPatientId = false;
-			TestInstance testInstance = new TestInstance(datasetName);
+			TestInstance testInstance = new TestInstance(datasetName, session.getTestSession());
 			List<String> sections = null;
 			Map<String, String> params = new HashMap<String, String>();
 			params.put("$patientid$", pid);

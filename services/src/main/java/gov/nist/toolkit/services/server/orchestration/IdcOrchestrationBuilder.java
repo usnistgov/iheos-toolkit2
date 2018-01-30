@@ -91,7 +91,7 @@ public class IdcOrchestrationBuilder {
          response.setSimulatorConfigs(simConfigs);
 
          TestInstance initTest =
-            TestInstanceManager.initializeTestInstance(request.getTestSession(), new TestInstance("idc_init"));
+            TestInstanceManager.initializeTestInstance(request.getTestSession(), new TestInstance("idc_init", request.getTestSession()));
          MessageItem initMsgItem = response.addMessage(initTest, true, "");
          try {
             util.submit(request.getTestSession(), SiteBuilder.siteSpecFromSimId(rrSimulatorConfig.getId()), initTest);

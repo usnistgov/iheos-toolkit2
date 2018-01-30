@@ -15,7 +15,7 @@ class TestInstanceManager {
     MessageItem messageItem
 
     public TestInstanceManager(AbstractOrchestrationRequest request, AbstractOrchestrationResponse response, String testId) {
-        testInstance = initializeTestInstance(request.testSession, new TestInstance(testId))
+        testInstance = initializeTestInstance(request.testSession, new TestInstance(testId, request.testSession))
         messageItem = response.addMessage(testInstance, true, "");  // all default to success until shown otherwise
     }
 

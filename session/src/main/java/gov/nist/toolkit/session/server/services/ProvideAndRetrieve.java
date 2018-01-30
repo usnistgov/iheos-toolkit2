@@ -28,7 +28,7 @@ public class ProvideAndRetrieve extends CommonService {
 		try {
 			session.setSiteSpec(site);
 			session.transactionSettings.assignPatientId = false;
-			TestInstance testInstance = new TestInstance("ProvideAndRetrieve");
+			TestInstance testInstance = new TestInstance("ProvideAndRetrieve", session.getTestSession());
 			List<String> sections = new ArrayList<String>();
 			sections.add("text");
 			sections.add("xml");

@@ -4,11 +4,13 @@ import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.installation.server.Installation
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.services.server.orchestration.FhirSupportOrchestrationBuilder
 import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.client.SimIdFactory
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
@@ -23,10 +25,10 @@ class MhdSimProxySearchSpec extends ToolkitSpecification {
     @Shared String patientId = 'BR14^^^&1.2.360&ISO'
     @Shared String patientId2 = 'BR15^^^&1.2.360&ISO'
     @Shared String envName = 'test'
-    @Shared String testSession = 'bill';
+    @Shared TestSession testSession = new TestSession('bill')
     @Shared String mhdId = "mhd"
     @Shared String mhdName = "${testSession}__${mhdId}"
-    @Shared SimId mhdSimId = new SimId(mhdName)
+//    @Shared SimId mhdSimId = new SimId(mhdName)
     @Shared SimConfig mhdSimConfig
     @Shared TestInstance testInstance = new TestInstance('MhdSubmit')
     @Shared Map<String, SimConfig> simGroup = [:]
@@ -46,22 +48,22 @@ class MhdSimProxySearchSpec extends ToolkitSpecification {
 
             // Build MHD Document Recipient
 
-            api.createTestSession(testSession)
+            api.createTestSession(testSession.value)
 
-            spi.delete(ToolkitFactory.newSimId(mhdId, testSession, ActorType.MHD_DOC_RECIPIENT.name, envName, true))
+            spi.delete(ToolkitFactory.newSimId(mhdId, testSession.value, ActorType.MHD_DOC_RECIPIENT.name, envName, true))
 
             Installation.instance().defaultEnvironmentName()
 
             mhdSimConfig = spi.create(
                     mhdId,
-                    testSession,
+                    testSession.value,
                     SimulatorActorType.MHD_DOC_RECIPIENT,
                     envName
             )
 
             mhdSimConfig.asList(SimulatorProperties.simulatorGroup).each { String simIdString ->
-                SimId theSimId = new SimId(simIdString)
-                SimConfig config = spi.get(spi.get(theSimId.testSession, theSimId.id))
+                SimId theSimId = SimIdFactory.simIdBuilder(simIdString)
+                SimConfig config = spi.get(spi.get(theSimId.testSession.value, theSimId.id))
                 simGroup[simIdString] = config
             }
 
@@ -86,7 +88,7 @@ class MhdSimProxySearchSpec extends ToolkitSpecification {
 
     def setup() {
         println "EC is ${Installation.instance().externalCache().toString()}"
-        println "${api.getSiteNames(true)}"
+        println "${api.getSiteNames(true, testSession)}"
     }
 
     // this fails because when ProvideDocumentBundleTransaction tries to verify returned fullUrls, to create

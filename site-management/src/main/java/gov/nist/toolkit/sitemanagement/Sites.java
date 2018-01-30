@@ -16,7 +16,9 @@ import java.util.*;
 public class Sites {
 	HashMap<String, Site> siteMap = new HashMap<String, Site>();   // siteName -> Site
 	String defaultSiteName;
-	static String all = "allRepositories";
+	final public static String ALL_REPOSITORIES = "allRepositories";
+	final public static String FAKE_SITE_NAME = "fake_site";
+	final public static Site FAKE_SITE = new Site(FAKE_SITE_NAME, TestSession.DEFAULT_TEST_SESSION);
 	TestSession testSession = null;
 	
 	public boolean equals(Sites s) {
@@ -24,8 +26,8 @@ public class Sites {
 			return false;
 		HashMap<String, Site> map1 = new HashMap<String, Site>(siteMap);
 		HashMap<String, Site> map2 = new HashMap<String, Site>(s.siteMap);
-		map1.remove(all);
-		map2.remove(all);
+		map1.remove(ALL_REPOSITORIES);
+		map2.remove(ALL_REPOSITORIES);
 		boolean mapped = equals(map1, map2);
 		
 		return
@@ -95,9 +97,10 @@ public class Sites {
 	}
 	
 	public Sites(Site site) {
-		if (!testSession.equals(site.getTestSession()))
-			throw new ToolkitRuntimeException("TestSession mismatch - trying to add " + site + " to Sites/" + testSession);
+//		if (!testSession.equals(site.getTestSession()))
+//			throw new ToolkitRuntimeException("TestSession mismatch - trying to add " + site + " to Sites/" + testSession);
 		siteMap.put(site.getName(), site);
+		validate();
 	}
 
 	private TestSession testSessionFromCollection(Collection<Site> sites) {
@@ -111,24 +114,36 @@ public class Sites {
 	public Sites(Collection<Site> sites) {
 		if (testSession == null && !sites.isEmpty())
 			testSession = testSessionFromCollection(sites);
-		for (Site site : sites) {
-			if (!site.getTestSession().equals(TestSession.DEFAULT_TEST_SESSION) && !testSession.equals(site.getTestSession()))
-				throw new ToolkitRuntimeException("TestSession mismatch - trying to add " + site + " to Sites/" + testSession);
+		for (Site site : sites)
 			siteMap.put(site.getName(), site);
+		validate();
+	}
+
+	public void validate() {
+		for (Site site : siteMap.values()) {
+			site.validate();
+			if (!isTestSessionOk(site))
+				throw new ToolkitRuntimeException("TestSession mismatch - Sites container is " + testSession + " but site is " + site.getTestSession());
 		}
+	}
+
+	private boolean isTestSessionOk(Site site) {
+		if (testSession == null) return false;
+		if (site.getTestSession() == null) return false;
+		if (site.getTestSession().equals(TestSession.DEFAULT_TEST_SESSION)) return true;
+		if (site.getTestSession().equals(testSession)) return true;
+		return false;
 	}
 	
 	public void add(Site site) {
-		if (!testSession.equals(site.getTestSession()))
-			throw new ToolkitRuntimeException("TestSession mismatch - trying to add " + site + " to Sites/" + testSession);
-
 		siteMap.put(site.getName(), site);
+		validate();
 	}
 
 	public void add(Sites sites) {
-		for (Site s : sites.siteMap.values()) {
+		for (Site s : sites.siteMap.values())
 			add(s);
-		}
+		validate();
 	}
 
 	public void deleteSite(String siteName) {
@@ -162,21 +177,16 @@ public class Sites {
 	}
 
 	public String toString() {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 
-		buf.append("[Sites]\n");
-		buf.append("default site : ");
-		buf.append(defaultSiteName);
-		buf.append("\n");
-		for (Iterator<String> it=siteMap.keySet().iterator(); it.hasNext(); ) {
-			String name = it.next();
-			Site site = siteMap.get(name);
-			buf.append("\t");
-			buf.append(name);
-			buf.append(" = \n");
-			buf.append(site.toString());
+		buf.append(testSession).append(": [");
+		boolean first = true;
+		for (Site site : siteMap.values()) {
+			if (!first) buf.append(", ");
+			first = false;
+			buf.append(site.getFullName());
 		}
-		buf.append("[[Sites]]");
+		buf.append("]");
 
 		return buf.toString();
 	}
@@ -274,14 +284,17 @@ public class Sites {
 	}
 
 	public Site getSite(String siteName, TestSession testSession) throws Exception {
+   		if (siteName.equals(FAKE_SITE_NAME))
+   			return FAKE_SITE;
 		if (siteName == null)
 			throw new Exception("Internal error: null site requested");
 		if (siteName.equals("gov/nist/toolkit/installation/shared"))
 			return new Site("gov/nist/toolkit/installation/shared", testSession);
 		List<String> sitenames = getSiteNames();
 		if ( !sitenames.contains(siteName)) {
-			// System.out.println(sitenames + " - " + siteName);
-			throw new Exception("Site [" + siteName + "] is not defined");
+			siteName = testSession.getValue() + "__" + siteName;
+			if (!sitenames.contains(siteName))
+				throw new Exception("Site [" + siteName + "] is not defined");
 		}
 		Site s = siteMap.get(siteName);
 		return s;
@@ -289,6 +302,7 @@ public class Sites {
 
 	public void setSites(HashMap<String, Site> sites) {
 		this.siteMap = sites;
+		validate();
 	}
 	
 	public void setDefaultSite(String name) {
@@ -337,6 +351,7 @@ public class Sites {
 			oSite.addLinkedSite(sutSite);
 			return oSite;
 		}
+
 		return getSite(siteSpec.name, siteSpec.testSession);
 	}
 

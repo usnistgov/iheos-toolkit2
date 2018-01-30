@@ -17,6 +17,7 @@ import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
 import gov.nist.toolkit.simcommon.server.SimCache
 import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.simcommon.server.SimEndpoint
+import gov.nist.toolkit.simcommon.server.SiteFactory
 import gov.nist.toolkit.simcommon.server.factories.SimProxyFactory
 import gov.nist.toolkit.simcoresupport.mhd.CodeTranslator
 import gov.nist.toolkit.simcoresupport.proxy.exceptions.SimProxyTransformException
@@ -213,7 +214,7 @@ public class SimProxyBase {
         config = simDb.getSimulator(simId);
         if (config == null) throw new BadSimIdException("Simulator " + simId +  " does not exist");
 
-        proxySite = new SimProxyFactory().getActorSite(config, new Site(simId.testSession));
+        proxySite = new SimProxyFactory().getActorSite(config, SiteFactory.buildSite(simId));
 
         SimulatorConfigElement ele = config.getConfigEle(SimulatorProperties.proxyPartner);
         if (ele == null) throw new Exception("SimProxy " + simId + " has no backend sim (connection to target system)");
@@ -222,7 +223,7 @@ public class SimProxyBase {
 
         transformConfigs = []
         SimulatorConfigElement sce = config.get(SimulatorProperties.simProxyTransformations)
-        if (sce) {
+        if (sce != null) {
             List<String> transforms = sce.asList()
             transformConfigs = transforms.collect { String xfrm ->
                 ProxyTransformConfig.parse(xfrm)

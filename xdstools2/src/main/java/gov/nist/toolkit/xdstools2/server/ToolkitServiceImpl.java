@@ -193,7 +193,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public String saveSite(SaveSiteRequest request) throws Exception {
         installCommandContext(request);
-        return siteServiceManager.saveSite(session().getId(), request.getSite());
+        return siteServiceManager.saveSite(session().getId(), request.getSite(), request.getTestSession());
     }
     @Override
     public String deleteSite(DeleteSiteRequest request) throws Exception {
@@ -216,7 +216,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<String> getRegistryNames()  throws NoServletSessionException { return siteServiceManager.getRegistryNames(session().getId(), session().getTestSession()); }
     @Override
-    public List<String> getRepositoryNames()  throws NoServletSessionException { return siteServiceManager.getRepositoryNames(session().getId(), session().getTestSession()); }
+    public List<String> getRepositoryNames()  throws NoServletSessionException, Exception { return siteServiceManager.getRepositoryNames(session().getId(), session().getTestSession()); }
     @Override
     public List<String> getRGNames()  throws NoServletSessionException { return siteServiceManager.getRGNames(session().getId(), session().getTestSession()); }
     @Override
@@ -1001,7 +1001,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     public String deleteConfig(SimConfigRequest request) throws Exception {
         installCommandContext(request);
         if (request.getConfig()!=null)
-            return new SimulatorServiceManager(session()).deleteConfig(request.getConfig());
+            return new SimulatorServiceManager(session()).delete(request.getConfig());
         else if (request.getConfigList()!=null)
             return new SimulatorServiceManager(session()).deleteConfigs(request.getConfigList());
         return "";
@@ -1068,7 +1068,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<SimId> getSimIdsForUser(GetSimIdsForUserRequest context) throws Exception {
         installCommandContext(context);
-        return new SimulatorServiceManager(session()).getSimIds(context.getUser());
+        return new SimulatorServiceManager(session()).getSimIds(context.getTestSession().getValue());
     }
 
     @Override
@@ -1654,6 +1654,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     public List<Result> fhirCreate(FhirCreateRequest request) throws Exception {
         installCommandContext(request);
         logger.debug(sessionID + ": fhirCreate()");
+        request.getSite().testSession = request.getTestSession();
         List<Result> results = new FhirServiceManager(session()).create(request.getSite(), request.getDatasetElement());
         return results;
     }
@@ -1662,6 +1663,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     public List<Result> fhirTransaction(FhirTransactionRequest request) throws Exception {
         installCommandContext(request);
         logger.debug(sessionID + ": fhirTransaction()");
+        request.getSite().testSession = request.getTestSession();
         List<Result> results = new FhirServiceManager(session()).transaction(request.getSite(), request.getDatasetElement());
         return results;
     }
@@ -1670,6 +1672,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     public List<Result> fhirSearch(FhirSearchRequest request) throws Exception {
         installCommandContext(request);
         logger.debug(sessionID + ": fhirSearch()");
+        request.getSite().testSession = request.getTestSession();
         List<Result> results = new FhirServiceManager(session()).search(request.getSite(), request.getResourceTypeName(), request.getCodesSpec());
         return results;
     }
@@ -1678,6 +1681,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     public List<Result> fhirRead(FhirReadRequest request) throws Exception {
         installCommandContext(request);
         logger.debug(sessionID + ": fhirRead()");
+        request.getSite().testSession = request.getTestSession();
         List<Result> results = new FhirServiceManager(session()).read(request.getSite(), request.getReference());
         return results;
     }

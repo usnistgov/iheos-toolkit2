@@ -5,10 +5,10 @@ import org.apache.commons.csv.CSVParser
 import java.nio.file.Paths
 
 import static org.apache.commons.csv.CSVFormat.DEFAULT
-
 /**
  *
  */
+
 class ConfigParser {
 
     Collection<ConfigDef> values = []

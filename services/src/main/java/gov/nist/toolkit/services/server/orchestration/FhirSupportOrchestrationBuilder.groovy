@@ -30,7 +30,7 @@ class FhirSupportOrchestrationBuilder {
     private Session session
     private FhirSupportOrchestrationRequest request
     private Util util
-    TestInstance testInstance = new TestInstance('supporting_fhir_patients')
+    TestInstance testInstance = new TestInstance('supporting_fhir_patients', request.testSession)
     String siteName
     String simName = SimProxyBase.fhirSupportSimName
     SiteSpec siteSpec

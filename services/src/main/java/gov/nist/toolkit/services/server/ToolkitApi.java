@@ -147,7 +147,7 @@ public class ToolkitApi {
      * @throws NoSimException - simulator doesn't exist
      */
     public void deleteSimulator(SimId simId) throws Exception, NoSimException {
-        simulatorServiceManager().deleteConfig(simId);
+        simulatorServiceManager().delete(simId);
     }
 
     /**
@@ -225,6 +225,7 @@ public class ToolkitApi {
         SiteSpec siteSpec = new SiteSpec(testSession);
         siteSpec.setName(siteName);
         siteSpec.setTls(isTls);
+        siteSpec.validate();
         if (session.getTestSession() == null) session.setTestSession(testSession);
         // TODO add environment name in following call?
         return xdsTestServiceManager().runMesaTest(environmentName,testSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);

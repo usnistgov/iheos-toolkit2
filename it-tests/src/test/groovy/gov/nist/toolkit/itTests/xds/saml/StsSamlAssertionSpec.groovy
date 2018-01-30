@@ -32,7 +32,7 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
 
     @Shared String reg = 'sunil__reg'
     @Shared SimId simId = SimIdFactory.simIdBuilder(reg)
-    @Shared String testSession = 'sunil'
+    @Shared TestSession testSession = new TestSession('sunil')
     @Shared Site gazelleStsSite
     @Shared Session tkSession
     @Shared SimConfig rrConfig = null
@@ -113,7 +113,7 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
     def 'Get SAML Assertion'(){
         when:
         String siteName = gazelleStsSite.getName()
-        TestInstance testId = new TestInstance("GazelleSts")
+        TestInstance testId = new TestInstance("GazelleSts", TestSession.DEFAULT_TEST_SESSION)
         List<String> sections = new ArrayList<>()
         sections.add("samlassertion-issue")
         Map<String, String> params = new HashMap<>()
@@ -123,7 +123,7 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
         and: 'Run samlassertion-issue'
 //        No need to set this: session.setTls(true)
         // Main parameter for the TLS is the isTls flag in the runTest method
-        List<Result> results = api.runTest(testSession, siteName, true, testId, sections, params, stopOnFirstError)
+        List<Result> results = api.runTest(TestSession.DEFAULT_TEST_SESSION.value, siteName, true, testId, sections, params, stopOnFirstError)
 
         then:
         results.size() == 1
@@ -133,7 +133,7 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
     def 'Validate SAML Assertion'() {
         when:
         String siteName = gazelleStsSite.getName()
-        TestInstance testId = new TestInstance("GazelleSts")
+        TestInstance testId = new TestInstance("GazelleSts", TestSession.DEFAULT_TEST_SESSION)
         List<String> sections = new ArrayList<>()
         sections.add("samlassertion-validate")
         Map<String, String> params = new HashMap<>()
@@ -142,7 +142,7 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
         and: 'Run samlassertion-validate'
 //        For it-tests, there is no need to set this: session.setTls(true) BUT it is required for the non-api type main code.
         // Main parameter for the TLS is the isTls flag in the runTest method
-        List<Result> results = api.runTest(testSession, siteName, true, testId, sections, params, stopOnFirstError)
+        List<Result> results = api.runTest(TestSession.DEFAULT_TEST_SESSION.value, siteName, true, testId, sections, params, stopOnFirstError)
 
         then:
         results.size() == 1
@@ -160,7 +160,7 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
         // Begin headless
         rrConfig = spi.create(
                 'rr',
-                testSession,
+                testSession.value,
                 SimulatorActorType.REPOSITORY_REGISTRY,
                 'default')
 
@@ -172,7 +172,7 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
     def 'headless1 - Submit Pid transaction to Registry simulator'() {
             when:
             String siteName = 'sunil__rr'
-            TestInstance testId = new TestInstance("15804")
+            TestInstance testId = new TestInstance("15804",testSession)
             List<String> sections = new ArrayList<>()
             sections.add("section")
             Map<String, String> params = new HashMap<>()
@@ -193,7 +193,7 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
     def 'headless1.1 - Run SQ initialization'() {
         when:
         String siteName = 'sunil__rr'
-        TestInstance testId = new TestInstance("tc:Initialize_for_Stored_Query")
+        TestInstance testId = new TestInstance("tc:Initialize_for_Stored_Query",testSession)
         List<String> sections = new ArrayList<>()
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId)
@@ -211,7 +211,7 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
     def 'headless1.2 Setup test with submissions'() {
         when:
         String siteName = 'sunil__rr'
-        TestInstance testId = new TestInstance("15816")
+        TestInstance testId = new TestInstance("15816",testSession)
         List<String> sections = ['Register_Stable', 'PnR']
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId)

@@ -12,7 +12,13 @@ public class SimIdFactory implements Serializable, IsSerializable {
 
     static public SimId simIdBuilder(String rawId) {
         String[] parts = rawId.split("__");
-        if (parts.length != 2) throw new ToolkitRuntimeException("Not a valid SimId - " + rawId);
+        if (parts.length != 2)
+            throw new ToolkitRuntimeException("Not a valid SimId - " + rawId);
         return new SimId(new TestSession(parts[0]), parts[1]);
+    }
+
+    static public SimId simIdBuilder(TestSession testSession, String id) {
+        if (id.contains("__")) throw new ToolkitRuntimeException("Cannot construct a SimId from " + testSession + " and " + id);
+        return new SimId(testSession, id);
     }
 }

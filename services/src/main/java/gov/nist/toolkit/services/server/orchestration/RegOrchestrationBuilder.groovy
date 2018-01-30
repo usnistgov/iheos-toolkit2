@@ -68,10 +68,10 @@ class RegOrchestrationBuilder {
         response.setMpq1Pid(mpq1Pid)
         response.setMpq2Pid(mpq2Pid)
 
-        TestInstance testInstance12346 = TestInstanceManager.initializeTestInstance(request.testSession, new TestInstance("12346"))
+        TestInstance testInstance12346 = TestInstanceManager.initializeTestInstance(request.testSession, new TestInstance("12346", request.testSession))
         MessageItem item12346 = response.addMessage(testInstance12346, true, "");
 
-        TestInstance testInstance12374 = TestInstanceManager.initializeTestInstance(request.testSession, new TestInstance("12374"))
+        TestInstance testInstance12374 = TestInstanceManager.initializeTestInstance(request.testSession, new TestInstance("12374", request.testSession))
         MessageItem item12374 = response.addMessage(testInstance12374, true, "");
 
         if (orchProps.updated()) {

@@ -6,17 +6,20 @@ import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.services.client.PifType
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.sitemanagement.client.SiteSpec
+import groovy.transform.TypeChecked
+
 /**
  * Send a Patient Identify Feed.  This relies heavily on OrchestrationProperties. The feed is only sent if
  * orchProps.updated() is true.
  */
+@TypeChecked
 class PifSender {
     private OrchestrationProperties orchProps
 //    AbstractOrchestrationRequest request
     private SiteSpec regSite
     private ToolkitApi api
     private Util util
-    private String testSession
+    private TestSession testSession
 
     public PifSender(ToolkitApi api, TestSession testSession, SiteSpec regSite, OrchestrationProperties orchProps) {
         this.api = api
@@ -30,9 +33,9 @@ class PifSender {
         if (orchProps.updated()) {
             if (pifType == PifType.V2) {
                 // register patient ids with registry
-                pidNameMap.each {
-                    String pidId = it.key
-                    TestInstanceManager testInstanceManager = it.value
+                pidNameMap.each { String key, TestInstanceManager value ->
+                    String pidId = key
+                    TestInstanceManager testInstanceManager = value
                     try {
                         Pid pid = PidBuilder.createPid(orchProps.getProperty(pidId))
                         util.submit(testSession, regSite, testInstanceManager.testInstance, 'pif', pid, null)
@@ -44,8 +47,8 @@ class PifSender {
                 }
             }
         } else {  // pass back PIF status
-            pidNameMap.each {
-                TestInstanceManager testInstanceManager = it.value
+            pidNameMap.each { String key, TestInstanceManager value ->
+                TestInstanceManager testInstanceManager = value
                 testInstanceManager.messageItem.setSuccess(api.getTestLogs(testInstanceManager.testInstance).isSuccess())
             }
         }

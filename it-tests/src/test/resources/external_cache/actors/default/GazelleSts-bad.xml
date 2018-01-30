@@ -1,0 +1,4 @@
+<site name="GazelleSts-bad">
+	<transaction name="sts" secure="1">https://badbad.gazelle.ihe.net/picketlink-sts</transaction>
+</site>
+

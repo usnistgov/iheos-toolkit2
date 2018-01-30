@@ -314,7 +314,7 @@ public class SimulatorServiceManager extends CommonService {
 
 		List<SimId> userSimIds = new ArrayList<>();
 		for (SimId simId : simIds) {
-			if (simId.isTestSession(testSession))
+			if (simId.isTestSession(testSession) || simId.isTestSession(TestSession.DEFAULT_TEST_SESSION))
 				userSimIds.add(simId);
 		}
 
@@ -350,10 +350,10 @@ public class SimulatorServiceManager extends CommonService {
 		return "";
 	}
 
-    public String deleteConfig(SimId simId) throws Exception {
+    public String delete(SimId simId) throws Exception {
         SimulatorConfig config = new SimDb().getSimulator(simId);
         if (config != null)
-            return deleteConfig(config);
+            return delete(config);
         if (SimDb.exists(simId)) {
             try {
                 new SimDb(simId).delete();
@@ -364,8 +364,12 @@ public class SimulatorServiceManager extends CommonService {
         return "";
     }
 
-	public String deleteConfig(SimulatorConfig config) throws Exception  {
-		logger.debug(session.id() + ": " + "deleteConfig " + config.getId());
+    public boolean exists(SimId simId) {
+		return SimDb.exists(simId);
+	}
+
+	public String delete(SimulatorConfig config) throws Exception  {
+		logger.debug(session.id() + ": " + "delete " + config.getId());
         GenericSimulatorFactory.delete(config.getId());
         // This looks like it's redundant??
 		// Both GenericSimulatorFactory.delete and SimulatorApi(session).delete
@@ -376,7 +380,7 @@ public class SimulatorServiceManager extends CommonService {
 //		try {
 //			new SimCache().deleteSimConfig(config.getId());
 //		} catch (IOException e) {
-//			logger.error("deleteConfig", e);
+//			logger.error("delete", e);
 //			throw new Exception(e.getMessage());
 //		}
 //		return "";
@@ -386,7 +390,7 @@ public class SimulatorServiceManager extends CommonService {
 		String errors = "";
 		for (SimulatorConfig config : configs)	{
 			try {
-				deleteConfig(config);
+				delete(config);
 			} catch (Exception ex) {
 				errors += ex.getMessage() + ".";
 			}
