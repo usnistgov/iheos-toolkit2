@@ -79,14 +79,6 @@ public class PopupMessage  extends DialogBox {
 
 	private void showFrame() {
 		show();
-		if (false) {
-			Timer timer = new Timer() {
-				public void run() {
-					show();
-				}
-			};
-			timer.schedule(100);
-		}
 	}
 
 	private void frameMessage(Widget content) {

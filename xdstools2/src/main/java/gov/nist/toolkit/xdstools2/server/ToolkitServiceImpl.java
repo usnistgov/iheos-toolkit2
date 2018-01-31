@@ -138,7 +138,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         setEnvironment(commandContext.getEnvironmentName());
 
         if (Installation.instance().propertyServiceManager().isSingleUserMode()
-                && "default".equals(commandContext.getTestSessionName())) {
+                && "default".equalsIgnoreCase(commandContext.getTestSessionName())) {
             setMesaTestSession(commandContext.getTestSessionName());
         }
     }

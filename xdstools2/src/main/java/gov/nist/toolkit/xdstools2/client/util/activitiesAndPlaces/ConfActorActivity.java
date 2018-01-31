@@ -6,9 +6,13 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import gov.nist.toolkit.actortransaction.client.IheItiProfile;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
+import gov.nist.toolkit.xdstools2.client.command.command.GetToolkitPropertiesCommand;
 import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.ConformanceTestTab;
 import gov.nist.toolkit.xdstools2.client.toolLauncher.ToolLauncher;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+
+import java.util.Map;
 
 /**
  *
@@ -19,21 +23,49 @@ public class ConfActorActivity extends AbstractActivity {
 
     @Override
     public void start(AcceptsOneWidget acceptsOneWidget, EventBus eventBus) {
-        if (confActor != null) {
-            Xdstools2.getInstance().doNotDisplayHomeTab();
+        new GetToolkitPropertiesCommand() {
+            @Override
+            public void onFailure(Throwable throwable) {
+                new PopupMessage("Delete error getting properties : " + throwable.toString());
+            }
 
-            // Override start-up initialization of environment
-            ClientUtils.INSTANCE.getEnvironmentState().initEnvironmentName(confActor.getEnvironmentName());
+            @Override
+            public void onComplete(final Map<String, String> tkPropMap) {
 
-            ToolWindow toolWindow = new ToolLauncher(ToolLauncher.conformanceTestsLabel).launch();
-            toolWindow.setCurrentTestSession(confActor.getTestSessionName());
-            ConformanceTestTab conformanceTestTab = (ConformanceTestTab) toolWindow;
-            conformanceTestTab.setInitTestSession(confActor.getTestSessionName());
-            conformanceTestTab.getCurrentActorOption().setActorTypeId(confActor.getActorType());
-            conformanceTestTab.getCurrentActorOption().setProfileId(IheItiProfile.find(confActor.getProfileId()));
-            conformanceTestTab.getCurrentActorOption().setOptionId(confActor.getOptionId());
-            xdstools2view.resizeToolkit();
-        }
+                boolean multiUserModeEnabled = Boolean.parseBoolean(tkPropMap.get("Multiuser_mode"));
+                boolean casModeEnabled = Boolean.parseBoolean(tkPropMap.get("Cas_mode"));
+
+                if (confActor != null) {
+                    Xdstools2.getInstance().doNotDisplayHomeTab();
+
+                    // Override start-up initialization of environment
+                    ClientUtils.INSTANCE.getEnvironmentState().initEnvironmentName(confActor.getEnvironmentName());
+
+                    ToolWindow toolWindow = new ToolLauncher(ToolLauncher.conformanceTestsLabel).launch();
+                    ConformanceTestTab conformanceTestTab = (ConformanceTestTab) toolWindow;
+
+                    if ("default".equalsIgnoreCase(confActor.getTestSessionName())) {
+                     if (!multiUserModeEnabled) {
+                         toolWindow.setCurrentTestSession(confActor.getTestSessionName());
+                         conformanceTestTab.setInitTestSession(confActor.getTestSessionName());
+                     } else {
+                         toolWindow.setCurrentTestSession(null);
+                         new PopupMessage("ConfActorActivity: Test Session is not valid for the current Toolkit user mode.");
+                     }
+                    } else {
+                        toolWindow.setCurrentTestSession(confActor.getTestSessionName());
+                        conformanceTestTab.setInitTestSession(confActor.getTestSessionName());
+                    }
+                    conformanceTestTab.getCurrentActorOption().setActorTypeId(confActor.getActorType());
+                    conformanceTestTab.getCurrentActorOption().setProfileId(IheItiProfile.find(confActor.getProfileId()));
+                    conformanceTestTab.getCurrentActorOption().setOptionId(confActor.getOptionId());
+                    xdstools2view.resizeToolkit();
+                }
+
+            }
+        }.run(ClientUtils.INSTANCE.getCommandContext());
+
+
     }
 
     public void setConfActor(ConfActor confActor) { this.confActor = confActor; }

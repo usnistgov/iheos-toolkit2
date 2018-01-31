@@ -168,12 +168,12 @@ public class MultiUserTestSessionSelector {
     }
 
     void change(final String testSession) {
-        if (!"default".equals(testSession)) {
+        if (!"default".equalsIgnoreCase(testSession)) {
             CommandContext request = new CommandContext(null,testSession);
             new IsTestSessionValidCommand() {
                 @Override
                 public void onFailure(Throwable throwable) {
-                    new PopupMessage("Sorry.");
+                    new PopupMessage("Command failed: Sorry.");
                 }
 
                 @Override
@@ -183,14 +183,14 @@ public class MultiUserTestSessionSelector {
                         ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, testSession));
                         textBox.setValue("");
                     } else {
-                        textBox.setValue("");
                         new PopupMessage("Sorry.");
+                        textBox.setValue("");
                     }
                 }
             }.run(request);
         } else {
-            textBox.setValue("");
             new PopupMessage("Sorry.");
+            textBox.setValue("");
         }
 
     }
