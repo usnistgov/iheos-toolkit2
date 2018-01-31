@@ -10,7 +10,6 @@ import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.xdstools2.client.command.command.IsMultiUserTestSessionCommand;
@@ -155,6 +154,8 @@ public class MultiUserTestSessionSelector {
         }.run(ClientUtils.INSTANCE.getCommandContext());
     }
     void add() {
+
+
         String value = textBox.getValue().trim();
         value = value.replaceAll(" ", "_");
         textBox.setValue("");
