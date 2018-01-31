@@ -1,26 +1,23 @@
 package gov.nist.toolkit.xdstools2.client.selectors;
 
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import gov.nist.toolkit.xdstools2.client.command.command.IsMultiUserTestSessionCommand;
+import gov.nist.toolkit.installation.shared.TestSession;
+import gov.nist.toolkit.xdstools2.client.command.command.IsTestSessionValidCommand;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionsUpdatedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionsUpdatedEventHandler;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
-
-import java.util.ArrayList;
-import java.util.List;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
+import gov.nist.toolkit.xdstools2.shared.command.request.BuildTestSessionCommand;
 
 /**
  *
@@ -29,21 +26,33 @@ public class MultiUserTestSessionSelector {
     HTML currentTestSession = new HTML();
     TextBox textBox = new TextBox();
     HorizontalPanel panel;
+    boolean canChangeTs = false;
+    boolean canCreateNewTs = false;
+    boolean canDeleteTs = false;
 
     public MultiUserTestSessionSelector() {
+        this(true,true,true);
         build();
         link();
     }
 
+    public MultiUserTestSessionSelector(boolean canChangeTs, boolean canCreateNewTs, boolean canDeleteTs) {
+        this.canChangeTs = canChangeTs;
+        this.canCreateNewTs = canCreateNewTs;
+        this.canDeleteTs = canDeleteTs;
+    }
+
     // Listen on the EventBus in the future
-    private void link() {
+    protected void link() {
 
         // Test sessions reloaded
         ClientUtils.INSTANCE.getEventBus().addHandler(TestSessionsUpdatedEvent.TYPE, new TestSessionsUpdatedEventHandler() {
             @Override
             public void onTestSessionsUpdated(TestSessionsUpdatedEvent event) {
-                listBox.clear();
-                for (String i : event.testSessionNames) listBox.addItem(i);
+                for (String str : event.testSessionNames) {
+                    currentTestSession.setText(str);
+                    break;
+                }
             }
         });
 
@@ -53,14 +62,14 @@ public class MultiUserTestSessionSelector {
             @Override
             public void onTestSessionChanged(TestSessionChangedEvent event) {
                 if (event.getChangeType() == TestSessionChangedEvent.ChangeType.SELECT) {
-                    listBox.setSelectedIndex(indexOfValue(event.getValue()));
+                    currentTestSession.setText(event.getValue());
                 }
             }
         });
     }
 
     // Initialize screen now
-    private void build() {
+    protected void build() {
 
         panel = new HorizontalPanel();
 
@@ -79,88 +88,120 @@ public class MultiUserTestSessionSelector {
 //            }
 //        });
 
-        textBox.removeStyleName("testSessionInputMc");
-        textBox.addStyleName("testSessionInputMc");
-        panel.add(textBox);
-        textBox.addKeyPressHandler(new KeyPressHandler()
-        {
-            @Override
-            public void onKeyPress(KeyPressEvent event_)
+        if (canChangeTs) {
+            textBox.removeStyleName("testSessionInputMc");
+            textBox.addStyleName("testSessionInputMc");
+            panel.add(textBox);
+            /*
+            textBox.addKeyPressHandler(new KeyPressHandler()
             {
-                boolean enterPressed = KeyCodes.KEY_ENTER == event_
-                        .getNativeEvent().getKeyCode();
-                if (enterPressed) {
+                @Override
+                public void onKeyPress(KeyPressEvent event_)
+                {
+                    boolean enterPressed = KeyCodes.KEY_ENTER == event_
+                            .getNativeEvent().getKeyCode();
+                    if (enterPressed) {
+                        String value = textBox.getValue().trim();
+                        event_.preventDefault();
+                        event_.stopPropagation();
+                        change(value);
+                    }
+                }
+            });
+            */
+
+            //
+            // Change Test Session Button
+            //
+            Button changeTestSessionButton = new Button("Change");
+            panel.add(changeTestSessionButton);
+            changeTestSessionButton.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent clickEvent) {
                     String value = textBox.getValue().trim();
                     change(value);
                 }
-            }
-        });
+            });
+            panel.add(new HTML("&nbsp;&nbsp;"));
+        }
 
 
-
-        //
-        // Change Test Session Button
-        //
-        Button changeTestSessionButton = new Button("Change");
-        panel.add(changeTestSessionButton);
-        changeTestSessionButton.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent clickEvent) {
-                String value = textBox.getValue().trim();
-                change(value);
-            }
-        });
-
-        panel.add(new HTML("&nbsp;&nbsp;"));
-
-        //
-        // Add Button
-        //
-        Button newTestSessionButton = new Button("Create New");
-        panel.add(newTestSessionButton);
-        newTestSessionButton.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent clickEvent) {
-                String value = textBox.getValue().trim();
-                textBox.setValue("");
-                if ("".equals(value)) return;
-                ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.ADD, value));
-            }
-        });
-
-        //
-        // Delete Button
-        //
-        Button delTestSessionButton = new Button("Delete");
-        panel.add(delTestSessionButton);
-        delTestSessionButton.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent clickEvent) {
-//                String value = textBox.getValue(listBox.getSelectedIndex());
-//                ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.DELETE, value));
-            }
-        });
-    }
-
-    void change(String testSession) {
-        new IsMultiUserTestSessionCommand() {
-            @Override
-            public void onComplete(Boolean result) {
-                if (result) {
-                    ClientUtils.INSTANCE.getTestSessionManager().setCurrentTestSession(testSession);
-                    ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, testSession));
+        if (canCreateNewTs) {
+            //
+            // Add Button
+            //
+            Button newTestSessionButton = new Button("Create New");
+            panel.add(newTestSessionButton);
+            newTestSessionButton.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent clickEvent) {
+                    textBox.setValue("");
+                    add();
                 }
-            }
-        }.run(ClientUtils.INSTANCE.getCommandContext());
+            });
+
+        }
+
+        if (canDeleteTs) {
+            //
+            // Delete Button
+            //
+            Button delTestSessionButton = new Button("Delete");
+            panel.add(delTestSessionButton);
+            delTestSessionButton.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent clickEvent) {
+                    String value = currentTestSession.getText();
+                    if (value!=null && !"".equals(value)) {
+                        boolean answer = Window.confirm("Delete Test Session: " + value + "?");
+                        if (answer) {
+                            ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.DELETE, value));
+                            currentTestSession.setText("");
+                        }
+                    }
+
+                }
+            });
+        }
+
+
     }
+
+    void change(final String testSession) {
+        if (!"default".equals(testSession)) {
+            CommandContext request = new CommandContext(null,testSession);
+            new IsTestSessionValidCommand() {
+                @Override
+                public void onFailure(Throwable throwable) {
+                    new PopupMessage("Sorry.");
+                }
+
+                @Override
+                public void onComplete(Boolean result) {
+                    if (result) {
+                        ClientUtils.INSTANCE.getTestSessionManager().setCurrentTestSession(testSession);
+                        ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, testSession));
+                        textBox.setValue("");
+                    } else {
+                        textBox.setValue("");
+                        new PopupMessage("Sorry.");
+                    }
+                }
+            }.run(request);
+        } else {
+            textBox.setValue("");
+            new PopupMessage("Sorry.");
+        }
+
+    }
+
     void add() {
-
-
-        String value = textBox.getValue().trim();
-        value = value.replaceAll(" ", "_");
-        textBox.setValue("");
-        if ("".equals(value)) return;
-        ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.ADD, value));
+        new BuildTestSessionCommand() {
+            @Override
+            public void onComplete(TestSession result) {
+                ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.ADD, result.toString()));
+            }
+        }.run(new CommandContext());
     }
 
     public Widget asWidget() { return panel; }

@@ -7,6 +7,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HTML;
@@ -57,12 +58,12 @@ public class PopupMessage  extends DialogBox {
 		messageContainer.add(buttonBar);
 		setWidget(messageContainer);
 		center();
-		show();
+		showFrame();
 	}
 
 	@Override
 	protected void onPreviewNativeEvent(Event.NativePreviewEvent event) {
-		super.onPreviewNativeEvent(event);
+//		super.onPreviewNativeEvent(event);
 //		Window.alert("is singleOption?" + singleOption);
 		if (singleOption) {
 			switch (event.getTypeInt()) {
@@ -73,6 +74,18 @@ public class PopupMessage  extends DialogBox {
 					}
 					break;
 			}
+		}
+	}
+
+	private void showFrame() {
+		show();
+		if (false) {
+			Timer timer = new Timer() {
+				public void run() {
+					show();
+				}
+			};
+			timer.schedule(100);
 		}
 	}
 
@@ -94,7 +107,7 @@ public class PopupMessage  extends DialogBox {
 		center();
 		setModal(true);
 
-		show();
+		showFrame();
 	}
 
 	public PopupMessage(AssertionResults result) {
@@ -119,7 +132,7 @@ public class PopupMessage  extends DialogBox {
 		center();
 		setModal(true);
 		ok.setFocus(true);
-		show();
+		showFrame();
 
 	}
 
