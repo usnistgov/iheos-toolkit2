@@ -7,6 +7,7 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
@@ -27,6 +28,7 @@ import gov.nist.toolkit.session.client.sort.TestSorter;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
+import gov.nist.toolkit.xdstools2.client.NotifyOnDelete;
 import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.event.testContext.TestContextChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testContext.TestContextChangedEventHandler;
@@ -46,7 +48,7 @@ import static gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TestContext
 /**
  * All Conformance tests will be run out of here
  */
-public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner, TestTarget, Controller {
+public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner, TestTarget, Controller, NotifyOnDelete {
 
 	private final ConformanceTestTab me;
 
@@ -95,18 +97,32 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		testDisplayGroup = new TestDisplayGroup(testContext, testContextView, this, this);
 	}
 
+	// if we dont arrange to remove the TestSession change handler then the TestSession
+	// manager will pop up even after the tab is deleted
+	private HandlerRegistration testSessionChangedHandler = null;
+
+	@Override
+	public void onDelete() {
+		// remove existing test session change handler
+		if (testSessionChangedHandler != null) {
+			GWT.log("Unregister TestSession change handler for Conformance Tool");
+			testSessionChangedHandler.removeHandler();
+			testSessionChangedHandler = null;
+		}
+	}
+
 	@Override
 	public void onTabLoad(final boolean select, String eventName) {
 		testContextView.updateTestingContextDisplay();
 		mainView.getTestSessionDescription().addClickHandler(testContextView);
 
 		addEast(mainView.getTestSessionDescriptionPanel());
-		registerTab(select, eventName);
+		registerDeletableTab(select, eventName, this);
 
 		tabTopPanel.add(mainView.getToolPanel());
 
 		// Reload if the test session changes
-		ClientUtils.INSTANCE.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
+		testSessionChangedHandler = ClientUtils.INSTANCE.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
 			@Override
 			public void onTestSessionChanged(TestSessionChangedEvent event) {
 				if (event.getChangeType() == TestSessionChangedEvent.ChangeType.SELECT) {
