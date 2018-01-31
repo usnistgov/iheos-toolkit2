@@ -77,6 +77,27 @@ public class TabContainer {
 		return titleHtml;
 	}
 
+	public HTML addDeletableTab(DockLayoutPanel w, AbstractPresenter presenter, String title, boolean select, NotifyOnDelete notifyOnDelete) {
+		w.getElement().getStyle().setMarginLeft(4, Style.Unit.PX);
+		w.getElement().getStyle().setMarginRight(4, Style.Unit.PX);
+
+		int tabIndex = TABBAR.getTabCount();
+		HTML titleHtml = new HTML(title);
+		formatTitle(titleHtml);
+		TABBAR.addTab(buildTabHeaderWidget(titleHtml, w));
+
+		TabContents tabContents = new TabContents(w, presenter);
+		tabContents.setNotifyOnDelete(notifyOnDelete);
+		deck.add(tabContents);
+		TABBAR.selectTab(TABBAR.getTabCount() - 1);
+
+		Xdstools2.getInstance().resizeToolkit();
+
+		announceOpen(title);
+
+		return titleHtml;
+	}
+
 	private static void selectTab() {
 		TabContents tc = deck.get(TABBAR.getSelectedTab());
 		if (tc.presenter != null)  // null for non-MVP tools
@@ -112,8 +133,11 @@ public class TabContainer {
 		}
 	}
 
-	private static void deleteTab(int index) {
-
+	private void deleteTab(int index) {
+		TabContents tabContents = deck.get(index);
+		if (tabContents == null) return;
+		if (tabContents.getNotifyOnDelete() != null)
+			tabContents.getNotifyOnDelete().onDelete();
 	}
 
 	private void formatTitle(HTML titleHtml) {
@@ -135,6 +159,7 @@ public class TabContainer {
 				TabContents tc = findPanelInDeck(content);
 				int i = deck.indexOf(tc);
 				GWT.log("Delete tab " + i);
+				deleteTab(i);
 				deck.remove(i);
 				INNER_DECKPANEL.remove(i);
 				TABBAR.removeTab(i);

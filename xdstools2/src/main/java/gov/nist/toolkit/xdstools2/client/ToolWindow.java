@@ -118,6 +118,12 @@ public abstract class ToolWindow {
 		tabContainer.addTab(tabTopRawPanel, null, tabName, select);
 	}
 
+	public void registerDeletableTab(boolean select, String tabName, NotifyOnDelete notifyOnDelete) {
+		this.tabName=tabName;
+		assert(tabContainer != null);
+		tabContainer.addDeletableTab(tabTopRawPanel, null, tabName,select, notifyOnDelete);
+	}
+
 	public TkProps tkProps() {
 		return Xdstools2.tkProps();
 	}
