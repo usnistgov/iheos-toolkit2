@@ -6,9 +6,9 @@ import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 /**
  * Created by skb1 on 1/30/18.
  */
-public abstract class IsMultiUserTestSessionCommand extends GenericCommand<CommandContext, Boolean>{
+public abstract class IsCasUserTestSessionCommand extends GenericCommand<CommandContext, Boolean>{
     @Override
     public void run(CommandContext request) {
-        ClientUtils.INSTANCE.getToolkitServices().isMultiUserTestSession(request, this);
+        ClientUtils.INSTANCE.getToolkitServices().isCasUserTestSession(request, this);
     }
 }

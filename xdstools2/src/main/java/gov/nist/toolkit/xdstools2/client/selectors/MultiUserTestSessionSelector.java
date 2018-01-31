@@ -13,6 +13,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import gov.nist.toolkit.xdstools2.client.command.command.IsMultiUserTestSessionCommand;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionsUpdatedEvent;
@@ -91,13 +92,12 @@ public class MultiUserTestSessionSelector {
                         .getNativeEvent().getKeyCode();
                 if (enterPressed) {
                     String value = textBox.getValue().trim();
-                    if (isValidSession) {
-                        ClientUtils.INSTANCE.getTestSessionManager().setCurrentTestSession(newValue);
-                        ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, newValue));
-                    }
+                    change(value);
                 }
             }
         });
+
+
 
         //
         // Change Test Session Button
@@ -108,6 +108,7 @@ public class MultiUserTestSessionSelector {
             @Override
             public void onClick(ClickEvent clickEvent) {
                 String value = textBox.getValue().trim();
+                change(value);
             }
         });
 
@@ -142,6 +143,17 @@ public class MultiUserTestSessionSelector {
         });
     }
 
+    void change(String testSession) {
+        new IsMultiUserTestSessionCommand() {
+            @Override
+            public void onComplete(Boolean result) {
+                if (result) {
+                    ClientUtils.INSTANCE.getTestSessionManager().setCurrentTestSession(testSession);
+                    ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, testSession));
+                }
+            }
+        }.run(ClientUtils.INSTANCE.getCommandContext());
+    }
     void add() {
         String value = textBox.getValue().trim();
         value = value.replaceAll(" ", "_");
@@ -152,10 +164,4 @@ public class MultiUserTestSessionSelector {
 
     public Widget asWidget() { return panel; }
 
-    int indexOfValue(String value) {
-        for (int i=0; i<listBox.getItemCount(); i++)
-            if (listBox.getItemText(i).equals(value))
-                return i;
-        return -1;
-    }
 }
