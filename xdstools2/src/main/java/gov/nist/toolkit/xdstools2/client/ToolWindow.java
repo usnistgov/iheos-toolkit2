@@ -119,7 +119,6 @@ public abstract class ToolWindow {
 	}
 
 	public void registerDeletableTab(boolean select, String tabName, NotifyOnDelete notifyOnDelete) {
-		registerTab(select, tabName);
 		this.tabName=tabName;
 		assert(tabContainer != null);
 		tabContainer.addDeletableTab(tabTopRawPanel, null, tabName,select, notifyOnDelete);
