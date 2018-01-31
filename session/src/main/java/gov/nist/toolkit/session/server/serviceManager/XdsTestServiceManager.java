@@ -4,6 +4,7 @@ import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.installation.shared.TestSession;
+import gov.nist.toolkit.installation.shared.ToolkitUserMode;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrymetadata.client.Document;
@@ -57,6 +58,7 @@ import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 
+import javax.swing.*;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
@@ -1127,20 +1129,46 @@ public class XdsTestServiceManager extends CommonService {
 			throw new Exception(e.getMessage());
 		}
 
+		// Bypass and protect displaying of test session Ids in multiuser mode or cas mode
+		if (!Installation.instance().propertyServiceManager().isSingleUserMode()) {
+			return names;
+		}
+		else
+			return listMesaTestSessionNames(cache, ToolkitUserMode.SINGLE_USER);
+	}
+
+	public List<String> listMesaTestSessionNames(File cache, ToolkitUserMode userMode) {
+		List<String> names = new ArrayList<String>();
 		String[] namea = cache.list();
 
 		for (int i=0; i<namea.length; i++) {
 			File dir = new File(cache, namea[i]);
 			if (!dir.isDirectory()) continue;
-			if (!namea[i].startsWith("."))
-				names.add(namea[i]);
-
+			if (!namea[i].startsWith(".")) {
+				File testSessionFile = new File(cache, namea[i]);
+				File muSafetyFile = new File(testSessionFile, Installation.instance().propertyServiceManager().getPropertyManager().MULTIUSER_MODE + ".txt");
+				File casSafetyFile = new File(testSessionFile, Installation.instance().propertyServiceManager().getPropertyManager().CAS_MODE+ ".txt");
+				if (ToolkitUserMode.SINGLE_USER.equals(userMode)) {
+					if (!muSafetyFile.exists() && !casSafetyFile.exists())
+						names.add(namea[i]);
+				} else if (ToolkitUserMode.MULTI_USER.equals(userMode)) {
+					if (muSafetyFile.exists()) {
+						names.add(namea[i]);
+					}
+				} else if (ToolkitUserMode.CAS_USER.equals(userMode)) {
+					if (casSafetyFile.exists()) {
+						names.add(namea[i]);
+					}
+				}
+			}
 		}
 
-		if (names.size() == 0) {
-			names.add("default");
-			File def = new File(cache, "default");
-			def.mkdirs();
+		if (ToolkitUserMode.SINGLE_USER.equals(userMode)) {
+			if (names.size() == 0) {
+				names.add("default");
+				File def = new File(cache, "default");
+				def.mkdirs();
+			}
 		}
 
 		logger.debug("testSession names are " + names);

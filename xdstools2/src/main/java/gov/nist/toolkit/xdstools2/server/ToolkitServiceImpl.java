@@ -18,6 +18,7 @@ import gov.nist.toolkit.installation.server.ExternalCacheManager;
 import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.installation.server.PropertyServiceManager;
 import gov.nist.toolkit.installation.shared.TestSession;
+import gov.nist.toolkit.installation.shared.ToolkitUserMode;
 import gov.nist.toolkit.interactionmapper.InteractionMapper;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.results.client.*;
@@ -132,7 +133,14 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     public InitializationResponse getInitialization(CommandContext context) throws Exception {
         installCommandContext(context);
         InitializationResponse response = new InitializationResponse();
-        response.setDefaultEnvironment(Installation.DEFAULT_ENVIRONMENT_NAME);
+        String defaultEnv = Installation.DEFAULT_ENVIRONMENT_NAME;
+        if (Installation.instance().propertyServiceManager().isCasMode()) {
+              defaultEnv = Installation.instance().propertyServiceManager().getDefaultEnvironment();
+              if (defaultEnv==null || "".equals(defaultEnv)) {
+                  throw new Exception("In CAS mode, a null or empty default environment value from toolkit.properties is not valid.");
+              }
+        }
+        response.setDefaultEnvironment(defaultEnv);
         response.setEnvironments(Session.getEnvironmentNames());
         response.setTestSessions(session().xdsTestServiceManager().getMesaTestSessionNames());
         response.setServletContextName(getServletContextName());
@@ -430,6 +438,24 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         installCommandContext(request);
         return session().xdsTestServiceManager().getTestResults(request.getTestIds(), request.getEnvironmentName(), request.getTestSession());
     }
+
+    private boolean isValidTestSession(TestSession testSession, ToolkitUserMode toolkitUserMode) throws Exception {
+        File cache = Installation.instance().propertyServiceManager().getTestLogCache();
+        List<String> names = session().xdsTestServiceManager().listMesaTestSessionNames(cache, ToolkitUserMode.MULTI_USER);
+        if (names!=null && names.contains(testSession.toString())) {
+            return true;
+        }
+        return false;
+    }
+    @Override
+    public boolean isMultiUserTestSession(CommandContext request) throws Exception {
+        return isValidTestSession(request.getTestSession(), ToolkitUserMode.MULTI_USER);
+    }
+    @Override
+    public boolean isCasUserTestSession(CommandContext request) throws Exception {
+        return isValidTestSession(request.getTestSession(), ToolkitUserMode.CAS_USER);
+    }
+
     @Override
     public String setMesaTestSession(String sessionName)  throws NoServletSessionException {
         TestSession testSession = new TestSession(sessionName);

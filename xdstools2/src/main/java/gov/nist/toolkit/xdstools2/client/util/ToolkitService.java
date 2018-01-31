@@ -75,6 +75,9 @@ public interface ToolkitService extends RemoteService  {
     List<Result> runMesaTest(RunTestRequest request) throws Exception ;
 	TestOverviewDTO runTest(RunTestRequest request) throws Exception;
 	boolean isPrivateMesaTesting() throws NoServletSessionException ;
+
+	boolean isMultiUserTestSession(CommandContext request) throws Exception;
+	boolean isCasUserTestSession(CommandContext request) throws Exception;
 	List<String> getMesaTestSessionNames(CommandContext request) throws Exception;
 	boolean addMesaTestSession(CommandContext context) throws Exception;
 	boolean delMesaTestSession(CommandContext context) throws Exception;

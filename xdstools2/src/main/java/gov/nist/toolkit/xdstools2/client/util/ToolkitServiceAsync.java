@@ -218,6 +218,8 @@ public interface ToolkitServiceAsync {
 	void reloadAllTestResults(CommandContext context, AsyncCallback<List<Test>> callback) ;
 	void getTestlogListing(String sessionName, AsyncCallback<List<TestInstance>> callback);
 	void getTestResults(GetTestResultsRequest request, AsyncCallback<Map<String, Result>> callback);
+	void isMultiUserTestSession(CommandContext request, AsyncCallback<Boolean> callback);
+    void isCasUserTestSession(CommandContext request, AsyncCallback<Boolean> callback);
 	void setMesaTestSession(String sessionName, AsyncCallback callback);
 	void getMesaTestSessionNames(CommandContext request, AsyncCallback<List<String>> callback);
 	void deleteAllTestResults(AllTestRequest request, AsyncCallback<List<Test>> callback);

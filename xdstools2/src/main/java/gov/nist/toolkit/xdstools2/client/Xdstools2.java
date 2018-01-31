@@ -12,6 +12,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
+import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionOfferingsCommand;
@@ -19,6 +20,7 @@ import gov.nist.toolkit.xdstools2.client.command.command.InitializationCommand;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.injector.Injector;
 import gov.nist.toolkit.xdstools2.client.selectors.EnvironmentManager;
+import gov.nist.toolkit.xdstools2.client.selectors.MultiUserTestSessionSelector;
 import gov.nist.toolkit.xdstools2.client.selectors.TestSessionSelector;
 import gov.nist.toolkit.xdstools2.client.tabs.EnvironmentState;
 import gov.nist.toolkit.xdstools2.client.tabs.HomeTab;
@@ -102,9 +104,24 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 		TabContainer.setWidth("100%");
 		TabContainer.setHeight("100%");
 
-		menuPanel.add(environmentManager);
-		menuPanel.setSpacing(10);
-		menuPanel.add(new TestSessionSelector(getTestSessionManager().getTestSessions(), getTestSessionManager().getCurrentTestSession()).asWidget());
+		// No environment selector for CAS mode, but allow for single user mode and multi user mode
+		if (!Installation.instance().propertyServiceManager().isCasMode()) {
+			menuPanel.add(environmentManager);
+			menuPanel.setSpacing(10);
+		}
+
+		// Only single user mode has a selectable test session drop down
+		if (Installation.instance().propertyServiceManager().isSingleUserMode()) {
+			menuPanel.add(new TestSessionSelector(getTestSessionManager().getTestSessions(), getTestSessionManager().getCurrentTestSession()).asWidget());
+		} else {
+			if (Installation.instance().propertyServiceManager().isMultiuserMode()) {
+				// Only two options: 1) Change Test Session and 2) New Test Session
+				menuPanel.add(new MultiUserTestSessionSelector());
+			} else if (Installation.instance().propertyServiceManager().isCasMode()) {
+				// Only one option: 1) Change Test Session
+
+			}
+		}
 
 		DockLayoutPanel mainPanel = new DockLayoutPanel(Style.Unit.EM);
 		mainPanel.addNorth(menuPanel, 4);
