@@ -111,7 +111,7 @@ public class MultiUserTestSessionSelector {
         delTestSessionButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent clickEvent) {
-                String value = currentTestSession.getText();
+                final String value = currentTestSession.getText();
                 if (value!=null && !"".equals(value)) {
 
                     SafeHtmlBuilder safeHtmlBuilder = new SafeHtmlBuilder();
