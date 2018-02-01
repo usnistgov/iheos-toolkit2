@@ -69,14 +69,19 @@ public class IdcOrchestrationBuilder {
                // lists of simulators may need specific user plugged in
                if (chg.hasList()) {
                   List <String> list = chg.asList();
-                  for (int i = 0; i < list.size(); i++ ) {
-                     String s = list.get(i);
+                  List <String> hold = new ArrayList<>();
+                  for (String string : list) hold.add(new String(string));
+                  SimulatorConfigElement ccc = new SimulatorConfigElement(chg.name, chg.type, hold, chg.getValueType());
+                  for (int i = 0; i < hold.size(); i++ ) {
+                     String s = hold.get(i);
                      s = StringUtils.replace(s, "${user}", user);
-                     list.set(i, s);
+                     hold.set(i, s);
                   }
-                  chg.setStringListValue(list);
+                  ccc.setStringListValue(hold);
+                  simConfig.replace(ccc);
+               } else {
+                  simConfig.replace(chg);
                }
-               simConfig.replace(chg);
             }
             api.saveSimulator(simConfig);
             } else {

@@ -63,6 +63,12 @@ public class SimulatorConfigElement implements Serializable,IsSerializable {
 		setListValueWithType(values, ValueType.SIMPLE_LIST);
 	}
 
+	public SimulatorConfigElement(String name, ParamType type, List<String> values, ValueType vt) {
+		this.name = name;
+		this.type = type;
+		setListValueWithType(values, vt);
+	}
+
 	public SimulatorConfigElement(String name, ParamType type, String[] vals, boolean isMultiSelect) {
         this.name = name;
         this.type = type;
@@ -123,6 +129,7 @@ public class SimulatorConfigElement implements Serializable,IsSerializable {
     public boolean hasSingleList() { return valueType == ValueType.SINGLE_SELECT_LIST; }
     public boolean hasMultiList() { return valueType == ValueType.MULTI_SELECT_LIST; }
     public boolean hasList() { return hasSingleList() || hasMultiList() || valueType == ValueType.SIMPLE_LIST; }
+    public ValueType getValueType() {return valueType;}
 	// removed because it breaks Jackson serialization
 //    public boolean isPatientErrorMap() { return valueType == ValueType.PATIENT_ERROR_MAP; }
 
