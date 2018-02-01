@@ -2,7 +2,6 @@ package gov.nist.toolkit.installation.server
 
 import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.utilities.id.UuidAllocator
-import gov.nist.toolkit.utilities.io.Io
 import groovy.transform.TypeChecked
 
 @TypeChecked
@@ -22,14 +21,16 @@ class TestSessionFactory {
 
         Installation.instance().simDbFile(testSession).mkdirs()
         File testLogFile = Installation.instance().testLogCache(testSession)
-         if (testLogFile.mkdirs()) {
-             createMarkerFile(testLogFile)
-         }
+        testLogFile.mkdirs()
+//         if (testLogFile.mkdirs()) {
+//             createMarkerFile(testLogFile)
+//         }
         Installation.instance().actorsDir(testSession).mkdirs()
 
         return testSession
     }
 
+    /*
     static createMarkerFile(File parent) {
         try {
             File userModeMarkerFile = getUserModeMarkerFile(parent)
@@ -45,4 +46,5 @@ class TestSessionFactory {
        }
         throw new Exception("Current user mode not supported!")
     }
+    */
 }

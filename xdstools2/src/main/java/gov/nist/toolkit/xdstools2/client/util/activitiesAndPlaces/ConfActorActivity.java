@@ -4,6 +4,7 @@ import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import gov.nist.toolkit.actortransaction.client.IheItiProfile;
+import gov.nist.toolkit.installation.shared.ToolkitUserMode;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.command.command.GetToolkitPropertiesCommand;
@@ -23,6 +24,7 @@ public class ConfActorActivity extends AbstractActivity {
 
     @Override
     public void start(AcceptsOneWidget acceptsOneWidget, EventBus eventBus) {
+        // Can we reuse the ClientUtils copy of Tkprops instead of this new command?
         new GetToolkitPropertiesCommand() {
             @Override
             public void onFailure(Throwable throwable) {
@@ -34,6 +36,7 @@ public class ConfActorActivity extends AbstractActivity {
 
                 boolean multiUserModeEnabled = Boolean.parseBoolean(tkPropMap.get("Multiuser_mode"));
                 boolean casModeEnabled = Boolean.parseBoolean(tkPropMap.get("Cas_mode"));
+                ToolkitUserMode userMode = (multiUserModeEnabled)?(casModeEnabled?ToolkitUserMode.CAS_USER:ToolkitUserMode.MULTI_USER):ToolkitUserMode.SINGLE_USER;
 
                 if (confActor != null) {
                     Xdstools2.getInstance().doNotDisplayHomeTab();
@@ -48,9 +51,9 @@ public class ConfActorActivity extends AbstractActivity {
                      if (!multiUserModeEnabled) {
                          toolWindow.setCurrentTestSession(confActor.getTestSessionName());
                          conformanceTestTab.setInitTestSession(confActor.getTestSessionName());
-                     } else {
+                     } else { // CAS
                          toolWindow.setCurrentTestSession(null);
-                         new PopupMessage("ConfActorActivity: Test Session is not valid for the current Toolkit user mode.");
+                         new PopupMessage("ConfActorActivity: Test session default cannot be selected in " + userMode);
                      }
                     } else {
                         toolWindow.setCurrentTestSession(confActor.getTestSessionName());

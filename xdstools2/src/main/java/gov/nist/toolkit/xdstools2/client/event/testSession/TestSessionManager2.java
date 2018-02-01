@@ -21,7 +21,7 @@ import java.util.Map;
  */
 public class TestSessionManager2 {
     private List<String> testSessions;  // this is maintained to initialize new tabs with
-    private String currentTestSession = "default";
+    private String currentTestSession = "";
 
     public TestSessionManager2() {
         ClientUtils.INSTANCE.getEventBus().addHandler(TestSessionsUpdatedEvent.TYPE, new TestSessionsUpdatedEventHandler() {
