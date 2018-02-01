@@ -1,17 +1,17 @@
 package gov.nist.toolkit.xdstools2.client.event.testSession;
 
 import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.xdstools2.client.CookieManager;
 import gov.nist.toolkit.xdstools2.client.command.command.AddMesaTestSessionCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.DeleteMesaTestSessionCommand;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTestSessionNamesCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetToolkitPropertiesCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -103,11 +103,29 @@ public class TestSessionManager2 {
 
     // delete new sessionName from server and broadcast updates to all tabs
     public void delete(String sessionName) {
-        new DeleteMesaTestSessionCommand(){
+        new DeleteMesaTestSessionCommand() {
             @Override
             public void onComplete(Boolean result) {
-                currentTestSession=testSessions.get(0);
-                load(currentTestSession);  // getRetrievedDocumentsModel full list and update all tabs
+                new GetToolkitPropertiesCommand() {
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                        new PopupMessage("Delete error getting properties : " + throwable.toString());
+                    }
+
+                    @Override
+                    public void onComplete(final Map<String, String> tkPropMap) {
+                        boolean multiUserModeEnabled = Boolean.parseBoolean(tkPropMap.get("Multiuser_mode"));
+                        boolean casModeEnabled = Boolean.parseBoolean(tkPropMap.get("Cas_mode"));
+                        if (!multiUserModeEnabled && !casModeEnabled) {
+                            if (testSessions!=null && testSessions.size()>0) {
+                                currentTestSession=testSessions.get(0);
+                                load(currentTestSession);
+                            }
+                        }
+
+                    }
+                }.run(ClientUtils.INSTANCE.getCommandContext());
+
             }
         }.run(new CommandContext(ClientUtils.INSTANCE.getEnvironmentState().getEnvironmentName(),sessionName));
     }

@@ -17,18 +17,23 @@ import gov.nist.toolkit.fhir.simulators.support.od.TransactionUtil;
 import gov.nist.toolkit.installation.server.ExternalCacheManager;
 import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.installation.server.PropertyServiceManager;
+import gov.nist.toolkit.installation.server.TestSessionFactory;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.interactionmapper.InteractionMapper;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
-import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.results.client.CodesResult;
+import gov.nist.toolkit.results.client.DocumentEntryDetail;
+import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.Test;
+import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest;
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationResponse;
 import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.server.RawResponseBuilder;
-import gov.nist.toolkit.services.server.orchestration.OrchestrationManager;
 import gov.nist.toolkit.services.server.SimulatorServiceManager;
+import gov.nist.toolkit.services.server.orchestration.OrchestrationManager;
 import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
@@ -85,7 +90,13 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 
 @SuppressWarnings("serial")
 public class ToolkitServiceImpl extends RemoteServiceServlet implements
@@ -125,14 +136,25 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 //		}
 //        session().setEnvironment(commandContext.getEnvironmentName());
         setEnvironment(commandContext.getEnvironmentName());
-        setMesaTestSession(commandContext.getTestSessionName());
+
+        if (Installation.instance().propertyServiceManager().isSingleUserMode()
+                && "default".equalsIgnoreCase(commandContext.getTestSessionName())) {
+            setMesaTestSession(commandContext.getTestSessionName());
+        }
     }
 
     @Override
     public InitializationResponse getInitialization(CommandContext context) throws Exception {
         installCommandContext(context);
         InitializationResponse response = new InitializationResponse();
-        response.setDefaultEnvironment(Installation.DEFAULT_ENVIRONMENT_NAME);
+        String defaultEnv = Installation.DEFAULT_ENVIRONMENT_NAME;
+        if (Installation.instance().propertyServiceManager().isCasMode()) {
+              defaultEnv = Installation.instance().propertyServiceManager().getDefaultEnvironment();
+              if (defaultEnv==null || "".equals(defaultEnv)) {
+                  throw new Exception("In CAS mode, a null or empty default environment value from toolkit.properties is not valid.");
+              }
+        }
+        response.setDefaultEnvironment(defaultEnv);
         response.setEnvironments(Session.getEnvironmentNames());
         response.setTestSessions(session().xdsTestServiceManager().getMesaTestSessionNames());
         response.setServletContextName(getServletContextName());
@@ -430,6 +452,18 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         installCommandContext(request);
         return session().xdsTestServiceManager().getTestResults(request.getTestIds(), request.getEnvironmentName(), request.getTestSession());
     }
+
+    @Override
+    public boolean isTestSessionValid(CommandContext request) throws Exception {
+        List<String> sessionNames = getMesaTestSessionNames(request);
+        return (sessionNames!=null && sessionNames.contains(request.getTestSessionName()));
+    }
+
+    @Override
+    public TestSession buildTestSession() throws Exception {
+        return TestSessionFactory.build();
+    }
+
     @Override
     public String setMesaTestSession(String sessionName)  throws NoServletSessionException {
         TestSession testSession = new TestSession(sessionName);
@@ -439,7 +473,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
     @Override
     public List<String> getMesaTestSessionNames(CommandContext request) throws Exception {
-        installCommandContext(request);
+//        installCommandContext(request); Not sure why this is needed since we are just getting a list of session names in test log cache.
         return session().xdsTestServiceManager().getMesaTestSessionNames();
     }
     @Override

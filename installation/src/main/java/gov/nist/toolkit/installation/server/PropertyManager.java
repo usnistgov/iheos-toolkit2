@@ -27,10 +27,11 @@ public class PropertyManager {
 	static private final String MSH_5 = "MSH_5";
 	static private final String MSH_6 = "MSH_6";
 	static private final String ARCHIVE_LOGS = "Archive_Logs";
-	static private final String MULTIUSER_MODE = "Multiuser_mode";
-	static private final String CAS_MODE = "Cas_mode";
+	static public final String MULTIUSER_MODE = "Multiuser_mode";
+	static public final String CAS_MODE = "Cas_mode";
 	static private final String NONCE_SIZE = "Nonce_size";
 	static private final String GAZELLE_TESTING_SESSION = "Gazelle_testing_session";
+
 
 	private String propFile;
 	private Properties toolkitProperties = null;
@@ -297,7 +298,11 @@ public class PropertyManager {
 		return (String) toolkitProperties.getProperty("Proxy_Port");
     }
 
-    public boolean getMultiuserMode() {
+    public boolean isSingleuserMode() {
+		return !isMultiuserMode() && !isCasMode();
+	}
+
+    public boolean isMultiuserMode() {
 		loadProperties();
 		String mode = (String) toolkitProperties.getProperty(MULTIUSER_MODE);
 		if (mode == null)
@@ -308,7 +313,7 @@ public class PropertyManager {
 		return false;
 	}
 
-	public boolean getCasMode() {
+	public boolean isCasMode() {
 		loadProperties();
 		String mode = (String) toolkitProperties.getProperty(CAS_MODE);
 		if (mode == null)
