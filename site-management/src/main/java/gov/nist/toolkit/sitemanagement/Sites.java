@@ -140,10 +140,11 @@ public class Sites {
 		validate();
 	}
 
-	public void add(Sites sites) {
+	public Sites add(Sites sites) {
 		for (Site s : sites.siteMap.values())
 			add(s);
 		validate();
+		return this;
 	}
 
 	public void deleteSite(String siteName) {

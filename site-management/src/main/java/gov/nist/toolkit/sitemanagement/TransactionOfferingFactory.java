@@ -6,6 +6,7 @@ import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -58,8 +59,9 @@ public class TransactionOfferingFactory {
 	}
 	
 	void build() {
-				
-		for (Site s : sites.getAllSites().asCollection()) {
+
+		Collection<Site> c = sites.getAllSites().asCollection();
+		for (Site s : c) {
 			if (s.isAllRepositories())
 				continue;
 			

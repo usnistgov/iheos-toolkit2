@@ -181,26 +181,50 @@ public class SiteServiceManager {
 		}
 	}
 
-
+	private void load(TestSession testSession) throws Exception {
+		File dir = Installation.instance().actorsDir(testSession);
+		logger.debug("loading sites from " + dir);
+		commonSites.put(testSession, new SeparateSiteLoader(testSession).load(dir, null));
+	}
 
 	// Statically defined sites (does not include simulators)
+	// how is the commonSites variable helping?
 	public Sites getCommonSites(TestSession testSession) throws FactoryConfigurationError,
 			Exception {
-		if (testSession.equals(TestSession.DEFAULT_TEST_SESSION))
-			commonSites.put(testSession, new Sites(testSession));  // clear out old
-		else
-			getCommonSites(TestSession.DEFAULT_TEST_SESSION);  // load up default sites
 
-		if (!useActorsFile()) {
-			File dir = Installation.instance().actorsDir(testSession);
-			logger.debug("loading sites from " + dir);
-			commonSites.put(testSession, new SeparateSiteLoader(testSession).load(dir, commonSites.get(testSession)));
-		} else {
-			throw new ToolkitRuntimeException("Combined site (all in one file) no longer supported");
-		}
-		if (commonSites.get(testSession) == null)
-			return new Sites(testSession);
-		return commonSites.get(testSession);
+		load(TestSession.DEFAULT_TEST_SESSION);
+		if (!testSession.equals(TestSession.DEFAULT_TEST_SESSION))
+			load(testSession);
+
+//		if (testSession.equals(TestSession.DEFAULT_TEST_SESSION))
+//			commonSites.put(testSession, new Sites(testSession));  // clear out old
+//		else
+//			getCommonSites(TestSession.DEFAULT_TEST_SESSION);  // load up default sites
+//
+//		if (!useActorsFile()) {
+//			File dir = Installation.instance().actorsDir(testSession);
+//			logger.debug("loading sites from " + dir);
+//			commonSites.put(testSession, new SeparateSiteLoader(testSession).load(dir, commonSites.get(testSession)));
+//		} else {
+//			throw new ToolkitRuntimeException("Combined site (all in one file) no longer supported");
+//		}
+//
+//
+//		if (commonSites.get(TestSession.DEFAULT_TEST_SESSION) == null)
+//			commonSites.put(TestSession.DEFAULT_TEST_SESSION, new Sites(TestSession.DEFAULT_TEST_SESSION));
+//		if (commonSites.get(testSession) == null)
+//			commonSites.put(testSession, new Sites(testSession));
+//
+
+		if (testSession.equals(TestSession.DEFAULT_TEST_SESSION))
+			return commonSites.get(TestSession.DEFAULT_TEST_SESSION);
+
+		Sites sites = commonSites.get(testSession).add(commonSites.get(TestSession.DEFAULT_TEST_SESSION));
+		return sites;
+
+//		if (commonSites.get(testSession) == null)
+//			return new Sites(testSession);
+//		return commonSites.get(testSession);
 	}
 
 	private boolean useActorsFile() {

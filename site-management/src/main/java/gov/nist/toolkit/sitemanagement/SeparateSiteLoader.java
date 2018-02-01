@@ -27,6 +27,8 @@ public class SeparateSiteLoader extends SiteLoader {
 	}
 
 	public Sites load(File actorsDir, Sites sites) throws Exception {
+		if (sites == null)
+			sites = new Sites(testSession);
 		if (!actorsDir.isDirectory())
 			throw new Exception("Cannot load actor descriptions: " +
 					actorsDir + " is not a directory");
@@ -34,8 +36,6 @@ public class SeparateSiteLoader extends SiteLoader {
 			if (!file.getName().endsWith("xml"))
 				continue;
 			OMElement conf = Util.parse_xml(file);
-			if (sites == null)
-				sites = new Sites(testSession);
 			sites = load(conf, sites);
 		}
 		return sites;
