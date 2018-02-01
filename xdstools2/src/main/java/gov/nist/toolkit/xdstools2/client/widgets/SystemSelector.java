@@ -15,6 +15,8 @@ abstract public class SystemSelector extends ButtonListSelector implements IsWid
         super(title, style);
     }
 
-
+    public void clearSelection() {
+        setCurrentSelection(null);
+    }
 
 }
