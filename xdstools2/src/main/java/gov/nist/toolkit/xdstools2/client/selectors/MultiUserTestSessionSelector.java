@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.selectors;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.Button;
@@ -144,23 +145,6 @@ public class MultiUserTestSessionSelector {
         textBox.removeStyleName("testSessionInputMc");
         textBox.addStyleName("testSessionInputMc");
         panel.add(textBox);
-                /*
-            textBox.addKeyPressHandler(new KeyPressHandler()
-            {
-                @Override
-                public void onKeyPress(KeyPressEvent event_)
-                {
-                    boolean enterPressed = KeyCodes.KEY_ENTER == event_
-                            .getNativeEvent().getKeyCode();
-                    if (enterPressed) {
-                        String value = textBox.getValue().trim();
-                        event_.preventDefault();
-                        event_.stopPropagation();
-                        change(value);
-                    }
-                }
-            });
-                */
 
         textBox.addKeyUpHandler(new KeyUpHandler() {
                                     @Override
@@ -168,6 +152,19 @@ public class MultiUserTestSessionSelector {
                                         setChangeAccess();
                                     }
                                 });
+        textBox.addKeyUpHandler(new KeyUpHandler() {
+            @Override
+            public void onKeyUp(KeyUpEvent keyUpEvent) {
+                if (KeyCodes.KEY_ENTER == keyUpEvent.getNativeKeyCode()) {
+                    keyUpEvent.getNativeEvent().preventDefault();
+                    keyUpEvent.getNativeEvent().stopPropagation();
+                    textBox.cancelKey();
+                    String value = textBox.getValue().trim();
+                    change(value);
+                }
+            }
+        });
+
         //
         // Change Test Session Button
         //
@@ -181,19 +178,7 @@ public class MultiUserTestSessionSelector {
             }
         });
 
-        textBox.addKeyPressHandler(new KeyPressHandler()
-        {
-            @Override
-            public void onKeyPress(KeyPressEvent event_)
-            {
-                boolean enterPressed = KeyCodes.KEY_ENTER == event_
-                        .getNativeEvent().getKeyCode();
-                if (enterPressed) {
-                    String value = textBox.getValue().trim();
-                    change(value);
-                }
-            }
-        });
+
 
         panel.add(new HTML("&nbsp;&nbsp;"));
     }

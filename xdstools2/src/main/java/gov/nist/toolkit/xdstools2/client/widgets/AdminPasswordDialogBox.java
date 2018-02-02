@@ -2,8 +2,11 @@ package gov.nist.toolkit.xdstools2.client.widgets;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 
@@ -20,14 +23,19 @@ public class AdminPasswordDialogBox extends DialogBox {
 		topPanel.add(instructions);
 		
 		passBox = new PasswordTextBox();
-		passBox.addKeyPressHandler(new KeyPressHandler() {
+		passBox.addKeyUpHandler(new KeyUpHandler() {
+			@Override
+			public void onKeyUp(KeyUpEvent keyUpEvent) {
+				if (KeyCodes.KEY_ENTER == keyUpEvent.getNativeKeyCode()) {
+					keyUpEvent.getNativeEvent().preventDefault();
+					keyUpEvent.getNativeEvent().stopPropagation();
+					passBox.cancelKey();
 
-			public void onKeyPress(KeyPressEvent event) {
-				if (event.getCharCode() == '\r')
 					new OkButtonClicked().onClick(null);
+				}
 			}
-			
 		});
+
 		topPanel.add(passBox);
 		
 		Button okButton = new Button("Ok");
