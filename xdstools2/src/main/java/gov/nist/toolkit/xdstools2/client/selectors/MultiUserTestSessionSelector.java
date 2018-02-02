@@ -1,9 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.selectors;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
@@ -12,6 +9,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.installation.shared.TestSession;
+import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.command.command.IsTestSessionValidCommand;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
@@ -182,6 +180,21 @@ public class MultiUserTestSessionSelector {
                 change(value);
             }
         });
+
+        textBox.addKeyPressHandler(new KeyPressHandler()
+        {
+            @Override
+            public void onKeyPress(KeyPressEvent event_)
+            {
+                boolean enterPressed = KeyCodes.KEY_ENTER == event_
+                        .getNativeEvent().getKeyCode();
+                if (enterPressed) {
+                    String value = textBox.getValue().trim();
+                    change(value);
+                }
+            }
+        });
+
         panel.add(new HTML("&nbsp;&nbsp;"));
     }
 
@@ -229,7 +242,7 @@ public class MultiUserTestSessionSelector {
         if (testSession!=null && testSession.equals(currentTestSession.getText()))
             return;
 
-        if (!"default".equalsIgnoreCase(testSession)) {
+        if (!"default".equalsIgnoreCase(testSession) || PasswordManagement.isSignedIn) {
             CommandContext request = new CommandContext(null,testSession);
             new IsTestSessionValidCommand() {
                 @Override
@@ -240,7 +253,7 @@ public class MultiUserTestSessionSelector {
                 @Override
                 public void onComplete(Boolean result) {
                     if (result) {
-                        if (!"".equals(currentTestSession.getText()) && !"None.".equals(currentTestSession.getText())) {
+                        if (!"".equals(currentTestSession.getText()) && !"None.".equals(currentTestSession.getText()) && !PasswordManagement.isSignedIn) {
                             VerticalPanel body = new VerticalPanel();
                             String alertMessage = "";
                             if ((tabWatcher!=null && tabWatcher.getTabCount()>0)) {
@@ -293,7 +306,8 @@ public class MultiUserTestSessionSelector {
     private void doChange(String testSession) {
         textBox.setValue("");
         setChangeAccess();
-        tabWatcher.closeAllTabs();
+        if (!PasswordManagement.isSignedIn)
+            tabWatcher.closeAllTabs();
         ClientUtils.INSTANCE.getTestSessionManager().setCurrentTestSession(testSession);
         ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, testSession));
     }

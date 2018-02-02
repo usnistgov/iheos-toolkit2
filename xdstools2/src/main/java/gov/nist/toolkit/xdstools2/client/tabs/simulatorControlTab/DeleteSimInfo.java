@@ -8,10 +8,12 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.xdstools2.client.ClickHandlerData;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
+import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.util.SimpleCallback;
 import gov.nist.toolkit.xdstools2.client.widgets.AdminPasswordDialogBox;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
@@ -98,47 +100,30 @@ List<SimInfo> simInfoList;
                 new ClickHandlerData<List<SimInfo>>(simInfoList) {
                     @Override
                     public void onClick(ClickEvent clickEvent) {
-//                        Timer refreshTimer = null;
-//                        final int delayMillis = 500 * simInfoList.size();
                         hostTab.getSimManagerWidget().asWidget().getElement().removeClassName("loading");
-                        hostTab.getSimManagerWidget().asWidget().getElement().addClassName("loading");
+                        //hostTab.getSimManagerWidget().asWidget().getElement().addClassName("loading");
 
                         List<SimulatorConfig> configList = new ArrayList<>();
                         for (SimInfo simInfo : simInfoList) {
                             configList.add(simInfo.getSimulatorConfig());
                         }
 
-                        DeleteButtonClickHandler handler = new DeleteButtonClickHandler(hostTab, configList);
-                        handler.delete(true, new SimpleCallback() {
-                            @Override
-                            public void run() {
-                                hostTab.getSimManagerWidget().asWidget().getElement().removeClassName("loading");
+                        boolean requiresAdmin = false;
+                        for (SimulatorConfig config : configList) {
+                            if (TestSession.DEFAULT_TEST_SESSION.equals(config.getTestSession()) && Xdstools2.getInstance().multiUserModeEnabled)
+                                requiresAdmin = true;
+                        }
+
+                        if (requiresAdmin) {
+                            if (PasswordManagement.isSignedIn) {
                             }
-                        });
-
-                        /*
-                        for (SimInfo simInfo : simInfoList) {
-                            try {
-                                DeleteButtonClickHandler handler = new DeleteButtonClickHandler(hostTab, simInfo.getSimulatorConfig());
-                                handler.delete(false);
-
-                            } catch (Exception ex) {
-                                GWT.log("Delete failed simId: " + simInfo.getSimulatorConfig().getId().toString() + ". Exception: " + ex.toString());
-                            } finally {
-                                if (refreshTimer!=null)
-                                    refreshTimer.cancel();
-                                refreshTimer = new Timer() {
-                                    @Override
-                                    public void run() {
-                                        hostTab.getSimManagerWidget().asWidget().getElement().removeClassName("loading");
-                                        hostTab.loadSimStatus();
-                                        ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireSimulatorsUpdatedEvent();
-                                    }
-                                };
-                                refreshTimer.schedule(delayMillis);
+                            else {
+                                new PopupMessage("To delete simulators owned by default you must be signed in as admin");
+                                return;
                             }
                         }
-                        */
+
+                        deleteSimConfigPreAuthorized(configList);
 
                     }
                 }
@@ -147,5 +132,17 @@ List<SimInfo> simInfoList;
         safeHtmlBuilder.appendHtmlConstant("<img src=\"icons2/garbage.png\" title=\"Delete\" height=\"16\" width=\"16\"/>");
         safeHtmlBuilder.appendHtmlConstant("Confirm Delete Simulator");
         new PopupMessage(safeHtmlBuilder.toSafeHtml() , body, actionButton);
+    }
+
+
+
+    private void deleteSimConfigPreAuthorized(List<SimulatorConfig> configList) {
+        DeleteButtonClickHandler handler = new DeleteButtonClickHandler(hostTab, configList);
+        handler.delete(true, new SimpleCallback() {
+            @Override
+            public void run() {
+                hostTab.getSimManagerWidget().asWidget().getElement().removeClassName("loading");
+            }
+        });
     }
 }

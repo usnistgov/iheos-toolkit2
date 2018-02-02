@@ -19,10 +19,7 @@ import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionOfferings
 import gov.nist.toolkit.xdstools2.client.command.command.InitializationCommand;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.injector.Injector;
-import gov.nist.toolkit.xdstools2.client.selectors.CasUserTestSessionSelector;
-import gov.nist.toolkit.xdstools2.client.selectors.EnvironmentManager;
-import gov.nist.toolkit.xdstools2.client.selectors.MultiUserTestSessionSelector;
-import gov.nist.toolkit.xdstools2.client.selectors.TestSessionSelector;
+import gov.nist.toolkit.xdstools2.client.selectors.*;
 import gov.nist.toolkit.xdstools2.client.tabs.EnvironmentState;
 import gov.nist.toolkit.xdstools2.client.tabs.HomeTab;
 import gov.nist.toolkit.xdstools2.client.tabs.QueryState;
@@ -141,6 +138,7 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 						menuPanel.add(new CasUserTestSessionSelector(Xdstools2.this).asWidget());
 					}
 				}
+				menuPanel.add(new SignInSelector());
 
 			}
 		}.run(ClientUtils.INSTANCE.getCommandContext());
