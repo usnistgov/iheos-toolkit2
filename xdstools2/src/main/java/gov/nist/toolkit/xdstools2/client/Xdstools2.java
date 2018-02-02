@@ -56,6 +56,8 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 
 	public static String toolkitBaseUrl = null;
 	public static String wikiBaseUrl = null;
+	public boolean multiUserModeEnabled;
+	public boolean casModeEnabled;
 
 	private static TkProps props = new TkProps();
 
@@ -112,10 +114,11 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 				new PopupMessage("BuildTabsWrapper error getting properties : " + throwable.toString());
 			}
 
+
 			@Override
 			public void onComplete(final Map<String, String> tkPropMap) {
-				boolean multiUserModeEnabled = Boolean.parseBoolean(tkPropMap.get("Multiuser_mode"));
-				boolean casModeEnabled = Boolean.parseBoolean(tkPropMap.get("Cas_mode"));
+				multiUserModeEnabled = Boolean.parseBoolean(tkPropMap.get("Multiuser_mode"));
+				casModeEnabled = Boolean.parseBoolean(tkPropMap.get("Cas_mode"));
 
 				// No environment selector for CAS mode, but allow for single user mode and multi user mode
 				if (!casModeEnabled) {

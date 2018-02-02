@@ -6,6 +6,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 
 import java.io.Serializable;
@@ -295,5 +296,9 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 		result = 31 * result + (expired ? 1 : 0);
 		result = 31 * result + (elements != null ? elements.hashCode() : 0);
 		return result;
+	}
+
+	public TestSession getTestSession() {
+   		return id.getTestSession();
 	}
 }
