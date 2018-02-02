@@ -7,6 +7,8 @@ import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.tabs.EnvironmentState;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
+import java.util.Map;
+
 /**
  * Client Utilities singleton.
  */
@@ -15,6 +17,7 @@ public class ClientUtils {
     private ClientFactory clientFactory=GWT.create(ClientFactory.class);
     private EnvironmentState environmentState = new EnvironmentState();
     private TestSessionManager2 testSessionManager;
+    private Map<String, String> tkPropMap;
 
     // Private constructor whose sole is to hide the implicit public one and really have a Singleton.
     private ClientUtils(){}
@@ -46,4 +49,11 @@ public class ClientUtils {
         return new TestSession(getTestSessionManager().getCurrentTestSession());
     }
 
+    public Map<String, String> getTkPropMap() {
+        return tkPropMap;
+    }
+
+    public void setTkPropMap(Map<String, String> tkPropMap) {
+        this.tkPropMap = tkPropMap;
+    }
 }

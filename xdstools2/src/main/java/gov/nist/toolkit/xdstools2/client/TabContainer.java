@@ -157,14 +157,8 @@ public class TabContainer {
 			public void onClick(ClickEvent clickEvent) {
 				GWT.log("Delete tab");
 				TabContents tc = findPanelInDeck(content);
-				int i = deck.indexOf(tc);
-				GWT.log("Delete tab " + i);
-				deleteTab(i);
-				deck.remove(i);
-				INNER_DECKPANEL.remove(i);
-				TABBAR.removeTab(i);
-				i = deck.size() - 1;
-				selectTab(i);
+				if (tc!=null)
+			 		closeTab(tc);
 			}
 		});
 		panel.add(x);
@@ -181,6 +175,24 @@ public class TabContainer {
 				return tc;
 		}
 		return null;
+	}
+
+	public boolean closeAllTabs() {
+		for (int i = getTabCount()-1; i>-1; i--)
+		    closeTab(deck.get(i));
+		return true;
+	}
+
+	private void closeTab(TabContents tc) {
+		int i = deck.indexOf(tc);
+		GWT.log("Delete tab " + i);
+		deleteTab(i);
+		deck.remove(i);
+		INNER_DECKPANEL.remove(i);
+		TABBAR.removeTab(i);
+		i = deck.size() - 1;
+		if (i>-1)
+			selectTab(i);
 	}
 
 	public static void setWidth(String width) {
@@ -213,5 +225,9 @@ public class TabContainer {
 //	protected static Widget getWidget(int tabIndex) {
 //		return INNERPANEL.getWidget(tabIndex);
 //	}
+
+	public int getTabCount() {
+		return TABBAR.getTabCount();
+	}
 
 }

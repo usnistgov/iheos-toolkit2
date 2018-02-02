@@ -29,6 +29,7 @@ import gov.nist.toolkit.xdstools2.client.tabs.QueryState;
 import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientFactory;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.util.TabWatcher;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.InitializationResponse;
 
@@ -37,7 +38,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 
-public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, ProvidesResize {
+public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, ProvidesResize, TabWatcher {
 	public static final int TRAY_SIZE = 190;
 	public static final int TRAY_CTL_BTN_SIZE = 9; // 23
 
@@ -117,6 +118,7 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 
 			@Override
 			public void onComplete(final Map<String, String> tkPropMap) {
+                ClientUtils.INSTANCE.setTkPropMap(tkPropMap);
 				multiUserModeEnabled = Boolean.parseBoolean(tkPropMap.get("Multiuser_mode"));
 				casModeEnabled = Boolean.parseBoolean(tkPropMap.get("Cas_mode"));
 
@@ -128,14 +130,15 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 
 				// Only single user mode has a selectable test session drop down
 				if (!multiUserModeEnabled && !casModeEnabled) {
+					getTestSessionManager().setCurrentTestSession("default");
 					menuPanel.add(new TestSessionSelector(getTestSessionManager().getTestSessions(), getTestSessionManager().getCurrentTestSession()).asWidget());
 				} else {
 					if (multiUserModeEnabled && !casModeEnabled) {
 						// Only two options: 1) Change Test Session and 2) New Test Session
-						menuPanel.add(new MultiUserTestSessionSelector().asWidget());
+						menuPanel.add(new MultiUserTestSessionSelector( Xdstools2.this).asWidget());
 					} else if (casModeEnabled) {
 						// Only one option: 1) Change Test Session
-						menuPanel.add(new CasUserTestSessionSelector().asWidget());
+						menuPanel.add(new CasUserTestSessionSelector(Xdstools2.this).asWidget());
 					}
 				}
 
@@ -353,5 +356,15 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 	@Override
 	public void onResize() {
 	 mainSplitPanel.onResize();
+	}
+
+	@Override
+	public int getTabCount() {
+	   return tabContainer.getTabCount();
+	}
+
+	@Override
+	public boolean closeAllTabs() {
+	    return tabContainer.closeAllTabs();
 	}
 }
