@@ -207,11 +207,11 @@ public class XdsTestServiceManager extends CommonService {
 		}
 	}
 
-	public List<Result> querySts(String siteName, String sessionid, String query, Map<String, String> params, boolean persistResult, TestSession testSession) {
+	public List<Result> querySts(String siteName, String query, Map<String, String> params, boolean persistResult, TestSession testSession) {
 		setGazelleTruststore();
 
 		String environmentName = "default";
-		Session mySession = new Session(Installation.instance().warHome(), sessionid);
+		Session mySession = new Session(Installation.instance().warHome(), testSession.toString());
 		mySession.setEnvironment(environmentName);
 
 		// This must exist in the EC Dir. ex. GazelleSts

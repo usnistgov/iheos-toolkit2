@@ -79,7 +79,7 @@ public class StsSamlValidator extends AbstractMessageValidator {
                         String query = "samlassertion-validate";
 
                         XdsTestServiceManager xdsTestServiceManager = new XdsTestServiceManager(null);
-                        List<Result> results = xdsTestServiceManager.querySts("GazelleSts","default",query,params, false, testSession);
+                        List<Result> results = xdsTestServiceManager.querySts("GazelleSts", query, params, false, TestSession.DEFAULT_TEST_SESSION);
 
                         if (results.size() == 1) {
                             if (!results.get(0).passed()) {

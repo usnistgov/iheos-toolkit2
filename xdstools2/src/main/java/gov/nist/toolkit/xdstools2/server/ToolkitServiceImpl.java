@@ -1589,10 +1589,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     public String getStsSamlAssertion(GetStsSamlAssertionRequest request) throws Exception {
         installCommandContext(request);
         XdsTestServiceManager xtsm = session().getXdsTestServiceManager();
-        String sessionName = request.getTestSessionName();
         String step = "issue";
         String query = request.getTestInstance().getSection();
-        List<Result> results = xtsm.querySts("GazelleSts",sessionName,query,request.getParams(), false, request.getTestSession());
+        List<Result> results = xtsm.querySts("GazelleSts",query,request.getParams(), false, request.getTestSession());
 
         if (results!=null) {
             if (results.size() == 1) {
@@ -1608,7 +1607,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
                     }
 
                 } else {
-                    LogFileContentDTO logFileContentDTO = xtsm.getTestLogDetails(new TestSession(sessionName),request.getTestInstance());
+                    LogFileContentDTO logFileContentDTO = xtsm.getTestLogDetails(request.getTestSession(),request.getTestInstance());
                     TestStepLogContentDTO testStepLogContentDTO = logFileContentDTO.getStep(step);
                     List<ReportDTO> reportDTOs = testStepLogContentDTO.getReportDTOs();
                     String assertionResultId = "saml-assertion";
