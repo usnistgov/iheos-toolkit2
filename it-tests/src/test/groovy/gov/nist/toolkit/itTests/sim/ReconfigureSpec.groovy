@@ -80,6 +80,7 @@ class ReconfigureSpec extends Specification {
         rs.setOverrideHost('home')
         rs.setOverridePort('42')
         Installation.instance().setServletContextName('toolkit45')
+        rs.reconfigure(simId)
         rs.init(null)
 
 
@@ -103,6 +104,7 @@ class ReconfigureSpec extends Specification {
         rs.setOverrideHost('home')
         rs.setOverridePort('42')
         Installation.instance().setServletContextName('')
+        rs.reconfigure(simId)
         rs.init(null)
 
 
