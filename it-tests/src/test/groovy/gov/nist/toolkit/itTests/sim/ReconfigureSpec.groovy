@@ -11,6 +11,7 @@ import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.client.Simulator
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
+import org.apache.log4j.BasicConfigurator
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -22,6 +23,10 @@ class ReconfigureSpec extends Specification {
     @Shared String retrieveEndpoint
     SimId simId
     SimulatorConfig config
+
+    def setupSpec() {
+        BasicConfigurator.configure()
+    }
 
     def setup() {
         simId = new SimId(new TestSession('bill'), 'mysim', ActorType.REPOSITORY.name)
@@ -58,8 +63,8 @@ class ReconfigureSpec extends Specification {
         ReconfigureSimulators rs = new ReconfigureSimulators()
         rs.setOverrideHost('home')
         rs.setOverridePort('42')
-        rs.reconfigure(simId)
         rs.init(null)
+        rs.reconfigure(simId)
 
         and:
         SimulatorConfig config2 = api.getConfig(simId)
@@ -80,14 +85,14 @@ class ReconfigureSpec extends Specification {
         rs.setOverrideHost('home')
         rs.setOverridePort('42')
         Installation.instance().setServletContextName('toolkit45')
-        rs.reconfigure(simId)
         rs.init(null)
-
+        rs.reconfigure(simId)
 
         and:
         SimulatorConfig config2 = api.getConfig(simId)
         String retrieveEndpoint2 = config2.getConfigEle(SimulatorProperties.retrieveEndpoint).asString()
         EndpointParser ep = new EndpointParser(retrieveEndpoint2)
+        println "Updated endpoint is ${ep.endpoint}"
         String host = ep.getHost()
         String port = ep.getPort()
         String context = ep.context
@@ -104,9 +109,8 @@ class ReconfigureSpec extends Specification {
         rs.setOverrideHost('home')
         rs.setOverridePort('42')
         Installation.instance().setServletContextName('')
-        rs.reconfigure(simId)
         rs.init(null)
-
+        rs.reconfigure(simId)
 
         and:
         SimulatorConfig config2 = api.getConfig(simId)

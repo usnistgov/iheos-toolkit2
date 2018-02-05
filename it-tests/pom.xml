@@ -156,24 +156,7 @@
                     <version>2.19.1</version>
                     <configuration>
                         <includes>
-                            <!-- Always include tests in pairs: Groovy and Java -->
-                            <!-- begin include individual test -->
-                            <!--<include>**/RetrieveSpec.groovy</include>-->
-                            <!--<include>**/RetrieveSpec.java</include>-->
-                            <!--<include>**/RegisterSpec.groovy</include>-->
-                            <!--<include>**/RegisterSpec.java</include>-->
-                            <!--<include>**/OdConsumerSpec.groovy</include>-->
-                            <!--<include>**/OdConsumerSpec.java</include>-->
-                            <!--<include>**/StsSamlAssertionSpec.groovy</include>-->
-                            <!--<include>**/StsSamlAssertionSpec.java</include>-->
-                            <!--<include>**/InteractionSequenceSpec.groovy</include>-->
-                            <!--<include>**/InteractionSequenceSpec.java</include>-->
-                            <!--<include>**/RigSpec.groovy</include>-->
-                            <!--<include>**/RigSpec.java</include>-->
-                            <!--<include>**/FrontEndSpec.groovy</include>-->
-                            <!--<include>**/FrontEndSpec.java</include>-->
-                            <!-- end include individual test -->
-                            <!-- begin include all tests -->
+                            <!--<include>**/FhirSupportOrchestrationBuilderSpec.java</include>-->
                             <include>**/*Spec.java</include>
                             <include>**/*Test.java</include>
                             <include>**/*IT.java</include>
