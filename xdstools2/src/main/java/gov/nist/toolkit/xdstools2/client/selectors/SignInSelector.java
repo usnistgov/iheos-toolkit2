@@ -5,6 +5,8 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.command.command.AddMesaTestSessionCommand;
+import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.AdminPasswordDialogBox;
 
 public class SignInSelector implements IsWidget {
@@ -49,11 +51,18 @@ public class SignInSelector implements IsWidget {
             signInStatus.setText(signedIn);
             signOut.setVisible(true);
             signIn.setVisible(false);
+            switchTestSession("default");
         } else {
             signInStatus.setText(signedOut);
             signOut.setVisible(false);
             signIn.setVisible(true);
+            switchTestSession("");
         }
+    }
+
+    private void switchTestSession(String testSession) {
+        ClientUtils.INSTANCE.getTestSessionManager().setCurrentTestSession(testSession);
+        ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, testSession));
     }
 
     @Override

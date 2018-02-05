@@ -1,6 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.selectors;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.Button;
@@ -93,7 +94,10 @@ public class MultiUserTestSessionSelector {
             @Override
             public void onTestSessionChanged(TestSessionChangedEvent event) {
                 if (event.getChangeType() == TestSessionChangedEvent.ChangeType.SELECT) {
-                    currentTestSession.setText(event.getValue());
+                    if (!"".equals(event.getValue()))
+                        currentTestSession.setText(event.getValue());
+                    else
+                        currentTestSession.setText("None.");
                     setDeleteAccess();
                 }
             }
@@ -106,6 +110,7 @@ public class MultiUserTestSessionSelector {
         // Delete Button
         //
         setDeleteAccess();
+        delTestSessionButton.getElement().getStyle().setMarginLeft(2, Style.Unit.PX);
         panel.add(delTestSessionButton);
         delTestSessionButton.addClickHandler(new ClickHandler() {
             @Override
@@ -238,6 +243,7 @@ public class MultiUserTestSessionSelector {
                 @Override
                 public void onComplete(Boolean result) {
                     if (result) {
+                        // Alert only when switching from one test session to another but not when going from no-test-session to a test session (initial state).
                         if (!"".equals(currentTestSession.getText()) && !"None.".equals(currentTestSession.getText()) && !PasswordManagement.isSignedIn) {
                             VerticalPanel body = new VerticalPanel();
                             String alertMessage = "";
