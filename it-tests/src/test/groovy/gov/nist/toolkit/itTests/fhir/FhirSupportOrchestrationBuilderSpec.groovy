@@ -1,5 +1,6 @@
 package gov.nist.toolkit.itTests.fhir
 
+import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.FhirSpecification
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest
@@ -16,6 +17,9 @@ class FhirSupportOrchestrationBuilderSpec extends FhirSpecification  {
 
     def setupSpec() {
         startGrizzlyWithFhir('8889')   // sets up Grizzly server on remoteToolkitPort
+        Installation.instance().testSessions.each { TestSession testSession ->
+            new SimDb().deleteAllSims(testSession)
+        }
     }
 
     def 'test full build' () {
