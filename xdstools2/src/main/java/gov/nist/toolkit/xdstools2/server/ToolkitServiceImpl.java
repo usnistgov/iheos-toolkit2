@@ -455,7 +455,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 
     @Override
     public boolean isTestSessionValid(CommandContext request) throws Exception {
-        List<String> sessionNames = getMesaTestSessionNames(request);
+        List<String> sessionNames = session().xdsTestServiceManager().getMesaTestSessionNames();
         return (sessionNames!=null && sessionNames.contains(request.getTestSessionName()));
     }
 
@@ -474,6 +474,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<String> getMesaTestSessionNames(CommandContext request) throws Exception {
 //        installCommandContext(request); Not sure why this is needed since we are just getting a list of session names in test log cache.
+        if (Installation.instance().propertyServiceManager().isMultiuserMode())
+            throw new ToolkitRuntimeException("Function getMesaTestSessionNames() not available in MulitUserMode");
+
         return session().xdsTestServiceManager().getMesaTestSessionNames();
     }
     @Override

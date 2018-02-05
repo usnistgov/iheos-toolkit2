@@ -649,6 +649,9 @@ public class XdsTestServiceManager extends CommonService {
 		if (session != null)
 			logger.debug(session.id() + ": " + "getTestlogListing(" + sessionName + ")");
 
+		if (Installation.instance().propertyServiceManager().isMultiuserMode())
+			throw new ToolkitRuntimeException("Function getTestlogListing() not available in MulitUserMode");
+
 		List<String> sessionNames = getMesaTestSessionNames();
 
 		if (!sessionNames.contains(sessionName))

@@ -77,6 +77,11 @@ public class TabContainer {
 		return titleHtml;
 	}
 
+	public int addTabWithIndex(DockLayoutPanel w, AbstractPresenter presenter, String title, boolean select) {
+		addTab(w, presenter, title, select);
+		return TABBAR.getTabCount() - 1;
+	}
+
 	public HTML addDeletableTab(DockLayoutPanel w, AbstractPresenter presenter, String title, boolean select, NotifyOnDelete notifyOnDelete) {
 		w.getElement().getStyle().setMarginLeft(4, Style.Unit.PX);
 		w.getElement().getStyle().setMarginRight(4, Style.Unit.PX);
@@ -133,11 +138,18 @@ public class TabContainer {
 		}
 	}
 
+	void rmTab(int index) {
+		if (index >= 0 && index < deck.size()) {
+			TabContents tabContents = deck.get(index);
+			closeTab(tabContents);
+		}
+	}
+
 	private void deleteTab(int index) {
-		TabContents tabContents = deck.get(index);
-		if (tabContents == null) return;
-		if (tabContents.getNotifyOnDelete() != null)
-			tabContents.getNotifyOnDelete().onDelete();
+			TabContents tabContents = deck.get(index);
+			if (tabContents == null) return;
+			if (tabContents.getNotifyOnDelete() != null)
+				tabContents.getNotifyOnDelete().onDelete();
 	}
 
 	private void formatTitle(HTML titleHtml) {

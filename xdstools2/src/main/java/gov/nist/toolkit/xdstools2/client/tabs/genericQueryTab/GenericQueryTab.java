@@ -139,6 +139,8 @@ public abstract class GenericQueryTab  extends ToolWindow {
      */
     protected abstract Widget buildUI();
 
+//    protected void tabIndex(int index) {}
+
     /**
      * This is the method that should bind the tab's widgets with actions, the eventbus and the server.
      * This methoud could contains eventbus handlers, calls to the server or even action handlers like click handler,
@@ -227,11 +229,15 @@ public abstract class GenericQueryTab  extends ToolWindow {
         }
     }
 
+
     @Override
     public void onTabLoad(boolean select, String eventName) {
+        int index = -1;
         if (displayTab)
-            registerTab(true, eventName);
+            index = registerTab(true, eventName);
         buildView();  // the view is still built because of old code in HomeTab -
+//        tabIndex(index);
+//        return index;
     }
 
     protected void buildView(){

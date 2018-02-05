@@ -15,7 +15,6 @@ import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
 import gov.nist.toolkit.sitemanagement.client.TransactionCollection;
 import gov.nist.toolkit.xdstools2.client.NotifyOnDelete;
-import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.command.command.GetSiteNamesCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.IsGazelleConfigFeedEnabledCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.ReloadExternalSitesCommand;
@@ -37,8 +36,8 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
     ListBox siteSelector;
 	private FlexTable actorEditGrid;
 	private int actorEditRow = -1;
-	private HTML signInStatus;
-	private Hyperlink signIn = new Hyperlink();
+//	private HTML signInStatus;
+//	private Hyperlink signIn = new Hyperlink();
 	private boolean enableGazelleReload = false;
 	private Button reloadFromGazelleButton;
 	private CheckBox showSims = new CheckBox();
@@ -129,26 +128,26 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
 
 		sitesPanel.add(actionButtons);
 
-		HorizontalPanel signOutPanel = new HorizontalPanel();
-
-		signInStatus = new HTML();
-		updateSignInStatus();
-		signOutPanel.add(signInStatus);
-
-		signIn.setText("[Sign Out]");
-		signOutPanel.add(signIn);
-
-		signIn.addClickHandler(new ClickHandler() {
-
-			public void onClick(ClickEvent event) {
-				PasswordManagement.isSignedIn = false;
-				updateSignInStatus();
-			}
-
-		});
-
-
-		sitesPanel.add(signOutPanel);
+//		HorizontalPanel signOutPanel = new HorizontalPanel();
+//
+//		signInStatus = new HTML();
+//		updateSignInStatus();
+//		signOutPanel.add(signInStatus);
+//
+//		signIn.setText("[Sign Out]");
+//		signOutPanel.add(signIn);
+//
+//		signIn.addClickHandler(new ClickHandler() {
+//
+//			public void onClick(ClickEvent event) {
+//				PasswordManagement.isSignedIn = false;
+//				updateSignInStatus();
+//			}
+//
+//		});
+//
+//
+//		sitesPanel.add(signOutPanel);
 		
 		showSims.setText("Show Sims");
 		showSims.setValue(false);
@@ -210,13 +209,13 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
 	}
 
 	void updateSignInStatus() {
-		if (PasswordManagement.isSignedIn) {
-			signInStatus.setText("Signed In   ");
-		}
-		else {
-			signInStatus.setText("Signed Out   ");
-		}		
-		signIn.setVisible(PasswordManagement.isSignedIn);
+//		if (PasswordManagement.isSignedIn) {
+//			signInStatus.setText("Signed In   ");
+//		}
+//		else {
+//			signInStatus.setText("Signed Out   ");
+//		}
+//		signIn.setVisible(PasswordManagement.isSignedIn);
 	}
 
 	void newActorEditGrid() {
