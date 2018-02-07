@@ -445,11 +445,14 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 				@Override
 				public void onComplete(Site result) {
 					testContext.setSiteUnderTest(result);
+					testContext.setCurrentSiteSpec(result.getName());
+
 					// Tool was launched via Activity URL
 					if (getInitTestSession() != null) {
 						updateDisplayedActorAndOptionType();
 						setInitTestSession(result.getTestSession().getValue());
 					}
+					testContextView.updateTestingContextDisplay();
 				}
 			}.run(new GetSiteRequest(ClientUtils.INSTANCE.getCommandContext(), siteToIssueTestAgainst.name));
 
