@@ -93,6 +93,7 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 
 	void buildTabsWrapper() {
 		final HorizontalPanel menuPanel = new HorizontalPanel();
+		menuPanel.setWidth("100%");
 		tabContainer = Injector.INSTANCE.getTabContainer();
 		assert(tabContainer != null);
 		final EnvironmentManager environmentManager = new EnvironmentManager(tabContainer);

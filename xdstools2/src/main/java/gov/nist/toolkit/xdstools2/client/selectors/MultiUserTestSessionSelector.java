@@ -1,15 +1,9 @@
 package gov.nist.toolkit.xdstools2.client.selectors;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.command.command.IsTestSessionValidCommand;
@@ -58,9 +52,12 @@ public class MultiUserTestSessionSelector {
 
         panel = new HorizontalPanel();
 
-        panel.add(new HTML("Test Session: "));
+        panel.add(new HTML("Test Session:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"));
 
         panel.add(currentTestSession);
+
+        panel.add(new HTML("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"));
+
 
         if (canDeleteTs) {
             buildDelete();
