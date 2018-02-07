@@ -21,4 +21,10 @@ public class SimIdFactory implements Serializable, IsSerializable {
         if (id.contains("__")) throw new ToolkitRuntimeException("Cannot construct a SimId from " + testSession + " and " + id);
         return new SimId(testSession, id);
     }
+
+    static public boolean isSimId(String rawId) {
+        String[] parts = rawId.split("__");
+        if (parts.length != 2) return false;
+        return true;
+    }
 }
