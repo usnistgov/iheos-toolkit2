@@ -25,6 +25,7 @@ public class SignInSelector implements IsWidget {
         panel.add(signOut);
         panel.addStyleName("right");
         updateDisplay();
+        switchTestSession(ClientUtils.INSTANCE.getTestSessionManager().getCurrentTestSession());
 
         signIn.addClickHandler(new ClickHandler() {
             @Override
@@ -34,6 +35,7 @@ public class SignInSelector implements IsWidget {
                     @Override
                     public void onComplete(Boolean result) {
                         updateDisplay();
+                        switchTestSession("default");
                     }
                 });
                 new AdminPasswordDialogBox(panel);
@@ -45,6 +47,7 @@ public class SignInSelector implements IsWidget {
             public void onClick(ClickEvent clickEvent) {
                 PasswordManagement.isSignedIn = false;
                 updateDisplay();
+                switchTestSession("");
             }
         });
     }
@@ -54,12 +57,10 @@ public class SignInSelector implements IsWidget {
             signInStatus.setText(signedIn);
             signOut.setVisible(true);
             signIn.setVisible(false);
-            switchTestSession("default");
         } else {
             signInStatus.setText(signedOut);
             signOut.setVisible(false);
             signIn.setVisible(true);
-            switchTestSession("");
         }
     }
 

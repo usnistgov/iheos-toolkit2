@@ -8,6 +8,7 @@ import gov.nist.toolkit.installation.shared.ToolkitUserMode;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.command.command.GetToolkitPropertiesCommand;
+import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.ConformanceTestTab;
 import gov.nist.toolkit.xdstools2.client.toolLauncher.ToolLauncher;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
@@ -46,18 +47,23 @@ public class ConfActorActivity extends AbstractActivity {
 
                     ToolWindow toolWindow = new ToolLauncher(ToolLauncher.conformanceTestsLabel).launch();
                     ConformanceTestTab conformanceTestTab = (ConformanceTestTab) toolWindow;
+                    String testSession = confActor.getTestSessionName();
 
-                    if ("default".equalsIgnoreCase(confActor.getTestSessionName())) {
+                    if ("default".equalsIgnoreCase(testSession)) {
                      if (!multiUserModeEnabled) {
-                         toolWindow.setCurrentTestSession(confActor.getTestSessionName());
-                         conformanceTestTab.setInitTestSession(confActor.getTestSessionName());
+                         toolWindow.setCurrentTestSession(testSession);
+                         conformanceTestTab.setInitTestSession(testSession);
                      } else { // CAS
                          toolWindow.setCurrentTestSession(null);
                          new PopupMessage("ConfActorActivity: Test session default cannot be selected in " + userMode);
                      }
                     } else {
-                        toolWindow.setCurrentTestSession(confActor.getTestSessionName());
-                        conformanceTestTab.setInitTestSession(confActor.getTestSessionName());
+                        toolWindow.setCurrentTestSession(testSession);
+                        conformanceTestTab.setInitTestSession(testSession);
+                        if (testSession!=null && !"".equals(testSession)) {
+                            ClientUtils.INSTANCE.getTestSessionManager().setCurrentTestSession(testSession);
+                            ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, testSession));
+                        }
                     }
                     conformanceTestTab.getCurrentActorOption().setActorTypeId(confActor.getActorType());
                     conformanceTestTab.getCurrentActorOption().setProfileId(IheItiProfile.find(confActor.getProfileId()));

@@ -35,7 +35,6 @@ public class MultiUserTestSessionSelector {
     public MultiUserTestSessionSelector(TabWatcher tabWatcher) {
         this(true,true,true,"Multiuser");
         this.tabWatcher = tabWatcher;
-        currentTestSession.setText("None.");
         build();
         link();
     }
@@ -91,7 +90,7 @@ public class MultiUserTestSessionSelector {
             @Override
             public void onTestSessionChanged(TestSessionChangedEvent event) {
                 if (event.getChangeType() == TestSessionChangedEvent.ChangeType.SELECT) {
-                    if (!"".equals(event.getValue()))
+                    if (event.getValue()!=null && !"".equals(event.getValue()))
                         currentTestSession.setText(event.getValue());
                     else
                         currentTestSession.setText("None.");
