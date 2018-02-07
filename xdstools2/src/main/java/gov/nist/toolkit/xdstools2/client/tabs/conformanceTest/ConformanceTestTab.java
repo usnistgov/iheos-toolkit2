@@ -431,34 +431,60 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 			testContextView.updateTestingContextDisplay();
 			return;
 		}
-		new GetAssignedSiteForTestSessionCommand(){
-			@Override
-			public void onComplete(final String result) {
-				testContext.setCurrentSiteSpec(result);
-				testContextView.updateTestingContextDisplay();
 
-				if (result == null) return;
-				if (result.equals(NONE)) return;
-				new GetSiteCommand(){
-					@Override
-					public void onFailure(Throwable throwable) {
-						new PopupMessage("System " + result + " does not exist.");
-						testContext.setCurrentSiteSpec(null);
-						testContext.setSiteUnderTest(null);
-						testContextView.updateTestingContextDisplay();
+		if (siteToIssueTestAgainst != null) {
+			new GetSiteCommand() {
+				@Override
+				public void onFailure(Throwable throwable) {
+					new PopupMessage("System " + siteToIssueTestAgainst + " does not exist.");
+					testContext.setCurrentSiteSpec(null);
+					testContext.setSiteUnderTest(null);
+					testContextView.updateTestingContextDisplay();
+				}
+
+				@Override
+				public void onComplete(Site result) {
+					testContext.setSiteUnderTest(result);
+					// Tool was launched via Activity URL
+					if (getInitTestSession() != null) {
+						updateDisplayedActorAndOptionType();
+						setInitTestSession(result.getTestSession().getValue());
 					}
-					@Override
-					public void onComplete(Site result) {
-					    testContext.setSiteUnderTest(result);
-						// Tool was launched via Activity URL
-						if (getInitTestSession()!=null) {
-							updateDisplayedActorAndOptionType();
-							setInitTestSession(null);
+				}
+			}.run(new GetSiteRequest(ClientUtils.INSTANCE.getCommandContext(), siteToIssueTestAgainst.name));
+
+		} else {
+
+			new GetAssignedSiteForTestSessionCommand() {
+				@Override
+				public void onComplete(final String result) {
+					testContext.setCurrentSiteSpec(result);
+					testContextView.updateTestingContextDisplay();
+
+					if (result == null) return;
+					if (result.equals(NONE)) return;
+					new GetSiteCommand() {
+						@Override
+						public void onFailure(Throwable throwable) {
+							new PopupMessage("System " + result + " does not exist.");
+							testContext.setCurrentSiteSpec(null);
+							testContext.setSiteUnderTest(null);
+							testContextView.updateTestingContextDisplay();
 						}
-					}
-				}.run(new GetSiteRequest(ClientUtils.INSTANCE.getCommandContext(),result));
-			}
-		}.run(getCommandContext());
+
+						@Override
+						public void onComplete(Site result) {
+							testContext.setSiteUnderTest(result);
+							// Tool was launched via Activity URL
+							if (getInitTestSession() != null) {
+								updateDisplayedActorAndOptionType();
+								setInitTestSession(null);
+							}
+						}
+					}.run(new GetSiteRequest(ClientUtils.INSTANCE.getCommandContext(), result));
+				}
+			}.run(getCommandContext());
+		}
 	}
 
 	private void resetStatistics(TestStatistics testStatistics, int testcount) {

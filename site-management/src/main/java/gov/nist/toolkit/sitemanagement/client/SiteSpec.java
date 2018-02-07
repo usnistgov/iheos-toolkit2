@@ -49,12 +49,12 @@ public class SiteSpec implements Serializable, IsSerializable {
 	public SiteSpec(String name, ActorType actorType, SiteSpec toClone, TestSession testSession) {
 		this.name = name;
 		this.actorType = actorType;
-		
+		this.testSession = testSession;
+
 		if (toClone == null) {
 			isTls = false;
 			isSaml = false;
 			isAsync = false;
-			this.testSession = testSession;
 		} else {
 			isTls = toClone.isTls;
 			isSaml = toClone.isSaml;

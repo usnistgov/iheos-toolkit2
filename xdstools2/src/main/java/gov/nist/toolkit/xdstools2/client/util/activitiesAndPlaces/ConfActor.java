@@ -17,8 +17,12 @@ public class ConfActor extends Place {
 
         @Override
         public String getToken(ConfActor ca) {
-            return ca.environmentName + "/" + ca.testSessionName + "/" + ca.actorType
-                    + ((ca.profileId!=null)?("/"+ca.profileId + ((ca.optionId!=null)?"/"+ca.optionId:"")):"");
+            return ca.environmentName
+                    + "/" + ca.testSessionName
+                    + "/" + ca.actorType
+                    + "/" + ((ca.profileId!=null)?ca.profileId : "")
+                    + "/" + ((ca.optionId!=null)?ca.optionId:"")
+                    + "/" + ((ca.systemName!=null)?ca.systemName:"");
         }
     }
 
@@ -27,6 +31,7 @@ public class ConfActor extends Place {
     private String actorType;
     private String profileId;
     private String optionId;
+    private String systemName;
 
     public ConfActor(String configuration) {
         String[] parts = configuration.split("/");
@@ -42,6 +47,8 @@ public class ConfActor extends Place {
                 profileId = parts[3].trim();
             if (parts.length > 4)
                 optionId = parts[4].trim();
+            if (parts.length > 5)
+                systemName = parts[5].trim();
         }
     }
 
@@ -49,7 +56,7 @@ public class ConfActor extends Place {
     public boolean equals(Object obj) {
         if (obj instanceof ConfActor) {
             ConfActor ca = (ConfActor) obj;
-            return ca.environmentName.equals(environmentName) && ca.testSessionName.equals(testSessionName) && ca.actorType.equals(actorType);
+            return ca.environmentName.equals(environmentName) && ca.testSessionName.equals(testSessionName) && ca.actorType.equals(actorType) && ca.systemName.equals(systemName);
         }
         return false;
     }
@@ -57,7 +64,8 @@ public class ConfActor extends Place {
     @Override
     public String toString() {
         return "ConfActor: " + environmentName + "/" + testSessionName + "/" + actorType
-                + ((profileId!=null)?("/"+profileId + ((optionId!=null)?"/"+optionId:"")):"");
+                + ((profileId!=null)?("/"+profileId + ((optionId!=null)?"/"+optionId:"")):"") +
+                "/" + ((systemName!=null)?systemName:"");
     }
 
     public String getTestSessionName() {
@@ -79,4 +87,6 @@ public class ConfActor extends Place {
     public String getOptionId() {
         return optionId;
     }
+
+    public String getSystemName() { return systemName; }
 }

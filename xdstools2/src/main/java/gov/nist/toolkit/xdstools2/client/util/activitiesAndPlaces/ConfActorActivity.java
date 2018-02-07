@@ -1,10 +1,13 @@
 package gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces;
 
 import com.google.gwt.activity.shared.AbstractActivity;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import gov.nist.toolkit.actortransaction.client.IheItiProfile;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.installation.shared.ToolkitUserMode;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.command.command.GetToolkitPropertiesCommand;
@@ -59,9 +62,19 @@ public class ConfActorActivity extends AbstractActivity {
                         toolWindow.setCurrentTestSession(confActor.getTestSessionName());
                         conformanceTestTab.setInitTestSession(confActor.getTestSessionName());
                     }
+                    GWT.log("Launch ConformanceTool for " +
+                                    "/testsession=" + confActor.getTestSessionName() +
+                    "/actor=" + confActor.getActorType() +
+                    "/profile=" + confActor.getProfileId() +
+                    "/option=" + confActor.getOptionId() +
+                            "/site=" + new SiteSpec(confActor.getSystemName(), new TestSession(confActor.getTestSessionName())) +
+                            ""
+                    );
                     conformanceTestTab.getCurrentActorOption().setActorTypeId(confActor.getActorType());
                     conformanceTestTab.getCurrentActorOption().setProfileId(IheItiProfile.find(confActor.getProfileId()));
                     conformanceTestTab.getCurrentActorOption().setOptionId(confActor.getOptionId());
+                    conformanceTestTab.setCommonSiteSpec(new SiteSpec(confActor.getSystemName(), new TestSession(confActor.getTestSessionName())));
+                    conformanceTestTab.setSiteToIssueTestAgainst(new SiteSpec(confActor.getSystemName(), new TestSession(confActor.getTestSessionName())));
                     xdstools2view.resizeToolkit();
                 }
 
