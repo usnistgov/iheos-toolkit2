@@ -7,6 +7,7 @@ import groovy.transform.TypeChecked
 @TypeChecked
 class TestSessionFactory {
 
+    // This does not test for prior existance - better to use TestSessionServiceManager
     static TestSession create() {
         int size = Installation.instance().propertyServiceManager().nonceSize;
         if (size > 12) size = 12
@@ -16,18 +17,18 @@ class TestSessionFactory {
         return new TestSession(value)
     }
 
+    // This does not test for prior existance - better to use TestSessionServiceManager
     static TestSession build() {
         TestSession testSession = create()
+        initialize(testSession)
+        return testSession
+    }
 
+    static void initialize(TestSession testSession) {
         Installation.instance().simDbFile(testSession).mkdirs()
         File testLogFile = Installation.instance().testLogCache(testSession)
         testLogFile.mkdirs()
-//         if (testLogFile.mkdirs()) {
-//             createMarkerFile(testLogFile)
-//         }
         Installation.instance().actorsDir(testSession).mkdirs()
-
-        return testSession
     }
 
     /*

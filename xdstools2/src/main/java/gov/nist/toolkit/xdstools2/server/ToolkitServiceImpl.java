@@ -17,16 +17,10 @@ import gov.nist.toolkit.fhir.simulators.support.od.TransactionUtil;
 import gov.nist.toolkit.installation.server.ExternalCacheManager;
 import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.installation.server.PropertyServiceManager;
-import gov.nist.toolkit.installation.server.TestSessionFactory;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.interactionmapper.InteractionMapper;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
-import gov.nist.toolkit.results.client.CodesResult;
-import gov.nist.toolkit.results.client.DocumentEntryDetail;
-import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.Test;
-import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.results.client.TestLogs;
+import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest;
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationResponse;
 import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
@@ -40,6 +34,7 @@ import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.serviceManager.FhirServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
+import gov.nist.toolkit.session.server.serviceManager.TestSessionServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
 import gov.nist.toolkit.session.shared.Message;
 import gov.nist.toolkit.simcommon.client.SimId;
@@ -90,13 +85,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class ToolkitServiceImpl extends RemoteServiceServlet implements
@@ -131,10 +120,6 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
             logger.error(ExceptionUtil.here("session: " + getSessionId() + " installCommandContext: environment name is null"));
             throw new Exception("installCommandContext: environment name is null");
         }
-//		if (commandContext.getTestSessionName() == null) {
-//			throw new Exception("installCommandContext: test session name is null");
-//		}
-//        session().setEnvironment(commandContext.getEnvironmentName());
         setEnvironment(commandContext.getEnvironmentName());
 
         if (Installation.instance().propertyServiceManager().isSingleUserMode()
@@ -156,7 +141,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         }
         response.setDefaultEnvironment(defaultEnv);
         response.setEnvironments(Session.getEnvironmentNames());
-        response.setTestSessions(session().xdsTestServiceManager().getMesaTestSessionNames());
+        response.setTestSessions(TestSessionServiceManager.INSTANCE.getNames());
         response.setServletContextName(getServletContextName());
         PropertyServiceManager props = Installation.instance().propertyServiceManager();
         String contextName = Installation.instance().getServletContextName();
@@ -434,6 +419,57 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         installCommandContext(context);
         return queryServiceManager.getLastMetadata(); }
 
+    private void logCall(String callName) {
+        logger.info(sessionID + ": " + callName);
+    }
+
+    //------------------------------------------------------------------------
+    //------------------------------------------------------------------------
+    // TestSession
+    //------------------------------------------------------------------------
+    //------------------------------------------------------------------------
+
+    @Override
+    public boolean isTestSessionValid(CommandContext request) throws Exception {
+        installCommandContext(request);
+        logCall("isTestSessionValid");
+        return TestSessionServiceManager.INSTANCE.exists(request.getTestSessionName());
+    }
+
+    @Override
+    public TestSession buildTestSession() throws Exception {
+        logCall("buildTestSession");
+        return TestSessionServiceManager.INSTANCE.create();
+    }
+
+    @Override
+    public String setMesaTestSession(String sessionName)  throws NoServletSessionException {
+        logCall("setMesaTestSession " + sessionName);
+        TestSession testSession = new TestSession(sessionName);
+        TestSessionServiceManager.INSTANCE.setTestSession(session(), testSession);
+        return sessionName;
+    }
+    @Override
+    public List<String> getMesaTestSessionNames(CommandContext request) throws Exception {
+        installCommandContext(request);
+        if (Installation.instance().propertyServiceManager().isMultiuserMode())
+            throw new ToolkitRuntimeException("Function getMesaTestSessionNames() not available in MulitUserMode");
+        return TestSessionServiceManager.INSTANCE.getNames();
+    }
+
+    @Override
+    public boolean addMesaTestSession(CommandContext context) throws Exception {
+        logCall("addMesaTestSession " + context.getTestSessionName());
+        return TestSessionServiceManager.INSTANCE.add(context.getTestSession());
+    }
+
+    @Override
+    public boolean delMesaTestSession(CommandContext context) throws Exception {
+        logCall("delMesaTestSession " + context.getTestSessionName());
+        return TestSessionServiceManager.INSTANCE.delete(context.getTestSession());
+    }
+
+
     //------------------------------------------------------------------------
     //------------------------------------------------------------------------
     // Test Service
@@ -453,36 +489,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return session().xdsTestServiceManager().getTestResults(request.getTestIds(), request.getEnvironmentName(), request.getTestSession());
     }
 
-    @Override
-    public boolean isTestSessionValid(CommandContext request) throws Exception {
-        List<String> sessionNames = session().xdsTestServiceManager().getMesaTestSessionNames();
-        return (sessionNames!=null && sessionNames.contains(request.getTestSessionName()));
-    }
 
-    @Override
-    public TestSession buildTestSession() throws Exception {
-        return TestSessionFactory.build();
-    }
-
-    @Override
-    public String setMesaTestSession(String sessionName)  throws NoServletSessionException {
-        TestSession testSession = new TestSession(sessionName);
-        session().xdsTestServiceManager().setTestSession(testSession);
-        session().setTestSession(testSession);
-        return sessionName;
-    }
-    @Override
-    public List<String> getMesaTestSessionNames(CommandContext request) throws Exception {
-//        installCommandContext(request); Not sure why this is needed since we are just getting a list of session names in test log cache.
-        if (Installation.instance().propertyServiceManager().isMultiuserMode())
-            throw new ToolkitRuntimeException("Function getMesaTestSessionNames() not available in MulitUserMode");
-
-        return session().xdsTestServiceManager().getMesaTestSessionNames();
-    }
-    @Override
-    public boolean addMesaTestSession(CommandContext context) throws Exception { return session().xdsTestServiceManager().addTestSession(context.getTestSession()); }
-    @Override
-    public boolean delMesaTestSession(CommandContext context) throws Exception { return session().xdsTestServiceManager().delMesaTestSession(context.getTestSession()); }
     @Override
     public String getNewPatientId(String assigningAuthority)  throws NoServletSessionException { return session().xdsTestServiceManager().getNewPatientId(assigningAuthority); }
 //    public String delTestResults(List<TestInstance> testInstances, String testSession )  throws NoServletSessionException {

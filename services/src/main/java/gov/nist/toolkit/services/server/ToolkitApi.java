@@ -12,6 +12,7 @@ import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
+import gov.nist.toolkit.session.server.serviceManager.TestSessionServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
 import gov.nist.toolkit.simcommon.client.*;
 import gov.nist.toolkit.simcommon.server.SimDb;
@@ -221,7 +222,7 @@ public class ToolkitApi {
             testSessionName = "API";
         }
         TestSession testSession = new TestSession(testSessionName);
-        xdsTestServiceManager().addTestSession(testSession);
+        TestSessionServiceManager.INSTANCE.add(testSession);
         SiteSpec siteSpec = new SiteSpec(testSession);
         siteSpec.setName(siteName);
         siteSpec.setTls(isTls);
@@ -236,7 +237,7 @@ public class ToolkitApi {
             testSessionName = "API";
         }
         TestSession testSession = new TestSession(testSessionName);
-        xdsTestServiceManager().addTestSession(testSession);
+        TestSessionServiceManager.INSTANCE.add(testSession);
         if (session.getTestSession() == null) session.setTestSession(testSession);
         // TODO add environment name in following call?
         List<Result> results = xdsTestServiceManager().runMesaTest(environmentName,testSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
@@ -264,7 +265,9 @@ public class ToolkitApi {
         new SimulatorApi(session).setConfig(config, parameterName, value);
     }
 
-    public void createTestSession(String name) throws Exception { xdsTestServiceManager().addTestSession(new TestSession(name)); }
+    public void createTestSession(String name) throws Exception {
+        TestSessionServiceManager.INSTANCE.add(new TestSession(name));
+    }
 
     private SimulatorServiceManager simulatorServiceManager() { return  new SimulatorServiceManager(session); }
     private XdsTestServiceManager xdsTestServiceManager() { return session.xdsTestServiceManager(); }

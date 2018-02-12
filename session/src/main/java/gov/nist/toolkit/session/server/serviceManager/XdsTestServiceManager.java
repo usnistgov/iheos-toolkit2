@@ -15,7 +15,6 @@ import gov.nist.toolkit.results.MetadataToMetadataCollectionParser;
 import gov.nist.toolkit.results.ResourceToMetadataCollectionParser;
 import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.*;
-import gov.nist.toolkit.results.client.Test;
 import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
@@ -26,7 +25,6 @@ import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.services.TestLogCache;
 import gov.nist.toolkit.session.server.testlog.TestOverviewBuilder;
 import gov.nist.toolkit.session.shared.Message;
-import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testengine.engine.ResultPersistence;
@@ -443,7 +441,7 @@ public class XdsTestServiceManager extends CommonService {
 
 			List<TestInstance> tis = new ArrayList<>();
 			for (String testId : collec) {
-				TestInstance ti = new TestInstance(testId, getTestSession());
+				TestInstance ti = new TestInstance(testId, TestSessionServiceManager.INSTANCE.getTestSession(session));
 				tis.add(ti);
 			}
 
@@ -652,7 +650,7 @@ public class XdsTestServiceManager extends CommonService {
 		if (Installation.instance().propertyServiceManager().isMultiuserMode())
 			throw new ToolkitRuntimeException("Function getTestlogListing() not available in MulitUserMode");
 
-		List<String> sessionNames = getMesaTestSessionNames();
+		List<String> sessionNames = TestSessionServiceManager.INSTANCE.getNames();
 
 		if (!sessionNames.contains(sessionName))
 			throw new Exception("Don't understand session name " + sessionName);
@@ -669,7 +667,7 @@ public class XdsTestServiceManager extends CommonService {
 		}
 
 		List<TestInstance> testInstances = new ArrayList<TestInstance>();
-		for (String name : names) testInstances.add(new TestInstance(name, getTestSession()));
+		for (String name : names) testInstances.add(new TestInstance(name, TestSessionServiceManager.INSTANCE.getTestSession(session)));
 
 		return testInstances;
 	}
@@ -942,7 +940,7 @@ public class XdsTestServiceManager extends CommonService {
 	//	}
 
 	TestInstance newTestLogId() {
-		return new TestInstance(UuidAllocator.allocate().replaceAll(":", "_"), getTestSession());
+		return new TestInstance(UuidAllocator.allocate().replaceAll(":", "_"), TestSessionServiceManager.INSTANCE.getTestSession(session));
 	}
 
 	Result buildResult(List<TestLogDetails> testLogDetailses, TestInstance logId) throws Exception {
@@ -1118,82 +1116,6 @@ public class XdsTestServiceManager extends CommonService {
 		return  "DocumentCache/";
 	}
 
-	public List<String> getMesaTestSessionNames() throws Exception  {
-		if (session != null)
-			logger.debug(session.id() + ": " + "getMesaTestSessionNames");
-		List<String> names = new ArrayList<String>();
-		File cache;
-		try {
-			cache = Installation.instance().propertyServiceManager().getTestLogCache();
-		} catch (Exception e) {
-			logger.error("getMesaTestSessionNames", e);
-			throw new Exception(e.getMessage());
-		}
-
-		String[] namea = cache.list();
-
-		for (int i=0; i<namea.length; i++) {
-			File dir = new File(cache, namea[i]);
-			if (!dir.isDirectory()) continue;
-			if (!namea[i].startsWith("."))
-				names.add(namea[i]);
-
-		}
-
-		if (names.size() == 0) {
-			names.add("default");
-			File def = new File(cache, "default");
-			def.mkdirs();
-		}
-
-		logger.debug("testSession names are " + names);
-		return names;
-	}
-
-	public boolean addTestSession(TestSession testSession) throws Exception  {
-		String name = testSession.getValue();
-		File cache;
-
-		try {
-			cache = Installation.instance().propertyServiceManager().getTestLogCache();
-
-			if (name == null || name.equals(""))
-				throw new Exception("Cannot add test session with no name");
-			if (name.contains("__"))
-				throw new Exception("Cannot contain a double underscore (__)");
-			if (name.contains(" "))
-				throw new Exception("Cannot contain spaces");
-			if (name.contains("\t"))
-				throw new Exception("Cannot contain tabs");
-		} catch (Exception e) {
-			logger.error("addMesaTestSession", e);
-			throw new Exception(e.getMessage());
-		}
-		File dir = new File(cache.toString() + File.separator + name);
-		dir.mkdir();
-		return true;
-	}
-
-	public boolean delMesaTestSession(TestSession testSession) throws Exception  {
-		File cache;
-		try {
-			cache = Installation.instance().propertyServiceManager().getTestLogCache();
-
-			if (testSession == null)
-				return false;
-		} catch (Exception e) {
-			logger.error("delMesaTestSession", e);
-			throw new Exception(e.getMessage());
-		}
-		File dir = new File(cache.toString() + File.separator + testSession.getValue());
-		Io.delete(dir);
-
-		// also delete simulators owned by this test session
-
-		SimDb.deleteSims(SimDb.getSimIdsForUser(testSession));
-		return true;
-	}
-
 
 	/******************************************************************
 	 *
@@ -1201,16 +1123,6 @@ public class XdsTestServiceManager extends CommonService {
 	 *
 	 ******************************************************************/
 
-	public void setTestSession(TestSession testSession) {
-		if (session != null)
-			logger.debug(session.id() + ": " + "setTestSession(" + testSession + ")");
-		session.setTestSession(testSession);
-	}
-
-	public TestSession getTestSession() {
-		if (session == null) return null;
-		return session.getTestSession();
-	}
 
 	public List<String> getTestdataSetListing(String environmentName,TestSession testSession,String testdataSetName) {
 		logger.debug(session.id() + ": " + "getTestdataSetListing:" + testdataSetName);
@@ -1218,24 +1130,6 @@ public class XdsTestServiceManager extends CommonService {
 		Collection<String> listing = searchPath.getTestdataSetListing(testdataSetName);
 		return new ArrayList<String>(listing);
 	}
-
-//	public List<String> getTestdataRegistryTests() {
-//		if (session != null)
-//			logger.debug(session.id() + ": " + "getTestdataRegistryTests");
-//		return getTestKit().getTestdataRegistryTests();
-//	}
-//
-//	public List<String> getTestdataRepositoryTests() {
-//		if (session != null)
-//			logger.debug(session.id() + ": " + "getTestdataRepositoryTests");
-//		return getTestKit().getTestdataRepositoryTests();
-//	}
-//
-//	public List<String> getTestdataList(String listname) {
-//		if (session != null)
-//			logger.debug(session.id() + ": " + "getTestdataList");
-//		return getTestKit().getTestdataSetListing(listname);
-//	}
 
 	public String getNewPatientId(String assigningAuthority) {
 		if (session != null)

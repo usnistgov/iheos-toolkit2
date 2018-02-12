@@ -1,8 +1,8 @@
 package gov.nist.toolkit.xdstools2.server.casSessionBuilder
 
 import gov.nist.toolkit.installation.server.Installation
-import gov.nist.toolkit.installation.server.TestSessionFactory
 import gov.nist.toolkit.installation.shared.TestSession
+import gov.nist.toolkit.session.server.serviceManager.TestSessionServiceManager
 import gov.nist.toolkit.xdstools2.server.serviceManager.GazelleServiceManager
 import groovy.transform.TypeChecked
 import org.apache.http.HttpStatus
@@ -13,7 +13,6 @@ import org.apache.log4j.Logger
 import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
-
 /**
  * create new CAS test session
  *
@@ -78,7 +77,7 @@ class CasSessionBuilderServlet extends HttpServlet {
             return
         }
 
-        TestSession testSession = TestSessionFactory.build()
+        TestSession testSession = TestSessionServiceManager.INSTANCE.create();
 
         // testingSessionId=57
         try {
