@@ -4,7 +4,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
-import gov.nist.toolkit.xdstools2.client.command.command.AddMesaTestSessionCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.AddTestSessionCommand;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.AdminPasswordDialogBox;
@@ -31,7 +31,7 @@ public class SignInSelector implements IsWidget {
             @Override
             public void onClick(ClickEvent clickEvent) {
                 PasswordManagement.isSignedIn = false;
-                PasswordManagement.addSignInCallback(new AddMesaTestSessionCommand() {
+                PasswordManagement.addSignInCallback(new AddTestSessionCommand() {
                     @Override
                     public void onComplete(Boolean result) {
                         updateDisplay();

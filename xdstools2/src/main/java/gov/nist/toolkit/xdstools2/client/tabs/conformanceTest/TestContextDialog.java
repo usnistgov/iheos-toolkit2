@@ -17,7 +17,7 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.StringSort;
 import gov.nist.toolkit.xdstools2.client.ErrorHandler;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
-import gov.nist.toolkit.xdstools2.client.command.command.AddMesaTestSessionCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.AddTestSessionCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.ClearTestSessionCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetAssignedSiteForTestSessionCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetSiteNamesCommand;
@@ -286,7 +286,7 @@ class TestContextDialog extends DialogBox {
         public void onClick(ClickEvent clickEvent) {
             final String newItem = textBox.getText();
             if (newItem == null || "".equals(newItem)) return;
-            new AddMesaTestSessionCommand(){
+            new AddTestSessionCommand(){
 
                 @Override
                 public void onComplete(Boolean result) {

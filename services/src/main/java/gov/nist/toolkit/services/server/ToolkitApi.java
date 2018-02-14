@@ -222,13 +222,13 @@ public class ToolkitApi {
             testSessionName = "API";
         }
         TestSession testSession = new TestSession(testSessionName);
-        TestSessionServiceManager.INSTANCE.add(testSession);
+        TestSessionServiceManager.INSTANCE.create(testSession);
         SiteSpec siteSpec = new SiteSpec(testSession);
         siteSpec.setName(siteName);
         siteSpec.setTls(isTls);
         siteSpec.validate();
         if (session.getTestSession() == null) session.setTestSession(testSession);
-        // TODO add environment name in following call?
+        // TODO create environment name in following call?
         return xdsTestServiceManager().runMesaTest(environmentName,testSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
     }
 
@@ -237,9 +237,9 @@ public class ToolkitApi {
             testSessionName = "API";
         }
         TestSession testSession = new TestSession(testSessionName);
-        TestSessionServiceManager.INSTANCE.add(testSession);
+        TestSessionServiceManager.INSTANCE.create(testSession);
         if (session.getTestSession() == null) session.setTestSession(testSession);
-        // TODO add environment name in following call?
+        // TODO create environment name in following call?
         List<Result> results = xdsTestServiceManager().runMesaTest(environmentName,testSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
         return results;
     }
@@ -266,7 +266,7 @@ public class ToolkitApi {
     }
 
     public void createTestSession(String name) throws Exception {
-        TestSessionServiceManager.INSTANCE.add(new TestSession(name));
+        TestSessionServiceManager.INSTANCE.create(new TestSession(name));
     }
 
     private SimulatorServiceManager simulatorServiceManager() { return  new SimulatorServiceManager(session); }

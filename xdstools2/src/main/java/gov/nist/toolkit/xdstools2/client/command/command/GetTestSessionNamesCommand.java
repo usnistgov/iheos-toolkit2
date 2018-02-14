@@ -13,6 +13,6 @@ public abstract class GetTestSessionNamesCommand extends GenericCommand<CommandC
 
     @Override
     public void run(CommandContext var1) {
-        ClientUtils.INSTANCE.getToolkitServices().getMesaTestSessionNames(var1, this);
+        ClientUtils.INSTANCE.getToolkitServices().getTestSessionNames(var1, this);
     }
 }

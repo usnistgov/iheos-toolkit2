@@ -220,7 +220,7 @@ public class Installation {
         File tlsFile = testLogCacheDir();
 
         for (File tlFile : tlsFile.listFiles()) {
-            if (tlFile.isDirectory())
+            if (tlFile.isDirectory() && !tlFile.getName().startsWith("."))
                 ts.add(new TestSession(tlFile.getName()));
         }
         return ts;
@@ -244,11 +244,19 @@ public class Installation {
         return propertyServiceMgr;
     }
 
+    public File actorsDir() {
+        return new File(externalCache() + File.separator + "actors");
+    }
+
     public File actorsDir(TestSession testSession) {
         if (testSession == null) throw new ToolkitRuntimeException("TestSession is null");
-        File f = new File(new File(externalCache() + File.separator + "actors"), testSession.getValue());
+        File f = new File(actorsDir(), testSession.getValue());
         f.mkdirs();
         return f;
+    }
+
+    public File simDbFile() {
+        return new File(externalCache(), "simdb");
     }
 
     /**
@@ -257,7 +265,7 @@ public class Installation {
     */
    public File simDbFile(TestSession testSession) {
        if (testSession == null) throw new ToolkitRuntimeException("TestSession is null");
-        return new File(new File(externalCache(), "simdb"), testSession.getValue());
+        return new File(simDbFile(), testSession.getValue());
     }
 
     public File resourceCacheFile() {
@@ -402,8 +410,12 @@ public class Installation {
         return new File(externalCache + sep + "TestLogCache");
     }
 
+    public File testLogCache() {
+        return new File(externalCache + sep + "TestLogCache");
+    }
+
     public File testLogCache(TestSession testSession) {
-        return new File(new File(externalCache + sep + "TestLogCache"), testSession.getValue());
+        return new File(testLogCache(), testSession.getValue());
     }
 
     public File orchestrationCache(TestSession testSession, String actorType) {

@@ -77,12 +77,12 @@ public interface ToolkitService extends RemoteService  {
 	TestOverviewDTO runTest(RunTestRequest request) throws Exception;
 	boolean isPrivateMesaTesting() throws NoServletSessionException ;
 
-	boolean isTestSessionValid(CommandContext request) throws Exception;
+	boolean testSessionExists(CommandContext request) throws Exception;
 	TestSession buildTestSession() throws Exception;
 
-	List<String> getMesaTestSessionNames(CommandContext request) throws Exception;
-	boolean addMesaTestSession(CommandContext context) throws Exception;
-	boolean delMesaTestSession(CommandContext context) throws Exception;
+	List<String> getTestSessionNames(CommandContext request) throws Exception;
+	boolean addTestSession(CommandContext context) throws Exception;
+	boolean deleteTestSession(CommandContext context) throws Exception;
 
 	/* Simulator Management */
 	List<String> getActorTypeNames(CommandContext context) throws Exception ;
@@ -261,7 +261,7 @@ public interface ToolkitService extends RemoteService  {
 	Test runSingleTest(RunSingleTestRequest request) throws Exception;
 	TestOverviewDTO deleteSingleTestResult(DeleteSingleTestRequest request) throws Exception;
 
-	String setMesaTestSession(String sessionName) throws NoServletSessionException ;
+	String setTestSession(String sessionName) throws NoServletSessionException ;
 	String getNewPatientId(String assigningAuthority) throws NoServletSessionException ;
 	List<String> getTransactionErrorCodeRefs(GetTransactionErrorCodeRefsRequest refsRequest) throws Exception;
 

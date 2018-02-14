@@ -2,7 +2,7 @@ package gov.nist.toolkit.xdstools2.client.event.testSession;
 
 import com.google.gwt.user.client.Cookies;
 import gov.nist.toolkit.xdstools2.client.CookieManager;
-import gov.nist.toolkit.xdstools2.client.command.command.AddMesaTestSessionCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.AddTestSessionCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.DeleteMesaTestSessionCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTestSessionNamesCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetToolkitPropertiesCommand;
@@ -93,7 +93,7 @@ public class TestSessionManager2 {
 
     // save new sessionName to server and broadcast updates to all tabs
     public void add(final String sessionName) {
-        new AddMesaTestSessionCommand(){
+        new AddTestSessionCommand(){
             @Override
             public void onComplete(Boolean result) {
                 load(sessionName);  // getRetrievedDocumentsModel full list and update all tabs

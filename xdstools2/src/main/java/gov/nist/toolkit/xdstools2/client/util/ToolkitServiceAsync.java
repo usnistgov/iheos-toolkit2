@@ -193,8 +193,8 @@ public interface ToolkitServiceAsync {
     void runMesaTest(RunTestRequest request, AsyncCallback<List<Result>> callback);
     void runTest(RunTestRequest request, AsyncCallback<TestOverviewDTO> callback);
     void isPrivateMesaTesting(AsyncCallback<Boolean> callback);
-    void addMesaTestSession(CommandContext context, AsyncCallback<Boolean> callback);
-    void delMesaTestSession(CommandContext context, AsyncCallback<Boolean> callback);
+    void addTestSession(CommandContext context, AsyncCallback<Boolean> callback);
+    void deleteTestSession(CommandContext context, AsyncCallback<Boolean> callback);
     void createPid(GeneratePidRequest generatePidRequest, AsyncCallback<Pid> callback);
     void getAssigningAuthority(CommandContext commandContext, AsyncCallback<String> callback);
     void getAssigningAuthorities(CommandContext commandContext, AsyncCallback<List<String>> callback);
@@ -224,9 +224,9 @@ public interface ToolkitServiceAsync {
 	void getTestlogListing(String sessionName, AsyncCallback<List<TestInstance>> callback);
 	void getTestResults(GetTestResultsRequest request, AsyncCallback<Map<String, Result>> callback);
 	void buildTestSession(AsyncCallback<TestSession> callback);
-    void isTestSessionValid(CommandContext request, AsyncCallback<Boolean> callback);
-	void setMesaTestSession(String sessionName, AsyncCallback callback);
-	void getMesaTestSessionNames(CommandContext request, AsyncCallback<List<String>> callback);
+    void testSessionExists(CommandContext request, AsyncCallback<Boolean> callback);
+	void setTestSession(String sessionName, AsyncCallback callback);
+	void getTestSessionNames(CommandContext request, AsyncCallback<List<String>> callback);
 	void deleteAllTestResults(AllTestRequest request, AsyncCallback<List<Test>> callback);
 	void deleteSingleTestResult(DeleteSingleTestRequest request, AsyncCallback<TestOverviewDTO> callback);
 	void runAllTests(AllTestRequest request, AsyncCallback<List<Test>> callback);

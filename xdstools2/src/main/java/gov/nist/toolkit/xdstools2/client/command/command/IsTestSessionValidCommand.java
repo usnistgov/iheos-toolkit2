@@ -9,6 +9,6 @@ import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 public abstract class IsTestSessionValidCommand extends GenericCommand<CommandContext, Boolean>{
     @Override
     public void run(CommandContext request) {
-        ClientUtils.INSTANCE.getToolkitServices().isTestSessionValid(request, this);
+        ClientUtils.INSTANCE.getToolkitServices().testSessionExists(request, this);
     }
 }

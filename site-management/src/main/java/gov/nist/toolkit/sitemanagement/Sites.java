@@ -293,8 +293,9 @@ public class Sites {
 			return new Site("gov/nist/toolkit/installation/shared", testSession);
 		List<String> sitenames = getSiteNames();
 		if ( !sitenames.contains(siteName)) {
-			siteName = testSession.getValue() + "__" + siteName;
-			if (!sitenames.contains(siteName))
+			if (sitenames.contains(testSession.getValue() + "__" + siteName))
+				siteName = testSession.getValue() + "__" + siteName;
+			else if (!sitenames.contains(siteName))
 				throw new Exception("Site [" + siteName + "] is not defined");
 		}
 		Site s = siteMap.get(siteName);

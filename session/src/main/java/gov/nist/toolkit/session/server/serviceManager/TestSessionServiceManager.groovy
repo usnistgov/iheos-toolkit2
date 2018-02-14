@@ -1,23 +1,20 @@
-package gov.nist.toolkit.session.server.serviceManager;
+package gov.nist.toolkit.session.server.serviceManager
 
-import gov.nist.toolkit.installation.server.Installation;
-import gov.nist.toolkit.installation.server.TestSessionFactory;
-import gov.nist.toolkit.installation.shared.TestSession;
-import gov.nist.toolkit.session.server.Session;
-import gov.nist.toolkit.simcommon.server.SimDb;
-import gov.nist.toolkit.utilities.io.Io;
-import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
-import org.apache.log4j.Logger;
+import gov.nist.toolkit.installation.server.Installation
+import gov.nist.toolkit.installation.server.TestSessionFactory
+import gov.nist.toolkit.installation.shared.TestSession
+import gov.nist.toolkit.session.server.Session
+import gov.nist.toolkit.simcommon.server.SimDb
+import gov.nist.toolkit.utilities.io.Io
+import groovy.transform.TypeChecked
+import org.apache.log4j.Logger
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-public class TestSessionServiceManager {
+@TypeChecked
+class TestSessionServiceManager {
     public static final TestSessionServiceManager INSTANCE = new TestSessionServiceManager();
     private static final Logger logger = Logger.getLogger(TestSessionServiceManager.class);
 
-    public TestSession create() {
+    TestSession create() {
         TestSession testSession;
 
         while (true) {
@@ -29,16 +26,16 @@ public class TestSessionServiceManager {
         }
     }
 
-    public boolean exists(TestSession testSession)  {
+    boolean exists(TestSession testSession)  {
         return exists(testSession.getValue());
     }
 
-    public boolean exists(String testSessionName)  {
+    boolean exists(String testSessionName)  {
         if (testSessionName == null) return false;
         return getNames().contains(testSessionName);
     }
 
-    public boolean add(TestSession testSession) throws Exception  {
+    boolean create(TestSession testSession) throws Exception  {
         String name = testSession.getValue();
         File cache;
 
@@ -46,7 +43,7 @@ public class TestSessionServiceManager {
             cache = Installation.instance().propertyServiceManager().getTestLogCache();
 
             if (name == null || name.equals(""))
-                throw new Exception("Cannot add test session with no name");
+                throw new Exception("Cannot create test session with no name");
             if (name.contains("__"))
                 throw new Exception("Cannot contain a double underscore (__)");
             if (name.contains(" "))
@@ -62,37 +59,40 @@ public class TestSessionServiceManager {
         return true;
     }
 
-    public List<String> getNames()  {
-        List<String> names = new ArrayList<String>();
-        File cache;
-        try {
-            cache = Installation.instance().propertyServiceManager().getTestLogCache();
-        } catch (Exception e) {
-            logger.error("getMesaTestSessionNames", e);
-            throw new ToolkitRuntimeException(e.getMessage());
-        }
-
-        String[] namea = cache.list();
-
-        for (int i=0; i<namea.length; i++) {
-            File dir = new File(cache, namea[i]);
-            if (!dir.isDirectory()) continue;
-            if (!namea[i].startsWith("."))
-                names.add(namea[i]);
-
-        }
-
-        if (names.size() == 0) {
-            names.add("default");
-            File def = new File(cache, "default");
-            def.mkdirs();
-        }
-
-        logger.debug("testSession names are " + names);
-        return names;
+    List<String> getNames()  {
+        (inSimDb() + inActors() + inTestLogs()) as List
+//        Installation.instance().getTestSessions().collect { TestSession ts -> ts.value}
     }
 
-    public boolean delete(TestSession testSession) throws Exception  {
+    boolean isConsistant() {
+        return true
+//        Set<String> sims = inSimDb()
+//        Set<String> actors = inActors()
+//        Set<String> testLogs = inTestLogs()
+//
+//        sims == actors && actors == testLogs
+    }
+
+    Set<String> inSimDb() {
+        Installation.instance().simDbFile().listFiles().findAll { File f ->
+            f.isDirectory() && !f.name.startsWith('.')
+        }.collect { File f -> f.name } as Set
+    }
+
+    Set<String> inActors() {
+        Installation.instance().actorsDir().listFiles().findAll { File f ->
+            f.isDirectory() && !f.name.startsWith('.')
+        }.collect { File f -> f.name } as Set
+    }
+
+    Set<String> inTestLogs() {
+        Installation.instance().testLogCache().listFiles().findAll { File f ->
+            f.isDirectory() && !f.name.startsWith('.')
+        }.collect { File f -> f.name } as Set
+    }
+
+
+    boolean delete(TestSession testSession) throws Exception  {
         File cache;
         try {
             cache = Installation.instance().propertyServiceManager().getTestLogCache();
@@ -116,11 +116,11 @@ public class TestSessionServiceManager {
         return true;
     }
 
-    public void setTestSession(Session session, TestSession testSession) {
+    void setTestSession(Session session, TestSession testSession) {
         session.setTestSession(testSession);
     }
 
-    public TestSession getTestSession(Session session) {
+    TestSession getTestSession(Session session) {
         if (session == null) return null;
         return session.getTestSession();
     }

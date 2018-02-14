@@ -181,10 +181,19 @@ public class SiteServiceManager {
 		}
 	}
 
+	// continue to load from EC/actors base dir - otherwise IT tests are almost impossible to write
+	// this should not be used in production
 	private void load(TestSession testSession) throws Exception {
-		File dir = Installation.instance().actorsDir(testSession);
+		File dir;
+		dir = Installation.instance().actorsDir();
 		logger.debug("loading sites from " + dir);
-		commonSites.put(testSession, new SeparateSiteLoader(testSession).load(dir, null));
+		Sites ss = new SeparateSiteLoader(testSession).load(dir, null);
+		commonSites.put(testSession, ss);
+
+		dir = Installation.instance().actorsDir(testSession);
+		logger.debug("loading sites from " + dir);
+		Sites ss2 = new SeparateSiteLoader(testSession).load(dir, null);
+		ss.add(ss2);
 	}
 
 	// Statically defined sites (does not include simulators)

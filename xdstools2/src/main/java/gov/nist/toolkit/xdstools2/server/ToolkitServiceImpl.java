@@ -124,7 +124,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 
         if (Installation.instance().propertyServiceManager().isSingleUserMode()
                 && "default".equalsIgnoreCase(commandContext.getTestSessionName())) {
-            setMesaTestSession(commandContext.getTestSessionName());
+            setTestSession(commandContext.getTestSessionName());
         }
     }
 
@@ -430,9 +430,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     //------------------------------------------------------------------------
 
     @Override
-    public boolean isTestSessionValid(CommandContext request) throws Exception {
+    public boolean testSessionExists(CommandContext request) throws Exception {
         installCommandContext(request);
-        logCall("isTestSessionValid");
+        logCall("testSessionExists");
         return TestSessionServiceManager.INSTANCE.exists(request.getTestSessionName());
     }
 
@@ -443,29 +443,29 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
 
     @Override
-    public String setMesaTestSession(String sessionName)  throws NoServletSessionException {
-        logCall("setMesaTestSession " + sessionName);
+    public String setTestSession(String sessionName)  throws NoServletSessionException {
+        logCall("setTestSession " + sessionName);
         TestSession testSession = new TestSession(sessionName);
         TestSessionServiceManager.INSTANCE.setTestSession(session(), testSession);
         return sessionName;
     }
     @Override
-    public List<String> getMesaTestSessionNames(CommandContext request) throws Exception {
+    public List<String> getTestSessionNames(CommandContext request) throws Exception {
         installCommandContext(request);
         if (Installation.instance().propertyServiceManager().isMultiuserMode())
-            throw new ToolkitRuntimeException("Function getMesaTestSessionNames() not available in MulitUserMode");
+            throw new ToolkitRuntimeException("Function getTestSessionNames() not available in MulitUserMode");
         return TestSessionServiceManager.INSTANCE.getNames();
     }
 
     @Override
-    public boolean addMesaTestSession(CommandContext context) throws Exception {
-        logCall("addMesaTestSession " + context.getTestSessionName());
-        return TestSessionServiceManager.INSTANCE.add(context.getTestSession());
+    public boolean addTestSession(CommandContext context) throws Exception {
+        logCall("addTestSession " + context.getTestSessionName());
+        return TestSessionServiceManager.INSTANCE.create(context.getTestSession());
     }
 
     @Override
-    public boolean delMesaTestSession(CommandContext context) throws Exception {
-        logCall("delMesaTestSession " + context.getTestSessionName());
+    public boolean deleteTestSession(CommandContext context) throws Exception {
+        logCall("deleteTestSession " + context.getTestSessionName());
         return TestSessionServiceManager.INSTANCE.delete(context.getTestSession());
     }
 

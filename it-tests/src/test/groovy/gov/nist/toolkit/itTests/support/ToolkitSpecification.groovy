@@ -9,14 +9,14 @@ import gov.nist.toolkit.results.client.*
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
 import gov.nist.toolkit.session.server.Session
+import gov.nist.toolkit.session.server.serviceManager.TestSessionServiceManager
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.SimId
-import org.apache.commons.io.FileUtils
+import gov.nist.toolkit.utilities.io.Io
 import org.junit.Rule
 import org.junit.rules.TestName
 import spock.lang.Shared
 import spock.lang.Specification
-
 /**
  *
  */
@@ -41,20 +41,20 @@ class ToolkitSpecification extends Specification {
         println 'Running method: ' + name.methodName
     }
 
+    // clean out simdb, testlogcache, and actors
     def cleanupDir() {
-        File testDataDir = Installation.instance().propertyServiceManager().getTestLogCache()
-        if (testDataDir.exists()) {
-            System.out.println("Clearing TEST (testLogCache) data before testing...")
-            FileUtils.cleanDirectory(testDataDir)
+        TestSessionServiceManager.INSTANCE.inSimDb().each { String testSessionName ->
+            Io.delete(Installation.instance().simDbFile(new TestSession(testSessionName)))
         }
-
-        Installation.instance().testSessions.each { TestSession testSession ->
-            testDataDir = Installation.instance().simDbFile(testSession)
-            if (testDataDir.exists()) {
-                System.out.println("Clearing TEST (simdb) data before testing...")
-                FileUtils.cleanDirectory(testDataDir)
-            }
+        TestSessionServiceManager.INSTANCE.inActors().each { String testSessionName ->
+            Io.delete(Installation.instance().actorsDir(new TestSession(testSessionName)))
         }
+        TestSessionServiceManager.INSTANCE.inTestLogs().each { String testSessionName ->
+            Io.delete(Installation.instance().testLogCache(new TestSession(testSessionName)))
+        }
+        Installation.instance().simDbFile(TestSession.DEFAULT_TEST_SESSION).mkdirs()
+        Installation.instance().actorsDir(TestSession.DEFAULT_TEST_SESSION).mkdirs()
+        Installation.instance().testLogCache(TestSession.DEFAULT_TEST_SESSION).mkdirs()
     }
 
     def startGrizzly(String port) {
@@ -92,6 +92,8 @@ class ToolkitSpecification extends Specification {
             server = null
         }
         ListenerFactory.terminateAll()
+
+        assert TestSessionServiceManager.INSTANCE.isConsistant()
     }
 
     def initializeRegistryWithPatientId(String testSession, SimId simId, Pid pid) {

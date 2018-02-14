@@ -9,6 +9,6 @@ import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 public abstract class DeleteMesaTestSessionCommand extends GenericCommand<CommandContext,Boolean>{
     @Override
     public void run(CommandContext var1) {
-        ClientUtils.INSTANCE.getToolkitServices().delMesaTestSession(var1,this);
+        ClientUtils.INSTANCE.getToolkitServices().deleteTestSession(var1,this);
     }
 }
