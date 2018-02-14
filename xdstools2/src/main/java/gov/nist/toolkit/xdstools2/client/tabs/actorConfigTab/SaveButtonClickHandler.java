@@ -23,6 +23,13 @@ class SaveButtonClickHandler implements ClickHandler {
 			new PopupMessage("You must give site a real name before saving");
 			return;
 		}
+		actorConfigTab.currentEditSite.cleanup();
+		StringBuffer errors = new StringBuffer();
+		actorConfigTab.currentEditSite.validate(errors);
+		if (errors.length() > 0) {
+			new PopupMessage(errors.toString());
+			return;
+		}
 
 		if (PasswordManagement.isSignedIn) {
 			actorConfigTab.saveSignedInCallback.onSuccess(true);

@@ -14,7 +14,7 @@ import java.io.Serializable;
 public class SimId implements Serializable, IsSerializable {
 
     private static final String DEFAULT_USER = "nouser";
-    private static final String SEPARATOR = "__";
+    public static final String SEPARATOR = "__";
     private static final String SLASH = "/";
 
     public String user = null;
