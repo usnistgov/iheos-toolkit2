@@ -134,6 +134,9 @@ public class Site  implements IsSerializable, Serializable {
 	}
 	
 	public void validate(StringBuffer buf) {
+
+		if (name.contains("__"))
+			buf.append("Site name cannot contain double underscore (__)\n");
 		
 		for (TransactionBean b : transactions.transactions) {
 			for (TransactionBean c : transactions.transactions) {

@@ -25,6 +25,7 @@ import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEve
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.NullSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteNamesRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.SaveSiteRequest;
 
@@ -563,14 +564,13 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
 
 		public void onSuccess(Boolean ignored) {
 			updateSignInStatus();
-			currentEditSite.cleanup();
 			newActorEditGrid();
 			saveSite();
 		}
 
 	};
 
-	void saveSite() {
+	private void saveSite() {
 		new SaveSiteCommand(){
 
 			@Override
