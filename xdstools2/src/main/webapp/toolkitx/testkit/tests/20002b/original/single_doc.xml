@@ -200,9 +200,7 @@
       <rim:Name>
         <rim:LocalizedString value="Physical"/>
       </rim:Name>
-      <rim:Description>
-        <rim:LocalizedString value="Annual physical"/>
-      </rim:Description>
+      <rim:Description>Annual physical</rim:Description>
       <rim:Slot name="submissionTime">
         <rim:ValueList>
           <rim:Value>20041225235050</rim:Value>
