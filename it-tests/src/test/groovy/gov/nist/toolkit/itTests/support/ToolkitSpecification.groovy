@@ -1,5 +1,6 @@
 package gov.nist.toolkit.itTests.support
 
+import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.grizzlySupport.GrizzlyController
 import gov.nist.toolkit.installation.server.Installation
@@ -150,11 +151,4 @@ class ToolkitSpecification extends Specification {
         return found
     }
 
-    boolean getRunASingleTestInIde() {
-        return runASingleTestInIde
-    }
-
-    void setRunASingleTestInIde(boolean runASingleTestInIde) {
-        this.runASingleTestInIde = runASingleTestInIde
-    }
 }
