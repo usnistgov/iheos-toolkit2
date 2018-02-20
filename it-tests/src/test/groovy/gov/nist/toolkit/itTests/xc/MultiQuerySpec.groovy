@@ -21,6 +21,7 @@ class MultiQuerySpec extends ToolkitSpecification {
     @Shared TestSession testSession = new TestSession(prefixNonce('joe'))
 
     def setupSpec() {   // one time setup done when class launched
+//        runASingleTestInIde = true
         startGrizzly('8889')
 
         // Initialize remote api for talking to toolkit on Grizzly
