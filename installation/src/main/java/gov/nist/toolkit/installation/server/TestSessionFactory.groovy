@@ -9,12 +9,15 @@ class TestSessionFactory {
 
     // This does not test for prior existance - better to use TestSessionServiceManager
     static TestSession create() {
+        return new TestSession(nonce())
+    }
+
+    static String nonce() {
         int size = Installation.instance().propertyServiceManager().nonceSize;
         if (size > 12) size = 12
         String base = UuidAllocator.allocate().reverse()
         String value = base.substring(0, size)
-        value = value.replaceAll('-', 'p')
-        return new TestSession(value)
+        return value.replaceAll('-', 'p')
     }
 
     // This does not test for prior existance - better to use TestSessionServiceManager

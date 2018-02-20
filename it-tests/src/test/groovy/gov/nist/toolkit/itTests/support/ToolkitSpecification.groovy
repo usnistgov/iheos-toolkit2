@@ -1,9 +1,9 @@
 package gov.nist.toolkit.itTests.support
 
-import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.grizzlySupport.GrizzlyController
 import gov.nist.toolkit.installation.server.Installation
+import gov.nist.toolkit.installation.server.TestSessionFactory
 import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.results.client.*
 import gov.nist.toolkit.services.server.ToolkitApi
@@ -28,14 +28,15 @@ class ToolkitSpecification extends Specification {
     @Shared ToolkitApi api
     @Shared Session session
     @Shared String remoteToolkitPort = null
+    @Shared boolean runASingleTestInIde = false;
 
     def setupSpec() {  // there can be multiple setupSpec() fixture methods - they all get run
+        Installation.instance().setServletContextName("");
         session = UnitTestEnvironmentManager.setupLocalToolkit()
         api = UnitTestEnvironmentManager.localToolkitApi()
 
         Installation.setTestRunning(true)
-        // Handled in start pre-integration test
-//        cleanupDir()
+        cleanupDir()
     }
 
     def setup() {
@@ -44,35 +45,42 @@ class ToolkitSpecification extends Specification {
 
     // clean out simdb, testlogcache, and actors
     def cleanupDir() {
-        TestSessionServiceManager.INSTANCE.inSimDb().each { String testSessionName ->
-            Io.delete(Installation.instance().simDbFile(new TestSession(testSessionName)))
+        if (runASingleTestInIde) {
+            TestSessionServiceManager.INSTANCE.inTestLogs().each { String testSessionName ->
+                Io.delete(Installation.instance().testLogCache(new TestSession(testSessionName)))
+            }
+            Installation.instance().simDbFile(TestSession.DEFAULT_TEST_SESSION).mkdirs()
+            Installation.instance().actorsDir(TestSession.DEFAULT_TEST_SESSION).mkdirs()
+            Installation.instance().testLogCache(TestSession.DEFAULT_TEST_SESSION).mkdirs()
         }
-        TestSessionServiceManager.INSTANCE.inActors().each { String testSessionName ->
-            Io.delete(Installation.instance().actorsDir(new TestSession(testSessionName)))
-        }
-        TestSessionServiceManager.INSTANCE.inTestLogs().each { String testSessionName ->
-            Io.delete(Installation.instance().testLogCache(new TestSession(testSessionName)))
-        }
-        Installation.instance().simDbFile(TestSession.DEFAULT_TEST_SESSION).mkdirs()
-        Installation.instance().actorsDir(TestSession.DEFAULT_TEST_SESSION).mkdirs()
-        Installation.instance().testLogCache(TestSession.DEFAULT_TEST_SESSION).mkdirs()
     }
 
     def startGrizzly(String port) {
         remoteToolkitPort = port
-//        server = new GrizzlyController()
-//        server.start(remoteToolkitPort);
-//        server.withToolkit()
+        if (runASingleTestInIde) {
+            server = new GrizzlyController()
+            server.start(remoteToolkitPort);
+            server.withToolkit()
+        }
         Installation.instance().overrideToolkitPort(remoteToolkitPort)  // ignore toolkit.properties
     }
 
     def startGrizzlyWithFhir(String port) {
         remoteToolkitPort = port
-//        server = new GrizzlyController()
-//        server.start(remoteToolkitPort);
-//        server.withToolkit()
-//        server.withFhirServlet()
+        if (runASingleTestInIde) {
+            server = new GrizzlyController()
+            server.start(remoteToolkitPort);
+            server.withToolkit()
+            server.withFhirServlet()
+        }
         Installation.instance().overrideToolkitPort(remoteToolkitPort)  // ignore toolkit.properties
+    }
+
+    static String prefixNonce(String name) {
+        if ("default".equals(name))
+            throw new Exception("Default session cannot be prefixed with a nonce.")
+
+        return name + TestSessionFactory.nonce()
     }
 
 
@@ -87,14 +95,15 @@ class ToolkitSpecification extends Specification {
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
-        System.gc()
-//        if (server) {
-//            server.stop()
-//            server = null
-//        }
-//        ListenerFactory.terminateAll()
+        if (runASingleTestInIde) {
+            if (server) {
+                server.stop()
+                server = null
+            }
+            ListenerFactory.terminateAll()
 
-        assert TestSessionServiceManager.INSTANCE.isConsistant()
+            assert TestSessionServiceManager.INSTANCE.isConsistant()
+        }
     }
 
     def initializeRegistryWithPatientId(String testSession, SimId simId, Pid pid) {
@@ -141,5 +150,11 @@ class ToolkitSpecification extends Specification {
         return found
     }
 
+    boolean getRunASingleTestInIde() {
+        return runASingleTestInIde
+    }
 
+    void setRunASingleTestInIde(boolean runASingleTestInIde) {
+        this.runASingleTestInIde = runASingleTestInIde
+    }
 }

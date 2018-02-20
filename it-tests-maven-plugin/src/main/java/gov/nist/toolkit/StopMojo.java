@@ -16,6 +16,7 @@ package gov.nist.toolkit;
  * limitations under the License.
  */
 
+import gov.nist.toolkit.adt.ListenerFactory;
 import gov.nist.toolkit.grizzlySupport.GrizzlyController;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -33,6 +34,11 @@ public class StopMojo extends AbstractMojo {
         if (server!=null) {
             getLog().info("Stopping grizzly server.");
             server.stop();
+        }
+
+        ListenerFactory listenerFactory = (ListenerFactory)getPluginContext().get("listenerFactory");
+        if (listenerFactory!=null) {
+            listenerFactory.terminateAll();
         }
     }
 

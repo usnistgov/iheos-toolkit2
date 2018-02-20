@@ -1,7 +1,6 @@
 package gov.nist.toolkit.itTests.xds
 
 import gov.nist.toolkit.actortransaction.client.ActorType
-import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.installation.shared.TestSession
@@ -13,7 +12,6 @@ import gov.nist.toolkit.simcommon.client.SimIdFactory
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import spock.lang.Shared
-
 /**
  * Test the Register transaction
  */
@@ -24,9 +22,9 @@ class RegisterSpec extends ToolkitSpecification {
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
     @Shared String patientId = 'BR14^^^&1.2.360&ISO'
     @Shared String patientId2 = 'BR15^^^&1.2.360&ISO'
-    @Shared String reg = 'bill__reg'
+    @Shared String testSession = prefixNonce('bill')
+    @Shared String reg = testSession + '__reg'
     @Shared SimId simId = SimIdFactory.simIdBuilder(reg)
-    @Shared String testSession = 'bill';
 
     def setupSpec() {   // one time setup done when class launched
         startGrizzly('8889')
@@ -52,8 +50,8 @@ class RegisterSpec extends ToolkitSpecification {
         spi.delete('reg', testSession)
         spi.delete('reg', 'test')
         api.deleteSimulatorIfItExists(simId)
-        server.stop()
-        ListenerFactory.terminateAll()
+//        server.stop()
+//        ListenerFactory.terminateAll()
     }
 
     def setup() {
@@ -69,7 +67,7 @@ class RegisterSpec extends ToolkitSpecification {
     // submits the patient id configured above to the registry in a Patient Identity Feed transaction
     def 'Submit Pid transaction to Registry simulator'() {
         when:
-        String siteName = 'bill__reg'
+        String siteName = testSession + '__reg'
         TestInstance testId = new TestInstance("15804")
         List<String> sections = new ArrayList<>()
         sections.add("section")
@@ -107,7 +105,7 @@ class RegisterSpec extends ToolkitSpecification {
 
     def 'Run a failed test'() {
         when:
-        String siteName = 'bill__reg'
+        String siteName = testSession + '__reg'
         TestInstance testId = new TestInstance("11993")
         List<String> sections = new ArrayList<>()
         Map<String, String> params = new HashMap<>()
@@ -125,7 +123,7 @@ class RegisterSpec extends ToolkitSpecification {
 
     def 'Run a submit with namespace tests'() {
         when:
-        String siteName = 'bill__reg'
+        String siteName = testSession + '__reg'
         TestInstance testId = new TestInstance("regsubmit")
         List<String> sections = new ArrayList<>()
         Map<String, String> params = new HashMap<>()

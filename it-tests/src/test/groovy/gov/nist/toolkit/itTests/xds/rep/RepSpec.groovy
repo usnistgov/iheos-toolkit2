@@ -1,6 +1,5 @@
 package gov.nist.toolkit.itTests.xds.rep
 
-import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.installation.shared.TestSession
@@ -21,13 +20,12 @@ import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import spock.lang.Shared
-
 /**
  *
  */
 class RepSpec extends ToolkitSpecification {
     @Shared SimulatorBuilder spi
-    @Shared TestSession testSession = new TestSession('repspec')
+    @Shared TestSession testSession = new TestSession(prefixNonce('repspec'))
     @Shared String id = 'rep'
     @Shared SimId simId = new SimId(testSession, id)
     @Shared String envName = 'default'
@@ -64,8 +62,8 @@ class RepSpec extends ToolkitSpecification {
     def cleanupSpec() {  // one time shutdown when everything is done
         spi.delete(id, testSession.value)
         api.deleteSimulatorIfItExists(simId)
-        server.stop()
-        ListenerFactory.terminateAll()
+//        server.stop()
+//        ListenerFactory.terminateAll()
     }
 
     def setup() {

@@ -5,6 +5,7 @@ import gov.nist.toolkit.actortransaction.server.EndpointParser
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.fhir.simulators.servlet.ReconfigureSimulators
 import gov.nist.toolkit.installation.server.Installation
+import gov.nist.toolkit.installation.server.TestSessionFactory
 import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
@@ -23,13 +24,14 @@ class ReconfigureSpec extends Specification {
     @Shared String retrieveEndpoint
     SimId simId
     SimulatorConfig config
+    @Shared String testSessionName =  'bill' + TestSessionFactory.nonce()
 
     def setupSpec() {
         BasicConfigurator.configure()
     }
 
     def setup() {
-        simId = new SimId(new TestSession('bill'), 'mysim', ActorType.REPOSITORY.name)
+        simId = new SimId(new TestSession(testSessionName), 'mysim', ActorType.REPOSITORY.name)
         api.deleteSimulatorIfItExists(simId)
         Simulator sim = api.createSimulator(simId)
         config = sim.getConfig(0)
@@ -124,6 +126,6 @@ class ReconfigureSpec extends Specification {
         host == 'home'
         port == '42'
         context == ''
-        retrieveEndpoint2 == 'http://home:42/sim/bill__mysim/rep/ret'
+        retrieveEndpoint2 == 'http://home:42/sim/' + testSessionName + '__mysim/rep/ret'
     }
 }

@@ -32,12 +32,6 @@ public class ListenerFactory {
                 threadPool.add(new ThreadPoolItem(i));
         }
         isInitialized = true;
-
-        try {
-            throw new Exception("Checking where init is called from...");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
     }
 
     static public void init(List<String> portRange) {

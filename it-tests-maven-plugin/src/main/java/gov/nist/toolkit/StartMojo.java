@@ -16,6 +16,7 @@ package gov.nist.toolkit;
  * limitations under the License.
  */
 
+import gov.nist.toolkit.adt.ListenerFactory;
 import gov.nist.toolkit.grizzlySupport.GrizzlyController;
 import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.installation.shared.TestSession;
@@ -70,10 +71,8 @@ public class StartMojo
         session = uteMgr.getSession();
         api = uteMgr.localToolkitApi();
 
-        // Not sure why this is needed in the 'client' side. I think SimServlet should call this from the Grizzly server.
-//        ListenerFactory listenerFactory = new ListenerFactory();
-//        getPluginContext().put("listenerFactory", listenerFactory);
-//        listenerFactory.init(Installation.instance().getListenerPortRange());
+        ListenerFactory listenerFactory = new ListenerFactory();
+        getPluginContext().put("listenerFactory", listenerFactory);
     }
 
 

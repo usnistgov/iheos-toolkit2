@@ -1,11 +1,9 @@
 package gov.nist.toolkit.itTests.support
 
 import gov.nist.toolkit.fhir.server.utility.FhirClient
-import gov.nist.toolkit.grizzlySupport.GrizzlyController
 import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.toolkitServicesCommon.ToolkitFactory
-
 /**
  *
  */
@@ -16,7 +14,7 @@ class FhirSpecification extends ToolkitSpecification {
 //        server = new GrizzlyController()
 //        server.start(remoteToolkitPort);
 //        server.withFhirServlet()
-//        Installation.instance().overrideToolkitPort(remoteToolkitPort)  // ignore toolkit.properties
+        Installation.instance().overrideToolkitPort(remoteToolkitPort)  // ignore toolkit.properties
     }
 
     String baseURL() { "http://localhost:${remoteToolkitPort}/xdstools2/fsim"}

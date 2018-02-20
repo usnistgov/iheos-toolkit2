@@ -1,6 +1,5 @@
 package gov.nist.toolkit.itTests.simlog
 
-import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.installation.shared.TestSession
@@ -15,7 +14,6 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import spock.lang.Shared
-
 /**
  * Test SimDb markers - a tool to isolate events that happen since a certain time
  */
@@ -27,7 +25,7 @@ class MarkerSpec extends ToolkitSpecification {
     @Shared String patientId = 'BR14^^^&1.2.360&ISO'
     @Shared String patientId2 = 'BR15^^^&1.2.360&ISO'
     @Shared String envName = 'test'
-    @Shared TestSession testSession = new TestSession('bill')
+    @Shared TestSession testSession = new TestSession(prefixNonce('bill'))
     @Shared String id = 'regrep'
     @Shared String id2 = 'rec2'
     @Shared String rec = "${testSession}__${id}"
@@ -71,8 +69,8 @@ class MarkerSpec extends ToolkitSpecification {
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
-        server.stop()
-        ListenerFactory.terminateAll()
+//        server.stop()
+//        ListenerFactory.terminateAll()
     }
 
     def setup() {

@@ -18,8 +18,7 @@ import spock.lang.Shared
  */
 class MultiQuerySpec extends ToolkitSpecification {
     @Shared SimulatorBuilder spi
-    def userName = 'joe'
-    TestSession testSession = new TestSession(userName)
+    @Shared TestSession testSession = new TestSession(prefixNonce('joe'))
 
     def setupSpec() {   // one time setup done when class launched
         startGrizzly('8889')
@@ -35,12 +34,14 @@ class MultiQuerySpec extends ToolkitSpecification {
         when:
         def igConfig
         def rgConfigs
-        (igConfig, rgConfigs) = GatewayBuilder.build(api, spi, 1, userName, 'test', patientId)
+        (igConfig, rgConfigs) = GatewayBuilder.build(api, spi, 1, testSession.value, 'test', patientId)
         def igSite = new SiteSpec(igConfig.fullId, ActorType.INITIATING_GATEWAY, null, testSession)
 
         Map<String, List<String>> selectedCodes = new HashMap<>()
         selectedCodes.put(CodesConfiguration.DocumentEntryStatus, [MetadataSupport.statusType_approved])
         selectedCodes.put(CodesConfiguration.ReturnsType, [QueryReturnType.LEAFCLASS.getReturnTypeString()])
+
+        then:
         List<Result> results = api.findDocuments(igSite, patientId, selectedCodes)
 
         then:
@@ -53,13 +54,16 @@ class MultiQuerySpec extends ToolkitSpecification {
         then:
         metadataCollections.size() == 1
         metadataCollections.get(0).docEntries.size() == 2
+
+        spi.delete(rgConfigs.get(0))
+
     }
 
     def 'two rgs'() {
         when:
         def igConfig
         def rgConfigs
-        (igConfig, rgConfigs) = GatewayBuilder.build(api, spi, 2, userName, 'test', patientId)
+        (igConfig, rgConfigs) = GatewayBuilder.build(api, spi, 2, testSession.value, 'test', patientId)
         def igSite = new SiteSpec(igConfig.fullId, ActorType.INITIATING_GATEWAY, null, testSession)
 
         Map<String, List<String>> selectedCodes = new HashMap<>()

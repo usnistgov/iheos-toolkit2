@@ -32,7 +32,7 @@ class MhdSimProxySubmitSpec extends ToolkitSpecification {
     @Shared String patientId = 'BR14^^^&1.2.360&ISO'
     @Shared String patientId2 = 'BR15^^^&1.2.360&ISO'
     @Shared String envName = 'test'
-    @Shared String testSession = 'bill';
+    @Shared String testSession = prefixNonce('bill')
     @Shared String mhdId = "mhd"
     @Shared String mhdName = "${testSession}__${mhdId}"
     @Shared SimId mhdSimId = SimIdFactory.simIdBuilder(mhdName)
@@ -80,7 +80,7 @@ class MhdSimProxySubmitSpec extends ToolkitSpecification {
         }
 
         //println simGroup
-        SimConfig rrConfig = simGroup['bill__mhd_regrep']
+        SimConfig rrConfig = simGroup[testSession + '__mhd_regrep']
 //        rrConfig.setProperty(SimulatorProperties.VALIDATE_CODES, false)
         rrConfig.setProperty(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, false)
         spi.update(rrConfig)
@@ -130,7 +130,7 @@ class MhdSimProxySubmitSpec extends ToolkitSpecification {
         }
 
         //println simGroup
-        SimConfig rrConfig = simGroup['bill__mhd_regrep']
+        SimConfig rrConfig = simGroup[testSession + '__mhd_regrep']
         rrConfig.setProperty(SimulatorProperties.VALIDATE_CODES, false)
         rrConfig.setProperty(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, false)
         spi.update(rrConfig)
@@ -174,7 +174,7 @@ class MhdSimProxySubmitSpec extends ToolkitSpecification {
         }
 
         //println simGroup
-        SimConfig rrConfig = simGroup['bill__mhd_regrep']
+        SimConfig rrConfig = simGroup[testSession + '__mhd_regrep']
         rrConfig.setProperty(SimulatorProperties.VALIDATE_CODES, false)
         rrConfig.setProperty(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, false)
         spi.update(rrConfig)

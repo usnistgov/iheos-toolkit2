@@ -10,7 +10,7 @@ import spock.lang.Shared
  *
  */
 class ResDbSpec extends FhirSpecification {
-    @Shared SimId simId = new SimId(new TestSession('default'), 'test')
+    @Shared SimId simId = new SimId(new TestSession('default'), prefixNonce('test'))
 
     def 'build/delete fhir sim'() {
         when:

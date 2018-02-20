@@ -1,4 +1,4 @@
-package gov.nist.toolkit.itTests.testSession
+package gov.nist.toolkit.itTests.a1runfirst.testSession
 
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.installation.shared.TestSession
@@ -10,7 +10,7 @@ import gov.nist.toolkit.simcommon.client.Simulator
 import gov.nist.toolkit.simcommon.server.SimDb
 import spock.lang.Shared
 
-class FindSpec extends ToolkitSpecification {
+class A1RunFirst_FindSpec extends ToolkitSpecification {
     @Shared TestSession lynnTestSession = new TestSession('lynn')
     @Shared TestSession billTestSession = new TestSession('bill')
     @Shared TestSession defaultTestSession = new TestSession('default')

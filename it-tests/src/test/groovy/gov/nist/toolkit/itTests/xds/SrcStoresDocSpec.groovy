@@ -1,7 +1,6 @@
 package gov.nist.toolkit.itTests.xds
 
 import gov.nist.toolkit.actortransaction.client.ActorType
-import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.installation.server.Installation
@@ -27,9 +26,9 @@ class SrcStoresDocSpec extends ToolkitSpecification {
 
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
     @Shared String patientId = 'SR7^^^&1.2.260&ISO'
-    @Shared String rr = 'bill__rr'
+    @Shared String testSession = prefixNonce('bill')
+    @Shared String rr = testSession + '__rr'
     @Shared SimId simId = SimIdFactory.simIdBuilder(rr)
-    @Shared String testSession = 'bill'
     @Shared String repUid = ''
 
     def setupSpec() {   // one time setup done when class launched
@@ -61,8 +60,8 @@ class SrcStoresDocSpec extends ToolkitSpecification {
 //        System.gc()
         spi.delete('rr', testSession)
         api.deleteSimulatorIfItExists(simId)
-        server.stop()
-        ListenerFactory.terminateAll()
+//        server.stop()
+//        ListenerFactory.terminateAll()
     }
 
     def setup() {

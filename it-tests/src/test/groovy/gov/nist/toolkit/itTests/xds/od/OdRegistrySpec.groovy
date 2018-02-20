@@ -1,6 +1,6 @@
 package gov.nist.toolkit.itTests.xds.od
+
 import gov.nist.toolkit.actortransaction.client.ActorType
-import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
@@ -20,9 +20,9 @@ class OdRegistrySpec extends ToolkitSpecification {
 
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
     String patientId = 'ODREG11^^^&1.2.460&ISO'
-    @Shared String reg = 'sunil__reg'
+    @Shared String testSession = prefixNonce( 'sunil')
+    @Shared String reg = testSession + '__reg'
     @Shared SimId simId = SimIdFactory.simIdBuilder(reg)
-    @Shared String testSession = 'sunil';
 
     def setupSpec() {   // one time setup done when class launched
         startGrizzly('8889')
@@ -50,8 +50,8 @@ class OdRegistrySpec extends ToolkitSpecification {
     def cleanupSpec() {  // one time shutdown when everything is done
 //        System.gc()
         spi.delete('reg',testSession)
-        server.stop()
-        ListenerFactory.terminateAll()
+//        server.stop()
+//        ListenerFactory.terminateAll()
     }
 
     def setup() {
@@ -67,7 +67,7 @@ class OdRegistrySpec extends ToolkitSpecification {
     // submits the patient id configured above to the registry in a Patient Identity Feed transaction
     def 'Submit Pid transaction to Registry simulator'() {
         when:
-        String siteName = 'sunil__reg'
+        String siteName = testSession + '__reg'
         TestInstance testId = new TestInstance("15804")
         List<String> sections = new ArrayList<>()
         sections.add("section")
@@ -86,7 +86,7 @@ class OdRegistrySpec extends ToolkitSpecification {
 
     def 'Run all tests'() {
         when:
-        String siteName = 'sunil__reg'
+        String siteName = testSession + '__reg'
         TestInstance testId = new TestInstance("15805")
         List<String> sections = new ArrayList<>()
         Map<String, String> params = new HashMap<>()

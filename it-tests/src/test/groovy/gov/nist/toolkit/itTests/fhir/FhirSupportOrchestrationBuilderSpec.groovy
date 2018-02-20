@@ -13,7 +13,7 @@ import gov.nist.toolkit.simcommon.client.SimIdFactory
 import gov.nist.toolkit.simcommon.server.SimDb
 
 class FhirSupportOrchestrationBuilderSpec extends FhirSpecification  {
-    def userName = 'fhirsupport'
+    def testSessionName = prefixNonce('fhirsupport')
 
     def setupSpec() {
         startGrizzlyWithFhir('8889')   // sets up Grizzly server on remoteToolkitPort
@@ -25,7 +25,7 @@ class FhirSupportOrchestrationBuilderSpec extends FhirSpecification  {
     def 'test full build' () {
         setup:
         FhirSupportOrchestrationRequest request = new FhirSupportOrchestrationRequest()
-        request.testSession = new TestSession(userName)
+        request.testSession = new TestSession(testSessionName)
         request.environmentName = 'test'
         request.useExistingState = false
 

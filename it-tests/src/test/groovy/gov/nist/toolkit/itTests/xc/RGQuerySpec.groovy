@@ -21,7 +21,7 @@ class RGQuerySpec extends ToolkitSpecification {
     @Shared  BasicSimParameters RGParams = new BasicSimParameters();
     @Shared  BasicSimParameters IGParams = new BasicSimParameters();
     @Shared  String patientId = 'BR14^^^&1.2.360&ISO'
-    @Shared  String testSession = 'bill'
+    @Shared  String testSession = prefixNonce('bill')
     @Shared  apiEnvironment = 'test'
     @Shared  spiEnvironment = 'test'
     @Shared  TestInstance testId
@@ -29,7 +29,7 @@ class RGQuerySpec extends ToolkitSpecification {
     @Shared  Map<String, String> qparams
     @Shared  boolean stopOnFirstError = true
     @Shared  List<Result> results
-    @Shared  String RGSiteName = 'bill__rg1'
+    @Shared  String RGSiteName = testSession + '__rg1'
     @Shared  SimId RGSimId
     @Shared  SimId IGSimId
 

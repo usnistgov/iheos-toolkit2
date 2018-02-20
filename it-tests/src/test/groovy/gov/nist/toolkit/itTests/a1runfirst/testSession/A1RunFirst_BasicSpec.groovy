@@ -1,4 +1,4 @@
-package gov.nist.toolkit.itTests.testSession
+package gov.nist.toolkit.itTests.a1runfirst.testSession
 
 import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
@@ -6,7 +6,7 @@ import gov.nist.toolkit.session.server.serviceManager.TestSessionServiceManager
 import gov.nist.toolkit.simcommon.server.SimDb
 import spock.lang.Shared
 
-class BasicSpec extends ToolkitSpecification {
+class A1RunFirst_BasicSpec extends ToolkitSpecification {
     @Shared SimDb simDb = new SimDb()
     @Shared TestSessionServiceManager sm = TestSessionServiceManager.INSTANCE
     @Shared String DEFAULT = TestSession.DEFAULT_TEST_SESSION.value

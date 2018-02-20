@@ -1,6 +1,5 @@
 package gov.nist.toolkit.itTests.xdr
 
-import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
@@ -40,8 +39,8 @@ class MinimalMetadataSpec extends ToolkitSpecification {
     def cleanupSpec() {  // one time shutdown when everything is done
         spi.delete(srcParams.id, srcParams.user)
         spi.delete(recParams.id, recParams.user)
-        server.stop()
-        ListenerFactory.terminateAll()
+//        server.stop()
+//        ListenerFactory.terminateAll()
     }
 
     def setup() {  // run before each test method

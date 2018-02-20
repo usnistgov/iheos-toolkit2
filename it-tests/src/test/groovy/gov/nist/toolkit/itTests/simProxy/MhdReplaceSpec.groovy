@@ -79,7 +79,7 @@ class MhdReplaceSpec extends ToolkitSpecification {
     def 'submit and replace'() {
         when: 'submit pdb with known entryUUID urn:uuid:1e404af3-077f-4bee-b7a6-a9be97e1ce34'
         def params = [ :]
-        TestInstance testInstance = new TestInstance('MhdReplace')
+        TestInstance testInstance = new TestInstance('MhdReplace') // Note: bill__mhd site name is hard-coded in singledocsubmit.xml
 
         List<Result> results = api.runTest(testSession, mhdName, testInstance, ['submit'], params, true)
 

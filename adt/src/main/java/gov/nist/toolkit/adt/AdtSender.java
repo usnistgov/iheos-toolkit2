@@ -40,7 +40,7 @@ public class AdtSender {
 //            return;
         } catch (IOException e) {
             logger.error("Couldn't get I/O for "
-                    + "the connection to: " + server, e);
+                    + "the connection to: " + server + " at port: " + port, e);
             throw e;
 //            return;
         }

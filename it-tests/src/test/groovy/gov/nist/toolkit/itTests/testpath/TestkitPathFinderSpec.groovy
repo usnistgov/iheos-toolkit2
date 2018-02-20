@@ -1,7 +1,6 @@
 package gov.nist.toolkit.itTests.testpath
 
 import gov.nist.toolkit.actortransaction.client.ActorType
-import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.installation.shared.TestSession
@@ -13,7 +12,6 @@ import gov.nist.toolkit.simcommon.client.SimIdFactory
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import spock.lang.Shared
-
 /**
  * Created by onh2 on 5/17/16.
  */
@@ -50,8 +48,8 @@ class TestkitPathFinderSpec extends ToolkitSpecification{
     def cleanupSpec() {  // one time shutdown when everything is done
         spi.delete('rep','testpath')
         spi.delete('rep','test')
-        server.stop()
-        ListenerFactory.terminateAll()
+//        server.stop()
+//        ListenerFactory.terminateAll()
     }
 
     def setup() {
