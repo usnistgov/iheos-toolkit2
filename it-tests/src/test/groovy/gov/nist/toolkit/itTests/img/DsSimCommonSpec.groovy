@@ -55,8 +55,8 @@ class DsSimCommonSpec extends ToolkitSpecification {
     // one time shutdown when everything is done
     def cleanupSpec() {
         api.deleteSimulatorIfItExists(simId)
-        server.stop()
-        ListenerFactory.terminateAll()
+//        server.stop()
+//        ListenerFactory.terminateAll()
     }
 
     def setup() {

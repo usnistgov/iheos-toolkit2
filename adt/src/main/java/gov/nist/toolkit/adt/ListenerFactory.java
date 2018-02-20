@@ -1,5 +1,7 @@
 package gov.nist.toolkit.adt;
 
+import gov.nist.toolkit.http.httpclient.HttpClient;
+import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.xdsexception.client.ThreadPoolExhaustedException;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
@@ -19,6 +21,7 @@ public class ListenerFactory {
     private static int nextPort = 0;
     private static List<ThreadPoolItem> threadPool = new ArrayList<>();
     private static int timeoutinMilli = 5*1000;
+    private static boolean isInitialized = false;
 
     static public void init(int _firstPort, int _lastPort) {
         firstPort = _firstPort;
@@ -27,6 +30,13 @@ public class ListenerFactory {
         for (int i=firstPort; i<=lastPort; i++) {
             if (getThreadPoolItem(i) == null)
                 threadPool.add(new ThreadPoolItem(i));
+        }
+        isInitialized = true;
+
+        try {
+            throw new Exception("Checking where init is called from...");
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
@@ -67,6 +77,9 @@ public class ListenerFactory {
     }
 
     public static int generateListener(String simId, int port, PifCallback pifCallback) {
+        if (Installation.isTestRunning() && !isInitialized) {
+            return 0;
+        }
         ThreadPoolItem tpi = getThreadPoolItem(port);
         if (tpi == null)
             tpi = allocateThreadPoolItem(port);
@@ -86,20 +99,61 @@ public class ListenerFactory {
     }
 
     public static int allocatePort(String simId) {
+        if (Installation.isTestRunning()) {
+           if (!isInitialized) {
+//                 Call the Pid service
+               try {
+                   String endpoint =
+                           "http://"
+                            + Installation.instance().propertyServiceManager().getToolkitHost()
+                            + ":"
+                            + Installation.instance().propertyServiceManager().getToolkitPort()
+                            + "/testEnvPidPort?cmd=allocate&simId=" + simId;
+                   logger.debug("Requesting new port from " + endpoint);
+                   String pidPort = HttpClient.httpGet(endpoint);
+                   pidPort = pidPort.trim();
+                   return Integer.parseInt(pidPort);
+               } catch (Exception e) {
+                   throw new ToolkitRuntimeException(e.getCause());
+               }
+           }
+        }
+
         ThreadPoolItem threadPoolItem =  allocateThreadPoolItem();
         threadPoolItem.simId = simId;
         return threadPoolItem.port;
+
     }
 
     public static void terminate(String simId) {
+        if (Installation.isTestRunning()) {
+            if (!isInitialized) {
+//                 Call the Pid service
+                try {
+                    String endpoint =
+                            "http://"
+                                    + Installation.instance().propertyServiceManager().getToolkitHost()
+                                    + ":"
+                                    + Installation.instance().propertyServiceManager().getToolkitPort()
+                                    + "/testEnvPidPort?cmd=terminate&simId=" + simId;
+                    logger.debug("Requesting terminate port from " + endpoint);
+                    HttpClient.httpGet(endpoint);
+                    return;
+                } catch (Exception e) {
+                    throw new ToolkitRuntimeException(e.getCause());
+                }
+            }
+        }
+
         logger.info("terminate patientIdentityFeed listener for sim " + simId + "...");
         ThreadPoolItem tpi = getItem(simId);
         if (tpi == null) {
             logger.info("...none");
             return;
         }
-        logger.info("...which is port " + tpi.port);
-        tpi.thread.interrupt();
+        logger.info("...which is port " + tpi.port + ", thread is not null? " + (tpi.thread!=null) + ", and is in use? " + tpi.isInUse());
+        if (tpi.thread!=null) // Not started
+            tpi.thread.interrupt();
         tpi.setInUse(false);
     }
 
@@ -127,7 +181,12 @@ public class ListenerFactory {
                 tm.setInUse(true);
                 return tm;
             }
-        throw new ThreadPoolExhaustedException("Thread pool exhausted - cannot allocate ADT patientIdentityFeed");
+
+        for (ThreadPoolItem tm : threadPool)
+            if (tm.isInUse())
+                System.out.println(" in use: " + tm.simId);
+
+        throw new ThreadPoolExhaustedException("Thread pool exhausted - cannot allocate ADT patientIdentityFeed. pool has " + threadPool.size() + " items. First port is " + firstPort + ", last port is " + lastPort + ". isInitialized? " + isInitialized);
     }
 
     public static List<String> availablePorts() {

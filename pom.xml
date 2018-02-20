@@ -89,6 +89,7 @@
         <module>sim-proxy</module>
         <module>proxy</module>
         <module>it-tests</module>
+        <module>it-tests-maven-plugin</module>
     </modules>
 
     <profiles>

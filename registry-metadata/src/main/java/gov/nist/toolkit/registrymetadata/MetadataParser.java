@@ -2,13 +2,16 @@ package gov.nist.toolkit.registrymetadata;
 
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.Util;
+import gov.nist.toolkit.utilities.xml.XmlFileStream;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
 import javax.xml.parsers.FactoryConfigurationError;
+import javax.xml.stream.XMLStreamException;
 import java.io.File;
 import java.io.IOException;
 
@@ -52,8 +55,20 @@ public class MetadataParser {
 
 
 	static public Metadata parseNonSubmission(File metadata_file) throws MetadataException, MetadataValidationException, XdsInternalException {
+//		return parseNonSubmission(Util.parse_xml(metadata_file));
+		XmlFileStream xmlFs = null;
+		try {
+			xmlFs = XmlFileStream.parse_xml(metadata_file);
+			return parseNonSubmission(xmlFs.getOmElement());
+		} finally {
+			if (xmlFs!=null) {
+				if (xmlFs.getParser()!=null)
+						try {xmlFs.getParser().close();} catch (XMLStreamException xmlse) {}
+				if (xmlFs.getFr()!=null)
+						try {xmlFs.getFr().close();} catch (IOException ioe){}
+			}
 
-		return parseNonSubmission(Util.parse_xml(metadata_file));
+		}
 
 	}
 

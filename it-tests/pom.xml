@@ -151,20 +151,43 @@
         <build>
             <plugins>
                 <plugin>
+                    <groupId>gov.nist.toolkit</groupId>
+                    <artifactId>it-tests-maven-plugin</artifactId>
+                    <configuration>
+                        <warHome>${basedir}/target/test-classes/war</warHome>
+                        <ecDir>${basedir}/target/test-classes/external_cache</ecDir>
+                        <axis2>${basedir}/target/test-classes/axis2.xml</axis2>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>prepTestEnv</id>
+                            <goals>
+                                <goal>start</goal>
+                                <goal>stop</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
                     <version>2.19.1</version>
                     <configuration>
                         <includes>
                             <!--<include>**/FhirSupportOrchestrationBuilderSpec.java</include>-->
+                            <!--<include>**/MultiQuerySpec.java</include>-->
                             <include>**/*Spec.java</include>
                             <include>**/*Test.java</include>
                             <include>**/*IT.java</include>
                             <!-- end include all tests -->
                         </includes>
+                        <excludes>
+                            <exclude>**/BasicSpec.java</exclude>
+                        </excludes>
                         <!-- Explanation of the fork arguments in use here: Since there is only ONE external_cache dir, running tests in parallel causes one test to disturb other test environment. To remove this side effect, we start off with a clean environment each time (see cleanupDir method in ToolkitSpecification). -->
                         <forkCount>1</forkCount>
-                        <reuseForks>false</reuseForks>
+                        <reuseForks>true</reuseForks>
                         <!-- We should NOT ignore IT test failures. TestFailureIgnore should be false. -->
                         <testFailureIgnore>false</testFailureIgnore>
                     </configuration>

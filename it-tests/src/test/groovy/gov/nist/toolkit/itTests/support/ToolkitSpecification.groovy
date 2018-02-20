@@ -34,7 +34,8 @@ class ToolkitSpecification extends Specification {
         api = UnitTestEnvironmentManager.localToolkitApi()
 
         Installation.setTestRunning(true)
-        cleanupDir()
+        // Handled in start pre-integration test
+//        cleanupDir()
     }
 
     def setup() {
@@ -59,18 +60,18 @@ class ToolkitSpecification extends Specification {
 
     def startGrizzly(String port) {
         remoteToolkitPort = port
-        server = new GrizzlyController()
-        server.start(remoteToolkitPort);
-        server.withToolkit()
+//        server = new GrizzlyController()
+//        server.start(remoteToolkitPort);
+//        server.withToolkit()
         Installation.instance().overrideToolkitPort(remoteToolkitPort)  // ignore toolkit.properties
     }
 
     def startGrizzlyWithFhir(String port) {
         remoteToolkitPort = port
-        server = new GrizzlyController()
-        server.start(remoteToolkitPort);
-        server.withToolkit()
-        server.withFhirServlet()
+//        server = new GrizzlyController()
+//        server.start(remoteToolkitPort);
+//        server.withToolkit()
+//        server.withFhirServlet()
         Installation.instance().overrideToolkitPort(remoteToolkitPort)  // ignore toolkit.properties
     }
 
@@ -87,11 +88,11 @@ class ToolkitSpecification extends Specification {
 
     def cleanupSpec() {  // one time shutdown when everything is done
         System.gc()
-        if (server) {
-            server.stop()
-            server = null
-        }
-        ListenerFactory.terminateAll()
+//        if (server) {
+//            server.stop()
+//            server = null
+//        }
+//        ListenerFactory.terminateAll()
 
         assert TestSessionServiceManager.INSTANCE.isConsistant()
     }
