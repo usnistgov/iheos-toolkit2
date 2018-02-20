@@ -32,7 +32,7 @@ import static gov.nist.toolkit.simcommon.server.AbstractActorFactory.getActorFac
  */
 public class SiteServiceManager {
 	private static SiteServiceManager siteServiceManager = null;
-	private Map<TestSession, Sites> commonSites = new HashMap<>(); // these are the common sites. The simulator based
+//	private Map<TestSession, Sites> commonSites = new HashMap<>(); // these are the common sites. The simulator based
 	// sites are kept in Session.sites.
 	private boolean alwaysReload = true;
 
@@ -65,6 +65,8 @@ public class SiteServiceManager {
 		for (SimId simId : simIds) {
 			SimulatorConfig config = new SimDb().getSimulator(simId);
 			AbstractActorFactory af = getActorFactory(config);
+			if (af == null)
+				throw new ToolkitRuntimeException("No ActorFactory for " + config);
 			Site site = af.getActorSite(config, null);
 			sites.put(site.getName(), site);
 		}
@@ -78,6 +80,7 @@ public class SiteServiceManager {
 
 		List<Site> returns = new ArrayList<>();
 		returns.addAll(sites.values());
+		logger.debug("allSites are " + returns);
 		return returns;
 
 	}
@@ -182,58 +185,31 @@ public class SiteServiceManager {
 	}
 
 	// continue to load from EC/actors base dir - otherwise IT tests are almost impossible to write
-	// this should not be used in production
-	private void load(TestSession testSession) throws Exception {
+	private Sites load(TestSession testSession) throws Exception {
 		File dir;
 		dir = Installation.instance().actorsDir();
-		logger.debug("loading sites from " + dir);
 		Sites ss = new SeparateSiteLoader(testSession).load(dir, null);
-		commonSites.put(testSession, ss);
 
 		dir = Installation.instance().actorsDir(testSession);
-		logger.debug("loading sites from " + dir);
 		Sites ss2 = new SeparateSiteLoader(testSession).load(dir, null);
 		ss.add(ss2);
+		logger.debug("Loaded (" + testSession + "): " + ss.toString());
+		return ss;
 	}
 
 	// Statically defined sites (does not include simulators)
 	// how is the commonSites variable helping?
 	public Sites getCommonSites(TestSession testSession) throws FactoryConfigurationError,
 			Exception {
+		logger.debug("getCommonSites(" + testSession + ")");
 
-		load(TestSession.DEFAULT_TEST_SESSION);
+		Sites retSites = load(TestSession.DEFAULT_TEST_SESSION);
 		if (!testSession.equals(TestSession.DEFAULT_TEST_SESSION))
-			load(testSession);
+			retSites.add(load(testSession));
 
-//		if (testSession.equals(TestSession.DEFAULT_TEST_SESSION))
-//			commonSites.put(testSession, new Sites(testSession));  // clear out old
-//		else
-//			getCommonSites(TestSession.DEFAULT_TEST_SESSION);  // load up default sites
-//
-//		if (!useActorsFile()) {
-//			File dir = Installation.instance().actorsDir(testSession);
-//			logger.debug("loading sites from " + dir);
-//			commonSites.put(testSession, new SeparateSiteLoader(testSession).load(dir, commonSites.get(testSession)));
-//		} else {
-//			throw new ToolkitRuntimeException("Combined site (all in one file) no longer supported");
-//		}
-//
-//
-//		if (commonSites.get(TestSession.DEFAULT_TEST_SESSION) == null)
-//			commonSites.put(TestSession.DEFAULT_TEST_SESSION, new Sites(TestSession.DEFAULT_TEST_SESSION));
-//		if (commonSites.get(testSession) == null)
-//			commonSites.put(testSession, new Sites(testSession));
-//
+		logger.debug("Returned common: " + retSites);
+		return retSites;
 
-		if (testSession.equals(TestSession.DEFAULT_TEST_SESSION))
-			return commonSites.get(TestSession.DEFAULT_TEST_SESSION);
-
-		Sites sites = commonSites.get(testSession).add(commonSites.get(TestSession.DEFAULT_TEST_SESSION));
-		return sites;
-
-//		if (commonSites.get(testSession) == null)
-//			return new Sites(testSession);
-//		return commonSites.get(testSession);
 	}
 
 	private boolean useActorsFile() {
@@ -352,8 +328,8 @@ public class SiteServiceManager {
 		logger.debug(sessionId + ": " + "saveSite");
 		try {
 
-			if (commonSites.get(testSession) == null) commonSites.put(testSession, new Sites(testSession));
-			commonSites.get(testSession).putSite(site);
+//			if (commonSites.get(testSession) == null) commonSites.put(testSession, new Sites(testSession));
+//			commonSites.get(testSession).putSite(site);
 			// sites.saveToFile(configuredActorsFile(false));
 			if (!useActorsFile())
 				new SeparateSiteLoader(testSession).saveToFile(Installation.instance()
@@ -372,8 +348,8 @@ public class SiteServiceManager {
 
 	public String deleteSite(String sessionId, String siteName, TestSession testSession) throws Exception {
 		logger.debug(sessionId + ": " + "deleteSite");
-		if (commonSites.get(testSession) != null)
-			commonSites.get(testSession).deleteSite(siteName);
+//		if (commonSites.get(testSession) != null)
+//			commonSites.get(testSession).deleteSite(siteName);
 		try {
 			// sites.saveToFile(configuredActorsFile(false));
 			if (!useActorsFile())
@@ -405,10 +381,11 @@ public class SiteServiceManager {
 	// don't return sites implemented via simulators
 	public List<String> reloadCommonSites(TestSession testSession) throws FactoryConfigurationError,
 			Exception {
-		logger.debug("reloadCommonSites");
-		getCommonSites(testSession);    // does reload
-        if (commonSites.get(testSession) == null) return new ArrayList<>();
-		return commonSites.get(testSession).getSiteNames();
+		logger.debug("reloadCommonSites for " + testSession.getValue());
+		Sites sites = getCommonSites(testSession);    // does reload
+		List<String> values = sites.getSiteNames();
+		logger.debug("reloaded CommonSites are " + testSession.getValue() + ": " + values);
+		return values;
 	}
 
 	public TransactionOfferings getTransactionOfferings(String sessionId, TestSession testSession) throws Exception {
@@ -417,7 +394,7 @@ public class SiteServiceManager {
 		try {
 			getAllSites(sessionId, testSession);
 			Sites sits = SimManager.getAllSites(testSession);
-			logger.debug("site Names: " + sits.getSiteNames());
+			logger.debug("getTransactionOfferings: site Names: " + sits.getSiteNames());
 			return new TransactionOfferingFactory(sits).get();
 		} catch (Exception e) {
 			System.out.println(ExceptionUtil.exception_details(e));

@@ -137,13 +137,13 @@ public class Sites {
 	
 	public void add(Site site) {
 		siteMap.put(site.getName(), site);
-		validate();
+//		validate();
 	}
 
 	public Sites add(Sites sites) {
 		for (Site s : sites.siteMap.values())
 			add(s);
-		validate();
+//		validate();
 		return this;
 	}
 
@@ -272,10 +272,12 @@ public class Sites {
 	}
 
 	public List<String> getSiteNames() {
-		List<String> lst = new ArrayList<String>();
-		if (siteMap != null)
-			lst.addAll(siteMap.keySet());
-		return lst;
+		if (siteMap != null) {
+			Set<String> set = siteMap.keySet();
+			List<String> lst = new ArrayList<>(set);
+			return lst;
+		}
+		return new ArrayList<String>();
 	}
 
 	public Site getDefaultSite(TestSession testSession) throws Exception {

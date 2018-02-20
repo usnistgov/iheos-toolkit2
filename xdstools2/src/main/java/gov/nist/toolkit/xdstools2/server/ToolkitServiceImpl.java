@@ -117,8 +117,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 
     private void installCommandContext(CommandContext commandContext) throws Exception {
         if (commandContext.getEnvironmentName() == null) {
-            logger.error(ExceptionUtil.here("session: " + getSessionId() + " installCommandContext: environment name is null"));
-            throw new Exception("installCommandContext: environment name is null");
+            return;
+//            logger.error(ExceptionUtil.here("session: " + getSessionId() + " installCommandContext: environment name is null"));
+//            throw new Exception("installCommandContext: environment name is null");
         }
         setEnvironment(commandContext.getEnvironmentName());
 

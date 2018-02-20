@@ -3,12 +3,12 @@ package gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import gov.nist.toolkit.xdstools2.client.command.command.DeleteSiteCommand;
-import gov.nist.toolkit.xdstools2.client.widgets.AdminPasswordDialogBox;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.Xdstools2;
+import gov.nist.toolkit.xdstools2.client.command.command.DeleteSiteCommand;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.request.DeleteSiteRequest;
 
 class DeleteSite implements ClickHandler {
@@ -32,13 +32,20 @@ class DeleteSite implements ClickHandler {
 		}
 		if (PasswordManagement.isSignedIn) {
 			deleteSignedInCallback.onSuccess(true);
-//			((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireActorsConfigUpdatedEvent();
 		}
 		else {
 			PasswordManagement.addSignInCallback(deleteSignedInCallback);
 			PasswordManagement.addSignInCallback(updateSignInStatusCallback);
 
-			new AdminPasswordDialogBox(actorConfigTab.getTabTopPanel());
+			if (Xdstools2.getInstance().multiUserModeEnabled && !Xdstools2.getInstance().casModeEnabled) {
+				deleteSignedInCallback.onSuccess(true);
+//				((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireActorsConfigUpdatedEvent();
+			} else {
+				new PopupMessage("You must be signed in as admin");
+			}
+
+
+//			new AdminPasswordDialogBox(actorConfigTab.getTabTopPanel());
 
 			//				PasswordManagement.rmSignInCallback(deleteSignedInCallback);
 			//				PasswordManagement.rmSignInCallback(updateSignInStatusCallback);

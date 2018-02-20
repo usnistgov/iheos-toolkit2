@@ -59,13 +59,13 @@ public class EnvSetting {
     }
 
 	public EnvSetting(String sessionId, String name, File dir) {
-		logger.info(sessionId + ": EnvSetting -  uses environment " + name + " ==> " + dir);
+//		logger.info(sessionId + ": EnvSetting -  uses environment " + name + " ==> " + dir);
 		settings.put(sessionId, new EnvSetting(name, dir));
 	}
 	
 	public EnvSetting(String sessionId, String name) {
 		File dir = Installation.instance().environmentFile(name);
-		logger.info("Session " + sessionId + " environment " + name + " ==> " + dir);
+//		logger.info("Session " + sessionId + " environment " + name + " ==> " + dir);
         settings.put(sessionId, new EnvSetting(name, dir));
 	}
 
