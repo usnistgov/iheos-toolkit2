@@ -77,6 +77,14 @@ public class PropertyServiceManager {
 		return getPropertyManager().getToolkitHost();
 	}
 
+	public boolean isUsingSSL() {
+		return getPropertyManager().isUsingSSL();
+	}
+
+	public String getSSLPort() {
+		return getPropertyManager().getSSLPort();
+	}
+
 	public String getToolkitPort() {
 //		logger.debug(": " + "getToolkitPort");
         if (overrideToolkitPort != null) {

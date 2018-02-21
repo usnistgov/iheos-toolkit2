@@ -8,6 +8,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.http.client.HtmlMarkup;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.session.shared.Message;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractView;
 import gov.nist.toolkit.xdstools2.client.abstracts.MessagePanel;
@@ -216,7 +217,7 @@ public class SimMsgViewerView extends AbstractView<SimMsgViewerPresenter> {
             public void onTestSessionChanged(TestSessionChangedEvent event) {
                 if (event.getChangeType() == TestSessionChangedEvent.ChangeType.SELECT) {
                     GWT.log("SimMsgViewer - test session changed");
-                    getPresenter().testSessionChanged();
+                    getPresenter().testSessionChanged(new TestSession(event.getValue()));
                 }
             }
         });

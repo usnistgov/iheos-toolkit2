@@ -337,6 +337,10 @@
             <url-pattern>*.ico</url-pattern>
             <url-pattern>/img/*</url-pattern>
             <url-pattern>/css/*</url-pattern>
+
+            <url-pattern>/sim/*</url-pattern>
+            <url-pattern>/fsim/*</url-pattern>
+
         </web-resource-collection>
         <user-data-constraint>
             <transport-guarantee>NONE</transport-guarantee>

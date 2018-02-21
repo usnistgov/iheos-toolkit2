@@ -80,6 +80,7 @@ public class SimMsgViewerActivity extends AbstractToolkitActivity implements IsW
 
                 @Override
                 public void onComplete(SimId simId) {
+                    GWT.log("SimId is " + simId.toString());
                     presenter.setCurrentSimId(simId);
                     presenter.setTitle("Log " + simId.toString());
                     finish(acceptsOneWidget, eventBus);
@@ -94,6 +95,7 @@ public class SimMsgViewerActivity extends AbstractToolkitActivity implements IsW
     private void finish(AcceptsOneWidget acceptsOneWidget, EventBus eventBus) {
 
         if (event != null) {
+            GWT.log("pre-select event " + event);
             presenter.setPreSelectEvent(event);
         }
 

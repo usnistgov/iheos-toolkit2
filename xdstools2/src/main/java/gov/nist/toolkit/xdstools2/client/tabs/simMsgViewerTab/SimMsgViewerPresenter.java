@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.HTML;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.session.shared.Message;
 import gov.nist.toolkit.simcommon.client.SimId;
@@ -320,19 +321,20 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
 
     }
 
-    public void setPreSelectEvent(String preSelectEvent) {
+    void setPreSelectEvent(String preSelectEvent) {
         this.preSelectEvent = preSelectEvent;
     }
 
-    public void testSessionChanged() {
-        currentTransactionInstance = null;
-        getView().clearAllTabs();
-        getView().eventListBox.clear();
-        getView().transactionNamesPanel.clear();
-        setCurrentSimId(null);
-//        doRefresh();
-        getView().eventListBox.clear();
-        loadSimulatorNames();
-        updateEventLink();
+    void testSessionChanged(TestSession testSession) {
+        if (!currentSimId.getTestSession().equals(testSession)) {
+            currentTransactionInstance = null;
+            getView().clearAllTabs();
+            getView().eventListBox.clear();
+            getView().transactionNamesPanel.clear();
+            setCurrentSimId(null);
+            getView().eventListBox.clear();
+            loadSimulatorNames();
+            updateEventLink();
+        }
     }
 }
