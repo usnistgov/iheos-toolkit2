@@ -68,7 +68,7 @@ public class PropertyServiceManager {
 	}
 
 	public String getAdminPassword() {
-		logger.debug(": " + "getAdminPassword");
+//		logger.debug(": " + "getAdminPassword");
 		return getPropertyManager().getPassword();
 	}
 

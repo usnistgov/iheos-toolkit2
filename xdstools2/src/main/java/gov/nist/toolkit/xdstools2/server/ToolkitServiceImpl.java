@@ -214,7 +214,16 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public TransactionOfferings getTransactionOfferings(CommandContext commandContext) throws Exception {
         installCommandContext(commandContext);
-        return siteServiceManager.getTransactionOfferings(session().getId(), commandContext.getTestSession());
+        TransactionOfferings to = null;
+        try {
+            to = siteServiceManager.getTransactionOfferings(session().getId(), commandContext.getTestSession());
+        } catch (Throwable e) {
+            // this can happen because UI initializes faster than AbstractActorFactory on startup
+            // only ever noticed when launching from IntelliJ.  In production tomcat launch happens
+            // way before browser launch
+            return new TransactionOfferings();
+        }
+        return to;
     }
     @Override
     public List<String> reloadExternalSites(CommandContext context) throws FactoryConfigurationError, Exception {
@@ -445,8 +454,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 
     @Override
     public String setTestSession(String sessionName)  throws NoServletSessionException {
-        logCall("setTestSession " + sessionName);
         TestSession testSession = new TestSession(sessionName);
+        if (sessionName != null && !testSession.equals(TestSessionServiceManager.INSTANCE.getTestSession(session())))
+            logCall("setTestSession " + sessionName);
         TestSessionServiceManager.INSTANCE.setTestSession(session(), testSession);
         return sessionName;
     }

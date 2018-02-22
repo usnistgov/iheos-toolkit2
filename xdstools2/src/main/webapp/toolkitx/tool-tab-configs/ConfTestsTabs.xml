@@ -45,6 +45,16 @@ See collections.txt file for indexing.
 
 	<tab label="Document Source" type="actor" tcCode="src" displayColorCode="#D0E4F6">
 		<tabs label="Profiles">
+			<!--
+			<tab label="XDS" type="profile" tcCode="xds">
+				<tab label="Options">
+					<tab label="Required" type="option" tcCode="" externalStart="true"/>
+					<tab label="Doc Replace" type="option" tcCode="docreplace" externalStart="true"/>
+					<tab label="Life Cycle" type="option" tcCode="lifecycle" externalStart="true"/>
+					<tab label="Folder" type="option" tcCode="folder" externalStart="true"/>
+				</tab>
+			</tab>
+			-->
 			<tab label="MHD" type="profile" tcCode="mhd">
 				<tabs label="Options">
 					<tab label="Required" type="option" tcCode="" externalStart="true"/>

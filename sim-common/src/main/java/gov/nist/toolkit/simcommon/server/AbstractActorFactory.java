@@ -48,7 +48,7 @@ public abstract class AbstractActorFactory {
 	public abstract Site getActorSite(SimulatorConfig asc, Site site) throws NoSimulatorException;
 	public abstract List<TransactionType> getIncomingTransactions();
 
-
+	private static boolean initialized = false;
 	/**
 	 * ActorType.name ==> ActorFactory
 	 */
@@ -75,9 +75,12 @@ public abstract class AbstractActorFactory {
 				logger.fatal("AbstractActorFactory: Cannot load factory class for Actor Type " + actorType.getName() + " - " + ExceptionUtil.exception_details(t));
 			}
 		}
+		initialized = true;
 		return theFactories;
+	}
 
-
+	public static boolean isInitialized() {
+		return initialized;
 	}
 
 	public AbstractActorFactory getActorFactory(ActorType at) {

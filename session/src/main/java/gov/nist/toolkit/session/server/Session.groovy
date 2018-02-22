@@ -463,7 +463,8 @@ public class Session implements SecurityParams {
             logger.info("Session set environment - null ignored")
             return;
         }
-		logger.info("Session: " + getId() + ": " + " Environment set to " + name);
+		if (currentEnvName != null && !currentEnvName.equals(name))
+			logger.info("Session: " + getId() + ": " + " Environment set to " + name);
 		setEnvironment(name, Installation.instance().propertyServiceManager().getPropertyManager().getExternalCache());
 	}
 	
@@ -471,10 +472,11 @@ public class Session implements SecurityParams {
 		File k = Installation.instance().environmentFile(name);
 		if (!k.exists() || !k.isDirectory())
 			throw new ToolkitRuntimeException("Environment " + name + " does not exist");
+		if (currentEnvName != null && currentEnvName != name)
+			logger.debug(getId() + ": " + "Environment set to " + k);
 		currentEnvName = name;
 		System.setProperty("XDSCodesFile", k.toString() + File.separator + "codes.xml");
 		new EnvSetting(sessionId, name, k);
-		logger.debug(getId() + ": " + "Environment set to " + k);
 	}
 	
 	public String getCurrentEnvironment() {

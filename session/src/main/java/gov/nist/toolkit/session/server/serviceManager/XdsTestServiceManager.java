@@ -72,8 +72,8 @@ public class XdsTestServiceManager extends CommonService {
 
 	public XdsTestServiceManager(Session session)  {
 		this.session = session;
-		if (session != null)
-			logger.info("XdsTestServiceManager: using session " + session.getId());
+//		if (session != null)
+//			logger.info("XdsTestServiceManager: using session " + session.getId());
 	}
 
 	public static Logger getLogger() {
