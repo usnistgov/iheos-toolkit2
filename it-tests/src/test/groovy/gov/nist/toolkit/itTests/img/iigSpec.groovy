@@ -1,4 +1,4 @@
-package gov.nist.toolkit.itTests.a1runfirst.img
+package gov.nist.toolkit.itTests.img
 
 import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
@@ -19,7 +19,7 @@ import spock.lang.Shared
 /**
  * Integration tests for IIG Simulator
  */
-class A1RunFirst_iigSpec extends ToolkitSpecification {
+class iigSpec extends ToolkitSpecification {
     @Shared SimulatorBuilder spi
     @Shared TestSession testSession = new TestSession(prefixNonce('iigspec'))
     @Shared String id = 'simulator_iig'
