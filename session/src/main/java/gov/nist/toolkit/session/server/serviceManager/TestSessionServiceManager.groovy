@@ -60,7 +60,8 @@ class TestSessionServiceManager {
     }
 
     List<String> getNames()  {
-        (inSimDb() + inActors() + inTestLogs()) as List
+        List<String> a = (inSimDb() + inActors() + inTestLogs()) as List
+        return a
 //        Installation.instance().getTestSessions().collect { TestSession ts -> ts.value}
     }
 

@@ -14,7 +14,7 @@ public class A01Sender {
     static Logger logger = Logger.getLogger(A01Sender.class);
     private static String[] A01 = new String[4];
     static {
-        A01[0] = "MSH|^~\\&|$MSH3$|$MSH4$|$MSH5$|$MSH6$|201301011226||ADT^A01|HL7MSG00001|P|2.3|";
+        A01[0] = "MSH|^~\\&|$MSH3$|$MSH4$|$MSH5$|$MSH6$|201301011226||ADT^A01|HL7MSG00001|P|2.3.1|";
         A01[1] = "EVN||20090224104145-0600";
         A01[2] = "PID|||$pid$||APPLESEED^JOHN^A^III||19710101|M||C|1^CATALYZE STREET^^MADISON^WI^53005-1020|GL|(414)379-1212|(414)271-3434||S||MRN$MRN$^2^M10|123456789|987654^NC|";
         A01[3] = "PV1||I";

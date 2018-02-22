@@ -35,7 +35,7 @@ public class SignInSelector implements IsWidget {
                     @Override
                     public void onComplete(Boolean result) {
                         updateDisplay();
-                        switchTestSession("default");
+                        //switchTestSession("default");
                     }
                 });
                 new AdminPasswordDialogBox(panel);
@@ -47,7 +47,7 @@ public class SignInSelector implements IsWidget {
             public void onClick(ClickEvent clickEvent) {
                 PasswordManagement.isSignedIn = false;
                 updateDisplay();
-                switchTestSession("");
+                //switchTestSession("");
             }
         });
     }

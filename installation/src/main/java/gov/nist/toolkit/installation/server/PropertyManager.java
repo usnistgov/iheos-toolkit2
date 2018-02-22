@@ -31,6 +31,8 @@ public class PropertyManager {
 	static public final String CAS_MODE = "Cas_mode";
 	static private final String NONCE_SIZE = "Nonce_size";
 	static private final String GAZELLE_TESTING_SESSION = "Gazelle_testing_session";
+	static private final String USING_SSL = "Using_SSL";
+	static private final String SSL_PORT = "SSL_Port";
 
 
 	private String propFile;
@@ -127,6 +129,18 @@ public class PropertyManager {
 	public String getPassword() {
 		loadProperties();
 		return (String) toolkitProperties.get(ADMIN_PASSWORD);
+	}
+
+	public boolean isUsingSSL() {
+		loadProperties();
+		String value = (String) toolkitProperties.get(USING_SSL);
+		if (value == null || value.equals("")) return false;
+		return value.equalsIgnoreCase("true");
+	}
+
+	public String getSSLPort() {
+		loadProperties();
+		return (String) toolkitProperties.get(SSL_PORT);
 	}
 
 	public String getToolkitHost() {

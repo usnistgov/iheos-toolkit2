@@ -50,10 +50,11 @@ public class Installation {
      */
 
     public String getToolkitBaseUrl() {
-        return "http://"
+        boolean ssl = propertyServiceMgr.isUsingSSL();
+        return ((ssl) ? "https://" : "http://")
                 + propertyServiceMgr.getToolkitHost()
                 + ":"
-                + propertyServiceMgr.getToolkitPort()
+                + ((ssl) ? propertyServiceMgr.getSSLPort() : propertyServiceMgr.getToolkitPort())
                 + getServletContextName()
                 + "/Xdstools2.html";
     }

@@ -2,9 +2,11 @@ package gov.nist.toolkit.xdstools2.client.toolLauncher;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.registrymetadata.client.RegistryObject;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
+import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.tabs.*;
 import gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab.SubmitResource;
 import gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab.ActorConfigTab;
@@ -16,6 +18,8 @@ import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorT
 import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewer;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.SimulatorControlTab;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.TestsOverviewTab;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -195,6 +199,12 @@ public class ToolLauncher implements ClickHandler {
 	}
 
 	private ToolWindow launch(String requestedName) {
+		boolean mu = Xdstools2.getInstance().multiUserModeEnabled;
+		TestSession testSession = ClientUtils.INSTANCE.getCurrentTestSession();
+		if (mu && (testSession == null || testSession.getValue().equals(""))) {
+			new PopupMessage("A Test Session must be selected");
+			return null;
+		}
 		ToolDef def = getToolDef(requestedName);
 		ToolWindow tool = getTool(def);
 		if (tool == null) return null;
