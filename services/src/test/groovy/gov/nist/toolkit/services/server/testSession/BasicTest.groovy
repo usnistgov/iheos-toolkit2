@@ -1,12 +1,14 @@
-package gov.nist.toolkit.itTests.a1runfirst.testSession
+package gov.nist.toolkit.services.server.testSession
 
+import gov.nist.toolkit.installation.server.ExternalCacheManager
 import gov.nist.toolkit.installation.shared.TestSession
-import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.session.server.serviceManager.TestSessionServiceManager
 import gov.nist.toolkit.simcommon.server.SimDb
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException
 import spock.lang.Shared
+import spock.lang.Specification
 
-class A1RunFirst_BasicSpec extends ToolkitSpecification {
+class BasicTest extends Specification {
     @Shared SimDb simDb = new SimDb()
     @Shared TestSessionServiceManager sm = TestSessionServiceManager.INSTANCE
     @Shared String DEFAULT = TestSession.DEFAULT_TEST_SESSION.value
@@ -15,8 +17,17 @@ class A1RunFirst_BasicSpec extends ToolkitSpecification {
 
     }
 
-    def setup() {
 
+    def setup() {
+        URL externalCacheMarker = getClass().getResource('/external_cache/external_cache.txt')
+        if (externalCacheMarker == null) {
+            throw new ToolkitRuntimeException("Cannot locate external cache for test environment")
+        }
+        File externalCache = new File(externalCacheMarker.toURI().path).parentFile
+
+        // Important to set this before war home since it is overriding contents of toolkit.properties
+        if (!externalCache || !externalCache.isDirectory())throw new ToolkitRuntimeException('External Cache not found')
+        ExternalCacheManager.reinitialize(externalCache)
     }
 
     def 'test create' () {
