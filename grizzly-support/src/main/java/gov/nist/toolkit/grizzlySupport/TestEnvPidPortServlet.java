@@ -46,9 +46,11 @@ public class TestEnvPidPortServlet extends HttpServlet {
                     writer.close();
                 } else if ("terminate".equals(cmd)) {
                    ListenerFactory.terminate(simId);
-
                     response.setStatus(HttpServletResponse.SC_OK);
                    return;
+                } else if ("status".equals(cmd)) {
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    return;
                 }
             }
 

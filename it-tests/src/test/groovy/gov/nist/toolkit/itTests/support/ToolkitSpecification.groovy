@@ -18,6 +18,12 @@ import org.junit.Rule
 import org.junit.rules.TestName
 import spock.lang.Shared
 import spock.lang.Specification
+
+import javax.ws.rs.client.Client
+import javax.ws.rs.client.ClientBuilder
+import javax.ws.rs.client.WebTarget
+import javax.ws.rs.core.Response
+
 /**
  *
  */
@@ -28,10 +34,33 @@ class ToolkitSpecification extends Specification {
     @Shared GrizzlyController server = null
     @Shared ToolkitApi api
     @Shared Session session
-    @Shared String remoteToolkitPort = null
-    @Shared boolean runASingleTestInIde = false;
+    @Shared static String remoteToolkitPort = '8889'
+    @Shared static final boolean localServerMode
+
+    /*
+     * When running it-tests as part of the build, the it-tests plugin launches a one-time startup http server.
+     *
+     * When running a single IT test inside the IDE, a local server is required.
+     *
+     * This block below will decide which mode the test is running in to automatically use the server as needed.
+     */
+    static {
+        try {
+            Client client = ClientBuilder.newClient()
+            WebTarget target = client.target('http://localhost:' + remoteToolkitPort + '/testEnvPidPort?cmd=status')
+
+            Response response = target
+                    .request('text/xml')
+                    .get()
+
+            localServerMode = !(response.status == 200)
+        } catch (Exception ex) {
+            localServerMode = true
+        }
+    }
 
     def setupSpec() {  // there can be multiple setupSpec() fixture methods - they all get run
+
         Installation.instance().setServletContextName("");
         session = UnitTestEnvironmentManager.setupLocalToolkit()
         api = UnitTestEnvironmentManager.localToolkitApi()
@@ -46,7 +75,7 @@ class ToolkitSpecification extends Specification {
 
     // clean out simdb, testlogcache, and actors
     def cleanupDir() {
-        if (runASingleTestInIde) {
+        if (localServerMode) {
             TestSessionServiceManager.INSTANCE.inTestLogs().each { String testSessionName ->
                 Io.delete(Installation.instance().testLogCache(new TestSession(testSessionName)))
             }
@@ -58,7 +87,7 @@ class ToolkitSpecification extends Specification {
 
     def startGrizzly(String port) {
         remoteToolkitPort = port
-        if (runASingleTestInIde) {
+        if (localServerMode) {
             server = new GrizzlyController()
             server.start(remoteToolkitPort);
             server.withToolkit()
@@ -68,7 +97,7 @@ class ToolkitSpecification extends Specification {
 
     def startGrizzlyWithFhir(String port) {
         remoteToolkitPort = port
-        if (runASingleTestInIde) {
+        if (localServerMode) {
             server = new GrizzlyController()
             server.start(remoteToolkitPort);
             server.withToolkit()
@@ -96,7 +125,7 @@ class ToolkitSpecification extends Specification {
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
-        if (runASingleTestInIde) {
+        if (localServerMode) {
             if (server) {
                 server.stop()
                 server = null
