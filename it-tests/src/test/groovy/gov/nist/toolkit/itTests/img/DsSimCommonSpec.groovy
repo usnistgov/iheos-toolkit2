@@ -2,26 +2,24 @@ package gov.nist.toolkit.itTests.img
 
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.actortransaction.client.ParamType
-import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.errorrecording.ErrorRecorder
+import gov.nist.toolkit.fhir.simulators.support.DsSimCommon
+import gov.nist.toolkit.fhir.simulators.support.StoredDocument
 import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
-import gov.nist.toolkit.simcommon.server.SimDb
-import gov.nist.toolkit.fhir.simulators.support.DsSimCommon
 import gov.nist.toolkit.simcommon.server.SimCommon
-import gov.nist.toolkit.fhir.simulators.support.StoredDocument
+import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.valsupport.client.ValidationContext
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
 import spock.lang.Shared
 
 import java.nio.file.Path
-
 /**
  * Test DsSimCommon methods for images
  * Created by rmoult01 on 3/13/17.
@@ -29,7 +27,7 @@ import java.nio.file.Path
 class DsSimCommonSpec extends ToolkitSpecification {
 
     @Shared SimulatorBuilder spi
-    @Shared String testSession = 'dssctest'
+    @Shared String testSession = prefixNonce('dssctest')
     @Shared String id = 'simulator_ids'
     @Shared SimId simId = new SimId(new TestSession(testSession), id)
     @Shared String actor = "ids"
@@ -55,8 +53,8 @@ class DsSimCommonSpec extends ToolkitSpecification {
     // one time shutdown when everything is done
     def cleanupSpec() {
         api.deleteSimulatorIfItExists(simId)
-        server.stop()
-        ListenerFactory.terminateAll()
+//        server.stop()
+//        ListenerFactory.terminateAll()
     }
 
     def setup() {

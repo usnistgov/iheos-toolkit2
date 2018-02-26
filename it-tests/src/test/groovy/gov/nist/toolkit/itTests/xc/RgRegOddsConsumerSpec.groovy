@@ -1,7 +1,6 @@
 package gov.nist.toolkit.itTests.xc
 
 import gov.nist.toolkit.actortransaction.client.ActorType
-import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.fhir.simulators.support.od.TransactionUtil
@@ -30,7 +29,7 @@ class RgRegOddsConsumerSpec extends ToolkitSpecification {
     @Shared String patientId = 'SRG13^^^&1.2.460&ISO'
     @Shared String id = 'odrg'
 //    SimId simId = new SimId(reg)
-    @Shared TestSession testSession = new TestSession('billtest')
+    @Shared TestSession testSession = new TestSession(prefixNonce('billtest'))
     @Shared String siteName = testSession.value + '__' + id
     @Shared SimConfig rgConfig = null
     @Shared Session tkSession
@@ -83,8 +82,8 @@ class RgRegOddsConsumerSpec extends ToolkitSpecification {
 //        spi.delete('rg', testSession)
 //        spi.delete('od', testSession)
         spi.delete(id, testSession.value)
-        server.stop()
-        ListenerFactory.terminateAll()
+//        server.stop()
+//        ListenerFactory.terminateAll()
     }
 
     // submits the patient id configured above to the registry in a Patient Identity Feed transaction

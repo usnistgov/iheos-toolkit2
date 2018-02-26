@@ -1,6 +1,5 @@
 package gov.nist.toolkit.itTests.xdr
 
-import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
@@ -20,7 +19,6 @@ import gov.nist.toolkit.utilities.xml.OMFormatter
 import gov.nist.toolkit.utilities.xml.Util
 import org.apache.axiom.om.OMElement
 import spock.lang.Shared
-
 /**
  * This is not named *Spec on purpose.  The recipient must be created manually in
  * a separate copy of toolkit so this must be run by hand.
@@ -42,8 +40,8 @@ class XdrSrcTls extends ToolkitSpecification {
 
     def cleanupSpec() {  // one time shutdown when everything is done
         spi.delete(srcParams.id, srcParams.user)
-        server.stop()
-        ListenerFactory.terminateAll()
+//        server.stop()
+//        ListenerFactory.terminateAll()
     }
 
 

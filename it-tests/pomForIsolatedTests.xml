@@ -10,7 +10,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>it-tests</artifactId>
+    <artifactId>it-tests-isolated</artifactId>
 
     <dependencies>
         <dependency>
@@ -141,7 +141,7 @@
 
     <profiles>
     <profile>
-        <id>Integration-Tests</id>
+        <id>Integration-Tests-Isolated</id>
         <activation>
             <activeByDefault>false</activeByDefault>
         </activation>
@@ -174,22 +174,13 @@
                     <artifactId>maven-failsafe-plugin</artifactId>
                     <version>2.19.1</version>
                     <configuration>
+                        <!-- Tests that require to be run in complete isolation. -->
                         <includes>
-                            <!--<include>**/FhirSupportOrchestrationBuilderSpec.java</include>-->
-                            <!--<include>**/MultiQuerySpec.java</include>-->
-                            <!--<include>**/DicomSpec.java</include>-->
-                            <include>**/*Spec.java</include>
-                            <include>**/*Test.java</include>
-                            <include>**/*IT.java</include>
-                            <!-- end include all tests -->
+                            <include>**/BasicSpec.java</include>
                         </includes>
-                        <!-- Exclude tests that disturb other tests or require to be run in complete isolation. -->
-                        <!--<parallel>classes</parallel>-->
-                        <!--<runOrder>alphabetical</runOrder>-->
-                        <!--<useUnlimitedThreads>true</useUnlimitedThreads>-->
-                        <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                        <!-- Explanation of the fork arguments in use here: Since there is only ONE external_cache dir, running tests in parallel causes one test to disturb other test environment. To remove this side effect, we start off with a clean environment each time (see cleanupDir method in ToolkitSpecification). -->
                         <forkCount>1</forkCount>
-                        <reuseForks>true</reuseForks>
+                        <reuseForks>false</reuseForks>
                         <!-- We should NOT ignore IT test failures. TestFailureIgnore should be false. -->
                         <testFailureIgnore>false</testFailureIgnore>
                     </configuration>

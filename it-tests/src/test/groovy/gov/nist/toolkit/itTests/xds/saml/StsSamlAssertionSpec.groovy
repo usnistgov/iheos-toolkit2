@@ -30,9 +30,9 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
 
     @Shared String patientId = 'SKB1^^^&1.2.960&ISO'
 
-    @Shared String reg = 'sunil__reg'
+    @Shared TestSession testSession = new TestSession(prefixNonce('sunil'))
+    @Shared String reg = testSession.value + '__reg'
     @Shared SimId simId = SimIdFactory.simIdBuilder(reg)
-    @Shared TestSession testSession = new TestSession('sunil')
     @Shared Site gazelleStsSite
     @Shared Session tkSession
     @Shared SimConfig rrConfig = null
@@ -74,7 +74,7 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
-        server.stop()
+//        server.stop()
 //        ListenerFactory.terminateAll()
     }
 
@@ -171,7 +171,7 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
     @Ignore
     def 'headless1 - Submit Pid transaction to Registry simulator'() {
             when:
-            String siteName = 'sunil__rr'
+            String siteName = testSession + '__rr'
             TestInstance testId = new TestInstance("15804",testSession)
             List<String> sections = new ArrayList<>()
             sections.add("section")
@@ -192,7 +192,7 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
     @Ignore
     def 'headless1.1 - Run SQ initialization'() {
         when:
-        String siteName = 'sunil__rr'
+        String siteName =  testSession + '__rr'
         TestInstance testId = new TestInstance("tc:Initialize_for_Stored_Query",testSession)
         List<String> sections = new ArrayList<>()
         Map<String, String> params = new HashMap<>()
@@ -210,7 +210,7 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
     @Ignore
     def 'headless1.2 Setup test with submissions'() {
         when:
-        String siteName = 'sunil__rr'
+        String siteName = testSession + '__rr'
         TestInstance testId = new TestInstance("15816",testSession)
         List<String> sections = ['Register_Stable', 'PnR']
         Map<String, String> params = new HashMap<>()

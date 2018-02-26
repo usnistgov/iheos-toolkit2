@@ -1,6 +1,5 @@
 package gov.nist.toolkit.itTests.img
 
-import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.TestInstance
@@ -22,7 +21,7 @@ import spock.lang.Shared
  */
 class RigSpec extends ToolkitSpecification {
     @Shared SimulatorBuilder spi
-    @Shared TestSession testSession = new TestSession('rigspec')
+    @Shared TestSession testSession = new TestSession(prefixNonce('rigspec'))
     @Shared String id = 'simulator_rig'
     @Shared SimId simId = new SimId(testSession, id)
     @Shared String envName = 'default'
@@ -52,8 +51,8 @@ class RigSpec extends ToolkitSpecification {
 
     // one time shutdown when everything is done
     def cleanupSpec() {
-        server.stop()
-        ListenerFactory.terminateAll()
+//        server.stop()
+//        ListenerFactory.terminateAll()
     }
 
     def setup() {

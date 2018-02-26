@@ -19,7 +19,7 @@ import spock.lang.Shared
 class CreateSpec extends FhirSpecification {
     @Shared SimulatorBuilder spi
 
-    @Shared def testSession = 'bill'
+    @Shared def testSession = prefixNonce('bill')
     @Shared def simIdName = 'myfhirsys'
     @Shared def siteName = "${testSession}__${simIdName}"
 

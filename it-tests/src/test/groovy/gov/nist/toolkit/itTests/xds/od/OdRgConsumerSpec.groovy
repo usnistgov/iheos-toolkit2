@@ -1,9 +1,9 @@
 package gov.nist.toolkit.itTests.xds.od
 
 import gov.nist.toolkit.actortransaction.client.ActorType
-import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
+import gov.nist.toolkit.fhir.simulators.support.od.TransactionUtil
 import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.registrymetadata.client.Document
@@ -13,14 +13,12 @@ import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.simcommon.client.SimId
-import gov.nist.toolkit.fhir.simulators.support.od.TransactionUtil
 import gov.nist.toolkit.simcommon.client.SimIdFactory
 import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import spock.lang.Shared
-
 /**
  * Test Responding gateway with On-Demand Document Source
  */
@@ -30,9 +28,9 @@ class OdRgConsumerSpec extends ToolkitSpecification {
 
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
     @Shared String patientId = 'SRG13^^^&1.2.460&ISO'
-    String reg = 'sunil__rg'
+    @Shared TestSession testSession = new TestSession(prefixNonce('sunil'))
+    String reg = testSession.value + '__rg'
     SimId simId = SimIdFactory.simIdBuilder(reg)
-    @Shared TestSession testSession = new TestSession('sunil')
     @Shared SimConfig rgConfig = null
     @Shared SimConfig oddsConfig = null
     @Shared Session tkSession
@@ -84,15 +82,15 @@ class OdRgConsumerSpec extends ToolkitSpecification {
 //        System.gc()
         spi.delete('rg', testSession.value)
         spi.delete('od', testSession.value)
-        server.stop()
-        ListenerFactory.terminateAll()
+//        server.stop()
+//        ListenerFactory.terminateAll()
     }
 
 
     // submits the patient id configured above to the registry in a Patient Identity Feed transaction
     def 'Submit Pid transaction to Registry simulator'() {
         when:
-        String siteName = 'sunil__rg'
+        String siteName = testSession.value + '__rg'
         TestInstance testId = new TestInstance("15804",testSession)
         List<String> sections = new ArrayList<>()
         sections.add("section")
@@ -136,7 +134,7 @@ class OdRgConsumerSpec extends ToolkitSpecification {
      */
     def 'Retrieve from the ODDS without Persistence Option'() {
         when:
-        String siteName = 'sunil__rg'
+        String siteName = testSession.value + '__rg'
         TestInstance testId = new TestInstance("15806",testSession)
         List<String> sections = ["Retrieve"]
         Map<String, String> params = new HashMap<>()

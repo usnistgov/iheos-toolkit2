@@ -1,0 +1,45 @@
+package gov.nist.toolkit;
+
+/*
+ * Copyright 2001-2005 The Apache Software Foundation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import gov.nist.toolkit.adt.ListenerFactory;
+import gov.nist.toolkit.grizzlySupport.GrizzlyController;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+
+@Mojo(name = "stop", defaultPhase = LifecyclePhase.POST_INTEGRATION_TEST)
+public class StopMojo extends AbstractMojo {
+
+    @Override
+    public void execute() throws MojoExecutionException {
+        GrizzlyController server = (GrizzlyController) getPluginContext().get("grizzlyService");
+        getLog().info("grizzly server is not null?" + (server!=null));
+
+        if (server!=null) {
+            getLog().info("Stopping grizzly server.");
+            server.stop();
+        }
+
+        ListenerFactory listenerFactory = (ListenerFactory)getPluginContext().get("listenerFactory");
+        if (listenerFactory!=null) {
+            listenerFactory.terminateAll();
+        }
+    }
+
+}

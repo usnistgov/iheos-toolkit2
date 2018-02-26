@@ -4,6 +4,7 @@ import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.grizzlySupport.GrizzlyController
 import gov.nist.toolkit.installation.server.Installation
+import gov.nist.toolkit.installation.server.TestSessionFactory
 import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.results.client.*
 import gov.nist.toolkit.services.server.ToolkitApi
@@ -17,6 +18,12 @@ import org.junit.Rule
 import org.junit.rules.TestName
 import spock.lang.Shared
 import spock.lang.Specification
+
+import javax.ws.rs.client.Client
+import javax.ws.rs.client.ClientBuilder
+import javax.ws.rs.client.WebTarget
+import javax.ws.rs.core.Response
+
 /**
  *
  */
@@ -27,9 +34,34 @@ class ToolkitSpecification extends Specification {
     @Shared GrizzlyController server = null
     @Shared ToolkitApi api
     @Shared Session session
-    @Shared String remoteToolkitPort = null
+    @Shared static String remoteToolkitPort = '8889'
+    @Shared static final boolean localServerMode
+
+    /*
+     * When running it-tests as part of the build, the it-tests plugin launches a one-time startup http server.
+     *
+     * When running a single IT test inside the IDE, a local server is required.
+     *
+     * This block below will decide which mode the test is running in to automatically use the server as needed.
+     */
+    static {
+        try {
+            Client client = ClientBuilder.newClient()
+            WebTarget target = client.target('http://localhost:' + remoteToolkitPort + '/testEnvPidPort?cmd=status')
+
+            Response response = target
+                    .request('text/xml')
+                    .get()
+
+            localServerMode = !(response.status == 200)
+        } catch (Exception ex) {
+            localServerMode = true
+        }
+    }
 
     def setupSpec() {  // there can be multiple setupSpec() fixture methods - they all get run
+
+        Installation.instance().setServletContextName("");
         session = UnitTestEnvironmentManager.setupLocalToolkit()
         api = UnitTestEnvironmentManager.localToolkitApi()
 
@@ -43,35 +75,42 @@ class ToolkitSpecification extends Specification {
 
     // clean out simdb, testlogcache, and actors
     def cleanupDir() {
-        TestSessionServiceManager.INSTANCE.inSimDb().each { String testSessionName ->
-            Io.delete(Installation.instance().simDbFile(new TestSession(testSessionName)))
+        if (localServerMode) {
+            TestSessionServiceManager.INSTANCE.inTestLogs().each { String testSessionName ->
+                Io.delete(Installation.instance().testLogCache(new TestSession(testSessionName)))
+            }
+            Installation.instance().simDbFile(TestSession.DEFAULT_TEST_SESSION).mkdirs()
+            Installation.instance().actorsDir(TestSession.DEFAULT_TEST_SESSION).mkdirs()
+            Installation.instance().testLogCache(TestSession.DEFAULT_TEST_SESSION).mkdirs()
         }
-        TestSessionServiceManager.INSTANCE.inActors().each { String testSessionName ->
-            Io.delete(Installation.instance().actorsDir(new TestSession(testSessionName)))
-        }
-        TestSessionServiceManager.INSTANCE.inTestLogs().each { String testSessionName ->
-            Io.delete(Installation.instance().testLogCache(new TestSession(testSessionName)))
-        }
-        Installation.instance().simDbFile(TestSession.DEFAULT_TEST_SESSION).mkdirs()
-        Installation.instance().actorsDir(TestSession.DEFAULT_TEST_SESSION).mkdirs()
-        Installation.instance().testLogCache(TestSession.DEFAULT_TEST_SESSION).mkdirs()
     }
 
     def startGrizzly(String port) {
         remoteToolkitPort = port
-        server = new GrizzlyController()
-        server.start(remoteToolkitPort);
-        server.withToolkit()
+        if (localServerMode) {
+            server = new GrizzlyController()
+            server.start(remoteToolkitPort);
+            server.withToolkit()
+        }
         Installation.instance().overrideToolkitPort(remoteToolkitPort)  // ignore toolkit.properties
     }
 
     def startGrizzlyWithFhir(String port) {
         remoteToolkitPort = port
-        server = new GrizzlyController()
-        server.start(remoteToolkitPort);
-        server.withToolkit()
-        server.withFhirServlet()
+        if (localServerMode) {
+            server = new GrizzlyController()
+            server.start(remoteToolkitPort);
+            server.withToolkit()
+            server.withFhirServlet()
+        }
         Installation.instance().overrideToolkitPort(remoteToolkitPort)  // ignore toolkit.properties
+    }
+
+    static String prefixNonce(String name) {
+        if ("default".equals(name))
+            throw new Exception("Default session cannot be prefixed with a nonce.")
+
+        return name + TestSessionFactory.nonce()
     }
 
 
@@ -86,14 +125,15 @@ class ToolkitSpecification extends Specification {
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
-        System.gc()
-        if (server) {
-            server.stop()
-            server = null
-        }
-        ListenerFactory.terminateAll()
+        if (localServerMode) {
+            if (server) {
+                server.stop()
+                server = null
+            }
+            ListenerFactory.terminateAll()
 
-        assert TestSessionServiceManager.INSTANCE.isConsistant()
+            assert TestSessionServiceManager.INSTANCE.isConsistant()
+        }
     }
 
     def initializeRegistryWithPatientId(String testSession, SimId simId, Pid pid) {
@@ -139,6 +179,5 @@ class ToolkitSpecification extends Specification {
 
         return found
     }
-
 
 }

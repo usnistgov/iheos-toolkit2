@@ -1,7 +1,6 @@
 package gov.nist.toolkit.itTests.xds
 
 import gov.nist.toolkit.actortransaction.client.ActorType
-import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.installation.shared.TestSession
@@ -13,7 +12,6 @@ import gov.nist.toolkit.simcommon.client.SimIdFactory
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import spock.lang.Shared
-
 /**
  * Runs all Registry tests.
  * To run:
@@ -30,10 +28,10 @@ class StoredQuerySpec extends ToolkitSpecification {
 
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
     @Shared String patientId2 = 'BR15^^^&1.2.360&ISO'
-    @Shared String reg = 'bill__reg'
+    @Shared String testSession = prefixNonce('bill')
+    @Shared String reg =  testSession + '__reg'
     @Shared SimId simId = SimIdFactory.simIdBuilder(reg)
-    @Shared String testSession = 'bill';
-    @Shared String siteName = 'bill__reg'
+    @Shared String siteName = testSession + '__reg'
 
     def setupSpec() {   // one time setup done when class launched
         startGrizzly('8889')
@@ -59,8 +57,8 @@ class StoredQuerySpec extends ToolkitSpecification {
 //        System.gc()
         spi.delete('reg', testSession)
         api.deleteSimulatorIfItExists(simId)
-        server.stop()
-        ListenerFactory.terminateAll()
+//        server.stop()
+//        ListenerFactory.terminateAll()
     }
 
     def setup() {

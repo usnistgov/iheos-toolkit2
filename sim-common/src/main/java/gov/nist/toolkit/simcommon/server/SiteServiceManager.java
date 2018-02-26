@@ -64,18 +64,22 @@ public class SiteServiceManager {
 		simIds = SimDb.getAllSimIds(TestSession.DEFAULT_TEST_SESSION);
 		for (SimId simId : simIds) {
 			SimulatorConfig config = new SimDb().getSimulator(simId);
-			AbstractActorFactory af = getActorFactory(config);
-			if (af == null)
-				throw new ToolkitRuntimeException("No ActorFactory for " + config);
-			Site site = af.getActorSite(config, null);
-			sites.put(site.getName(), site);
+			if (config != null) {
+				AbstractActorFactory af = getActorFactory(config);
+				if (af == null)
+					throw new ToolkitRuntimeException("No ActorFactory for " + config);
+				Site site = af.getActorSite(config, null);
+				sites.put(site.getName(), site);
+			}
 		}
 		simIds = SimDb.getAllSimIds(testSession);
 		for (SimId simId : simIds) {
 			SimulatorConfig config = new SimDb().getSimulator(simId);
-			AbstractActorFactory af = getActorFactory(config);
-			Site site = af.getActorSite(config, null);
-			sites.put(site.getName(), site);
+			if (config!=null) {
+				AbstractActorFactory af = getActorFactory(config);
+				Site site = af.getActorSite(config, null);
+				sites.put(site.getName(), site);
+			}
 		}
 
 		List<Site> returns = new ArrayList<>();

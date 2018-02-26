@@ -1,7 +1,6 @@
 package gov.nist.toolkit.itTests.xds
 
 import gov.nist.toolkit.actortransaction.client.ActorType
-import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
@@ -11,17 +10,19 @@ import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import spock.lang.Shared
+import spock.lang.Stepwise
 
 /**
  *
  */
+@Stepwise
 class DicomSpec extends ToolkitSpecification {
     @Shared SimulatorBuilder spi
 
 
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
     @Shared String patientId = 'IDS-AD027-a^^^&1.3.6.1.4.1.21367.2005.13.20.1000&ISO'
-    @Shared String testSession = 'test'
+    @Shared String testSession = prefixNonce( 'test')
     @Shared String simName = 'rr'
     @Shared SimId simId = new SimId(new TestSession(testSession), simName)
     @Shared String rr = simId.toString()
@@ -48,13 +49,13 @@ class DicomSpec extends ToolkitSpecification {
             api.openSimulator(simId)
         } else {
             println "Creating sim ${simId}"
-            api.createSimulator(ActorType.REPOSITORY_REGISTRY, simId)
+            spi.createDocumentRegRep(simId.id, simId.testSession.value,'default')
         }
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
-        server.stop()
-        ListenerFactory.terminateAll()
+//        server.stop()
+//        ListenerFactory.terminateAll()
 //        api.deleteSimulatorIfItExists(simId)
     }
 

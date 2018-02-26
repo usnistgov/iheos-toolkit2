@@ -1,6 +1,5 @@
 package gov.nist.toolkit.itTests.xdm
 
-import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitApi.XdmValidator
@@ -8,7 +7,6 @@ import gov.nist.toolkit.toolkitServicesCommon.resource.xdm.XdmItem
 import gov.nist.toolkit.toolkitServicesCommon.resource.xdm.XdmReport
 import gov.nist.toolkit.toolkitServicesCommon.resource.xdm.XdmRequestResource
 import spock.lang.Shared
-
 /**
  *
  */
@@ -27,8 +25,8 @@ class ValidateXdmSpec extends ToolkitSpecification {
 
     def cleanupSpec() {  // one time shutdown when everything is done
 //        System.gc()
-        server.stop()
-        ListenerFactory.terminateAll()
+//        server.stop()
+//        ListenerFactory.terminateAll()
     }
 
     def setup() {}

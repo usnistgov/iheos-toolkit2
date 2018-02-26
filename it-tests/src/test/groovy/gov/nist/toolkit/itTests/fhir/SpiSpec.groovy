@@ -15,7 +15,7 @@ class SpiSpec extends FhirSpecification {
     @Shared SimulatorBuilder spi
 
     @Shared def testSession = 'default'
-    @Shared def simIdName = 'test'
+    @Shared def simIdName = prefixNonce('test')
 
     @Shared SimId simId = new SimId(new TestSession(testSession), simIdName).forFhir()
     @Shared FhirContext ourCtx = FhirContext.forDstu3()

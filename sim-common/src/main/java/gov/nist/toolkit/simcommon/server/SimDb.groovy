@@ -208,19 +208,10 @@ public class SimDb {
 		if (!simDir.isDirectory())
 			throw new ToolkitRuntimeException("Cannot create content in Simulator database, creation of " + simDir.toString() + " failed");
 
-//		int retry=3;
-//		boolean hasSafetyFile = false;
-//		while (!hasSafetyFile && retry-->0) {
-//			try {
 		// add this for safety when deleting simulators -
 		if (!isSimDir(simDir)) {
 			Io.stringToFile(simSafetyFile(), simId.toString());
 		}
-//				hasSafetyFile=true;
-//			} catch (Exception ex) {
-//				Thread.sleep(1000);
-//			}
-//		}
 
 	}
 
@@ -633,7 +624,7 @@ public class SimDb {
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	public SimulatorConfig getSimulator(SimId simId) throws Exception {
+	public SimulatorConfig getSimulator(SimId simId) throws SimDoesNotExistException {
 		SimulatorConfig config = null;
 		boolean okIfNotExist = true;
 		int retry = 3;
@@ -642,13 +633,13 @@ public class SimDb {
 			try {
 				config = GenericSimulatorFactory.loadSimulator(simId, okIfNotExist);
 			} catch (Exception ex) {
-				Thread.sleep(1000);
+				Thread.sleep(100);
 				logger.info("LoadSimulator retrying attempt..." + retry);
 			}
 		}
 
 		if (!okIfNotExist && retry==0 && config==null)
-			throw new Exception("Null config for " + simId.toString() + " even after retry attempts.");
+			throw new SimDoesNotExistException("Null config for " + simId.toString() + " even after retry attempts.");
 
 		return config;
 	}

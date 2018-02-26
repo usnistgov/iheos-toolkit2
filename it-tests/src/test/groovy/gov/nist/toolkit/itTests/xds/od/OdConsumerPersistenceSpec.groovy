@@ -1,7 +1,6 @@
 package gov.nist.toolkit.itTests.xds.od
 
 import gov.nist.toolkit.actortransaction.client.ActorType
-import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.fhir.simulators.support.od.TransactionUtil
@@ -27,7 +26,7 @@ class OdConsumerPersistenceSpec extends ToolkitSpecification {
 
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
     @Shared String patientId = 'SR15^^^&1.2.460&ISO'
-    @Shared TestSession testSession = new TestSession('sunil2')
+    @Shared TestSession testSession = new TestSession(prefixNonce('sunil2'))
     @Shared SimConfig rrConfig = null
     @Shared SimConfig oddsConfig = null
     @Shared Session tkSession
@@ -80,15 +79,15 @@ class OdConsumerPersistenceSpec extends ToolkitSpecification {
 //        System.gc()
         spi.delete('rr3', testSession.value)
         spi.delete('odds3', testSession.value)
-        server.stop()
-        ListenerFactory.terminateAll()
+//        server.stop()
+//        ListenerFactory.terminateAll()
     }
 
 
     // submits the patient id configured above to the registry in a Patient Identity Feed transaction
     def 'Submit Pid transaction to Registry simulator'() {
         when:
-        String siteName = 'sunil2__rr3'
+        String siteName = testSession.value + '__rr3'
         TestInstance testId = new TestInstance("15804")
         List<String> sections = new ArrayList<>()
         sections.add("section")
@@ -149,13 +148,9 @@ class OdConsumerPersistenceSpec extends ToolkitSpecification {
     }
     */
 
-    /**
-     *
-     * @return
-     */
     def 'Retrieve from the ODDS with Persistence Option'() {
         when:
-        String siteName = 'sunil2__odds3'
+        String siteName = testSession.value + '__odds3'
         TestInstance testId = new TestInstance("15806")
         List<String> sections = ["Retrieve"]
         Map<String, String> params = new HashMap<>()

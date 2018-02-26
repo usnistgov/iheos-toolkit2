@@ -21,7 +21,7 @@ import spock.lang.Shared
  *
  */
 class PatientQueryByNameSpec extends FhirSpecification {
-    @Shared SimId simId = new SimId(new TestSession('default'), 'test')
+    @Shared SimId simId = new SimId(new TestSession('default'), prefixNonce('test'))
     @Shared FhirContext ourCtx = FhirContext.forDstu3()
 
     def setupSpec() {
