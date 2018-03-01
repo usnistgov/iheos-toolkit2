@@ -158,7 +158,11 @@ public class SqSim  extends TransactionSimulator implements MetadataGeneratingSi
 		} else if (sq instanceof GetAllSim) {
 			GetAllSim sim = (GetAllSim) sq;
 			sim.setRegIndex(dsSimCommon.regIndex);
-		} else {
+		} else if (sq instanceof FindDocumentsForMultiplePatientsSim) {
+			FindDocumentsForMultiplePatientsSim sim = (FindDocumentsForMultiplePatientsSim) sq;
+			sim.setRegIndex(dsSimCommon.regIndex);
+		}
+		else {
 			throw new XdsInternalException("Internal Error: " + sq.getClass().getCanonicalName() + " is not linked to Registry Index");
 		}
 	}

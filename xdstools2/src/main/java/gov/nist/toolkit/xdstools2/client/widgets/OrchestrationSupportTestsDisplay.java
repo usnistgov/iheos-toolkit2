@@ -23,7 +23,7 @@ public class OrchestrationSupportTestsDisplay extends FlowPanel {
             public void onComplete(List<TestOverviewDTO> testOverviews) {
                 add(new HTML("Utilities run to initialize environment"));
                 TestDisplayGroup orchGroup = new TestDisplayGroup(testContext, testContextView, testRunner, controller);
-                orchGroup.allowRun(false);
+                orchGroup.allowRun(true);
                 orchGroup.allowDelete(false);
                 boolean hasTests = false;
                 for (TestOverviewDTO testOverview : testOverviews) {
@@ -35,7 +35,7 @@ public class OrchestrationSupportTestsDisplay extends FlowPanel {
                     }
                 }
                 if (!hasTests) {
-                    add(new HTML("No utilities configured"));
+                    add(new HTML("No Orchestration steps configured"));
                 }
             }
         }.run(new GetTestsOverviewRequest(ClientUtils.INSTANCE.getCommandContext(),orchResponse.getTestInstances()));
