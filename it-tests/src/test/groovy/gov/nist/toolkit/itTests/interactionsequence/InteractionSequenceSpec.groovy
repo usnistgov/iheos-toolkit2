@@ -11,8 +11,27 @@ class InteractionSequenceSpec extends ToolkitSpecification {
     }
     def cleanupSpec() {
     }
-
     def setup() {
+    }
+
+    def 'Test Mu transformation'() {
+        when:
+        InteractionSequences.init(Installation.instance().getInteractionSequencesFile())
+
+        then:
+        InteractionSequences.getSequencesMap().size() > 0
+
+        List<InteractingEntity> seq = InteractionSequences.getInteractionSequenceById("MuTransaction")
+
+        seq != null && seq.size() == 1
+
+        InteractingEntity docAdmin = seq.get(0)
+        docAdmin != null
+        docAdmin.role == "Document Administrator"
+
+        docAdmin.getInteractions().size() == 1
+        InteractingEntity reg = docAdmin.getInteractions().get(0)
+        reg.role == "Document Registry"
 
     }
 
@@ -34,12 +53,12 @@ class InteractionSequenceSpec extends ToolkitSpecification {
 
         System.out.println(docSrc.toString())
 
-        docSrc.getInteractions().size()==1
+        docSrc.getInteractions().size() == 1
         InteractingEntity repos = docSrc.getInteractions().get(0)
-        repos.role == "Repository"
+        repos.role == "Document Repository"
 
         InteractingEntity reg = repos.getInteractions().get(0)
-        reg.role == "Registry"
+        reg.role == "Document Registry"
 
     }
 

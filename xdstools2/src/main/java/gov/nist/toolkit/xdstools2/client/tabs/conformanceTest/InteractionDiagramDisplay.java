@@ -69,7 +69,6 @@ public class InteractionDiagramDisplay extends FlowPanel {
                             diagram.draw();
                         }
 
-
                         if ((!getTestOverviewDTO().isRun() && diagram.hasMeaningfulDiagram()) || getTestOverviewDTO().isRun()) {
                             add(new HTML("<p><b>Interaction Sequence:</b></p>"));
                             add(diagram);

@@ -3,6 +3,7 @@ package gov.nist.toolkit.testkitutilities;
 import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.interactionmodel.server.InteractionSequences;
+import gov.nist.toolkit.interactionmodel.shared.TransactionSequenceNotFoundException;
 import gov.nist.toolkit.testkitutilities.client.Gather;
 import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
 import gov.nist.toolkit.testkitutilities.client.StepDefinitionDAO;
@@ -18,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -148,23 +150,30 @@ public class TestDefinition {
 						} else {
 							transactionKey = InteractionSequences.xformSequenceToEntity(interactionSeq);
 						}
-						if (InteractionSequences.getInteractionSequenceById(transactionKey)!=null) {
+						try {
+							if (InteractionSequences.getInteractionSequenceById(transactionKey) != null) {
+								List<InteractingEntity> src = InteractionSequences.getInteractionSequenceById(transactionKey);
+								List<InteractingEntity> copyIeList = new ArrayList<>();
 
-							List<InteractingEntity> src = InteractionSequences.getInteractionSequenceById(transactionKey);
-							List<InteractingEntity> copyIeList = new ArrayList<>();
-
-							if (src!=null) {
-								for (InteractingEntity ie : src) {
-									copyIeList.add(ie.copy());
+								if (src != null) {
+									for (InteractingEntity ie : src) {
+										copyIeList.add(ie.copy());
+									}
+									step.setInteractionSequence(copyIeList);
 								}
-								step.setInteractionSequence(copyIeList);
-							}
 
-							if (goalEle==null)
+								if (goalEle == null)
+									section.addStep(step);
+							}
+						} catch (TransactionSequenceNotFoundException tsnfe) {
+								InteractingEntity ie = new InteractingEntity();
+								ie.setErrors(Arrays.asList(new String[]{TransactionSequenceNotFoundException.class.getSimpleName() + ":" + trans.getLocalName() +  ": Transaction is not mappable." + tsnfe.toString()}));
+								step.setInteractionSequence(new ArrayList<InteractingEntity>());
+								step.getInteractionSequence().add(ie);
 								section.addStep(step);
-							break;
 						}
 					} catch (Exception ex) {}
+					break; // limit one transaction diagram per step
 				}
 
 				// parse goals

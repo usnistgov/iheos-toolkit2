@@ -20,6 +20,7 @@ import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.interactiondiagram.client.events.DiagramClickedEvent;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
+import gov.nist.toolkit.interactionmodel.shared.TransactionSequenceNotFoundException;
 import gov.nist.toolkit.session.client.logtypes.SectionOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.StepOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
@@ -86,6 +87,11 @@ public class InteractionDiagram extends Composite {
     private String sutActorRoleName;
     private String sessionName;
     private boolean atleastOneSectionWasRun = false;
+    /**
+     * Transaction is not mappable since there is no matching transaction key in the InteractionSequences.xml file.
+     * When this happens, the entire test sequence is not meaningful since at least one transaction is not mappable.
+     */
+    private boolean hasUnmappableTransaction = false;
 
     private static final int MAX_TOOLTIPS = 5;
     private static final int HIDE_TOOLTIP_ON_MOUSEOUT = -1;
@@ -431,13 +437,21 @@ public class InteractionDiagram extends Composite {
                 List<InteractingEntity> interactionSequence = stepOverviewDTO.getInteractionSequence();
 
                 if (interactionSequence!=null) {
-                    setIePlaceholderValues(interactionSequence);
-                    setIeTransactionStatus(section, sectionOverviewDTO, stepName, stepOverviewDTO, interactionSequence);
+
+                    if (interactionSequence.size()==1 && interactionSequence.get(0).getErrors().size()==1) {
+                        String error = interactionSequence.get(0).getErrors().get(0);
+                        if (error.contains(TransactionSequenceNotFoundException.class.getSimpleName())) {
+                           hasUnmappableTransaction = true;
+                        }
+                    } else {
+                        setIePlaceholderValues(interactionSequence);
+                        setIeTransactionStatus(section, sectionOverviewDTO, stepName, stepOverviewDTO, interactionSequence);
 
 //                    if ("11981".equals(testResultDTO.getTestInstance().getId()))
 //                    alert("section: " + section + " step: " + stepName + " is hashcode: " + interactionSequence.hashCode() + " step hashcode: " + stepOverviewDTO.hashCode());
 
-                    result.addAll(interactionSequence);
+                        result.addAll(interactionSequence);
+                    }
                 }
             }
          }
@@ -1236,8 +1250,9 @@ public class InteractionDiagram extends Composite {
         return tooltip;
     }
 
-    public boolean hasMeaningfulDiagram() { // At-least two life lines for a meaningful diagram
-       return (lls.size()>1);
+    public boolean hasMeaningfulDiagram() {
+        // At-least two life lines for a meaningful diagram
+       return (lls.size()>1) && !hasUnmappableTransaction;
     }
 
     public SiteSpec getTargetSite() {

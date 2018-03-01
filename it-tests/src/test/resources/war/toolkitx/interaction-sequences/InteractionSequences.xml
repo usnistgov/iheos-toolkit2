@@ -1,43 +1,109 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!--
+
+INTRODUCTION:
+This file defines general interaction sequences between actors, within an XDS Toolkit conformance environment, as referred to by the test plan in question. It is meant to supplement a test plan. However, if a test plan specifies it's own InteractionSequence element, it takes precedence over this definition. In this case the key must be unqiue like so: 11966_SpecialStep_ProvideAndRegister.
+
+IMPORTANT NOTES:
+i) The value of an actor element's name attribute provided by a toolkit simulator is linked to the Conformance Test Environment. This value is hardcoded in the Builder class for now. See the relevant OrchestrationBuilder class depending on the SystemUnderTest provider's actor role. For example, if the actor role is Repository, see RepOrchestrationBuilder.groovy. Eventually when the conformance test environment is scripted the name reference should resolve automatically.
+ii) The value of an InteractionSequence element's type attribute is linked to a TestPlan's TestStep transaction element.
+iii) The Id attribute value maps to the TestPlan TestStep Transaction.
+iv) The transaction type value maps to TransactionType class
+v) Actor role maps to ActorType class
+vi)	When there are multiple transactions to the same type of actor and provider, their name names must be unique. Example: role=r1 provider=p1 *name=community1* and role=r1 provider=p1 *name=community2*
+
+ASSUMPTIONS:
+Limited by the TestOverviewBuilder class, this makes an assumption that only one Transaction is allowed per Step.
+        stepOverview.setTransaction(stepContent.getTransaction());
+
+-->
 
 <InteractionSequences>
+    <InteractionSequence id="RetrieveTransaction">
+        <Actor role="XDS Document Consumer" provider="TestClient">
+            <Transaction type="ret.b">
+                <Actor role="Document Repository" provider="Simulator"/>
+            </Transaction>
+        </Actor>
+    </InteractionSequence>
 
-	<InteractionSequence id="ProvideAndRegisterTransaction">
-			<Actor role="Document Source" provider="TestClient">
-				<Transaction type="prb">
-					<Actor role="Repository" provider="SystemUnderTest">
-						<Transaction type="rb">
-							<Actor role="Registry" name="rep_test_support" provider="Simulator"/>
-						</Transaction>
-					</Actor>
-				</Transaction>
-			</Actor>
-	</InteractionSequence>
+    <InteractionSequence id="RegisterTransaction">
+        <Actor role="Document Repository" provider="TestClient">
+            <Transaction type="rb">
+                <Actor role="Document Registry" provider="Simulator"/>
+            </Transaction>
+        </Actor>
+    </InteractionSequence>
 
+    <InteractionSequence id="MuTransaction">
+        <Actor role="Document Administrator" provider="TestClient">
+            <Transaction type="update">
+                <Actor role="Document Registry" provider="Simulator"/>
+            </Transaction>
+        </Actor>
+    </InteractionSequence>
 
-	<InteractionSequence id="XCRTransaction">
-		<Actor role="Initiating Gateway" provider="Simulator">
-			<Transaction type="xcr">
-				<Actor role="Responding Gateway" provider="Simulator" name="community1">
-					<Transaction type="ret.b">
-						<Actor role="Document Repository" provider="Simulator" name="docrep1"/>
-					</Transaction>
-				</Actor>
-			</Transaction>
-			<Transaction type="xcr">
-				<Actor role="Responding Gateway" provider="Simulator" name="community2">
-					<Transaction type="ret.b">
-						<Actor role="Document Repository" provider="Simulator" name="docrep2"/>
-					</Transaction>
-				</Actor>
-			</Transaction>
-		</Actor>
-	</InteractionSequence>
+    <InteractionSequence id="ProvideAndRegisterTransaction">
+        <Actor role="Document Source" provider="TestClient">
+            <Transaction type="prb">
+                <Actor role="Document Repository" provider="Simulator">
+                    <Transaction type="rb">
+                        <Actor role="Document Registry" provider="Simulator"/>
+                    </Transaction>
+                </Actor>
+            </Transaction>
+        </Actor>
+    </InteractionSequence>
+
+    <InteractionSequence id="StoredQueryTransaction">
+        <Actor role="XDS Document Consumer" provider="TestClient">
+            <Transaction type="sq">
+                <Actor role="Document Registry" provider="Simulator"/>
+            </Transaction>
+        </Actor>
+    </InteractionSequence>
+
+    <InteractionSequence id="XCQTransaction">
+        <Actor role="Initiating Gateway" provider="Simulator">
+            <Transaction type="xcq">
+                <Actor role="Responding Gateway" provider="Simulator" name="community1">
+                    <Transaction type="sq">
+                        <Actor role="Document Registry" provider="Simulator" name="docreg1"/>
+                    </Transaction>
+                </Actor>
+            </Transaction>
+            <Transaction type="xcq">
+                <Actor role="Responding Gateway" provider="Simulator" name="community2">
+                    <Transaction type="sq">
+                        <Actor role="Document Registry" provider="Simulator" name="docreg2"/>
+                    </Transaction>
+                </Actor>
+            </Transaction>
+        </Actor>
+    </InteractionSequence>
+
+    <InteractionSequence id="XCRTransaction">
+        <Actor role="Initiating Gateway" provider="Simulator">
+            <Transaction type="xcr">
+                <Actor role="Responding Gateway" provider="Simulator" name="community1">
+                    <Transaction type="ret.b">
+                        <Actor role="Document Repository" provider="Simulator" name="docrep1"/>
+                    </Transaction>
+                </Actor>
+            </Transaction>
+            <Transaction type="xcr">
+                <Actor role="Responding Gateway" provider="Simulator" name="community2">
+                    <Transaction type="ret.b">
+                        <Actor role="Document Repository" provider="Simulator" name="docrep2"/>
+                    </Transaction>
+                </Actor>
+            </Transaction>
+        </Actor>
+    </InteractionSequence>
 
 </InteractionSequences>
 
 
 
-		
 
