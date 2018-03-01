@@ -8,18 +8,17 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.command.command.FindDocuments2Command;
-import gov.nist.toolkit.xdstools2.client.command.command.GetInteractionFromModelCommand;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.shared.command.request.FindDocuments2Request;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetInteractionFromModelRequest;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Diane Azais local on 9/23/2015.
@@ -42,8 +41,6 @@ public class FindDocuments2Tab extends GenericQueryTab {
 
     GenericQueryTab genericQueryTab;
     FindDocuments2Params sqParams;
-
-    InteractingEntity origin = new InteractingEntity(); //  new InteractingEntity(); // Destination
 
     public FindDocuments2Tab() {
         super(new FindDocumentsSiteActorManager());
@@ -102,8 +99,6 @@ public class FindDocuments2Tab extends GenericQueryTab {
             // is linked in via the queryCallback parameter
             rigForRunning();
 
-            origin.setBegin(new Date());
-
             new FindDocuments2Command(){
                 @Override
                 public void onComplete(List<Result> result) {
@@ -117,33 +112,10 @@ public class FindDocuments2Tab extends GenericQueryTab {
         @Override
         public void onFailure(Throwable throwable) {
             queryCallback.onFailure(throwable);
-
-            //			TODO: handle interaction onFailure
-//			try {
-//				origin.setEnd(new Date());
-//			} catch (Throwable t){}
-
         }
 
         @Override
         public void onSuccess(List<Result> results) {
-            try {
-                if (getInteractionModel()!=null) {
-                    getInteractionModel().setEnd(new Date());
-
-                    new GetInteractionFromModelCommand(){
-                        @Override
-                        public void onComplete(InteractingEntity interactingEntity) {
-                            String mapMsg = "mapping was successful!!";
-                            System.out.println(mapMsg);
-                        }
-                    }.run(new GetInteractionFromModelRequest(getCommandContext(),getInteractionModel()));
-                }
-                else {
-                    new PopupMessage("Null origin");
-                }
-            } catch (Throwable t){ new PopupMessage(t.toString());}
-
             queryCallback.onSuccess(results);
         }
     };
@@ -153,20 +125,4 @@ public class FindDocuments2Tab extends GenericQueryTab {
         return "finddocuments2";
     }
 
-    public InteractingEntity getInteractionModel() {
-        // begin interaction model
-        InteractingEntity registryEntity = new InteractingEntity(); // Destination
-
-        origin.setName(null); // Matches with the transactionSettings origin. null=TestClient
-        origin.setDescription("Document Consumer - Toolkit");
-
-        registryEntity.setName(getSiteSelection().getName());
-        registryEntity.setDescription("Registry - SUT");
-        registryEntity.setSourceInteractionLabel("Stored Query (ITI-18)");
-
-        origin.setInteractions(new ArrayList<InteractingEntity>());
-        origin.getInteractions().add(registryEntity);
-        // end
-        return origin;
-    }
 }
