@@ -75,7 +75,7 @@ class RegOrchestrationBuilder {
         TestInstance testInstance12374 = TestInstanceManager.initializeTestInstance(request.testSession, new TestInstance("12374", request.testSession))
         MessageItem item12374 = response.addMessage(testInstance12374, true, "");
 
-        TestInstance testInstance12361 = TestInstanceManager.initializeTestInstance(request.getUserName(), new TestInstance("12361"))
+        TestInstance testInstance12361 = TestInstanceManager.initializeTestInstance(request.testSession, new TestInstance("12361"))
         MessageItem item12361 = response.addMessage(testInstance12361, true, "");
 
         if (orchProps.updated()) {
@@ -101,7 +101,7 @@ class RegOrchestrationBuilder {
             }
 
             try {
-                util.submit(request.userName, request.registrySut, testInstance12361, parms);
+                util.submit(request.testSession.value, request.registrySut, testInstance12361, parms);
 
             } catch (Exception e) {
                 item12361.setSuccess(false);
