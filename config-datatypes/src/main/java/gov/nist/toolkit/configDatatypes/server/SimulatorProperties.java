@@ -31,6 +31,8 @@ public class SimulatorProperties {
 
     public static final String                      VALIDATE_AS_RECIPIENT = "Validate_as_Recipient";
 
+    public static final String                      MULTI_PATIENT_QUERY = "Multi_Patient_Query";
+
     /**
      * Boolean property controlling whether Registry Simulator validates Affinity Domain codes defined
      * in the Simulator Environment.
@@ -115,6 +117,10 @@ public class SimulatorProperties {
      * Updates to this property are ignored.
      */
     public static final String                         updateEndpoint = "update_endpoint";
+
+    public static final String                          multiPatientQueryEndpoint = "multipatient_query_endpoint";
+
+    public static final String                          multiPatientQueryTlsEndpoint = "multipatient_query_TLS_endpoint";
 
     /**
      * Endpoint to use to send the indicated transaction to this Simulator.

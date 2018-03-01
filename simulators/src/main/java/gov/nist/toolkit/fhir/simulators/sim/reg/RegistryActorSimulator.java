@@ -215,7 +215,7 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 
 
 		}
-		else if (transactionType.equals(TransactionType.STORED_QUERY)) {
+		else if (transactionType.equals(TransactionType.STORED_QUERY) || transactionType.equals(TransactionType.MPQ)) {
 
 			common.vc.isSQ = true;
 			common.vc.xds_b = true;
@@ -223,15 +223,13 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 			common.vc.hasHttp = true;
 			common.vc.hasSoap = true;
 
+			if (transactionType.equals(TransactionType.MPQ)) {
+				common.vc.isMultiPatient = true;
+			}
+
 			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
 				return false;
 			
-//			if (mvc.hasErrors()) {
-//				dsSimCommon.sendErrorsInRegistryResponse(er);
-//				return false;
-//			}
-
-
 			SqSim sqsim = new SqSim(common, dsSimCommon);
 			mvc.addMessageValidator("SqSim", sqsim, er);
 

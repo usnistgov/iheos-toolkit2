@@ -61,6 +61,7 @@ class RegOrchestrationBuilder {
         Pid sqPid       = PidBuilder.createPid(orchProps.getProperty("sqPid"))
         Pid mpq1Pid     = PidBuilder.createPid(orchProps.getProperty("mpq1Pid"))
         Pid mpq2Pid     = PidBuilder.createPid(orchProps.getProperty("mpq2Pid"))
+        Pid mpq3Pid     = PidBuilder.createPid(orchProps.getProperty("mpq3Pid"))
 
         response.setRegisterPid(registerPid)
         response.setRegisterAltPid(registerAltPid)
@@ -74,6 +75,9 @@ class RegOrchestrationBuilder {
         TestInstance testInstance12374 = TestInstanceManager.initializeTestInstance(request.getUserName(), new TestInstance("12374"))
         MessageItem item12374 = response.addMessage(testInstance12374, true, "");
 
+        TestInstance testInstance12361 = TestInstanceManager.initializeTestInstance(request.getUserName(), new TestInstance("12361"))
+        MessageItem item12361 = response.addMessage(testInstance12361, true, "");
+
         if (orchProps.updated()) {
             // send necessary Patient ID Feed messages
             new PifSender(api, request.getUserName(), request.registrySut, orchProps).send(PifType.V2, pidNameMap)
@@ -86,7 +90,6 @@ class RegOrchestrationBuilder {
                 util.submit(request.userName, request.registrySut, testInstance12346, parms);
 
             } catch (Exception e) {
-//                item12346.setMessage("Initialization of " + request.registrySut.name + " failed:\n" + e.getMessage());
                 item12346.setSuccess(false);
             }
 
@@ -94,12 +97,19 @@ class RegOrchestrationBuilder {
                 util.submit(request.userName, request.registrySut, testInstance12374, parms);
 
             } catch (Exception e) {
-//                item12374.setMessage("Initialization of " + request.registrySut.name + " failed:\n" + e.getMessage());
                 item12374.setSuccess(false);
+            }
+
+            try {
+                util.submit(request.userName, request.registrySut, testInstance12361, parms);
+
+            } catch (Exception e) {
+                item12361.setSuccess(false);
             }
         } else {
             item12346.setSuccess(api.getTestLogs(testInstance12346).isSuccess());
             item12374.setSuccess(api.getTestLogs(testInstance12374).isSuccess());
+            item12361.setSuccess(api.getTestLogs(testInstance12361).isSuccess());
         }
 
         orchProps.save();

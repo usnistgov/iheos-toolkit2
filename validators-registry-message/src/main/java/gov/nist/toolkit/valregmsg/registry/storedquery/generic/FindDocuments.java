@@ -54,7 +54,7 @@ abstract public class FindDocuments extends StoredQuery {
 	 */
 	public Metadata runSpecific() throws XdsException, XDSRegistryOutOfResourcesException {
 
-		validateParameters();
+//		validateParameters();
 
 		parseParameters();
 
@@ -131,6 +131,13 @@ abstract public class FindDocuments extends StoredQuery {
 	void toBuffer(StringBuffer buf, String name, String arg) {
 		if (arg != null && !arg.equals(""))
 			buf.append(name).append("=").append(arg).append("\n");
+	}
+
+	void toBuffer(StringBuffer buf, String name, List<String> arg) {
+		if (arg != null) {
+			for (String s : arg)
+				buf.append(name).append("=").append(s).append("\n");
+		}
 	}
 
 	void toBuffer(StringBuffer buf, String name, SQCodedTerm arg) {
