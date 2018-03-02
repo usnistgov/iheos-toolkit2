@@ -61,7 +61,6 @@ class RegOrchestrationBuilder {
         Pid sqPid       = PidBuilder.createPid(orchProps.getProperty("sqPid"))
         Pid mpq1Pid     = PidBuilder.createPid(orchProps.getProperty("mpq1Pid"))
         Pid mpq2Pid     = PidBuilder.createPid(orchProps.getProperty("mpq2Pid"))
-        Pid mpq3Pid     = PidBuilder.createPid(orchProps.getProperty("mpq3Pid"))
 
         response.setRegisterPid(registerPid)
         response.setRegisterAltPid(registerAltPid)
