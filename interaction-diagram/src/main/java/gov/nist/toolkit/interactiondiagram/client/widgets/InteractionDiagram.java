@@ -438,19 +438,23 @@ public class InteractionDiagram extends Composite {
 
                 if (interactionSequence!=null) {
 
-                    if (interactionSequence.size()==1 && interactionSequence.get(0).getErrors().size()==1) {
-                        String error = interactionSequence.get(0).getErrors().get(0);
-                        if (error.contains(TransactionSequenceNotFoundException.class.getSimpleName())) {
-                           hasUnmappableTransaction = true;
-                        }
-                    } else {
-                        setIePlaceholderValues(interactionSequence);
-                        setIeTransactionStatus(section, sectionOverviewDTO, stepName, stepOverviewDTO, interactionSequence);
+                    if (interactionSequence.size()==1) {
+                        if (InteractingEntity.INTERACTIONSTATUS.UNKNOWN.equals(interactionSequence.get(0).getStatus())) {
+//                            if (interactionSequence.get(0).getErrors()!=null && interactionSequence.get(0).getErrors().get(0)!=null) {
+//                                String error = interactionSequence.get(0).getErrors().get(0);
+//                                if (error.contains(TransactionSequenceNotFoundException.class.getSimpleName())) {
+                                    hasUnmappableTransaction = true;
+//                                }
+//                            }
+                        } else {
+                            setIePlaceholderValues(interactionSequence);
+                            setIeTransactionStatus(section, sectionOverviewDTO, stepName, stepOverviewDTO, interactionSequence);
 
 //                    if ("11981".equals(testResultDTO.getTestInstance().getId()))
 //                    alert("section: " + section + " step: " + stepName + " is hashcode: " + interactionSequence.hashCode() + " step hashcode: " + stepOverviewDTO.hashCode());
 
-                        result.addAll(interactionSequence);
+                            result.addAll(interactionSequence);
+                        }
                     }
                 }
             }

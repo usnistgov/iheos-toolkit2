@@ -40,7 +40,7 @@ public class InteractingEntity implements IsSerializable, Serializable {
     List<InteractionIdentifierTerm> interactionIdentifierTerms;
     // TODO: is request status needed here?
     /**
-     *  Repsonse status
+     *  Response status
      */
     INTERACTIONSTATUS status;
     List<String> errors;
