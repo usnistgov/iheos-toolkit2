@@ -4,8 +4,10 @@
       <rim:Name>
         <rim:LocalizedString value="Test 20002b"/>
       </rim:Name>
-      <rim:Description>Base DocumentEntry for this test.</rim:Description>
-		<rim:Slot name="creationTime">
+      <rim:Description>
+        <rim:LocalizedString value="Base DocumentEntry for this test."/>      	
+      </rim:Description>
+	  <rim:Slot name="creationTime">
         <rim:ValueList>
           <rim:Value>20051224</rim:Value>
         </rim:ValueList>
@@ -200,7 +202,9 @@
       <rim:Name>
         <rim:LocalizedString value="Physical"/>
       </rim:Name>
-      <rim:Description>Annual physical</rim:Description>
+      <rim:Description>
+        <rim:LocalizedString value="Annual physical."/> 
+      </rim:Description>
       <rim:Slot name="submissionTime">
         <rim:ValueList>
           <rim:Value>20041225235050</rim:Value>
