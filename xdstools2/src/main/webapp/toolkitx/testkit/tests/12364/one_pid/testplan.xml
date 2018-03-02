@@ -11,7 +11,10 @@
     <MPQTransaction>
       <XDSb/>
       <MetadataFile>query.xml</MetadataFile>
-      <UseId testdir="../12361/single_doc" id="SubmissionSet01" symbol="$patient_id$" step="single_doc" section="AssignedPatientId"/>
+      <!--
+      <UseId testdir="../../12361/single_doc" id="SubmissionSet01" symbol="$patient_id$" step="single_doc" section="AssignedPatientId"/>
+      -->
+      <UseReport reportName="$patientid$" test="15820" section="pif" step="step" useAs="$patient_id$"/>
       <ExpectedContents>
         <ObjectRefs count="1"/>
       </ExpectedContents>
