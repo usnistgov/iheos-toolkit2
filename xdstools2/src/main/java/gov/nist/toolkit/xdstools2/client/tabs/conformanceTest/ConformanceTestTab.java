@@ -698,7 +698,6 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 
 				currentActorTypeDescription = getDescriptionForTestCollection(currentActorOption.actorTypeId);
-//				updateTestsOverviewHeader();
 
 				// This is a little wierd being here. This depends on initTestSession
 				// which is set AFTER onTabLoad is run so run here - later in the initialization
@@ -738,7 +737,6 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		@Override
 		public void onClick(ClickEvent clickEvent) {
 			initializeTestDisplay(mainView.getTestsPanel());
-//			displayTestCollection(mainView.getTestsPanel());
 		}
 	}
 
