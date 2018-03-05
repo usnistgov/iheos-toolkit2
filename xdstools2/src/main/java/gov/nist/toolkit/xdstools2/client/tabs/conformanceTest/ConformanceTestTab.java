@@ -806,6 +806,8 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		testDisplayGroup.allowRun(allowRun);
 		testDisplayGroup.allowValidate(allowValidate());
 
+		GetTestsOverviewRequest tor = new GetTestsOverviewRequest(getCommandContext(), testInstances);
+
 		new GetTestsOverviewCommand() {
 			@Override
 			public void onComplete(List<TestOverviewDTO> testOverviews) {
@@ -840,7 +842,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 				mainView.clearLoadingMessage();
 
 			}
-		}.run(new GetTestsOverviewRequest(getCommandContext(), testInstances));
+		}.run(tor);
 	}
 
 	private static String getPatientIdStr(Map<String, String> parms) {
