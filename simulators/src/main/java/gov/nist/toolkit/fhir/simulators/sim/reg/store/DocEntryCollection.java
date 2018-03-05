@@ -137,13 +137,18 @@ public class DocEntryCollection extends RegObCollection implements Serializable 
 		}
 		return null;
 	}
+
+	public List<DocEntry> getAll() {
+		return entries;
+	}
 		
 	public List<DocEntry> findByPid(String pid) {
 		List<DocEntry> results = new ArrayList<DocEntry>();
 		
 		for (int i=0; i<entries.size(); i++) {
 			DocEntry de = entries.get(i);
-			if (pid.equals(de.pid))
+			// pid == null handles MPQ
+			if (pid != null && pid.equals(de.pid))
 				results.add(de);
 		}
 		if (parent != null)

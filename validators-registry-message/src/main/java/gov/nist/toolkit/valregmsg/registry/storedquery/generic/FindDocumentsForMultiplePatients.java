@@ -24,7 +24,7 @@ Generic implementation of FindDocuments Stored Query. This class knows how to pa
  * @author bill
  *
  */
-abstract public class FindDocumentsForMultiplePatients extends StoredQuery {
+abstract public class FindDocumentsForMultiplePatients extends FindDocuments {
 
 	/**
 	 * Method required in subclasses (implementation specific class) to define specific
@@ -161,6 +161,22 @@ abstract public class FindDocumentsForMultiplePatients extends StoredQuery {
 
 	}
 
+	public String toString() {
+		StringBuffer buf = new StringBuffer();
+
+		buf.append("FindDocumentsforMultiplePatients: [\n");
+
+		toBuffer(buf, "patient_ids", patient_id);
+		toBuffer(buf, "class_codes", class_codes);
+		toBuffer(buf, "practice_setting_codes", practice_setting_codes);
+		toBuffer(buf, "hcft_codes", hcft_codes);
+		toBuffer(buf, "event_codes", event_codes);
+		toBuffer(buf, "conf_codes", conf_codes);
+
+		buf.append("]\n");
+
+		return buf.toString();
+	}
 
 
 }
