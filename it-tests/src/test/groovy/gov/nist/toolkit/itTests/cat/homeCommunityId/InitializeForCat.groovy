@@ -1,10 +1,10 @@
 package gov.nist.toolkit.itTests.cat.homeCommunityId
 
-import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
-import gov.nist.toolkit.installation.Installation
-import gov.nist.toolkit.itTests.support.ToolkitSpecification
+import gov.nist.toolkit.installation.server.Installation
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itSupport.xc.GatewayBuilder
+import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.TestLogs
 import gov.nist.toolkit.toolkitApi.DocumentConsumer
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
@@ -29,7 +29,7 @@ class InitializeForCat extends ToolkitSpecification {
         Installation.instance().externalCache(new File('/Users/bill/tmp/toolkit2a'))
 
         println "EC is ${Installation.instance().externalCache().toString()}"
-        println "${api.getSiteNames(true)}"
+        println "${api.getSiteNames(true, new TestSession(testSession))}"
         api.createTestSession(testSession)
 
         // Connect to remote API
@@ -38,8 +38,8 @@ class InitializeForCat extends ToolkitSpecification {
 
     def cleanupSpec() {  // one time shutdown when everything is done
 //        System.gc()
-        server.stop()
-        ListenerFactory.terminateAll()
+//        server.stop()
+//        ListenerFactory.terminateAll()
     }
 
     def setup() {}

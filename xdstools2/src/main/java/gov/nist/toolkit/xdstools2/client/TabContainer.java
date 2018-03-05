@@ -77,6 +77,32 @@ public class TabContainer {
 		return titleHtml;
 	}
 
+	public int addTabWithIndex(DockLayoutPanel w, AbstractPresenter presenter, String title, boolean select) {
+		addTab(w, presenter, title, select);
+		return TABBAR.getTabCount() - 1;
+	}
+
+	public HTML addDeletableTab(DockLayoutPanel w, AbstractPresenter presenter, String title, boolean select, NotifyOnDelete notifyOnDelete) {
+		w.getElement().getStyle().setMarginLeft(4, Style.Unit.PX);
+		w.getElement().getStyle().setMarginRight(4, Style.Unit.PX);
+
+		int tabIndex = TABBAR.getTabCount();
+		HTML titleHtml = new HTML(title);
+		formatTitle(titleHtml);
+		TABBAR.addTab(buildTabHeaderWidget(titleHtml, w));
+
+		TabContents tabContents = new TabContents(w, presenter);
+		tabContents.setNotifyOnDelete(notifyOnDelete);
+		deck.add(tabContents);
+		TABBAR.selectTab(TABBAR.getTabCount() - 1);
+
+		Xdstools2.getInstance().resizeToolkit();
+
+		announceOpen(title);
+
+		return titleHtml;
+	}
+
 	private static void selectTab() {
 		TabContents tc = deck.get(TABBAR.getSelectedTab());
 		if (tc.presenter != null)  // null for non-MVP tools
@@ -112,8 +138,18 @@ public class TabContainer {
 		}
 	}
 
-	private static void deleteTab(int index) {
+	void rmTab(int index) {
+		if (index >= 0 && index < deck.size()) {
+			TabContents tabContents = deck.get(index);
+			closeTab(tabContents);
+		}
+	}
 
+	private void deleteTab(int index) {
+			TabContents tabContents = deck.get(index);
+			if (tabContents == null) return;
+			if (tabContents.getNotifyOnDelete() != null)
+				tabContents.getNotifyOnDelete().onDelete();
 	}
 
 	private void formatTitle(HTML titleHtml) {
@@ -133,13 +169,8 @@ public class TabContainer {
 			public void onClick(ClickEvent clickEvent) {
 				GWT.log("Delete tab");
 				TabContents tc = findPanelInDeck(content);
-				int i = deck.indexOf(tc);
-				GWT.log("Delete tab " + i);
-				deck.remove(i);
-				INNER_DECKPANEL.remove(i);
-				TABBAR.removeTab(i);
-				i = deck.size() - 1;
-				selectTab(i);
+				if (tc!=null)
+			 		closeTab(tc);
 			}
 		});
 		panel.add(x);
@@ -156,6 +187,24 @@ public class TabContainer {
 				return tc;
 		}
 		return null;
+	}
+
+	public boolean closeAllTabs() {
+		for (int i = getTabCount()-1; i>-1; i--)
+		    closeTab(deck.get(i));
+		return true;
+	}
+
+	private void closeTab(TabContents tc) {
+		int i = deck.indexOf(tc);
+		GWT.log("Delete tab " + i);
+		deleteTab(i);
+		deck.remove(i);
+		INNER_DECKPANEL.remove(i);
+		TABBAR.removeTab(i);
+		i = deck.size() - 1;
+		if (i>-1)
+			selectTab(i);
 	}
 
 	public static void setWidth(String width) {
@@ -188,5 +237,9 @@ public class TabContainer {
 //	protected static Widget getWidget(int tabIndex) {
 //		return INNERPANEL.getWidget(tabIndex);
 //	}
+
+	public int getTabCount() {
+		return TABBAR.getTabCount();
+	}
 
 }

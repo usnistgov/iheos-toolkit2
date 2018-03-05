@@ -49,7 +49,7 @@ public class RigActorFactory extends AbstractActorFactory implements IActorFacto
       this.newID = newID;
       ActorType actorType = ActorType.RESPONDING_IMAGING_GATEWAY;
       SimulatorConfig sc;
-      if (configureBase) sc = configureBaseElements(actorType, newID);
+      if (configureBase) sc = configureBaseElements(actorType, newID, newID.getTestSession());
       else sc = new SimulatorConfig();
 
       addEditableConfig(sc, SimulatorProperties.homeCommunityId, ParamType.TEXT,
@@ -79,8 +79,8 @@ public class RigActorFactory extends AbstractActorFactory implements IActorFacto
       try {
          String siteName = sc.getDefaultName();
 
-         if (site == null) site = new Site(siteName);
-         site.user = sc.getId().user; // labels this site as coming from a sim
+         if (site == null) site = new Site(siteName, sc.getId().getTestSession());
+         site.setTestSession(sc.getId().getTestSession()); // labels this site as coming from a sim
 
          boolean isAsync = false;
 

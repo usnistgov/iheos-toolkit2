@@ -12,8 +12,6 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * This should only be invoked from ListenerFactory.
@@ -159,7 +157,7 @@ public class AdtSocketListener implements Runnable{
                             String patientId = message.getPatientId();
                             String patientName = message.getPatientName();
                             logger.info("Incoming PatientID = " + patientId + "  Patient Name = " + patientName + " SimId = " + threadPoolItem.simId);
-                            threadPoolItem.pifCallback.addPatient(threadPoolItem.simId, patientId);
+                            threadPoolItem.pifCallback.addPatient(threadPoolItem.simId, patientId, threadPoolItem.testSession);
 //                    Adt.addPatientId(threadPoolItem.simId, patientId);
                         } catch (AdtMessageParseException e) {
                             sendError = true;

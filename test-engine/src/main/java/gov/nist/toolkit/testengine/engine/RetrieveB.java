@@ -2,7 +2,7 @@ package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
-import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
 import gov.nist.toolkit.registrymsg.repository.RetrieveResponseParser;

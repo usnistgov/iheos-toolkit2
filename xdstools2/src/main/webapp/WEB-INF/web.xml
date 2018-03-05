@@ -203,6 +203,16 @@
         <load-on-startup>1</load-on-startup>
     </servlet>
 
+    <servlet>
+        <servlet-name>casServlet</servlet-name>
+        <servlet-class>gov.nist.toolkit.xdstools2.server.casSessionBuilder.CasSessionBuilderServlet</servlet-class>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>casServlet</servlet-name>
+        <url-pattern>/CasSessionBuilder</url-pattern>
+    </servlet-mapping>
+
     <servlet-mapping>
         <servlet-name>fhirServlet</servlet-name>
         <url-pattern>/fsim/*</url-pattern>
@@ -327,6 +337,10 @@
             <url-pattern>*.ico</url-pattern>
             <url-pattern>/img/*</url-pattern>
             <url-pattern>/css/*</url-pattern>
+
+            <url-pattern>/sim/*</url-pattern>
+            <url-pattern>/fsim/*</url-pattern>
+
         </web-resource-collection>
         <user-data-constraint>
             <transport-guarantee>NONE</transport-guarantee>

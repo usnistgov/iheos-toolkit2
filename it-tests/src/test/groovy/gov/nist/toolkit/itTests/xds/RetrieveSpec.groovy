@@ -1,19 +1,19 @@
 package gov.nist.toolkit.itTests.xds
 
 import gov.nist.toolkit.actortransaction.client.ActorType
-import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
-import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.server.Installation
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.client.SimIdFactory
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.resource.SimConfigResource
 import spock.lang.Shared
-
 /**
  * Test the Retrieve transaction
  */
@@ -23,9 +23,9 @@ class RetrieveSpec extends ToolkitSpecification {
 
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
     @Shared String patientId = 'SR7^^^&1.2.260&ISO'
-    @Shared String reg = 'sunil__rr'
-    @Shared SimId simId = new SimId(reg)
-    @Shared String testSession = 'sunil'
+    @Shared String testSession = prefixNonce('sunil')
+    @Shared String reg = testSession + '__rr'
+    @Shared SimId simId = SimIdFactory.simIdBuilder(reg)
     @Shared String repUid = ''
 
     def setupSpec() {   // one time setup done when class launched
@@ -56,13 +56,13 @@ class RetrieveSpec extends ToolkitSpecification {
     def cleanupSpec() {  // one time shutdown when everything is done
         spi.delete('rr', testSession)
         api.deleteSimulatorIfItExists(simId)
-        server.stop()
-        ListenerFactory.terminateAll()
+//        server.stop()
+//        ListenerFactory.terminateAll()
     }
 
     def setup() {
         println "EC is ${Installation.instance().externalCache().toString()}"
-        println "${api.getSiteNames(true)}"
+        println "${api.getSiteNames(true, new TestSession(testSession))}"
         api.createTestSession(testSession)
         if (!api.simulatorExists(simId)) {
             println "Creating sim ${simId}"
@@ -73,7 +73,7 @@ class RetrieveSpec extends ToolkitSpecification {
     // submits the patient id configured above to the registry in a Patient Identity Feed transaction
     def 'Submit Pid transaction to Registry simulator'() {
         when:
-        String siteName = 'sunil__rr'
+        String siteName = testSession + '__rr'
         TestInstance testId = new TestInstance("15804")
         List<String> sections = new ArrayList<>()
         sections.add("section")
@@ -93,7 +93,7 @@ class RetrieveSpec extends ToolkitSpecification {
 
     def 'Setup test with submissions'() {
         when:
-        String siteName = 'sunil__rr'
+        String siteName = testSession + '__rr'
         TestInstance testId = new TestInstance("15816")
         List<String> sections = ['Register_Stable', 'PnR']
         Map<String, String> params = new HashMap<>()
@@ -115,7 +115,7 @@ class RetrieveSpec extends ToolkitSpecification {
      */
     def 'Run retrieve tests'() {
         when:
-        String siteName = 'sunil__rr'
+        String siteName = testSession + '__rr'
         TestInstance testId = new TestInstance("15816")
         List<String> sections = ["Retrieve_Doc", 'Retrieve_Bad_Doc_Uid', 'Retrieve_Partial_Uid']
 //        List<String> SECTIONS = ['Retrieve_Partial_Uid']

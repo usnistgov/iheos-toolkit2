@@ -111,11 +111,23 @@ public abstract class ToolWindow {
 	public void setCurrentTestSession(String testSession) { testSessionManager.setCurrentTestSession(testSession);}
 
 	private TabContainer tabContainer;
+	private int index = -1;
 
-	public void registerTab(boolean select, String tabName) {
+	public int registerTab(boolean select, String tabName) {
 		this.tabName=tabName;
 		assert(tabContainer != null);
-		tabContainer.addTab(tabTopRawPanel, null, tabName, select);
+		index = tabContainer.addTabWithIndex(tabTopRawPanel, null, tabName, select);
+		return index;
+	}
+
+	public void registerDeletableTab(boolean select, String tabName, NotifyOnDelete notifyOnDelete) {
+		this.tabName=tabName;
+		assert(tabContainer != null);
+		tabContainer.addDeletableTab(tabTopRawPanel, null, tabName,select, notifyOnDelete);
+	}
+
+	public void deleteMe() {
+		tabContainer.rmTab(index);
 	}
 
 	public TkProps tkProps() {

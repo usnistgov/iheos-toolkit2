@@ -29,6 +29,7 @@ abstract public class AbstractGrizzlyController {
     // Base URI the Grizzly HTTP server will listen on
     public static final String BASE_URI = "http://localhost:%s/xdstools2/rest/";
     HttpServer server = null;
+    File axis2;
 
     public abstract List<String> getPackages();
 
@@ -67,7 +68,8 @@ abstract public class AbstractGrizzlyController {
     }
 
     AbstractGrizzlyController withAxis2() {
-        File axis2 = new File(getClass().getResource('/axis2.xml').file)
+
+        File axis2 = (getAxis2()!=null)?getAxis2():new File(getClass().getResource('/axis2.xml').file)
         System.getProperties().setProperty('axis2.xml', axis2.toString())
         System.getProperties().setProperty('axis2.repo', axis2.parentFile.toString())
         this
@@ -79,9 +81,12 @@ abstract public class AbstractGrizzlyController {
         sims.addMapping('sim/*')
         final ServletRegistration httpSims = tools2.addServlet("HttpSimServlet", new HttpSimServlet());
         httpSims.addMapping('httpsim/*')
+        final ServletRegistration pidPort = tools2.addServlet("TestEnvPidPortServlet", new TestEnvPidPortServlet())
+        pidPort.addMapping('testEnvPidPort/*')
         tools2.deploy(getHttpServer())
         this
     }
+
 
     AbstractGrizzlyController withFhirServlet() {
         final WebappContext tools2 = new WebappContext("fhir","")
@@ -116,5 +121,8 @@ abstract public class AbstractGrizzlyController {
 
     public HttpServer getHttpServer() { return server }
 
+    void setAxis2(File axis2) {
+        this.axis2 = axis2
+    }
 }
 

@@ -4,18 +4,19 @@ import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
-import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.fhir.simulators.sim.reg.RegistryResponseGeneratingSim;
+import gov.nist.toolkit.fhir.simulators.sim.rep.RepIndex;
+import gov.nist.toolkit.fhir.simulators.support.DsSimCommon;
+import gov.nist.toolkit.fhir.simulators.support.StoredDocument;
+import gov.nist.toolkit.fhir.simulators.support.TransactionSimulator;
+import gov.nist.toolkit.fhir.simulators.support.od.TransactionUtil;
+import gov.nist.toolkit.installation.server.Installation;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.registrymsg.registry.Response;
 import gov.nist.toolkit.results.client.DocumentEntryDetail;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
-import gov.nist.toolkit.fhir.simulators.sim.reg.RegistryResponseGeneratingSim;
-import gov.nist.toolkit.fhir.simulators.sim.rep.RepIndex;
-import gov.nist.toolkit.fhir.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simcommon.server.SimCommon;
-import gov.nist.toolkit.fhir.simulators.support.StoredDocument;
-import gov.nist.toolkit.fhir.simulators.support.TransactionSimulator;
-import gov.nist.toolkit.fhir.simulators.support.od.TransactionUtil;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.valregmsg.registry.RetrieveMultipleResponse;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -77,8 +78,8 @@ public class RetrieveOnDemandDocumentResponseSim extends TransactionSimulator im
 
 
 			// ---------------------------------------------------------------------------------------------------------
-			String sessionName = getSimulatorConfig().getId().getUser();
-			Session mySession = new Session(Installation.instance().warHome(), sessionName);
+			TestSession testSession = getSimulatorConfig().getId().getTestSession();
+			Session mySession = new Session(Installation.instance().warHome(), testSession.getValue());
 			getSimulatorConfig().getId().setEnvironmentName(Installation.instance().defaultEnvironmentName());
 			mySession.setEnvironment(getSimulatorConfig().getId().getEnvironmentName());
 
@@ -99,7 +100,7 @@ public class RetrieveOnDemandDocumentResponseSim extends TransactionSimulator im
 
 				// Is persistence option on then do a PnR
 				if (persistenceOptn) {
-					if (mySession.getMesaSessionName() == null) mySession.setMesaSessionName(sessionName);
+					if (mySession.getTestSession() == null) mySession.setTestSession(testSession);
 					mySession.setSiteSpec(reposSite);
 				}
 
@@ -115,7 +116,7 @@ public class RetrieveOnDemandDocumentResponseSim extends TransactionSimulator im
 					}
 				}
 
-				Map<String,String> rsMap = TransactionUtil.getOdContentFile(persistenceOptn, mySession, sessionName
+				Map<String,String> rsMap = TransactionUtil.getOdContentFile(persistenceOptn, mySession, testSession
 						, reposSite
 						, ded, getSimulatorConfig().getId(), params);
 				document.setPathToDocument(rsMap.get("file"));

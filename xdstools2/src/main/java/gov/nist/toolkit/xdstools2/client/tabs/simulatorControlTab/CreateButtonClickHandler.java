@@ -2,7 +2,9 @@ package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.simcommon.client.SimIdFactory;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
@@ -37,7 +39,7 @@ class CreateButtonClickHandler implements ClickHandler {
 		}
 		SimId simId;
 		try {
-            simId = new SimId(testSessionManager.getCurrentTestSession(), rawSimId);
+            simId = SimIdFactory.simIdBuilder(new TestSession(testSessionManager.getCurrentTestSession()),rawSimId);
         } catch (Exception e) {
             new PopupMessage(e.getMessage());
             return;

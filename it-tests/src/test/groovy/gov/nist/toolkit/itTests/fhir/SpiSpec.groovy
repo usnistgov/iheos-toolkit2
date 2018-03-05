@@ -2,6 +2,7 @@ package gov.nist.toolkit.itTests.fhir
 
 import ca.uhn.fhir.context.FhirContext
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.FhirSpecification
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.SimDb
@@ -14,9 +15,9 @@ class SpiSpec extends FhirSpecification {
     @Shared SimulatorBuilder spi
 
     @Shared def testSession = 'default'
-    @Shared def simIdName = 'test'
+    @Shared def simIdName = prefixNonce('test')
 
-    @Shared SimId simId = new SimId(testSession, simIdName).forFhir()
+    @Shared SimId simId = new SimId(new TestSession(testSession), simIdName).forFhir()
     @Shared FhirContext ourCtx = FhirContext.forDstu3()
 
     def setupSpec() {
@@ -72,7 +73,7 @@ class SpiSpec extends FhirSpecification {
         !SimDb.fexists(simId)
 
         when:
-        spi.createFhirServer(simId.id, simId.user, 'default')
+        spi.createFhirServer(simId.id, simId.testSession.value, 'default')
 
         then:
         SimDb.fexists(simId)
@@ -87,7 +88,7 @@ class SpiSpec extends FhirSpecification {
         !SimDb.fexists(simId)
 
         when:
-        spi.createFhirServer(simId.id, simId.user, 'default')
+        spi.createFhirServer(simId.id, simId.testSession.value, 'default')
 
         then:
         SimDb.fexists(simId)

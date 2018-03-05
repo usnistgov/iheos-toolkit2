@@ -6,6 +6,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.simcommon.client.SimIdFactory;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.tabs.SimulatorMessageViewTab;
@@ -25,7 +26,7 @@ public class SimLogActivity  extends AbstractActivity {
 
             ToolWindow toolWindow = new ToolLauncher(ToolLauncher.newSimulatorMessageViewTabLabel).launch();
 
-            SimId simId = new SimId(simLog.getSimIdString());
+            SimId simId = SimIdFactory.simIdBuilder(simLog.getSimIdString());
             SimulatorMessageViewTab simulatorMessageViewTab = (SimulatorMessageViewTab) toolWindow;
             simulatorMessageViewTab.setSimId(simId);
             simulatorMessageViewTab.setActor(simLog.getActor());

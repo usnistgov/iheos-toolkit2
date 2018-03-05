@@ -29,7 +29,7 @@ public class RecipientActorFactory  extends AbstractActorFactory implements IAct
 		ActorType actorType = ActorType.DOCUMENT_RECIPIENT;
 		SimulatorConfig sc;
 		if (configureBase)
-			sc = configureBaseElements(actorType, newID);
+			sc = configureBaseElements(actorType, newID, newID.getTestSession());
 		else 
 			sc = new SimulatorConfig();
 
@@ -59,9 +59,9 @@ public class RecipientActorFactory  extends AbstractActorFactory implements IAct
 		String siteName = sc.getDefaultName();
 
 		if (site == null)
-			site = new Site(siteName);
+			site = new Site(siteName, sc.getId().getTestSession());
 
-		site.user = sc.getId().user;  // labels this site as coming from a sim
+		site.setTestSession(sc.getId().getTestSession());  // labels this site as coming from a sim
 
 		boolean isAsync = false;
 

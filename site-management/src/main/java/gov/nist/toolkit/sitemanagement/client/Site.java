@@ -3,8 +3,10 @@ package gov.nist.toolkit.sitemanagement.client;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
 import gov.nist.toolkit.xdsexception.client.TkActorNotFoundException;
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -62,9 +64,12 @@ public class Site  implements IsSerializable, Serializable {
 
 	public String pidAllocateURI = null;
 	transient public boolean changed = false;
-	public String user = null;  // loaded from SimId - when non-null this site represents a sim
+	private TestSession testSession = null;  // required to be valid
 	private String orchestrationSiteName = null;
 	private boolean isASimulator = false;
+
+	public Site() {
+	}
 
 	/**
 	 * Site linkage is used to combine two sites into one.  Use case: The SUT is defined in a site. We
@@ -96,13 +101,22 @@ public class Site  implements IsSerializable, Serializable {
 		Site s = (Site) o;
 		return
 				((name == null) ? s.name == null : name.equals(s.name)) &&
-						((user == null) ? s.user == null : user.equals(s.user)) &&
+						((testSession == null) ? s.testSession == null : testSession.equals(s.testSession)) &&
 				((home == null) ? s.home == null : home.equals(s.home)) &&
 				((pifHost == null) ? s.pifHost == null : pifHost.equals(s.pifHost)) &&
 				((pifPort == null) ? s.pifPort == null : pifPort.equals(s.pifPort)) &&
 				((pidAllocateURI == null) ? s.pidAllocateURI == null : pidAllocateURI.equals(s.pidAllocateURI)) &&
 				transactions.equals(s.transactions) &&
 				repositories.equals(s.repositories);
+	}
+
+	public boolean isValid() {
+		return name != null && !name.equals("") && testSession != null;
+	}
+
+	public void validate() {
+		if (!isValid())
+			throw new ToolkitRuntimeException("Site " + toString() + " is not valie");
 	}
 	
 	public TransactionCollection transactions() {
@@ -113,7 +127,7 @@ public class Site  implements IsSerializable, Serializable {
 		return repositories;
 	}
 	
-	public boolean validate() {
+	public boolean verify() {
 		StringBuffer buf = new StringBuffer();
 		validate(buf);
 		return buf.length() == 0;
@@ -391,10 +405,13 @@ public class Site  implements IsSerializable, Serializable {
 		this.home = home;
 	}
 	
+	public String getFullName() {
+		return testSession + "/" + name;
+	}
+
+	@Override
 	public String toString() {
-		StringBuffer buf = new StringBuffer();
-		buf.append(name);
-		return buf.toString();
+		return getFullName();
 	}
 
     public String describe() {
@@ -404,13 +421,18 @@ public class Site  implements IsSerializable, Serializable {
         return buf.toString();
     }
 
-	public Site() {}
+	public Site(TestSession testSession) {
+		this.testSession = testSession;
+	}
 
-	public Site(String name) {
+	public Site(String name, TestSession testSession) {
 		setName(name);
+		if (testSession == null) throw new ToolkitRuntimeException("Site: null TestSession");
+		this.testSession = testSession;
 	}
 
 	public void setName(String name) {
+		if (name == null || name.equals("null")) throw new ToolkitRuntimeException("Site: null name");
 		this.name = name;
 		transactions.setName(name); 
 		repositories.setName(name);
@@ -448,7 +470,8 @@ public class Site  implements IsSerializable, Serializable {
 	}
 
 	public SiteSpec siteSpec() {
-		SiteSpec siteSpec = new SiteSpec(getSiteName());
+		TestSession thisTestSession = (testSession != null) ? testSession : TestSession.DEFAULT_TEST_SESSION;
+		SiteSpec siteSpec = new SiteSpec(getSiteName(), thisTestSession);
 		siteSpec.orchestrationSiteName = orchestrationSiteName;
 		return siteSpec;
 	}
@@ -468,4 +491,11 @@ public class Site  implements IsSerializable, Serializable {
 
 	public boolean isSimulator() { return isASimulator; }
 
+	public void setTestSession(TestSession testSession) {
+		this.testSession = testSession;
+	}
+
+	public TestSession getTestSession() {
+		return testSession;
+	}
 }

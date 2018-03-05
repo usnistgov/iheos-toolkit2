@@ -105,7 +105,7 @@ class XcRetrieveImgSim extends AbstractMessageValidator {
 
          // Get list of configured Responding Gateways
          SimManager simMgr = new SimManager("ignored");
-         List<Site> sites = simMgr.getSites(asc.getConfigEle(SimulatorProperties.respondingImagingGateways).asList());
+         List<Site> sites = simMgr.getSites(asc.getConfigEle(SimulatorProperties.respondingImagingGateways).asList(), asc.getId().getTestSession());
          if (sites == null || sites.size() == 0) {
             er.err(XdsErrorCode.Code.XDSRepositoryError, "No RespondingGateways configured", this, null);
             throw new NonException();

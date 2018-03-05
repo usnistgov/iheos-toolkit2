@@ -3,7 +3,8 @@ package gov.nist.toolkit.itTests.simProxy
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
-import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.server.Installation
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.AssertionResult
 import gov.nist.toolkit.results.client.Result
@@ -11,6 +12,7 @@ import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationResponse
 import gov.nist.toolkit.services.server.orchestration.FhirSupportOrchestrationBuilder
 import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.client.SimIdFactory
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
@@ -28,7 +30,7 @@ class MhdReplaceSpec extends ToolkitSpecification {
     @Shared String testSession = 'bill';
     @Shared String mhdId = "mhd"
     @Shared String mhdName = "${testSession}__${mhdId}"
-    @Shared SimId mhdSimId = new SimId(mhdName)
+    @Shared SimId mhdSimId = SimIdFactory.simIdBuilder(mhdName)
     @Shared SimConfig mhdSimConfig
     @Shared Map<String, SimConfig> simGroup = [:]
 
@@ -45,7 +47,7 @@ class MhdReplaceSpec extends ToolkitSpecification {
 
     def setup() {
         println "EC is ${Installation.instance().externalCache().toString()}"
-        println "${api.getSiteNames(true)}"
+        println "${api.getSiteNames(true, new TestSession(testSession))}"
 
         api.createTestSession(testSession)
 
@@ -61,8 +63,8 @@ class MhdReplaceSpec extends ToolkitSpecification {
         )
 
         mhdSimConfig.asList(SimulatorProperties.simulatorGroup).each { String simIdString ->
-            SimId theSimId = new SimId(simIdString)
-            SimConfig config = spi.get(spi.get(theSimId.user, theSimId.id))
+            SimId theSimId = SimIdFactory.simIdBuilder(simIdString)
+            SimConfig config = spi.get(spi.get(theSimId.testSession.value, theSimId.id))
             simGroup[simIdString] = config
         }
 
@@ -70,14 +72,14 @@ class MhdReplaceSpec extends ToolkitSpecification {
         rrConfig.setProperty(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, false)
         spi.update(rrConfig)
 
-        FhirSupportOrchestrationResponse response = new FhirSupportOrchestrationBuilder(api, session, testSession, false).buildTestEnvironment()
+        FhirSupportOrchestrationResponse response = new FhirSupportOrchestrationBuilder(api, session, new TestSession(testSession), false).buildTestEnvironment()
         assert !response.error
     }
 
     def 'submit and replace'() {
         when: 'submit pdb with known entryUUID urn:uuid:1e404af3-077f-4bee-b7a6-a9be97e1ce34'
         def params = [ :]
-        TestInstance testInstance = new TestInstance('MhdReplace')
+        TestInstance testInstance = new TestInstance('MhdReplace') // Note: bill__mhd site name is hard-coded in singledocsubmit.xml
 
         List<Result> results = api.runTest(testSession, mhdName, testInstance, ['submit'], params, true)
 

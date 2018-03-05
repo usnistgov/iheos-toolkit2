@@ -37,7 +37,7 @@ class TransactionReportBuilder {
         bean.responseMessageBody = new String(db.responseMessageBody)
         bean.callbackClassName = callbackClassName
         bean.simulatorId = simId.id
-        bean.simulatorUser = simId.user
+        bean.simulatorUser = simId.testSession
         return bean;
     }
 }

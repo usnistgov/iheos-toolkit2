@@ -5,7 +5,7 @@
     <parent>
         <groupId>gov.nist.toolkit</groupId>
         <artifactId>tk-deps</artifactId>
-        <version>5.2.4</version>
+        <version>5.3.0-SNAPSHOT</version>
         <relativePath>../tk-deps/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -151,37 +151,45 @@
         <build>
             <plugins>
                 <plugin>
+                    <groupId>gov.nist.toolkit</groupId>
+                    <artifactId>it-tests-maven-plugin</artifactId>
+                    <configuration>
+                        <warHome>${basedir}/target/test-classes/war</warHome>
+                        <ecDir>${basedir}/target/test-classes/external_cache</ecDir>
+                        <axis2>${basedir}/target/test-classes/axis2.xml</axis2>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>prepTestEnv</id>
+                            <goals>
+                                <goal>start</goal>
+                                <goal>stop</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
                     <version>2.19.1</version>
                     <configuration>
                         <includes>
-                            <!-- Always include tests in pairs: Groovy and Java -->
-                            <!-- begin include individual test -->
-                            <!--<include>**/RetrieveSpec.groovy</include>-->
-                            <!--<include>**/RetrieveSpec.java</include>-->
-                            <!--<include>**/RegisterSpec.groovy</include>-->
-                            <!--<include>**/RegisterSpec.java</include>-->
-                            <!--<include>**/OdConsumerSpec.groovy</include>-->
-                            <!--<include>**/OdConsumerSpec.java</include>-->
-                            <!--<include>**/StsSamlAssertionSpec.groovy</include>-->
-                            <!--<include>**/StsSamlAssertionSpec.java</include>-->
-                            <!--<include>**/InteractionSequenceSpec.groovy</include>-->
-                            <!--<include>**/InteractionSequenceSpec.java</include>-->
-                            <!--<include>**/RigSpec.groovy</include>-->
-                            <!--<include>**/RigSpec.java</include>-->
-                            <!--<include>**/FrontEndSpec.groovy</include>-->
-                            <!--<include>**/FrontEndSpec.java</include>-->
-                            <!-- end include individual test -->
-                            <!-- begin include all tests -->
+                            <!--<include>**/FhirSupportOrchestrationBuilderSpec.java</include>-->
+                            <!--<include>**/MultiQuerySpec.java</include>-->
+                            <!--<include>**/DicomSpec.java</include>-->
                             <include>**/*Spec.java</include>
                             <include>**/*Test.java</include>
                             <include>**/*IT.java</include>
                             <!-- end include all tests -->
                         </includes>
-                        <!-- Explanation of the fork arguments in use here: Since there is only ONE external_cache dir, running tests in parallel causes one test to disturb other test environment. To remove this side effect, we start off with a clean environment each time (see cleanupDir method in ToolkitSpecification). -->
+                        <!-- Exclude tests that disturb other tests or require to be run in complete isolation. -->
+                        <!--<parallel>classes</parallel>-->
+                        <!--<runOrder>alphabetical</runOrder>-->
+                        <!--<useUnlimitedThreads>true</useUnlimitedThreads>-->
+                        <redirectTestOutputToFile>true</redirectTestOutputToFile>
                         <forkCount>1</forkCount>
-                        <reuseForks>false</reuseForks>
+                        <reuseForks>true</reuseForks>
                         <!-- We should NOT ignore IT test failures. TestFailureIgnore should be false. -->
                         <testFailureIgnore>false</testFailureIgnore>
                     </configuration>

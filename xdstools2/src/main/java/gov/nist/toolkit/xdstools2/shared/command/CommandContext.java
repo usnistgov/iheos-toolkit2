@@ -1,6 +1,7 @@
 package gov.nist.toolkit.xdstools2.shared.command;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.installation.shared.TestSession;
 
 import java.io.Serializable;
 
@@ -41,4 +42,7 @@ public class CommandContext implements Serializable, IsSerializable {
         this.testSessionName = testSessionName;
     }
 
+    public TestSession getTestSession() {
+        return new TestSession(testSessionName);
+    }
 }

@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 class CreateNewSite implements ClickHandler {
@@ -24,7 +25,7 @@ class CreateNewSite implements ClickHandler {
 			new PopupMessage("Current Site has been edited. Save or Forget changes before creating new site");
 			return;
 		}
-		Site site = new Site();
+		Site site = new Site(ClientUtils.INSTANCE.getCurrentTestSession());
 		site.setName(this.actorConfigTab.newSiteName);
 		this.actorConfigTab.newActorEditGrid();
 		this.actorConfigTab.displaySite(site);

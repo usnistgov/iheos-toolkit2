@@ -14,26 +14,28 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.tk.client.TkProps;
+import gov.nist.toolkit.xdstools2.client.command.command.GetToolkitPropertiesCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionOfferingsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.InitializationCommand;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.injector.Injector;
-import gov.nist.toolkit.xdstools2.client.selectors.EnvironmentManager;
-import gov.nist.toolkit.xdstools2.client.selectors.TestSessionSelector;
+import gov.nist.toolkit.xdstools2.client.selectors.*;
 import gov.nist.toolkit.xdstools2.client.tabs.EnvironmentState;
 import gov.nist.toolkit.xdstools2.client.tabs.HomeTab;
 import gov.nist.toolkit.xdstools2.client.tabs.QueryState;
 import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientFactory;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.util.TabWatcher;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.InitializationResponse;
 
 import javax.inject.Inject;
+import java.util.Map;
 import java.util.logging.Logger;
 
 
-public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, ProvidesResize {
+public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, ProvidesResize, TabWatcher {
 	public static final int TRAY_SIZE = 190;
 	public static final int TRAY_CTL_BTN_SIZE = 9; // 23
 
@@ -52,6 +54,8 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 
 	public static String toolkitBaseUrl = null;
 	public static String wikiBaseUrl = null;
+	public boolean multiUserModeEnabled;
+	public boolean casModeEnabled;
 
 	private static TkProps props = new TkProps();
 
@@ -88,12 +92,13 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 	private TabContainer tabContainer;
 
 	void buildTabsWrapper() {
-		HorizontalPanel menuPanel = new HorizontalPanel();
+		final HorizontalPanel menuPanel = new HorizontalPanel();
+		menuPanel.setWidth("100%");
 		tabContainer = Injector.INSTANCE.getTabContainer();
 		assert(tabContainer != null);
-		EnvironmentManager environmentManager = new EnvironmentManager(tabContainer);
+		final EnvironmentManager environmentManager = new EnvironmentManager(tabContainer);
 
-		Widget decoratedTray = decorateMenuContainer();
+		Widget decoratedTray = makeMenuCollapsible();
 
 		mainSplitPanel.addWest(decoratedTray, TRAY_SIZE);
 		mainSplitPanel.setWidgetToggleDisplayAllowed(decoratedTray,true);
@@ -102,9 +107,44 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 		TabContainer.setWidth("100%");
 		TabContainer.setHeight("100%");
 
-		menuPanel.add(environmentManager);
-		menuPanel.setSpacing(10);
-		menuPanel.add(new TestSessionSelector(getTestSessionManager().getTestSessions(), getTestSessionManager().getCurrentTestSession()).asWidget());
+		new GetToolkitPropertiesCommand() {
+			@Override
+			public void onFailure(Throwable throwable) {
+				new PopupMessage("BuildTabsWrapper error getting properties : " + throwable.toString());
+			}
+
+
+			@Override
+			public void onComplete(final Map<String, String> tkPropMap) {
+                ClientUtils.INSTANCE.setTkPropMap(tkPropMap);
+				multiUserModeEnabled = Boolean.parseBoolean(tkPropMap.get("Multiuser_mode"));
+				casModeEnabled = Boolean.parseBoolean(tkPropMap.get("Cas_mode"));
+
+				// No environment selector for CAS mode, but allow for single user mode and multi user mode
+				if (!casModeEnabled) {
+					menuPanel.add(environmentManager);
+					menuPanel.setSpacing(10);
+				}
+
+				// Only single user mode has a selectable test session drop down
+				if (!multiUserModeEnabled && !casModeEnabled) {
+					getTestSessionManager().setCurrentTestSession("default");
+					menuPanel.add(new TestSessionSelector(getTestSessionManager().getTestSessions(), getTestSessionManager().getCurrentTestSession()).asWidget());
+				} else {
+					if (multiUserModeEnabled && !casModeEnabled) {
+						// Only two options: 1) Change Test Session and 2) New Test Session
+						menuPanel.add(new MultiUserTestSessionSelector( Xdstools2.this).asWidget());
+					} else if (casModeEnabled) {
+						// Only one option: 1) Change Test Session
+						menuPanel.add(new CasUserTestSessionSelector(Xdstools2.this).asWidget());
+					}
+				}
+				menuPanel.add(new SignInSelector());
+
+			}
+		}.run(ClientUtils.INSTANCE.getCommandContext());
+
+
 
 		DockLayoutPanel mainPanel = new DockLayoutPanel(Style.Unit.EM);
 		mainPanel.addNorth(menuPanel, 4);
@@ -124,7 +164,7 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 
 	static public void clearMainMenu() { ME.mainMenuPanel.clear(); }
 
-	private Widget decorateMenuContainer() {
+	private Widget makeMenuCollapsible() {
 		final FlowPanel vpCollapsible =  new FlowPanel();
 
 		// Set margins
@@ -315,5 +355,15 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 	@Override
 	public void onResize() {
 	 mainSplitPanel.onResize();
+	}
+
+	@Override
+	public int getTabCount() {
+	   return tabContainer.getTabCount();
+	}
+
+	@Override
+	public boolean closeAllTabs() {
+	    return tabContainer.closeAllTabs();
 	}
 }

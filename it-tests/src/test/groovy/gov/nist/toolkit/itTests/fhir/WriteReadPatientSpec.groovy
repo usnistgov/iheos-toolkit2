@@ -4,7 +4,8 @@ import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.parser.IParser
 import gov.nist.toolkit.fhir.server.utility.FhirId
 import gov.nist.toolkit.fhir.support.SimIndexManager
-import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.server.Installation
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.FhirSpecification
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.SimDb
@@ -22,9 +23,9 @@ class WriteReadPatientSpec extends FhirSpecification {
     @Shared SimulatorBuilder spi
 
     @Shared def testSession = 'default'
-    @Shared def simIdName = 'test'
+    @Shared def simIdName = prefixNonce('test')
 
-    @Shared SimId simId = new SimId(testSession, simIdName)
+    @Shared SimId simId = new SimId(new TestSession(testSession), simIdName)
     @Shared FhirContext ourCtx = FhirContext.forDstu3()
 
     def setupSpec() {

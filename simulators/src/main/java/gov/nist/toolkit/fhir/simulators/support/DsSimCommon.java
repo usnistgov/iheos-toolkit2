@@ -15,7 +15,7 @@ import gov.nist.toolkit.fhir.simulators.sim.reg.SoapWrapperRegistryResponseSim;
 import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.fhir.simulators.sim.rep.RepIndex;
 import gov.nist.toolkit.http.HttpParserBa;
-import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponse;
 import gov.nist.toolkit.registrymsg.registry.Response;
@@ -223,7 +223,7 @@ public class DsSimCommon {
        MessageValidatorEngine mvc, ErrorRecorderBuilder gerb) throws IOException {
        ValidateMessageService vms = new ValidateMessageService(regIndex);
        MessageValidatorEngine mve = vms.runValidation(vc, 
-           db.getRequestMessageHeader(), db.getRequestMessageBody(), mvc, gerb);
+           db.getRequestMessageHeader(), db.getRequestMessageBody(), mvc, gerb, db.getTestSession());
        hparser = vms.getHttpMessageValidator().getHttpParserBa();
        return mve;
     }

@@ -4,8 +4,9 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
@@ -17,6 +18,7 @@ import gov.nist.toolkit.xdstools2.client.command.command.RunMesaTestCommand;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetImagingDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTestResultsRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.RunTestRequest;
@@ -221,7 +223,7 @@ public class IIGTestTab extends GenericQueryTab implements GatewayTool {
             }
 
             TestInstance testInstance = new TestInstance(testToRun);
-            testInstance.setUser(getCurrentTestSession());
+            testInstance.setTestSession(new TestSession(getCurrentTestSession()));
             new RunMesaTestCommand(){
                 @Override
                 public void onComplete(List<Result> result) {
@@ -250,7 +252,7 @@ public class IIGTestTab extends GenericQueryTab implements GatewayTool {
                             new PopupMessage("Results not available");
                             return;
                         }
-                        SiteSpec siteSpec = new SiteSpec(siteName, ActorType.RESPONDING_GATEWAY, null);
+                        SiteSpec siteSpec = new SiteSpec(siteName, ActorType.RESPONDING_GATEWAY, null, ClientUtils.INSTANCE.getCurrentTestSession());
 
                         MetadataInspectorTab itab = new MetadataInspectorTab();
                         List<Result> results = new ArrayList<Result>();

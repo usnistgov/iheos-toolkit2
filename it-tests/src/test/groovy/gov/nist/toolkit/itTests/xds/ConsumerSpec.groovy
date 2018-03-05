@@ -1,11 +1,11 @@
 package gov.nist.toolkit.itTests.xds
 
-import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
-import gov.nist.toolkit.adt.ListenerFactory
-import gov.nist.toolkit.configDatatypes.client.Pid
-import gov.nist.toolkit.installation.Installation
-import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.commondatatypes.MetadataSupport
+import gov.nist.toolkit.configDatatypes.client.Pid
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
+import gov.nist.toolkit.installation.server.Installation
+import gov.nist.toolkit.installation.shared.TestSession
+import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.results.client.TestLogs
 import gov.nist.toolkit.toolkitApi.DocumentConsumer
@@ -22,7 +22,7 @@ class ConsumerSpec extends ToolkitSpecification {
     @Shared SimulatorBuilder simBuilder
     @Shared Pid pid = new Pid('1.2.360','BR14')
     @Shared SimConfig rrConfig
-    @Shared String testSession = 'bill';
+    @Shared String testSession = prefixNonce('bill')
     @Shared String envName = 'test'
     @Shared DocumentConsumer docCons
     @Shared TestLogs repTestLogs
@@ -32,7 +32,7 @@ class ConsumerSpec extends ToolkitSpecification {
         startGrizzly('8889')
 
         println "EC is ${Installation.instance().externalCache().toString()}"
-        println "${api.getSiteNames(true)}"
+        println "${api.getSiteNames(true, new TestSession(testSession))}"
         api.createTestSession(testSession)
 
         // Connect to remote API
@@ -60,8 +60,8 @@ class ConsumerSpec extends ToolkitSpecification {
 
     def cleanupSpec() {  // one time shutdown when everything is done
 //        System.gc()
-        server.stop()
-        ListenerFactory.terminateAll()
+//        server.stop()
+//        ListenerFactory.terminateAll()
     }
 
     def setup() {}

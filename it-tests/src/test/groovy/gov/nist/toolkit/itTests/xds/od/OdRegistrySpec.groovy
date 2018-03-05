@@ -1,11 +1,13 @@
 package gov.nist.toolkit.itTests.xds.od
+
 import gov.nist.toolkit.actortransaction.client.ActorType
-import gov.nist.toolkit.adt.ListenerFactory
-import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.server.Installation
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.client.SimIdFactory
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import spock.lang.Shared
@@ -18,9 +20,9 @@ class OdRegistrySpec extends ToolkitSpecification {
 
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
     String patientId = 'ODREG11^^^&1.2.460&ISO'
-    @Shared String reg = 'sunil__reg'
-    @Shared SimId simId = new SimId(reg)
-    @Shared String testSession = 'sunil';
+    @Shared String testSession = prefixNonce( 'sunil')
+    @Shared String reg = testSession + '__reg'
+    @Shared SimId simId = SimIdFactory.simIdBuilder(reg)
 
     def setupSpec() {   // one time setup done when class launched
         startGrizzly('8889')
@@ -48,13 +50,13 @@ class OdRegistrySpec extends ToolkitSpecification {
     def cleanupSpec() {  // one time shutdown when everything is done
 //        System.gc()
         spi.delete('reg',testSession)
-        server.stop()
-        ListenerFactory.terminateAll()
+//        server.stop()
+//        ListenerFactory.terminateAll()
     }
 
     def setup() {
         println "EC is ${Installation.instance().externalCache().toString()}"
-        println "${api.getSiteNames(true)}"
+        println "${api.getSiteNames(true, new TestSession(testSession))}"
         api.createTestSession(testSession)
         if (!api.simulatorExists(simId)) {
             println "Creating sim ${simId}"
@@ -65,7 +67,7 @@ class OdRegistrySpec extends ToolkitSpecification {
     // submits the patient id configured above to the registry in a Patient Identity Feed transaction
     def 'Submit Pid transaction to Registry simulator'() {
         when:
-        String siteName = 'sunil__reg'
+        String siteName = testSession + '__reg'
         TestInstance testId = new TestInstance("15804")
         List<String> sections = new ArrayList<>()
         sections.add("section")
@@ -84,7 +86,7 @@ class OdRegistrySpec extends ToolkitSpecification {
 
     def 'Run all tests'() {
         when:
-        String siteName = 'sunil__reg'
+        String siteName = testSession + '__reg'
         TestInstance testId = new TestInstance("15805")
         List<String> sections = new ArrayList<>()
         Map<String, String> params = new HashMap<>()

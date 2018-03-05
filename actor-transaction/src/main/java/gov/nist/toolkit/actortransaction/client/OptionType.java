@@ -17,7 +17,10 @@ public enum OptionType {
             "Affinity Domain"),
     DOC_RECIP_RESPNDR("docreciprespndr","MHD Document Recipient/Responder"),
     MHD_DOC_RECIP("mhddocrecip", "MHD Document Recipient"),
-    XDS_ON_FHIR("xdsonfhir", "XDS on FHIR");
+    XDS_ON_FHIR("xdsonfhir", "XDS on FHIR"),
+    DocumentReplace("docreplace", "Document Replace"),
+    LifeCycle("lifecycle", "Life Cycle"),
+    Folder("folder", "Folder");
 
 
 

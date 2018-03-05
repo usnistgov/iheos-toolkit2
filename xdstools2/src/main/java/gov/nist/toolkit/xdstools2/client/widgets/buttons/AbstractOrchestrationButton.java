@@ -3,12 +3,8 @@ package gov.nist.toolkit.xdstools2.client.widgets.buttons;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.*;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.services.client.AbstractOrchestrationResponse;
 import gov.nist.toolkit.services.client.MessageItem;
@@ -17,6 +13,7 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.ErrorHandler;
 import gov.nist.toolkit.xdstools2.client.command.command.GetStsSamlAssertionCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetToolkitPropertiesCommand;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.ConformanceTestTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetStsSamlAssertionRequest;
 
@@ -27,6 +24,7 @@ import java.util.Map;
  *
  */
 abstract public class AbstractOrchestrationButton implements ClickHandler {
+    protected ConformanceTestTab testTab;
     private final FlowPanel panel = new FlowPanel();  // upper panel
     private final FlowPanel errorPanel = new FlowPanel();
     private Panel topPanel;
@@ -47,7 +45,7 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
     static {
         stsTestInstance.setSection("samlassertion-issue");
     }
-    private static final SiteSpec stsSpec =  new SiteSpec("GazelleSts");
+    private static final SiteSpec stsSpec =  new SiteSpec(new TestSession("GazelleSts"));
     private static final Map<String, String> samlParams = new HashMap<>();
     static public final String XUA_OPTION = "xua";
 
@@ -291,6 +289,10 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
 
     public static TestInstance getStsTestInstance() {
         return stsTestInstance;
+    }
+
+    protected TestSession getTestSession() {
+        return new TestSession(testTab.getCurrentTestSession());
     }
 
 }

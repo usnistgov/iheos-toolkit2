@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab;
 
-import gov.nist.toolkit.results.shared.Test;
+import gov.nist.toolkit.results.client.Test;
 
 import java.util.ArrayList;
 import java.util.List;

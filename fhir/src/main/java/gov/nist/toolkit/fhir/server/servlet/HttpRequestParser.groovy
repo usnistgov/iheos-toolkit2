@@ -2,11 +2,14 @@ package gov.nist.toolkit.fhir.server.servlet
 
 import ca.uhn.fhir.rest.method.RequestDetails
 import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.client.SimIdFactory
+import groovy.transform.TypeChecked
 
 import javax.servlet.http.HttpServletRequest
 /**
  * This extracts the SimId from the HttpServletRequest
  */
+@TypeChecked
 class HttpRequestParser {
 
     static final protected String CONTEXT = "fsim"
@@ -33,6 +36,6 @@ class HttpRequestParser {
 
         String simId = uri.substring(simIdStart, simIdEnd);
 
-        return new SimId(simId).forFhir()
+        return SimIdFactory.simIdBuilder(simId).forFhir()
     }
 }

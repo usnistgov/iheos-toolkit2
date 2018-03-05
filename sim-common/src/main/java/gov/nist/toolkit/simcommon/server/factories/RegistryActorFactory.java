@@ -6,7 +6,7 @@ import gov.nist.toolkit.adt.ListenerFactory;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.envSetting.EnvSetting;
-import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.Simulator;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
@@ -48,7 +48,7 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
 		ActorType actorType = ActorType.REGISTRY;
 		SimulatorConfig sc;
 		if (configureBase)
-			sc = configureBaseElements(actorType, simId);
+			sc = configureBaseElements(actorType, simId, simId.getTestSession());
 		else
 			sc = new SimulatorConfig();
 
@@ -140,9 +140,9 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
 		String siteName = asc.getDefaultName();
 		
 		if (site == null)
-			site = new Site(siteName);
+			site = new Site(siteName, asc.getId().getTestSession());
 
-		site.user = asc.getId().user;  // labels this site as coming from a sim
+		site.setTestSession(asc.getId().getTestSession());  // labels this site as coming from a sim
 		//site.user = asc.getId().user;  // labels this site as coming from a sim
 
 		boolean isAsync = false;

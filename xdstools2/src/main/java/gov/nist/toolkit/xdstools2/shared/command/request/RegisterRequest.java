@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.shared.command.request;
 
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
@@ -64,6 +65,10 @@ public class RegisterRequest extends CommandContext{
 
     public String getUsername() {
         return username;
+    }
+
+    public TestSession getTestSession() {
+        return new TestSession(username);
     }
 
     public void setUsername(String username) {

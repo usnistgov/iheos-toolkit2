@@ -5,7 +5,7 @@
     <parent>
         <groupId>gov.nist.toolkit</groupId>
         <artifactId>tk-deps</artifactId>
-        <version>5.2.4</version>
+        <version>5.3.0-SNAPSHOT</version>
         <relativePath>../tk-deps/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -25,6 +25,10 @@
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>installation</artifactId>
         </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>http</artifactId>
+        </dependency>
         <!--<dependency>-->
             <!--<groupId>gov.nist.toolkit</groupId>-->
             <!--<artifactId>actorfactory</artifactId>-->
@@ -36,7 +40,7 @@
         <dependency>
             <groupId>org.spockframework</groupId>
             <artifactId>spock-core</artifactId>
-            <version>0.7-groovy-2.0</version>
+            <version>${spock.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

@@ -2,10 +2,10 @@ package gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import gov.nist.toolkit.xdstools2.client.PasswordManagement;
+import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
-import gov.nist.toolkit.xdstools2.client.widgets.AdminPasswordDialogBox;
-import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 class SaveButtonClickHandler implements ClickHandler {
@@ -36,9 +36,16 @@ class SaveButtonClickHandler implements ClickHandler {
 			((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireActorsConfigUpdatedEvent();
 		}
 		else {
-			PasswordManagement.addSignInCallback(actorConfigTab.saveSignedInCallback);
-
-			new AdminPasswordDialogBox(actorConfigTab.getTabTopPanel());
+			if (Xdstools2.getInstance().multiUserModeEnabled && !Xdstools2.getInstance().casModeEnabled) {
+				actorConfigTab.saveSignedInCallback.onSuccess(true);
+				actorConfigTab.loadExternalSites();
+				((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireActorsConfigUpdatedEvent();
+			} else {
+				new PopupMessage("You must be signed in as admin");
+			}
+//			PasswordManagement.addSignInCallback(actorConfigTab.saveSignedInCallback);
+//
+//			new AdminPasswordDialogBox(actorConfigTab.getTabTopPanel());
 		}
 	}
 

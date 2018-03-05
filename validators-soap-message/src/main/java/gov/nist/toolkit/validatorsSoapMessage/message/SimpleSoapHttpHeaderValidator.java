@@ -6,8 +6,8 @@ import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.http.HttpHeader;
 import gov.nist.toolkit.http.HttpParserBa;
 import gov.nist.toolkit.http.ParseException;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.validatorsSoapMessage.factories.SoapMessageValidatorFactory;
-import gov.nist.toolkit.valregmsg.validation.factories.CommonMessageValidatorFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
@@ -28,14 +28,16 @@ public class SimpleSoapHttpHeaderValidator extends AbstractMessageValidator {
 	byte[] bodyBytes;
 	String charset = null;
 	RegistryValidationInterface rvi;
+	TestSession testSession;
 
-	public SimpleSoapHttpHeaderValidator(ValidationContext vc, HttpParserBa hparser, byte[] body, ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, RegistryValidationInterface rvi) {
+	public SimpleSoapHttpHeaderValidator(ValidationContext vc, HttpParserBa hparser, byte[] body, ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, RegistryValidationInterface rvi, TestSession testSession) {
 		super(vc);
 		this.hparser = hparser;
 		this.erBuilder = erBuilder;
 		this.mvc = mvc;
 		this.rvi = rvi;
 		this.bodyBytes = body;
+		this.testSession = testSession;
 	}
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
@@ -69,7 +71,7 @@ public class SimpleSoapHttpHeaderValidator extends AbstractMessageValidator {
 
 //			er.detail("Scheduling validation of SOAP content");
             er.sectionHeading("SOAP Message");
-			SoapMessageValidatorFactory.getValidatorContext(erBuilder, bodyBytes, mvc, "Validate SOAP", vc, rvi);
+			SoapMessageValidatorFactory.getValidatorContext(erBuilder, bodyBytes, mvc, "Validate SOAP", vc, rvi, testSession);
 
 		} catch (ParseException e) {
 			err(e);

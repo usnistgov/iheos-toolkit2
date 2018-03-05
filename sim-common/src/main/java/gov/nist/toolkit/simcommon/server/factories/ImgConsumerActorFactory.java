@@ -29,7 +29,7 @@ public class ImgConsumerActorFactory  extends AbstractActorFactory implements IA
         ActorType actorType = ActorType.IMAGING_DOC_CONSUMER;
         SimulatorConfig sc;
         if (configureBase)
-            sc = configureBaseElements(actorType, simId);
+            sc = configureBaseElements(actorType, simId, simId.getTestSession());
         else
             sc = new SimulatorConfig();
 
@@ -56,7 +56,7 @@ public class ImgConsumerActorFactory  extends AbstractActorFactory implements IA
      */
     @Override
     public Site getActorSite(SimulatorConfig asc, Site site) throws NoSimulatorException {
-        return (site == null) ? new Site(asc.getDefaultName()) : site;
+        return (site == null) ? new Site(asc.getDefaultName(), asc.getId().getTestSession()) : site;
     }
 
     @Override

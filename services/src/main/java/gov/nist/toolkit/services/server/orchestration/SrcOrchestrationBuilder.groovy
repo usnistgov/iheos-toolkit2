@@ -45,8 +45,8 @@ class SrcOrchestrationBuilder {
 
             boolean forceNewPatientIds = !request.isUseExistingState()
 
-            simId = new SimId(request.userName, supportIdName, ActorType.MHD_DOC_RECIPIENT.name, request.environmentName)
-            OrchestrationProperties orchProps = new OrchestrationProperties(session, request.userName, ActorType.MHD_DOC_RECIPIENT, pidNameMap.keySet(), !request.useExistingState)
+            simId = new SimId(request.testSession, supportIdName, ActorType.MHD_DOC_RECIPIENT.name, request.environmentName)
+            OrchestrationProperties orchProps = new OrchestrationProperties(session, request.testSession, ActorType.MHD_DOC_RECIPIENT, pidNameMap.keySet(), !request.useExistingState)
 
             if (!request.useExistingState) {
                 api.deleteSimulatorIfItExists(simId)
@@ -68,9 +68,9 @@ class SrcOrchestrationBuilder {
             orchProps.save()
 
             response.config = simConfig
-            response.simProxySite = SimCache.getSite(session.getId(), simId.toString())
-            response.simProxyBeSite = SimCache.getSite(session.getId(), simId.toString() + "_be")
-            response.regrepSite = SimCache.getSite(session.getId(), simId.toString() + "_regrep")
+            response.simProxySite = SimCache.getSite(simId.toString(), request.testSession)
+            response.simProxyBeSite = SimCache.getSite(simId.toString() + "_be", request.testSession)
+            response.regrepSite = SimCache.getSite(simId.toString() + "_regrep", request.testSession)
 
             return response
 

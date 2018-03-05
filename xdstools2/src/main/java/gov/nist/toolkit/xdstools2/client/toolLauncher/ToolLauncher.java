@@ -2,11 +2,12 @@ package gov.nist.toolkit.xdstools2.client.toolLauncher;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.registrymetadata.client.RegistryObject;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
+import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.tabs.*;
-import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.*;
 import gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab.SubmitResource;
 import gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab.ActorConfigTab;
 import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.ConformanceTestTab;
@@ -17,6 +18,8 @@ import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorT
 import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewer;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.SimulatorControlTab;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.TestsOverviewTab;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,12 +64,12 @@ public class ToolLauncher implements ClickHandler {
 	final static public String testRunnerTabLabel = "Conformance Tests";
 	final static public String pidFavoritesLabel = "Manage Patient IDs";
 	final static public String testsOverviewTabLabel = "Tests Overview";
-	final static public String igTestsTabLabel = "Initiating Gateway Tests";
-	final static public String rgTestsTabLabel = "Responding Gateway Tests";
-	final static public String iigTestsTabLabel = "Initiating Imaging Gateway Tests";
-	final static public String rigTestsTabLabel = "Responding Imaging Gateway Tests";
-	final static public String idsTestsTabLabel = "Imaging Document Source Tests";
-	final static public String rsnaedgeTestsTabLabel = "RSNA Edge Device Tests";
+//	final static public String igTestsTabLabel = "Initiating Gateway Tests";
+//	final static public String rgTestsTabLabel = "Responding Gateway Tests";
+//	final static public String iigTestsTabLabel = "Initiating Imaging Gateway Tests";
+//	final static public String rigTestsTabLabel = "Responding Imaging Gateway Tests";
+//	final static public String idsTestsTabLabel = "Imaging Document Source Tests";
+//	final static public String rsnaedgeTestsTabLabel = "RSNA Edge Device Tests";
 	final static public String imagingDocumentSetRetrieveTabLabel = "RetrieveImagingDocumentSet";
 	final static public String homeTabLabel = "Home";
 	final static public String SysConfigTabLabel = "SUT Configuration";
@@ -117,12 +120,12 @@ public class ToolLauncher implements ClickHandler {
 //		tools.addTest(new ToolDef(nwhinTabLabel, "FindDocs", "FindDocs"));
 		tools.add(new ToolDef(pidFavoritesLabel, "PIDFav", "PIDFav"));
 		tools.add(new ToolDef(testsOverviewTabLabel, "TestsOver", "TestsOver"));
-		tools.add(new ToolDef(igTestsTabLabel, "IGTests", "IGTests"));
-		tools.add(new ToolDef(iigTestsTabLabel, "IIGTests", "IIGTests"));
-		tools.add(new ToolDef(rigTestsTabLabel, "RIGTests", "RIGTests"));
-		tools.add(new ToolDef(idsTestsTabLabel, "IDSTests", "IDSTests"));
-		tools.add(new ToolDef(rsnaedgeTestsTabLabel, "RSNA Edge Tests", "RSNAEdgeTests"));
-		tools.add(new ToolDef(rgTestsTabLabel, "RGTests", "RGTests"));
+//		tools.add(new ToolDef(igTestsTabLabel, "IGTests", "IGTests"));
+//		tools.add(new ToolDef(iigTestsTabLabel, "IIGTests", "IIGTests"));
+//		tools.add(new ToolDef(rigTestsTabLabel, "RIGTests", "RIGTests"));
+//		tools.add(new ToolDef(idsTestsTabLabel, "IDSTests", "IDSTests"));
+//		tools.add(new ToolDef(rsnaedgeTestsTabLabel, "RSNA Edge Tests", "RSNAEdgeTests"));
+//		tools.add(new ToolDef(rgTestsTabLabel, "RGTests", "RGTests"));
 		tools.add(new ToolDef(imagingDocumentSetRetrieveTabLabel, "RetIDS", "RetIDS"));
 		tools.add(new ToolDef(conformanceTestsLabel, "ConfTests", "ConfTests"));
 		tools.add(new ToolDef(toolConfigTabLabel, "ToolkitConf", "ToolkitConf"));
@@ -150,8 +153,8 @@ public class ToolLauncher implements ClickHandler {
 
 		if (menuName.equals(findDocumentsAllParametersTabLabel)) return new FindDocuments2Tab();
 		if (menuName.equals(findDocumentsTabLabel)) return new FindDocumentsTab();
-		if (menuName.equals(igTestsTabLabel)) return new IGTestTab();
-		if (menuName.equals(rgTestsTabLabel)) return new RGTestTab();
+//		if (menuName.equals(igTestsTabLabel)) return new IGTestTab();
+//		if (menuName.equals(rgTestsTabLabel)) return new RGTestTab();
 		if (menuName.equals(findDocumentsByRefIdTabLabel)) return new FindDocumentsByRefIdTab();
 		if (menuName.equals(findDocumentsAllParametersTabLabel)) return new FindDocuments2Tab();
 		if (menuName.equals(findFoldersTabLabel)) return new FindFoldersTab();
@@ -186,16 +189,22 @@ public class ToolLauncher implements ClickHandler {
 		if (menuName.equals(pidFavoritesLabel)) return new PidFavoritesTab(def.getTabName());
 		if (menuName.equals(testsOverviewTabLabel)) return new TestsOverviewTab();
 		if (menuName.equals(homeTabLabel)) return new HomeTab();
-		if (menuName.equals(iigTestsTabLabel)) return new IIGTestTab();
-		if (menuName.equals(rigTestsTabLabel)) return new RIGTestTab();
-		if (menuName.equals(idsTestsTabLabel)) return new IDSTestTab();
-		if (menuName.equals(rsnaedgeTestsTabLabel)) return new RSNAEdgeTestTab();
+//		if (menuName.equals(iigTestsTabLabel)) return new IIGTestTab();
+//		if (menuName.equals(rigTestsTabLabel)) return new RIGTestTab();
+//		if (menuName.equals(idsTestsTabLabel)) return new IDSTestTab();
+//		if (menuName.equals(rsnaedgeTestsTabLabel)) return new RSNAEdgeTestTab();
 		if (menuName.equals(submitResourceTabLabel)) return new NewToolLauncher().launch(new SubmitResource());
 		if (menuName.equals(fhirSearchTabLabel)) return new NewToolLauncher().launch(new FhirSearch());
 		return null;
 	}
 
 	private ToolWindow launch(String requestedName) {
+		boolean mu = Xdstools2.getInstance().multiUserModeEnabled;
+		TestSession testSession = ClientUtils.INSTANCE.getCurrentTestSession();
+		if (mu && (testSession == null || testSession.getValue().equals(""))) {
+			new PopupMessage("A Test Session must be selected");
+			return null;
+		}
 		ToolDef def = getToolDef(requestedName);
 		ToolWindow tool = getTool(def);
 		if (tool == null) return null;

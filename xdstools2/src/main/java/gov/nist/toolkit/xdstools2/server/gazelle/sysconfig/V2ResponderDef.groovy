@@ -1,10 +1,12 @@
 package gov.nist.toolkit.xdstools2.server.gazelle.sysconfig
 
 import groovy.transform.ToString
+import groovy.transform.TypeChecked
 
 /**
  *
  */
+@TypeChecked
 @ToString
 class V2ResponderDef {
     String configType

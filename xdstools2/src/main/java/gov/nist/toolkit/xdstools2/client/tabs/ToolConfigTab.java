@@ -12,7 +12,6 @@ import gov.nist.toolkit.xdstools2.client.command.command.SetToolkitPropertiesCom
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.NullSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.util.InformationLink;
-import gov.nist.toolkit.xdstools2.client.widgets.AdminPasswordDialogBox;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.TestkitConfigTool;
 import gov.nist.toolkit.xdstools2.shared.command.request.SetToolkitPropertiesRequest;
@@ -35,6 +34,7 @@ public class ToolConfigTab extends GenericQueryTab {
     private Map<String, String> props;
     private Button loadAllGazelleConfigsBtn = new Button("Load all Gazelle configs");
     private int gridRow;
+    private int index;
 
 	public ToolConfigTab() {
 		super(new NullSiteActorManager());
@@ -50,9 +50,13 @@ public class ToolConfigTab extends GenericQueryTab {
 		if (PasswordManagement.isSignedIn) {
 		}
 		else {
-			PasswordManagement.addSignInCallback(signedInCallback);
 
-			new AdminPasswordDialogBox(container);
+		    new PopupMessage("You must be signed in as admin");
+		    deleteMe();
+
+//			PasswordManagement.addSignInCallback(signedInCallback);
+//
+//			new AdminPasswordDialogBox(container);
 
 			return null;
 		}

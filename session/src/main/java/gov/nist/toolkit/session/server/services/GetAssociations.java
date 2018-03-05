@@ -26,7 +26,7 @@ public class GetAssociations extends CommonService {
 		try {
 			session.setSiteSpec(site);
 
-			TestInstance testInstance = new TestInstance("GetAssociations");
+			TestInstance testInstance = new TestInstance("GetAssociations", session.getTestSession());
 			List<String> sections = new ArrayList<String>();
 			Map<String, String> params = new HashMap<String, String>();
 			params.put("$returnType$", returnType);

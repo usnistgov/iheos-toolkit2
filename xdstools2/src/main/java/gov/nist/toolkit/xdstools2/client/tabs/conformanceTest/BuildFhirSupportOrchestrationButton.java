@@ -2,6 +2,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorOption;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest;
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationResponse;
 import gov.nist.toolkit.services.client.PatientDef;
@@ -14,7 +15,6 @@ import static gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.OrchSupport
 import static gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.OrchSupport.tableHeader;
 
 public class BuildFhirSupportOrchestrationButton extends AbstractOrchestrationButton {
-    private ConformanceTestTab testTab;
     private Panel initializationPanel;
     private TestContext testContext;
     private ActorOption actorOption;
@@ -46,7 +46,7 @@ public class BuildFhirSupportOrchestrationButton extends AbstractOrchestrationBu
         initializationResultsPanel.clear();
 
         FhirSupportOrchestrationRequest request = new FhirSupportOrchestrationRequest();
-        request.setUserName(testTab.getCurrentTestSession());
+        request.setTestSession(new TestSession(testTab.getCurrentTestSession()));
         request.setEnvironmentName(testTab.getEnvironmentSelection());
         request.setUseExistingState(!isResetRequested());
         request.getActorOption().copyFrom(testTab.getCurrentActorOption());

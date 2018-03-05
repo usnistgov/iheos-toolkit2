@@ -1,7 +1,6 @@
 package gov.nist.toolkit.testkitutilities
 
-import gov.nist.toolkit.installation.Installation
-import gov.nist.toolkit.xdsexception.ExceptionUtil
+import gov.nist.toolkit.installation.server.Installation
 import org.apache.log4j.BasicConfigurator
 import org.apache.log4j.Logger
 

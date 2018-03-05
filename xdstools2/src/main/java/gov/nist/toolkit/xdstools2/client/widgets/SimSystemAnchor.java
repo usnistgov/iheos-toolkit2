@@ -2,6 +2,7 @@ package gov.nist.toolkit.xdstools2.client.widgets;
 
 import com.google.gwt.user.client.ui.HTML;
 import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.simcommon.client.SimIdFactory;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.command.command.GetSimConfigsCommand;
@@ -21,20 +22,25 @@ public class SimSystemAnchor extends HorizontalFlowPanel {
         h.addStyleName("detail-table-header");
         add(h);
 
-        List<SimId> simIds = new ArrayList<>();
-        simIds.add(new SimId(siteSpec));
+        if (SimIdFactory.isSimId(siteSpec.name)) {
 
-        new GetSimConfigsCommand(){
-            @Override
-            public void onComplete(List<SimulatorConfig> simulatorConfigs) {
-                if (simulatorConfigs.size() == 1) {
-                    final SimulatorConfig simConfig = simulatorConfigs.get(0);
-                    add(new SimConfigEditAnchor("[Simulator Configuration]", simConfig));
-                    add(new SimLogViewerAnchor("[Simulator Log]", simConfig.getId()));
-                } else {
-                    add(new SiteEditAnchor("[System Configuration]", siteSpec));
+            List<SimId> simIds = new ArrayList<>();
+            simIds.add(SimIdFactory.simIdBuilder(siteSpec.name));
+
+            new GetSimConfigsCommand() {
+                @Override
+                public void onComplete(List<SimulatorConfig> simulatorConfigs) {
+                    if (simulatorConfigs.size() == 1) {
+                        final SimulatorConfig simConfig = simulatorConfigs.get(0);
+                        add(new SimConfigEditAnchor("[Simulator Configuration]", simConfig));
+                        add(new SimLogViewerAnchor("[Simulator Log]", simConfig.getId()));
+                    } else {
+                        add(new SiteEditAnchor("[System Configuration]", siteSpec));
+                    }
                 }
-            }
-        }.run(new GetSimConfigsRequest(ClientUtils.INSTANCE.getCommandContext(),simIds));
+            }.run(new GetSimConfigsRequest(ClientUtils.INSTANCE.getCommandContext(), simIds));
+        } else {
+            add(new SiteEditAnchor("[System Configuration]", siteSpec));
+        }
     }
 }

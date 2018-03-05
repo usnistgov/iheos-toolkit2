@@ -49,7 +49,7 @@ public class OnDemandDocumentSourceActorFactory extends AbstractActorFactory imp
 //		logger.debug("Creating " + actorType.getName() + " with id " + simId);
 		SimulatorConfig sc;
 		if (configureBase)
-			sc = configureBaseElements(actorType, simId);
+			sc = configureBaseElements(actorType, simId, simId.getTestSession());
 		else
 			sc = new SimulatorConfig();
 
@@ -94,9 +94,9 @@ public class OnDemandDocumentSourceActorFactory extends AbstractActorFactory imp
 		String siteName = asc.getDefaultName();
 
 		if (site == null)
-			site = new Site(siteName);
+			site = new Site(siteName, asc.getId().getTestSession());
 
-		site.user = asc.getId().user;  // labels this site as coming from a sim
+		site.setTestSession(asc.getId().getTestSession());  // labels this site as coming from a sim
 
 		boolean isAsync = false;
 

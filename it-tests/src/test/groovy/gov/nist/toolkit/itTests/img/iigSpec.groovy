@@ -1,6 +1,6 @@
 package gov.nist.toolkit.itTests.img
 
-import gov.nist.toolkit.adt.ListenerFactory
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.services.client.IigOrchestrationRequest
@@ -11,19 +11,17 @@ import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.SimManager
 import gov.nist.toolkit.sitemanagement.Sites
-import gov.nist.toolkit.sitemanagement.client.Site
 import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import spock.lang.Shared
-
 /**
  * Integration tests for IIG Simulator
  */
 class iigSpec extends ToolkitSpecification {
     @Shared SimulatorBuilder spi
-    @Shared String testSession = 'iigspec';
+    @Shared TestSession testSession = new TestSession(prefixNonce('iigspec'))
     @Shared String id = 'simulator_iig'
     @Shared SimId simId = new SimId(testSession, id)
     @Shared String envName = 'default'
@@ -42,14 +40,14 @@ class iigSpec extends ToolkitSpecification {
         // builds his test collections. mimics startup of tomcat
         new BuildCollections().init(null)
 
-        // creates the special user/session for this test
-        api.createTestSession(testSession)
+        // creates the special testSession/session for this test
+        api.createTestSession(testSession.value)
     }
 
     // one time shutdown when everything is done
     def cleanupSpec() {
-        server.stop()
-        ListenerFactory.terminateAll()
+//        server.stop()
+//        ListenerFactory.terminateAll()
     }
 
     def setup() {
@@ -59,9 +57,9 @@ class iigSpec extends ToolkitSpecification {
         setup: 'iig orchestration request is set up'
         IigOrchestrationRequest request = new IigOrchestrationRequest()
         request.environmentName = envName
-        request.userName = testSession
+        request.testSession = testSession
         request.useExistingSimulator = false
-        request.siteUnderTest = new SiteSpec(simId.toString())
+        request.siteUnderTest = new SiteSpec(simId.id, simId.testSession)
 
         when: 'build orchestration'
         def builder = new IigOrchestrationBuilder(api, session, request)
@@ -81,10 +79,10 @@ class iigSpec extends ToolkitSpecification {
         SiteSpec siteSpec = request.siteUnderTest
 
         SimManager simManager = new SimManager(api.getSession().id)
-        Sites sites = simManager.getAllSites(new Sites())
-        Site sutSite = sites.getSite(siteSpec.name)
+        Sites sites = simManager.getAllSites(new Sites(testSession), testSession)
+//        Site sutSite = sites.getSite(siteSpec.name, new TestSession(testSession))
 
-        TestInstance testInstance = new TestInstance(testId)
+        TestInstance testInstance = new TestInstance(testId, testSession)
         List<String> sections = []
         Map<String, String> params = new HashMap<>()
 

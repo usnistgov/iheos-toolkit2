@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.services.client.PifType;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.client.RgOrchestrationRequest;
@@ -138,15 +139,15 @@ public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton 
         testTab.getMainView().showLoadingMessage("Initializing...");
         RgOrchestrationRequest request = new RgOrchestrationRequest();
         request.setOnDemand(isOnDemand);  // much of the rest is ignored if this is true
-        request.setUserName(testTab.getCurrentTestSession());
+        request.setTestSession(new TestSession(testTab.getCurrentTestSession()));
         request.setUseExposedRR(usingExposedRR());
         request.setUseSimAsSUT(false);
 
         request.setPifType((v2Feed.isChecked()) ? PifType.V2 : PifType.NONE);
-        request.setUserName(testTab.getCurrentTestSession());
+        request.setTestSession(new TestSession(testTab.getCurrentTestSession()));
         request.setEnvironmentName(testTab.getEnvironmentSelection());
         request.setUseExistingState(!isResetRequested());
-        SiteSpec siteSpec = new SiteSpec(testContext.getSiteName());
+        SiteSpec siteSpec = new SiteSpec(testContext.getSiteName(), new TestSession(testTab.getCurrentTestSession()));
         /*
         if (isSaml()) {
             setSamlAssertion(siteSpec);

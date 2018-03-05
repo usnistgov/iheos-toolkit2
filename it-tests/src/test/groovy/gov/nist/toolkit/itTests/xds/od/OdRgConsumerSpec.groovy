@@ -1,9 +1,10 @@
 package gov.nist.toolkit.itTests.xds.od
 
 import gov.nist.toolkit.actortransaction.client.ActorType
-import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
+import gov.nist.toolkit.fhir.simulators.support.od.TransactionUtil
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.registrymetadata.client.Document
 import gov.nist.toolkit.results.client.Result
@@ -12,13 +13,12 @@ import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.simcommon.client.SimId
-import gov.nist.toolkit.fhir.simulators.support.od.TransactionUtil
+import gov.nist.toolkit.simcommon.client.SimIdFactory
 import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import spock.lang.Shared
-
 /**
  * Test Responding gateway with On-Demand Document Source
  */
@@ -28,9 +28,9 @@ class OdRgConsumerSpec extends ToolkitSpecification {
 
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
     @Shared String patientId = 'SRG13^^^&1.2.460&ISO'
-    String reg = 'sunil__rg'
-    SimId simId = new SimId(reg)
-    @Shared String testSession = 'sunil'
+    @Shared TestSession testSession = new TestSession(prefixNonce('sunil'))
+    String reg = testSession.value + '__rg'
+    SimId simId = SimIdFactory.simIdBuilder(reg)
     @Shared SimConfig rgConfig = null
     @Shared SimConfig oddsConfig = null
     @Shared Session tkSession
@@ -48,19 +48,19 @@ class OdRgConsumerSpec extends ToolkitSpecification {
 
         new BuildCollections().init(null)
 
-        spi.delete('rg', testSession)
+        spi.delete('rg', testSession.value)
 
         rgConfig = spi.create(
                 'rg',
-                testSession,
+                testSession.value,
                 SimulatorActorType.RESPONDING_GATEWAY,
                 'test')
 
-        spi.delete('od', testSession)
+        spi.delete('od', testSession.value)
 
         oddsConfig = spi.create(
                 'od',
-                testSession,
+                testSession.value,
                 SimulatorActorType.ONDEMAND_DOCUMENT_SOURCE,
                 'test')
         oddsConfig.setProperty(SimulatorProperties.PERSISTENCE_OF_RETRIEVED_DOCS, false)
@@ -80,18 +80,18 @@ class OdRgConsumerSpec extends ToolkitSpecification {
 
     def cleanupSpec() {  // one time shutdown when everything is done
 //        System.gc()
-        spi.delete('rg', testSession)
-        spi.delete('od', testSession)
-        server.stop()
-        ListenerFactory.terminateAll()
+        spi.delete('rg', testSession.value)
+        spi.delete('od', testSession.value)
+//        server.stop()
+//        ListenerFactory.terminateAll()
     }
 
 
     // submits the patient id configured above to the registry in a Patient Identity Feed transaction
     def 'Submit Pid transaction to Registry simulator'() {
         when:
-        String siteName = 'sunil__rg'
-        TestInstance testId = new TestInstance("15804")
+        String siteName = testSession.value + '__rg'
+        TestInstance testId = new TestInstance("15804",testSession)
         List<String> sections = new ArrayList<>()
         sections.add("section")
         Map<String, String> params = new HashMap<>()
@@ -116,10 +116,10 @@ class OdRgConsumerSpec extends ToolkitSpecification {
 
         then:
         Map<String,String> rs = TransactionUtil.registerWithLocalizedTrackingInODDS(tkSession
-                , oddsConfig.getUser()
-                , new TestInstance("15806")
-                , new SiteSpec(rgConfig.getFullId(), ActorType.REGISTRY, null)
-                , new SimId(oddsConfig.getFullId())
+                , new TestSession(oddsConfig.getUser())
+                , new TestInstance("15806",testSession)
+                , new SiteSpec(rgConfig.getFullId(), ActorType.REGISTRY, null, testSession)
+                , SimIdFactory.simIdBuilder(oddsConfig.getFullId())
                 , paramsRegOdde)
 
         for (String key : rs.keySet()) {
@@ -134,8 +134,8 @@ class OdRgConsumerSpec extends ToolkitSpecification {
      */
     def 'Retrieve from the ODDS without Persistence Option'() {
         when:
-        String siteName = 'sunil__rg'
-        TestInstance testId = new TestInstance("15806")
+        String siteName = testSession.value + '__rg'
+        TestInstance testId = new TestInstance("15806",testSession)
         List<String> sections = ["Retrieve"]
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId)

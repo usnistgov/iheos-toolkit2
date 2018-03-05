@@ -1,0 +1,44 @@
+package gov.nist.toolkit.installation.shared;
+
+import com.fasterxml.jackson.annotation.*;
+import com.google.gwt.user.client.rpc.*;
+
+import java.io.*;
+
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
+public class TestSession implements Serializable, IsSerializable {
+    private String value;
+    public transient static final TestSession DEFAULT_TEST_SESSION = new TestSession("default");
+
+    private TestSession() {}
+
+    public TestSession(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    @Override
+    public String toString() {
+        return value;
+    }
+
+    public void clean() { value = value.replaceAll("\\.", "_").toLowerCase(); }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TestSession that = (TestSession) o;
+
+        return value != null ? value.equals(that.value) : that.value == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return value != null ? value.hashCode() : 0;
+    }
+}

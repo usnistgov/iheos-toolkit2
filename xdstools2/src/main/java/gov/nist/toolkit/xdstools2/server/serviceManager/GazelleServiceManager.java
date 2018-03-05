@@ -1,9 +1,10 @@
 package gov.nist.toolkit.xdstools2.server.serviceManager;
 
-import gov.nist.toolkit.simcommon.server.SiteServiceManager;
-import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.installation.server.Installation;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.session.server.Session;
+import gov.nist.toolkit.simcommon.server.SiteServiceManager;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.client.XdsException;
 import gov.nist.toolkit.xdstools2.server.gazelle.actorConfig.CSVParser;
@@ -26,6 +27,8 @@ public class GazelleServiceManager extends CommonService {
     File externalCacheFile;
     boolean unitTest = false;
     boolean initDone = false;
+    String testSessionId = null;
+    TestSession testSession;
 
     public GazelleServiceManager(Session session) throws XdsException {
         this.session = session;
@@ -36,6 +39,13 @@ public class GazelleServiceManager extends CommonService {
         unitTest = true;
     }
 
+    public void setTestSessionId(String id) {
+        testSessionId = id;
+    }
+
+    public void setTestSession(TestSession testSession) {
+        this.testSession = testSession;
+    }
     // Execution of this delayed. Not everything is initialized when constructor is called
     void init() {
         if (unitTest) {
@@ -44,7 +54,7 @@ public class GazelleServiceManager extends CommonService {
             externalCacheFile = new File("/Users/bmajur/tmp/toolkit2");
         } else {
             gazelleUrl = Installation.instance().propertyServiceManager().getPropertyManager().getToolkitGazelleConfigURL();
-            actorsDir = new File(Installation.instance().propertyServiceManager().getPropertyManager().getExternalCache() + File.separator + "actors");
+            actorsDir = Installation.instance().actorsDir(testSession);
             externalCacheFile = new File(Installation.instance().propertyServiceManager().getPropertyManager().getExternalCache());
         }
 
@@ -66,12 +76,18 @@ public class GazelleServiceManager extends CommonService {
             if (!initDone) {
                 initDone = true;
                 init();   // loads gazelleUrl and actorsDir
+                if (testSessionId == null) {
+                    testSessionId = Installation.instance().propertyServiceManager().getPropertyManager().getGazelleTestingSession();
+                }
+                if (testSessionId != null) {
+                    gazelleUrl = gazelleUrl + "?testingSessionId=" + testSessionId;
+                }
             }
 
             if (gazelleUrl == null || gazelleUrl.equals(""))
                 throw new Exception("Linkage to Gazelle not configured");
 
-            GenerateSystemShell gazelleShell = new GenerateSystemShell(actorsDir, gazelleUrl);
+            GenerateSystemShell gazelleShell = new GenerateSystemShell(actorsDir, gazelleUrl, testSession);
             String log = "";
             if (systemName.equals("ALL")) {
                 Collection<String> systemNames = gazelleShell.run();
@@ -93,10 +109,11 @@ public class GazelleServiceManager extends CommonService {
 
             // force reload of all actor definitions
             if (!unitTest) {
-                SiteServiceManager.getSiteServiceManager().reloadCommonSites();
+                SiteServiceManager.getSiteServiceManager().reloadCommonSites(TestSession.DEFAULT_TEST_SESSION);
             }
             if (unitTest)
                 return null;
+            logger.info(log);
             return "<pre>\n" + log + "\n</pre>";
         } catch (Exception e) {
             logger.error(e.getMessage());

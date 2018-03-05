@@ -27,37 +27,6 @@ class TestKitLog {
 	 */
 	File getLogFile(File testPlan) throws Exception {
 		return new File(getLogDir(testPlan), "log.xml");
-//		String relativePath = null;
-//
-//		relativePath = TestLogDetails.getLogicalPath(testPlan.getParentFile(), testKit);
-//		// formats:
-//		//	tests/testname/section
-//		// or
-//		//  tests/testname
-//
-//		String[] parts = relativePath.split(Matcher.quoteReplacement(File.separator));
-//
-//		File path;
-//
-//		if (parts.length>2) {
-//			path = testLog;
-//			int offset = 2; // + (parts.length - 3);
-//			for (int cx=offset; cx < parts.length; cx++) {
-//				path = new File(path, parts[cx]);
-//			}
-//			path = new File(path, "log.xml");
-//
-//		} else
-//			path = new File(testLog + File.separator + "log.xml");
-//
-//		System.out.println("getLogFile");
-//		System.out.println("   testlog is " + testLog);
-//		System.out.println("   testspec is " + testPlan);
-//		System.out.println("   log file is " + path);
-//		System.out.println("   relative path is " + relativePath);
-//		path.getParentFile().mkdirs();
-//
-//		return path;
 	}
 
 	/**

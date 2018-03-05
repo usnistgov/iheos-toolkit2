@@ -21,7 +21,7 @@ public class RepositoryRegistryActorFactory extends AbstractActorFactory impleme
 		ActorType actorType = ActorType.REPOSITORY_REGISTRY;
 		SimulatorConfig sc;
 		if (configureBase)
-			sc = configureBaseElements(actorType, newID);
+			sc = configureBaseElements(actorType, newID, newID.getTestSession());
 		else
 			sc = new SimulatorConfig();
 
@@ -51,8 +51,8 @@ public class RepositoryRegistryActorFactory extends AbstractActorFactory impleme
 		String siteName = sc.getDefaultName();
 
 		if (site == null)
-			site = new Site(siteName);
-		site.user = sc.getId().user;  // labels this site as coming from a sim
+			site = new Site(siteName, sc.getId().getTestSession());
+		site.setTestSession(sc.getId().getTestSession());  // labels this site as coming from a sim
 
 		boolean isAsync = false;
 

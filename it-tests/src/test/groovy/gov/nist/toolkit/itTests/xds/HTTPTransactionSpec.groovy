@@ -1,8 +1,8 @@
 package gov.nist.toolkit.itTests.xds
 
 import gov.nist.toolkit.actortransaction.client.ActorType
-import gov.nist.toolkit.adt.ListenerFactory
-import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.server.Installation
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
@@ -19,9 +19,9 @@ class HTTPTransactionSpec extends ToolkitSpecification {
 
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
     @Shared String patientId = 'SR7^^^&1.2.260&ISO'
-    @Shared String testSession = 'test'
+    @Shared String testSession = prefixNonce('test')
     @Shared String simName = 'rr'
-    @Shared SimId simId = new SimId(testSession, simName)
+    @Shared SimId simId = new SimId(new TestSession(testSession), simName)
     @Shared String rr = simId.toString()
     @Shared String siteName = rr
 
@@ -36,7 +36,7 @@ class HTTPTransactionSpec extends ToolkitSpecification {
         new BuildCollections().init(null)
 
         println "EC is ${Installation.instance().externalCache().toString()}"
-        println "${api.getSiteNames(true)}"
+        println "${api.getSiteNames(true, new TestSession(testSession))}"
         api.createTestSession(testSession)
 
         spi.delete('rr', testSession)
@@ -46,13 +46,13 @@ class HTTPTransactionSpec extends ToolkitSpecification {
             api.openSimulator(simId)
         } else {
             println "Creating sim ${simId}"
-            api.createSimulator(ActorType.REPOSITORY_REGISTRY, simId)
+            spi.createDocumentRegRep(simId.id, simId.testSession.value, 'default')
         }
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
-        server.stop()
-        ListenerFactory.terminateAll()
+//        server.stop()
+//        ListenerFactory.terminateAll()
         api.deleteSimulatorIfItExists(simId)
     }
 

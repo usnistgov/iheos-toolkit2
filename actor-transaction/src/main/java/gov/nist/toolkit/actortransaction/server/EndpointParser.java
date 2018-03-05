@@ -146,7 +146,7 @@ public class EndpointParser  {
 
         buf.append(parts.get(0));
         for (int i=1; i<parts.size(); i++) {
-            if (i == 3 && parts.get(i).equals("") )
+            if (i == 3 && (parts.get(i) == null || parts.get(i).equals("") ))
                 continue;
             buf.append("/").append(parts.get(i));
         }

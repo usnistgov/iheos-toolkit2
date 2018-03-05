@@ -6,8 +6,9 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
-import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.services.client.IigOrchestrationRequest;
 import gov.nist.toolkit.services.client.IigOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
@@ -104,10 +105,10 @@ public class BuildIIGTestOrchestrationButton extends AbstractOrchestrationButton
       testTab.getMainView().showLoadingMessage("Initializing...");
 
       IigOrchestrationRequest request = new IigOrchestrationRequest();
-      request.setUserName(testTab.getCurrentTestSession());
+      request.setTestSession(new TestSession(testTab.getCurrentTestSession()));
       request.setEnvironmentName(testTab.getEnvironmentSelection());
       request.setUseExistingState(!isResetRequested());
-      SiteSpec siteSpec = new SiteSpec(testContext.getSiteName());
+      SiteSpec siteSpec = new SiteSpec(testContext.getSiteName(), new TestSession(testTab.getCurrentTestSession()));
       if (isSaml()) {
          setSamlAssertion(siteSpec);
       }

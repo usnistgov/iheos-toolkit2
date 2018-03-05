@@ -3,9 +3,9 @@
  */
 package edu.wustl.mir.erl.ihe.xdsi.util;
 
-import gov.nist.toolkit.installation.Installation;
-import gov.nist.toolkit.installation.PropertyManager;
-import gov.nist.toolkit.installation.PropertyServiceManager;
+import gov.nist.toolkit.installation.server.Installation;
+import gov.nist.toolkit.installation.server.PropertyManager;
+import gov.nist.toolkit.installation.server.PropertyServiceManager;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.testengine.engine.SimulatorTransaction;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
@@ -363,7 +363,7 @@ public class PrsSimLogs {
          String simulatorType = simId.getActorType();
          FilenameFilter filter = new PidDateFilenameFilter(pid, timeOfTransaction);
          if (StringUtils.isBlank(transactionCode)) transactionCode = "prb";
-         Path base = Paths.get(externalCache, "simdb", simulatorName, simulatorType, transactionCode);
+         Path base = Paths.get(externalCache, "simdb", simId.getTestSession().getValue(), simulatorName, simulatorType, transactionCode);
          Utility.isValidPfn("xtools log dir", base, PfnType.DIRECTORY, "r");
          String[] logDirs = base.toFile().list(filter);
          Arrays.sort(logDirs);

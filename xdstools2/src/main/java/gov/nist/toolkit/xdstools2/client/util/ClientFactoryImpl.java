@@ -32,6 +32,7 @@ public class ClientFactoryImpl implements ClientFactory {
     private static final SubmitResourceActivity SUBMIT_RESOURCE_ACTIVITY = GWT.create(SubmitResourceActivity.class);
     private static final FhirSearchActivity FHIR_SEARCH_ACTIVITY = GWT.create(FhirSearchActivity.class);
 
+
     @Override
     public EventBus getEventBus() {
         return EVENT_BUS;

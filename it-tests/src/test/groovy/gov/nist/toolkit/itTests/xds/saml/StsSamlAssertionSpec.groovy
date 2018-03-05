@@ -3,11 +3,13 @@ package gov.nist.toolkit.itTests.xds.saml
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.TransactionType
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.client.SimIdFactory
 import gov.nist.toolkit.simcommon.server.SimCache
 import gov.nist.toolkit.sitemanagement.client.Site
 import gov.nist.toolkit.testengine.scripts.BuildCollections
@@ -28,9 +30,9 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
 
     @Shared String patientId = 'SKB1^^^&1.2.960&ISO'
 
-    @Shared String reg = 'sunil__reg'
-    @Shared SimId simId = new SimId(reg)
-    @Shared String testSession = 'sunil'
+    @Shared TestSession testSession = new TestSession(prefixNonce('sunil'))
+    @Shared String reg = testSession.value + '__reg'
+    @Shared SimId simId = SimIdFactory.simIdBuilder(reg)
     @Shared Site gazelleStsSite
     @Shared Session tkSession
     @Shared SimConfig rrConfig = null
@@ -64,7 +66,7 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
         boolean isSecure = true;
         boolean isAsync = false;
 
-        gazelleStsSite = new Site(gazelleSiteName)
+        gazelleStsSite = new Site(gazelleSiteName, TestSession.DEFAULT_TEST_SESSION)
         gazelleStsSite.addTransaction(transName, endpoint, isSecure, isAsync);
 
         // Adding a site dynamically doesn't work. Must use Actors.xml file.
@@ -72,13 +74,13 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
-        server.stop()
+//        server.stop()
 //        ListenerFactory.terminateAll()
     }
 
     def 'Make sure the GazelleSts site can be retrieved from the Actor file'() {
         when:
-        Collection<Site> sites = new SimCache().getAllSites()
+        Collection<Site> sites = new SimCache().getAllSites(TestSession.DEFAULT_TEST_SESSION)
 
         for (Site site : sites) {
             if (gazelleSiteName.equals(site.getName())) {
@@ -111,7 +113,7 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
     def 'Get SAML Assertion'(){
         when:
         String siteName = gazelleStsSite.getName()
-        TestInstance testId = new TestInstance("GazelleSts")
+        TestInstance testId = new TestInstance("GazelleSts", TestSession.DEFAULT_TEST_SESSION)
         List<String> sections = new ArrayList<>()
         sections.add("samlassertion-issue")
         Map<String, String> params = new HashMap<>()
@@ -121,7 +123,7 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
         and: 'Run samlassertion-issue'
 //        No need to set this: session.setTls(true)
         // Main parameter for the TLS is the isTls flag in the runTest method
-        List<Result> results = api.runTest(testSession, siteName, true, testId, sections, params, stopOnFirstError)
+        List<Result> results = api.runTest(TestSession.DEFAULT_TEST_SESSION.value, siteName, true, testId, sections, params, stopOnFirstError)
 
         then:
         results.size() == 1
@@ -131,7 +133,7 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
     def 'Validate SAML Assertion'() {
         when:
         String siteName = gazelleStsSite.getName()
-        TestInstance testId = new TestInstance("GazelleSts")
+        TestInstance testId = new TestInstance("GazelleSts", TestSession.DEFAULT_TEST_SESSION)
         List<String> sections = new ArrayList<>()
         sections.add("samlassertion-validate")
         Map<String, String> params = new HashMap<>()
@@ -140,7 +142,7 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
         and: 'Run samlassertion-validate'
 //        For it-tests, there is no need to set this: session.setTls(true) BUT it is required for the non-api type main code.
         // Main parameter for the TLS is the isTls flag in the runTest method
-        List<Result> results = api.runTest(testSession, siteName, true, testId, sections, params, stopOnFirstError)
+        List<Result> results = api.runTest(TestSession.DEFAULT_TEST_SESSION.value, siteName, true, testId, sections, params, stopOnFirstError)
 
         then:
         results.size() == 1
@@ -158,7 +160,7 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
         // Begin headless
         rrConfig = spi.create(
                 'rr',
-                testSession,
+                testSession.value,
                 SimulatorActorType.REPOSITORY_REGISTRY,
                 'default')
 
@@ -169,8 +171,8 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
     @Ignore
     def 'headless1 - Submit Pid transaction to Registry simulator'() {
             when:
-            String siteName = 'sunil__rr'
-            TestInstance testId = new TestInstance("15804")
+            String siteName = testSession + '__rr'
+            TestInstance testId = new TestInstance("15804",testSession)
             List<String> sections = new ArrayList<>()
             sections.add("section")
             Map<String, String> params = new HashMap<>()
@@ -190,8 +192,8 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
     @Ignore
     def 'headless1.1 - Run SQ initialization'() {
         when:
-        String siteName = 'sunil__rr'
-        TestInstance testId = new TestInstance("tc:Initialize_for_Stored_Query")
+        String siteName =  testSession + '__rr'
+        TestInstance testId = new TestInstance("tc:Initialize_for_Stored_Query",testSession)
         List<String> sections = new ArrayList<>()
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId)
@@ -208,8 +210,8 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
     @Ignore
     def 'headless1.2 Setup test with submissions'() {
         when:
-        String siteName = 'sunil__rr'
-        TestInstance testId = new TestInstance("15816")
+        String siteName = testSession + '__rr'
+        TestInstance testId = new TestInstance("15816",testSession)
         List<String> sections = ['Register_Stable', 'PnR']
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId)

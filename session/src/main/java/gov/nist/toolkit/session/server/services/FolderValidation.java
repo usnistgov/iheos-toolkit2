@@ -22,7 +22,7 @@ public class FolderValidation  extends CommonService {
 		try {
 			session.setSiteSpec(site);
 			session.transactionSettings.assignPatientId = false;
-			TestInstance testInstance = new TestInstance("tc:folder");
+			TestInstance testInstance = new TestInstance("tc:folder", session.getTestSession());
 			List<String> sections = null;
 			Map<String, String> params = new HashMap<String, String>();
 			params.put("$patientid$", pid);

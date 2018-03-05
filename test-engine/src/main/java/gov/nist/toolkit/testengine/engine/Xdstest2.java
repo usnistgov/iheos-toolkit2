@@ -1,5 +1,6 @@
 package gov.nist.toolkit.testengine.engine;
 
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.sitemanagement.Sites;
@@ -54,9 +55,9 @@ public class Xdstest2 {
 	 * @throws Exception 
 	 * @throws FileNotFoundException 
 	 */
-	public Xdstest2(File toolkitDir, TestKitSearchPath searchPath, SecurityParams tki) throws Exception {
+	public Xdstest2(File toolkitDir, TestKitSearchPath searchPath, SecurityParams tki, TestSession testSession) throws Exception {
 		this.searchPath = searchPath;
-		xt = new XdsTest(searchPath);
+		xt = new XdsTest(searchPath, testSession);
 		xt.setToolkit(toolkitDir);
 		xt.loadTestKitVersion();
 		this.tki = tki;

@@ -47,7 +47,7 @@ public class RetrieveImagingDocSet extends CommonService {
 				logger.debug(" New uid.repositoryUniqueId: " + uid.repositoryUniqueId);
 			}
 
-			TestInstance testInstance = new TestInstance("RetrieveImagingDocSet");
+			TestInstance testInstance = new TestInstance("RetrieveImagingDocSet", session.getTestSession());
 			List<String> sections = new ArrayList<String>();
 			Map<String, String> params = new HashMap<String, String>();
 			if (session.siteSpec.isImagingDocumentSourceActor()) {

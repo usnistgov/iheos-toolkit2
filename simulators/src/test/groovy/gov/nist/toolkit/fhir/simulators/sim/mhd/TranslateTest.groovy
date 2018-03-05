@@ -6,7 +6,7 @@ import gov.nist.toolkit.fhir.server.resourceMgr.ResourceCacheMgr
 import gov.nist.toolkit.fhir.server.resourceMgr.ResourceMgr
 import gov.nist.toolkit.fhir.server.resourceMgr.TestResourceCacheFactory
 import gov.nist.toolkit.fhir.server.utility.UriBuilder
-import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.simcoresupport.mhd.MhdGenerator
 import gov.nist.toolkit.simcoresupport.proxy.util.SimProxyBase
 import groovy.xml.MarkupBuilder

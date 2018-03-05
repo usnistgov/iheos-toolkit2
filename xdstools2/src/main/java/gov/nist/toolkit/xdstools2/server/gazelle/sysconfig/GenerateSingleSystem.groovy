@@ -1,28 +1,32 @@
 package gov.nist.toolkit.xdstools2.server.gazelle.sysconfig
 
 import gov.nist.toolkit.configDatatypes.client.TransactionType
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.sitemanagement.client.Site
 import gov.nist.toolkit.sitemanagement.client.TransactionBean
+import groovy.transform.TypeChecked
 
 /**
  *
  */
+@TypeChecked
 class GenerateSingleSystem {
     GazellePull gazellePull
     GazelleGet getter
     File cache
+    TestSession testSession;
     ConfigParser cparser = new ConfigParser()
     OidsParser oparser = new OidsParser()
     V2ResponderParser vparser = new V2ResponderParser()
-    def nl = '\n'
-    def tab = '  '
-    def tab2 = tab + tab
-    def tab3 = tab + tab + tab
+    String nl = '\n'
+    String tab = '  '
+    String tab2 = tab + tab
+    String tab3 = tab + tab + tab
     boolean hasErrors = false
 
     // When a systeName is requested, it may have one of these extensions on it.  They are added by
     // this tool and should be stripped off to get Gazelle simName.
-    static nameExtensions = [
+    static List<String> nameExtensions = [
             ' - ROD',
             ' - IDS',
             ' - EMBED',
@@ -30,14 +34,15 @@ class GenerateSingleSystem {
             ' - REC'
     ]
     static String withoutExtension(String name) {
-        String extension = nameExtensions.find { name.endsWith(it) }
+        String extension = nameExtensions.find { String it -> name.endsWith(it) }
         if (!extension) return name
         return name.minus(extension)
     }
 
-    GenerateSingleSystem(GazellePull _gazellePull, File _cache) {
+    GenerateSingleSystem(GazellePull _gazellePull, File _cache, TestSession testSession) {
         gazellePull = _gazellePull
         cache = _cache
+        this.testSession = testSession
         getter = new GazelleGet(gazellePull, cache) // pull from Gazelle or cache
     }
 
@@ -59,19 +64,19 @@ class GenerateSingleSystem {
         oparser.parse(getter.oidsFile().toString())
         vparser.parse(getter.v2ResponderFile().toString())
 
-        List<ConfigDef> elements = cparser.values.findAll { filter(it) }
+        Collection<ConfigDef> elements = cparser.values.findAll { ConfigDef it -> filter(it) }
         if (!elements) return null
 
         //*************************************************************
         // Recipient
         //*************************************************************
         Site recipientSite = null
-        elements.findAll { (it.isRecipient() || it.isResponder())  && it.approved }.each { ConfigDef config ->
+        elements.findAll { ConfigDef it ->  (it.isRecipient() || it.isResponder())  && it.approved }.each { ConfigDef config ->
             String system = config.system
             String tkSystem = "${system} - REC"
             if (recipientSite == null) {
                 log.append(tab).append('Toolkit system: ').append(tkSystem).append(' (Document Recipient)').append(nl)
-                recipientSite = new Site(tkSystem)
+                recipientSite = new Site(tkSystem, testSession)
             }
             String transactionId = config.getTransaction()
             if (!transactionId) return
@@ -124,12 +129,12 @@ class GenerateSingleSystem {
         // Register On Demand
         //*************************************************************
         Site rodSite = null
-        elements.findAll { it.isROD() && it.approved }.each { ConfigDef config ->
+        elements.findAll { ConfigDef it ->  it.isROD() && it.approved }.each { ConfigDef config ->
             String system = config.system
             String tkSystem = "${system} - ROD"
             if (rodSite == null) {
                 log.append(tab).append('Toolkit system: ').append(tkSystem).append(' (Register On Demand)').append(nl)
-                rodSite = new Site(tkSystem)
+                rodSite = new Site(tkSystem, testSession)
             }
             String transactionId = config.getTransaction()
             if (!transactionId) return
@@ -148,12 +153,12 @@ class GenerateSingleSystem {
         // Image document source
         //*************************************************************
         Site idsSite = null
-        elements.findAll { it.isIDS() && it.approved }.each { ConfigDef config ->
+        elements.findAll { ConfigDef it ->  it.isIDS() && it.approved }.each { ConfigDef config ->
             String system = config.system
             String tkSystem = "${system} - IDS"
             if (idsSite == null) {
                 log.append(tab).append('Toolkit system: ').append(tkSystem).append(' (Imaging Document Source)').append(nl)
-                idsSite = new Site(tkSystem)
+                idsSite = new Site(tkSystem, testSession)
             }
             String transactionId = config.getTransaction()
             if (!transactionId) return
@@ -174,7 +179,7 @@ class GenerateSingleSystem {
         //*************************************************************
         Site embedSite = null
         String embedOid = null
-        elements.findAll { it.isEMBED_REPOS() && it.approved }.each { ConfigDef config ->
+        elements.findAll { ConfigDef it ->  it.isEMBED_REPOS() && it.approved }.each { ConfigDef config ->
             String system = config.system
             String tkSystem = "${system} - EMBED" // in toolkit
             if (embedSite == null) {
@@ -184,7 +189,7 @@ class GenerateSingleSystem {
                     log.append(tab).append('No OID registered for this system - skipping').append(nl)
                     return
                 }
-                embedSite = new Site(tkSystem)
+                embedSite = new Site(tkSystem, testSession)
             }
             String transactionId = config.getTransaction()
             if (!transactionId) return
@@ -204,14 +209,14 @@ class GenerateSingleSystem {
         //*************************************************************
         Site oddsSite = null
         String oddsOid = null
-        elements.findAll { it.isODDS() && it.approved }.each { ConfigDef config ->
+        elements.findAll { ConfigDef it ->  it.isODDS() && it.approved }.each { ConfigDef config ->
             String system = config.system
             String tkSystem = "${system} - ODDS" // in toolkit
             if (oddsSite == null) {
                 log.append(tab).append('Toolkit system: ').append(tkSystem).append(' (On Demand Document Source)').append(nl)
                 oddsOid = oparser.getOid(system, OidDef.ODDSRepUidOid)
                 if (oddsOid == null) return
-                oddsSite = new Site(tkSystem)
+                oddsSite = new Site(tkSystem, testSession)
             }
             String transactionId = config.getTransaction()
             if (!transactionId) return
@@ -235,11 +240,11 @@ class GenerateSingleSystem {
         String homeOid = null
         String pifHost = null
         String pifPort = null
-        elements.findAll { !it.isODDS() && !it.isRecipient() && !it.isEMBED_REPOS() && !it.isROD() && !it.isIDS() && it.approved }.each { ConfigDef config ->
+        elements.findAll { ConfigDef it ->  !it.isODDS() && !it.isRecipient() && !it.isEMBED_REPOS() && !it.isROD() && !it.isIDS() && it.approved }.each { ConfigDef config ->
             boolean forceNotRetrieve = false
             String transactionId = config.getTransaction()
             if (!transactionId) return
-            if (!ConfigDef.TRANSACTIONS_TO_PROCESS.contains(transactionId)) return
+            if (!((List<String>)ConfigDef.TRANSACTIONS_TO_PROCESS).contains(transactionId)) return
 
             String system = config.system
             String tkSystem = system // in toolkit
@@ -247,7 +252,7 @@ class GenerateSingleSystem {
                 log.append(tab).append('Toolkit system: ').append(tkSystem).append(nl)
                 otherOid = oparser.getOid(system, OidDef.RepUidOid)
 //                if (otherOid == null) return
-                otherSite = new Site(tkSystem)
+                otherSite = new Site(tkSystem, testSession)
                 homeOid = oparser.getOid(system, OidDef.HomeIdOid)
                 log.append(tab2).append('homeCommunityId ').append(homeOid).append(nl)
                 otherSite.setHome(homeOid)
@@ -359,7 +364,7 @@ class GenerateSingleSystem {
      */
     boolean filter(ConfigDef config) {
         if (config.isAsync()) return false;
-        if (!ConfigDef.TRANSACTIONS_TO_PROCESS.contains(config.getTransaction())) return false
+        if (!((List<String>)ConfigDef.TRANSACTIONS_TO_PROCESS).contains(config.getTransaction())) return false
         return true;
     }
 }

@@ -6,20 +6,21 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.datasets.shared.DatasetModel;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.results.client.CodesResult;
 import gov.nist.toolkit.results.client.DocumentEntryDetail;
 import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.Test;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.results.client.TestLogs;
-import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest;
 import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
 import gov.nist.toolkit.services.client.RawResponse;
-import gov.nist.toolkit.session.shared.Message;
 import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
+import gov.nist.toolkit.session.shared.Message;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.Simulator;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
@@ -75,9 +76,13 @@ public interface ToolkitService extends RemoteService  {
     List<Result> runMesaTest(RunTestRequest request) throws Exception ;
 	TestOverviewDTO runTest(RunTestRequest request) throws Exception;
 	boolean isPrivateMesaTesting() throws NoServletSessionException ;
-	List<String> getMesaTestSessionNames(CommandContext request) throws Exception;
-	boolean addMesaTestSession(CommandContext context) throws Exception;
-	boolean delMesaTestSession(CommandContext context) throws Exception;
+
+	boolean testSessionExists(CommandContext request) throws Exception;
+	TestSession buildTestSession() throws Exception;
+
+	List<String> getTestSessionNames(CommandContext request) throws Exception;
+	boolean addTestSession(CommandContext context) throws Exception;
+	boolean deleteTestSession(CommandContext context) throws Exception;
 
 	/* Simulator Management */
 	List<String> getActorTypeNames(CommandContext context) throws Exception ;
@@ -256,7 +261,7 @@ public interface ToolkitService extends RemoteService  {
 	Test runSingleTest(RunSingleTestRequest request) throws Exception;
 	TestOverviewDTO deleteSingleTestResult(DeleteSingleTestRequest request) throws Exception;
 
-	String setMesaTestSession(String sessionName) throws NoServletSessionException ;
+	String setTestSession(String sessionName) throws NoServletSessionException ;
 	String getNewPatientId(String assigningAuthority) throws NoServletSessionException ;
 	List<String> getTransactionErrorCodeRefs(GetTransactionErrorCodeRefsRequest refsRequest) throws Exception;
 

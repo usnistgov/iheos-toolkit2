@@ -1,7 +1,8 @@
 package gov.nist.toolkit.services.server.orchestration;
 
 import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.installation.server.Installation;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.session.server.Session;
 
 import java.io.File;
@@ -25,11 +26,11 @@ public class OrchestrationProperties {
     private Session session;
     private boolean forceNewPatientIds;
 
-    public OrchestrationProperties(Session session, String userName, ActorType actorType, Collection<String> pidPropNames, boolean forceNewPatientIds) throws Exception {
+    public OrchestrationProperties(Session session, TestSession testSession, ActorType actorType, Collection<String> pidPropNames, boolean forceNewPatientIds) throws Exception {
         this.session = session;
         this.pidPropNames = pidPropNames;
         this.forceNewPatientIds = forceNewPatientIds;
-        orchestrationPropFile = Installation.instance().orchestrationPropertiesFile(userName, actorType.getShortName());
+        orchestrationPropFile = Installation.instance().orchestrationPropertiesFile(testSession, actorType.getShortName());
         if (orchestrationPropFile.exists())
             orchProps.load(new FileInputStream(orchestrationPropFile));
         allocatePids();

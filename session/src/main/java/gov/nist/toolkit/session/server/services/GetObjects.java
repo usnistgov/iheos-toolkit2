@@ -74,25 +74,25 @@ public class GetObjects extends CommonService {
 		List<Result> results = new ArrayList<Result>();
 
 		try {
-			List<Result> results1 = session.queryServiceManager().perCommunityQuery(aids, new TestInstance("GetAssociations"), sections, params);
+			List<Result> results1 = session.queryServiceManager().perCommunityQuery(aids, new TestInstance("GetAssociations", session.getTestSession()), sections, params);
 			if (hasContent(results1))
 				results.addAll(results1);
 		} catch (Exception e) {		}
 
 		try {
-			List<Result> results2 = session.queryServiceManager().perCommunityQuery(aids, new TestInstance("GetSubmissionSetAndContents"), sections, params);
+			List<Result> results2 = session.queryServiceManager().perCommunityQuery(aids, new TestInstance("GetSubmissionSetAndContents", session.getTestSession()), sections, params);
 			if (hasContent(results2))
 				results.addAll(results2);
 		} catch (Exception e) {}
 
 		try {
-			List<Result> results3 = session.queryServiceManager().perCommunityQuery(aids, new TestInstance("GetDocuments"), sections, params);
+			List<Result> results3 = session.queryServiceManager().perCommunityQuery(aids, new TestInstance("GetDocuments", session.getTestSession()), sections, params);
 			if (hasContent(results3))
 				results.addAll(results3);
 		} catch (Exception e) {}
 
 		try {
-			List<Result> results4 = session.queryServiceManager().perCommunityQuery(aids, new TestInstance("GetFolders"), sections, params);
+			List<Result> results4 = session.queryServiceManager().perCommunityQuery(aids, new TestInstance("GetFolders", session.getTestSession()), sections, params);
 			if (hasContent(results4))
 				results.addAll(results4);
 		} catch (Exception e) {}

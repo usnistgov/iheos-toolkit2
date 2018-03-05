@@ -16,6 +16,7 @@
 
 
     <!-- Other module inherits          -->
+    <inherits name="gov.nist.toolkit.installation.installation"/>
     <inherits name="gov.nist.toolkit.simcommon.simCommon"/>
     <!--<inherits name="gov.nist.toolkit.xdstestgui.xdstestGui"/>-->
     <inherits name="gov.nist.toolkit.testengine.testengine"/>

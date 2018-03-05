@@ -8,9 +8,9 @@ import gov.nist.toolkit.http.HttpParseException;
 import gov.nist.toolkit.http.HttpParserBa;
 import gov.nist.toolkit.http.MultipartParserBa;
 import gov.nist.toolkit.http.PartBa;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.validatorsSoapMessage.factories.SoapMessageValidatorFactory;
 import gov.nist.toolkit.valregmsg.message.MultipartContainer;
-import gov.nist.toolkit.valregmsg.validation.factories.CommonMessageValidatorFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
@@ -26,14 +26,16 @@ public class MtomMessageValidator extends AbstractMessageValidator {
 	MessageValidatorEngine mvc;
 	RegistryValidationInterface rvi;
 	byte[] bodyBytes;
+	TestSession testSession;
 
-	public MtomMessageValidator(ValidationContext vc, HttpParserBa headers, byte[] body, ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, RegistryValidationInterface rvi) {
+	public MtomMessageValidator(ValidationContext vc, HttpParserBa headers, byte[] body, ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, RegistryValidationInterface rvi, TestSession testSession) {
 		super(vc);
 		this.headers = headers;
 		this.erBuilder = erBuilder;
 		this.mvc = mvc;
 		this.rvi = rvi;
 		this.bodyBytes = body;
+		this.testSession = testSession;
 	}
 
 
@@ -85,7 +87,7 @@ public class MtomMessageValidator extends AbstractMessageValidator {
 
 			
 			er.detail("Scheduling validation of SOAP wrapper");
-			SoapMessageValidatorFactory.getValidatorContext(erBuilder, startPart.getBody(), mvc, "Validate SOAP", vc, rvi);
+			SoapMessageValidatorFactory.getValidatorContext(erBuilder, startPart.getBody(), mvc, "Validate SOAP", vc, rvi, testSession);
 
 		} catch (UnsupportedEncodingException e) {
 			er.err(XdsErrorCode.Code.NoCode, e);

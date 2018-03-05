@@ -2,6 +2,7 @@ package gov.nist.toolkit.xdstools2.server.gazelle.actorConfig;
 
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.sitemanagement.SeparateSiteLoader;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
@@ -44,7 +45,7 @@ public class ConfigToXml {
 		int ignoredSiteCount = 0;
 		buildSystemMap();
 
-		Sites sites = new Sites();
+		Sites sites = new Sites(TestSession.DEFAULT_TEST_SESSION);
 		for (String sysName : gMap.keySet()) {
 			if (sysName == null || sysName.equals(""))
 				continue;
@@ -58,7 +59,7 @@ public class ConfigToXml {
 				continue;
 			}
 			siteCount++;
-			OMElement siteXml = new SeparateSiteLoader().siteToXML(site);
+			OMElement siteXml = new SeparateSiteLoader(TestSession.DEFAULT_TEST_SESSION).siteToXML(site);
 			if (actorsDir != null) {
 				File outfile = new File(actorsDir + File.separator + actorName + ".xml");
 				Io.xmlToFile(outfile, siteXml);
@@ -94,7 +95,7 @@ public class ConfigToXml {
 		if (entries.size() == 0)
 			return null;
 
-		Site site = new Site(sysname);
+		Site site = new Site(sysname, TestSession.DEFAULT_TEST_SESSION);
 
 		List<SysConfig> configs = new ArrayList<SysConfig>();
 

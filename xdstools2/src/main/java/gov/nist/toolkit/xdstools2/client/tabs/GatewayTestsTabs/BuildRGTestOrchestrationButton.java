@@ -4,6 +4,7 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.client.RgOrchestrationRequest;
 import gov.nist.toolkit.services.client.RgOrchestrationResponse;
@@ -74,7 +75,7 @@ public class BuildRGTestOrchestrationButton extends AbstractOrchestrationButton 
 //        }
 
         RgOrchestrationRequest request = new RgOrchestrationRequest();
-        request.setUserName(testTab.getCurrentTestSession());
+        request.setTestSession(new TestSession(testTab.getCurrentTestSession()));
 //        request.setEnvironmentName(??????);
         if (isSaml()) {
             setSamlAssertion(siteUnderTest);

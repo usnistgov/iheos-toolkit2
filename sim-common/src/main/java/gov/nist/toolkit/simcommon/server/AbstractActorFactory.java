@@ -8,8 +8,9 @@ import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.envSetting.EnvSetting;
-import gov.nist.toolkit.installation.Installation;
-import gov.nist.toolkit.installation.PropertyServiceManager;
+import gov.nist.toolkit.installation.server.Installation;
+import gov.nist.toolkit.installation.server.PropertyServiceManager;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.simcommon.client.NoSimException;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.Simulator;
@@ -47,7 +48,7 @@ public abstract class AbstractActorFactory {
 	public abstract Site getActorSite(SimulatorConfig asc, Site site) throws NoSimulatorException;
 	public abstract List<TransactionType> getIncomingTransactions();
 
-
+	private static boolean initialized = false;
 	/**
 	 * ActorType.name ==> ActorFactory
 	 */
@@ -74,9 +75,12 @@ public abstract class AbstractActorFactory {
 				logger.fatal("AbstractActorFactory: Cannot load factory class for Actor Type " + actorType.getName() + " - " + ExceptionUtil.exception_details(t));
 			}
 		}
+		initialized = true;
 		return theFactories;
+	}
 
-
+	public static boolean isInitialized() {
+		return initialized;
 	}
 
 	public AbstractActorFactory getActorFactory(ActorType at) {
@@ -111,13 +115,13 @@ public abstract class AbstractActorFactory {
 		return ActorType.findActor(name);
 	}
 
-	protected SimulatorConfig configureBaseElements(ActorType simType) {
-		return configureBaseElements(simType, null);
+	protected SimulatorConfig configureBaseElements(ActorType simType, TestSession testSession) {
+		return configureBaseElements(simType, null, testSession);
 	}
 
-	protected SimulatorConfig configureBaseElements(ActorType simType, SimId newId) {
+	protected SimulatorConfig configureBaseElements(ActorType simType, SimId newId, TestSession testSession) {
 		if (newId == null)
-			newId = getNewId();
+			newId = getNewId(testSession);
 		SimulatorConfig sc = new SimulatorConfig(newId, simType.getShortName(), SimDb.getNewExpiration(SimulatorConfig.class));
 
 		return configureBaseElements(sc);
@@ -265,14 +269,14 @@ public abstract class AbstractActorFactory {
 	}
 
 
-	public SimId getNewId() {
+	private SimId getNewId(TestSession testSession) {
 		String id = UuidAllocator.allocate();
 		String[] parts = id.split(":");
 		id = parts[2];
 		//		id = id.replaceAll("-", "_");
 
         try {
-            return new SimId(id);
+            return new SimId(testSession, id);
         }
         catch (Exception e) {
             throw new ToolkitRuntimeException("Internal error: " + e.getMessage(), e);
@@ -406,12 +410,12 @@ public abstract class AbstractActorFactory {
 		new SimDb().rename(simFileSpec, newSimFileSpec);
 	}
 
-	static public List<SimulatorConfig> getSimConfigs(ActorType actorType) {
-		return getSimConfigs(actorType.getName());
+	static public List<SimulatorConfig> getSimConfigs(ActorType actorType, TestSession testSession) {
+		return getSimConfigs(actorType.getName(), testSession);
 	}
 
-	static public List<SimulatorConfig> getSimConfigs(String actorTypeName) {
-		List<SimId> allSimIds = new SimDb().getAllSimIds();
+	static public List<SimulatorConfig> getSimConfigs(String actorTypeName, TestSession testSession) {
+		List<SimId> allSimIds = new SimDb().getAllSimIds(testSession);
 		List<SimulatorConfig> simConfigs = new ArrayList<>();
 
 		try {

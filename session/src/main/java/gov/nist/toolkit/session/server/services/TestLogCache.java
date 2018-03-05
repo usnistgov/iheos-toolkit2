@@ -1,6 +1,7 @@
 package gov.nist.toolkit.session.server.services;
 
 
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.results.client.TestInstance;
 
 import java.io.File;
@@ -13,14 +14,14 @@ public class TestLogCache {
 	}
 
 	public File getTestDir(TestInstance testInstance) {
-		if (testInstance.getUser() == null) return null;
-		return getTestDir(testInstance.getUser(), testInstance);
+		if (testInstance.getTestSession() == null) return null;
+		return getTestDir(testInstance.getTestSession(), testInstance);
 	}
 
-	public File getTestDir(String sessionName, TestInstance testInstance) {
+	public File getTestDir(TestSession testSession, TestInstance testInstance) {
 		// find test directory under external_cache/TestLogCache/<sessionName>/
 
-		for (File testDir : getSessionDir(sessionName).listFiles()) {
+		for (File testDir : getSessionDir(testSession).listFiles()) {
 			if (!testDir.isDirectory())
 				continue;
 			if (testDir.getName().equals(testInstance.getId())) {
@@ -32,7 +33,7 @@ public class TestLogCache {
 
 	}
 
-	public File getSessionDir(String sessionName) {
-		return new File(cache + File.separator + sessionName);
+	public File getSessionDir(TestSession testSession) {
+		return new File(cache + File.separator + testSession.getValue());
 	}
 }

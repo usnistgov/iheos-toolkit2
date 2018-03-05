@@ -3,12 +3,13 @@ package gov.nist.toolkit.actortransaction.client;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  *
  */
-public class TransactionInstance implements IsSerializable {
+public class TransactionInstance implements IsSerializable, Serializable {
     public String simId = null;
     public String messageId = null;   // message id
     public String labelInterpretedAsDate = null;
@@ -17,6 +18,8 @@ public class TransactionInstance implements IsSerializable {
     public ActorType actorType = null;
     public String ipAddress;
     public boolean isPif = false;
+
+    public TransactionInstance() {}
 
     public String toString() {
         return labelInterpretedAsDate + " " + nameInterpretedAsTransactionType + " " + ipAddress;

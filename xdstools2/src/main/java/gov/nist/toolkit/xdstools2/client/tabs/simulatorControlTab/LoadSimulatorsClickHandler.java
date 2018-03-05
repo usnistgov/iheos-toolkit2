@@ -2,6 +2,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.xdstools2.client.command.command.GetSimConfigsCommand;
@@ -38,7 +39,7 @@ public class LoadSimulatorsClickHandler implements ClickHandler {
 			if (!x.equals("")) {
 				SimId si;
 				try {
-					si = new SimId(currentTestSession, x);
+					si = new SimId(new TestSession(currentTestSession), x);
 				} catch (Exception e) {
 					new PopupMessage(e.getMessage());
 					return;

@@ -75,7 +75,7 @@ public class XcRetrieveSim extends AbstractMessageValidator {
             }
 
             SimManager simMgr = new SimManager("ignored");
-            List<Site> sites = simMgr.getSites(asc.getConfigEle(SimulatorProperties.respondingGateways).asList());
+            List<Site> sites = simMgr.getSites(asc.getConfigEle(SimulatorProperties.respondingGateways).asList(), asc.getId().testSession);
             if (sites == null || sites.size() == 0) {
                 er.err(XdsErrorCode.Code.XDSRepositoryError, "No RespondingGateways configured", this, null);
                 throw new NonException();  // need to run finally code

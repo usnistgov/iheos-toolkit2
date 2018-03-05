@@ -1,23 +1,27 @@
 package gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.sitemanagement.client.StringSort;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
 import gov.nist.toolkit.sitemanagement.client.TransactionCollection;
-import gov.nist.toolkit.xdstools2.client.PasswordManagement;
-import gov.nist.toolkit.sitemanagement.client.StringSort;
+import gov.nist.toolkit.xdstools2.client.NotifyOnDelete;
 import gov.nist.toolkit.xdstools2.client.command.command.GetSiteNamesCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.IsGazelleConfigFeedEnabledCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.ReloadExternalSitesCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.SaveSiteCommand;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
+import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
+import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.NullSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
@@ -28,13 +32,13 @@ import gov.nist.toolkit.xdstools2.shared.command.request.SaveSiteRequest;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActorConfigTab extends GenericQueryTab {
+public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
     public static final String TAB_NAME = "SystemConfig";
     ListBox siteSelector;
 	private FlexTable actorEditGrid;
 	private int actorEditRow = -1;
-	private HTML signInStatus;
-	private Hyperlink signIn = new Hyperlink();
+//	private HTML signInStatus;
+//	private Hyperlink signIn = new Hyperlink();
 	private boolean enableGazelleReload = false;
 	private Button reloadFromGazelleButton;
 	private CheckBox showSims = new CheckBox();
@@ -61,9 +65,33 @@ public class ActorConfigTab extends GenericQueryTab {
 
 	}
 
+	private HandlerRegistration testSessionChangedHandler = null;
+
+	@Override
+	public void onDelete() {
+		// remove existing test session change handler
+		if (testSessionChangedHandler != null) {
+			testSessionChangedHandler.removeHandler();
+			testSessionChangedHandler = null;
+		}
+	}
+
+
 	@Override
 	public void onTabLoad(boolean select, String eventName) {
-		registerTab(select, TAB_NAME);
+//		registerTab(select, TAB_NAME);
+		registerDeletableTab(select, eventName, this);
+
+		// Reload if the test session changes
+		testSessionChangedHandler = ClientUtils.INSTANCE.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
+			@Override
+			public void onTestSessionChanged(TestSessionChangedEvent event) {
+				if (event.getChangeType() == TestSessionChangedEvent.ChangeType.SELECT) {
+					loadExternalSites();
+					((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireActorsConfigUpdatedEvent();
+				}
+			}
+		});
 
 		loadGazelleFeedAvailableStatus();
 
@@ -101,26 +129,26 @@ public class ActorConfigTab extends GenericQueryTab {
 
 		sitesPanel.add(actionButtons);
 
-		HorizontalPanel signOutPanel = new HorizontalPanel();
-
-		signInStatus = new HTML();
-		updateSignInStatus();
-		signOutPanel.add(signInStatus);
-
-		signIn.setText("[Sign Out]");
-		signOutPanel.add(signIn);
-
-		signIn.addClickHandler(new ClickHandler() {
-
-			public void onClick(ClickEvent event) {
-				PasswordManagement.isSignedIn = false;
-				updateSignInStatus();
-			}
-
-		});
-
-
-		sitesPanel.add(signOutPanel);
+//		HorizontalPanel signOutPanel = new HorizontalPanel();
+//
+//		signInStatus = new HTML();
+//		updateSignInStatus();
+//		signOutPanel.add(signInStatus);
+//
+//		signIn.setText("[Sign Out]");
+//		signOutPanel.add(signIn);
+//
+//		signIn.addClickHandler(new ClickHandler() {
+//
+//			public void onClick(ClickEvent event) {
+//				PasswordManagement.isSignedIn = false;
+//				updateSignInStatus();
+//			}
+//
+//		});
+//
+//
+//		sitesPanel.add(signOutPanel);
 		
 		showSims.setText("Show Sims");
 		showSims.setValue(false);
@@ -168,7 +196,6 @@ public class ActorConfigTab extends GenericQueryTab {
 		sitesPanel.add(reloadFromGazelleButton);
 		reloadFromGazelleButton.setEnabled(enableGazelleReload);
 
-
 	}
 
 	private void loadGazelleFeedAvailableStatus() {
@@ -183,13 +210,13 @@ public class ActorConfigTab extends GenericQueryTab {
 	}
 
 	void updateSignInStatus() {
-		if (PasswordManagement.isSignedIn) {
-			signInStatus.setText("Signed In   ");
-		}
-		else {
-			signInStatus.setText("Signed Out   ");
-		}		
-		signIn.setVisible(PasswordManagement.isSignedIn);
+//		if (PasswordManagement.isSignedIn) {
+//			signInStatus.setText("Signed In   ");
+//		}
+//		else {
+//			signInStatus.setText("Signed Out   ");
+//		}
+//		signIn.setVisible(PasswordManagement.isSignedIn);
 	}
 
 	void newActorEditGrid() {
@@ -562,6 +589,7 @@ public class ActorConfigTab extends GenericQueryTab {
 	}
 	
 	void loadExternalSites() {
+		GWT.log("loadExternalSites");
 		new GetSiteNamesCommand(){
 
 			@Override

@@ -1,11 +1,9 @@
 package gov.nist.toolkit.itTests.support
 
 import gov.nist.toolkit.fhir.server.utility.FhirClient
-import gov.nist.toolkit.grizzlySupport.GrizzlyController
-import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.toolkitServicesCommon.ToolkitFactory
-
 /**
  *
  */
@@ -13,9 +11,9 @@ class FhirSpecification extends ToolkitSpecification {
 
     def startGrizzlyWithFhir(String port) {
         remoteToolkitPort = port
-        server = new GrizzlyController()
-        server.start(remoteToolkitPort);
-        server.withFhirServlet()
+//        server = new GrizzlyController()
+//        server.start(remoteToolkitPort);
+//        server.withFhirServlet()
         Installation.instance().overrideToolkitPort(remoteToolkitPort)  // ignore toolkit.properties
     }
 
@@ -43,7 +41,7 @@ class FhirSpecification extends ToolkitSpecification {
      * @param simId
      */
     gov.nist.toolkit.toolkitServicesCommon.SimId spiSimId(SimId simId) {
-        ToolkitFactory.newSimId(simId.id, simId.user, simId.actorType, simId.environmentName, simId.fhir)
+        ToolkitFactory.newSimId(simId.id, simId.testSession.value, simId.actorType, simId.environmentName, simId.fhir)
     }
 
 

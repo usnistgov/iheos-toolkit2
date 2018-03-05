@@ -6,6 +6,7 @@ import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.http.HttpParseException;
 import gov.nist.toolkit.http.HttpParserBa;
 import gov.nist.toolkit.http.ParseException;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.validatorsSoapMessage.message.HttpMessageValidator;
 import gov.nist.toolkit.validatorsSoapMessage.message.SoapMessageParser;
@@ -30,7 +31,7 @@ public class SoapMessageValidatorFactory implements MessageValidatorFactory2I {
 
     public static MessageValidatorEngine validateBasedOnValidationContext(
             ErrorRecorderBuilder erBuilder, OMElement xml,
-            MessageValidatorEngine mvc, ValidationContext vc, RegistryValidationInterface rvi) {
+            MessageValidatorEngine mvc, ValidationContext vc, RegistryValidationInterface rvi, TestSession testSession) {
         logger.debug("messageValidatorEngine#validateBasedOnValidationContext");
         logger.debug(" VC: " + vc.toString());
 
@@ -41,7 +42,7 @@ public class SoapMessageValidatorFactory implements MessageValidatorFactory2I {
 
         if (vc.hasSoap) {
             mvc.addMessageValidator("SOAP Message Parser", new SoapMessageParser(vc, xml), erBuilder.buildNewErrorRecorder());
-            mvc.addMessageValidator("SOAP Message Validator", new SoapMessageValidator(vc, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+            mvc.addMessageValidator("SOAP Message Validator", new SoapMessageValidator(vc, erBuilder, mvc, rvi, testSession), erBuilder.buildNewErrorRecorder());
             return mvc;
         }
 
@@ -59,7 +60,7 @@ public class SoapMessageValidatorFactory implements MessageValidatorFactory2I {
      */
     public static MessageValidatorEngine validateBasedOnValidationContext(
             ErrorRecorderBuilder erBuilder, String body,
-            MessageValidatorEngine mvc, ValidationContext vc, RegistryValidationInterface rvi) {
+            MessageValidatorEngine mvc, ValidationContext vc, RegistryValidationInterface rvi, TestSession testSession) {
         OMElement xml = null;
         try {
             // for now all the message inputs are XML - later some will be HTTP wrapped around XML
@@ -73,7 +74,7 @@ public class SoapMessageValidatorFactory implements MessageValidatorFactory2I {
                 er.detail("Input looks like: " + body.substring(0, ValUtil.min(100, body.length())));
             return mvc;
         }
-        return validateBasedOnValidationContext(erBuilder, xml, mvc, vc, rvi);
+        return validateBasedOnValidationContext(erBuilder, xml, mvc, vc, rvi, testSession);
     }
 
     /**
@@ -88,14 +89,14 @@ public class SoapMessageValidatorFactory implements MessageValidatorFactory2I {
     public static MessageValidatorEngine validateBasedOnRootElement(
             ErrorRecorderBuilder erBuilder, OMElement xml,
             MessageValidatorEngine mvc, ValidationContext vc,
-            String rootElementName, RegistryValidationInterface rvi) {
+            String rootElementName, RegistryValidationInterface rvi, TestSession testSession) {
 
         if (rootElementName.equals("Envelope")) {
             // schema validation of SOAP envelope is useless
             //			mvc.addMessageValidator("Schema", new SchemaValidator(vc, xml), erBuilder.buildNewErrorRecorder());
             // don't know what ValidationContext to set - let this validator choose
             mvc.addMessageValidator("SOAP Message Parser", new SoapMessageParser(vc, xml), erBuilder.buildNewErrorRecorder());
-            mvc.addMessageValidator("SOAP Message Validator", new SoapMessageValidator(vc, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+            mvc.addMessageValidator("SOAP Message Validator", new SoapMessageValidator(vc, erBuilder, mvc, rvi, testSession), erBuilder.buildNewErrorRecorder());
             return mvc;
         }
         return RootElementValidatorFactory.validateBasedOnRootElement(erBuilder, xml, mvc, vc, rootElementName, rvi);
@@ -112,7 +113,7 @@ public class SoapMessageValidatorFactory implements MessageValidatorFactory2I {
      */
     public static MessageValidatorEngine validateBasedOnRootElement(
             ErrorRecorderBuilder erBuilder, String body,
-            MessageValidatorEngine mvc, ValidationContext vc, RegistryValidationInterface rvi) {
+            MessageValidatorEngine mvc, ValidationContext vc, RegistryValidationInterface rvi, TestSession testSession) {
         OMElement xml = null;
         try {
             xml = Util.parse_xml(body);
@@ -126,7 +127,7 @@ public class SoapMessageValidatorFactory implements MessageValidatorFactory2I {
             return mvc;
         }
         String rootElementName = xml.getLocalName();
-        return validateBasedOnRootElement(erBuilder, xml, mvc, vc, rootElementName, rvi);
+        return validateBasedOnRootElement(erBuilder, xml, mvc, vc, rootElementName, rvi, testSession);
 
     }
 
@@ -140,7 +141,7 @@ public class SoapMessageValidatorFactory implements MessageValidatorFactory2I {
     * at least the first validation step so calling engine.run() will kick start the validation. Note that no
     * ValidationContext is created so the goals of the validation are not yet known.
     */
-    static private MessageValidatorEngine getValidatorContext(ErrorRecorderBuilder erBuilder, OMElement xml, MessageValidatorEngine mvc, String title, ValidationContext vc, RegistryValidationInterface rvi) {
+    static private MessageValidatorEngine getValidatorContext(ErrorRecorderBuilder erBuilder, OMElement xml, MessageValidatorEngine mvc, String title, ValidationContext vc, RegistryValidationInterface rvi, TestSession testSession) {
         String rootElementName = xml.getLocalName();
         if (vc == null)
             vc = DefaultValidationContextFactory.validationContext();
@@ -157,7 +158,7 @@ public class SoapMessageValidatorFactory implements MessageValidatorFactory2I {
                     ((vc.isMessageTypeKnown()) ? vc.getTransactionName() : "Unknown message type") +
                     ((vc.hasSoap) ? " with SOAP Wrapper" : ""));
             mvc.addMessageValidator("SOAP Message Parser", new SoapMessageParser(vc, xml), erBuilder.buildNewErrorRecorder());
-            mvc.addMessageValidator("SOAP Message Validator", new SoapMessageValidator(vc, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+            mvc.addMessageValidator("SOAP Message Validator", new SoapMessageValidator(vc, erBuilder, mvc, rvi, testSession), erBuilder.buildNewErrorRecorder());
             return mvc;
 
         } else {
@@ -178,7 +179,7 @@ public class SoapMessageValidatorFactory implements MessageValidatorFactory2I {
      * at least the first validation step so calling engine.run() will kick start the validation. Note that no
      * ValidationContext is created so the goals of the validation are not yet known.
      */
-    static public MessageValidatorEngine getValidatorContext(ErrorRecorderBuilder erBuilder, byte[] input, MessageValidatorEngine mvc, String title, ValidationContext vc, RegistryValidationInterface rvi) {
+    static public MessageValidatorEngine getValidatorContext(ErrorRecorderBuilder erBuilder, byte[] input, MessageValidatorEngine mvc, String title, ValidationContext vc, RegistryValidationInterface rvi, TestSession testSession) {
         OMElement xml = null;
         try {
             // for now all the message inputs are XML - later some will be HTTP wrapped around XML
@@ -197,7 +198,7 @@ public class SoapMessageValidatorFactory implements MessageValidatorFactory2I {
             }
             return mvc;
         }
-        return getValidatorContext(erBuilder, xml, mvc, title, vc, rvi);
+        return getValidatorContext(erBuilder, xml, mvc, title, vc, rvi, testSession);
     }
 
     /**
@@ -211,11 +212,11 @@ public class SoapMessageValidatorFactory implements MessageValidatorFactory2I {
      * at least the first validation step so calling engine.run() will kick start the validation. Note that no
      * ValidationContext is created so the goals of the validation are not yet known.
      */
-    static public MessageValidatorEngine getValidatorForHttp(ErrorRecorderBuilder erBuilder, String httpInput, MessageValidatorEngine mvc, ValidationContext vc, RegistryValidationInterface rvi) {
+    static public MessageValidatorEngine getValidatorForHttp(ErrorRecorderBuilder erBuilder, String httpInput, MessageValidatorEngine mvc, ValidationContext vc, RegistryValidationInterface rvi, TestSession testSession) {
         try {
             HttpParserBa hparser = new HttpParserBa(httpInput.getBytes());
             mvc = (mvc == null) ? new MessageValidatorEngine() : mvc;
-            mvc.addMessageValidator("HTTP Validator", new HttpMessageValidator(vc, hparser, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+            mvc.addMessageValidator("HTTP Validator", new HttpMessageValidator(vc, hparser, erBuilder, mvc, rvi, testSession), erBuilder.buildNewErrorRecorder());
             return mvc;
         } catch (HttpParseException e) {
             mvc = (mvc == null) ? new MessageValidatorEngine() : mvc;
@@ -240,7 +241,7 @@ public class SoapMessageValidatorFactory implements MessageValidatorFactory2I {
      * at least the first validation step so calling engine.run() will kick start the validation. Note that no
      * ValidationContext is created so the goals of the validation are not yet known.
      */
-    public MessageValidatorEngine getValidator(ErrorRecorderBuilder erBuilder, byte[] input, byte[] directCertInput, ValidationContext vc, RegistryValidationInterface rvi) {
+    public MessageValidatorEngine getValidator(ErrorRecorderBuilder erBuilder, byte[] input, byte[] directCertInput, ValidationContext vc, RegistryValidationInterface rvi, TestSession testSession) {
 
         MessageValidatorEngine mvc = new MessageValidatorEngine();
         if (erBuilder != null) {
@@ -253,10 +254,10 @@ public class SoapMessageValidatorFactory implements MessageValidatorFactory2I {
         String inputString = new String(input).trim();
 
         if (vc.hasHttp) {
-            return getValidatorForHttp(erBuilder, inputString, mvc, vc, rvi);
+            return getValidatorForHttp(erBuilder, inputString, mvc, vc, rvi, testSession);
         }
 
-        return new CommonMessageValidatorFactory().getValidator(erBuilder, input, directCertInput, vc, rvi);
+        return new CommonMessageValidatorFactory().getValidator(erBuilder, input, directCertInput, vc, rvi, testSession);
     }
 
 

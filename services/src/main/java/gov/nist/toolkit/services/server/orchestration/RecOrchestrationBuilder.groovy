@@ -42,7 +42,7 @@ class RecOrchestrationBuilder {
     RawResponse buildTestEnvironment() {
 
         // depends on Fhir Support server running and initialized
-        FhirSupportOrchestrationBuilder supportBuilder = new FhirSupportOrchestrationBuilder(api, session, request.userName, request.useExistingState)
+        FhirSupportOrchestrationBuilder supportBuilder = new FhirSupportOrchestrationBuilder(api, session, request.testSession, request.useExistingState)
         FhirSupportOrchestrationResponse supportResponse = supportBuilder.buildTestEnvironment()
 
         if (actorOption.optionId == OptionType.XDS_ON_FHIR.toString()) {
@@ -65,7 +65,7 @@ class RecOrchestrationBuilder {
 
             boolean forceNewPatientIds = !request.isUseExistingState()
 
-            OrchestrationProperties orchProps = new OrchestrationProperties(session, request.userName, ActorType.DOCUMENT_RECIPIENT, pidNameMap.keySet(), forceNewPatientIds)
+            OrchestrationProperties orchProps = new OrchestrationProperties(session, request.testSession, ActorType.DOCUMENT_RECIPIENT, pidNameMap.keySet(), forceNewPatientIds)
 
             Pid registerPid
             if (forceNewPatientIds) {
@@ -107,8 +107,8 @@ class RecOrchestrationBuilder {
             boolean forceNewPatientIds = !request.isUseExistingState()
 
             boolean reuse = false  // updated as we progress
-            rrSimId = new SimId(request.userName, supportIdName, ActorType.REPOSITORY_REGISTRY.name, request.environmentName)
-            OrchestrationProperties orchProps = new OrchestrationProperties(session, request.userName, ActorType.REPOSITORY_REGISTRY, pidNameMap.keySet(), !request.useExistingState)
+            rrSimId = new SimId(request.testSession, supportIdName, ActorType.REPOSITORY_REGISTRY.name, request.environmentName)
+            OrchestrationProperties orchProps = new OrchestrationProperties(session, request.testSession, ActorType.REPOSITORY_REGISTRY, pidNameMap.keySet(), !request.useExistingState)
 
             if (!request.isUseExistingSimulator()) {
                 api.deleteSimulatorIfItExists(rrSimId)
@@ -132,8 +132,8 @@ class RecOrchestrationBuilder {
 
            // response.setRegisterPid(PidBuilder.createPid('fake^^^&1.2.3&ISO'))
             response.rrConfig = rrSimConfig
-            response.RRSite = SimCache.getSite(session.getId(), rrSimId.toString())
-            response.supportSite = SimCache.getSite(session.getId(), rrSimId.toString())
+            response.RRSite = SimCache.getSite(rrSimId.toString(), request.testSession)
+            response.supportSite = SimCache.getSite(rrSimId.toString(), request.testSession)
 
             return response
         } catch (Exception e) {

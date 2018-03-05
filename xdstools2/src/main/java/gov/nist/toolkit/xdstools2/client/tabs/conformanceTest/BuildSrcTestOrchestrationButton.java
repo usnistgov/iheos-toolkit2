@@ -4,6 +4,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
 import gov.nist.toolkit.actortransaction.client.ActorOption;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.client.SrcOrchestrationRequest;
 import gov.nist.toolkit.services.client.SrcOrchestrationResponse;
@@ -49,7 +50,7 @@ public class BuildSrcTestOrchestrationButton  extends AbstractOrchestrationButto
         initializationResultsPanel.clear();
 
         SrcOrchestrationRequest request = new SrcOrchestrationRequest(actorOption);
-        request.setUserName(testTab.getCurrentTestSession());
+        request.setTestSession(new TestSession(testTab.getCurrentTestSession()));
         request.setEnvironmentName(testTab.getEnvironmentSelection());
         request.setUseExistingState(!isResetRequested());
         request.getActorOption().copyFrom(testTab.getCurrentActorOption());

@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.Pid;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.services.client.IgOrchestrationRequest;
 import gov.nist.toolkit.services.client.IgOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
@@ -82,7 +83,7 @@ public class BuildIGTestOrchestrationButton extends AbstractOrchestrationButton 
         }
         IgOrchestrationRequest request = new IgOrchestrationRequest();
         request.setUseExistingState(!isResetRequested());
-        request.setUserName(testTab.getCurrentTestSession());
+        request.setTestSession(new TestSession(testTab.getCurrentTestSession()));
         request.setIncludeLinkedIG(includeIG);
 
         initializationResultsPanel.clear();

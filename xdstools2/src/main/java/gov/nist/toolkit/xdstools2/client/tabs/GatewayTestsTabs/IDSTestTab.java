@@ -5,6 +5,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
@@ -62,6 +63,10 @@ public class IDSTestTab extends GenericQueryTab implements GatewayTool {
     @Override
     protected void configureTabView() {
 
+    }
+
+    TestSession getTestSession() {
+        return rrConfig.getId().getTestSession();
     }
 
     @Override
@@ -275,7 +280,7 @@ public class IDSTestTab extends GenericQueryTab implements GatewayTool {
                             new PopupMessage("Results not available");
                             return;
                         }
-                        SiteSpec siteSpec = new SiteSpec(siteName, ActorType.RESPONDING_GATEWAY, null);
+                        SiteSpec siteSpec = new SiteSpec(siteName, ActorType.RESPONDING_GATEWAY, null, getTestSession());
 
                         MetadataInspectorTab itab = new MetadataInspectorTab();
                         List<Result> results = new ArrayList<Result>();

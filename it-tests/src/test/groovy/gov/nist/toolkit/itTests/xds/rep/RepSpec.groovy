@@ -1,8 +1,8 @@
 package gov.nist.toolkit.itTests.xds.rep
 
-import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.services.client.RawResponse
@@ -20,13 +20,12 @@ import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import spock.lang.Shared
-
 /**
  *
  */
 class RepSpec extends ToolkitSpecification {
     @Shared SimulatorBuilder spi
-    @Shared String testSession = 'repspec';
+    @Shared TestSession testSession = new TestSession(prefixNonce('repspec'))
     @Shared String id = 'rep'
     @Shared SimId simId = new SimId(testSession, id)
     @Shared String envName = 'default'
@@ -46,25 +45,25 @@ class RepSpec extends ToolkitSpecification {
 
         new BuildCollections().init(null)
 
-        if (spi.get(id, testSession))
-            spi.delete(id, testSession)
+        if (spi.get(id, testSession.value))
+            spi.delete(id, testSession.value)
 
         api.deleteSimulatorIfItExists(simId)
 
         repSimConfig = spi.create(
                 id,
-                testSession,
+                testSession.value,
                 SimulatorActorType.REPOSITORY,
                 envName)
 
-        api.createTestSession(testSession)
+        api.createTestSession(testSession.value)
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
-        spi.delete(id, testSession)
+        spi.delete(id, testSession.value)
         api.deleteSimulatorIfItExists(simId)
-        server.stop()
-        ListenerFactory.terminateAll()
+//        server.stop()
+//        ListenerFactory.terminateAll()
     }
 
     def setup() {
@@ -74,9 +73,9 @@ class RepSpec extends ToolkitSpecification {
         setup:
         RepOrchestrationRequest request = new RepOrchestrationRequest()
         request.environmentName = envName
-        request.userName = testSession
+        request.testSession = testSession
         request.useExistingSimulator = false
-        request.sutSite = new SiteSpec(simId.toString())
+        request.sutSite = new SiteSpec(simId.id, simId.testSession)
 
         when: 'build orchestration'
         def builder = new RepOrchestrationBuilder(api, session, request)
@@ -103,10 +102,10 @@ class RepSpec extends ToolkitSpecification {
         siteSpec.orchestrationSiteName = supportConfig.id
 
         SimManager simManager = new SimManager(api.getSession().id)
-        Sites sites = simManager.getAllSites(new Sites())
-        Site sutSite = sites.getSite(siteSpec.name)
+        Sites sites = simManager.getAllSites(new Sites(testSession), testSession)
+        Site sutSite = sites.getSite(siteSpec.name, testSession)
 
-        TestInstance testInstance = new TestInstance('12360')
+        TestInstance testInstance = new TestInstance('12360',testSession)
         List<String> sections = []
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', "P20160803215512.2^^^&1.3.6.1.4.1.21367.2005.13.20.1000&ISO");

@@ -1,8 +1,7 @@
 package gov.nist.toolkit.session.server.serviceManager;
 
-import gov.nist.toolkit.simcommon.server.SimCache;
-import gov.nist.toolkit.simcommon.server.SiteServiceManager;
 import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.client.*;
 import gov.nist.toolkit.results.CommonService;
@@ -11,6 +10,8 @@ import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.services.*;
+import gov.nist.toolkit.simcommon.server.SimCache;
+import gov.nist.toolkit.simcommon.server.SiteServiceManager;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
@@ -27,9 +28,11 @@ public class QueryServiceManager extends CommonService {
 
 	static Logger logger = Logger.getLogger(QueryServiceManager.class);
 	Session session;
+	TestSession testSession;
 
 	public QueryServiceManager(Session session) {
 		this.session = session;
+		this.testSession = session.getTestSession();
 	}
 	
 	public List<Result> registerAndQuery(TestInstance testInstance, SiteSpec site, String pid)  {
@@ -59,33 +62,33 @@ public class QueryServiceManager extends CommonService {
 		}
 	}
 
-	public List<Result> submitRegistryTestdata(String testSessionName,SiteSpec site,
-			String datasetName, String pid)  {
+	public List<Result> submitRegistryTestdata(SiteSpec site,
+											   String datasetName, String pid)  {
 		logger.debug(session.id() + ": " + "submitRegistryTestdata");
 		try {
-			session.setMesaSessionName(testSessionName);
+			session.setTestSession(testSession);
 			return new SubmitRegistryTestdata(session).run(site, datasetName, pid);
 		} catch (XdsException e) {
 			return buildResultList(e);
 		}
 	}
 
-	public List<Result> submitRepositoryTestdata(String testSessionName, SiteSpec site,
+	public List<Result> submitRepositoryTestdata(SiteSpec site,
 												 String datasetName, String pid)  {
 		logger.debug(session.id() + ": " + "submitRepositoryTestdata");
 		try {
-			session.setMesaSessionName(testSessionName);
+			session.setTestSession(testSession);
 			return new SubmitRepositoryTestdata(session).run(site, datasetName, pid);
 		} catch (XdsException e) {
 			return buildResultList(e);
 		}
 	}
 
-	public List<Result> submitXDRTestdata(String testSessionName,SiteSpec site,
+	public List<Result> submitXDRTestdata(SiteSpec site,
 			String datasetName, String pid)  {
 		logger.debug(session.id() + ": " + "submitXDRTestdata");
 		try {
-			session.setMesaSessionName(testSessionName);
+			session.setTestSession(testSession);
 			return new SubmitXDRTestdata(session).run(site, datasetName, pid);
 		} catch (XdsException e) {
 			return buildResultList(e);
@@ -317,7 +320,7 @@ public class QueryServiceManager extends CommonService {
 	public List<Result> getLastMetadata() {
 		logger.debug(session.id() + ": " + "getLastMetadata");
 		List<Result> results = new ArrayList<Result>();
-		Result result = ResultBuilder.RESULT(new TestInstance("getLastMetadata"));
+		Result result = ResultBuilder.RESULT(new TestInstance("getLastMetadata", testSession));
 		results.add(result);
 
 		try {
@@ -463,7 +466,7 @@ public class QueryServiceManager extends CommonService {
 			if (id.repositoryUniqueId == null) {
 				if (s2 == null) {
 					try {
-						s2 = new SimCache().getSimManagerForSession(s.id()).getAllSites().getSite(s.siteSpec.name);
+						s2 = new SimCache().getSimManagerForSession(s.id()).getAllSites(testSession).getSite(s.siteSpec.name, testSession);
 					} catch (Throwable e) {}
 				}
 				if (s2 != null && s2.hasRepositoryB()) {
@@ -485,7 +488,7 @@ public class QueryServiceManager extends CommonService {
 					if (homeName == null || homeName.equals(""))
 						throw new Exception("Cross Community request through IG " + s.siteSpec.name + ". No RG specified");
 					Site rg = null;
-					List<Site> sites = SiteServiceManager.getSiteServiceManager().getAllSites(s.getId());
+					List<Site> sites = SiteServiceManager.getSiteServiceManager().getAllSites(s.getId(), testSession);
 					for (Site site : sites) {
 						if (site.getSiteName().equals(homeName)) {
 							rg = site;
@@ -498,7 +501,7 @@ public class QueryServiceManager extends CommonService {
 				} else {
 					if (s2 == null) {
 						SiteServiceManager ssm = SiteServiceManager.getSiteServiceManager();
-						s2 = ssm.getSite(ssm.getAllSites(session.id()), s.siteSpec.name);
+						s2 = ssm.getSite(ssm.getAllSites(session.id(), testSession), s.siteSpec.name);
 					}
 					if (s2.getHome() == null || s2.getHome().equals(""))
 						throw new Exception("Cross Community request but site " + s.siteSpec.name + " has no homeCommunityId configured");
@@ -511,7 +514,7 @@ public class QueryServiceManager extends CommonService {
 
 	Uids fillInHome(Uids uids) throws Exception {
 		Session s = session;
-		Site s2 = SiteServiceManager.getSiteServiceManager().getCommonSites().getSite(s.siteSpec.name);
+		Site s2 = SiteServiceManager.getSiteServiceManager().getCommonSites(testSession).getSite(s.siteSpec.name, testSession);
 		for (Uid uid : uids.uids) {
 			if (uid.repositoryUniqueId == null)
 				uid.repositoryUniqueId = s2.getRepositoryUniqueId(TransactionBean.RepositoryType.REPOSITORY);

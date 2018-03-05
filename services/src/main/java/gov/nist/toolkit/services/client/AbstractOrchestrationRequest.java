@@ -2,6 +2,7 @@ package gov.nist.toolkit.services.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.actortransaction.client.ActorOption;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 
 import java.io.Serializable;
@@ -10,7 +11,7 @@ import java.io.Serializable;
  *
  */
 abstract public class AbstractOrchestrationRequest implements Serializable, IsSerializable  {
-    private String userName;
+    private TestSession testSession;
     private String environmentName;
     private PifType pifType;
     private SiteSpec registrySut;
@@ -18,12 +19,12 @@ abstract public class AbstractOrchestrationRequest implements Serializable, IsSe
     private boolean selfTest = false;
     private ActorOption actorOption = new ActorOption();
 
-    public String getUserName() {
-        return userName;
+    public TestSession getTestSession() {
+        return testSession;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setTestSession(TestSession testSession) {
+        this.testSession = testSession;
     }
 
     public String getEnvironmentName() {

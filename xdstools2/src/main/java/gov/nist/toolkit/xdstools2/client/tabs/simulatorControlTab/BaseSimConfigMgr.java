@@ -9,9 +9,11 @@ import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.http.client.HtmlMarkup;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
+import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.command.command.PutSimConfigCommand;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.intf.SimConfigMgrIntf;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
@@ -251,7 +253,9 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
     }
 
     public void saveSimConfig() {
-        boolean locked = wasLocked || config.getConfigEle(SimulatorProperties.locked).asBoolean();
+        boolean locked = wasLocked ||
+                config.getConfigEle(SimulatorProperties.locked).asBoolean() ||
+                (TestSession.DEFAULT_TEST_SESSION.equals(config.getTestSession()) && Xdstools2.getInstance().multiUserModeEnabled);
         if (locked) {
             if (PasswordManagement.isSignedIn) {
             }

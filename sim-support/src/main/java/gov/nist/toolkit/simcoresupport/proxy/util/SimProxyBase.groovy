@@ -8,20 +8,23 @@ import gov.nist.toolkit.configDatatypes.client.FhirVerb
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.fhir.server.utility.UriBuilder
-import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.simcommon.client.BadSimIdException
 import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.client.SimIdFactory
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
 import gov.nist.toolkit.simcommon.server.SimCache
 import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.simcommon.server.SimEndpoint
+import gov.nist.toolkit.simcommon.server.SiteFactory
 import gov.nist.toolkit.simcommon.server.factories.SimProxyFactory
 import gov.nist.toolkit.simcoresupport.mhd.CodeTranslator
 import gov.nist.toolkit.simcoresupport.proxy.exceptions.SimProxyTransformException
 import gov.nist.toolkit.sitemanagement.client.Site
 import gov.nist.toolkit.sitemanagement.client.TransactionBean
 import gov.nist.toolkit.valsupport.client.ValidationContext
+import groovy.transform.TypeChecked
 import org.apache.http.Header
 import org.apache.http.HttpHost
 import org.apache.http.HttpRequest
@@ -32,6 +35,7 @@ import org.hl7.fhir.dstu3.model.Resource
 /**
  *
  */
+@TypeChecked
 public class SimProxyBase {
     static final String fhirSupportSimName = 'fhir_support'
     static Logger logger = Logger.getLogger(SimProxyBase.class);
@@ -68,7 +72,7 @@ public class SimProxyBase {
     }
 
     String fhirSupportBase() {
-        def userName = simId.user
+        def userName = simId.testSession
         SimId supportId = new SimId(userName, fhirSupportSimName)
         SimDb simDb = new SimDb(supportId)
         SimulatorConfig config = simDb.getSimulator(supportId)
@@ -210,25 +214,38 @@ public class SimProxyBase {
         config = simDb.getSimulator(simId);
         if (config == null) throw new BadSimIdException("Simulator " + simId +  " does not exist");
 
-        proxySite = new SimProxyFactory().getActorSite(config, new Site());
+        proxySite = new SimProxyFactory().getActorSite(config, SiteFactory.buildSite(simId));
 
         SimulatorConfigElement ele = config.getConfigEle(SimulatorProperties.proxyPartner);
         if (ele == null) throw new Exception("SimProxy " + simId + " has no backend sim (connection to target system)");
 
-        simId2 = new SimId(ele.asString());
+        simId2 = SimIdFactory.simIdBuilder(ele.asString());
 
-        transformConfigs =
-        config.get(SimulatorProperties.simProxyTransformations)?.asList()?.collect {
-            ProxyTransformConfig.parse(it)
+        transformConfigs = []
+        SimulatorConfigElement sce = config.get(SimulatorProperties.simProxyTransformations)
+        if (sce != null) {
+            List<String> transforms = sce.asList()
+            transformConfigs = transforms.collect { String xfrm ->
+                ProxyTransformConfig.parse(xfrm)
+            }
         }
-        List<Header> contentTypeHeaders = request.getHeaders('Accept')
+
+//        transformConfigs =
+//        config.get(SimulatorProperties.simProxyTransformations)?.asList()?.collect { String sce ->
+//            ProxyTransformConfig.parse(sce)
+//        }
+
+
+
+        List<Header> contentTypeHeaders = request.getHeaders('Accept') as List
         contentTypeHeaders.each { Header h ->
             clientContentTypes << h.value
         }
 
         String targetSiteName = config.get(SimulatorProperties.proxyForwardSite)?.asString()
+        SimId targetSiteSimId = SimIdFactory.simIdBuilder(targetSiteName)
         if (!targetSiteName) return handleEarlyException(new Exception("Proxy forward site not configured"))
-        targetSite = SimCache.getSite(targetSiteName)
+        targetSite = SimCache.getSite(targetSiteName, targetSiteSimId.testSession)
         if (!targetSite) return handleEarlyException(new Exception("Site ${targetSiteName} does not exist"))
         return null
     }
@@ -259,7 +276,7 @@ public class SimProxyBase {
     }
 
     boolean isRequestedContentTypeWildcarded() {
-        clientContentTypes.find { it.contains('*')}
+        clientContentTypes.find { String it -> it.contains('*')}
     }
 
 }

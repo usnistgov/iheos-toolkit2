@@ -6,8 +6,9 @@ package gov.nist.toolkit.services.server.orchestration;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.results.shared.SiteBuilder;
+import gov.nist.toolkit.results.client.SiteBuilder;
 import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
 import gov.nist.toolkit.services.client.IdcOrchestrationResponse;
 import gov.nist.toolkit.services.client.MessageItem;
@@ -49,14 +50,14 @@ public class IdcOrchestrationBuilder {
 
    public RawResponse buildTestEnvironment() {
 
-      String user = request.getUserName();
+      TestSession testSession = request.getTestSession();
       String env = request.getEnvironmentName();
       IdcOrchestrationResponse response = new IdcOrchestrationResponse();
 
       try {
          for (Orchestra sim : Orchestra.values()) {
             SimulatorConfig simConfig = null;
-            SimId simId = new SimId(user, sim.name(), sim.actorType.getName(), env);
+            SimId simId = new SimId(testSession, sim.name(), sim.actorType.getName(), env);
             if (!request.isUseExistingState()) {
                api.deleteSimulatorIfItExists(simId);
             }
@@ -71,7 +72,7 @@ public class IdcOrchestrationBuilder {
                   List <String> list = chg.asList();
                   for (int i = 0; i < list.size(); i++ ) {
                      String s = list.get(i);
-                     s = StringUtils.replace(s, "${user}", user);
+                     s = StringUtils.replace(s, "${user}", testSession.getValue());
                      list.set(i, s);
                   }
                   chg.setStringListValue(list);
@@ -90,10 +91,10 @@ public class IdcOrchestrationBuilder {
          response.setSimulatorConfigs(simConfigs);
 
          TestInstance initTest =
-            TestInstanceManager.initializeTestInstance(request.getUserName(), new TestInstance("idc_init"));
+            TestInstanceManager.initializeTestInstance(request.getTestSession(), new TestInstance("idc_init", request.getTestSession()));
          MessageItem initMsgItem = response.addMessage(initTest, true, "");
          try {
-            util.submit(request.getUserName(), SiteBuilder.siteSpecFromSimId(rrSimulatorConfig.getId()), initTest);
+            util.submit(request.getTestSession(), SiteBuilder.siteSpecFromSimId(rrSimulatorConfig.getId()), initTest);
          } catch (Exception e) {
             initMsgItem.setMessage("Initialization of " + rrSimulatorConfig.getId() + " failed:\n" + e.getMessage());
             initMsgItem.setSuccess(false);

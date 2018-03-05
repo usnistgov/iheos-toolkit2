@@ -1,11 +1,13 @@
 package gov.nist.toolkit.xdstools2.server.gazelle.sysconfig
 
 import groovy.transform.ToString
+import groovy.transform.TypeChecked
 
 /**
  * This matches the WebService configuration offered by Gazelle.
  * Updates to this must be matched in ConfigParser.groovy
  */
+@TypeChecked
 @ToString
 class ConfigDef {
     String configType
@@ -43,9 +45,9 @@ class ConfigDef {
 
     boolean isRetrieve() { 'Retrieve.b' == getTransactionName() }
 
-    static boolean hasRepository(List<ConfigDef> elements) { elements.find { it.isRepository() } }
-    static boolean hasODDS(List<ConfigDef> elements) { elements.find { it.isODDS() }}
-    static boolean hasRecipient(List<ConfigDef> elements) { elements.find { it.isRecipient() } }
+    static boolean hasRepository(List<ConfigDef> elements) {  elements.find {ConfigDef it -> it.isRepository() } }
+    static boolean hasODDS(List<ConfigDef> elements) { elements.find {ConfigDef it -> it.isODDS() }}
+    static boolean hasRecipient(List<ConfigDef> elements) { elements.find {ConfigDef it -> it.isRecipient() } }
 
     /**
      *

@@ -50,7 +50,7 @@ public class PatientIdentityFeedTransaction extends BasicTransaction {
 
 			String server = testConfig.site.pifHost;
 			String port = testConfig.site.pifPort;
-            s_ctx.addDetail("server", server);
+            s_ctx.addDetail("gov/nist/toolkit/installation/server", server);
             s_ctx.addDetail("port", port);
 
 			if (server == null || "".equals(server)) throw new Exception("Site " + testConfig.site.getName() + " has no Patient Identity Feed host configured");

@@ -3,26 +3,17 @@ package gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.HTML;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.session.shared.Message;
 import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.simcommon.client.SimIdFactory;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractPresenter;
-import gov.nist.toolkit.xdstools2.client.command.command.GetSimIdForUser;
-import gov.nist.toolkit.xdstools2.client.command.command.GetSimulatorEventRequestCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.GetSimulatorEventResponseCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionInstancesCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionLogCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionRequestCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionResponseCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionsForSimulatorCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.inspector.mvp.ResultInspector;
 import gov.nist.toolkit.xdstools2.client.toolLauncher.NewToolLauncher;
-import gov.nist.toolkit.xdstools2.client.util.ASite;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
-import gov.nist.toolkit.xdstools2.client.util.SimpleCallback;
-import gov.nist.toolkit.xdstools2.client.util.SiteFilter;
-import gov.nist.toolkit.xdstools2.client.util.ToolkitLink;
+import gov.nist.toolkit.xdstools2.client.util.*;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.SimLog;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSimIdsForUserRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSimulatorEventRequest;
@@ -69,7 +60,10 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
      */
     void setCurrentSimId(SimId simId) {
         currentSimId = simId;  // this prevents init() from loading full context
-        setTitle("Log " + simId.toString());
+        if (simId == null)
+            setTitle("Log");
+        else
+            setTitle("Log " + simId.toString());
         loadSimulatorNames();
     }
 
@@ -107,18 +101,20 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
 
     // not sure why this level is useful. Maybe for filters?
     private void loadTransactionTypes() {
-        assert(currentSimId != null);
         getView().eventListBox.clear();
-        //getSimulatorTransactionNames
-        new GetTransactionsForSimulatorCommand(){
-            @Override
-            public void onComplete(List<String> result) {
-                GWT.log("Loaded " + result.size() + " events");
-                getView().transactionNamesPanel.clear();
-                loadEventsForSimulator("all", null);
-            }
+        getView().transactionNamesPanel.clear();
+        if (currentSimId != null) {
+//            assert (currentSimId != null);
+            //getSimulatorTransactionNames
+            new GetTransactionsForSimulatorCommand() {
+                @Override
+                public void onComplete(List<String> result) {
+                    GWT.log("Loaded " + result.size() + " events");
+                    loadEventsForSimulator("all", null);
+                }
 
-        }.run(new GetTransactionRequest(ClientUtils.INSTANCE.getCommandContext(), currentSimId));
+            }.run(new GetTransactionRequest(ClientUtils.INSTANCE.getCommandContext(), currentSimId));
+        }
     }
 
     private void displayEvents(List<TransactionInstance> events, String preselectedEventId) {
@@ -237,7 +233,7 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
             assert (simName != null);
             assert (!simName.equals(""));
             // translates to server version of simid
-            currentSimId = getServerSimId(new SimId(simName));
+            currentSimId = getServerSimId(SimIdFactory.simIdBuilder(simName));
             loadEventsForSimulator();
             getView().clearAllTabs();
             currentTransactionInstance = null;
@@ -276,7 +272,7 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
 
         ResultInspector resultInspector = new ResultInspector();
         resultInspector.setResults(results);
-        SiteSpec siteSpec = new SiteSpec(currentSimId.toString(), currentTransactionInstance.actorType, null);
+        SiteSpec siteSpec = new SiteSpec(currentSimId.toString(), currentTransactionInstance.actorType, null, currentSimId.getTestSession());
         resultInspector.setSiteSpec(siteSpec);
         new NewToolLauncher().launch(resultInspector);
     }
@@ -319,13 +315,26 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
     void doRefresh() {
         loadSimulatorNames();
         loadTransactionTypes();
-        loadEventsForSimulator(currentTransaction);
+        loadEventsForSimulator("all");
 
         getView().clearAllTabs();
 
     }
 
-    public void setPreSelectEvent(String preSelectEvent) {
+    void setPreSelectEvent(String preSelectEvent) {
         this.preSelectEvent = preSelectEvent;
+    }
+
+    void testSessionChanged(TestSession testSession) {
+        if (!currentSimId.getTestSession().equals(testSession)) {
+            currentTransactionInstance = null;
+            getView().clearAllTabs();
+            getView().eventListBox.clear();
+            getView().transactionNamesPanel.clear();
+            setCurrentSimId(null);
+            getView().eventListBox.clear();
+            loadSimulatorNames();
+            updateEventLink();
+        }
     }
 }

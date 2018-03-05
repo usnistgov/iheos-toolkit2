@@ -3,6 +3,9 @@ package gov.nist.toolkit.fhir.simulators.support.od;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
+import gov.nist.toolkit.fhir.simulators.sim.rep.RepIndex;
+import gov.nist.toolkit.fhir.simulators.support.StoredDocument;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
@@ -10,8 +13,6 @@ import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simcommon.server.SimDb;
-import gov.nist.toolkit.fhir.simulators.sim.rep.RepIndex;
-import gov.nist.toolkit.fhir.simulators.support.StoredDocument;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testkitutilities.TestDefinition;
 import gov.nist.toolkit.testkitutilities.TestKitSearchPath;
@@ -36,12 +37,12 @@ public class TransactionUtil {
     /**
      * Must have a default Register section in this test.
      */
-    static public Result register(Session session, String username, TestInstance testInstance, SiteSpec registry, Map<String, String> params, List<String> sections) {
+    static public Result register(Session session, TestSession testSession, TestInstance testInstance, SiteSpec registry, Map<String, String> params, List<String> sections) {
 
         // pid format "SKB1^^^&1.2.960&ISO";
 
         boolean stopOnFirstError = true;
-        //new Session(Installation.instance().warHome(), username);
+        //new Session(Installation.instance().warHome(), testSession);
 
         XdsTestServiceManager xdsTestServiceManager = new XdsTestServiceManager(session);
 
@@ -53,10 +54,10 @@ public class TransactionUtil {
 
             List<Result> results = null;
 
-            if (session.getMesaSessionName() == null) session.setMesaSessionName(username);
+            if (session.getTestSession() == null) session.setTestSession(testSession);
             session.setSiteSpec(registry);
 
-            results = XdsTestServiceManager.runTestplan(session.getCurrentEnvironment(), username, registry, testInstance, sections, params, stopOnFirstError, session, xdsTestServiceManager, true);
+            results = XdsTestServiceManager.runTestplan(session.getCurrentEnvironment(), testSession, registry, testInstance, sections, params, stopOnFirstError, session, xdsTestServiceManager, true);
 
             printResult(results);
             return results.get(0);
@@ -88,7 +89,7 @@ public class TransactionUtil {
      *
      * @return
      */
-    static public Map<String, String> registerWithLocalizedTrackingInODDS(Session session, String username, TestInstance testInstance, SiteSpec registry, SimId oddsSimId, Map<String, String> params) throws Exception {
+    static public Map<String, String> registerWithLocalizedTrackingInODDS(Session session, TestSession testSession, TestInstance testInstance, SiteSpec registry, SimId oddsSimId, Map<String, String> params) throws Exception {
 
         if (oddsSimId==null)
             throw new Exception("ODDS Sim Id cannot be null.");
@@ -97,7 +98,7 @@ public class TransactionUtil {
         String oddeUid = null;
 
         // Part 1. Register an ODDE
-        Result result = register(session, username,testInstance,registry,params, new ArrayList<String>(){{add("Register_OD");}});
+        Result result = register(session, testSession,testInstance,registry,params, new ArrayList<String>(){{add("Register_OD");}});
 
         if (result!=null && result.getStepResults()!=null)
             logger.info(" *** register result size: " + result.getStepResults().size());
@@ -183,7 +184,7 @@ public class TransactionUtil {
                     if (simulatorConfig.get(SimulatorProperties.PERSISTENCE_OF_RETRIEVED_DOCS).asBoolean()) {
                         SimulatorConfigElement sce = simulatorConfig.get(SimulatorProperties.oddsRepositorySite);
                         if (sce!=null && sce.asList()!=null && sce.asList().size()>0) {
-                            SiteSpec reposSite = new SiteSpec(sce.asList().get(0), ActorType.REPOSITORY, null);
+                            SiteSpec reposSite = new SiteSpec(sce.asList().get(0), ActorType.REPOSITORY, null, oddsSimId.getTestSession());
                             ded.setReposSiteSpec(reposSite);
                         }
                     }
@@ -270,7 +271,7 @@ public class TransactionUtil {
     /**
      * Maps Content file and if being persisted, its new snapshot UUID
      */
-    static public Map<String,String> getOdContentFile(boolean persistenceOption, Session session, String username, SiteSpec repository, DocumentEntryDetail ded, SimId oddsSimId, Map<String, String> params)  {
+    static public Map<String,String> getOdContentFile(boolean persistenceOption, Session session, TestSession testSession, SiteSpec repository, DocumentEntryDetail ded, SimId oddsSimId, Map<String, String> params)  {
 
         try {
             XdsTestServiceManager xdsTestServiceManager = new XdsTestServiceManager(session);
@@ -316,7 +317,7 @@ public class TransactionUtil {
                 // Ret 2: ODD has 1, Snapshot has -1
                 // Ret 3: ODD has 1, Snapshot has -1 to indicate end of documents
                 if (ded.getSnapshot() == null /* first retrieve attempt */ || ALL_OD_DOCS_SUPPLIED != ded.getSnapshot().getSupplyStateIndex() /* subsequent attempt until the last */ ) {
-                    results = XdsTestServiceManager.runTestplan(session.getCurrentEnvName(), username, repository, testInstance, sections, params, stopOnFirstError, session, xdsTestServiceManager, true);
+                    results = XdsTestServiceManager.runTestplan(session.getCurrentEnvName(), testSession, repository, testInstance, sections, params, stopOnFirstError, session, xdsTestServiceManager, true);
 
                     printResult(results);
 

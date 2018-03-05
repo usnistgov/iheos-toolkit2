@@ -30,7 +30,7 @@ public class IGActorFactory extends AbstractActorFactory implements IActorFactor
 
       ActorType actorType = ActorType.INITIATING_GATEWAY;
       SimulatorConfig sc;
-      if (configureBase) sc = configureBaseElements(actorType, newID);
+      if (configureBase) sc = configureBaseElements(actorType, newID, newID.getTestSession());
       else sc = new SimulatorConfig();
 
       addFixedEndpoint(sc, SimulatorProperties.igqEndpoint, actorType,
@@ -56,9 +56,9 @@ public class IGActorFactory extends AbstractActorFactory implements IActorFactor
    public Site getActorSite(SimulatorConfig sc, Site site) {
       String siteName = sc.getDefaultName();
 
-      if (site == null) site = new Site(siteName);
+      if (site == null) site = new Site(siteName, sc.getId().getTestSession());
 
-      site.user = sc.getId().user; // labels this site as coming from a sim
+      site.setTestSession(sc.getId().getTestSession()); // labels this site as coming from a sim
 
       boolean isAsync = false;
 

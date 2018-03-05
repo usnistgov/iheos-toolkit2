@@ -7,8 +7,9 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
-import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.services.client.IdsOrchestrationRequest;
 import gov.nist.toolkit.services.client.IdsOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
@@ -134,10 +135,10 @@ public class BuildIDSTestOrchestrationButton extends AbstractOrchestrationButton
        testTab.getMainView().showLoadingMessage("Initializing...");
 
       IdsOrchestrationRequest request = new IdsOrchestrationRequest();
-      request.setUserName(testTab.getCurrentTestSession());
+      request.setTestSession(new TestSession(testTab.getCurrentTestSession()));
       request.setEnvironmentName(testTab.getEnvironmentSelection());
       request.setUseExistingSimulator(!isResetRequested());
-      SiteSpec siteSpec = new SiteSpec(testContext.getSiteName());
+      SiteSpec siteSpec = new SiteSpec(testContext.getSiteName(), new TestSession(testTab.getCurrentTestSession()));
        if (isSaml()) {
            setSamlAssertion(siteSpec);
        }

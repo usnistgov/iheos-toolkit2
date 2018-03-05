@@ -8,10 +8,14 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.http.client.HtmlMarkup;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.session.shared.Message;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractView;
 import gov.nist.toolkit.xdstools2.client.abstracts.MessagePanel;
+import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
+import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.util.ASite;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.client.widgets.SystemSelector;
 
@@ -208,6 +212,16 @@ public class SimMsgViewerView extends AbstractView<SimMsgViewerPresenter> {
 
     @Override
     protected void bindUI() {
+        ClientUtils.INSTANCE.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
+            @Override
+            public void onTestSessionChanged(TestSessionChangedEvent event) {
+                if (event.getChangeType() == TestSessionChangedEvent.ChangeType.SELECT) {
+                    GWT.log("SimMsgViewer - test session changed");
+                    getPresenter().testSessionChanged(new TestSession(event.getValue()));
+                }
+            }
+        });
+
         eventListBox.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent changeEvent) {

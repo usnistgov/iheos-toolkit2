@@ -1,8 +1,9 @@
 package gov.nist.toolkit.testengine.engine;
 
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.results.client.AssertionResults;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.securityCommon.SecurityParams;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testengine.transactions.TransactionTransport;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
 
@@ -23,7 +24,7 @@ public class TransactionSettings {
 	public LogRepository logRepository = null;
 	public boolean writeLogs = false;
 	public SiteSpec siteSpec;
-	public String testSession;
+	public TestSession testSession;
 	public String environmentName;
 	/**
 	 *Origin, null or default value is interpreted as "TestClient". For other Toolkit to Toolkit uses, use the originating simulator name/site name here.

@@ -4,6 +4,7 @@ import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.RadioButton;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.StringSort;
@@ -43,11 +44,12 @@ public class SiteLoader {
                 List<Site> sitesForUser = new ArrayList<Site>();
                 for (Site s : sitesForTransaction) {
 //                    Xdstools2.DEBUG("site " + s.getName() + " has user " + s.user);
-                    if (s.user == null)
+                    if (s.getTestSession() == null)
                         sitesForUser.add(s);
-                    else if (user.equals(s.user)) {
+                    else if (user.equals(s.getTestSession().getValue()))
                         sitesForUser.add(s);
-                    }
+                    else if (s.getTestSession().equals(TestSession.DEFAULT_TEST_SESSION))
+                        sitesForUser.add(s);
                 }
 
                 return sitesForUser;

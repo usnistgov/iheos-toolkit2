@@ -4,7 +4,8 @@ import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.parser.IParser
 import gov.nist.toolkit.fhir.server.utility.FhirId
 import gov.nist.toolkit.fhir.support.SimIndexManager
-import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.server.Installation
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.FhirSpecification
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.SimDb
@@ -20,7 +21,7 @@ import spock.lang.Shared
  *
  */
 class PatientQueryByNameSpec extends FhirSpecification {
-    @Shared SimId simId = new SimId('default', 'test')
+    @Shared SimId simId = new SimId(new TestSession('default'), prefixNonce('test'))
     @Shared FhirContext ourCtx = FhirContext.forDstu3()
 
     def setupSpec() {

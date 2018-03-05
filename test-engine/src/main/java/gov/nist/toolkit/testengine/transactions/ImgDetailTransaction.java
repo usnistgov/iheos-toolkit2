@@ -8,9 +8,8 @@ import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
 import edu.wustl.mir.erl.ihe.xdsi.validation.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.installation.Installation;
-import gov.nist.toolkit.installation.PropertyManager;
-import gov.nist.toolkit.registrymsg.repository.Mtom;
+import gov.nist.toolkit.installation.server.Installation;
+import gov.nist.toolkit.installation.server.PropertyManager;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.testengine.assertionEngine.Assertion;
@@ -1018,7 +1017,7 @@ public class ImgDetailTransaction extends BasicTransaction {
          if (tType == null) throw new XdsInternalException(a.toString() + " invalid transaction");
          ActorType aType = ActorType.getActorType(tType);
          TestInstance ti = testConfig.testInstance;
-         SimId simId = new SimId(ti.getUser(), id, aType.getShortName());
+         SimId simId = new SimId(ti.getTestSession(), id, aType.getShortName());
          SimulatorTransaction simulatorTransaction = SimulatorTransaction.get(simId, tType, pid, null);
          try {
             switch (piece.toUpperCase()) {
@@ -1048,7 +1047,7 @@ public class ImgDetailTransaction extends BasicTransaction {
       if (tType == null) throw new XdsInternalException(a.toString() + " invalid transaction");
       ActorType aType = ActorType.getActorType(tType);
       TestInstance ti = testConfig.testInstance;
-      SimId simId = new SimId(ti.getUser(), id, aType.getShortName());
+      SimId simId = new SimId(ti.getTestSession(), id, aType.getShortName());
       return SimulatorTransaction.get(simId, tType, pid, null);
       } catch (XdsInternalException ie) {
          errs.add("Error loading simulator transaction" + ie.getMessage());

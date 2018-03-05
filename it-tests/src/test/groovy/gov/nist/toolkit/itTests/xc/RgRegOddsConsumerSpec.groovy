@@ -1,9 +1,10 @@
 package gov.nist.toolkit.itTests.xc
 
 import gov.nist.toolkit.actortransaction.client.ActorType
-import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
+import gov.nist.toolkit.fhir.simulators.support.od.TransactionUtil
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.registrymetadata.client.Document
 import gov.nist.toolkit.results.client.Result
@@ -11,8 +12,7 @@ import gov.nist.toolkit.results.client.StepResult
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
 import gov.nist.toolkit.session.server.Session
-import gov.nist.toolkit.simcommon.client.SimId
-import gov.nist.toolkit.fhir.simulators.support.od.TransactionUtil
+import gov.nist.toolkit.simcommon.client.SimIdFactory
 import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
@@ -29,8 +29,8 @@ class RgRegOddsConsumerSpec extends ToolkitSpecification {
     @Shared String patientId = 'SRG13^^^&1.2.460&ISO'
     @Shared String id = 'odrg'
 //    SimId simId = new SimId(reg)
-    @Shared String testSession = 'billtest'
-    @Shared String siteName = testSession + '__' + id
+    @Shared TestSession testSession = new TestSession(prefixNonce('billtest'))
+    @Shared String siteName = testSession.value + '__' + id
     @Shared SimConfig rgConfig = null
     @Shared Session tkSession
 
@@ -47,11 +47,11 @@ class RgRegOddsConsumerSpec extends ToolkitSpecification {
 
         new BuildCollections().init(null)
 
-        spi.delete(id, testSession)
+        spi.delete(id, testSession.value)
 
         rgConfig = spi.create(
                 id,
-                testSession,
+                testSession.value,
                 SimulatorActorType.ON_DEMAND_RESPONDING_GATEWAY,
                 'test')
 
@@ -81,9 +81,9 @@ class RgRegOddsConsumerSpec extends ToolkitSpecification {
     def cleanupSpec() {  // one time shutdown when everything is done
 //        spi.delete('rg', testSession)
 //        spi.delete('od', testSession)
-        spi.delete(id, testSession)
-        server.stop()
-        ListenerFactory.terminateAll()
+        spi.delete(id, testSession.value)
+//        server.stop()
+//        ListenerFactory.terminateAll()
     }
 
     // submits the patient id configured above to the registry in a Patient Identity Feed transaction
@@ -115,10 +115,10 @@ class RgRegOddsConsumerSpec extends ToolkitSpecification {
 
         then:
         Map<String,String> rs = TransactionUtil.registerWithLocalizedTrackingInODDS(tkSession
-                , rgConfig.getUser()
+                , new TestSession(rgConfig.getUser())
                 , new TestInstance("15806")
-                , new SiteSpec(rgConfig.getFullId(), ActorType.REGISTRY, null)
-                , new SimId(rgConfig.getFullId())
+                , new SiteSpec(rgConfig.getFullId(), ActorType.REGISTRY, null, new TestSession(rgConfig.getUser()))
+                , SimIdFactory.simIdBuilder(rgConfig.getFullId())
                 , paramsRegOdde)
 
         for (String key : rs.keySet()) {
@@ -131,6 +131,7 @@ class RgRegOddsConsumerSpec extends ToolkitSpecification {
      *
      * @return
      */
+
     def 'Retrieve from the ODDS without Persistence Option'() {
         when:
         TestInstance testId = new TestInstance("15806")

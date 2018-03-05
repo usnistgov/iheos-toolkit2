@@ -8,6 +8,7 @@ import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.List;
 
@@ -92,7 +93,7 @@ public class QueryBoilerplate {
 		if (genericQueryTab.selectByActor != null) {    // Used in Mesa test tab
 			for (RadioButton b : genericQueryTab.byActorButtons) {
 				if (b.getValue()) {
-					genericQueryTab.setCommonSiteSpec(new SiteSpec(b.getText(), genericQueryTab.selectByActor, genericQueryTab.getCommonSiteSpec()));
+					genericQueryTab.setCommonSiteSpec(new SiteSpec(b.getText(), genericQueryTab.selectByActor, genericQueryTab.getCommonSiteSpec(), ClientUtils.INSTANCE.getCurrentTestSession()));
 					return genericQueryTab.getCommonSiteSpec();
 				}
 			}

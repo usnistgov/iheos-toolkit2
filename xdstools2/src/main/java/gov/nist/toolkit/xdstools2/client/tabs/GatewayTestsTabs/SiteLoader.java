@@ -39,7 +39,7 @@ public class SiteLoader {
 
         List<Site> sitesForUser = new ArrayList<Site>();
         for (Site s : map.get(t)) {
-            if (user.equals(s.user)) {
+            if (user.equals(s.getTestSession())) {
                 sitesForUser.add(s);
             }
         }

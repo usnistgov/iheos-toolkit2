@@ -4,8 +4,9 @@
 package gov.nist.toolkit.testengine.transactions;
 
 import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
-import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.server.SimDb;
@@ -362,8 +363,8 @@ public class WADOTransaction extends BasicTransaction {
    protected void parseTargetInstruction(OMElement part) {
       try {
       String sim = part.getAttributeValue(new QName("sim"));
-      String user = testConfig.testInstance.getUser();
-      SimulatorConfig simConfig = new SimDb().getSimulator(new SimId(user, sim));
+      TestSession testSession = testConfig.testInstance.getTestSession();
+      SimulatorConfig simConfig = new SimDb().getSimulator(new SimId(testSession, sim));
       target = simConfig.getConfigEle(SimulatorProperties.wadoEndpoint).asString();
       } catch (Exception e) {
          

@@ -5,6 +5,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
 import gov.nist.toolkit.actortransaction.client.ActorOption;
 import gov.nist.toolkit.actortransaction.client.IheItiProfile;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.client.RecOrchestrationRequest;
 import gov.nist.toolkit.services.client.RecOrchestrationResponse;
@@ -70,7 +71,7 @@ public class BuildRecTestOrchestrationButton extends AbstractOrchestrationButton
         testTab.getMainView().showLoadingMessage("Initializing...");
 
         RecOrchestrationRequest request = new RecOrchestrationRequest(actorOption);
-        request.setUserName(testTab.getCurrentTestSession());
+        request.setTestSession(new TestSession(testTab.getCurrentTestSession()));
         request.setEnvironmentName(testTab.getEnvironmentSelection());
         request.setUseExistingState(!isResetRequested());
         request.getActorOption().copyFrom(testTab.getCurrentActorOption());

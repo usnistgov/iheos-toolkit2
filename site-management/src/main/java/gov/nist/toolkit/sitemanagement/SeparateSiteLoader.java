@@ -1,38 +1,50 @@
 package gov.nist.toolkit.sitemanagement;
 
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.Util;
+import gov.nist.toolkit.utilities.xml.XmlFileStream;
+import org.apache.axiom.om.OMElement;
 
 import java.io.File;
 
-import org.apache.axiom.om.OMElement;
-
 public class SeparateSiteLoader extends SiteLoader {
+
+	public SeparateSiteLoader(TestSession testSession) {
+		super(testSession);
+	}
 
 	public Sites load(OMElement conf, Sites sites) throws Exception {
 		parseSite(conf);
 		
 		if (sites == null)
-			sites = new Sites();
+			sites = new Sites(testSession);
 		
 		sites.setSites(siteMap);
-		sites.buildRepositoriesSite();
+		sites.buildRepositoriesSite(testSession);
 		
 		return sites;
 	}
 
 	public Sites load(File actorsDir, Sites sites) throws Exception {
+		if (sites == null)
+			sites = new Sites(testSession);
 		if (!actorsDir.isDirectory())
 			throw new Exception("Cannot load actor descriptions: " +
 					actorsDir + " is not a directory");
 		for (File file : actorsDir.listFiles()) {
 			if (!file.getName().endsWith("xml"))
 				continue;
-			OMElement conf = Util.parse_xml(file);
-			if (sites == null)
-				sites = new Sites();
-			sites = load(conf, sites);
+			XmlFileStream xmlFs = XmlFileStream.parse_xml(file);
+//			OMElement conf = Util.parse_xml(file);
+			sites = load(xmlFs.getOmElement(), sites);
+
+			// Cleanup after using the stream
+			if (xmlFs.getParser()!=null)
+				xmlFs.getParser().close();
+			if (xmlFs.getFr()!=null)
+				xmlFs.getFr().close();
 		}
 		return sites;
 	}
@@ -50,6 +62,7 @@ public class SeparateSiteLoader extends SiteLoader {
 			throw new Exception("Validation Errors: " + errs.toString());
 		OMElement xml = siteToXML(site);
 		String siteName = site.getName();
+		actorsDir.mkdirs();
 		Io.xmlToFile(new File(actorsDir + File.separator + siteName + ".xml"), xml);
 	}
 	

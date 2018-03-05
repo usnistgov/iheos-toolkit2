@@ -1,17 +1,21 @@
 package gov.nist.toolkit.itTests.sim
 
-import gov.nist.toolkit.actortransaction.server.EndpointParser
 import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.actortransaction.server.EndpointParser
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
-import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.fhir.simulators.servlet.ReconfigureSimulators
+import gov.nist.toolkit.installation.server.Installation
+import gov.nist.toolkit.installation.server.TestSessionFactory
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.client.Simulator
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
-import gov.nist.toolkit.fhir.simulators.servlet.ReconfigureSimulators
+import org.apache.log4j.BasicConfigurator
 import spock.lang.Shared
 import spock.lang.Specification
+
 /**
  * Test updating a simulator with new host:port
  */
@@ -20,9 +24,14 @@ class ReconfigureSpec extends Specification {
     @Shared String retrieveEndpoint
     SimId simId
     SimulatorConfig config
+    @Shared String testSessionName =  'bill' + TestSessionFactory.nonce()
+
+    def setupSpec() {
+        BasicConfigurator.configure()
+    }
 
     def setup() {
-        simId = new SimId('bill', 'mysim', ActorType.REPOSITORY.name)
+        simId = new SimId(new TestSession(testSessionName), 'mysim', ActorType.REPOSITORY.name)
         api.deleteSimulatorIfItExists(simId)
         Simulator sim = api.createSimulator(simId)
         config = sim.getConfig(0)
@@ -54,9 +63,9 @@ class ReconfigureSpec extends Specification {
     def 'update endpoint and confirm' () {
         when:
         ReconfigureSimulators rs = new ReconfigureSimulators()
-        rs.init(null)
         rs.setOverrideHost('home')
         rs.setOverridePort('42')
+        rs.init(null)
         rs.reconfigure(simId)
 
         and:
@@ -79,12 +88,13 @@ class ReconfigureSpec extends Specification {
         rs.setOverridePort('42')
         Installation.instance().setServletContextName('toolkit45')
         rs.init(null)
-
+        rs.reconfigure(simId)
 
         and:
         SimulatorConfig config2 = api.getConfig(simId)
         String retrieveEndpoint2 = config2.getConfigEle(SimulatorProperties.retrieveEndpoint).asString()
         EndpointParser ep = new EndpointParser(retrieveEndpoint2)
+        println "Updated endpoint is ${ep.endpoint}"
         String host = ep.getHost()
         String port = ep.getPort()
         String context = ep.context
@@ -102,7 +112,7 @@ class ReconfigureSpec extends Specification {
         rs.setOverridePort('42')
         Installation.instance().setServletContextName('')
         rs.init(null)
-
+        rs.reconfigure(simId)
 
         and:
         SimulatorConfig config2 = api.getConfig(simId)
@@ -116,6 +126,6 @@ class ReconfigureSpec extends Specification {
         host == 'home'
         port == '42'
         context == ''
-        retrieveEndpoint2 == 'http://home:42/sim/bill__mysim/rep/ret'
+        retrieveEndpoint2 == 'http://home:42/sim/' + testSessionName + '__mysim/rep/ret'
     }
 }

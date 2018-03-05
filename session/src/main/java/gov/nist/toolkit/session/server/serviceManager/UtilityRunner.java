@@ -1,6 +1,6 @@
 package gov.nist.toolkit.session.server.serviceManager;
 
-import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.session.server.Session;
@@ -15,6 +15,7 @@ import gov.nist.toolkit.testkitutilities.TestKit;
 import gov.nist.toolkit.testkitutilities.TestKitSearchPath;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -48,6 +49,7 @@ public class UtilityRunner {
      */
     public Result run(Session session, Map<String, String> params, Map<String, Object> params2, List<String> sections,
                       TestInstance testInstance, String[] areas, boolean stopOnFirstFailure) {
+        if (testInstance.getTestSession() == null) throw new ToolkitRuntimeException("TestSession is null");
 
         xdsTestServiceManager.cleanupParams(params);
 
@@ -67,7 +69,7 @@ public class UtilityRunner {
             initializeLogRepository(session);
 
             session.xt.setLogRepository(session.transactionSettings.logRepository);
-            logger.info("*** logRepository user (sessionName): " + session.transactionSettings.logRepository.getUser());
+            logger.info("*** logRepository user (sessionName): " + session.transactionSettings.logRepository.getTestSession());
 
             try {
                 if (testInstance.getId().startsWith("tc:")) {
@@ -81,7 +83,7 @@ public class UtilityRunner {
                     TestCollection testCollection = new TestCollection(Installation.instance().internalTestkitFile(), collectionName);
                     List<String> testIds = testCollection.getTestIds();
                     for (String id : testIds) {
-                        TestInstance ti = new TestInstance(id);
+                        TestInstance ti = new TestInstance(id, session.getTestSession());
                         TestKitSearchPath searchPath = session.getTestkitSearchPath();
                         TestKit testKit = searchPath.getTestKitForTest(id);
                         if (testKit == null)
@@ -99,9 +101,9 @@ public class UtilityRunner {
                 }
 
                 // force loading of site definitions
-                SiteServiceManager.getSiteServiceManager().getAllSites(session.getId());
+                SiteServiceManager.getSiteServiceManager().getAllSites(session.getId(), testInstance.getTestSession());
 
-                Collection<Site> siteCollection = SimCache.getAllSites();
+                Collection<Site> siteCollection = SimCache.getAllSites(testInstance.getTestSession());
                 Sites theSites = new Sites(siteCollection);
                 assignSite(session, theSites);
             } catch (Exception e) {
@@ -161,7 +163,7 @@ public class UtilityRunner {
             if (session.transactionSettings.environmentName==null)
                 session.transactionSettings.environmentName=session.getCurrentEnvName();
             if (session.transactionSettings.testSession==null)
-                session.transactionSettings.testSession=session.getMesaSessionName();
+                session.transactionSettings.testSession=session.getTestSession();
 
             session.xt.run(params, params2, stopOnFirstFailure, session.transactionSettings);
 
@@ -201,12 +203,12 @@ public class UtilityRunner {
                                         LogIdType.TIME_ID,
                                         null);
             } else if (testRunType == TestRunType.TEST) {
-                logger.info("*** logRepository user (sessionName): " + session.getMesaSessionName());
+                logger.info("*** logRepository user (sessionName): " + session.getTestSession());
                 session.transactionSettings.logRepository =
                         LogRepositoryFactory.
                                 getLogRepository(
-                                        Installation.instance().testLogCache(),
-                                        session.getMesaSessionName(),
+                                        Installation.instance().testLogCache(session.getTestSession()),
+                                        session.getTestSession(),
                                         LogIdIOFormat.JAVA_SERIALIZATION,
                                         LogIdType.SPECIFIC_ID,
                                         null);
@@ -224,7 +226,7 @@ public class UtilityRunner {
             session.xt.setSite(site);
             session.xt.setSites(theSites);
         } else if (session.repUid != null) {
-            Site site = theSites.getSite("allRepositories");
+            Site site = theSites.getSite("allRepositories", session.getTestSession());
             if (site == null)
                 throw new Exception("Cannot find site 'allRepositories'");
             session.xt.setSite(site);

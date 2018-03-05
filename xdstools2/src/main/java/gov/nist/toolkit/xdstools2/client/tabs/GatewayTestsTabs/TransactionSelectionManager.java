@@ -7,6 +7,7 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -79,7 +80,7 @@ public class TransactionSelectionManager {
 	}
 
 	public SiteSpec generateSiteSpec() {
-		SiteSpec ss = new SiteSpec();
+		SiteSpec ss = new SiteSpec(ClientUtils.INSTANCE.getCurrentTestSession());
 		List<RbSite> selections = selections2();
 		
 		if (selections.size() == 1) {

@@ -5,6 +5,7 @@ import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.validatorsSoapMessage.message.HttpMessageValidator;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -36,11 +37,11 @@ public class ValidateMessageService {
 	}
 	
 
-	public MessageValidatorEngine runValidation(ValidationContext vc, String httpMsgHdr, byte[] httpMsgBody, MessageValidatorEngine mvc, ErrorRecorderBuilder gerb) throws IOException {
+	public MessageValidatorEngine runValidation(ValidationContext vc, String httpMsgHdr, byte[] httpMsgBody, MessageValidatorEngine mvc, ErrorRecorderBuilder gerb, TestSession testSession) throws IOException {
 
 		if (mvc == null)
 			mvc = new MessageValidatorEngine();
-		val = new HttpMessageValidator(vc, httpMsgHdr, httpMsgBody, gerb, mvc, rvi);
+		val = new HttpMessageValidator(vc, httpMsgHdr, httpMsgBody, gerb, mvc, rvi, testSession);
 		mvc.addMessageValidator("Parse HTTP Message", val, gerb.buildNewErrorRecorder());
 		mvc.run();
 

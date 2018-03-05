@@ -63,28 +63,7 @@ public class Util {
 	}
 
 	public static OMElement parse_xml(File infile) throws FactoryConfigurationError, XdsInternalException {
-
-		//		create the parser
-		XMLStreamReader parser=null;
-
-		try {
-			parser = XMLInputFactory.newInstance().createXMLStreamReader(new FileInputStream(infile.getCanonicalFile()));
-		} catch (XMLStreamException e) {
-			throw new XdsInternalException("Could not create XMLStreamReader from " + infile.getName());
-		} catch (FileNotFoundException e) {
-			throw new XdsInternalException("Could not find input file " + infile.getAbsolutePath());
-		} catch (IOException e) {
-			throw new XdsInternalException("Could not find input file " + infile.getAbsolutePath());
-		}
-
-		//		create the builder
-		StAXOMBuilder builder = new StAXOMBuilder(parser);
-
-		//		get the root element (in this case the envelope)
-		OMElement documentElement =  builder.getDocumentElement();
-		if (documentElement == null)
-			throw new XdsInternalException("No document element");
-		return documentElement;
+		return XmlFileStream.parse_xml(infile).omElement;
 	}
 
 	public static OMElement parse_xml(String input) throws FactoryConfigurationError, XdsInternalException {

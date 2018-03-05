@@ -1,6 +1,7 @@
 package gov.nist.toolkit.toolkitServices;
 
 import gov.nist.toolkit.actortransaction.client.ParamType;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig;
@@ -17,13 +18,13 @@ public class ToolkitFactory {
     static Logger logger = Logger.getLogger(ToolkitFactory.class);
 
     static public gov.nist.toolkit.simcommon.client.SimId asServerSimId(SimId simId) {
-        return new gov.nist.toolkit.simcommon.client.SimId(simId.getUser(), simId.getId(), simId.getActorType(), simId.getEnvironmentName(), simId.isFhir());
+        return new gov.nist.toolkit.simcommon.client.SimId(new TestSession(simId.getUser()), simId.getId(), simId.getActorType(), simId.getEnvironmentName(), simId.isFhir());
     }
 
     static public SimIdResource asSimIdBean(gov.nist.toolkit.simcommon.client.SimId simId) {
         SimIdResource bean = new SimIdResource();
         bean.setId(simId.getId());
-        bean.setUser(simId.getUser());
+        bean.setUser(simId.getTestSession().getValue());
         bean.setActorType(simId.getActorType());
         bean.setEnvironmentName(simId.getEnvironmentName());
         return bean;
@@ -32,7 +33,7 @@ public class ToolkitFactory {
     static public SimConfigResource asSimConfigBean(SimulatorConfig config) {
         SimConfigResource bean = new SimConfigResource();
         bean.setId(config.getId().getId());
-        bean.setUser(config.getId().getUser());
+        bean.setUser(config.getId().getTestSession().getValue());
         bean.setActorType(config.getActorType());
 
         for (SimulatorConfigElement ele : config.getElements()) {
@@ -49,7 +50,7 @@ public class ToolkitFactory {
 
     static public SimulatorConfig asSimulatorConfig(SimConfig res) {
         SimulatorConfig config = new SimulatorConfig();
-        config.setId(new gov.nist.toolkit.simcommon.client.SimId(res.getFullId()));
+        config.setId(new gov.nist.toolkit.simcommon.client.SimId(TestSession.DEFAULT_TEST_SESSION, res.getFullId()));
         config.setActorType(res.getActorType());
 
         for (String propName : res.getPropertyNames()) {

@@ -1,7 +1,7 @@
 package gov.nist.toolkit.results
 
 import gov.nist.toolkit.fhir.context.ToolkitFhirContext
-import gov.nist.toolkit.installation.ExternalCacheManager
+import gov.nist.toolkit.installation.server.ExternalCacheManager
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException
 import org.hl7.fhir.dstu3.model.DocumentReference
 import spock.lang.Specification

@@ -149,7 +149,7 @@ abstract public class ButtonListSelector implements IsWidget {
         return currentSelection;
     }
 
-    private void setCurrentSelection(String currentSelection) {
+    void setCurrentSelection(String currentSelection) {
         this.currentSelection = currentSelection;
     }
 

@@ -8,6 +8,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.simcommon.client.SimIdFactory;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractToolkitActivity;
 import gov.nist.toolkit.xdstools2.client.abstracts.ActivityDisplayer;
@@ -79,12 +80,13 @@ public class SimMsgViewerActivity extends AbstractToolkitActivity implements IsW
 
                 @Override
                 public void onComplete(SimId simId) {
+                    GWT.log("SimId is " + simId.toString());
                     presenter.setCurrentSimId(simId);
                     presenter.setTitle("Log " + simId.toString());
                     finish(acceptsOneWidget, eventBus);
                 }
 
-            }.run(new GetFullSimIdRequest(Xdstools2.getHomeTab().getCommandContext(), new SimId(simName)));
+            }.run(new GetFullSimIdRequest(Xdstools2.getHomeTab().getCommandContext(), SimIdFactory.simIdBuilder(simName)));
         } else {
             finish(acceptsOneWidget, eventBus);
         }
@@ -93,6 +95,7 @@ public class SimMsgViewerActivity extends AbstractToolkitActivity implements IsW
     private void finish(AcceptsOneWidget acceptsOneWidget, EventBus eventBus) {
 
         if (event != null) {
+            GWT.log("pre-select event " + event);
             presenter.setPreSelectEvent(event);
         }
 

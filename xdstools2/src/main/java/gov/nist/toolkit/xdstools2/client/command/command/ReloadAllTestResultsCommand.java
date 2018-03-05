@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
-import gov.nist.toolkit.results.shared.Test;
+import gov.nist.toolkit.results.client.Test;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 

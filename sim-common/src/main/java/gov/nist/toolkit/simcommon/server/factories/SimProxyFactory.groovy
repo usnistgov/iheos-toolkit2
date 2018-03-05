@@ -14,6 +14,8 @@ import gov.nist.toolkit.simcommon.server.SimManager
 import gov.nist.toolkit.sitemanagement.client.Site
 import gov.nist.toolkit.sitemanagement.client.TransactionBean
 import gov.nist.toolkit.xdsexception.NoSimulatorException
+import groovy.transform.TypeChecked
+
 /**
  * A singleton factory for creating Sim Proxy
  *
@@ -28,6 +30,7 @@ import gov.nist.toolkit.xdsexception.NoSimulatorException
  * Runtime is handled by the reverse proxy code base which runs on a different port. The
  * calls to addFixedFhirEndpoint below configure the port number for this service.
  */
+@TypeChecked
 class SimProxyFactory extends AbstractActorFactory implements IActorFactory{
     static final List<TransactionType> incomingTransactions = TransactionType.asList()  // accepts all known transactions
 
@@ -38,14 +41,14 @@ class SimProxyFactory extends AbstractActorFactory implements IActorFactory{
         ActorType actorType = getActorType(); //ActorType.SIM_PROXY
         SimulatorConfig config
         if (configureBase)
-            config = configureBaseElements(actorType, simId)
+            config = configureBaseElements(actorType, simId, simId.testSession)
         else
             config = new SimulatorConfig()
 
-        SimId simId2 = new SimId(simId.user, simId.id + '_be')   // 'be' for back end
+        SimId simId2 = new SimId(simId.testSession, simId.id + '_be')   // 'be' for back end
         SimulatorConfig config2
         if (configureBase)
-            config2 = configureBaseElements(actorType, simId2)
+            config2 = configureBaseElements(actorType, simId2, simId2.testSession)
         else
             config2 = new SimulatorConfig()
 
@@ -102,7 +105,7 @@ class SimProxyFactory extends AbstractActorFactory implements IActorFactory{
      */
     @Override
     Site getActorSite(SimulatorConfig asc, Site site) throws NoSimulatorException {
-        Site aSite = (site) ? site : new Site(asc.defaultName)
+        Site aSite = (site) ? site : new Site(asc.id.toString(), asc.id.testSession)
 
         if (!asc.get(SimulatorProperties.isProxyFrontEnd).asBoolean())
             return aSite  // back end gets no transactions

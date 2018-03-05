@@ -28,7 +28,7 @@ class GetDocumentDetailsSpec extends ToolkitSpecification {
     }
 
     def patientId = 'br14^^^&1.2.3&ISO'
-    def userName = 'bill'
+    def userName =  prefixNonce('bill')
     def environmentName = 'test'
 
     def 'test'() {

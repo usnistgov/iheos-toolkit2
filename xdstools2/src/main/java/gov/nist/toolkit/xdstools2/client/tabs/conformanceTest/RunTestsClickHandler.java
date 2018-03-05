@@ -2,6 +2,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.command.command.GetStsSamlAssertionCommand;
@@ -42,8 +43,8 @@ class RunTestsClickHandler implements ClickHandler, TestIterator {
         testTarget.getSiteToIssueTestAgainst().setTls(orchInit.isTls());
 
         if (orchInit.isSaml()) {
-            SiteSpec stsSpec = new SiteSpec("GazelleSts");
-            TestInstance testInstance = new TestInstance("GazelleSts");
+            SiteSpec stsSpec = new SiteSpec("GazelleSts", TestSession.DEFAULT_TEST_SESSION);
+            TestInstance testInstance = new TestInstance("GazelleSts", TestSession.DEFAULT_TEST_SESSION);
             testInstance.setSection("samlassertion-issue");
             Map<String, String> params = new HashMap<>();
 

@@ -11,6 +11,8 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractPresenter;
 import gov.nist.toolkit.xdstools2.client.command.command.*;
+import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
+import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.tabs.fhirSearchTab.ResponseLoader;
 import gov.nist.toolkit.xdstools2.client.util.ASite;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
@@ -44,6 +46,17 @@ public class SubmitResourcePresenter extends AbstractPresenter<SubmitResourceVie
 
     @Override
     public void init() {
+
+        ClientUtils.INSTANCE.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
+            @Override
+            public void onTestSessionChanged(TestSessionChangedEvent event) {
+                if (event.getChangeType() == TestSessionChangedEvent.ChangeType.SELECT) {
+                    getView().getSystemSelector().clearSelection();
+                    loadSystems();
+                    getView().lateBindUI();
+                }
+            }
+        });
 
         new GetAllDatasetsCommand() {
             @Override
@@ -109,7 +122,7 @@ public class SubmitResourcePresenter extends AbstractPresenter<SubmitResourceVie
                     ResultDisplay.display(result, getPresenter());
                     ResponseLoader.load(result.logId, "Results", getView());
                 }
-            }.run(new FhirTransactionRequest(getCommandContext(), new SiteSpec(selectedSite), selectedDatasetElement));
+            }.run(new FhirTransactionRequest(getCommandContext(), new SiteSpec(selectedSite, ClientUtils.INSTANCE.getCurrentTestSession()), selectedDatasetElement));
         } else {
             new FhirCreateCommand() {
                 @Override
@@ -118,7 +131,7 @@ public class SubmitResourcePresenter extends AbstractPresenter<SubmitResourceVie
                     ResultDisplay.display(result, getPresenter());
                     ResponseLoader.load(result.logId, "Results", getView());
                 }
-            }.run(new FhirCreateRequest(getCommandContext(), new SiteSpec(selectedSite), selectedDatasetElement));
+            }.run(new FhirCreateRequest(getCommandContext(), new SiteSpec(selectedSite, ClientUtils.INSTANCE.getCurrentTestSession()), selectedDatasetElement));
         }
     }
 

@@ -6,6 +6,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 
 import java.io.Serializable;
@@ -80,21 +81,22 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 //	}
 		
 	public String toString() {
-		StringBuffer buf = new StringBuffer();
-		
-		buf.append("ActorSimulatorConfig:");
-		buf.append(" id=").append(id);
-		buf.append(" type=").append(actorType);
-		buf.append("\n\telements=[");
-		for (SimulatorConfigElement asce : elements) {
-			buf.append("\n\t\t").append(asce);
-		}
-//		buf.append("\n\tuser=[");
-//		for (ActorSimulatorConfigElement asce : user) {
+		return id.toString();
+//		StringBuffer buf = new StringBuffer();
+//
+//		buf.append("ActorSimulatorConfig:");
+//		buf.append(" id=").append(id);
+//		buf.append(" type=").append(actorType);
+//		buf.append("\n\telements=[");
+//		for (SimulatorConfigElement asce : elements) {
 //			buf.append("\n\t\t").append(asce);
 //		}
-		
-		return buf.toString();
+////		buf.append("\n\tuser=[");
+////		for (ActorSimulatorConfigElement asce : user) {
+////			buf.append("\n\t\t").append(asce);
+////		}
+//
+//		return buf.toString();
 	}
 	
 	public SimulatorConfig() {
@@ -294,5 +296,9 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 		result = 31 * result + (expired ? 1 : 0);
 		result = 31 * result + (elements != null ? elements.hashCode() : 0);
 		return result;
+	}
+
+	public TestSession getTestSession() {
+   		return id.getTestSession();
 	}
 }

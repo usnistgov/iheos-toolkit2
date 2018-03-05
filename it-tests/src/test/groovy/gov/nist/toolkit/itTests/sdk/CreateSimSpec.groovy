@@ -29,7 +29,7 @@ class CreateSimSpec extends ToolkitSpecification {
 
     def setup() {  // run before each test method
         params.id = 'reg'
-        params.user = 'bill'
+        params.user = prefixNonce('bill')
         params.actorType = SimulatorActorType.REGISTRY
         params.environmentName = 'test'
     }
@@ -59,7 +59,7 @@ class CreateSimSpec extends ToolkitSpecification {
 
     def 'Get Unknown SimId'() {
         when:
-        spi.get(ToolkitFactory.newSimId('foo', 'bar', 'reg', 'default'))
+        spi.get(ToolkitFactory.newSimId('foo', prefixNonce('bar'), 'reg', 'default'))
 
         then:
         ToolkitServiceException e = thrown()
@@ -94,7 +94,7 @@ class CreateSimSpec extends ToolkitSpecification {
 
         then: 'verify configuration'
         simId.getId() == config.getId()
-        config.asString('Name') == 'bill__reg'
+        config.asString('Name') == params.user + '__' + params.id
     }
 
     static final private parmName = "Validate_Codes"
@@ -126,7 +126,7 @@ class CreateSimSpec extends ToolkitSpecification {
     }
 
     def cleanupSpec() {
-        if (params!=null)
+        if (params && spi)
             spi.delete(params)
     }
 }

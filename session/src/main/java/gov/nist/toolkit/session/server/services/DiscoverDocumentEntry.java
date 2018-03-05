@@ -1,13 +1,14 @@
 package gov.nist.toolkit.session.server.services;
 
 import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.registrymetadata.client.AnyId;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.results.client.StepResult;
 import gov.nist.toolkit.session.server.Session;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdsexception.client.XdsException;
 
 import java.util.ArrayList;
@@ -26,11 +27,11 @@ public class DiscoverDocumentEntry extends CommonService {
 		this.session = session;;
 	}
 
-	public List<String> run(List<String> registryNames, AnyId id) throws XdsException {
+	public List<String> run(List<String> registryNames, AnyId id, TestSession testSession) throws XdsException {
 		List<String> foundRegistries = new ArrayList<String>();
 		
 		for (String registryName : registryNames) {
-			SiteSpec site = new SiteSpec(registryName, ActorType.REGISTRY, null);
+			SiteSpec site = new SiteSpec(registryName, ActorType.REGISTRY, null, testSession);
 			AnyIds ids = new AnyIds(id);
 			GetDocuments gd = new GetDocuments(session);
 			gd.setObjectRefReturn();

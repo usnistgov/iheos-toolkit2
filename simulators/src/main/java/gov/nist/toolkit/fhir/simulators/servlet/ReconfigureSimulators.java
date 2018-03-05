@@ -3,7 +3,8 @@ package gov.nist.toolkit.fhir.simulators.servlet;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.server.EndpointParser;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
-import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.installation.server.Installation;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
@@ -46,13 +47,19 @@ public class ReconfigureSimulators extends HttpServlet {
         if (configuredContext.startsWith("/"))
             configuredContext = configuredContext.substring(1);
 
-        logger.info("Reconfiguring Simulators to host " + configuredHost + " port " + configuredPort + " context " + configuredContext);
+        logger.info("Reconfiguring Simulators to host " + getConfiguredHost() + " port " + getConfiguredPort() + " context " + getConfiguredContext());
 
-        for (SimId simId : SimDb.getAllSimIds()) {
-            try {
-                reconfigure(simId);
-            } catch (Throwable e) {
-                logger.fatal("Reconfigure of sim " + simId + " failed - " + ExceptionUtil.exception_details(e));
+        logger.info("Reconfiguring simulators in " + Installation.instance().getTestSessions());
+
+        for (TestSession testSession : Installation.instance().getTestSessions()) {
+
+            for (SimId simId : SimDb.getAllSimIds(testSession)) {
+                try {
+                    logger.info("Reconfiguring " + simId);
+                    reconfigure(simId);
+                } catch (Throwable e) {
+                    logger.fatal("Reconfigure of sim " + simId + " failed - " + ExceptionUtil.exception_details(e));
+                }
             }
         }
     }

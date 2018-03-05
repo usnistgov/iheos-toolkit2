@@ -7,6 +7,8 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -99,13 +101,11 @@ public class TestSessionSelector {
         textBox.removeStyleName("testSessionInputMc");
         textBox.addStyleName("testSessionInputMc");
         panel.add(textBox);
-        textBox.addKeyPressHandler(new KeyPressHandler()
-        {
+
+        textBox.addKeyUpHandler(new KeyUpHandler() {
             @Override
-            public void onKeyPress(KeyPressEvent event_)
-            {
-                boolean enterPressed = KeyCodes.KEY_ENTER == event_
-                        .getNativeEvent().getKeyCode();
+            public void onKeyUp(KeyUpEvent keyUpEvent) {
+                boolean enterPressed = KeyCodes.KEY_ENTER == keyUpEvent.getNativeEvent().getKeyCode();
                 if (enterPressed) {
                     add();
                 }

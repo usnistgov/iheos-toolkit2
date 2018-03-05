@@ -5,6 +5,7 @@
   can translate into JavaScript to use client side -->
 <module>
     <inherits name='com.google.gwt.user.User' />
+    <inherits name="gov.nist.toolkit.installation.installation"/>
     <inherits name="gov.nist.toolkit.testengine.testengine"/>
         <source path="client" />
     <source path="shared" />

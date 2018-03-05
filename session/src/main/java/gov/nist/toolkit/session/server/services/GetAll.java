@@ -28,7 +28,7 @@ public class GetAll extends CommonService {
         try {
             session.setSiteSpec(site);
             session.transactionSettings.assignPatientId = false;
-            TestInstance testInstance = new TestInstance("GetAll");
+            TestInstance testInstance = new TestInstance("GetAll", session.getTestSession());
 
             System.out.println("GetAll:  " +  selectedCodes);
 

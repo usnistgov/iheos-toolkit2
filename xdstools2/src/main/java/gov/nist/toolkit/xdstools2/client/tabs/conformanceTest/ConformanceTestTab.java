@@ -7,6 +7,7 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
@@ -16,17 +17,32 @@ import gov.nist.toolkit.actortransaction.client.ActorOption;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.IheItiProfile;
 import gov.nist.toolkit.configDatatypes.client.Pid;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.interactiondiagram.client.events.DiagramClickedEvent;
 import gov.nist.toolkit.interactiondiagram.client.events.DiagramPartClickedEventHandler;
 import gov.nist.toolkit.interactiondiagram.client.widgets.InteractionDiagram;
 import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.services.client.*;
+import gov.nist.toolkit.services.client.AbstractOrchestrationResponse;
+import gov.nist.toolkit.services.client.FhirSupportOrchestrationResponse;
+import gov.nist.toolkit.services.client.RecOrchestrationResponse;
+import gov.nist.toolkit.services.client.RegOrchestrationResponse;
+import gov.nist.toolkit.services.client.RepOrchestrationResponse;
+import gov.nist.toolkit.services.client.SrcOrchestrationResponse;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.sort.TestSorter;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
-import gov.nist.toolkit.xdstools2.client.command.command.*;
+import gov.nist.toolkit.xdstools2.client.NotifyOnDelete;
+import gov.nist.toolkit.xdstools2.client.command.command.AutoInitConformanceTestingCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.DeleteSingleTestCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetAssignedSiteForTestSessionCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetSiteCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetStsSamlAssertionCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTabConfigCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTestCollectionsCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTestsOverviewCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.RunTestCommand;
 import gov.nist.toolkit.xdstools2.client.event.testContext.TestContextChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testContext.TestContextChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
@@ -36,16 +52,26 @@ import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.LaunchInspectorClickHandler;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
-import gov.nist.toolkit.xdstools2.shared.command.request.*;
+import gov.nist.toolkit.xdstools2.shared.command.request.DeleteSingleTestRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetCollectionRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetStsSamlAssertionRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTabConfigRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestsOverviewRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.RunTestRequest;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TestContext.NONE;
 
 /**
  * All Conformance tests will be run out of here
  */
-public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner, TestTarget, Controller {
+public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner, TestTarget, Controller, NotifyOnDelete {
 
 	private final ConformanceTestTab me;
 
@@ -94,18 +120,32 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		testDisplayGroup = new TestDisplayGroup(testContext, testContextView, this, this);
 	}
 
+	// if we dont arrange to remove the TestSession change handler then the TestSession
+	// manager will pop up even after the tab is deleted
+	private HandlerRegistration testSessionChangedHandler = null;
+
+	@Override
+	public void onDelete() {
+		// remove existing test session change handler
+		if (testSessionChangedHandler != null) {
+			GWT.log("Unregister TestSession change handler for Conformance Tool");
+			testSessionChangedHandler.removeHandler();
+			testSessionChangedHandler = null;
+		}
+	}
+
 	@Override
 	public void onTabLoad(final boolean select, String eventName) {
 		testContextView.updateTestingContextDisplay();
 		mainView.getTestSessionDescription().addClickHandler(testContextView);
 
 		addEast(mainView.getTestSessionDescriptionPanel());
-		registerTab(select, eventName);
+		registerDeletableTab(select, eventName, this);
 
 		tabTopPanel.add(mainView.getToolPanel());
 
 		// Reload if the test session changes
-		ClientUtils.INSTANCE.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
+		testSessionChangedHandler = ClientUtils.INSTANCE.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
 			@Override
 			public void onTestSessionChanged(TestSessionChangedEvent event) {
 				if (event.getChangeType() == TestSessionChangedEvent.ChangeType.SELECT) {
@@ -159,7 +199,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 			public void onClicked(TestInstance testInstance, InteractionDiagram.DiagramPart part) {
 				if (InteractionDiagram.DiagramPart.RequestConnector.equals(part)
 						|| InteractionDiagram.DiagramPart.ResponseConnector.equals(part)) {
-					new LaunchInspectorClickHandler(testInstance, getCurrentTestSession(), new SiteSpec(testContext.getSiteName())).onClick(null);
+					new LaunchInspectorClickHandler(testInstance, getCurrentTestSession(), new SiteSpec(testContext.getSiteName(), getTestSession())).onClick(null);
 				}
 			}
 		});
@@ -277,6 +317,9 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 	}
 
 	public void setTestStatistics(final HTML statsBar,  final ActorOptionConfig actorOption) {
+	    if (getCommandContext().getTestSessionName()==null || "".equals(getCommandContext().getTestSessionName()))
+	    	return;
+
 		final TestStatistics testStatistics = new TestStatistics();
 
 	    final Map<TestInstance, TestOverviewDTO> myTestOverviewDTOs = new HashMap<>();
@@ -388,34 +431,63 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 			testContextView.updateTestingContextDisplay();
 			return;
 		}
-		new GetAssignedSiteForTestSessionCommand(){
-			@Override
-			public void onComplete(final String result) {
-				testContext.setCurrentSiteSpec(result);
-				testContextView.updateTestingContextDisplay();
 
-				if (result == null) return;
-				if (result.equals(NONE)) return;
-				new GetSiteCommand(){
-					@Override
-					public void onFailure(Throwable throwable) {
-						new PopupMessage("System " + result + " does not exist.");
-						testContext.setCurrentSiteSpec(null);
-						testContext.setSiteUnderTest(null);
-						testContextView.updateTestingContextDisplay();
+		if (siteToIssueTestAgainst != null) {
+			new GetSiteCommand() {
+				@Override
+				public void onFailure(Throwable throwable) {
+					new PopupMessage("System " + siteToIssueTestAgainst + " does not exist.");
+					testContext.setCurrentSiteSpec(null);
+					testContext.setSiteUnderTest(null);
+					testContextView.updateTestingContextDisplay();
+				}
+
+				@Override
+				public void onComplete(Site result) {
+					testContext.setSiteUnderTest(result);
+					testContext.setCurrentSiteSpec(result.getName());
+
+					// Tool was launched via Activity URL
+					if (getInitTestSession() != null) {
+						updateDisplayedActorAndOptionType();
+						setInitTestSession(result.getTestSession().getValue());
 					}
-					@Override
-					public void onComplete(Site result) {
-					    testContext.setSiteUnderTest(result);
-						// Tool was launched via Activity URL
-						if (getInitTestSession()!=null) {
-							updateDisplayedActorAndOptionType();
-							setInitTestSession(null);
+					testContextView.updateTestingContextDisplay();
+				}
+			}.run(new GetSiteRequest(ClientUtils.INSTANCE.getCommandContext(), siteToIssueTestAgainst.name));
+
+		} else {
+
+			new GetAssignedSiteForTestSessionCommand() {
+				@Override
+				public void onComplete(final String result) {
+					testContext.setCurrentSiteSpec(result);
+					testContextView.updateTestingContextDisplay();
+
+					if (result == null) return;
+					if (result.equals(NONE)) return;
+					new GetSiteCommand() {
+						@Override
+						public void onFailure(Throwable throwable) {
+							new PopupMessage("System " + result + " does not exist.");
+							testContext.setCurrentSiteSpec(null);
+							testContext.setSiteUnderTest(null);
+							testContextView.updateTestingContextDisplay();
 						}
-					}
-				}.run(new GetSiteRequest(ClientUtils.INSTANCE.getCommandContext(),result));
-			}
-		}.run(getCommandContext());
+
+						@Override
+						public void onComplete(Site result) {
+							testContext.setSiteUnderTest(result);
+							// Tool was launched via Activity URL
+							if (getInitTestSession() != null) {
+								updateDisplayedActorAndOptionType();
+								setInitTestSession(null);
+							}
+						}
+					}.run(new GetSiteRequest(ClientUtils.INSTANCE.getCommandContext(), result));
+				}
+			}.run(getCommandContext());
+		}
 	}
 
 	private void resetStatistics(TestStatistics testStatistics, int testcount) {
@@ -626,7 +698,6 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 
 				currentActorTypeDescription = getDescriptionForTestCollection(currentActorOption.actorTypeId);
-//				updateTestsOverviewHeader();
 
 				// This is a little wierd being here. This depends on initTestSession
 				// which is set AFTER onTabLoad is run so run here - later in the initialization
@@ -666,7 +737,6 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		@Override
 		public void onClick(ClickEvent clickEvent) {
 			initializeTestDisplay(mainView.getTestsPanel());
-//			displayTestCollection(mainView.getTestsPanel());
 		}
 	}
 
@@ -734,6 +804,8 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		testDisplayGroup.allowRun(allowRun);
 		testDisplayGroup.allowValidate(allowValidate());
 
+		GetTestsOverviewRequest tor = new GetTestsOverviewRequest(getCommandContext(), testInstances);
+
 		new GetTestsOverviewCommand() {
 			@Override
 			public void onComplete(List<TestOverviewDTO> testOverviews) {
@@ -768,7 +840,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 				mainView.clearLoadingMessage();
 
 			}
-		}.run(new GetTestsOverviewRequest(getCommandContext(), testInstances));
+		}.run(tor);
 	}
 
 	private static String getPatientIdStr(Map<String, String> parms) {
@@ -914,7 +986,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 	ClickHandler getInspectClickHandler(TestInstance testInstance) {
 		new PopupMessage("ti=" + testInstance.toString() + " ts=" + getCurrentTestSession() + " sn=" + testContext.getSiteName());
-		return new LaunchInspectorClickHandler(testInstance, getCurrentTestSession(), new SiteSpec(testContext.getSiteName()));
+		return new LaunchInspectorClickHandler(testInstance, getCurrentTestSession(), new SiteSpec(testContext.getSiteName(), getTestSession()));
 	}
 
 	/**
@@ -960,9 +1032,9 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 				// STS SAML assertion
 				// This has to be here because we need to retrieve the assertion just in time before the test executes. Any other way will be confusing to debug and more importantly the assertion will not be fresh.
 				// Interface can be refactored to support mulitple run methods such as runTest[WithSamlOption] and runTest.
-				TestInstance stsTestInstance = new TestInstance("GazelleSts");
+				TestInstance stsTestInstance = new TestInstance("GazelleSts", TestSession.DEFAULT_TEST_SESSION);
 				stsTestInstance.setSection("samlassertion-issue");
-				SiteSpec stsSpec =  new SiteSpec("GazelleSts");
+				SiteSpec stsSpec =  new SiteSpec("GazelleSts", TestSession.DEFAULT_TEST_SESSION);
 				Map<String, String> params = new HashMap<>();
 				String xuaUsername = "Xuagood";
 				if (orchInit.isXuaOption()) {
@@ -1120,7 +1192,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 	@Override
 	public SiteSpec getSiteToIssueTestAgainst() {
-		return (siteToIssueTestAgainst == null ? new SiteSpec("client") : siteToIssueTestAgainst);
+		return (siteToIssueTestAgainst == null ? new SiteSpec("gov/nist/toolkit/installation/shared", getTestSession()) : siteToIssueTestAgainst);
 	}
 
 	public void setSiteToIssueTestAgainst(SiteSpec siteToIssueTestAgainst) {
@@ -1166,5 +1238,9 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 	@Override
 	public ActorOptionConfig getCurrentActorOption() { return currentActorOption; }
+
+	public TestSession getTestSession() {
+		return new TestSession(getCurrentTestSession());
+	}
 
 }

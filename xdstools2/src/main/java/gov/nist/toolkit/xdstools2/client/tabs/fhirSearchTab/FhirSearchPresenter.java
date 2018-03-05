@@ -3,7 +3,6 @@ package gov.nist.toolkit.xdstools2.client.tabs.fhirSearchTab;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
-import com.sun.org.apache.bcel.internal.generic.POP;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.datasets.shared.DatasetElement;
 import gov.nist.toolkit.results.client.Result;
@@ -14,6 +13,8 @@ import gov.nist.toolkit.xdstools2.client.command.command.FhirReadCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.FhirSearchCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetDatasetElementContentCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionOfferingsCommand;
+import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
+import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.inspector.mvp.ResultInspector;
 import gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab.ILogger;
 import gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab.ResultDisplay;
@@ -55,6 +56,16 @@ public class FhirSearchPresenter extends AbstractPresenter<FhirSearchView> imple
 
     @Override
     public void init() {
+        ClientUtils.INSTANCE.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
+            @Override
+            public void onTestSessionChanged(TestSessionChangedEvent event) {
+                if (event.getChangeType() == TestSessionChangedEvent.ChangeType.SELECT) {
+                    getView().getSystemSelector().clearSelection();
+                    loadSystems();
+                }
+            }
+        });
+
         loadSystems();
         loadResourceTypes();
 
@@ -170,7 +181,7 @@ public class FhirSearchPresenter extends AbstractPresenter<FhirSearchView> imple
                 ResponseLoader.load(result.logId, "Results", getView());
                 resultsForInspector = results;
             }
-        }.run(new FhirReadRequest(getCommandContext(), new SiteSpec(selectedSite), resourceReference));
+        }.run(new FhirReadRequest(getCommandContext(), new SiteSpec(selectedSite, ClientUtils.INSTANCE.getCurrentTestSession()), resourceReference));
     }
 
     final public static String resourceTypeNameLabel = "resourcetype";
@@ -199,7 +210,7 @@ public class FhirSearchPresenter extends AbstractPresenter<FhirSearchView> imple
                 ResponseLoader.load(result.logId, "", getView());
                 resultsForInspector = results;
             }
-        }.run(new FhirSearchRequest(getCommandContext(), new SiteSpec(selectedSite), selectedResourceTypeName, codesSpec));
+        }.run(new FhirSearchRequest(getCommandContext(), new SiteSpec(selectedSite, ClientUtils.INSTANCE.getCurrentTestSession()), selectedResourceTypeName, codesSpec));
     }
 
 
@@ -226,7 +237,7 @@ public class FhirSearchPresenter extends AbstractPresenter<FhirSearchView> imple
         if (resultsForInspector != null) {
             ResultInspector resultInspector = new ResultInspector();
             resultInspector.setResults(resultsForInspector);
-            resultInspector.setSiteSpec(new SiteSpec(selectedSite));
+            resultInspector.setSiteSpec(new SiteSpec(selectedSite, ClientUtils.INSTANCE.getCurrentTestSession()));
             new NewToolLauncher().launch(resultInspector);
         }
     }
@@ -235,7 +246,7 @@ public class FhirSearchPresenter extends AbstractPresenter<FhirSearchView> imple
         if (resultsForInspector != null) {
             ResultInspector resultInspector = new ResultInspector();
             resultInspector.setResults(resultsForInspector);
-            resultInspector.setSiteSpec(new SiteSpec(selectedSite));
+            resultInspector.setSiteSpec(new SiteSpec(selectedSite, ClientUtils.INSTANCE.getCurrentTestSession()));
             new NewToolLauncher().launch(resultInspector);
         }
     }

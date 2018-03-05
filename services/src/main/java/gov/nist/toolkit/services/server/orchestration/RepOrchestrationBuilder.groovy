@@ -48,11 +48,11 @@ class RepOrchestrationBuilder {
             boolean forceNewPatientIds = !request.isUseExistingState()
 
             boolean reuse = false  // updated as we progress
-            supportSimId = new SimId(request.userName, supportIdName, ActorType.REGISTRY.name, request.environmentName)
-            OrchestrationProperties orchProps = new OrchestrationProperties(session, request.userName, ActorType.REPOSITORY, pidNameMap.keySet(), !request.useExistingState)
+            supportSimId = new SimId(request.testSession, supportIdName, ActorType.REGISTRY.name, request.environmentName)
+            OrchestrationProperties orchProps = new OrchestrationProperties(session, request.testSession, ActorType.REPOSITORY, pidNameMap.keySet(), !request.useExistingState)
             Pid pid
 
-            Site sutSite = SimCache.getSite(session.getId(), request.sutSite.name)
+            Site sutSite = SimCache.getSite(request.sutSite.name, request.testSession)
             response.repSite = sutSite
             if (!request.isUseExistingSimulator()) {
                 api.deleteSimulatorIfItExists(supportSimId)
@@ -84,7 +84,7 @@ class RepOrchestrationBuilder {
             orchProps.save()
 
             response.regConfig = supportSimConfig     //
-            response.supportSite = SimCache.getSite(session.getId(), supportSimId.toString())
+            response.supportSite = SimCache.getSite(supportSimId.toString(), request.testSession)
 
             // Transactions will be initiated on support site.  Link it to SUT site so that at the last minute
             // the SUT transactions will be added to support site.

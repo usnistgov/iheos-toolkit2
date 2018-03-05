@@ -3,7 +3,7 @@ package gov.nist.toolkit.itTests.interactionsequence
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity
 import gov.nist.toolkit.interactionmodel.server.InteractionSequences
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
-import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.server.Installation
 
 class InteractionSequenceSpec extends ToolkitSpecification {
 

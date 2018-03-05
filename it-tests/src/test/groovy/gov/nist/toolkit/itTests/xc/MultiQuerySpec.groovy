@@ -1,10 +1,11 @@
 package gov.nist.toolkit.itTests.xc
 
 import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.commondatatypes.MetadataSupport
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itSupport.xc.GatewayBuilder
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection
-import gov.nist.toolkit.commondatatypes.MetadataSupport
 import gov.nist.toolkit.results.client.CodesConfiguration
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.sitemanagement.client.SiteSpec
@@ -17,9 +18,10 @@ import spock.lang.Shared
  */
 class MultiQuerySpec extends ToolkitSpecification {
     @Shared SimulatorBuilder spi
-    def userName = 'joe'
+    @Shared TestSession testSession = new TestSession(prefixNonce('joe'))
 
     def setupSpec() {   // one time setup done when class launched
+//        runASingleTestInIde = true
         startGrizzly('8889')
 
         // Initialize remote api for talking to toolkit on Grizzly
@@ -33,12 +35,14 @@ class MultiQuerySpec extends ToolkitSpecification {
         when:
         def igConfig
         def rgConfigs
-        (igConfig, rgConfigs) = GatewayBuilder.build(api, spi, 1, userName, 'test', patientId)
-        def igSite = new SiteSpec(igConfig.fullId, ActorType.INITIATING_GATEWAY, null)
+        (igConfig, rgConfigs) = GatewayBuilder.build(api, spi, 1, testSession.value, 'test', patientId)
+        def igSite = new SiteSpec(igConfig.fullId, ActorType.INITIATING_GATEWAY, null, testSession)
 
         Map<String, List<String>> selectedCodes = new HashMap<>()
         selectedCodes.put(CodesConfiguration.DocumentEntryStatus, [MetadataSupport.statusType_approved])
         selectedCodes.put(CodesConfiguration.ReturnsType, [QueryReturnType.LEAFCLASS.getReturnTypeString()])
+
+        then:
         List<Result> results = api.findDocuments(igSite, patientId, selectedCodes)
 
         then:
@@ -51,14 +55,17 @@ class MultiQuerySpec extends ToolkitSpecification {
         then:
         metadataCollections.size() == 1
         metadataCollections.get(0).docEntries.size() == 2
+
+        spi.delete(rgConfigs.get(0))
+
     }
 
     def 'two rgs'() {
         when:
         def igConfig
         def rgConfigs
-        (igConfig, rgConfigs) = GatewayBuilder.build(api, spi, 2, userName, 'test', patientId)
-        def igSite = new SiteSpec(igConfig.fullId, ActorType.INITIATING_GATEWAY, null)
+        (igConfig, rgConfigs) = GatewayBuilder.build(api, spi, 2, testSession.value, 'test', patientId)
+        def igSite = new SiteSpec(igConfig.fullId, ActorType.INITIATING_GATEWAY, null, testSession)
 
         Map<String, List<String>> selectedCodes = new HashMap<>()
         selectedCodes.put(CodesConfiguration.DocumentEntryStatus, [MetadataSupport.statusType_approved])

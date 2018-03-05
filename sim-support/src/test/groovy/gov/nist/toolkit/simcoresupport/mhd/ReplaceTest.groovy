@@ -3,7 +3,7 @@ package gov.nist.toolkit.simcoresupport.mhd
 import ca.uhn.fhir.context.FhirContext
 import gov.nist.toolkit.fhir.context.ToolkitFhirContext
 import gov.nist.toolkit.fhir.server.resourceMgr.ResourceCacheMgr
-import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.server.Installation
 import org.apache.log4j.BasicConfigurator
 import org.hl7.fhir.dstu3.model.Binary
 import org.hl7.fhir.dstu3.model.DocumentReference

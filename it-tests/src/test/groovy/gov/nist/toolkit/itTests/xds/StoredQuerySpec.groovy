@@ -1,17 +1,17 @@
 package gov.nist.toolkit.itTests.xds
 
 import gov.nist.toolkit.actortransaction.client.ActorType
-import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
-import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.server.Installation
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.client.SimIdFactory
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import spock.lang.Shared
-
 /**
  * Runs all Registry tests.
  * To run:
@@ -28,10 +28,10 @@ class StoredQuerySpec extends ToolkitSpecification {
 
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
     @Shared String patientId2 = 'BR15^^^&1.2.360&ISO'
-    @Shared String reg = 'bill__reg'
-    @Shared SimId simId = new SimId(reg)
-    @Shared String testSession = 'bill';
-    @Shared String siteName = 'bill__reg'
+    @Shared String testSession = prefixNonce('bill')
+    @Shared String reg =  testSession + '__reg'
+    @Shared SimId simId = SimIdFactory.simIdBuilder(reg)
+    @Shared String siteName = testSession + '__reg'
 
     def setupSpec() {   // one time setup done when class launched
         startGrizzly('8889')
@@ -57,13 +57,13 @@ class StoredQuerySpec extends ToolkitSpecification {
 //        System.gc()
         spi.delete('reg', testSession)
         api.deleteSimulatorIfItExists(simId)
-        server.stop()
-        ListenerFactory.terminateAll()
+//        server.stop()
+//        ListenerFactory.terminateAll()
     }
 
     def setup() {
         println "EC is ${Installation.instance().externalCache().toString()}"
-        println "${api.getSiteNames(true)}"
+        println "${api.getSiteNames(true, new TestSession(testSession))}"
         api.createTestSession(testSession)
         if (!api.simulatorExists(simId)) {
             println "Creating sim ${simId}"
@@ -111,7 +111,7 @@ class StoredQuerySpec extends ToolkitSpecification {
 
     def 'Run SQ initialization'() {
         when:
-        TestInstance testId = new TestInstance("tc:Initialize_for_Stored_Query")
+        TestInstance testId = new TestInstance("tc:Initialize_for_Stored_Query", new TestSession(testSession))
         List<String> sections = new ArrayList<>()
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId2)
@@ -127,7 +127,7 @@ class StoredQuerySpec extends ToolkitSpecification {
 
     def 'Run SQ tests'() {
         when:
-        TestInstance testId = new TestInstance("tc:SQ.b")
+        TestInstance testId = new TestInstance("tc:SQ.b", new TestSession(testSession))
         List<String> sections = new ArrayList<>()
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId2)   // not used

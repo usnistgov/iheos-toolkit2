@@ -1,16 +1,17 @@
 package gov.nist.toolkit.itTests.xds
 
 import gov.nist.toolkit.actortransaction.client.ActorType
-import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
-import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.server.Installation
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection
 import gov.nist.toolkit.results.client.AssertionResults
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.client.SimIdFactory
 import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
@@ -25,9 +26,9 @@ class SrcStoresDocSpec extends ToolkitSpecification {
 
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
     @Shared String patientId = 'SR7^^^&1.2.260&ISO'
-    @Shared String rr = 'bill__rr'
-    @Shared SimId simId = new SimId(rr)
-    @Shared String testSession = 'default'
+    @Shared String testSession = prefixNonce('bill')
+    @Shared String rr = testSession + '__rr'
+    @Shared SimId simId = SimIdFactory.simIdBuilder(rr)
     @Shared String repUid = ''
 
     def setupSpec() {   // one time setup done when class launched
@@ -59,13 +60,13 @@ class SrcStoresDocSpec extends ToolkitSpecification {
 //        System.gc()
         spi.delete('rr', testSession)
         api.deleteSimulatorIfItExists(simId)
-        server.stop()
-        ListenerFactory.terminateAll()
+//        server.stop()
+//        ListenerFactory.terminateAll()
     }
 
     def setup() {
         println "EC is ${Installation.instance().externalCache().toString()}"
-        println "${api.getSiteNames(true)}"
+        println "${api.getSiteNames(true, new TestSession(testSession))}"
         api.createTestSession(testSession)
         if (!api.simulatorExists(simId)) {
             println "Creating sim ${simId}"
@@ -120,7 +121,7 @@ class SrcStoresDocSpec extends ToolkitSpecification {
         sections = ['query', 'retrieve']
         params.clear()
         params.put('$uid$', ssUid)
-        session.setSiteSpec(new SiteSpec(rr))
+        session.setSiteSpec(new SiteSpec(rr, new TestSession(testSession)))
         result = session.xdsTestServiceManager().xdstest(testId, sections, params, null, null, true)
         AssertionResults assertionResults = result.assertions
 

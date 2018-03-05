@@ -5,9 +5,9 @@ import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.configDatatypes.client.PidBuilder
 import gov.nist.toolkit.configDatatypes.client.TransactionType
-import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.results.client.TestInstance
-import gov.nist.toolkit.results.shared.SiteBuilder
+import gov.nist.toolkit.results.client.SiteBuilder
 import gov.nist.toolkit.services.client.*
 import gov.nist.toolkit.services.server.RawResponseBuilder
 import gov.nist.toolkit.services.server.ToolkitApi
@@ -15,6 +15,7 @@ import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
+import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.sitemanagement.client.Site
 import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import groovy.transform.TypeChecked
@@ -55,7 +56,7 @@ class RgOrchestrationBuilder {
                 pidNameMap = [
                         simplePid:  new TestInstanceManager(request, response, '15823'),
                 ]
-                orchProps = new OrchestrationProperties(session, request.userName, ActorType.RESPONDING_GATEWAY, pidNameMap.keySet(), !request.useExistingState)
+                orchProps = new OrchestrationProperties(session, request.testSession, ActorType.RESPONDING_GATEWAY, pidNameMap.keySet(), !request.useExistingState)
 
                 simplePid = PidBuilder.createPid(orchProps.getProperty("simplePid"))
 
@@ -71,7 +72,7 @@ class RgOrchestrationBuilder {
             boolean reuse = false  // updated as we progress
 
 
-            Site site = SiteBuilder.siteFromSiteSpec(request.siteUnderTest, session.id)
+            Site site = gov.nist.toolkit.results.server.SiteBuilder.siteFromSiteSpec(request.siteUnderTest, session.id)
             if (site == null) return RawResponseBuilder.build(String.format("Responding Gateway under Test (%s) does not exist in site configurations."))
             rrSite = request.siteUnderTest
             response.siteUnderTest = rrSite
@@ -85,7 +86,7 @@ class RgOrchestrationBuilder {
                     // RG and RR in same site - verify site contents
 
                     // Momentarily turn off SAML if the SUT is a simulator. Need manual intervening for real systems.
-                    sutSimId = new SimId(request.siteUnderTest.name)
+                    sutSimId = SimDb.simIdBuilder(request.siteUnderTest.name)
                     if (Installation.instance().propertyServiceManager().getPropertyManager().isEnableSaml()) {
 
                         sutSimConfig = api.getConfig(sutSimId)
@@ -110,7 +111,7 @@ class RgOrchestrationBuilder {
                     // build RR sim - pass back details for configuration of SUT
                     // SUT and supporting RR are defined by different sites
 
-                    supportSimId = new SimId(request.userName, supportIdName, ActorType.REPOSITORY_REGISTRY.name, request.environmentName)
+                    supportSimId = new SimId(request.testSession, supportIdName, ActorType.REPOSITORY_REGISTRY.name, request.environmentName)
                     if (!request.isUseExistingState()) {
                         api.deleteSimulatorIfItExists(supportSimId)
                         orchProps.clear()
@@ -139,16 +140,16 @@ class RgOrchestrationBuilder {
                     home = rrSite.homeId
                 }
 
-                TestInstance testInstance12318 = new TestInstance('12318')
+                TestInstance testInstance12318 = new TestInstance('12318', request.testSession)
                 MessageItem item12318 = response.addMessage(testInstance12318, true, "")
 
                 if (orchProps.updated()) {
                     // send necessary Patient ID Feed messages
-                    new PifSender(api, request.getUserName(), rrSite, orchProps).send(PifType.V2, pidNameMap)
+                    new PifSender(api, request.testSession, rrSite, orchProps).send(PifType.V2, pidNameMap)
 
                     // Submit test data
                     try {
-                        util.submit(request.userName, rrSite, testInstance12318, simplePid, home)
+                        util.submit(request.testSession.value, rrSite, testInstance12318, simplePid, home)
                     } catch (Exception e) {
                         item12318.setMessage("Initialization of " + request.siteUnderTest.name + " failed:\n" + e.getMessage())
                         item12318.setSuccess(false)

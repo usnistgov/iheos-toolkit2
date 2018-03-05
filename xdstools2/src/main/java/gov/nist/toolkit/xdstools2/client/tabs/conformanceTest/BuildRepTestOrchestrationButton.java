@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.client.RepOrchestrationRequest;
 import gov.nist.toolkit.services.client.RepOrchestrationResponse;
@@ -63,7 +64,7 @@ class BuildRepTestOrchestrationButton extends AbstractOrchestrationButton {
             request.setSutSite(sutSiteSpec);
         } else
             request.setSutSite(null);
-        request.setUserName(testTab.getCurrentTestSession());
+        request.setTestSession(new TestSession(testTab.getCurrentTestSession()));
         request.setEnvironmentName(testTab.getEnvironmentSelection());
         request.setUseExistingSimulator(!isResetRequested());
 

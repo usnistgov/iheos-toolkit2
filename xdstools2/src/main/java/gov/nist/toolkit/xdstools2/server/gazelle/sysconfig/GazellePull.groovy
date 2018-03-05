@@ -1,6 +1,7 @@
 package gov.nist.toolkit.xdstools2.server.gazelle.sysconfig
 
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager
+import groovy.transform.TypeChecked
 
 /**
  * Pull system configuration or OIDs from Gazelle into local cache.
@@ -8,6 +9,7 @@ import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager
  * gazelleBaseUrl must be of the form
  *   https://gazelle.ihe.net/EU-CAT/systemConfigurations.seam?testingSessionId=35
  */
+@TypeChecked
 class GazellePull {
     String gazelleBaseUrl
 

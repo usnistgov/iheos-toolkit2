@@ -7,7 +7,7 @@ import gov.nist.toolkit.fhir.server.resourceMgr.FileSystemResourceCache
 import gov.nist.toolkit.fhir.simulators.proxy.util.PartSpec
 import gov.nist.toolkit.fhir.simulators.proxy.util.SoapBuilder
 import gov.nist.toolkit.http.HttpParser
-import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.simcoresupport.mhd.Attachment
 import gov.nist.toolkit.simcoresupport.mhd.MhdGenerator
 import gov.nist.toolkit.simcoresupport.mhd.Submission

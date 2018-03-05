@@ -3,6 +3,8 @@
  */
 package gov.nist.toolkit.services.client;
 
+import gov.nist.toolkit.installation.shared.TestSession;
+
 import java.io.Serializable;
 
 /**
@@ -14,17 +16,17 @@ import java.io.Serializable;
 public class RSNAEdgeOrchestrationRequest implements Serializable {
    private static final long serialVersionUID = 1L;
 
-   String userName;
+   TestSession testSession;
    String environmentName;
 
    public RSNAEdgeOrchestrationRequest() {}
 
-   public String getUserName() {
-       return userName;
+   public TestSession getTestSession() {
+       return testSession;
    }
 
-   public void setUserName(String userName) {
-       this.userName = userName;
+   public void setTestSession(TestSession testSession) {
+       this.testSession = testSession;
    }
 
    public String getEnvironmentName() {

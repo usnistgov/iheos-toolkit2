@@ -31,7 +31,7 @@ public class GetSubmissionSets extends CommonService {
 			}
 			session.setSiteSpec(site);
 
-			TestInstance testInstance = new TestInstance("GetSubmissionSets");
+			TestInstance testInstance = new TestInstance("GetSubmissionSets", session.getTestSession());
 			List<String> sections = new ArrayList<String>();
 			Map<String, String> params = new HashMap<String, String>();
 			

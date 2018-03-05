@@ -1,9 +1,10 @@
 package gov.nist.toolkit.itTests.xds.od
 
 import gov.nist.toolkit.actortransaction.client.ActorType
-import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
+import gov.nist.toolkit.fhir.simulators.support.od.TransactionUtil
+import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.registrymetadata.client.Document
 import gov.nist.toolkit.results.client.Result
@@ -11,8 +12,7 @@ import gov.nist.toolkit.results.client.StepResult
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
 import gov.nist.toolkit.session.server.Session
-import gov.nist.toolkit.simcommon.client.SimId
-import gov.nist.toolkit.fhir.simulators.support.od.TransactionUtil
+import gov.nist.toolkit.simcommon.client.SimIdFactory
 import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
@@ -26,7 +26,7 @@ class OdConsumerPersistenceSpec extends ToolkitSpecification {
 
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
     @Shared String patientId = 'SR15^^^&1.2.460&ISO'
-    @Shared String testSession = 'sunil2'
+    @Shared TestSession testSession = new TestSession(prefixNonce('sunil2'))
     @Shared SimConfig rrConfig = null
     @Shared SimConfig oddsConfig = null
     @Shared Session tkSession
@@ -44,19 +44,19 @@ class OdConsumerPersistenceSpec extends ToolkitSpecification {
 
         new BuildCollections().init(null)
 
-        spi.delete('rr3', testSession)
+        spi.delete('rr3', testSession.value)
 
         rrConfig = spi.create(
                 'rr3',
-                testSession,
+                testSession.value,
                 SimulatorActorType.REPOSITORY_REGISTRY,
                 'test')
 
-        spi.delete('odds3', testSession)
+        spi.delete('odds3', testSession.value)
 
         oddsConfig = spi.create(
                 'odds3',
-                testSession,
+                testSession.value,
                 SimulatorActorType.ONDEMAND_DOCUMENT_SOURCE,
                 'test')
         oddsConfig.setProperty(SimulatorProperties.PERSISTENCE_OF_RETRIEVED_DOCS, true)
@@ -77,17 +77,17 @@ class OdConsumerPersistenceSpec extends ToolkitSpecification {
 
     def cleanupSpec() {  // one time shutdown when everything is done
 //        System.gc()
-        spi.delete('rr3', testSession)
-        spi.delete('odds3', testSession)
-        server.stop()
-        ListenerFactory.terminateAll()
+        spi.delete('rr3', testSession.value)
+        spi.delete('odds3', testSession.value)
+//        server.stop()
+//        ListenerFactory.terminateAll()
     }
 
 
     // submits the patient id configured above to the registry in a Patient Identity Feed transaction
     def 'Submit Pid transaction to Registry simulator'() {
         when:
-        String siteName = 'sunil2__rr3'
+        String siteName = testSession.value + '__rr3'
         TestInstance testId = new TestInstance("15804")
         List<String> sections = new ArrayList<>()
         sections.add("section")
@@ -113,10 +113,10 @@ class OdConsumerPersistenceSpec extends ToolkitSpecification {
 
         then:
         Map<String,String> rs = TransactionUtil.registerWithLocalizedTrackingInODDS(tkSession
-                , oddsConfig.getUser()
+                , new TestSession(oddsConfig.getUser())
                 , new TestInstance("15806")
-                , new SiteSpec(rrConfig.getFullId(), ActorType.REGISTRY, null)
-                , new SimId(oddsConfig.getFullId())
+                , new SiteSpec(rrConfig.getFullId(), ActorType.REGISTRY, null, testSession)
+                , SimIdFactory.simIdBuilder(oddsConfig.getFullId())
                 , paramsRegOdde)
 
         for (String key : rs.keySet()) {
@@ -148,13 +148,9 @@ class OdConsumerPersistenceSpec extends ToolkitSpecification {
     }
     */
 
-    /**
-     *
-     * @return
-     */
     def 'Retrieve from the ODDS with Persistence Option'() {
         when:
-        String siteName = 'sunil2__odds3'
+        String siteName = testSession.value + '__odds3'
         TestInstance testId = new TestInstance("15806")
         List<String> sections = ["Retrieve"]
         Map<String, String> params = new HashMap<>()

@@ -3,6 +3,7 @@ package gov.nist.toolkit.validatorsSoapMessage.message;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.StepResult;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
@@ -32,13 +33,15 @@ public class StsSamlValidator extends AbstractMessageValidator {
     ErrorRecorderBuilder erBuilder;
     MessageValidatorEngine mvc;
     RegistryValidationInterface rvi;
+    TestSession testSession;
 
-    public StsSamlValidator(ValidationContext vc, ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, RegistryValidationInterface rvi, final OMElement header) {
+    public StsSamlValidator(ValidationContext vc, ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, RegistryValidationInterface rvi, final OMElement header, TestSession testSession) {
         super(vc);
         this.erBuilder = erBuilder;
         this.mvc = mvc;
         this.rvi = rvi;
         this.header = header;
+        this.testSession = testSession;
     }
 
     @Override
@@ -76,7 +79,7 @@ public class StsSamlValidator extends AbstractMessageValidator {
                         String query = "samlassertion-validate";
 
                         XdsTestServiceManager xdsTestServiceManager = new XdsTestServiceManager(null);
-                        List<Result> results = xdsTestServiceManager.querySts("GazelleSts","default",query,params, false);
+                        List<Result> results = xdsTestServiceManager.querySts("GazelleSts", query, params, false, TestSession.DEFAULT_TEST_SESSION);
 
                         if (results.size() == 1) {
                             if (!results.get(0).passed()) {

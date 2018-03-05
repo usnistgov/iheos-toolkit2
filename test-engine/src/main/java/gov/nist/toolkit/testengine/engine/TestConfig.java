@@ -11,7 +11,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class TestConfig {
-	
+
+	public TestConfig() {}
+
 	// current test number
 	public TestInstance testInstance;
 

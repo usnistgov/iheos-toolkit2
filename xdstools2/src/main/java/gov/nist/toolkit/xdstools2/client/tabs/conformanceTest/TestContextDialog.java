@@ -4,12 +4,26 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.TextBox;
+import gov.nist.toolkit.installation.shared.TestSession;
+import gov.nist.toolkit.installation.shared.ToolkitUserMode;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
-import gov.nist.toolkit.xdstools2.client.ErrorHandler;
 import gov.nist.toolkit.sitemanagement.client.StringSort;
+import gov.nist.toolkit.xdstools2.client.ErrorHandler;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
-import gov.nist.toolkit.xdstools2.client.command.command.*;
+import gov.nist.toolkit.xdstools2.client.command.command.AddTestSessionCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.ClearTestSessionCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetAssignedSiteForTestSessionCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetSiteNamesCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetSitesForTestSessionCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTestSessionNamesCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.SetAssignedSiteForTestSessionCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
@@ -19,6 +33,7 @@ import gov.nist.toolkit.xdstools2.shared.command.request.SetAssignedSiteForTestS
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -43,6 +58,11 @@ class TestContextDialog extends DialogBox {
         this.toolWindow = toolWindow;
         this.siteManager = siteManager;
         this.siteSelectionValidator = siteSelectionValidator;
+
+        Map<String,String> tkPropMap = ClientUtils.INSTANCE.getTkPropMap();
+        boolean multiUserModeEnabled = Boolean.parseBoolean(tkPropMap.get("Multiuser_mode"));
+        boolean casModeEnabled = Boolean.parseBoolean(tkPropMap.get("Cas_mode"));
+        ToolkitUserMode userMode2 = (multiUserModeEnabled)?(casModeEnabled?ToolkitUserMode.CAS_USER:ToolkitUserMode.MULTI_USER):ToolkitUserMode.SINGLE_USER;
 
         FlowPanel panel = new FlowPanel();
         setGlassEnabled(true);
@@ -76,17 +96,25 @@ class TestContextDialog extends DialogBox {
         testSessionListBox.addStyleName("confActorTestSessionSelectorMc");
         testSessionListBox.setVisibleItemCount(10);
         testSessionListBox.addChangeHandler(new TestSessionChangeHandler());
-        loadTestSessions(toolWindow.getCurrentTestSession());
+        if (ToolkitUserMode.SINGLE_USER.equals(userMode2)) {
+            loadTestSessions(toolWindow.getCurrentTestSession());
+        } else {
+            testSessionListBox.addItem(toolWindow.getCurrentTestSession());
+            testSessionListBox.setSelectedIndex(0);
+            testSessionListBox.setVisibleItemCount(3);
+        }
         testSessionEdit.add(testSessionListBox);
 
         FlowPanel testSessionEast = new FlowPanel();
 
         testSessionEast.add(sitesForTestSessionPanel);
         testSessionEdit.add(testSessionEast);
-        testSessionEast.add(textBox);
-        Button addButton = new Button("Add");
-        addButton.addClickHandler(new NewTestSessionClickHandler());
-        testSessionEast.add(addButton);
+        if (ToolkitUserMode.SINGLE_USER.equals(userMode2)) {
+            testSessionEast.add(textBox);
+            Button addButton = new Button("Add");
+            addButton.addClickHandler(new NewTestSessionClickHandler());
+            testSessionEast.add(addButton);
+        }
 
         loadSitesForTestSession(toolWindow.getCurrentTestSession());
 
@@ -165,7 +193,7 @@ class TestContextDialog extends DialogBox {
             if (TestContext.NONE.equals(selectedSite))
                 selectedSite = null;
             if (siteSelectionValidator != null)
-                siteSelectionValidator.validate(new SiteSpec(selectedSite));
+                siteSelectionValidator.validate(new SiteSpec(selectedSite, new TestSession(toolWindow.getCurrentTestSession())));
             siteManager.setSiteName(selectedSite);
             toolWindow.setCurrentTestSession(getSelectedTestSession());
             siteManager.update();
@@ -258,7 +286,7 @@ class TestContextDialog extends DialogBox {
         public void onClick(ClickEvent clickEvent) {
             final String newItem = textBox.getText();
             if (newItem == null || "".equals(newItem)) return;
-            new AddMesaTestSessionCommand(){
+            new AddTestSessionCommand(){
 
                 @Override
                 public void onComplete(Boolean result) {

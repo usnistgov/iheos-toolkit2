@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.server.initialization
 
-import gov.nist.toolkit.installation.ExternalCacheManager
-import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.server.ExternalCacheManager
+import gov.nist.toolkit.installation.server.Installation
 import org.apache.commons.io.FileUtils
 import spock.lang.Specification
 
