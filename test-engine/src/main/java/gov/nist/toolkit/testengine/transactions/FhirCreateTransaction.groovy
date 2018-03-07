@@ -129,7 +129,8 @@ class FhirCreateTransaction extends BasicFhirTransaction {
         def otherCount = 0
 
         // No fhirID from transaction
-        def (BasicStatusLine statusLine, String content, FhirId fhirId) = FhirClient.post(new URI(fullEndpoint), sendContent)
+        def (BasicStatusLine statusLine, String content, FhirId fhirId, String error) = FhirClient.post(new URI(fullEndpoint), sendContent)
+        if (error) stepContext.set_error(error)
         if (content) {
             IBaseResource baseResource = FhirSupport.parse(content)
             if (baseResource instanceof OperationOutcome) {

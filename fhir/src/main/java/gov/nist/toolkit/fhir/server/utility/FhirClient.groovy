@@ -30,13 +30,20 @@ class FhirClient implements IFhirSearch {
      */
     static post(def uri,  def _body) {
         HttpResponse response
+        def error = null
         try {
+            String contentType = contentType(_body)
             HttpClient httpclient = HttpClients.createDefault()
             HttpPost post = new HttpPost(uri)
             HttpEntity entity = new StringEntity(_body)
-            entity.contentType = contentType(_body) //'application/fhir+json'
+            entity.contentType = contentType
+            post.setHeader('Accept-Encoding', contentType)
             post.setEntity(entity)
             response = httpclient.execute(post)
+            String responseContentType = response.getFirstHeader('Content-Type')
+            responseContentType = responseContentType.split(':')[1].trim()
+            if (responseContentType != contentType)
+                error = "Requsted Content-Type ${contentType}\nReceived ${responseContentType}"
             FhirId locationHeader
             String lhdr = response.getFirstHeader('Location')
             if (lhdr) {
@@ -50,11 +57,11 @@ class FhirClient implements IFhirSearch {
             InputStream is = entity2.getContent()
             String content = Io.getStringFromInputStream(is)
 
-            return [statusLine, content, locationHeader]
+            return [statusLine, content, locationHeader, error]
         } catch (Exception e) {
             logger.error(ExceptionUtil.exception_details(e))
             BasicStatusLine statusLine = new BasicStatusLine(new ProtocolVersion('http', 1, 1), 400, e.getMessage())
-            return [statusLine, null, null]
+            return [statusLine, null, null, null]
         } finally {
             if (response)
                 response.close()

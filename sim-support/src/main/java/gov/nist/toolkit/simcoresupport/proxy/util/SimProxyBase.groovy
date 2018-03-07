@@ -237,9 +237,14 @@ public class SimProxyBase {
 
 
 
-        List<Header> contentTypeHeaders = request.getHeaders('Accept') as List
+        List<Header> contentTypeHeaders = request.getHeaders('Accept-Encoding') as List
         contentTypeHeaders.each { Header h ->
-            clientContentTypes << h.value
+            String types = h.value
+            types.split(';').each { String type ->
+                if (type.contains(':'))
+                    type = type.split(':')[1].trim()
+                clientContentTypes << type
+            }
         }
 
         String targetSiteName = config.get(SimulatorProperties.proxyForwardSite)?.asString()
