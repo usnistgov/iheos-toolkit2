@@ -2,6 +2,7 @@ package gov.nist.toolkit.testengine.transactions
 
 import gov.nist.toolkit.fhir.server.utility.FhirClient
 import gov.nist.toolkit.fhir.server.utility.FhirId
+import gov.nist.toolkit.testengine.engine.FhirContentFormat
 import gov.nist.toolkit.testengine.engine.StepContext
 import gov.nist.toolkit.testengine.engine.UniqueIdAllocator
 import gov.nist.toolkit.testengine.fhir.FhirSupport
@@ -10,12 +11,15 @@ import gov.nist.toolkit.xdsexception.client.MetadataException
 import gov.nist.toolkit.xdsexception.client.XdsInternalException
 import org.apache.axiom.om.OMElement
 import org.apache.http.message.BasicStatusLine
+import org.apache.log4j.Logger
 import org.hl7.fhir.dstu3.model.*
 import org.hl7.fhir.instance.model.api.IBaseResource
 /**
  *
  */
 class FhirCreateTransaction extends BasicFhirTransaction {
+    static private final Logger logger = Logger.getLogger(FhirCreateTransaction.class);
+
     FhirCreateTransaction(StepContext s_ctx, OMElement instruction, OMElement instruction_output) {
         super(s_ctx, instruction, instruction_output)
     }
@@ -33,23 +37,6 @@ class FhirCreateTransaction extends BasicFhirTransaction {
             }
         }
     }
-
-//    def updatePidIdentifier(def resource, String value, String system) {
-//        if ((resource instanceof DocumentManifest) || (resource instanceof DocumentReference)) {
-//            List<Identifier> ids = resource.getIdentifier()
-//            if (ids.size() > 0) {
-//                Identifier id = ids[0]
-//                id.system = system
-//                id.value = value
-//            }
-//        } else if (resource instanceof Bundle) {
-//            Bundle bundle = resource
-//            bundle.entry.each { Bundle.BundleEntryComponent comp ->
-//                Resource res = comp.getResource()
-//                updatePidIdentifier(res, value, system)
-//            }
-//        }
-//    }
 
     def updatePatientReference(def resource, String patientReference) {
         if ((resource instanceof DocumentManifest)) {
@@ -86,14 +73,10 @@ class FhirCreateTransaction extends BasicFhirTransaction {
     void doRun(IBaseResource resource, String urlExtension) {
         assert endpoint, 'TestClient:FhirCreateTransaction: endpoint is null'
 
-        String pid_value = null
-        String pid_system = null
         String patientReference = null
         Map<String, String> originalDocUrls = [:]
 
         if (useReportManager) {
-            pid_value = useReportManager.get('$pid_value$');
-            pid_system = useReportManager.get('$pid_system$');
             patientReference = useReportManager.get('$patient_reference$')
 
             (1..9).each { int index ->
@@ -108,9 +91,6 @@ class FhirCreateTransaction extends BasicFhirTransaction {
 
         if (patientReference)
             updatePatientReference(resource, patientReference)
-
-//        if (pid_value && pid_system)
-//            updatePidIdentifier(resource, pid_value, pid_system)
 
         // assign new new masterIdentifier to all DocumentRefernce and Documeent Manifest objects
         if (resource instanceof Resource)
@@ -133,11 +113,15 @@ class FhirCreateTransaction extends BasicFhirTransaction {
         reportManager.add('Base', getBaseUrl())   // endpoint)
         reportManager.add('Url', fullEndpoint)
 
-//        fullEndpoint = fullEndpoint.replace('7777', '6666')
-
         testLog.add_name_value(instruction_output, 'OutHeader', "POST ${fullEndpoint}")
 
-        def sendContent = fhirCtx.newJsonParser().setPrettyPrint(true).encodeResourceToString(resource)
+        logger.info("Requested format ${transactionSettings.fhirContentFormat}")
+        def sendContent
+        if (transactionSettings.fhirContentFormat == FhirContentFormat.XML)
+            sendContent = fhirCtx.newXmlParser().setPrettyPrint(true).encodeResourceToString(resource)
+        else
+            sendContent = fhirCtx.newJsonParser().setPrettyPrint(true).encodeResourceToString(resource)
+
         testLog.add_name_value(instruction_output, 'InputMetadata', sendContent)
 
         def dmCount = 0

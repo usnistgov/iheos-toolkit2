@@ -217,8 +217,10 @@ public class SimulatorServiceManager extends CommonService {
 
 	private Message subParseMessage(Message message) {
 		try {
-			IBaseResource resource = ResourceParser.parse(message.getParts().get(1));
-			Message message2 = new FhirMessageBuilder().build("", resource);
+			String rawMsg = message.getParts().get(1);
+			boolean isJson = rawMsg.trim().startsWith("{");
+			IBaseResource resource = ResourceParser.parse(rawMsg);
+			Message message2 = new FhirMessageBuilder(isJson).build("", resource);
 			message2.getParts().set(0, message.getParts().get(0));
 			return message2;
 		} catch (Exception e) {

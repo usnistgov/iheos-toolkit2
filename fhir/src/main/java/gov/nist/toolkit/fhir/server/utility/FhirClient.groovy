@@ -34,7 +34,7 @@ class FhirClient implements IFhirSearch {
             HttpClient httpclient = HttpClients.createDefault()
             HttpPost post = new HttpPost(uri)
             HttpEntity entity = new StringEntity(_body)
-            entity.contentType = 'application/fhir+json'
+            entity.contentType = contentType(_body) //'application/fhir+json'
             post.setEntity(entity)
             response = httpclient.execute(post)
             FhirId locationHeader
@@ -59,6 +59,17 @@ class FhirClient implements IFhirSearch {
             if (response)
                 response.close()
         }
+    }
+
+    static String contentType(String content) {
+        if (isJson(content)) return 'application/fhir+json'
+        return 'application/fhir+xml'
+    }
+
+    static boolean isJson(String content) {
+        if (content == null) return true;
+        if (content.trim().startsWith('{')) return true;
+        return false;
     }
 
     /**
@@ -109,9 +120,13 @@ class FhirClient implements IFhirSearch {
         readResource(uri, 'application/fhir+json')
     }
 
-    static IBaseResource readResource(def uri, def contentType) {
+    static IBaseResource readResource(def uri, String contentType) {
         def (statusLine, body) = get(uri, contentType)
-        return ToolkitFhirContext.get().newJsonParser().parseResource(body)
+        boolean isJson = contentType.contains('json')
+        if (isJson)
+            return ToolkitFhirContext.get().newJsonParser().parseResource(body)
+        else
+            return ToolkitFhirContext.get().newXmlParser().parseResource(body)
     }
 
     /**

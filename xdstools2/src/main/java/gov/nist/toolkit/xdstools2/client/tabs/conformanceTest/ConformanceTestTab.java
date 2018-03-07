@@ -1135,6 +1135,11 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 				setPatientId(parms, pid.asString());
 		}
 
+		if (orchInit instanceof BuildRecTestOrchestrationButton) {
+			BuildRecTestOrchestrationButton but = (BuildRecTestOrchestrationButton) orchInit;
+			parms.put("format", ((BuildRecTestOrchestrationButton) orchInit).getFormat());
+		}
+
 		if (ActorType.REGISTRY.getActorCode().equals(currentActorOption.actorTypeId)) {
 			setPatientId(parms, regOrchestrationResponse.getRegisterPid().asString());
 		}

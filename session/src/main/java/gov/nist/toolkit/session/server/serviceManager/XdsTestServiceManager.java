@@ -359,8 +359,9 @@ public class XdsTestServiceManager extends CommonService {
 			if (!input.equals("")) {
 				try {
 					// FHIR content
+					boolean isJson = input.trim().startsWith("{");
 					IBaseResource resource = FhirSupport.parse(input);
-					result.add(new FhirMessageBuilder().build("", resource).setName(testLog.stepName + " Request"));
+					result.add(new FhirMessageBuilder(isJson).build("", resource).setName(testLog.stepName + " Request"));
 				} catch (Exception e) {
 					// non-FHIR content (failed parse)
 					result.add(new MessageBuilder().build("", input).setName(testLog.stepName + " Request"));
@@ -373,7 +374,8 @@ public class XdsTestServiceManager extends CommonService {
 			try {
 				// FHIR content
 				IBaseResource resource = FhirSupport.parse(output);
-				result.add(new FhirMessageBuilder().build("", resource).setName(testLog.stepName + " Response"));
+				boolean isJson = output.trim().startsWith("{");
+				result.add(new FhirMessageBuilder(isJson).build("", resource).setName(testLog.stepName + " Response"));
 			} catch (Exception e) {
 				// non-FHIR content (failed parse)
 				result.add(new MessageBuilder().build("", output).setName(testLog.stepName + " Response"));
