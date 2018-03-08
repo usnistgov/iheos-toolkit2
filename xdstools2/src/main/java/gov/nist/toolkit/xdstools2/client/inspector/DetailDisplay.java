@@ -228,7 +228,7 @@ public class DetailDisplay {
 		row = displayDetail(ft, row, b, "contentTypeCode", ss.contentTypeCode, ss.contentTypeCodeX);
 		
 		b = diff.intendedRecipients != null;
-		row = displayDetail(ft, row,  b, "indendedRecipient", ss.intendedRecipients, ss.intendedRecipientsX);
+		row = displayDetail(ft, row,  b, "intendedRecipient", ss.intendedRecipients, ss.intendedRecipientsX);
 
 		b = diff.authors != null;
 		row = displayDetail(ft, row, b, ss.authors, ss.authorsX);

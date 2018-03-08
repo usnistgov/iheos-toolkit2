@@ -86,7 +86,6 @@ public class ListingDisplay {
 			ti.setHTML(Integer.toString(data.combinedMetadata.objectRefs.size()) + " ObjectRefs");
 			root.addItem(ti);
 
-			boolean hasHcIds = false;
 			for (ObjectRef o : data.combinedMetadata.objectRefs) {
 				Hyperlink h = HyperlinkFactory.link(tab, o);
 				TreeItem item = new TreeItem(h);
@@ -162,6 +161,16 @@ public class ListingDisplay {
 
 				TreeItem getLogicalItem = new TreeItem(HyperlinkFactory.getDocuments(tab, null, new ObjectRefs(new ObjectRef(de.lid, de.home)), "Action: Get All Versions", true, data.siteSpec));
 				item.addItem(getLogicalItem);
+
+				// Allow edit only when this panel is not the right-part of compare.
+				if (!de.isFhir)
+				 if (tab.dataNotification!=null) {
+					if (tab.dataNotification.inCompare()) {
+						TreeItem mu = new TreeItem(HyperlinkFactory.metadataUpdate(tab, de, "Action: MetadataUpdate"));
+						item.addItem(mu);
+					}
+				 }
+
 			}
             TreeItem retrieveItem = new TreeItem(HyperlinkFactory.retrieve(tab, de, "Action: Retrieve"));
             item.addItem(retrieveItem);

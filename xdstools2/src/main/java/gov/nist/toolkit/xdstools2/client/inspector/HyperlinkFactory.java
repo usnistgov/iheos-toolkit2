@@ -13,6 +13,13 @@ import gov.nist.toolkit.xdstools2.client.tabs.GetRelatedTab;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 public class HyperlinkFactory {
+
+	static Hyperlink metadataUpdate(MetadataInspectorTab it, DocumentEntry de, String text) {
+		Hyperlink h = new Hyperlink();
+		h.setText(text);
+		h.addClickHandler(new MuSelector(it, de));
+		return h;
+	}
 	
 	static Hyperlink link(MetadataInspectorTab it, AssertionResults ar, String text) {
 		Hyperlink h = new Hyperlink();

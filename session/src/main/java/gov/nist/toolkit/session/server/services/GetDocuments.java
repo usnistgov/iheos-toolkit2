@@ -18,7 +18,7 @@ public class GetDocuments extends CommonService {
 	Session session;
 	
 	public GetDocuments(Session session) throws XdsException {
-		this.session = session;;
+		this.session = session;
 	}
 
 	public List<Result> run(SiteSpec site, AnyIds aids) {

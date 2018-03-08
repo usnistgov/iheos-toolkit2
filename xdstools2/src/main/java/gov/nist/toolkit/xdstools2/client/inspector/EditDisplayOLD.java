@@ -9,7 +9,7 @@ import gov.nist.toolkit.registrymetadata.client.RegistryObject;
 
 import java.util.List;
 
-public class EditDisplay {
+public class EditDisplayOLD {
 	VerticalPanel detailPanel;
 	MetadataEditorTab it;
 	String textBoxWidth = "400";
@@ -21,7 +21,7 @@ public class EditDisplay {
 //	.create(ToolkitService.class);
 
 
-	public EditDisplay(VerticalPanel detailPanel, VerticalPanel buttonPanel, MetadataEditorTab it) {
+	public EditDisplayOLD(VerticalPanel detailPanel, VerticalPanel buttonPanel, MetadataEditorTab it) {
 		this.detailPanel = detailPanel;
 		this.buttonPanel = buttonPanel;
 		this.it = it;
