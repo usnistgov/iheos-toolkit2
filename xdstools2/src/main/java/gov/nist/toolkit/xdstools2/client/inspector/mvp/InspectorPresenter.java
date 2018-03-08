@@ -354,8 +354,11 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
         // Selecting from the tree triggers a custom event to select the corresponding row in the advance option table, then in turn which triggers a selection change event that calls this method.
         // The effect is the 'duplicate' node may be selected in case if it appears before the one that was actually selected.
         if (currentSelection!=null && currentSelection.getUserObject()!=null && currentSelection.getUserObject() instanceof MetadataObjectWrapper) {
-           if (treeItemSelector.compareTo((MetadataObjectWrapper)currentSelection.getUserObject(), target) )
+           if (treeItemSelector.compareTo((MetadataObjectWrapper)currentSelection.getUserObject(), target) ) {
+               treeItemSelector.removeSelectedStyleFromCurrentSelection();
+               treeItemSelector.applySelectedStyle(currentSelection);
                return null;
+           }
         }
 
         if (target!=null) {
@@ -431,14 +434,23 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
                     ((Hyperlink)treeItem.getWidget()).fireEvent(new ClickEvent() {});
                     treeItem.setSelected(true);
 //                    treeItem.setState(false, true);
-                    if (currentSelection!=null) {
-                        currentSelection.getWidget().removeStyleName("insetBorder");
-                    }
-                    treeItem.getWidget().addStyleName("insetBorder");
+                    removeSelectedStyleFromCurrentSelection();
+                    applySelectedStyle(treeItem);
                     return treeItem;
                 }
             }
             return null;
+        }
+
+        void removeSelectedStyleFromCurrentSelection() {
+            if (currentSelection!=null) {
+                currentSelection.getWidget().removeStyleName("insetBorder");
+            }
+        }
+
+        void applySelectedStyle(TreeItem treeItem) {
+            treeItem.getWidget().addStyleName("insetBorder");
+
         }
 
         public boolean compareTo(MetadataObjectWrapper userObject, MetadataObject target) {

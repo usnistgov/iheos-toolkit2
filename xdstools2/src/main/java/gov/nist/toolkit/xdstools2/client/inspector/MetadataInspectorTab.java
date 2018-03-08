@@ -651,6 +651,7 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 			t.addSelectionHandler(new SelectionHandler<TreeItem>() {
 				@Override
 				public void onSelection(SelectionEvent<TreeItem> selectionEvent) {
+					// TODO: set the parent as selected when child, like Action:Metadataupdate was selected.
 					TreeItem selectedItem = (TreeItem)selectionEvent.getSelectedItem();
 					if (selectedItem.getUserObject()!=null) {
 						if (currentSelectedTreeItem!=null) {

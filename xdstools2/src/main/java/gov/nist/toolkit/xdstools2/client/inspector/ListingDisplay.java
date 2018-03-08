@@ -162,14 +162,12 @@ public class ListingDisplay {
 				TreeItem getLogicalItem = new TreeItem(HyperlinkFactory.getDocuments(tab, null, new ObjectRefs(new ObjectRef(de.lid, de.home)), "Action: Get All Versions", true, data.siteSpec));
 				item.addItem(getLogicalItem);
 
-				// Allow edit only when this panel is not the right-part of compare.
-				if (!de.isFhir)
-				 if (tab.dataNotification!=null) {
-					if (tab.dataNotification.inCompare()) {
-						TreeItem mu = new TreeItem(HyperlinkFactory.metadataUpdate(tab, de, "Action: MetadataUpdate"));
-						item.addItem(mu);
-					}
-				 }
+				if (!de.isFhir) {
+					// Allow edit only when this panel is not the right-part of compare.
+                    // When in compare mode, the tree selection is hidden
+					TreeItem mu = new TreeItem(HyperlinkFactory.metadataUpdate(tab, de, "Action: MetadataUpdate"));
+					item.addItem(mu);
+				}
 
 			}
             TreeItem retrieveItem = new TreeItem(HyperlinkFactory.retrieve(tab, de, "Action: Retrieve"));

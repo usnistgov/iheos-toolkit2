@@ -10,8 +10,7 @@ import java.util.List;
  * @author bill
  *
  */
-public class DocumentEntry extends RegistryObject implements IsSerializable, Serializable, IsUpdatable {
-	
+public class DocumentEntry extends RegistryObject implements IsSerializable, Serializable {
 	private static final long serialVersionUID = 1L;
 	public String lid;
 	public String lidX;
@@ -112,8 +111,4 @@ public class DocumentEntry extends RegistryObject implements IsSerializable, Ser
 		return "DocumentEntry(" + name + ")";
 	}
 
-	@Override
-	public boolean isUpdateValid() {
-		return false;
-	}
 }
