@@ -20,6 +20,7 @@ import java.io.File;
 import java.util.*;
 
 public class Metadata {
+	public static final String MU_NOT_SUPPORTED = "1.1";
 	protected OMFactory fac;
 	boolean interpretAsSubmission = true;
 	// private final static Logger logger = Logger.getLogger(Metadata.class);
@@ -1274,7 +1275,7 @@ public class Metadata {
 	static public String getVersion(OMElement ele) {
 		OMElement ve = XmlUtil.firstChildWithLocalName(ele, "VersionInfo");
 		if (ve == null)
-			return "1.1";
+			return MU_NOT_SUPPORTED;
 		return ve.getAttributeValue(MetadataSupport.versionname_qname);
 	}
 

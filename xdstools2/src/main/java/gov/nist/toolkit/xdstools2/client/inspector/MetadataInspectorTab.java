@@ -651,21 +651,30 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 			t.addSelectionHandler(new SelectionHandler<TreeItem>() {
 				@Override
 				public void onSelection(SelectionEvent<TreeItem> selectionEvent) {
-					// TODO: set the parent as selected when child, like Action:Metadataupdate was selected.
 					TreeItem selectedItem = (TreeItem)selectionEvent.getSelectedItem();
-					if (selectedItem.getUserObject()!=null) {
-						if (currentSelectedTreeItem!=null) {
-							currentSelectedTreeItem.getWidget().removeStyleName("insetBorder");
+					TreeItem itemToSelect = selectedItem;
+					if (selectedItem.getUserObject()==null) {
+						// If available, get the parent of child as selected, when something like Action:Metadataupdate was selected.
+						TreeItem parent = selectedItem.getParentItem();
+						if (parent.getUserObject() != null && parent.getUserObject() instanceof MetadataObjectWrapper) {
+							itemToSelect = parent;
+						} else {
+							// Return if no parent to select
+							return;
 						}
-						selectedItem.getWidget().addStyleName("insetBorder");
-						currentSelectedTreeItem = selectedItem;
-						if (selectedItem.getUserObject()!=null && selectedItem.getUserObject() instanceof MetadataObjectWrapper) {
-							MetadataObjectWrapper userObject = (MetadataObjectWrapper) selectedItem.getUserObject();
-							dataNotification.onObjectSelected(userObject);
-							if (selectedItem.getWidget() !=null && selectedItem.getWidget() instanceof Hyperlink) {
-								((Hyperlink) selectedItem.getWidget()).fireEvent(new ClickEvent() {
-								});
-							}
+					}
+					// Already at the parent level
+					if (currentSelectedTreeItem!=null) {
+						currentSelectedTreeItem.getWidget().removeStyleName("insetBorder");
+					}
+					itemToSelect.getWidget().addStyleName("insetBorder");
+					currentSelectedTreeItem = itemToSelect;
+					if (itemToSelect.getUserObject()!=null && itemToSelect.getUserObject() instanceof MetadataObjectWrapper) {
+						MetadataObjectWrapper userObject = (MetadataObjectWrapper) itemToSelect.getUserObject();
+						dataNotification.onObjectSelected(userObject);
+						if (itemToSelect.getWidget() !=null && itemToSelect.getWidget() instanceof Hyperlink) {
+							((Hyperlink) itemToSelect.getWidget()).fireEvent(new ClickEvent() {
+							});
 						}
 					}
 				}

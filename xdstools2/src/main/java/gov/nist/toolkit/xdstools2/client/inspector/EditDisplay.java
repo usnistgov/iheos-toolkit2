@@ -25,6 +25,15 @@ public class EditDisplay extends CommonDisplay {
         int row=0;
         boolean b = false;
 
+
+        // TODO:
+       // MU Suppl
+       // 4.2.3.2.32 DocumentEntry.version
+       //  "The first version of a DocumentEntry shall have a value of 1."
+       // Check this value for an Integer. If not, disable update if value is null.
+       // Use Metadata.MU_NOT_SUPPORTED
+
+
         try {
             if (!de.isFhir) {
                 ft.setHTML(row, 0, bold("objectType", b));
