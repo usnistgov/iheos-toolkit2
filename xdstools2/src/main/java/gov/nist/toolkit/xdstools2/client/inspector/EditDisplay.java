@@ -33,6 +33,9 @@ public class EditDisplay extends CommonDisplay {
        // Check this value for an Integer. If not, disable update if value is null.
        // Use Metadata.MU_NOT_SUPPORTED
 
+       // TODO:
+       // Call documententry validators on 'Validate' button onClick
+
 
         try {
             if (!de.isFhir) {
