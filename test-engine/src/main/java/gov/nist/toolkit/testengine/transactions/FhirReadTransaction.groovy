@@ -5,6 +5,7 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.fhir.context.ToolkitFhirContext
 import gov.nist.toolkit.fhir.server.utility.FhirClient
 import gov.nist.toolkit.fhir.server.utility.FhirId
+import gov.nist.toolkit.testengine.engine.FhirContentFormat
 import gov.nist.toolkit.testengine.engine.StepContext
 import gov.nist.toolkit.testengine.fhir.FhirSupport
 import gov.nist.toolkit.utilities.xml.Util
@@ -24,9 +25,10 @@ import org.hl7.fhir.instance.model.api.IBaseResource
 class FhirReadTransaction extends BasicFhirTransaction {
     // if both of these are specified, requestType takes precesencse
     boolean requestXml = false
-    String requestType = null
     String referenceDocument = null  // relative path
-    String requestAcceptType = null
+
+    String requestType = null  // set in TestPlan
+    String requestAcceptType = null  // set in TestPlan
 
     boolean mustReturn = false
     boolean mustBeSuperseded = false
@@ -69,52 +71,62 @@ class FhirReadTransaction extends BasicFhirTransaction {
         endpoint = fullEndpoint  // so it shows up on the UI
         reportManager.add('Url', fullEndpoint)
 
+        requestXml = transactionSettings.fhirContentFormat == FhirContentFormat.XML
+
         def acceptType = (requestXml) ? 'application/fhir+xml' : 'application/fhir+json'
+
+        // Override in TestPlan
         if (requestType)
             acceptType = requestType
         if (requestAcceptType)
             acceptType = requestAcceptType
+
         testLog.add_name_value(instruction_output, 'OutHeader', "GET ${fullEndpoint}")
 
         BasicStatusLine statusLine
         String content
         byte[] contentBytes
         String returnedContentType
-        if (requestAcceptType) {
+//        if (requestAcceptType) {
             (statusLine, returnedContentType, contentBytes) = FhirClient.getBytes(new URI(fullEndpoint), acceptType)
             content = new String(contentBytes)
-            if (referenceDocument) {
-                File referenceFile = new File(testConfig.testplanDir, referenceDocument)
-                byte[] referenceBytes = referenceFile.bytes
+        if (returnedContentType != acceptType)
+            stepContext.set_error("Requested Content-Type ${acceptType}<br />Received ${returnedContentType} header")
+        boolean isJson = content.trim().startsWith('{')
+        if (isJson && !returnedContentType.contains('json'))
+            stepContext.set_error("Requested Content-Type ${acceptType}<br />Received ${(isJson) ? 'JSON' : 'XML'} content")
+        if (referenceDocument) {
+            File referenceFile = new File(testConfig.testplanDir, referenceDocument)
+            byte[] referenceBytes = referenceFile.bytes
 
-                if (returnedContentType.contains('fhir')) {
-                    // returned Binary instead of just the byte stream
-                    IBaseResource returned = FhirSupport.parse(content)
-                    assert returned instanceof Binary, "Since return is type ${returnedContentType}, content must be Binary resource - got ${returned.class.simpleName} instead"
-                    Binary returnedBinary = returned
-                    byte[] returnedBytes = returnedBinary.content
-                    if (referenceBytes !=  returnedBytes) {
-                        stepContext.set_error("Returned bytes do not match those sent")
-                        stepContext.set_error("Sent ${referenceBytes.size()}")
-                        stepContext.set_error("Received ${contentBytes.size()}")
-                        stepContext.set_error(describe(referenceBytes, contentBytes))
-                        return
-                    }
-                } else {
-                    // natural content returned (not a resource)
-                    if (referenceBytes != contentBytes) {
-                        stepContext.set_error("Returned bytes do not match those sent")
-                        stepContext.set_error("Sent ${referenceBytes.size()}")
-                        stepContext.set_error("Received ${contentBytes.size()}")
-                        stepContext.set_error(describe(referenceBytes, contentBytes))
-                        return
-                    }
+            if (returnedContentType.contains('fhir')) {
+                // returned Binary instead of just the byte stream
+                IBaseResource returned = FhirSupport.parse(content)
+                assert returned instanceof Binary, "Since return is type ${returnedContentType}, content must be Binary resource - got ${returned.class.simpleName} instead"
+                Binary returnedBinary = returned
+                byte[] returnedBytes = returnedBinary.content
+                if (referenceBytes !=  returnedBytes) {
+                    stepContext.set_error("Returned bytes do not match those sent")
+                    stepContext.set_error("Sent ${referenceBytes.size()}")
+                    stepContext.set_error("Received ${contentBytes.size()}")
+                    stepContext.set_error(describe(referenceBytes, contentBytes))
                     return
                 }
+            } else {
+                // natural content returned (not a resource)
+                if (referenceBytes != contentBytes) {
+                    stepContext.set_error("Returned bytes do not match those sent")
+                    stepContext.set_error("Sent ${referenceBytes.size()}")
+                    stepContext.set_error("Received ${contentBytes.size()}")
+                    stepContext.set_error(describe(referenceBytes, contentBytes))
+                    return
+                }
+                return
             }
-        } else {
-            (statusLine, content) = FhirClient.get(new URI(fullEndpoint), acceptType)
         }
+//        } else {
+//            (statusLine, content) = FhirClient.get(new URI(fullEndpoint), acceptType)
+//        }
 
         IBaseResource baseResource = null
         Resource returnedResource = null

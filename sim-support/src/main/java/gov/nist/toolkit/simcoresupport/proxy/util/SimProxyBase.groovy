@@ -7,7 +7,6 @@ import gov.nist.toolkit.actortransaction.server.EndpointParser
 import gov.nist.toolkit.configDatatypes.client.FhirVerb
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
-import gov.nist.toolkit.fhir.server.utility.UriBuilder
 import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.simcommon.client.BadSimIdException
 import gov.nist.toolkit.simcommon.client.SimId
@@ -31,7 +30,6 @@ import org.apache.http.HttpRequest
 import org.apache.http.HttpResponse
 import org.apache.log4j.Logger
 import org.hl7.fhir.dstu3.model.Resource
-
 /**
  *
  */
@@ -197,16 +195,6 @@ public class SimProxyBase {
             clientTransactionType = endpoint.transactionType
             fhirVerb = endpoint.fhirVerb
         }
-        URI urix = UriBuilder.build(uri)
-//        if (urix.query) {  // to distringuish query from read
-//            clientTransactionType = TransactionType.find(endpoint.transactionTypeName)
-//            fhirVerb = FhirVerb.QUERY
-//        }
-//        if (!clientTransactionType) {
-//            clientTransactionType = (clientActorType.transactions.contains(endpoint.transactionType)) ?  endpoint.transactionType : null
-//        }
-//        if (!clientTransactionType && clientActorType.transactions.contains(TransactionType.FHIR))
-//            clientTransactionType = TransactionType.FHIR  // probably a read
         if (!clientTransactionType) return handleEarlyException(new Exception("TransactionType name was ${endpoint.transactionTypeName}"))
         simId = SimIdParser.parse(uri)
         logger.info("SimId parsed from URI as ${simId}")
@@ -230,17 +218,10 @@ public class SimProxyBase {
             }
         }
 
-//        transformConfigs =
-//        config.get(SimulatorProperties.simProxyTransformations)?.asList()?.collect { String sce ->
-//            ProxyTransformConfig.parse(sce)
-//        }
-
-
-
-        List<Header> contentTypeHeaders = request.getHeaders('Accept-Encoding') as List
+        List<Header> contentTypeHeaders = request.getHeaders('Accept') as List
         contentTypeHeaders.each { Header h ->
             String types = h.value
-            types.split(';').each { String type ->
+            types.split(',').each { String type ->
                 if (type.contains(':'))
                     type = type.split(':')[1].trim()
                 clientContentTypes << type
@@ -259,7 +240,7 @@ public class SimProxyBase {
         earlyException = e
     }
 
-    static List<String> types = [
+    static List<String> fhirTypes = [
             'application/fhir+json',
             'application/fhir+xml'
     ]
@@ -267,13 +248,14 @@ public class SimProxyBase {
     String chooseContentType() {
         if (clientContentTypes.empty)
             return 'application/fhir+json'
-        def xx = types.intersect(clientContentTypes)
+        def xx = fhirTypes.intersect(clientContentTypes)
         if (xx) return xx[0]
         return 'application/fhir+json'
     }
 
+
     boolean isNonTradionalContentTypeRequested() {
-        !clientContentTypes.empty && !types.contains(clientContentTypes[0])
+        !clientContentTypes.empty && !fhirTypes.contains(clientContentTypes[0])
     }
 
     String getRequestedContentType() {

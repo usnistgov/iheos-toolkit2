@@ -37,7 +37,7 @@ class FhirClient implements IFhirSearch {
             HttpPost post = new HttpPost(uri)
             HttpEntity entity = new StringEntity(_body)
             entity.contentType = contentType
-            post.setHeader('Accept-Encoding', contentType)
+            post.setHeader('Accept', contentType)
             post.setEntity(entity)
             response = httpclient.execute(post)
             String responseContentType = response.getFirstHeader('Content-Type')
