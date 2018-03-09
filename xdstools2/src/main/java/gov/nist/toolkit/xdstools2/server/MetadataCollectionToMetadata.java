@@ -247,11 +247,21 @@ public class MetadataCollectionToMetadata {
 	}
 	
 	static public void main(String[] args) {
-		File infile = new File("/Users/bill/dev/testkit/tests/11966/submit/single_doc.xml");
+		File inFile = null;
+		File outFile = null;
+
+		if (args.length==2) {
+			inFile = new File(args[0]);
+			outFile = new File(args[1]);
+		} else {
+		 	inFile = new File("/Users/bill/dev/testkit/tests/11966/submit/single_doc.xml");
+		 	outFile = new File("/Users/bill/tmp/submission.xml");
+		}
+
 		Metadata m = null;
 		
 		try {
-			m = MetadataParser.parseNonSubmission(infile);
+			m = MetadataParser.parseNonSubmission(inFile);
 		} 
 		catch (Exception e) {
 			e.printStackTrace();
@@ -277,7 +287,7 @@ public class MetadataCollectionToMetadata {
 			x.addChild(e);
 		
 		try {
-			Io.stringToFile(new File("/Users/bill/tmp/submission.xml"), new OMFormatter(x).toString());
+			Io.stringToFile(outFile, new OMFormatter(x).toString());
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}

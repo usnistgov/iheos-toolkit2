@@ -20,23 +20,11 @@ import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.interactiondiagram.client.events.DiagramClickedEvent;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
-import gov.nist.toolkit.interactionmodel.shared.TransactionSequenceNotFoundException;
 import gov.nist.toolkit.session.client.logtypes.SectionOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.StepOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
-import org.vectomatic.dom.svg.OMSVGAElement;
-import org.vectomatic.dom.svg.OMSVGDocument;
-import org.vectomatic.dom.svg.OMSVGElement;
-import org.vectomatic.dom.svg.OMSVGGElement;
-import org.vectomatic.dom.svg.OMSVGLineElement;
-import org.vectomatic.dom.svg.OMSVGPathElement;
-import org.vectomatic.dom.svg.OMSVGPolygonElement;
-import org.vectomatic.dom.svg.OMSVGRectElement;
-import org.vectomatic.dom.svg.OMSVGSVGElement;
-import org.vectomatic.dom.svg.OMSVGTSpanElement;
-import org.vectomatic.dom.svg.OMSVGTextElement;
-import org.vectomatic.dom.svg.OMText;
+import org.vectomatic.dom.svg.*;
 import org.vectomatic.dom.svg.utils.OMSVGParser;
 
 import java.util.ArrayList;
@@ -1152,20 +1140,24 @@ public class InteractionDiagram extends Composite {
         });
         */
 
-        OMSVGTextElement text = doc.createSVGTextElement();
-        text.setAttribute("x",""+ll.getLl_stem_center());
-        text.setAttribute("y","" + (LL_BOX_HEIGHT /2));
-        text.setAttribute("dy","3");
-        text.setAttribute("font-family","Verdana");
-        text.setAttribute("font-size","10");
-        text.setAttribute("text-anchor","middle");
+        OMSVGTextElement lineLabel = doc.createSVGTextElement();
+        String[] boxLabel = splitName(name, MAX_LABEL_DISPLAY_LEN, "-");
+        lineLabel =  multiLineLabel(ll.getLl_stem_center(),LL_BOX_HEIGHT/2,boxLabel,9, MAX_LABEL_DISPLAY_LEN);
+
+
+//        OMSVGTextElement text = doc.createSVGTextElement();
+//        text.setAttribute("x",""+ll.getLl_stem_center());
+//        text.setAttribute("y","" + (LL_BOX_HEIGHT /2));
+//        text.setAttribute("dy","3");
+//        text.setAttribute("font-family","Verdana");
+//        text.setAttribute("font-size","10");
+//        text.setAttribute("text-anchor","middle");
 
         OMSVGGElement group = doc.createSVGGElement();
         String shortName = name;
-        List<String> ll_label = new ArrayList<>();
         List<String> actorDetail = new ArrayList<>();
 
-        shortName = getShortName(name,MAX_LL_DISPLAY_NAME);
+//        shortName = getShortName(name,MAX_LL_DISPLAY_NAME);
         if (!name.equals(entity.getProvider()))
             actorDetail.add(name);
         actorDetail.add(entity.getRole());
@@ -1173,10 +1165,13 @@ public class InteractionDiagram extends Composite {
 
         addTooltip(group,actorDetail, HIDE_TOOLTIP_ON_MOUSEOUT);
 
-        OMText textValue = doc.createTextNode(shortName);
-        text.appendChild(textValue);
+//        OMText textValue = doc.createTextNode(shortName);
+//        text.appendChild(textValue);
 
         group.appendChild(rect);
+
+       List<String> ll_label = new ArrayList<>();
+       ll_label.addAll(lineLabel);
 
        ll_label.add(entity.getRole());
        if ("Simulator".equals(entity.getProvider())) {
@@ -1192,12 +1187,27 @@ public class InteractionDiagram extends Composite {
         return ll;
     }
 
-    private String getShortName(String name, int truncateTo) {
-        if (name!=null && name.length()> truncateTo) {
-            return name.substring(0, truncateTo-3) + "...";
+    private String[] splitName(String name, int truncateTo, String trailingString) {
+        String[] lines = new String[3];
+        int numChars = 0;
+        if (name!=null && name.length()>truncateTo && truncateTo>trailingString.length()) {
+             lines[0] = name.substring(0, truncateTo-trailingString.length()) + trailingString;
+             numChars = lines[0].length() - trailingString.length();
+             if (name.length()>numChars) {
+                 lines[1] = name.substring(numChars+1);
+                 if (lines[1].length() > truncateTo) {
+                     lines[1] = lines[1].substring(0,truncateTo);
+                    lines[2] = "...";
+                 }
+             }
+             return lines;
         }
         else
-            return name;
+             return new String[]{name};
+    }
+
+    private String getShortName(String name, int truncateTo) {
+        return splitName(name, truncateTo, "...")[0];
     }
 
     LL getLL(String id) {
