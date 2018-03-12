@@ -36,24 +36,24 @@ import java.util.Map;
  * Created by skb1 Sunil.Bhaskarla on 8/12/2016.
  */
 // TODO: Use a style sheet.
+// TODO: Use newer NamedBox class
 public class InteractionDiagram extends Composite {
-
     public static final int NUM_LINES = 3;
     public static final String RGB_RED = "rgb(255,0,0)";
     public static final String RGB_BLUE = "rgb(0,0,255)";
     public static final String RGB_ORANGE = "rgb(255,165,0)";
     public static final int MAX_FIRST_TRAN_REPEAT = 3;
-    private int g_depth = 0;
-    private int g_x = 0;
-    private int g_y = 0;
 
     static final int HALF_CROSS_HEIGHT = 5;
     static final int LINE_HEIGHT = 13;
     static final int LL_BOX_WIDTH = 82;
     static final int LL_BOX_HEIGHT = 50;
     static final int TRANSACTION_PAIR_WIDTH=190;   // request origin | ------ width: 190px ------> | request destination
+    static final int MAX_LL_DISPLAY_NAME = 16;
 
-    static final int MAX_LL_DISPLAY_NAME = 14;
+    private int g_depth = 0;
+    private int g_x = 0;
+    private int g_y = 0;
     private int MAX_LABEL_DISPLAY_LEN = 27;
     private int LL_FEET = 10; // life line feet (extra) lines after the last transaction
     private int ll_margin = 108; // The width of a transaction connector
@@ -384,7 +384,7 @@ public class InteractionDiagram extends Composite {
                     String stepName = sectionOverviewDTO.getStepNames().get(0);
                     StepOverviewDTO stepOverviewDTO = sectionOverviewDTO.getStep(stepName);
 
-                    // Manage display to avoid long monotone diagrams
+                    // Manage display to avoid very long one-transaction type diagrams
                     if (firstTransaction == null) {
                         firstTransaction = stepOverviewDTO.getTransaction();
                         repeatCt++;
@@ -1140,9 +1140,7 @@ public class InteractionDiagram extends Composite {
         });
         */
 
-        OMSVGTextElement lineLabel = doc.createSVGTextElement();
-        String[] boxLabel = splitName(name, MAX_LABEL_DISPLAY_LEN, "-");
-        lineLabel =  multiLineLabel(ll.getLl_stem_center(),LL_BOX_HEIGHT/2,boxLabel,9, MAX_LABEL_DISPLAY_LEN);
+
 
 
 //        OMSVGTextElement text = doc.createSVGTextElement();
@@ -1156,29 +1154,25 @@ public class InteractionDiagram extends Composite {
         OMSVGGElement group = doc.createSVGGElement();
         String shortName = name;
         List<String> actorDetail = new ArrayList<>();
-
 //        shortName = getShortName(name,MAX_LL_DISPLAY_NAME);
         if (!name.equals(entity.getProvider()))
             actorDetail.add(name);
         actorDetail.add(entity.getRole());
         actorDetail.add(entity.getProvider());
-
         addTooltip(group,actorDetail, HIDE_TOOLTIP_ON_MOUSEOUT);
-
 //        OMText textValue = doc.createTextNode(shortName);
 //        text.appendChild(textValue);
-
         group.appendChild(rect);
 
-       List<String> ll_label = new ArrayList<>();
-       ll_label.addAll(lineLabel);
+        OMSVGTextElement providerTextEl = doc.createSVGTextElement();
+        String[] providerNameLabel = splitName(name, MAX_LL_DISPLAY_NAME, "-", true);
+        providerTextEl =  multiLineLabel(ll.getLl_stem_center(),2, providerNameLabel,9, MAX_LL_DISPLAY_NAME);
+        group.appendChild(providerTextEl);
 
-       ll_label.add(entity.getRole());
-       if ("Simulator".equals(entity.getProvider())) {
-           ll_label.add(entity.getProvider());
-       }
-
-        group.appendChild(multiLineLabel(ll.getLl_stem_center(),2,ll_label.toArray(new String[0]),9,MAX_LL_DISPLAY_NAME));
+        OMSVGTextElement roleTextEl = doc.createSVGTextElement();
+        String[] roleLabel = splitName(entity.getRole(), MAX_LL_DISPLAY_NAME, "-", false);
+        roleTextEl =  multiLineLabel(ll.getLl_stem_center(),2 + providerNameLabel.length * LINE_HEIGHT, roleLabel,9, MAX_LL_DISPLAY_NAME);
+        group.appendChild(roleTextEl);
 
         ll.setLlEl(group);
         lls.add(ll);
@@ -1187,18 +1181,23 @@ public class InteractionDiagram extends Composite {
         return ll;
     }
 
-    private String[] splitName(String name, int truncateTo, String trailingString) {
-        String[] lines = new String[3];
-        int numChars = 0;
+    /**
+     * Split string to a maximum of two lines.
+     * @param name
+     * @param truncateTo
+     * @param trailingString
+     * @return
+     */
+    private String[] splitName(String name, int truncateTo, String trailingString, boolean singleLineOnly) {
+        String lineLimitExceededString = "...";
+        String[] lines = new String[2];
         if (name!=null && name.length()>truncateTo && truncateTo>trailingString.length()) {
              lines[0] = name.substring(0, truncateTo-trailingString.length()) + trailingString;
-             numChars = lines[0].length() - trailingString.length();
-             if (name.length()>numChars) {
-                 lines[1] = name.substring(numChars+1);
-                 if (lines[1].length() > truncateTo) {
-                     lines[1] = lines[1].substring(0,truncateTo);
-                    lines[2] = "...";
-                 }
+             int charsRemaining = name.length() - truncateTo;
+             if (charsRemaining > truncateTo) {
+                 lines[1] = name.substring(truncateTo-1, truncateTo*2-lineLimitExceededString.length()) + lineLimitExceededString;
+             } else {
+                 lines[1] = name.substring(truncateTo-1);
              }
              return lines;
         }
@@ -1207,7 +1206,7 @@ public class InteractionDiagram extends Composite {
     }
 
     private String getShortName(String name, int truncateTo) {
-        return splitName(name, truncateTo, "...")[0];
+        return splitName(name, truncateTo, "...", true)[0];
     }
 
     LL getLL(String id) {
