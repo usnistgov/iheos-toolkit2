@@ -43,7 +43,7 @@ class TestContextDialog extends DialogBox {
     private SiteSelectionValidator siteSelectionValidator;
 
 
-    TestContextDialog(ToolWindow toolWindow, SiteManager siteManager, SiteSelectionValidator siteSelectionValidator, String message) {
+    TestContextDialog(final ToolWindow toolWindow, SiteManager siteManager, SiteSelectionValidator siteSelectionValidator, String message) {
         super(true, true);
         this.toolWindow = toolWindow;
         this.siteManager = siteManager;

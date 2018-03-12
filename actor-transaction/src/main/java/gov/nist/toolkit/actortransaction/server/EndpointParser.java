@@ -80,6 +80,8 @@ public class EndpointParser  {
         // if running as tomcat root there is no context
         if (parts.size() >= 4 &&  parts.get(3).equals("sim") || parts.get(3).equals("fsim"))
             index = 4;
+        if (parts.size() >= 5 &&  parts.get(4).equals("sim") || parts.get(4).equals("fsim"))
+            index = 5;
         if (index == -1)
             return null;
         return parts.get(index);

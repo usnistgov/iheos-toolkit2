@@ -18,7 +18,7 @@ public class TestContextView implements ClickHandler {
     private HTML testSessionDescription;
     private SiteSelectionValidator siteSelectionValidator;
 
-    public TestContextView(ToolWindow toolWindow, HTML testSessionDescription, TestContext testContext, SiteSelectionValidator siteSelectionValidator) {
+    public TestContextView(final ToolWindow toolWindow, HTML testSessionDescription, TestContext testContext, SiteSelectionValidator siteSelectionValidator) {
         this.toolWindow = toolWindow;
         this.testSessionDescription = testSessionDescription;
         this.testContext = testContext;
