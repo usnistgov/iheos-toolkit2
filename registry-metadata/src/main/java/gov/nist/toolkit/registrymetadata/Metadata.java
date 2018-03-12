@@ -1892,6 +1892,8 @@ public class Metadata {
 				"targetObject", null, targetUuid));
 		assoc.addAttribute(MetadataSupport.om_factory.createOMAttribute("id",
 				null, allocate_id()));
+
+		addAssociation(assoc);
 		return assoc;
 	}
 
