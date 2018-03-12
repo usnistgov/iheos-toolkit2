@@ -126,17 +126,24 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 					menuPanel.setSpacing(10);
 				}
 
+				testSessionSelector = new TestSessionSelector(getTestSessionManager().getTestSessions(), getTestSessionManager().getCurrentTestSession());
+				testSessionSelector.setVisibility(false);
+				menuPanel.add(testSessionSelector.asWidget());
+
 				// Only single user mode has a selectable test session drop down
 				if (!multiUserModeEnabled && !casModeEnabled) {
 					getTestSessionManager().setCurrentTestSession("default");
-					menuPanel.add(new TestSessionSelector(getTestSessionManager().getTestSessions(), getTestSessionManager().getCurrentTestSession()).asWidget());
+					enableTestSessionSelection();
 				} else {
 					if (multiUserModeEnabled && !casModeEnabled) {
 						// Only two options: 1) Change Test Session and 2) New Test Session
-						menuPanel.add(new MultiUserTestSessionSelector( Xdstools2.this).asWidget());
+						multiUserTestSessionSelector = new MultiUserTestSessionSelector( Xdstools2.this);
+						menuPanel.add(multiUserTestSessionSelector.asWidget());
 					} else if (casModeEnabled) {
 						// Only one option: 1) Change Test Session
-						menuPanel.add(new CasUserTestSessionSelector(Xdstools2.this).asWidget());
+						CasUserTestSessionSelector sel = new CasUserTestSessionSelector(Xdstools2.this);
+						multiUserTestSessionSelector = sel;
+						menuPanel.add(sel.asWidget());
 					}
 				}
 				menuPanel.add(new SignInSelector());
@@ -158,6 +165,21 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 			}
 
 		});
+	}
+
+	public void exitTestSession() {
+		if (multiUserTestSessionSelector != null)
+			multiUserTestSessionSelector.exitTestSession();
+	}
+
+	private MultiUserTestSessionSelector multiUserTestSessionSelector = null;
+	private TestSessionSelector testSessionSelector = null;
+
+	public void enableTestSessionSelection() {
+		if ((!multiUserModeEnabled && !casModeEnabled) || PasswordManagement.isSignedIn)
+			testSessionSelector.setVisibility(true);
+		else
+			testSessionSelector.setVisibility(false);
 	}
 
 	static public void addtoMainMenu(Widget w) { ME.mainMenuPanel.add(w); }

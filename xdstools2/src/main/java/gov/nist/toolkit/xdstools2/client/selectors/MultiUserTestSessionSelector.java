@@ -21,15 +21,17 @@ import gov.nist.toolkit.xdstools2.shared.command.request.BuildTestSessionCommand
  *
  */
 public class MultiUserTestSessionSelector {
-    HTML currentTestSession = new HTML("");
-    TextBox textBox = new TextBox();
-    HorizontalPanel panel;
-    boolean canChangeTs = false;
-    boolean canCreateNewTs = false;
-    boolean canDeleteTs = false;
-    String userMode;
-    Button changeTestSessionButton = new Button("Change");
-    Button delTestSessionButton = new Button("Delete");
+    private HTML currentTestSession = new HTML("");
+    private TextBox textBox = new TextBox();
+    private HorizontalPanel panel;
+    private boolean canChangeTs = false;
+    private boolean canCreateNewTs = false;
+    private boolean canDeleteTs = false;
+    private boolean canExitTs = true;
+    private String userMode;
+    private Button changeTestSessionButton = new Button("Change");
+    private Button delTestSessionButton = new Button("Delete");
+    private Button exitTestSessionButton = new Button("Exit");
     TabWatcher tabWatcher;
 
     public MultiUserTestSessionSelector(TabWatcher tabWatcher) {
@@ -63,6 +65,9 @@ public class MultiUserTestSessionSelector {
         }
         if (canChangeTs) {
             buildChange();
+        }
+        if (canExitTs) {
+            buildExit();
         }
         if (canCreateNewTs) {
             buildNew();
@@ -222,6 +227,53 @@ public class MultiUserTestSessionSelector {
                 }
             }
         });
+    }
+
+    private void buildExit() {
+        //
+        // Exit Button
+        //
+        Button exitTestSessionButton = new Button("Exit");
+        panel.add(exitTestSessionButton);
+        exitTestSessionButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent clickEvent) {
+                if (!"".equals(currentTestSession.getText()) && !"None.".equals(currentTestSession.getText())) {
+                    VerticalPanel body = new VerticalPanel();
+                    String alertMessage = "";
+                    if ((tabWatcher!=null && tabWatcher.getTabCount()>0)) {
+                        alertMessage = "<b>Note</b>: This action will close " + tabWatcher.getTabCount() + " tab(s).";
+                    }
+                    body.add(new HTML("<p>Exit test session?<br/>"
+                            + alertMessage
+                            + "</p>"));
+
+                    SafeHtmlBuilder safeHtmlBuilder = new SafeHtmlBuilder();
+                    if (!"".equals(alertMessage)) {
+                        safeHtmlBuilder.appendHtmlConstant("<img src=\"icons2/ic_announcement_black_36dp_1x.png\" title=\"Alert\" height=\"16\" width=\"16\"/>&nbsp;");
+                    }
+                    safeHtmlBuilder.appendHtmlConstant("Exit Test Session");
+
+                    Button actionBtn =  new Button("Ok");
+                    actionBtn.addClickHandler(new ClickHandler() {
+                        @Override
+                        public void onClick(ClickEvent clickEvent) {
+                            doChange("");
+                        }
+                    });
+                    new PopupMessage(safeHtmlBuilder.toSafeHtml() , body, actionBtn);
+                } else {
+                    doChange("");
+                }
+            }
+        });
+
+        panel.add(new HTML("&nbsp;&nbsp;"));
+
+    }
+
+    public void exitTestSession() {
+        doChange("");
     }
 
     private void change(final String testSession) {

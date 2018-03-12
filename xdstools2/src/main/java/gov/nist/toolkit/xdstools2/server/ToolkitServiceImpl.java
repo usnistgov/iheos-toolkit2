@@ -463,8 +463,8 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<String> getTestSessionNames(CommandContext request) throws Exception {
         installCommandContext(request);
-        if (Installation.instance().propertyServiceManager().isMultiuserMode())
-            throw new ToolkitRuntimeException("Function getTestSessionNames() not available in MulitUserMode");
+//        if (Installation.instance().propertyServiceManager().isMultiuserMode())
+//            throw new ToolkitRuntimeException("Function getTestSessionNames() not available in MulitUserMode");
         return TestSessionServiceManager.INSTANCE.getNames();
     }
 
