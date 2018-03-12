@@ -249,10 +249,16 @@ public class MetadataCollectionToMetadata {
 	static public void main(String[] args) {
 		File inFile = null;
 		File outFile = null;
+		boolean metadataV2 = false;
 
-		if (args.length==2) {
-			inFile = new File(args[0]);
-			outFile = new File(args[1]);
+		if (args.length==3) {
+			try {
+				inFile = new File(args[0]);
+				outFile = new File(args[1]);
+				metadataV2 = Boolean.parseBoolean(args[2]);
+			} catch (Exception ex) {
+				throw new IllegalArgumentException(ex);
+			}
 		} else {
 		 	inFile = new File("/Users/bill/dev/testkit/tests/11966/submit/single_doc.xml");
 		 	outFile = new File("/Users/bill/tmp/submission.xml");
@@ -275,7 +281,10 @@ public class MetadataCollectionToMetadata {
 		List<OMElement> eles = null;
 		
 		try {
-			eles = m2.getV3();
+		    if (metadataV2) {
+		    	eles = m2.getV2();
+			} else
+				eles = m2.getV3();
 		} catch (XdsInternalException e1) {
 			e1.printStackTrace();
 			System.exit(1);
