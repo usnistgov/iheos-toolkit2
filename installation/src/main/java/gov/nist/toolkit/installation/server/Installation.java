@@ -217,14 +217,30 @@ public class Installation {
     }
 
     public List<TestSession> getTestSessions() {
-        List<TestSession> ts = new ArrayList<>();
-        File tlsFile = testLogCacheDir();
+        Set<TestSession> ts = new HashSet<>();
 
-        for (File tlFile : tlsFile.listFiles()) {
-            if (tlFile.isDirectory() && !tlFile.getName().startsWith("."))
-                ts.add(new TestSession(tlFile.getName()));
+        for (File file : testLogCacheDir().listFiles()) {
+            if (file.isDirectory() && !file.getName().startsWith("."))
+                ts.add(new TestSession(file.getName()));
         }
-        return ts;
+
+        for (File file : actorsDir().listFiles()) {
+            if (file.isDirectory() && !file.getName().startsWith("."))
+                ts.add(new TestSession(file.getName()));
+        }
+
+        for (File file : simDbFile().listFiles()) {
+            if (file.isDirectory() && !file.getName().startsWith("."))
+                ts.add(new TestSession(file.getName()));
+        }
+
+        List<TestSession> returns = new ArrayList<>();
+        returns.addAll(ts);
+        return returns;
+    }
+
+    public boolean testSessionExists(TestSession testSession) {
+        return getTestSessions().contains(testSession);
     }
 
     public void overrideToolkitPort(String port) {

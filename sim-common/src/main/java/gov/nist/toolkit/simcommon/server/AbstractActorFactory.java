@@ -21,6 +21,7 @@ import gov.nist.toolkit.utilities.id.UuidAllocator;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.NoSimulatorException;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
+import org.apache.http.annotation.Obsolete;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -405,9 +406,25 @@ public abstract class AbstractActorFactory {
 		return simdb.getTransInstances(actor.toString(), trans);
 	}
 
+	// update internal to sim to align with current simId
+	static public void updateSimConfiguration(SimId simId) throws Exception {
+		SimulatorConfig config = loadSimulator(simId, false);
+
+		config.setId(simId);
+
+		SimulatorConfigElement ele = config.getConfigEle(name);
+		ele.setStringValue(simId.toString());
+
+		new GenericSimulatorFactory().saveConfiguration(config);
+
+		new SimDb(simId).updateSimConfiguration();
+	}
+
+	@Obsolete
 	static public void renameSimFile(String simFileSpec, String newSimFileSpec)
 			throws Exception {
-		new SimDb().rename(simFileSpec, newSimFileSpec);
+		throw new Exception("Not Implemented");
+//		new SimDb().rename(simFileSpec, newSimFileSpec);
 	}
 
 	static public List<SimulatorConfig> getSimConfigs(ActorType actorType, TestSession testSession) {

@@ -41,9 +41,13 @@ class FhirClient implements IFhirSearch {
             post.setEntity(entity)
             response = httpclient.execute(post)
             String responseContentType = response.getFirstHeader('Content-Type')
-            responseContentType = responseContentType.split(':')[1].trim()
-            if (responseContentType != contentType)
-                error = "Requsted Content-Type ${contentType}\nReceived ${responseContentType}"
+            if (responseContentType) {
+                responseContentType = responseContentType.split(':')[1].trim()
+                if (responseContentType != contentType)
+                    error = "Requsted Content-Type ${contentType}\nReceived ${responseContentType}"
+            } else {
+                responseContentType = 'text/plain'
+            }
             FhirId locationHeader
             String lhdr = response.getFirstHeader('Location')
             if (lhdr) {

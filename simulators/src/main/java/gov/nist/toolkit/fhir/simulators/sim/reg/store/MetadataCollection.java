@@ -1,13 +1,12 @@
 package gov.nist.toolkit.fhir.simulators.sim.reg.store;
 
-import gov.nist.toolkit.simcommon.server.DbObjectType;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
+import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegIndex.AssocType;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.utilities.id.UuidAllocator;
-import gov.nist.toolkit.commondatatypes.MetadataSupport;
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegIndex.AssocType;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -313,23 +312,15 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 		return null;
 	}
 
+	// compliment to storeMetadata(OMElement, boolean)
 	public Metadata loadRo(String id) throws MetadataException, XdsInternalException {
 		Ro ro = getRo(id);
 		if (ro == null)
 			return null;
-		File f = ro.getFile();
+		File f = regIndex.getAbsolutePathForObject(ro).toFile(); //ro.getFile();
 		Metadata m = MetadataParser.parseNonSubmission(f);
 		attachAvailabilityStatus(m);
 		m = attachFolderLastUpdateTime(m);
-		return m;
-	}
-
-	public Metadata loadRawRo(String id) throws MetadataValidationException, MetadataException, XdsInternalException {
-		Ro ro = getRo(id);
-		if (ro == null)
-			return null;
-		File f = ro.getFile();
-		Metadata m = MetadataParser.parseNonSubmission(f);
 		return m;
 	}
 
@@ -478,6 +469,7 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 		dirty = true;
 	}
 
+	// compliment to loadRo(String)
 	private void storeMetadata(OMElement ele,  boolean overwriteOk) throws IOException, MetadataException, XdsInternalException {
 		String id = Metadata.getId(ele);
 		Ro ro = getRo(id);
@@ -485,19 +477,14 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 			logger().debug("model " + id + " not found in metadata index");
 			throw new XdsInternalException("MetadataCollection#storeMetadata: index corrupted");
 		}
-		File rof = regIndex.getSimDb().getObjectFile(DbObjectType.REGISTRY, id);
 
-		if (rof == null)
-			throw new MetadataException("Object with id " + id + " cannot be persisted, the id must be a UUID", null);
+		File rof = regIndex.installInternalPath(ro);
 
 		if (!overwriteOk && rof.exists())
 			throw new MetadataException("Object with id " + id + " already exists in Registry", null);
 
-		ro.pathToMetadata = rof.toString();
-
 		OMElement wrapper = MetadataSupport.createElement("LeafRegistryObjectList", MetadataSupport.ebRIMns3);
 		wrapper.addChild(ele);
-
 
 		Io.stringToFile(rof, new OMFormatter(wrapper).toString());
 	}

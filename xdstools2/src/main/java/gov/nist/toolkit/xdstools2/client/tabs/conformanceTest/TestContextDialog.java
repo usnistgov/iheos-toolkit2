@@ -4,26 +4,16 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.installation.shared.ToolkitUserMode;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.StringSort;
 import gov.nist.toolkit.xdstools2.client.ErrorHandler;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
-import gov.nist.toolkit.xdstools2.client.command.command.AddTestSessionCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.ClearTestSessionCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.GetAssignedSiteForTestSessionCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.GetSiteNamesCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.GetSitesForTestSessionCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.GetTestSessionNamesCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.SetAssignedSiteForTestSessionCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.*;
+import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
+import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
@@ -141,6 +131,15 @@ class TestContextDialog extends DialogBox {
 
         clearTestSessionButton.addClickHandler(new ClearTestSessionButtonClickHandler());
 
+        // changed elsewhere
+        ClientUtils.INSTANCE.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
+            @Override
+            public void onTestSessionChanged(TestSessionChangedEvent event) {
+                if (event.getChangeType() == TestSessionChangedEvent.ChangeType.SELECT) {
+                    toolWindow.setCurrentTestSession(event.getValue());                }
+            }
+        });
+
         this.add(panel);
     }
 
@@ -220,6 +219,10 @@ class TestContextDialog extends DialogBox {
                     selectSite(result);
                 }
             }.run(ClientUtils.INSTANCE.getCommandContext());
+
+            loadSites();
+
+            ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, newTestSession));
         }
     }
 

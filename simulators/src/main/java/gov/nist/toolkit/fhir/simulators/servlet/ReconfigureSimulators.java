@@ -8,6 +8,7 @@ import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
+import gov.nist.toolkit.simcommon.server.AbstractActorFactory;
 import gov.nist.toolkit.simcommon.server.GenericSimulatorFactory;
 import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
@@ -21,6 +22,7 @@ import javax.servlet.http.HttpServlet;
  *   Toolkit Host
  *   Toolkit Port
  *   Toolkit TLS Port
+ *   Simulator ID
  */
 public class ReconfigureSimulators extends HttpServlet {
     private String configuredHost;
@@ -55,7 +57,6 @@ public class ReconfigureSimulators extends HttpServlet {
 
             for (SimId simId : SimDb.getAllSimIds(testSession)) {
                 try {
-                    logger.info("Reconfiguring " + simId);
                     reconfigure(simId);
                 } catch (Throwable e) {
                     logger.fatal("Reconfigure of sim " + simId + " failed - " + ExceptionUtil.exception_details(e));
@@ -65,10 +66,18 @@ public class ReconfigureSimulators extends HttpServlet {
     }
 
     public void reconfigure(SimId simId) {
+        String simIdString = simId.toString();
         boolean error = false;
         boolean updated = false;
         SimulatorConfig config;
-        logger.info("Reconfiguring Simulator " + simId.toString());
+        logger.info("Reconfiguring Simulator " + simIdString);
+
+        try {
+            AbstractActorFactory.updateSimConfiguration(simId);
+        } catch (Exception e) {
+            logger.error("    updateSimConfiguration failed: " + ExceptionUtil.exception_details(e, 5));
+        }
+
         try {
             config = new SimDb().getSimulator(simId);
         } catch (Exception e) {
@@ -131,6 +140,13 @@ public class ReconfigureSimulators extends HttpServlet {
                     ele.setStringValue(ep.getEndpoint());
                     updated = true;
                 }
+            }
+
+            if (!ep.getSimId().equals(simIdString)) {
+                ep.setSimId(simIdString);
+                logger.info("...to " + ep.getEndpoint());
+                ele.setStringValue(ep.getEndpoint());
+                updated = true;
             }
         }
 

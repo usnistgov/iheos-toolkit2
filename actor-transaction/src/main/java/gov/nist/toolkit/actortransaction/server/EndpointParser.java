@@ -73,6 +73,30 @@ public class EndpointParser  {
         }
     }
 
+    public String getSimId() {
+        int index = -1;
+        if (parts.size() >= 3 &&  parts.get(2).equals("sim") || parts.get(2).equals("fsim"))
+            index = 3;
+        // if running as tomcat root there is no context
+        if (parts.size() >= 4 &&  parts.get(3).equals("sim") || parts.get(3).equals("fsim"))
+            index = 4;
+        if (index == -1)
+            return null;
+        return parts.get(index);
+    }
+
+    public void setSimId(String simid) {
+        int index = -1;
+        if (parts.size() >= 3 &&  parts.get(2).equals("sim") || parts.get(2).equals("fsim"))
+            index = 3;
+        // if running as tomcat root there is no context
+        if (parts.size() >= 4 &&  parts.get(3).equals("sim") || parts.get(3).equals("fsim"))
+            index = 4;
+        if (index == -1)
+            return;
+        parts.set(index, simid);
+    }
+
     public String getProtocol() {
         String[] cparts = parts.get(0).split(":");
         if (cparts.length < 1) return "";

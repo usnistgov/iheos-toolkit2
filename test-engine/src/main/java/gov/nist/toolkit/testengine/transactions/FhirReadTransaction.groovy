@@ -90,6 +90,8 @@ class FhirReadTransaction extends BasicFhirTransaction {
 //        if (requestAcceptType) {
             (statusLine, returnedContentType, contentBytes) = FhirClient.getBytes(new URI(fullEndpoint), acceptType)
             content = new String(contentBytes)
+        if (returnedContentType.contains(';'))
+            returnedContentType = returnedContentType.split(';')[0]
         if (returnedContentType != acceptType)
             stepContext.set_error("Requested Content-Type ${acceptType}<br />Received ${returnedContentType} header")
         boolean isJson = content.trim().startsWith('{')

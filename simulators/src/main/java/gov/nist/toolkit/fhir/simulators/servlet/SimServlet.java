@@ -768,7 +768,7 @@ public class SimServlet  extends HttpServlet {
 		synchronized(config) {
 			regIndex = (RegIndex) servletContext.getAttribute("Reg_" + simid);
 			if (regIndex == null) {
-				logger.debug("Creating new RegIndex for " + simid);
+				logger.debug("Creating new RegIndex for " + simid + " in in-memory cache");
 				regIndex = new RegIndex(registryIndexFile, simid);
 				regIndex.setSimDb(db);
 				servletContext.setAttribute("Reg_" + simid, regIndex);

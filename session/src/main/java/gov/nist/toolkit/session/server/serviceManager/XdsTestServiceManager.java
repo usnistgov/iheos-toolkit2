@@ -822,6 +822,8 @@ public class XdsTestServiceManager extends CommonService {
 		List<File> testLogDirs = new ArrayList<>();
 		TestLogCache testLogCache = getTestLogCache();
 		File sessionDir = testLogCache.getSessionDir(testSession);
+		if (!sessionDir.exists())
+			return testLogDirs;
 		File[] files = sessionDir.listFiles();
 		for (File file : files) {
 			if (!file.isDirectory()) continue;
@@ -1290,10 +1292,13 @@ public class XdsTestServiceManager extends CommonService {
 	}
 
 	public void setAssignedSiteForTestSession(TestSession testSession, String siteName) throws IOException {
+		if (!Installation.instance().testSessionExists(testSession))
+			throw new IOException("Test Session " + testSession + " does not exist");
 		TestLogCache testLogCache = getTestLogCache();
 		File testSessionDir = testLogCache.getSessionDir(testSession);
-		if (!testSessionDir.exists() || !testSessionDir.isDirectory())
-			throw new IOException("Test Session " + testSession + " does not exist");
+		testSessionDir.mkdirs();
+//		if (!testSessionDir.exists() || !testSessionDir.isDirectory())
+//			throw new IOException("Test Session " + testSession + " does not exist");
 		if (siteName == null) {
 			Io.delete(new File(testSessionDir, SITEFILE));
 		} else {
