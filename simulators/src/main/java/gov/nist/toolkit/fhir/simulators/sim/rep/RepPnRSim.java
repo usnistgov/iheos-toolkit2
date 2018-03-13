@@ -203,11 +203,11 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 						// prefer TLS for Register transaction
 						endpoint = simulatorConfig.get(SimulatorProperties.registerTlsEndpoint).asString();
 					}
-					if (endpoint == null)
+					if (endpoint == null || endpoint.equals(""))
 						endpoint = simulatorConfig.get(SimulatorProperties.registerEndpoint).asString();
 				} catch (Exception e) {
 				}
-				if (endpoint == null) {
+				if (endpoint == null || endpoint.equals("")) {
 					logger.error("No register endpoint configured");
 					er.err(Code.XDSRepositoryError, "No register endpoint configured", this, "");
 					return;
