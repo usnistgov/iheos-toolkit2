@@ -120,6 +120,7 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 				multiUserModeEnabled = Boolean.parseBoolean(tkPropMap.get("Multiuser_mode"));
 				casModeEnabled = Boolean.parseBoolean(tkPropMap.get("Cas_mode"));
 				defaultTestSession = tkPropMap.get("Default_Test_Session");
+				defaultTestSessionisProtected = "true".equalsIgnoreCase(tkPropMap.get("Default_Test_Session_is_Protected"));
 
 				// No environment selector for CAS mode, but allow for single user mode and multi user mode
 				if (!casModeEnabled) {
@@ -171,6 +172,15 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 	}
 
 	public String defaultTestSession = null;
+	public boolean defaultTestSessionisProtected = false;
+
+	public boolean isSystemSaveEnabled() {
+		if (PasswordManagement.isSignedIn)
+			return true;
+		if (getTestSessionManager().getCurrentTestSession().equals(defaultTestSession) && defaultTestSessionisProtected)
+			return false;
+		return true;
+	}
 
 	public void exitTestSession() {
 		if (multiUserTestSessionSelector != null)

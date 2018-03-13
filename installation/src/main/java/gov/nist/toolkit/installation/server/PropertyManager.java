@@ -34,6 +34,7 @@ public class PropertyManager {
 	static private final String USING_SSL = "Using_SSL";
 	static private final String SSL_PORT = "SSL_Port";
 	static private final String DEFAULT_TEST_SESSION = "Default_Test_Session";
+	static private final String DEFAULT_TEST_SESSION_IS_PROTECTED = "Default_Test_Session_is_Protected";
 
 
 	private String propFile;
@@ -219,6 +220,11 @@ public class PropertyManager {
 	public String getDefaultTestSession() {
 		loadProperties();
 		return (String) toolkitProperties.get(DEFAULT_TEST_SESSION);
+	}
+
+	public boolean getDefaultTestSessionIsProtected() {
+		loadProperties();
+		return "true".equalsIgnoreCase((String)toolkitProperties.get(DEFAULT_TEST_SESSION_IS_PROTECTED));
 	}
 
 	public String getDefaultEnvironmentName() {

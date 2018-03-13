@@ -161,6 +161,10 @@ public class PropertyServiceManager {
 		return getPropertyManager().getDefaultTestSession();
 	}
 
+	public boolean getDefaultTestSessionIsProtected() {
+		return getPropertyManager().getDefaultTestSessionIsProtected();
+	}
+
 	public String getProxyPort() {
 		return getPropertyManager().getProxyPort();
 	}

@@ -23,6 +23,10 @@ class SaveButtonClickHandler implements ClickHandler {
 			new PopupMessage("You must give site a real name before saving");
 			return;
 		}
+		if (!Xdstools2.getInstance().isSystemSaveEnabled()) {
+			new PopupMessage("You don't have permission to create a save/update a System in this Test Session");
+			return;
+		}
 		actorConfigTab.currentEditSite.cleanup();
 		StringBuffer errors = new StringBuffer();
 		actorConfigTab.currentEditSite.validate(errors);

@@ -30,6 +30,11 @@ class DeleteSite implements ClickHandler {
 			new PopupMessage("Must choose site first");
 			return;
 		}
+		if (!Xdstools2.getInstance().isSystemSaveEnabled()) {
+			new PopupMessage("You don't have permission to delete a new System in this Test Session");
+			return;
+		}
+
 		if (PasswordManagement.isSignedIn) {
 			deleteSignedInCallback.onSuccess(true);
 		}
