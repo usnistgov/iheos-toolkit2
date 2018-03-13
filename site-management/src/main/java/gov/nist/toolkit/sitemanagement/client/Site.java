@@ -509,4 +509,8 @@ public class Site  implements IsSerializable, Serializable {
 	public void setOwner(String owner) {
 		this.owner = owner;
 	}
+
+	public boolean hasOwner() {
+		return owner != null;
+	}
 }

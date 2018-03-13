@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import gov.nist.toolkit.simcommon.client.SimIdFactory;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.command.command.DeleteSiteCommand;
@@ -31,7 +32,18 @@ class DeleteSite implements ClickHandler {
 			return;
 		}
 		if (!Xdstools2.getInstance().isSystemSaveEnabled()) {
-			new PopupMessage("You don't have permission to delete a new System in this Test Session");
+			new PopupMessage("You don't have permission to delete a System in this Test Session");
+			return;
+		}
+
+		if (SimIdFactory.isSimId(actorConfigTab.currentEditSite.getName())) {
+			new PopupMessage("You cannot delete a simulator from this tool");
+			return;
+		}
+
+		if (!actorConfigTab.currentEditSite.getOwner().equals(Xdstools2.getInstance().getTestSessionManager().getCurrentTestSession()) &&
+				!PasswordManagement.isSignedIn) {
+			new PopupMessage("You cannot delete a System you do not own");
 			return;
 		}
 
@@ -72,7 +84,8 @@ class DeleteSite implements ClickHandler {
 					actorConfigTab.loadExternalSites();
 					((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireActorsConfigUpdatedEvent();
 				}
-			}.run(new DeleteSiteRequest(ClientUtils.INSTANCE.getCommandContext(),actorConfigTab.currentEditSite.getName()));
+			}.run(new DeleteSiteRequest(ClientUtils.INSTANCE.getCommandContext().withTestSession(actorConfigTab.currentEditSite.getTestSession().getValue()),
+					actorConfigTab.currentEditSite.getName()));
 		}
 
 	};

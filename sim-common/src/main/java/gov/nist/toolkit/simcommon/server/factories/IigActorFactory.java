@@ -57,7 +57,8 @@ public class IigActorFactory extends AbstractActorFactory implements IActorFacto
 
    }
 
-   public Site getActorSite(SimulatorConfig sc, Site site) {
+   @Override
+   public Site buildActorSite(SimulatorConfig sc, Site site) {
       String siteName = sc.getDefaultName();
 
       if (site == null) site = new Site(siteName, sc.getId().getTestSession());

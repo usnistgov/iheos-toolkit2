@@ -46,7 +46,7 @@ public abstract class AbstractActorFactory {
 	 */
 	protected abstract Simulator buildNew(SimManager simm, SimId simId, boolean configureBase) throws Exception;
 	protected abstract void verifyActorConfigurationOptions(SimulatorConfig config) throws Exception;
-	public abstract Site getActorSite(SimulatorConfig asc, Site site) throws NoSimulatorException;
+	public abstract Site buildActorSite(SimulatorConfig asc, Site site) throws NoSimulatorException;
 	public abstract List<TransactionType> getIncomingTransactions();
 
 	private static boolean initialized = false;
@@ -78,6 +78,13 @@ public abstract class AbstractActorFactory {
 		}
 		initialized = true;
 		return theFactories;
+	}
+
+	public Site getActorSite(SimulatorConfig asc, Site site) throws NoSimulatorException {
+		Site finalSite = buildActorSite(asc, site);
+		if (finalSite == null) return null;
+		finalSite.setOwner(asc.getTestSession().getValue());
+		return finalSite;
 	}
 
 	public static boolean isInitialized() {

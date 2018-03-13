@@ -104,7 +104,7 @@ class SimProxyFactory extends AbstractActorFactory implements IActorFactory{
      * @throws NoSimulatorException
      */
     @Override
-    Site getActorSite(SimulatorConfig asc, Site site) throws NoSimulatorException {
+    Site buildActorSite(SimulatorConfig asc, Site site) throws NoSimulatorException {
         Site aSite = (site) ? site : new Site(asc.id.toString(), asc.id.testSession)
 
         if (!asc.get(SimulatorProperties.isProxyFrontEnd).asBoolean())

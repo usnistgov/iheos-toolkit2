@@ -55,7 +55,8 @@ public class RecipientActorFactory  extends AbstractActorFactory implements IAct
 
 	}
 
-	public Site getActorSite(SimulatorConfig sc, Site site) {
+	@Override
+	public Site buildActorSite(SimulatorConfig sc, Site site) {
 		String siteName = sc.getDefaultName();
 
 		if (site == null)
