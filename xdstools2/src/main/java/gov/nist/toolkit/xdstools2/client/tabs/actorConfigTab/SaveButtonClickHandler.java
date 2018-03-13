@@ -19,20 +19,24 @@ class SaveButtonClickHandler implements ClickHandler {
 	}
 	
 	public void onClick(ClickEvent event) {
+		save();
+	}
+
+	public boolean save() {
 		if (actorConfigTab.currentEditSite.getName().equals(actorConfigTab.newSiteName)) {
 			new PopupMessage("You must give site a real name before saving");
-			return;
+			return false;
 		}
 		if (!Xdstools2.getInstance().isSystemSaveEnabled()) {
 			new PopupMessage("You don't have permission to create a save/update a System in this Test Session");
-			return;
+			return false;
 		}
 		actorConfigTab.currentEditSite.cleanup();
 		StringBuffer errors = new StringBuffer();
 		actorConfigTab.currentEditSite.validate(errors);
 		if (errors.length() > 0) {
 			new PopupMessage(errors.toString());
-			return;
+			return false;
 		}
 
 		if (PasswordManagement.isSignedIn) {
@@ -46,11 +50,10 @@ class SaveButtonClickHandler implements ClickHandler {
 				((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireActorsConfigUpdatedEvent();
 			} else {
 				new PopupMessage("You must be signed in as admin");
+				return false;
 			}
-//			PasswordManagement.addSignInCallback(actorConfigTab.saveSignedInCallback);
-//
-//			new AdminPasswordDialogBox(actorConfigTab.getTabTopPanel());
 		}
+		return true;
 	}
 
 }

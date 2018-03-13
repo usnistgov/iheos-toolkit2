@@ -1749,5 +1749,14 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         }
     }
 
+    @Override
+    public String promote(PromoteRequest request) {
+        try {
+            siteServiceManager.promoteSiteToDefault(request.getSite().name, request.getTestSession());
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+        return null;
+    }
 
 }

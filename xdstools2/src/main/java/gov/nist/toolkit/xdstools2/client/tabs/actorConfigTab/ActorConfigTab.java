@@ -25,7 +25,6 @@ import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEve
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.NullSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteNamesRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.SaveSiteRequest;
 
@@ -41,6 +40,7 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
 //	private Hyperlink signIn = new Hyperlink();
 	private boolean enableGazelleReload = false;
 	private Button reloadFromGazelleButton;
+	private Button promoteButton;
 	private CheckBox showSims = new CheckBox();
 	
 	Site currentEditSite = null;
@@ -191,6 +191,11 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
 		sitesPanel.add(reloadSitesBtn);
 
 		sitesPanel.add(new HTML("<br />"));
+		promoteButton = new Button("Promote");
+		promoteButton.addClickHandler(new PromoteClickHandler(this));
+		sitesPanel.add(promoteButton);
+
+		sitesPanel.add(new HTML("<br />"));
 		reloadFromGazelleButton = new Button("Reload from Gazelle");
 		reloadFromGazelleButton.addClickHandler(new ReloadSystemFromGazelleClickHandler(this));
 		sitesPanel.add(reloadFromGazelleButton);
@@ -247,15 +252,23 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
 		HTML nameLabel = new HTML(HtmlMarkup.bold("System Name"));
 		actorEditGrid.setWidget(row, 0, nameLabel);
 
+		HTML ownerLabel = new HTML(HtmlMarkup.bold("Owner: " + site.getOwner()));
+		actorEditGrid.setWidget(row, 2, ownerLabel);
+
 		TextBox nameBox = new TextBox();
 		nameBox.setWidth("200px");
 		nameBox.setText(trim(currentEditSite.getName()));
 		nameBox.addChangeHandler(new NameChangedHandler(this, currentEditSite, nameBox));
 		actorEditGrid.setWidget(row, 1, nameBox);
+
 		row++;
 
-		actorEditGrid.setWidget(row, 1, new HTML(HtmlMarkup.bold(getTlsLabel(booleanValues().get(0)) + " Endpoints")));
-		actorEditGrid.setWidget(row, 2, new HTML(HtmlMarkup.bold(getTlsLabel(booleanValues().get(1)) + " Endpoints")));
+		HTML leftHeader = new HTML(HtmlMarkup.bold(getTlsLabel(booleanValues().get(0)) + " Endpoints"));
+		HTML rightHeader = new HTML(HtmlMarkup.bold(getTlsLabel(booleanValues().get(1)) + " Endpoints"));
+		leftHeader.addStyleName("detail-table-header");
+		rightHeader.addStyleName("detail-table-header");
+		actorEditGrid.setWidget(row, 1, leftHeader);
+		actorEditGrid.setWidget(row, 2, rightHeader);
 		row++;
 
 		for (ActorType actorType : TransactionCollection.getActorTypes()) {

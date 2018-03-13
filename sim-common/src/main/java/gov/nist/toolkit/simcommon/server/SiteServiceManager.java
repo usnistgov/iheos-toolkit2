@@ -411,4 +411,19 @@ public class SiteServiceManager {
 		return ActorType.getActorNamesForConfigurationDisplays();
 	}
 
+	public void promoteSiteToDefault(String siteName, TestSession testSession) throws Exception {
+		SeparateSiteLoader srcLoader = new SeparateSiteLoader(testSession);
+		File srcDir = Installation.instance().actorsDir(testSession);
+		Sites sites = srcLoader.load(srcDir, new Sites(testSession));
+		Site site = sites.getSite(siteName, testSession);
+
+		site.setOwner(testSession.getValue());
+
+		SeparateSiteLoader tgtLoader = new SeparateSiteLoader(TestSession.DEFAULT_TEST_SESSION);
+		File tgtDir = Installation.instance().actorsDir(TestSession.DEFAULT_TEST_SESSION);
+		tgtLoader.saveToFile(tgtDir, site);
+
+		srcLoader.delete(srcDir, siteName);
+	}
+
 }
