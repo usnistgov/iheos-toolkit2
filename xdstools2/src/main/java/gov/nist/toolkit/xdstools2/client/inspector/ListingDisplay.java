@@ -163,10 +163,12 @@ public class ListingDisplay {
 				item.addItem(getLogicalItem);
 
 				if (!de.isFhir) {
-					// Allow edit only when this panel is not the right-part of compare.
-                    // When in compare mode, the tree selection is hidden
-					TreeItem mu = new TreeItem(HyperlinkFactory.metadataUpdate(tab, de, "Action: MetadataUpdate"));
-					item.addItem(mu);
+					// "TF-3: Only an Approved DocumentEntry is replaceable."
+					if ("urn:oasis:names:tc:ebxml-regrep:StatusType:Approved".equals(de.status)) {
+						// We should only allow edit when this panel is not the right-part of compare. By chance, when in compare mode, the tree selection is hidden.
+						TreeItem mu = new TreeItem(HyperlinkFactory.metadataUpdate(tab, de, "Action: MetadataUpdate"));
+						item.addItem(mu);
+					}
 				}
 
 			}
