@@ -6,6 +6,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
+import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.command.command.IsTestSessionValidCommand;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
@@ -97,8 +98,9 @@ public class MultiUserTestSessionSelector {
                 if (event.getChangeType() == TestSessionChangedEvent.ChangeType.SELECT) {
                     if (event.getValue()!=null && !"".equals(event.getValue()))
                         currentTestSession.setText(event.getValue());
-                    else
-                        currentTestSession.setText("None.");
+                    else {
+                        currentTestSession.setText(Xdstools2.getInstance().defaultTestSession);
+                    }
                     setDeleteAccess();
                 }
             }
@@ -117,7 +119,11 @@ public class MultiUserTestSessionSelector {
             @Override
             public void onClick(ClickEvent clickEvent) {
                 final String value = currentTestSession.getText();
-                if (value!=null && !"".equals(value)) {
+                if (value == null)
+                    return;
+                if (value.equals(Xdstools2.getInstance().defaultTestSession))
+                    return;
+                if (!"".equals(value)) {
 
                     SafeHtmlBuilder safeHtmlBuilder = new SafeHtmlBuilder();
                     safeHtmlBuilder.appendHtmlConstant("<img src=\"icons2/garbage.png\" title=\"Delete\" height=\"16\" width=\"16\"/>");
@@ -130,10 +136,14 @@ public class MultiUserTestSessionSelector {
                     actionBtn.addClickHandler(new ClickHandler() {
                         @Override
                         public void onClick(ClickEvent clickEvent) {
-                            doChange("");
+                            doChange(Xdstools2.getInstance().defaultTestSession);
                             ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.DELETE, value));
-                            currentTestSession.setText("None.");
+//                            String ts = Xdstools2.getInstance().defaultTestSession;
+//                            if (ts.equals(""))
+//                                ts = "None.";
                             setDeleteAccess();
+                            Xdstools2.getInstance().getTestSessionManager().delete(value);
+                            doChange(Xdstools2.getInstance().defaultTestSession);
                         }
                     });
                     new PopupMessage(safeHtmlBuilder.toSafeHtml() , body, actionBtn);
@@ -238,7 +248,10 @@ public class MultiUserTestSessionSelector {
         exitTestSessionButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent clickEvent) {
-                if (!"".equals(currentTestSession.getText()) && !"None.".equals(currentTestSession.getText())) {
+                String current = currentTestSession.getText();
+                if (current.equals(Xdstools2.getInstance().defaultTestSession))
+                    return;
+                if (!"".equals(current) && !"None.".equals(current)) {
                     VerticalPanel body = new VerticalPanel();
                     String alertMessage = "";
                     if ((tabWatcher!=null && tabWatcher.getTabCount()>0)) {
@@ -258,12 +271,12 @@ public class MultiUserTestSessionSelector {
                     actionBtn.addClickHandler(new ClickHandler() {
                         @Override
                         public void onClick(ClickEvent clickEvent) {
-                            doChange("");
+                            doChange(Xdstools2.getInstance().defaultTestSession);
                         }
                     });
                     new PopupMessage(safeHtmlBuilder.toSafeHtml() , body, actionBtn);
                 } else {
-                    doChange("");
+                    doChange(Xdstools2.getInstance().defaultTestSession);
                 }
             }
         });
@@ -273,11 +286,14 @@ public class MultiUserTestSessionSelector {
     }
 
     public void exitTestSession() {
-        doChange("");
+        if (currentTestSession.equals(Xdstools2.getInstance().defaultTestSession))
+            return;
+        doChange(Xdstools2.getInstance().defaultTestSession);
     }
 
-    private void change(final String testSession) {
-        if (testSession!=null && testSession.equals(currentTestSession.getText()))
+    public void change(final String testSession) {
+        String current = currentTestSession.getText();
+        if (current.equals("") || (testSession!=null && testSession.equals(current)))
             return;
 
         if (!"default".equalsIgnoreCase(testSession) || PasswordManagement.isSignedIn) {
@@ -332,7 +348,7 @@ public class MultiUserTestSessionSelector {
 
     }
 
-    protected void setDeleteAccess() {
+    private void setDeleteAccess() {
         if (canDeleteTs) {
             delTestSessionButton.setEnabled(!"None.".equals(currentTestSession.getText()));
         }
@@ -342,8 +358,11 @@ public class MultiUserTestSessionSelector {
         changeTestSessionButton.setEnabled(textBox.getValue().length()>0 && !textBox.getValue().equals(currentTestSession.getText()));
     }
 
-    private void doChange(String testSession) {
-        textBox.setValue("");
+    public void doChange(String testSession) {
+//        if (Xdstools2.getInstance().defaultTestSession != null)
+//            textBox.setValue(Xdstools2.getInstance().defaultTestSession);
+//        else
+            textBox.setValue("");
         setChangeAccess();
         if (!PasswordManagement.isSignedIn)
             tabWatcher.closeAllTabs();
@@ -358,7 +377,6 @@ public class MultiUserTestSessionSelector {
     }
 
 
-
     private void add() {
         new BuildTestSessionCommand() {
             @Override
@@ -367,6 +385,10 @@ public class MultiUserTestSessionSelector {
                 tabWatcher.closeAllTabs();
             }
         }.run(new CommandContext());
+    }
+
+    public void reload() {
+        Xdstools2.getInstance().getTestSessionManager().load("");
     }
 
     public Widget asWidget() { return panel; }

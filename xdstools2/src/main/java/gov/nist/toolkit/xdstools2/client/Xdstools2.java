@@ -119,6 +119,7 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
                 ClientUtils.INSTANCE.setTkPropMap(tkPropMap);
 				multiUserModeEnabled = Boolean.parseBoolean(tkPropMap.get("Multiuser_mode"));
 				casModeEnabled = Boolean.parseBoolean(tkPropMap.get("Cas_mode"));
+				defaultTestSession = tkPropMap.get("Default_Test_Session");
 
 				// No environment selector for CAS mode, but allow for single user mode and multi user mode
 				if (!casModeEnabled) {
@@ -139,6 +140,8 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 						// Only two options: 1) Change Test Session and 2) New Test Session
 						multiUserTestSessionSelector = new MultiUserTestSessionSelector( Xdstools2.this);
 						menuPanel.add(multiUserTestSessionSelector.asWidget());
+						if (defaultTestSession != null && !defaultTestSession.equals(""))
+							multiUserTestSessionSelector.change(defaultTestSession);
 					} else if (casModeEnabled) {
 						// Only one option: 1) Change Test Session
 						CasUserTestSessionSelector sel = new CasUserTestSessionSelector(Xdstools2.this);
@@ -166,6 +169,8 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 
 		});
 	}
+
+	public String defaultTestSession = null;
 
 	public void exitTestSession() {
 		if (multiUserTestSessionSelector != null)
