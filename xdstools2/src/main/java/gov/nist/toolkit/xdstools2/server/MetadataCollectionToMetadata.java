@@ -16,13 +16,20 @@ import java.util.List;
 
 public class MetadataCollectionToMetadata {
 	Metadata m = new Metadata();
+	boolean allowSymbolicIds = false;
 	
 	static public Metadata buildMetadata(MetadataCollection mc) {
-		MetadataCollectionToMetadata mcm = new MetadataCollectionToMetadata(mc);
+		return buildMetadata(mc, false);
+	}
+
+	static public Metadata buildMetadata(MetadataCollection mc, boolean allowSymbolicIds) {
+		MetadataCollectionToMetadata mcm = new MetadataCollectionToMetadata(mc, allowSymbolicIds);
+		mcm.allowSymbolicIds = allowSymbolicIds;
 		return mcm.m;
 	}
 	
-	MetadataCollectionToMetadata(MetadataCollection mc) {
+	MetadataCollectionToMetadata(MetadataCollection mc, boolean allowSymbolicIds) {
+		this.allowSymbolicIds = allowSymbolicIds;
 		for (DocumentEntry de : mc.docEntries) 
 			buildDocumentEntry(de);
 		for (SubmissionSet ss : mc.submissionSets) 
@@ -46,7 +53,7 @@ public class MetadataCollectionToMetadata {
 		if (de.uniqueId != null && !de.uniqueId.equals(""))
 			m.addDocumentEntryUniqueId(eo, de.uniqueId);
 		
-		if(de.lid != null && !de.lid.equals("") && de.lid.startsWith("urn:uuid:"))
+		if(de.lid != null && !de.lid.equals("") && (de.lid.startsWith("urn:uuid:") || allowSymbolicIds) )
 			m.addLid(eo, de.lid);
 		if (de.version != null && !de.version.equals("") && de.id.startsWith("urn:uuid:"))
 			m.setVersion(eo, de.version);
@@ -276,7 +283,7 @@ public class MetadataCollectionToMetadata {
 		
 		MetadataCollection mc = MetadataToMetadataCollectionParser.buildMetadataCollection(m, "test");
 		
-		Metadata m2 = MetadataCollectionToMetadata.buildMetadata(mc);
+		Metadata m2 = MetadataCollectionToMetadata.buildMetadata(mc, true);
 		
 		List<OMElement> eles = null;
 		
