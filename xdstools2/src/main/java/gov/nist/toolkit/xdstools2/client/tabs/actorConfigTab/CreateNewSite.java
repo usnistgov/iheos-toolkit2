@@ -31,6 +31,7 @@ class CreateNewSite implements ClickHandler {
 			return;
 		}
 		Site site = new Site(ClientUtils.INSTANCE.getCurrentTestSession());
+		site.setOwner(site.getTestSession().getValue());
 		site.setName(this.actorConfigTab.newSiteName);
 		this.actorConfigTab.newActorEditGrid();
 		this.actorConfigTab.displaySite(site);

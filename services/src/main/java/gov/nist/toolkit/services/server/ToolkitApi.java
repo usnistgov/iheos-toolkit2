@@ -250,7 +250,7 @@ public class ToolkitApi {
     }
 
     public List<String> getSiteNames(boolean simAlso, TestSession testSession) {
-        return siteServiceManager().getSiteNames(session.getId(), true, simAlso, testSession);
+        return siteServiceManager().getSiteNames(session.getId(), true, simAlso, testSession, false);
     }
 
     public void setConfig(SimulatorConfig config, String parameterName, String value) {

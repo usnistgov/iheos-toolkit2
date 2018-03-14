@@ -180,7 +180,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<String> getSiteNames(GetSiteNamesRequest request) throws Exception {
         installCommandContext(request);
-        return siteServiceManager.getSiteNames(session().getId(), request.getReload(), request.getSimAlso(), request.getTestSession());
+        return siteServiceManager.getSiteNames(session().getId(), request.getReload(), request.getSimAlso(), request.getTestSession(), request.isQualified());
     }
     @Override
     public Collection<Site> getAllSites(CommandContext commandContext) throws Exception {

@@ -3,6 +3,7 @@ package gov.nist.toolkit.sitemanagement.client;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
 import gov.nist.toolkit.xdsexception.client.TkActorNotFoundException;

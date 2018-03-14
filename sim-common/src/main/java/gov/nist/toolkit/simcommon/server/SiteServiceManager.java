@@ -153,27 +153,27 @@ public class SiteServiceManager {
 
 	}
 
-	public List<String> getSiteNames(String sessionId, boolean reload, boolean returnSimAlso, TestSession testSession)   {
+	public List<String> getSiteNames(String sessionId, boolean reload, boolean returnSimAlso, TestSession testSession, boolean qualified)   {
 		logger.debug(sessionId + ": " + "getSiteNames");
 
 		try {
 			if (returnSimAlso) {  // implemented as return sim ONLY???
 				List<String> names = new ArrayList<>();
 				for (Site s : getAllSites(sessionId, testSession))
-					names.add(s.getName());
+					names.add((qualified)? getQualifiedName(s) : s.getName());
 				return names;
 			} else {
 				Set<String> names = new HashSet<>();
 				Sites sites = getCommonSites(testSession);
 				if (sites != null) {
 					for (Site s : sites.asCollection())
-						names.add(s.getName());
+						names.add((qualified)? getQualifiedName(s) : s.getName());
 				}
 				if (!testSession.equals(TestSession.DEFAULT_TEST_SESSION)) {
 					sites = getCommonSites(TestSession.DEFAULT_TEST_SESSION);
 					if (sites != null) {
 						for (Site s : sites.asCollection())
-							names.add(s.getName());
+							names.add((qualified)? getQualifiedName(s) : s.getName());
 					}
 				}
 				List<String> nameList = new ArrayList<>();
@@ -186,6 +186,13 @@ public class SiteServiceManager {
 			logger.error(ExceptionUtil.exception_details(e));
 			return new ArrayList<>();
 		}
+	}
+
+	private String getQualifiedName(Site s) {
+		TestSession owningTestSession = (s.getOwner() == null) ? TestSession.DEFAULT_TEST_SESSION : new TestSession(s.getOwner());
+		if (Installation.instance().testSessionExists(owningTestSession))
+			return owningTestSession.getValue() + ":" + s.getName();
+		return "undefined:" + s.getName();
 	}
 
 	// continue to load from EC/actors base dir - otherwise IT tests are almost impossible to write
@@ -309,7 +316,7 @@ public class SiteServiceManager {
 	public List<String> reloadSites(String sessionId, boolean simAlso, TestSession testSession)
 			throws FactoryConfigurationError, Exception {
 		logger.debug(sessionId + ": " + "reloadSites");
-		return getSiteNames(sessionId, true, simAlso, testSession);
+		return getSiteNames(sessionId, true, simAlso, testSession, false);
 	}
 
 

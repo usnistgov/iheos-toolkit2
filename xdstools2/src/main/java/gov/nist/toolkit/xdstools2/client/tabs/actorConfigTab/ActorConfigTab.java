@@ -9,15 +9,16 @@ import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.http.client.HtmlMarkup;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.StringSort;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
 import gov.nist.toolkit.sitemanagement.client.TransactionCollection;
 import gov.nist.toolkit.xdstools2.client.NotifyOnDelete;
+import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.command.command.GetSiteNamesCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.IsGazelleConfigFeedEnabledCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.ReloadExternalSitesCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.SaveSiteCommand;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
@@ -25,6 +26,7 @@ import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEve
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.NullSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteNamesRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.SaveSiteRequest;
 
@@ -232,12 +234,30 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
 	List<String> currentSiteNames = null;
 	
 	private void reloadExternalSites() {
-		new ReloadExternalSitesCommand(){
-            @Override
-            public void onComplete(List<String> result) {
-                loadSiteNames(result);
-            }
-        }.run(getCommandContext());
+		new GetSiteNamesCommand(){
+
+			@Override
+			public void onComplete(List<String> result) {
+				int allRepos = -1;
+				int i = 0;
+				for (String s : result) {
+					if (s.endsWith("allRepositories")) {
+						allRepos = i;
+						break;
+					}
+					i++;
+				}
+				if (i != -1)
+					result.remove(i);
+				loadSiteNames(result);
+			}
+		}.run(new GetSiteNamesRequest(getCommandContext(),true,showSims.getValue()).withQualified(PasswordManagement.isSignedIn));
+//		new ReloadExternalSitesCommand(){
+//            @Override
+//            public void onComplete(List<String> result) {
+//                loadSiteNames(result);
+//            }
+//        }.run(getCommandContext());
 	}
 
 	String newSiteName = "NewSite";
@@ -252,8 +272,47 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
 		HTML nameLabel = new HTML(HtmlMarkup.bold("System Name"));
 		actorEditGrid.setWidget(row, 0, nameLabel);
 
-		HTML ownerLabel = new HTML(HtmlMarkup.bold("Owner: " + site.getOwner()));
-		actorEditGrid.setWidget(row, 2, ownerLabel);
+		String currentTestSession = ClientUtils.INSTANCE.getCurrentTestSession().getValue();
+		String owner = site.getOwner();
+		String siteTs = site.getTestSession().getValue();
+		if (PasswordManagement.isSignedIn)
+			;
+		else if (currentTestSession.equals(owner))
+			owner = "This Test Session";
+		else if (TestSession.DEFAULT_TEST_SESSION.getValue().equals(owner))
+			owner = "System";
+		else if (TestSession.GAZELLE_TEST_SESSION.getValue().equals(owner))
+			owner = "Gazelle";
+		else
+			owner = "*****";
+
+		Widget ownerWidget;
+		if (PasswordManagement.isSignedIn) {
+			if (siteTs.equals(TestSession.DEFAULT_TEST_SESSION.getValue())) {
+				// tool can manipulate owner if site resides in SYSTEM
+				// it would be a technical conflict otherwise
+				HorizontalFlowPanel tsPanel = new HorizontalFlowPanel();
+				tsPanel.add(new HTML("Owner:"));
+				ListBox listBox = new ListBox();
+				tsPanel.add(listBox);
+				int selection = -1;
+				int i = 0;
+				for (String ts : ClientUtils.INSTANCE.getTestSessionManager().getTestSessions()) {
+					listBox.addItem(ts);
+					if (ts.equals(owner))
+						selection = i;
+					i++;
+				}
+				listBox.setSelectedIndex(selection);
+				listBox.addChangeHandler(new TestSessionChoose(this, listBox));
+				ownerWidget = tsPanel;
+			} else {
+				ownerWidget = new HTML(HtmlMarkup.bold("Owner: " + owner));
+			}
+		} else {
+			ownerWidget = new HTML(HtmlMarkup.bold("Owner: " + owner));
+		}
+		actorEditGrid.setWidget(row, 2, ownerWidget);
 
 		TextBox nameBox = new TextBox();
 		nameBox.setWidth("200px");
@@ -597,19 +656,31 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
 					}
 				}.run(new GetSiteNamesRequest(getCommandContext(),true,showSims.getValue()));
 			}
-		}.run(new SaveSiteRequest(getCommandContext(),currentEditSite));
+		}.run(new SaveSiteRequest(getCommandContext().withTestSession(currentEditSite.getTestSession().getValue()),currentEditSite));
         ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireActorsConfigUpdatedEvent();
 	}
 	
 	void loadExternalSites() {
 		GWT.log("loadExternalSites");
+
 		new GetSiteNamesCommand(){
 
 			@Override
 			public void onComplete(List<String> result) {
+				int allRepos = -1;
+				int i = 0;
+				for (String s : result) {
+					if (s.endsWith("allRepositories")) {
+						allRepos = i;
+						break;
+					}
+					i++;
+				}
+				if (i != -1)
+					result.remove(i);
 				loadSiteNames(result);
 			}
-		}.run(new GetSiteNamesRequest(getCommandContext(),true,showSims.getValue()));
+		}.run(new GetSiteNamesRequest(getCommandContext(),true,showSims.getValue()).withQualified(PasswordManagement.isSignedIn));
 	}
 
 	void loadSiteNames(List<String> result) {

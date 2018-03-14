@@ -62,7 +62,7 @@ public class SignInSelector implements IsWidget {
             signInStatus.setText(signedOut);
             signOut.setVisible(false);
             signIn.setVisible(true);
-            Xdstools2.getInstance().exitTestSession();
+//            Xdstools2.getInstance().exitTestSession();
         }
         Xdstools2.getInstance().enableTestSessionSelection();
     }

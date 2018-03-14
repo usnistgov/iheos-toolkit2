@@ -239,6 +239,12 @@ public class Installation {
         return returns;
     }
 
+    public TestSession getDefaultTestSession() {
+        String ts = propertyServiceManager().getDefaultTestSession();
+        if (ts == null || ts.equals("")) return null;
+        return new TestSession(ts);
+    }
+
     public boolean testSessionExists(TestSession testSession) {
         return getTestSessions().contains(testSession);
     }

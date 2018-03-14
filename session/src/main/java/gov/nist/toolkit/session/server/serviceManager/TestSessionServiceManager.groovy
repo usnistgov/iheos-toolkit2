@@ -97,6 +97,8 @@ class TestSessionServiceManager {
 
     boolean delete(TestSession testSession) throws Exception  {
         File cache;
+        if (testSession == Installation.instance().getDefaultTestSession())
+            throw new Exception("Cannot delete default Test Session")
         try {
             cache = Installation.instance().propertyServiceManager().getTestLogCache();
 
