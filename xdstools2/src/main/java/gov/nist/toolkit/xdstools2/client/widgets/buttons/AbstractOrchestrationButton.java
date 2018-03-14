@@ -172,7 +172,7 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
             } catch (Throwable t) {
                 handleError(t);
             } finally {
-                resetCheckBox.setValue(false);
+//                resetCheckBox.setValue(false);
             }
         } else {
             try {
@@ -180,7 +180,7 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
             } catch (Throwable t) {
                 handleError(t);
             } finally {
-                resetCheckBox.setValue(false);
+//                resetCheckBox.setValue(false);
             }
         }
     }
