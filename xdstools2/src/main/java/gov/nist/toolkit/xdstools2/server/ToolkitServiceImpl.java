@@ -1703,7 +1703,6 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return DatasetFactory.getAllDatasets();
     }
 
-
     @Override
     public List<Result> fhirCreate(FhirCreateRequest request) throws Exception {
         installCommandContext(request);

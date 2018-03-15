@@ -22,7 +22,7 @@ public abstract class CommonDisplay {
         FlowPanel flowPanel = new FlowPanel();
         title.addStyleName("left");
         flowPanel.add(title);
-        if (it.dataNotification!=null) {
+        if (it.dataNotification != null) {
             if (it.dataNotification.inCompare()) {
                 HTML closeX = new HTML("X");
                 closeX.setTitle("Close");
@@ -61,21 +61,21 @@ public abstract class CommonDisplay {
 
     int displayDetail(FlexTable ft, int row, boolean bold, Map<String, List<String>> values, Map<String, String> xmls) {
         int startRow = row;
-if (values != null) {
-for (String name : values.keySet()) {
-for (String value : values.get(name)) {
-String xml = xmls.get(name);
-if (row == startRow) {
-ft.setHTML(row, 0, bold(name, bold));
-}
-if (xml == null || xml.equals(""))
-ft.setHTML(row, 1, value.replaceAll(" ", "&nbsp;"));
-else
-ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, value, xml));
-row++;
-}
-}
-}
+        if (values != null) {
+            for (String name : values.keySet()) {
+                for (String value : values.get(name)) {
+                    String xml = xmls.get(name);
+                    if (row == startRow) {
+                        ft.setHTML(row, 0, bold(name, bold));
+                    }
+                    if (xml == null || xml.equals(""))
+                        ft.setHTML(row, 1, value.replaceAll(" ", "&nbsp;"));
+                    else
+                        ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, value, xml));
+                    row++;
+                }
+            }
+        }
         return row;
     }
 

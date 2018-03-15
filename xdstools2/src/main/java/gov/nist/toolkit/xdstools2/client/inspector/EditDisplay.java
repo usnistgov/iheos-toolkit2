@@ -1,10 +1,15 @@
 package gov.nist.toolkit.xdstools2.client.inspector;
 
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
 import gov.nist.toolkit.registrymetadata.client.MetadataObject;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 public class EditDisplay extends CommonDisplay {
+    private Button doValidateMu = new Button("Validate");
+    private Button doMu = new Button("Update");
+
     public EditDisplay(MetadataInspectorTab it) {
         this.detailPanel = it.detailPanel;
         this.metadataCollection = it.data.combinedMetadata;
@@ -36,6 +41,9 @@ public class EditDisplay extends CommonDisplay {
        // TODO:
        // Call documententry validators on 'Validate' button onClick
 
+       ft.setWidget(row, 0, doValidateMu);
+       ft.setWidget(row, 1, doMu);
+       row++;
 
         try {
             if (!de.isFhir) {
@@ -147,8 +155,12 @@ public class EditDisplay extends CommonDisplay {
             row = displayDetail(ft, row, b, "typeCode", de.typeCode, de.typeCodeX);
 
             row = displayDetail(ft, row, b, de.authors, de.authorsX);
-
+        } catch (Exception ex) {
+            new PopupMessage(ex.toString());
         } finally {
+            ft.setWidget(row, 0, doValidateMu);
+            ft.setWidget(row, 1, doMu);
+            row++;
             detailPanel.add(ft);
         }
 
