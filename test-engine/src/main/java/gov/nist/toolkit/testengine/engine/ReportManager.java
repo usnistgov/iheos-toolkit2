@@ -93,7 +93,7 @@ public class ReportManager {
                logger.error("Section " + reportDTO.getName() + " is not defined");
                throw new XdsInternalException("Section " + reportDTO.getName() + " is not defined");
             }
-            logger.info("Got section: " + section.toString());
+//            logger.info("Got section: " + section.toString());
             
             xpathExpression = new AXIOMXPath(reportDTO.getXpath());
             

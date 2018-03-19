@@ -39,4 +39,14 @@ public class SiteSorter {
         if (t == null) return null;
         return t.notls;
     }
+
+    public boolean hasEndpoints(String trans) {
+        Trans t = map.get(trans);
+        if (t == null) return false;
+        String reg = t.notls;
+        String tls = t.tls;
+        if (reg != null && !reg.equals("")) return true;
+        if (tls != null && !tls.equals("")) return true;
+        return false;
+    }
 }
