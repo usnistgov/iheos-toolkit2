@@ -5,7 +5,7 @@
     <parent>
         <artifactId>tk-deps</artifactId>
         <groupId>gov.nist.toolkit</groupId>
-        <version>6.0.1</version>
+        <version>6.0.2</version>
         <relativePath>../tk-deps/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
