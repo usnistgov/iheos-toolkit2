@@ -20,7 +20,10 @@ import gov.nist.toolkit.installation.server.PropertyServiceManager;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.interactionmapper.InteractionMapper;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
+import gov.nist.toolkit.registrymetadata.Metadata;
+import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
 import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest;
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationResponse;
 import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
@@ -48,6 +51,7 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.testengine.Sections;
+import gov.nist.toolkit.testengine.engine.RegistryUtility;
 import gov.nist.toolkit.testengine.scripts.BuildCollections;
 import gov.nist.toolkit.testengine.scripts.CodesUpdater;
 import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
@@ -61,6 +65,8 @@ import gov.nist.toolkit.utilities.xml.XmlFormatter;
 import gov.nist.toolkit.valregmsg.message.SchemaValidation;
 import gov.nist.toolkit.valregmsg.validation.factories.CommonMessageValidatorFactory;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
+import gov.nist.toolkit.valsupport.client.ValidationContext;
+import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdstools2.client.GazelleXuaUsername;
@@ -1135,6 +1141,46 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
             logger.error("getFullSimId - error - " + e.getMessage());
             throw e;
         }
+    }
+
+    @Override
+    public MessageValidationResults validateDEMetadataUpdate(ValidateDEMetadataUpdateRequest request) throws Exception {
+        installCommandContext(request);
+        RegistryErrorListGenerator rel  = null;
+
+        ValidationContext vc = DefaultValidationContextFactory.validationContext();
+//        if ("r".equals(tname)) vc.isR = true;
+//        vc.isStableOrODDE
+        vc.isMU = true;
+
+        try {
+            SecurityParams sp = s_ctx.getTransactionSettings().securityParams;
+            logger.info("Codes file is " + session().getCodesFile());
+            vc.setCodesFilename(session().getCodesFile().toString());
+        } catch (Exception e) {}
+        try {
+            Metadata
+            Metadata m2 = MetadataCollectionToMetadata.buildMetadata(, true);
+            rel = RegistryUtility.metadata_validator(request.getDe(), vc);
+        } catch (NoMetadataException e) {
+            // not all responses contain metadata
+            rel = new RegistryErrorListGenerator((xds_version == xds_a ? RegistryErrorListGenerator.version_2 : RegistryErrorListGenerator.version_3));
+        }
+
+        ArrayList<String> validatorErrors = new RegistryResponseParser(rel.getRegistryErrorList()).get_error_code_contexts();
+        returned_code_contexts.addAll(validatorErrors);
+
+        eval_expected_status(status, returned_code_contexts);
+        if (step_failure == false && validatorErrors.size() != 0) {
+            StringBuilder msg = new StringBuilder();
+            for (int i=0; i<validatorErrors.size(); i++) {
+                msg.append(validatorErrors.get(i));
+                msg.append("\n");
+            }
+            s_ctx.set_error(msg.toString());
+            step_failure = true;
+        }
+        return null;
     }
 
     @Override

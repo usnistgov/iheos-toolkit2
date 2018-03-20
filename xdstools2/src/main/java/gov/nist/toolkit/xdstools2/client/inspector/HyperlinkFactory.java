@@ -17,7 +17,7 @@ public class HyperlinkFactory {
 	static Hyperlink metadataUpdate(MetadataInspectorTab it, DocumentEntry de, String text) {
 		Hyperlink h = new Hyperlink();
 		h.setText(text);
-		h.addClickHandler(new MuSelector(it, de));
+		h.addClickHandler(new MuClickHandler(it, de));
 		return h;
 	}
 	

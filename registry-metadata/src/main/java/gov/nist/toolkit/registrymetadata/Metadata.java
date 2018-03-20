@@ -1084,6 +1084,7 @@ public class Metadata {
 
 		String myid = allocate_id();
 		e.addAttribute("id", myid, null);
+		// Do not set the lid attribute.
 		e.addAttribute("objectType", "urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:Classification", null);
 		e.addAttribute("classificationScheme", uuid, null);
 		e.addAttribute("classifiedObject", ele.getAttributeValue(MetadataSupport.id_qname), null);

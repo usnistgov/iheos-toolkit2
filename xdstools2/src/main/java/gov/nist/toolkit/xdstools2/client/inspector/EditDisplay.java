@@ -7,8 +7,8 @@ import gov.nist.toolkit.registrymetadata.client.MetadataObject;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 public class EditDisplay extends CommonDisplay {
-    private Button doValidateMu = new Button("Validate");
-    private Button doMu = new Button("Update");
+    private Button validateMuBtn = new Button("Validate");
+    private Button muBtn = new Button("Update");
 
     public EditDisplay(MetadataInspectorTab it) {
         this.detailPanel = it.detailPanel;
@@ -41,8 +41,8 @@ public class EditDisplay extends CommonDisplay {
        // TODO:
        // Call documententry validators on 'Validate' button onClick
 
-       ft.setWidget(row, 0, doValidateMu);
-       ft.setWidget(row, 1, doMu);
+       ft.setWidget(row, 0, validateMuBtn);
+       ft.setWidget(row, 1, muBtn);
        row++;
 
         try {
@@ -158,8 +158,8 @@ public class EditDisplay extends CommonDisplay {
         } catch (Exception ex) {
             new PopupMessage(ex.toString());
         } finally {
-            ft.setWidget(row, 0, doValidateMu);
-            ft.setWidget(row, 1, doMu);
+            ft.setWidget(row, 0, validateMuBtn);
+            ft.setWidget(row, 1, muBtn);
             row++;
             detailPanel.add(ft);
         }

@@ -130,6 +130,7 @@ public interface ToolkitService extends RemoteService  {
 
     SimId getFullSimId(GetFullSimIdRequest request) throws Exception;
 
+    MessageValidationResults validateDEMetadataUpdate(ValidateDEMetadataUpdateRequest request) throws Exception;
     MessageValidationResults validateMessage(ValidateMessageRequest request) throws Exception;
 
 	List<String> getSiteNames(GetSiteNamesRequest request) throws Exception;

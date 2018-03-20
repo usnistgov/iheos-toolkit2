@@ -7,11 +7,11 @@ import gov.nist.toolkit.registrymetadata.client.MetadataObject;
 /**
  * Metadata update selector
  */
-class MuSelector implements ClickHandler {
+class MuClickHandler implements ClickHandler {
 	MetadataObject mo;
 	MetadataInspectorTab it;
 
-	MuSelector(MetadataInspectorTab it, MetadataObject o) {
+	MuClickHandler(MetadataInspectorTab it, MetadataObject o) {
 		mo = o;
 		this.it = it;
 	}
