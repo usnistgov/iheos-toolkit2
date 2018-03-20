@@ -1,6 +1,8 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
-import com.google.gwt.cell.client.*;
+import com.google.gwt.cell.client.EditTextCell;
+import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Unit;
@@ -8,33 +10,29 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
-import elemental.client.Browser;
-import elemental.html.Selection;
-import elemental.ranges.Range;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.PidBuilder;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.command.command.GeneratePidCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetAssigningAuthoritiesCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.RetrieveFavPidsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.SendPidToRegistryCommand;
-import gov.nist.toolkit.xdstools2.client.widgets.ScrollingPager;
-import gov.nist.toolkit.xdstools2.client.widgets.buttons.CopyButton;
-import gov.nist.toolkit.xdstools2.shared.command.request.GeneratePidRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.SendPidToRegistryRequest;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.util.CookiesServices;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.widgets.ScrollingPager;
+import gov.nist.toolkit.xdstools2.client.widgets.buttons.CopyButton;
+import gov.nist.toolkit.xdstools2.shared.command.request.GeneratePidRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.SendPidToRegistryRequest;
 
 import java.io.IOException;
 import java.util.*;
@@ -135,7 +133,7 @@ public class PidFavoritesTab extends GenericQueryTab {
 
         favoritesListPanel.add(new HTML("Favorite Patient IDs"));
         ScrollingPager p = new ScrollingPager();
-        p.setSize("600px","400px");
+        p.setSize("600px","380px");
         p.setDisplay(favoritesListBox);
         favoritesListPanel.add(p);
         favoritesListPanel.setWidth("600px");
