@@ -13,6 +13,7 @@ import gov.nist.toolkit.services.server.RawResponseBuilder
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.simcommon.client.SimId
+import gov.nist.toolkit.simcommon.client.SimIdFactory
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
 import gov.nist.toolkit.simcommon.server.SimDb
@@ -86,17 +87,19 @@ class RgOrchestrationBuilder {
                     // RG and RR in same site - verify site contents
 
                     // Momentarily turn off SAML if the SUT is a simulator. Need manual intervening for real systems.
-                    sutSimId = SimDb.simIdBuilder(request.siteUnderTest.name)
-                    if (Installation.instance().propertyServiceManager().getPropertyManager().isEnableSaml()) {
+                    if (SimIdFactory.isSimId(request.siteUnderTest.name)) {
+                        sutSimId = SimDb.simIdBuilder(request.siteUnderTest.name)
+                        if (Installation.instance().propertyServiceManager().getPropertyManager().isEnableSaml()) {
 
-                        sutSimConfig = api.getConfig(sutSimId)
-                        if (sutSimConfig != null) {
-                            stsSce = sutSimConfig.get(SimulatorProperties.requiresStsSaml)
+                            sutSimConfig = api.getConfig(sutSimId)
+                            if (sutSimConfig != null) {
+                                stsSce = sutSimConfig.get(SimulatorProperties.requiresStsSaml)
 
-                            if (stsSce != null && stsSce.hasBoolean() && stsSce.asBoolean()) {
-                                sutSaml = true
-                                stsSce.setBooleanValue(false) // Turn off SAML for orchestration
-                                api.saveSimulator(sutSimConfig)
+                                if (stsSce != null && stsSce.hasBoolean() && stsSce.asBoolean()) {
+                                    sutSaml = true
+                                    stsSce.setBooleanValue(false) // Turn off SAML for orchestration
+                                    api.saveSimulator(sutSimConfig)
+                                }
                             }
                         }
                     }

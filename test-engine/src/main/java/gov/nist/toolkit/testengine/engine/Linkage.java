@@ -1,9 +1,9 @@
 package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.common.coder.Base64Coder;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
-import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.utilities.xml.Parse;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
@@ -258,9 +258,11 @@ public class Linkage extends BasicLinkage {
    public void replace_string_in_text_and_attributes(OMElement root, String old_text, String new_text)
       throws XdsInternalException {
       private_replace_string_in_text_and_attributes(root, old_text, new_text);
+//      logger.info("Result is\n" + new OMFormatter(root).toString());
+//      logger.info("");
    }
 
-   void private_replace_string_in_text_and_attributes(OMElement root, String old_text, String new_text)
+   private void private_replace_string_in_text_and_attributes(OMElement root, String old_text, String new_text)
             throws XdsInternalException {
 
       if (root == null) return;
@@ -288,11 +290,16 @@ public class Linkage extends BasicLinkage {
    private void replaceStringInElement(OMElement e, String old_text, String new_text) {
       // text
       String text = e.getText();
+//      logger.info("Replace " + old_text + " with " + new_text + " in " + text);
       if (text.contains(old_text)) {
          String oldstuff = escape_pattern(old_text);
          String replacement = Matcher.quoteReplacement(new_text);
-         text = text.replaceAll(oldstuff, replacement);
-         e.setText(text);
+         String newtext = text.replaceAll(oldstuff, replacement);
+       //  newtext = newtext.trim();
+         e.setText("");  // don't know why this is needed but it is on the MAC!!!!!!
+         e.setText(newtext);
+//         logger.info("    Yielding " + e.getText());
+         String finaltext = e.getText();
       }
 
       // attributes
