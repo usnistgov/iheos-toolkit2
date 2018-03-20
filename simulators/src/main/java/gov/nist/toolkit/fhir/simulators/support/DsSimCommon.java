@@ -923,7 +923,7 @@ public class DsSimCommon {
             sdi.mimeType = "application/dicom";
             sdi.charset = "UTF-8";
             sdi.content = null;
-            sd = new StoredDocument(sdi);
+            sd = new StoredDocument(repIndex, sdi);
         } else {
             logger.debug("Did not find an image file that matched transfer syntax");
             logger.debug(" Composite UID: " + compositeUid);

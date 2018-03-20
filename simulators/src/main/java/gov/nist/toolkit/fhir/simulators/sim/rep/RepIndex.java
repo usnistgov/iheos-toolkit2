@@ -7,6 +7,7 @@ import gov.nist.toolkit.simcommon.client.SimulatorStats;
 import org.apache.log4j.Logger;
 
 import java.io.*;
+import java.nio.file.Path;
 import java.util.Calendar;
 
 public class RepIndex implements Serializable {
@@ -38,6 +39,17 @@ public class RepIndex implements Serializable {
 		}
 	}
 
+	// use parent as path since index file may not have been created yet
+	public Path getRelativePath(Path absolute) {
+		Path index = new File(filename).toPath().getParent();
+		return index.relativize(absolute);
+	}
+
+	public Path getAbsolutePath(Path relative) {
+		Path index = new File(filename).toPath().getParent();
+		return index.resolve(relative);
+	}
+
 	public void restore() throws Exception, ClassNotFoundException {
 		synchronized(this) {
 			dc = RepIndex.restoreRepository(filename);
@@ -50,9 +62,12 @@ public class RepIndex implements Serializable {
 		ObjectInputStream in = null;
 		DocumentCollection dc;
 		try {
-				fis = new FileInputStream(filename);
-				in = new ObjectInputStream(fis);
-				dc = (DocumentCollection) in.readObject();
+			fis = new FileInputStream(filename);
+			in = new ObjectInputStream(fis);
+			dc = (DocumentCollection) in.readObject();
+		} catch (Throwable e) {
+			logger.fatal("Failed to restore Repository Index from " + filename);
+			throw e;
 		} finally {
 			if (in!=null)
 				in.close();

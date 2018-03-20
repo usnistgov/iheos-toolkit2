@@ -89,7 +89,7 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 
 				StoredDocumentInt sdi = dam.getUnOptimizedDocumentIfAvailable(eoId);
 				if (sdi != null) { // UnOptimized
-					storedDocument = new StoredDocument(sdi);
+					storedDocument = new StoredDocument(dsSimCommon.repIndex, sdi);
 					storedDocument.setPathToDocument(common.db.getRepositoryDocumentFile(uid).toString());
 					sdMap.put(uid, storedDocument);  // all documents end up here so they can be flushed to sim
 					storedDocument.setPathToDocument(repositoryFile.toString());
@@ -110,7 +110,7 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 					}
 					sdi = multipartContainer.getContent(cid);
 					if (sdi != null) {
-						storedDocument = new StoredDocument(sdi);
+						storedDocument = new StoredDocument(dsSimCommon.repIndex, sdi);
 						storedDocument.setUid(uid);
 						storedDocument.setPathToDocument(common.db.getRepositoryDocumentFile(uid).toString());
 						storedDocument.content = sdi.content;
@@ -177,8 +177,9 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 				StoredDocument sd = sdMap.get(uid);
 				dsSimCommon.repIndex.getDocumentCollection().add(sd);
 				byte[] content = sdMap.get(uid).content;
-				Io.bytesToFile(sd.getPathToDocument(), content);
-				byte[] content2 = Io.bytesFromFile(sd.getPathToDocument());
+				File location = sd.getPathToDocument();
+				Io.bytesToFile(location, content);
+				byte[] content2 = Io.bytesFromFile(location);
 				logger.info("Verifying storage...");
 				if (content.length != content2.length) {
 					logger.error("Repository: stored " + content.length + " bytes");

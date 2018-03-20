@@ -1,17 +1,21 @@
 package gov.nist.toolkit.fhir.simulators.support
 
+import gov.nist.toolkit.fhir.simulators.sim.rep.RepIndex
 import gov.nist.toolkit.results.client.DocumentEntryDetail
 import gov.nist.toolkit.utilities.io.Io
 import gov.nist.toolkit.valregmsg.message.StoredDocumentInt
 import groovy.transform.TypeChecked
 
+/**
+ * Internal pathToDocument is relative.  All calls to this class pass absolute path.
+ */
 @TypeChecked
 public class StoredDocument implements Serializable {
 
 	
 	private static final long serialVersionUID = 1L;
 
-   String pathToDocument;
+   String pathToDocument;  // relative
 	String uid;
 	String mimeType;
 	String charset;
@@ -30,10 +34,18 @@ public class StoredDocument implements Serializable {
 	transient public String cid;
 	
 	transient public byte[] content;
-	
-	public StoredDocument(StoredDocumentInt sdi) {
+
+	transient private RepIndex repIndex = null;
+
+	public StoredDocument() {
+	}
+
+	public StoredDocument(RepIndex repIndex, StoredDocumentInt sdi) {
+		this.repIndex = repIndex
+		assert repIndex
         assert sdi
-		pathToDocument = sdi.pathToDocument;
+		if (sdi.pathToDocument)
+			pathToDocument = repIndex.getRelativePath(new File(sdi.pathToDocument).toPath());
 		uid = sdi.uid;
 		mimeType = sdi.mimeType;
 		charset = sdi.charset;
@@ -42,14 +54,24 @@ public class StoredDocument implements Serializable {
 		content = sdi.content;
 	}
 
-    void setPathToDocument(String pathToDocument) {
-        this.pathToDocument = pathToDocument
+	public StoredDocument(RepIndex repIndex, String pathToDocument, String uid) {
+		assert repIndex
+		this.repIndex = repIndex
+		this.pathToDocument = repIndex.getRelativePath(new File(pathToDocument).toPath());
+		this.uid = uid;
+	}
+
+	void setPathToDocument(String pathToDocument) {
+		if (repIndex)
+        	this.pathToDocument = repIndex.getRelativePath(new File(pathToDocument).toPath());
+		else
+			this.pathToDocument = pathToDocument // deal with it later?
     }
 
 	public StoredDocumentInt getStoredDocumentInt() {
 		StoredDocumentInt sdi = new StoredDocumentInt();
 		
-		sdi.pathToDocument = pathToDocument;
+		sdi.pathToDocument = repIndex.getAbsolutePath(new File(pathToDocument).toPath());
 		sdi.uid = uid;
 		sdi.mimeType = mimeType;
 		sdi.charset = charset;
@@ -60,18 +82,9 @@ public class StoredDocument implements Serializable {
 	}
 
 	public File getFile() {
-		return new File(pathToDocument);
+		return repIndex.getAbsolutePath(new File(pathToDocument).toPath()).toFile();
 	}
-	
-	public StoredDocument() {
-		
-	}
-	
-	public StoredDocument(String pathToDocument, String uid) {
-		this.pathToDocument = pathToDocument;
-		this.uid = uid;
-	}
-	
+
 	public void setMimetype(String mimeType) {
 		this.mimeType = mimeType;
 	}
@@ -84,7 +97,9 @@ public class StoredDocument implements Serializable {
 	}
 		
 	public File getPathToDocument() {
-        return new File(pathToDocument);
+		assert repIndex
+		assert pathToDocument
+        return repIndex.getAbsolutePath(new File(pathToDocument).toPath()).toFile();
 	}
 	
 	public byte[] getDocumentContents() throws IOException {

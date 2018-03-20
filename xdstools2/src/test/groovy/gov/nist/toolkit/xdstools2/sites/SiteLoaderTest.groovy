@@ -90,10 +90,10 @@ class SiteLoaderTest extends Specification {
         def defaultRepoNames = siteServiceManager.getRepositoryNames(sessionid, defaultTestSession) as Set
 
         then: 'default should have only repo cat'
-        siteServiceManager.getSiteNames(sessionid, true, false, defaultTestSession) as Set == ['cat', Sites.ALL_REPOSITORIES] as Set
+        siteServiceManager.getSiteNames(sessionid, true, false, defaultTestSession, false) as Set == ['cat', Sites.ALL_REPOSITORIES] as Set
         defaultRepoNames == ['cat'] as Set
 
-        siteServiceManager.getSiteNames(sessionid, true, false, fooTestSession) as Set == ['cat', Sites.ALL_REPOSITORIES, 'dog'] as Set
+        siteServiceManager.getSiteNames(sessionid, true, false, fooTestSession, false) as Set == ['cat', Sites.ALL_REPOSITORIES, 'dog'] as Set
         siteServiceManager.getRepositoryNames(sessionid, fooTestSession) as Set == ['cat', 'dog'] as Set
     }
 
