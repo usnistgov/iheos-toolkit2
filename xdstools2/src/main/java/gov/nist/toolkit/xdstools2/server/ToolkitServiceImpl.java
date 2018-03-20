@@ -21,9 +21,15 @@ import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.interactionmapper.InteractionMapper;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.registrymetadata.Metadata;
+import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
+import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
 import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
-import gov.nist.toolkit.results.client.*;
-import gov.nist.toolkit.securityCommon.SecurityParams;
+import gov.nist.toolkit.results.client.CodesResult;
+import gov.nist.toolkit.results.client.DocumentEntryDetail;
+import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.Test;
+import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest;
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationResponse;
 import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
@@ -68,6 +74,7 @@ import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import gov.nist.toolkit.xdsexception.NoMetadataException;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdstools2.client.GazelleXuaUsername;
 import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TabConfig;
@@ -91,7 +98,13 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 
 @SuppressWarnings("serial")
 public class ToolkitServiceImpl extends RemoteServiceServlet implements
@@ -1145,8 +1158,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 
     @Override
     public MessageValidationResults validateDEMetadataUpdate(ValidateDEMetadataUpdateRequest request) throws Exception {
+        MessageValidationResults mvr = new MessageValidationResults();
         installCommandContext(request);
-        RegistryErrorListGenerator rel  = null;
+        RegistryErrorListGenerator regErrorListGen  = null;
 
         ValidationContext vc = DefaultValidationContextFactory.validationContext();
 //        if ("r".equals(tname)) vc.isR = true;
@@ -1154,33 +1168,38 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         vc.isMU = true;
 
         try {
-            SecurityParams sp = s_ctx.getTransactionSettings().securityParams;
             logger.info("Codes file is " + session().getCodesFile());
             vc.setCodesFilename(session().getCodesFile().toString());
-        } catch (Exception e) {}
+        } catch (Exception e) {
+           // What to do here?
+        }
         try {
-            Metadata
-            Metadata m2 = MetadataCollectionToMetadata.buildMetadata(, true);
-            rel = RegistryUtility.metadata_validator(request.getDe(), vc);
-        } catch (NoMetadataException e) {
+            MetadataCollection mc = new MetadataCollection();
+            mc.docEntries.add(request.getDe());
+            Metadata m2 = MetadataCollectionToMetadata.buildMetadata(mc, true);
+            regErrorListGen = RegistryUtility.metadata_validator(m2, vc);
+        } catch (Exception e) {
             // not all responses contain metadata
-            rel = new RegistryErrorListGenerator((xds_version == xds_a ? RegistryErrorListGenerator.version_2 : RegistryErrorListGenerator.version_3));
+            regErrorListGen = new RegistryErrorListGenerator(RegistryErrorListGenerator.version_3);
         }
 
-        ArrayList<String> validatorErrors = new RegistryResponseParser(rel.getRegistryErrorList()).get_error_code_contexts();
-        returned_code_contexts.addAll(validatorErrors);
+        // THis is useful?
+//        regErrorListGen.has_errors()
+//        regErrorListGen.getErrMsgs()
+//        regErrorListGen.getErrorsAndWarnings()
 
-        eval_expected_status(status, returned_code_contexts);
-        if (step_failure == false && validatorErrors.size() != 0) {
+        ArrayList<String> validatorErrors = new RegistryResponseParser(regErrorListGen.getRegistryErrorList()).get_error_code_contexts();
+
+        if (validatorErrors.size() != 0) {
             StringBuilder msg = new StringBuilder();
             for (int i=0; i<validatorErrors.size(); i++) {
                 msg.append(validatorErrors.get(i));
                 msg.append("\n");
             }
-            s_ctx.set_error(msg.toString());
-            step_failure = true;
+            mvr.addHtmlResults(msg.toString());
         }
-        return null;
+
+        return mvr;
     }
 
     @Override

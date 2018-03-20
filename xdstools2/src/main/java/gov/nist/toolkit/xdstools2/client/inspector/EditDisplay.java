@@ -1,28 +1,55 @@
 package gov.nist.toolkit.xdstools2.client.inspector;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
 import gov.nist.toolkit.registrymetadata.client.MetadataObject;
+import gov.nist.toolkit.valsupport.client.MessageValidationResults;
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
+import gov.nist.toolkit.xdstools2.client.command.command.ValidateDEMetadataUpdateCommand;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.shared.command.request.ValidateDEMetadataUpdateRequest;
 
 public class EditDisplay extends CommonDisplay {
     private Button validateMuBtn = new Button("Validate");
     private Button muBtn = new Button("Update");
+    DocumentEntry de = null;
+//    HTML errorMsgs = new HTML();
 
-    public EditDisplay(MetadataInspectorTab it) {
+    {
+        validateMuBtn.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent clickEvent) {
+                new ValidateDEMetadataUpdateCommand() {
+                    @Override
+                    public void onComplete(MessageValidationResults result) {
+                        if (result!=null) {
+                            new PopupMessage(result.getHtmlResults());
+                        }
+                        else new PopupMessage("result is null");
+                    }
+                }.run(new ValidateDEMetadataUpdateRequest(ClientUtils.INSTANCE.getCommandContext(), de));
+            }
+        });
+    }
+
+    public EditDisplay(MetadataInspectorTab it, MetadataObject mo) {
         this.detailPanel = it.detailPanel;
         this.metadataCollection = it.data.combinedMetadata;
         this.it = it;
+        if (mo instanceof DocumentEntry) {
+            this.de = (DocumentEntry)mo;
+            editDetail();
+        } else {
+            throw new ToolkitRuntimeException("Unsupported metadata type.");
+        }
     }
 
-    public void editDetail(MetadataObject mo) {
-        detailPanel.clear();
-        if (mo instanceof DocumentEntry)
-            editDetail((DocumentEntry) mo);
-    }
-
-   private void editDetail(DocumentEntry de) {
+   private void editDetail() {
+       detailPanel.clear();
 //		detailPanel.add(HyperlinkFactory.addHTML("<h4>Document Entry</h4>"));
         String title = (de.isFhir) ? "<h4>Document Entry (translated from DocumentReference)</h4>" : "<h4>Metadata Update - Document Entry</h4>";
         addTitle(HyperlinkFactory.addHTML(title));

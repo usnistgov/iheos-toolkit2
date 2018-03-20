@@ -11,7 +11,8 @@ public class ValidateDEMetadataUpdateRequest extends CommandContext{
 
     public ValidateDEMetadataUpdateRequest(){}
 
-    public ValidateDEMetadataUpdateRequest(DocumentEntry de) {
+    public ValidateDEMetadataUpdateRequest(CommandContext context, DocumentEntry de) {
+        copyFrom(context);
         this.de = de;
     }
 
