@@ -210,16 +210,33 @@ public class PidFavoritesTab extends GenericQueryTab {
         }
     }
 
+    private RadioButton fromSelection;
+    private RadioButton fromAll;
+
     @Override
     protected void configureTabView() {
         setRunButtonText("Send Patient Identity Feed");
         setTlsEnabled(false);
         setSamlEnabled(false);
         setShowInspectButton(false);
-        tabTopPanel.add(new HTML("<h3>Generate V2 Patient Identity Feed</h3><br />(From selection in Favorites)" +
-                "<p>Note that this is NOT integrated with Gazelle Patient Management.  It should be used " +
+        tabTopPanel.add(new HTML("<hr /><h3>Generate V2 Patient Identity Feed</h3><br />"));
+
+        tabTopPanel.add(new HTML("Patient ID to send<br />"));
+        fromSelection = new RadioButton("selection", "Selection in Favorites");
+        fromAll = new RadioButton("selection", "All in Favorites");
+        fromSelection.setValue(true);
+        VerticalPanel selectionPanel = new VerticalPanel();
+        selectionPanel.add(fromSelection);
+        selectionPanel.add(fromAll);
+        tabTopPanel.add(selectionPanel);
+
+        tabTopPanel.add(new HTML("<p>Note that this is NOT integrated with Gazelle Patient Management.  It should be used " +
                 "for private testing only.</p>"));
         queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, false);
+    }
+
+    private boolean sendAll() {
+        return fromAll.getValue();
     }
 
     @Override
@@ -349,17 +366,23 @@ public class PidFavoritesTab extends GenericQueryTab {
         return new ArrayList<Pid>(selectionModel.getSelectedSet());
     }
 
-    Pid getSelectedPid() {
-        List<Pid> pids = getSelectedPids();
+    List<Pid> getSelectedPid() {
+        List<Pid> pids;
+        if (sendAll()) {
+            pids = new ArrayList<>();
+            pids.addAll(configuredPids);
+        } else {
+            pids = getSelectedPids();
+        }
         if (pids.size() == 0) {
             new PopupMessage("Must select a Patient ID");
             return null;
         }
-        if (pids.size() > 1) {
-            new PopupMessage("Must select only one Patient ID");
-            return null;
-        }
-        return pids.get(0);
+//        if (pids.size() > 1) {
+//            new PopupMessage("Must select only one Patient ID");
+//            return null;
+//        }
+        return pids;
     }
 
     Set<Pid> getInputPids() {
@@ -379,7 +402,7 @@ public class PidFavoritesTab extends GenericQueryTab {
 
             if (!verifySiteProvided()) return;
 
-            Pid pid = getSelectedPid();
+            List<Pid> pid = getSelectedPid();
             if (pid == null) return;
 
             rigForRunning();

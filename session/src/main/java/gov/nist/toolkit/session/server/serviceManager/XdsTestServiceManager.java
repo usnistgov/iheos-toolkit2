@@ -1157,18 +1157,24 @@ public class XdsTestServiceManager extends CommonService {
 		return collectionNames;
 	}
 
-	public List<Result> sendPidToRegistry(SiteSpec site, Pid pid, String environmentName, TestSession testSession) throws Exception {
+	public List<Result> sendPidToRegistry(SiteSpec site, List<Pid> pid, String environmentName, TestSession testSession) throws Exception {
 		if (session != null)
 			logger.debug(session.id() + ": " + "sendPidToRegistry(" + pid + ")");
-		if (session.xt == null) {
-			TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, testSession);
-			session.xt = new Xdstest2(Installation.instance().toolkitxFile(), searchPath, session, testSession);
-		}
+
+		List<Result> results = new ArrayList<>();
 		session.setSiteSpec(site);
 		Map<String, String> params = new HashMap<>();
-		params.put("$pid$", pid.asString());
 		TestInstance testInstance = new TestInstance("PidFeed", testSession);
-		return asList(new UtilityRunner(this, TestRunType.UTILITY).run(session, params, null, null, testInstance, null, true));
+		for (Pid aPid : pid) {
+			if (session.xt == null) {
+				TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, testSession);
+				session.xt = new Xdstest2(Installation.instance().toolkitxFile(), searchPath, session, testSession);
+			}
+
+			params.put("$pid$", aPid.asString());
+			results.add(new UtilityRunner(this, TestRunType.UTILITY).run(session, params, null, null, testInstance, null, true));
+		}
+		return results;
 	}
 
 
