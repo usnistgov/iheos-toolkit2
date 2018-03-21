@@ -31,21 +31,39 @@ public class TestkitConfigTool extends Composite {
      * @param myTabContainer tab container
      */
     public TestkitConfigTool(TabContainer myTabContainer) {
-        container.add(new HTML("<h3>Configure Testkit</h3>"));
-        container.add(new HTML("This tool will create a new copy of testkit configured for a selected affinity " +
-                "domain configuration. An affinity domain is chosen by selecting an environment. <br/>The affinity testkit created will be placed in " +
-                "the environment selected.<br/><br/>"));
+        container.add(new HTML("<h2>Operations on Local Testkits</h2>"));
+        container.add(new HTML("These operations create/update content in the External Cache."));
+        container.add(new HTML("<hr /><h3>Convert Testkit to a New Affinity Domain Configuration</h3>"));
+        container.add(new HTML(
+                "Convert the default testkit to align with a new codes.xml (Affinity Domain) configuration " +
+                        "by first copying the default testkit into the environment selected below " +
+                        "and then converting the copy to align with the codes.xml (Affinity Domain) configuration " +
+                        "already installed in that environment." +
+//                        "configured for a selected affinity " +
+//                "domain configuration. An affinity domain is chosen by selecting an environment. <br/>The affinity testkit created will be placed in " +
+//                "the environment selected." +
+                        "<br/><br/>"
+        ));
         environmentManager = new EnvironmentManager(myTabContainer);
         container.add(environmentManager);
-        Button runUpdater=new Button("Create local testkit",new RunTestkitConfigHandler());
+        Button runUpdater=new Button("Convert testkit",new RunTestkitConfigHandler());
         runUpdater.setTitle("Run the generation of a local (codes updated) copy of the testkit in the selected environment.");
-        HorizontalPanel buttonsContainer = new HorizontalPanel();
-        buttonsContainer.setStyleName("HP");
-        buttonsContainer.add(runUpdater);
-        buttonsContainer.add(new Button("Reindex Test Kits", new IndexTestKitsHandler()));
-        buttonsContainer.add(new Button("Create EC testkit structure",new TestkitConfigTool.CreateTestkitStructureHandler()));
-        container.add(buttonsContainer);
+//        HorizontalPanel buttonsContainer = new HorizontalPanel();
+//        buttonsContainer.setStyleName("HP");
+        container.add(runUpdater);
+        container.add(new HTML("<br /><hr /><h3>Reindex Testkits</h3><br />"));
+        container.add(new HTML("Rebuild the index of test definitions used by the Conformance tool. This needs to be done " +
+        "any time new tests are added to an environment in the External Cache. Restarting Toolkit also rebuilds the indexes."));
+        container.add(new Button("Reindex Test Kits", new IndexTestKitsHandler()));
+        container.add(new HTML("<br /><hr /><h3>Create Testkit Structure</h3><br />"));
+        container.add(new HTML("For the currently selected Environment and Test Session, build the necessary directory structure " +
+        "in the environment directory of the External Cache so that local tests can be add during development. " +
+        "Remember to Reindex (above) after adding new tests so the Conformance Tool sees them."));
+        container.add(new Button("Create testkit structure",new TestkitConfigTool.CreateTestkitStructureHandler()));
+        container.add(new HTML("<br /><hr /><br />"));
+//        container.add(buttonsContainer);
         container.add(indexStatus);
+        container.add(new HTML("<br /><br /><br />"));
 
         initWidget(container);
     }
