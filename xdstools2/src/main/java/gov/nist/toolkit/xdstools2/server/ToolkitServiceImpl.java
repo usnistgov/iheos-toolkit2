@@ -871,7 +871,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         File environmentFile = Installation.instance().environmentFile(context.getEnvironmentName());
         File defaultTestkit = Installation.instance().internalTestkitFile();
         CodesUpdater updater = new CodesUpdater();
-        updater.run(environmentFile.getAbsolutePath(),defaultTestkit.getAbsolutePath());
+        updater.run(environmentFile.getAbsolutePath(),defaultTestkit.getAbsolutePath(), context.getTestSession());
         return updater.getOutput();
     }
 

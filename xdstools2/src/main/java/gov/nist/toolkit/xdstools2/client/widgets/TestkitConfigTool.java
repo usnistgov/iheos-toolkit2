@@ -11,7 +11,6 @@ import gov.nist.toolkit.xdstools2.client.command.command.GenerateTestkitStructur
 import gov.nist.toolkit.xdstools2.client.command.command.IndexTestkitsCommand;
 import gov.nist.toolkit.xdstools2.client.selectors.EnvironmentManager;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
-import gov.nist.toolkit.xdstools2.client.util.ToolkitServiceAsync;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
 
@@ -104,11 +103,17 @@ public class TestkitConfigTool extends Composite {
                 @Override
                 public void onComplete(Boolean exists) {
                     if (exists) {
-                        boolean confirmed = Window.confirm("There already is a existing testkit configured for this environment. " +
-                                "This will override it. \nDo you want to proceed?");
+                        boolean confirmed = Window.confirm("There already is a existing testkit configured for the environment " +
+                                        environmentManager.getSelectedEnvironment() + ". " +
+                                "This will over write it. \nDo you want to proceed?");
                         if (confirmed) runConfigTestkit();
                         else clearFeedbackBoard();
                     } else {
+                        boolean confirmed = Window.confirm("This will create a new testkit in environment " +
+                                environmentManager.getSelectedEnvironment() +
+                                " using the codes.xml in environment " +
+                                environmentManager.getSelectedEnvironment() + ". " +
+                                "\nDo you want to proceed?");
                         runConfigTestkit();
                     }
                 }
