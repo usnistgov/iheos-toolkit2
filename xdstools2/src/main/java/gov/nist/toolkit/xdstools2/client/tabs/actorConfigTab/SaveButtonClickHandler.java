@@ -31,8 +31,11 @@ class SaveButtonClickHandler implements ClickHandler {
 			new PopupMessage("You don't have permission to create a save/update a System in this Test Session");
 			return false;
 		}
-		if (!actorConfigTab.currentEditSite.getOwner().equals(Xdstools2.getInstance().getTestSessionManager().getCurrentTestSession()) &&
-				!PasswordManagement.isSignedIn) {
+//		if (actorConfigTab.currentEditSite.getOwner().equals(TestSession.GAZELLE_TEST_SESSION.getValue())) {
+//			actorConfigTab.currentEditSite.setOwner(Xdstools2.getInstance().getTestSessionManager().getCurrentTestSession());
+//		}
+		if (!actorConfigTab.currentEditSite.getOwner().equals(Xdstools2.getInstance().getTestSessionManager().getCurrentTestSession())
+				&&  !PasswordManagement.isSignedIn) {
 			new PopupMessage("You cannot update a System you do not own");
 			return false;
 		}
@@ -50,6 +53,7 @@ class SaveButtonClickHandler implements ClickHandler {
 				actorConfigTab.currentEditSite.setOwner(actorConfigTab.currentEditSite.getTestSession().getValue());
 			actorConfigTab.saveSignedInCallback.onSuccess(true);
 			((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireActorsConfigUpdatedEvent();
+			actorConfigTab.loadExternalSites();
 		}
 		else {
 			if (Xdstools2.getInstance().multiUserModeEnabled && !Xdstools2.getInstance().casModeEnabled) {

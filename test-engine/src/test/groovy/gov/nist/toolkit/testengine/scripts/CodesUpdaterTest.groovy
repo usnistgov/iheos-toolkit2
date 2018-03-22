@@ -1,5 +1,6 @@
 package gov.nist.toolkit.testengine.scripts
 
+import gov.nist.toolkit.installation.shared.TestSession
 import spock.lang.Specification
 
 /**
@@ -20,7 +21,7 @@ class CodesUpdaterTest extends Specification{
 
     def 'Test'(){
         when:
-        updater.run(environmentFile.getAbsolutePath(),testkitFile.getAbsolutePath())
+        updater.run(environmentFile.getAbsolutePath(),testkitFile.getAbsolutePath(), TestSession.DEFAULT_TEST_SESSION)
         then:
         !updater.hasErrors()
     }

@@ -122,6 +122,8 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 //            throw new Exception("installCommandContext: environment name is null");
         }
         setEnvironment(commandContext.getEnvironmentName());
+        if (session().queryServiceManager() != null)
+            session().queryServiceManager().setTestSession(commandContext.getTestSession());
 
         if (Installation.instance().propertyServiceManager().isSingleUserMode()
                 && "default".equalsIgnoreCase(commandContext.getTestSessionName())) {
@@ -133,7 +135,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     public InitializationResponse getInitialization(CommandContext context) throws Exception {
         installCommandContext(context);
         InitializationResponse response = new InitializationResponse();
-        String defaultEnv = Installation.DEFAULT_ENVIRONMENT_NAME;
+        String defaultEnv = Installation.instance().defaultEnvironmentName();
+        if (defaultEnv == null || defaultEnv.equals(""))
+                defaultEnv = Installation.DEFAULT_ENVIRONMENT_NAME;
         if (Installation.instance().propertyServiceManager().isCasMode()) {
               defaultEnv = Installation.instance().propertyServiceManager().getDefaultEnvironment();
               if (defaultEnv==null || "".equals(defaultEnv)) {

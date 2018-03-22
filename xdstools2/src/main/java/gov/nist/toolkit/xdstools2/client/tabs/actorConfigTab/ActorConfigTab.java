@@ -26,6 +26,7 @@ import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEve
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.NullSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.util.InformationLink;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteNamesRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.SaveSiteRequest;
@@ -100,6 +101,10 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
 		HTML title = new HTML();
 		title.setHTML("<h2>Configure Systems</h2>");
 		tabTopPanel.add(title);
+
+		tabTopPanel.add(new InformationLink("System configuration help", "Managing System Configurations at Connectathon"));
+
+
 
 		Anchor reload = new Anchor();
 		reload.setText("[reload]");
@@ -282,7 +287,7 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
 		else if (TestSession.DEFAULT_TEST_SESSION.getValue().equals(owner))
 			owner = "System";
 		else if (TestSession.GAZELLE_TEST_SESSION.getValue().equals(owner))
-			owner = "Gazelle";
+			owner = TestSession.GAZELLE_TEST_SESSION.getValue();
 		else
 			owner = "*****";
 
@@ -295,6 +300,11 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
 				tsPanel.add(new HTML("Owner:"));
 				ListBox listBox = new ListBox();
 				tsPanel.add(listBox);
+
+				List<String> testSessionNames = ClientUtils.INSTANCE.getTestSessionManager().getTestSessions();
+				if (!testSessionNames.contains(TestSession.GAZELLE_TEST_SESSION.getValue()))
+					testSessionNames.add(TestSession.GAZELLE_TEST_SESSION.getValue());
+
 				int selection = -1;
 				int i = 0;
 				for (String ts : ClientUtils.INSTANCE.getTestSessionManager().getTestSessions()) {
@@ -687,14 +697,35 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
 		newActorEditGrid();
 
 		siteSelector.clear();
-		for (String site : StringSort.sort(result)) {
+		List<String> swapped = swapParts(result);
+		for (String site : StringSort.sort(swapped)) {
 			if (site.equals("allRepositories"))
 				continue;
-			siteSelector.addItem(site);
+			siteSelector.addItem(swapParts(site));
 		}
 		siteSelector.addClickHandler(new SiteChoose(ActorConfigTab.this));
 
 		currentSiteNames = result;
+	}
+
+	List<String> swapParts(List<String> siteTags) {
+		List<String> work = new ArrayList<>();
+		for (String tag : siteTags) {
+			String[] parts = tag.split(":");
+			if (parts.length == 2) {
+				work.add(parts[1] + ":" + parts[0]);
+			} else {
+				work.add(tag);
+			}
+		}
+		return work;
+	}
+
+	String swapParts(String tag) {
+		String[] parts = tag.split(":");
+		if (parts.length == 2)
+			return parts[1] + ":" + parts[0];
+		return tag;
 	}
 
 	String getTlsLabel(boolean useTls) {

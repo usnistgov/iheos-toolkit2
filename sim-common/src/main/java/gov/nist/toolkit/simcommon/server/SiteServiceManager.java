@@ -190,7 +190,7 @@ public class SiteServiceManager {
 
 	private String getQualifiedName(Site s) {
 		TestSession owningTestSession = (s.getOwner() == null) ? TestSession.DEFAULT_TEST_SESSION : new TestSession(s.getOwner());
-		if (Installation.instance().testSessionExists(owningTestSession))
+		if (Installation.instance().testSessionExists(owningTestSession) || owningTestSession.equals(TestSession.GAZELLE_TEST_SESSION))
 			return owningTestSession.getValue() + ":" + s.getName();
 		return "undefined:" + s.getName();
 	}
