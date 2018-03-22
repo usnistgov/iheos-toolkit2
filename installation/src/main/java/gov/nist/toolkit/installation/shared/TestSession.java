@@ -10,6 +10,7 @@ public class TestSession implements Serializable, IsSerializable {
     private String value;
     public transient static final TestSession DEFAULT_TEST_SESSION = new TestSession("default");
     public transient static final TestSession GAZELLE_TEST_SESSION = new TestSession("gazelle");
+    public transient static final TestSession CAT_TEST_SESSION = new TestSession("cat");
 
     private TestSession() {}
 

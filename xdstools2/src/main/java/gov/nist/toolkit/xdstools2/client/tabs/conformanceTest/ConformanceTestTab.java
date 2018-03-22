@@ -22,27 +22,14 @@ import gov.nist.toolkit.interactiondiagram.client.events.DiagramClickedEvent;
 import gov.nist.toolkit.interactiondiagram.client.events.DiagramPartClickedEventHandler;
 import gov.nist.toolkit.interactiondiagram.client.widgets.InteractionDiagram;
 import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.services.client.AbstractOrchestrationResponse;
-import gov.nist.toolkit.services.client.FhirSupportOrchestrationResponse;
-import gov.nist.toolkit.services.client.RecOrchestrationResponse;
-import gov.nist.toolkit.services.client.RegOrchestrationResponse;
-import gov.nist.toolkit.services.client.RepOrchestrationResponse;
-import gov.nist.toolkit.services.client.SrcOrchestrationResponse;
+import gov.nist.toolkit.services.client.*;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.sort.TestSorter;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.xdstools2.client.NotifyOnDelete;
-import gov.nist.toolkit.xdstools2.client.command.command.AutoInitConformanceTestingCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.DeleteSingleTestCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.GetAssignedSiteForTestSessionCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.GetSiteCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.GetStsSamlAssertionCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.GetTabConfigCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.GetTestCollectionsCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.GetTestsOverviewCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.RunTestCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.event.testContext.TestContextChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testContext.TestContextChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
@@ -52,19 +39,9 @@ import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.LaunchInspectorClickHandler;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
-import gov.nist.toolkit.xdstools2.shared.command.request.DeleteSingleTestRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetCollectionRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetStsSamlAssertionRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetTabConfigRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetTestsOverviewRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.RunTestRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TestContext.NONE;
 
@@ -114,11 +91,28 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 	public ConformanceTestTab() {
 		super(10.0, 0.0);
 		me = this;
+		if (ClientUtils.INSTANCE.getCurrentTestSession().equals(TestSession.CAT_TEST_SESSION)) {
+			notLoadedReason = "Conformance Tool cannot be run in " + TestSession.CAT_TEST_SESSION.getValue() + " Test Session";
+			return;
+		}
 		mainView = new ConformanceTestMainView(this);
 		testContextView = new TestContextView(this, mainView.getTestSessionDescription(), testContext, new SiteSelectionValidatorImpl());
 		testContext.setTestContextView(testContextView);
 		testDisplayGroup = new TestDisplayGroup(testContext, testContextView, this, this);
 	}
+
+	private String notLoadedReason = null;
+
+	@Override
+	public boolean loaded() {
+		return notLoadedReason == null;
+	}
+
+	@Override
+	public String notLoadedReason() {
+		return notLoadedReason;
+	}
+
 
 	// if we dont arrange to remove the TestSession change handler then the TestSession
 	// manager will pop up even after the tab is deleted

@@ -212,7 +212,8 @@ public class MultiUserTestSessionSelector {
                     VerticalPanel body = new VerticalPanel();
                     String alertMessage = "";
                     if ((tabWatcher!=null && tabWatcher.getTabCount()>0)) {
-                        alertMessage = "<b>Note</b>: This action will close " + tabWatcher.getTabCount() + " tab(s).";
+                        if (!PasswordManagement.isSignedIn)
+                            alertMessage = "<b>Note</b>: This action will close " + tabWatcher.getTabCount() + " tab(s).";
                     }
                     body.add(new HTML("<p>Create a new test session?<br/>"
                             + alertMessage
@@ -312,7 +313,8 @@ public class MultiUserTestSessionSelector {
                             VerticalPanel body = new VerticalPanel();
                             String alertMessage = "";
                             if ((tabWatcher!=null && tabWatcher.getTabCount()>0)) {
-                                alertMessage = "<b>Note</b>: This action will close " + tabWatcher.getTabCount() + " tab(s).";
+                                if (!PasswordManagement.isSignedIn)
+                                    alertMessage = "<b>Note</b>: This action will close " + tabWatcher.getTabCount() + " tab(s).";
                             }
                             body.add(new HTML("<p>Change test session?<br/>"
                                     + alertMessage
@@ -382,7 +384,8 @@ public class MultiUserTestSessionSelector {
             @Override
             public void onComplete(TestSession result) {
                 ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.ADD, result.toString()));
-                tabWatcher.closeAllTabs();
+                if (!PasswordManagement.isSignedIn)
+                    tabWatcher.closeAllTabs();
             }
         }.run(new CommandContext());
     }
