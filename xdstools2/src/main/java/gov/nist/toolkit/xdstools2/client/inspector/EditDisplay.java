@@ -24,6 +24,18 @@ public class EditDisplay extends CommonDisplay {
 
 //    HTML errorMsgs = new HTML();
 
+    void applyChanges() {
+        if (de==null) throw new ToolkitRuntimeException("Unexpected Null documentEntry");
+
+        de.title = titleTxt.getText();
+
+    }
+
+    private class Difference {
+        String muAttributeName;
+
+    }
+
     private class ValidateClickHandler implements ClickHandler {
         DocumentEntry de;
 
@@ -46,12 +58,12 @@ public class EditDisplay extends CommonDisplay {
     }
 
 
-    public EditDisplay(MetadataInspectorTab it, MetadataObject mo) {
+    public EditDisplay(MetadataInspectorTab it, final MetadataObject mo) {
         this.detailPanel = it.detailPanel;
         this.metadataCollection = it.data.combinedMetadata;
         this.it = it;
         if (mo instanceof DocumentEntry) {
-            this.de = (DocumentEntry)mo;
+            this.de = DocumentEntry.clone((DocumentEntry)mo);
             validateMuBtn.addClickHandler(new ValidateClickHandler(de));
             editDetail();
         } else {

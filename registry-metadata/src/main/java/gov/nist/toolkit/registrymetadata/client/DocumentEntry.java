@@ -3,6 +3,7 @@ package gov.nist.toolkit.registrymetadata.client;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -111,4 +112,122 @@ public class DocumentEntry extends RegistryObject implements IsSerializable, Ser
 		return "DocumentEntry(" + name + ")";
 	}
 
+	public static DocumentEntry clone(DocumentEntry src) {
+		DocumentEntry dest = new DocumentEntry();
+		dest.lid = src.lid;
+		dest.lidX = src.lidX;
+		dest.lidDoc = src.lidDoc;
+
+		dest.objectType = src.objectType;
+		dest.objectTypeX = src.objectTypeX;
+		dest.objectTypeDoc = src.objectTypeDoc;
+
+		dest.version = src.version;
+		dest.versionX = src.versionX;
+		dest.versionDoc = src.versionDoc;
+
+		dest.mimeType = src.mimeType;
+		dest.mimeTypeX = src.mimeTypeX;
+		dest.mimeTypeDoc = src.mimeTypeDoc;
+
+		dest.hash = src.hash;
+		dest.hashX = src.hashX;
+		dest.hashDoc = src.hashDoc;
+
+		dest.lang = src.lang;
+		dest.langX = src.langX;
+		dest.langDoc = src.langDoc;
+
+		dest.legalAuth = src.legalAuth;
+		dest.legalAuthX = src.legalAuthX;
+		dest.legalAuthDoc = src.legalAuthDoc;
+
+		dest.serviceStartTime = src.serviceStartTime;
+		dest.serviceStartTimeX = src.serviceStartTimeX;
+		dest.serviceStartTimeDoc = src.serviceStartTimeDoc;
+
+		dest.serviceStopTime = src.serviceStopTime;
+		dest.serviceStopTimeX = src.serviceStopTimeX;
+		dest.serviceStopTimeDoc = src.serviceStopTimeDoc;
+
+		dest.repositoryUniqueId = src.repositoryUniqueId;
+		dest.repositoryUniqueIdX = src.repositoryUniqueIdX;
+		dest.repositoryUniqueIdDoc = src.repositoryUniqueIdDoc;
+
+		dest.size = src.size;
+		dest.sizeX = src.sizeX;
+		dest.sizeDoc = src.sizeDoc;
+
+		dest.sourcePatientId = src.sourcePatientId;
+		dest.sourcePatientIdX = src.sourcePatientIdX;
+		dest.sourcePatientIdDoc = src.sourcePatientIdDoc;
+
+		dest.creationTime = src.creationTime;
+		dest.creationTimeX = src.creationTimeX;
+		dest.creationTimeDoc = src.creationTimeDoc;
+
+		if (src.classCode != null) {
+			dest.classCode = new ArrayList<>(src.classCode);
+			dest.classCodeX = new ArrayList<>(src.classCodeX);
+			dest.classCodeDoc = new ArrayList<>(src.classCodeDoc);
+		}
+
+		if (src.confCodes != null) {
+            dest.confCodes = new ArrayList<>(src.confCodes);
+			dest.confCodesX = new ArrayList<>(src.confCodesX);
+			dest.confCodesDoc = new ArrayList<>(src.confCodesDoc);
+        }
+
+        if (src.eventCodeList != null) {
+			dest.eventCodeList = new ArrayList<>(src.eventCodeList);
+			dest.eventCodeListX = new ArrayList<>(src.eventCodeListX);
+			dest.eventCodeListDoc = new ArrayList<>(src.eventCodeListDoc);
+		}
+
+		if (src.formatCode != null) {
+			dest.formatCode = new ArrayList<>(src.formatCode);
+			dest.formatCodeX = new ArrayList<>(src.formatCodeX);
+			dest.formatCodeDoc = new ArrayList<>(src.formatCodeDoc);
+		}
+
+		if (src.hcftc != null) {
+			dest.hcftc = new ArrayList<>(src.hcftc);
+			dest.hcftcX = new ArrayList<>(src.hcftcX);
+			dest.hcftcDoc = new ArrayList<>(src.hcftcDoc);
+		}
+
+		if (src.pracSetCode != null) {
+			dest.pracSetCode = new ArrayList<>(src.pracSetCode);
+			dest.pracSetCodeX = new ArrayList<>(src.pracSetCodeX);
+			dest.pracSetCodeDoc = new ArrayList<>(src.pracSetCodeDoc);
+		}
+
+		if (src.typeCode != null) {
+			dest.typeCode = new ArrayList<>(src.typeCode);
+			dest.typeCodeX = new ArrayList<>(src.typeCodeX);
+			dest.typeCodeDoc = new ArrayList<>(src.typeCodeDoc);
+		}
+
+		if (src.authors!=null) {
+			dest.authors = new ArrayList<>();
+			for (Author a : src.authors) {
+				dest.authors.add(Author.clone(a));
+			}
+			dest.authorsX = new ArrayList<>(dest.authorsX);
+			if (src.authorsDoc!=null) {
+				dest.authorsDoc = new ArrayList<>();
+				for (Author a : src.authorsDoc) {
+					dest.authorsDoc.add(Author.clone(a));
+				}
+			}
+		}
+
+		if (src.sourcePatientInfo != null) {
+            dest.sourcePatientInfo = new ArrayList<>(src.sourcePatientInfo);
+			dest.sourcePatientInfoX = src.sourcePatientInfoX;
+			dest.sourcePatientInfoDoc = new ArrayList<>(src.sourcePatientInfoDoc);
+        }
+
+		return dest;
+	}
 }
