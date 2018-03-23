@@ -4,6 +4,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.TextBox;
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
 import gov.nist.toolkit.registrymetadata.client.MetadataObject;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
@@ -16,25 +17,34 @@ import gov.nist.toolkit.xdstools2.shared.command.request.ValidateDEMetadataUpdat
 public class EditDisplay extends CommonDisplay {
     private Button validateMuBtn = new Button("Validate");
     private Button muBtn = new Button("Update");
-    DocumentEntry de = null;
+    private DocumentEntry de = null;
+
+    // Edit controls
+    private TextBox titleTxt = new TextBox();
+
 //    HTML errorMsgs = new HTML();
 
-    {
-        validateMuBtn.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent clickEvent) {
-                new ValidateDEMetadataUpdateCommand() {
-                    @Override
-                    public void onComplete(MessageValidationResults result) {
-                        if (result!=null) {
-                            new PopupMessage(result.getHtmlResults());
-                        }
-                        else new PopupMessage("result is null");
+    private class ValidateClickHandler implements ClickHandler {
+        DocumentEntry de;
+
+        public ValidateClickHandler(DocumentEntry de) {
+            this.de = de;
+        }
+
+        @Override
+        public void onClick(ClickEvent clickEvent) {
+            new ValidateDEMetadataUpdateCommand() {
+                @Override
+                public void onComplete(MessageValidationResults result) {
+                    if (result!=null) {
+                        new PopupMessage(result.getHtmlResults());
                     }
-                }.run(new ValidateDEMetadataUpdateRequest(ClientUtils.INSTANCE.getCommandContext(), de));
-            }
-        });
+                    else new PopupMessage("result is null");
+                }
+            }.run(new ValidateDEMetadataUpdateRequest(ClientUtils.INSTANCE.getCommandContext(), de));
+        }
     }
+
 
     public EditDisplay(MetadataInspectorTab it, MetadataObject mo) {
         this.detailPanel = it.detailPanel;
@@ -42,6 +52,7 @@ public class EditDisplay extends CommonDisplay {
         this.it = it;
         if (mo instanceof DocumentEntry) {
             this.de = (DocumentEntry)mo;
+            validateMuBtn.addClickHandler(new ValidateClickHandler(de));
             editDetail();
         } else {
             throw new ToolkitRuntimeException("Unsupported metadata type.");
@@ -80,7 +91,8 @@ public class EditDisplay extends CommonDisplay {
             }
 
             ft.setHTML(row, 0, bold("title", b));
-            ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.title, de.titleX));
+//            ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.title, de.titleX));
+            ft.setWidget(row, 1, titleTxt);
             row++;
 
             ft.setHTML(row, 0, bold("comments", b));
