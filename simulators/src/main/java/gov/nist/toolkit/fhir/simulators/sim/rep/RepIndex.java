@@ -7,7 +7,6 @@ import gov.nist.toolkit.simcommon.client.SimulatorStats;
 import org.apache.log4j.Logger;
 
 import java.io.*;
-import java.nio.file.Path;
 import java.util.Calendar;
 
 public class RepIndex implements Serializable {
@@ -15,7 +14,7 @@ public class RepIndex implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	public DocumentCollection dc;
-	String filename;
+	public String filename;
 	public Calendar cacheExpires;
 	SimId simId;
 
@@ -39,16 +38,6 @@ public class RepIndex implements Serializable {
 		}
 	}
 
-	// use parent as path since index file may not have been created yet
-	public Path getRelativePath(Path absolute) {
-		Path index = new File(filename).toPath().getParent();
-		return index.relativize(absolute);
-	}
-
-	public Path getAbsolutePath(Path relative) {
-		Path index = new File(filename).toPath().getParent();
-		return index.resolve(relative);
-	}
 
 	public void restore() throws Exception, ClassNotFoundException {
 		synchronized(this) {
@@ -87,7 +76,7 @@ public class RepIndex implements Serializable {
 		}
 	}
 
-	static void saveRepository(DocumentCollection dc, String filename) throws IOException {
+	private static void saveRepository(DocumentCollection dc, String filename) throws IOException {
 		logger.debug("Save Repository Index");
 		FileOutputStream fos = null;
 		ObjectOutputStream out = null;

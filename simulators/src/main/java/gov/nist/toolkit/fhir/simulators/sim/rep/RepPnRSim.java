@@ -177,7 +177,7 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 				StoredDocument sd = sdMap.get(uid);
 				dsSimCommon.repIndex.getDocumentCollection().add(sd);
 				byte[] content = sdMap.get(uid).content;
-				File location = sd.getPathToDocument();
+				File location = sd.getPathToDocument().toFile();
 				Io.bytesToFile(location, content);
 				byte[] content2 = Io.bytesFromFile(location);
 				logger.info("Verifying storage...");

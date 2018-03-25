@@ -175,12 +175,10 @@
                     <version>2.19.1</version>
                     <configuration>
                         <includes>
-                            <!--<include>**/FhirSupportOrchestrationBuilderSpec.java</include>-->
-                            <!--<include>**/MultiQuerySpec.java</include>-->
-                            <!--<include>**/DicomSpec.java</include>-->
-                            <include>**/*Spec.java</include>
-                            <include>**/*Test.java</include>
-                            <include>**/*IT.java</include>
+                            <include>**/OdConsumerSpec.java</include>
+                            <!--<include>**/*Spec.java</include>-->
+                            <!--<include>**/*Test.java</include>-->
+                            <!--<include>**/*IT.java</include>-->
                             <!-- end include all tests -->
                         </includes>
                         <!-- Exclude tests that disturb other tests or require to be run in complete isolation. -->

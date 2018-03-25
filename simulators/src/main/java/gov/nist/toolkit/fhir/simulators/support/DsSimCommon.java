@@ -426,6 +426,7 @@ public class DsSimCommon {
 
         sd.cid = mkCid(documentsToAttach.size() + 1);
 
+
         documentsToAttach.put(sd.cid, sd);
     }
 
@@ -683,6 +684,7 @@ public class DsSimCommon {
                 for (String cid : documentsToAttach.keySet()) {
                     StringBuffer body = new StringBuffer();
                     StoredDocument sd = documentsToAttach.get(cid);
+                    sd.setRepIndex(repIndex);
 
                     body.append(rn).append("--").append(boundary).append(rn);
                     body.append("Content-Type: ").append(sd.getMimeType()).append(rn);
