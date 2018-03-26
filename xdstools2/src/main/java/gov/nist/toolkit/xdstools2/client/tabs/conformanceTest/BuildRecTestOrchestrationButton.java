@@ -73,6 +73,7 @@ public class BuildRecTestOrchestrationButton extends AbstractOrchestrationButton
         RecOrchestrationRequest request = new RecOrchestrationRequest(actorOption);
         request.setTestSession(new TestSession(testTab.getCurrentTestSession()));
         request.setEnvironmentName(testTab.getEnvironmentSelection());
+        request.setUseTls(isTls());
         request.setUseExistingState(!isResetRequested());
         request.getActorOption().copyFrom(testTab.getCurrentActorOption());
         if (!testingAClient && testContext.getSiteUnderTest() != null) {

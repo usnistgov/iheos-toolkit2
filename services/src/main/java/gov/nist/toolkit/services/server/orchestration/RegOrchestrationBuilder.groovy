@@ -14,13 +14,14 @@ import groovy.transform.TypeChecked
  *
  */
 @TypeChecked
-class RegOrchestrationBuilder {
+class RegOrchestrationBuilder extends AbstractOrchestrationBuilder {
     ToolkitApi api
     private Session session
     private RegOrchestrationRequest request
     private Util util
 
     public RegOrchestrationBuilder(ToolkitApi api, Session session, RegOrchestrationRequest request) {
+        super(session, request)
         this.api = api
         this.request = request
         this.session = session
@@ -86,6 +87,7 @@ class RegOrchestrationBuilder {
             parms.put('$patientid$', sqPid.toString())
 
             try {
+                request.registrySut.isTls = request.isUseTls()
                 util.submit(request.testSession.value, request.registrySut, testInstance12346, parms);
 
             } catch (Exception e) {
@@ -93,6 +95,7 @@ class RegOrchestrationBuilder {
             }
 
             try {
+                request.registrySut.isTls = request.isUseTls()
                 util.submit(request.testSession.value, request.registrySut, testInstance12374, parms);
 
             } catch (Exception e) {
@@ -100,6 +103,7 @@ class RegOrchestrationBuilder {
             }
 
             try {
+                request.registrySut.isTls = request.isUseTls()
                 util.submit(request.testSession.value, request.registrySut, testInstance12361, parms);
 
             } catch (Exception e) {

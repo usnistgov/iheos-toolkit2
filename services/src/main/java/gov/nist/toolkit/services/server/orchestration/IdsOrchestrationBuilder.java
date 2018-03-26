@@ -23,7 +23,7 @@ import java.util.List;
 * Build environment for testing Imaging Document Source SUT.
 */
 
-class IdsOrchestrationBuilder {
+class IdsOrchestrationBuilder extends AbstractOrchestrationBuilder {
    static Logger log = Logger.getLogger(IdsOrchestrationBuilder.class);   
 
    static final String sutSimulatorName = "simulator_ids";
@@ -38,6 +38,7 @@ class IdsOrchestrationBuilder {
     SimulatorConfig rrSimulatorConfig = null;
 
     public IdsOrchestrationBuilder(ToolkitApi api, Session session, IdsOrchestrationRequest request) {
+        super(session, request);
         this.api = api;
         this.session = session;
         this.request = request;
