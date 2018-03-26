@@ -122,6 +122,4 @@ public class MetadataCollection implements IsSerializable, Serializable {
 		addNoDup(assocs, mc.assocs);
 		addNoDup(objectRefs, mc.objectRefs);
 	}
-	
-	
 }

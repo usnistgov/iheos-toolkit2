@@ -74,7 +74,6 @@ import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.NoMetadataException;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdstools2.client.GazelleXuaUsername;
 import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TabConfig;
@@ -1157,7 +1156,12 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
 
     @Override
-    public MessageValidationResults validateDEMetadataUpdate(ValidateDEMetadataUpdateRequest request) throws Exception {
+    public List<Result> updateDocumentEntry(UpdateDocumentEntryRequest request) throws Exception {
+        return null;
+    }
+
+    @Override
+    public MessageValidationResults validateDocumentEntry(ValidateDocumentEntryRequest request) throws Exception {
         MessageValidationResults mvr = new MessageValidationResults();
         installCommandContext(request);
         RegistryErrorListGenerator regErrorListGen  = null;
@@ -1201,6 +1205,8 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 
         return mvr;
     }
+
+
 
     @Override
     public MessageValidationResults validateMessage(ValidateMessageRequest request) throws Exception {

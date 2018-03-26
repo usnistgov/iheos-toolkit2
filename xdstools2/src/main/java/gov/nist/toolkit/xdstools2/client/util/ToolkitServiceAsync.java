@@ -105,7 +105,9 @@ public interface ToolkitServiceAsync {
     void getLastFilename(CommandContext context,AsyncCallback<String> callback);
     void getTimeAndDate(CommandContext context,AsyncCallback<String> callback);
 
-    void validateDEMetadataUpdate(ValidateDEMetadataUpdateRequest request, AsyncCallback<MessageValidationResults> callback);
+    void updateDocumentEntry(UpdateDocumentEntryRequest request, AsyncCallback<List<Result>> callback);
+    void validateDocumentEntry(ValidateDocumentEntryRequest request, AsyncCallback<MessageValidationResults> callback);
+
     void validateMessage(ValidateMessageRequest vrequest, AsyncCallback<MessageValidationResults> callback);
 
     void getSiteNames(GetSiteNamesRequest request, AsyncCallback<List<String>> callback) ;

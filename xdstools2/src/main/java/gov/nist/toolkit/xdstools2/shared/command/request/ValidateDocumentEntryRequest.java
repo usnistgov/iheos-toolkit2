@@ -6,12 +6,12 @@ import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 /**
  * Created by skb1 on 3/15/18.
  */
-public class ValidateDEMetadataUpdateRequest extends CommandContext{
+public class ValidateDocumentEntryRequest extends CommandContext{
     DocumentEntry de;
 
-    public ValidateDEMetadataUpdateRequest(){}
+    public ValidateDocumentEntryRequest(){}
 
-    public ValidateDEMetadataUpdateRequest(CommandContext context, DocumentEntry de) {
+    public ValidateDocumentEntryRequest(CommandContext context, DocumentEntry de) {
         copyFrom(context);
         this.de = de;
     }

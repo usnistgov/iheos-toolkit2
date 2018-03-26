@@ -227,7 +227,6 @@ public class DocumentEntry extends RegistryObject implements IsSerializable, Ser
 			dest.sourcePatientInfoX = src.sourcePatientInfoX;
 			dest.sourcePatientInfoDoc = new ArrayList<>(src.sourcePatientInfoDoc);
         }
-
 		return dest;
 	}
 }

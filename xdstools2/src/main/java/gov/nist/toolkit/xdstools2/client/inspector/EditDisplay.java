@@ -12,7 +12,7 @@ import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdstools2.client.command.command.ValidateDEMetadataUpdateCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
-import gov.nist.toolkit.xdstools2.shared.command.request.ValidateDEMetadataUpdateRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.ValidateDocumentEntryRequest;
 
 public class EditDisplay extends CommonDisplay {
     private Button validateMuBtn = new Button("Validate");
@@ -25,15 +25,9 @@ public class EditDisplay extends CommonDisplay {
 //    HTML errorMsgs = new HTML();
 
     void applyChanges() {
-        if (de==null) throw new ToolkitRuntimeException("Unexpected Null documentEntry");
+        if (de==null) throw new ToolkitRuntimeException("Unexpected null documentEntry");
 
         de.title = titleTxt.getText();
-
-    }
-
-    private class Difference {
-        String muAttributeName;
-
     }
 
     private class ValidateClickHandler implements ClickHandler {
@@ -45,6 +39,7 @@ public class EditDisplay extends CommonDisplay {
 
         @Override
         public void onClick(ClickEvent clickEvent) {
+            applyChanges();
             new ValidateDEMetadataUpdateCommand() {
                 @Override
                 public void onComplete(MessageValidationResults result) {
@@ -53,7 +48,7 @@ public class EditDisplay extends CommonDisplay {
                     }
                     else new PopupMessage("result is null");
                 }
-            }.run(new ValidateDEMetadataUpdateRequest(ClientUtils.INSTANCE.getCommandContext(), de));
+            }.run(new ValidateDocumentEntryRequest(ClientUtils.INSTANCE.getCommandContext(), de));
         }
     }
 
