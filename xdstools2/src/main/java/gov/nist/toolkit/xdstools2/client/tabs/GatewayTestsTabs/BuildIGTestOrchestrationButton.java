@@ -83,6 +83,7 @@ public class BuildIGTestOrchestrationButton extends AbstractOrchestrationButton 
         }
         IgOrchestrationRequest request = new IgOrchestrationRequest();
         request.setUseExistingState(!isResetRequested());
+        request.setUseTls(isTls());
         request.setTestSession(new TestSession(testTab.getCurrentTestSession()));
         request.setIncludeLinkedIG(includeIG);
 

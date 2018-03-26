@@ -20,7 +20,7 @@ import groovy.transform.TypeChecked
  *
  */
 @TypeChecked
-class IgOrchestrationBuilder {
+class IgOrchestrationBuilder extends AbstractOrchestrationBuilder {
     Session session
     IgOrchestrationRequest request
     ToolkitApi api
@@ -30,6 +30,7 @@ class IgOrchestrationBuilder {
     OrchestrationProperties orchProps
 
     public IgOrchestrationBuilder(ToolkitApi api, Session session, IgOrchestrationRequest request) {
+        super(session, request)
         this.api = api
         this.session = session
         this.request = request
@@ -88,6 +89,7 @@ class IgOrchestrationBuilder {
 //                MessageItem item12318 = response.addMessage(testInstance12318, true, "")
 
                 // Submit test data
+                SiteBuilder.siteSpecFromSimId(rgConfigs.get(0).id).isTls = request.isUseTls()
                 try {
                     util.submit(request.testSession, SiteBuilder.siteSpecFromSimId(rgConfigs.get(0).id), new TestInstance("15807", request.testSession), 'onedoc1', oneDocPid, home0)
                 } catch (Exception e) {
@@ -118,6 +120,7 @@ class IgOrchestrationBuilder {
                         '$patientid$'     : twoRgPid.asString(),
                         '$testdata_home$' : home1,
                         '$testdata_repid$': rgConfigs[1].getConfigEle(SimulatorProperties.repositoryUniqueId).asString()]
+                SiteBuilder.siteSpecFromSimId(rgConfigs.get(1).id).isTls = request.isUseTls()
                 try {
                     util.submit(request.testSession.value, SiteBuilder.siteSpecFromSimId(rgConfigs.get(1).id), new TestInstance("15807", request.testSession), 'onedoc3', params)
                 } catch (Exception e) {

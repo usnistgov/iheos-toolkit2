@@ -48,6 +48,7 @@ public class BuildFhirSupportOrchestrationButton extends AbstractOrchestrationBu
         FhirSupportOrchestrationRequest request = new FhirSupportOrchestrationRequest();
         request.setTestSession(new TestSession(testTab.getCurrentTestSession()));
         request.setEnvironmentName(testTab.getEnvironmentSelection());
+        request.setUseTls(isTls());
         request.setUseExistingState(!isResetRequested());
         request.getActorOption().copyFrom(testTab.getCurrentActorOption());
 

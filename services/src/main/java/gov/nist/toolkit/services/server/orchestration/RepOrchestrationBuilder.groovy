@@ -22,13 +22,14 @@ import groovy.transform.TypeChecked
  * A Registry sim is built and configured to not validate Register transactions against PIF.
  */
 @TypeChecked
-class RepOrchestrationBuilder {
+class RepOrchestrationBuilder extends AbstractOrchestrationBuilder {
     Session session
     RepOrchestrationRequest request
     ToolkitApi api
     Util util
 
     public RepOrchestrationBuilder(ToolkitApi api, Session session, RepOrchestrationRequest request) {
+        super(session, request)
         this.api = api
         this.session = session
         this.request = request

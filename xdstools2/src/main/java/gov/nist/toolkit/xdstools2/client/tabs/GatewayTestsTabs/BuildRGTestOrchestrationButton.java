@@ -83,6 +83,7 @@ public class BuildRGTestOrchestrationButton extends AbstractOrchestrationButton 
         request.setSiteUnderTest(siteUnderTest);
         request.setUseExposedRR(useExposedRR);
         request.setUseSimAsSUT(useSimAsSUT);
+        request.setUseTls(isTls());
 
         new BuildRGTestOrchestrationCommand(){
             @Override
