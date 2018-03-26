@@ -77,8 +77,12 @@ public class StoredDocument implements Serializable {
 	}
 
 	def setPathToDocument(String pathToDocument) {
-		boolean canBeRelativized = repIndex && RepIndexSerializer.canBeRelativized(repIndex.filename, new File(pathToDocument).toPath())
-		this.pathToDocument = (canBeRelativized) ? RepIndexSerializer.getRelativePath(repIndex.filename, new File(pathToDocument).toPath()) : pathToDocument
+		if (!pathToDocument)
+			this.pathToDocument = pathToDocument
+		else {
+			boolean canBeRelativized = repIndex && RepIndexSerializer.canBeRelativized(repIndex.filename, new File(pathToDocument).toPath())
+			this.pathToDocument = (canBeRelativized) ? RepIndexSerializer.getRelativePath(repIndex.filename, new File(pathToDocument).toPath()) : pathToDocument
+		}
 	}
 
 	Path getPathToDocument() {
