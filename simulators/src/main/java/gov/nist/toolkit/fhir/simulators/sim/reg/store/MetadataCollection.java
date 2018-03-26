@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -317,7 +318,12 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 		Ro ro = getRo(id);
 		if (ro == null)
 			return null;
-		File f = regIndex.getAbsolutePathForObject(ro).toFile(); //ro.getFile();
+		File f = null;
+		if (ro.isPathIsRelative()) {
+		 	f = regIndex.getAbsolutePathForObject(ro).toFile(); //ro.getFile();
+		} else {
+			f = new File(ro.getPathToMetadata());
+		}
 		Metadata m = MetadataParser.parseNonSubmission(f);
 		attachAvailabilityStatus(m);
 		m = attachFolderLastUpdateTime(m);
