@@ -77,4 +77,20 @@ public class Ro  implements Serializable  {
         for (Ro r : ros) ids.add(r.getId());
         return ids;
     }
+
+	public boolean isPathIsRelative() {
+		return pathIsRelative;
+	}
+
+	public void setPathIsRelative(boolean pathIsRelative) {
+		this.pathIsRelative = pathIsRelative;
+	}
+
+	public void setPathToMetadata(String pathToMetadata) {
+		this.pathToMetadata = pathToMetadata;
+	}
+
+	public String getPathToMetadata() {
+		return pathToMetadata;
+	}
 }

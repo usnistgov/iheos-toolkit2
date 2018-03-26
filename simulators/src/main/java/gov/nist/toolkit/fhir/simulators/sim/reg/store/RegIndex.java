@@ -27,9 +27,9 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 	transient private SimDb db;
 	private SimId simId;
 
-	// path is created relative to index file
+	// path is created relative to index file parent folder
 	File installInternalPath(Ro ro) {
-		Path indexPath = new File(filename).toPath();
+		Path indexPath = new File(filename).getParentFile().toPath();
 		File absolute = getSimDb().getObjectFile(DbObjectType.REGISTRY, ro.id);
 		ro.pathToMetadata = indexPath.relativize(absolute.toPath()).toString();
 		ro.pathIsRelative = true;
@@ -37,11 +37,11 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 		return absolute;
 	}
 
-	// resolve relative to index file
-	Path getAbsolutePathForObject(Ro ro) {
+	// resolve relative to index file parent
+	public Path getAbsolutePathForObject(Ro ro) {
 		if (!(ro.pathIsRelative || !ro.pathToMetadata.startsWith("/")))
 			return new File(ro.pathToMetadata).toPath();
-		Path indexPath = new File(filename).toPath();
+		Path indexPath = new File(filename).getParentFile().toPath();
 		Path path = indexPath.resolve(ro.pathToMetadata);
 		logger.info("RegRead: " + path);
 		return path;
