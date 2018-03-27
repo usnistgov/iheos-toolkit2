@@ -22,9 +22,8 @@ import java.util.List;
 
 public class EditDisplay extends CommonDisplay {
     private Button validateMuBtn = new Button("Validate");
-    private Button muBtn = new Button("Update");
+    private Button updateBtn = new Button("Update");
     private DocumentEntry de = null;
-    private int idx;
     private TestInstance logId;
 
     // Edit controls
@@ -39,12 +38,6 @@ public class EditDisplay extends CommonDisplay {
     }
 
     private class ValidateClickHandler implements ClickHandler {
-        DocumentEntry de;
-
-        public ValidateClickHandler(DocumentEntry de) {
-            this.de = de;
-        }
-
         @Override
         public void onClick(ClickEvent clickEvent) {
             applyChanges();
@@ -61,7 +54,6 @@ public class EditDisplay extends CommonDisplay {
     }
 
     private class UpdateClickHandler implements ClickHandler {
-
         @Override
         public void onClick(ClickEvent clickEvent) {
             applyChanges();
@@ -73,21 +65,21 @@ public class EditDisplay extends CommonDisplay {
                     else
                         new PopupMessage("no results!");
                 }
-            }.run(new UpdateDocumentEntryRequest(ClientUtils.INSTANCE.getCommandContext(), de, logId, idx));
+            }.run(new UpdateDocumentEntryRequest(ClientUtils.INSTANCE.getCommandContext(), de, logId));
 
         }
     }
 
 
-    public EditDisplay(MetadataInspectorTab it, final MetadataObject mo, int idx, final TestInstance logId) {
+    public EditDisplay(MetadataInspectorTab it, final MetadataObject mo, final TestInstance logId) {
         this.detailPanel = it.detailPanel;
         this.metadataCollection = it.data.combinedMetadata;
         this.it = it;
-        this.idx = idx;
         this.logId = logId;
         if (mo instanceof DocumentEntry) {
             this.de = DocumentEntry.clone((DocumentEntry)mo);
-            validateMuBtn.addClickHandler(new ValidateClickHandler(de));
+            validateMuBtn.addClickHandler(new ValidateClickHandler());
+            updateBtn.addClickHandler(new UpdateClickHandler());
             editDetail();
         } else {
             throw new ToolkitRuntimeException("Unsupported metadata type.");
@@ -115,7 +107,7 @@ public class EditDisplay extends CommonDisplay {
        // Call documententry validators on 'Validate' button onClick
 
        ft.setWidget(row, 0, validateMuBtn);
-       ft.setWidget(row, 1, muBtn);
+       ft.setWidget(row, 1, updateBtn);
        row++;
 
         try {
@@ -127,6 +119,7 @@ public class EditDisplay extends CommonDisplay {
 
             ft.setHTML(row, 0, bold("title", b));
 //            ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.title, de.titleX));
+            titleTxt.setText(de.title);
             ft.setWidget(row, 1, titleTxt);
             row++;
 
@@ -233,7 +226,7 @@ public class EditDisplay extends CommonDisplay {
             new PopupMessage(ex.toString());
         } finally {
             ft.setWidget(row, 0, validateMuBtn);
-            ft.setWidget(row, 1, muBtn);
+            ft.setWidget(row, 1, updateBtn);
             row++;
             detailPanel.add(ft);
         }

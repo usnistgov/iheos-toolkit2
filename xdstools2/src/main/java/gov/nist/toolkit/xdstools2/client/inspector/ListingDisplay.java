@@ -138,13 +138,12 @@ public class ListingDisplay {
 	}
 
 	void documentEntries() {
-		int idx=0; // The order of metadata as it appears in log.xml
 		for (DocumentEntry de : data.combinedMetadata.docEntries) {
-			addDe(root, de, idx++);
+			addDe(root, de);
 		}
 	}
 
-	void addDe(TreeThing treeThing, DocumentEntry de, int idx) {
+	void addDe(TreeThing treeThing, DocumentEntry de) {
 		Hyperlink h = HyperlinkFactory.link(tab, de);
 		TreeItem item = new TreeItem(h);
 		item.setUserObject(new MetadataObjectWrapper(MetadataObjectType.DocEntries,de));
@@ -170,7 +169,7 @@ public class ListingDisplay {
 					// "TF-3: Only an Approved DocumentEntry is replaceable."
 					if ("urn:oasis:names:tc:ebxml-regrep:StatusType:Approved".equals(de.status)) {
 						// We should only allow edit when this panel is not the right-part of compare. By chance, when in compare mode, the tree selection is hidden.
-						TreeItem mu = new TreeItem(HyperlinkFactory.metadataUpdate(tab, de, idx, "Action: MetadataUpdate"));
+						TreeItem mu = new TreeItem(HyperlinkFactory.metadataUpdate(tab, de, logId, "Action: MetadataUpdate"));
 						item.addItem(mu);
 					}
 				}

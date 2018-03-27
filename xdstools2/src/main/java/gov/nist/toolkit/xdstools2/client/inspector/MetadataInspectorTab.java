@@ -223,7 +223,7 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 				addTreeSelectionHandler(contentTree);
 			}
 
-			new ListingDisplay(this, data, new TreeThing(contentTree)).listing();
+			new ListingDisplay(this, data, new TreeThing(contentTree), null).listing();
 
 			historyPanel.add(contentTree);
 		}

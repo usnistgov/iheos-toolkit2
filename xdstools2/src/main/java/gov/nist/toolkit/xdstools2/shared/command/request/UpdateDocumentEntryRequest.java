@@ -8,17 +8,15 @@ import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
  * Created by skb1 on 3/26/18.
  */
 public class UpdateDocumentEntryRequest extends CommandContext {
-    int logEntryindex;
     DocumentEntry toBeUpdatedDe;
     TestInstance originalGetDocsTestInstance;
 
     public UpdateDocumentEntryRequest(){}
 
-    public UpdateDocumentEntryRequest(CommandContext context, DocumentEntry toBeUpdatedDe, TestInstance originalGetDocsTestInstance, int logEntryindex) {
+    public UpdateDocumentEntryRequest(CommandContext context, DocumentEntry toBeUpdatedDe, TestInstance originalGetDocsTestInstance) {
         copyFrom(context);
         this.toBeUpdatedDe = toBeUpdatedDe;
         this.originalGetDocsTestInstance = originalGetDocsTestInstance;
-        this.logEntryindex = logEntryindex;
     }
 
     public DocumentEntry getToBeUpdatedDe() {
@@ -34,7 +32,4 @@ public class UpdateDocumentEntryRequest extends CommandContext {
         this.originalGetDocsTestInstance = originalGetDocsTestInstance;
     }
 
-    public int getLogEntryindex() {
-        return logEntryindex;
-    }
 }

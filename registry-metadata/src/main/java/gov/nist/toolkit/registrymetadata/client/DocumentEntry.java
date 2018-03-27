@@ -162,50 +162,54 @@ public class DocumentEntry extends RegistryObject implements IsSerializable, Ser
 		dest.sourcePatientIdX = src.sourcePatientIdX;
 		dest.sourcePatientIdDoc = src.sourcePatientIdDoc;
 
+		dest.title = src.title;
+		dest.titleDoc = src.titleDoc;
+		dest.titleX = src.titleX;
+
 		dest.creationTime = src.creationTime;
 		dest.creationTimeX = src.creationTimeX;
 		dest.creationTimeDoc = src.creationTimeDoc;
 
 		if (src.classCode != null) {
 			dest.classCode = new ArrayList<>(src.classCode);
-			dest.classCodeX = new ArrayList<>(src.classCodeX);
-			dest.classCodeDoc = new ArrayList<>(src.classCodeDoc);
+			if (src.classCodeX!=null) {dest.classCodeX = new ArrayList<>(src.classCodeX);}
+			if (src.classCodeDoc!=null) {dest.classCodeDoc = new ArrayList<>(src.classCodeDoc);}
 		}
 
 		if (src.confCodes != null) {
             dest.confCodes = new ArrayList<>(src.confCodes);
-			dest.confCodesX = new ArrayList<>(src.confCodesX);
-			dest.confCodesDoc = new ArrayList<>(src.confCodesDoc);
+			if (src.confCodesX!=null) {dest.confCodesX = new ArrayList<>(src.confCodesX);}
+			if (src.confCodesDoc!=null) {dest.confCodesDoc = new ArrayList<>(src.confCodesDoc);}
         }
 
         if (src.eventCodeList != null) {
 			dest.eventCodeList = new ArrayList<>(src.eventCodeList);
-			dest.eventCodeListX = new ArrayList<>(src.eventCodeListX);
-			dest.eventCodeListDoc = new ArrayList<>(src.eventCodeListDoc);
+			if (src.eventCodeListX!=null) {dest.eventCodeListX = new ArrayList<>(src.eventCodeListX);}
+			if (src.eventCodeListDoc!=null) {dest.eventCodeListDoc = new ArrayList<>(src.eventCodeListDoc);}
 		}
 
 		if (src.formatCode != null) {
 			dest.formatCode = new ArrayList<>(src.formatCode);
-			dest.formatCodeX = new ArrayList<>(src.formatCodeX);
-			dest.formatCodeDoc = new ArrayList<>(src.formatCodeDoc);
+			if (src.formatCodeX!=null) {dest.formatCodeX = new ArrayList<>(src.formatCodeX);}
+			if (src.formatCodeDoc!=null) {dest.formatCodeDoc = new ArrayList<>(src.formatCodeDoc);}
 		}
 
 		if (src.hcftc != null) {
 			dest.hcftc = new ArrayList<>(src.hcftc);
-			dest.hcftcX = new ArrayList<>(src.hcftcX);
-			dest.hcftcDoc = new ArrayList<>(src.hcftcDoc);
+			if (src.hcftcX!=null) {dest.hcftcX = new ArrayList<>(src.hcftcX);}
+			if (src.hcftcDoc!=null) {dest.hcftcDoc = new ArrayList<>(src.hcftcDoc);}
 		}
 
 		if (src.pracSetCode != null) {
 			dest.pracSetCode = new ArrayList<>(src.pracSetCode);
-			dest.pracSetCodeX = new ArrayList<>(src.pracSetCodeX);
-			dest.pracSetCodeDoc = new ArrayList<>(src.pracSetCodeDoc);
+			if (src.pracSetCodeX!=null) {dest.pracSetCodeX = new ArrayList<>(src.pracSetCodeX);}
+			if (src.pracSetCodeDoc!=null) {dest.pracSetCodeDoc = new ArrayList<>(src.pracSetCodeDoc);}
 		}
 
 		if (src.typeCode != null) {
 			dest.typeCode = new ArrayList<>(src.typeCode);
-			dest.typeCodeX = new ArrayList<>(src.typeCodeX);
-			dest.typeCodeDoc = new ArrayList<>(src.typeCodeDoc);
+			if (src.typeCodeX!=null) {dest.typeCodeX = new ArrayList<>(src.typeCodeX);}
+			if (src.typeCodeDoc!=null) {dest.typeCodeDoc = new ArrayList<>(src.typeCodeDoc);}
 		}
 
 		if (src.authors!=null) {
@@ -213,7 +217,7 @@ public class DocumentEntry extends RegistryObject implements IsSerializable, Ser
 			for (Author a : src.authors) {
 				dest.authors.add(Author.clone(a));
 			}
-			dest.authorsX = new ArrayList<>(dest.authorsX);
+			if (src.authorsX!=null) {dest.authorsX = new ArrayList<>(src.authorsX);}
 			if (src.authorsDoc!=null) {
 				dest.authorsDoc = new ArrayList<>();
 				for (Author a : src.authorsDoc) {
@@ -225,7 +229,7 @@ public class DocumentEntry extends RegistryObject implements IsSerializable, Ser
 		if (src.sourcePatientInfo != null) {
             dest.sourcePatientInfo = new ArrayList<>(src.sourcePatientInfo);
 			dest.sourcePatientInfoX = src.sourcePatientInfoX;
-			dest.sourcePatientInfoDoc = new ArrayList<>(src.sourcePatientInfoDoc);
+			if (src.sourcePatientInfoDoc!=null) {dest.sourcePatientInfoDoc = new ArrayList<>(src.sourcePatientInfoDoc);}
         }
 		return dest;
 	}

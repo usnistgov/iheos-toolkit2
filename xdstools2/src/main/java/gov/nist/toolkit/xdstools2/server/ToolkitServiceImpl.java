@@ -23,6 +23,7 @@ import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrymetadata.client.Difference;
+import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
 import gov.nist.toolkit.registrymetadata.client.DocumentEntryDiff;
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
@@ -62,7 +63,6 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.testengine.Sections;
 import gov.nist.toolkit.testengine.engine.RegistryUtility;
-import gov.nist.toolkit.testengine.engine.TestLogsBuilder;
 import gov.nist.toolkit.testengine.scripts.BuildCollections;
 import gov.nist.toolkit.testengine.scripts.CodesUpdater;
 import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
@@ -1190,6 +1190,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
             throw new ToolkitRuntimeException(e);
         }
 
+        /*
         TestLogs testLogs = null;
         try {
             testLogs = TestLogsBuilder.build(logMapDTO);
@@ -1199,26 +1200,33 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
             logger.error(details);
             throw new ToolkitRuntimeException(e);
         }
+        */
 
-        if (!testLogs.isSuccess())
-            throw new ToolkitRuntimeException("originalGetDocsTi contains assertion errors.");
+        if (!logMapDTO.getItems().get(0).getLog().isSuccess())
+            throw new ToolkitRuntimeException("originalGetDocsTi was not successfully run.");
 
-        if (request.getLogEntryindex()<testLogs.size())
-            throw new ToolkitRuntimeException("originalGetDocsTi testLogs is less than 1.");
+//        if (request.getLogEntryindex()>testLogs.size()-1)
+//            throw new ToolkitRuntimeException("originalGetDocsTi testLogs index mismatched.");
 
         Metadata m = null;
         try {
-            m = MetadataParser.parseNonSubmission(testLogs.getTestLog(request.getLogEntryindex()).inputMetadata);
+            m = MetadataParser.parseNonSubmission(logMapDTO.getItems().get(0).getLog().getStep("GetDocuments").getRootString());
         }
         catch (Exception e) {
             e.printStackTrace();
             throw new ToolkitRuntimeException(e);
         }
 
-        MetadataCollection mc = MetadataToMetadataCollectionParser.buildMetadataCollection(m, "test");
+        MetadataCollection mcOrig = MetadataToMetadataCollectionParser.buildMetadataCollection(m, "test");
 
         DocumentEntryDiff diff = new DocumentEntryDiff();
-        List<Difference> diffs = diff.compare(mc.docEntries.get(0), request.getToBeUpdatedDe());
+        DocumentEntry deOrig = null;
+        for (DocumentEntry de : mcOrig.docEntries) {
+            if (de.id.equals(request.getToBeUpdatedDe().id)) {
+                deOrig = de;
+            }
+        }
+        List<Difference> diffs = diff.compare(deOrig, request.getToBeUpdatedDe());
 
         for (Difference d : diffs) {
             logger.info("Found difference: " + d.getMetadataAttributeName());
