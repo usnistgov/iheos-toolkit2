@@ -1,0 +1,36 @@
+<Patient xmlns="http://hl7.org/fhir">
+   <id value="8786"/>
+   <meta>
+      <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+   </meta>
+   <identifier>
+      <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+      <value value="IHEBLUE-2707"/>
+   </identifier>
+   <identifier>
+      <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+      <value value="IHEFACILITY-2707"/>
+   </identifier>
+   <identifier>
+      <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+      <value value="IHEGREEN-2707"/>
+   </identifier>
+   <identifier>
+      <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+      <value value="IHERED-2707"/>
+   </identifier>
+   <active value="true"/>
+   <name>
+      <family value="EXTRA-EU-SIX"/>
+      <given value="Ilmari"/>
+   </name>
+   <gender value="male"/>
+   <birthDate value="1994-09-14"/>
+   <address>
+      <use value="home"/>
+      <line value="Kuohunharjuntie"/>
+      <city value="Kangasala"/>
+      <postalCode value="36200"/>
+      <country value="FIN"/>
+   </address>
+</Patient>

@@ -1,0 +1,35 @@
+<Patient xmlns="http://hl7.org/fhir">
+   <id value="8802"/>
+   <meta>
+      <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+   </meta>
+   <identifier>
+      <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+      <value value="IHEBLUE-2724"/>
+   </identifier>
+   <identifier>
+      <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+      <value value="IHEFACILITY-2724"/>
+   </identifier>
+   <identifier>
+      <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+      <value value="IHEGREEN-2724"/>
+   </identifier>
+   <identifier>
+      <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+      <value value="IHERED-2724"/>
+   </identifier>
+   <active value="true"/>
+   <name>
+      <family value="斎藤"/>
+      <given value="太一"/>
+   </name>
+   <gender value="female"/>
+   <birthDate value="2010-06-05"/>
+   <address>
+      <use value="home"/>
+      <city value="Kuki-shi"/>
+      <postalCode value="349-1106"/>
+      <country value="JPN"/>
+   </address>
+</Patient>

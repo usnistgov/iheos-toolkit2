@@ -14,6 +14,7 @@ import spock.lang.Specification
 class ConvertPatients2018 extends Specification {
     @Shared String inputFileName = '/testdata/patientManagement/2018.xml'
     @Shared String outputFileName = '/Users/bill/tmp/toolkit2a/environment/cat/pids.txt'
+    @Shared File datasets = new File('/Users/bill/tmp/toolkit2a/datasets')
     @Shared FhirContext ctx = ToolkitFhirContext.get()
     @Shared def redAA = '1.3.6.1.4.1.21367.13.20.1000'
     @Shared def greenAA = '1.3.6.1.4.1.21367.13.20.2000'
@@ -39,7 +40,7 @@ class ConvertPatients2018 extends Specification {
         name(patient) == 'Moore; Chip'
     }
 
-    def 'run data' () {
+    def 'run V2 data' () {
         when:
         StringBuilder buf = new StringBuilder()
         buf.append('[')
@@ -56,6 +57,20 @@ class ConvertPatients2018 extends Specification {
         }
         buf.append(']')
         new File(outputFileName).text = buf.toString()
+
+        then:
+        true
+    }
+
+    def 'run FHIR Patient resources' () {
+        when:
+        File patients = new File(new File(datasets, 'CAT'), 'Patients')
+        patients.mkdirs()
+        patientBundle.getEntry().each { Bundle.BundleEntryComponent comp ->
+            Patient patient = (Patient) comp.getResource()
+            String name = filename(patient)
+            new File(patients, name).text = ctx.newXmlParser().setPrettyPrint(true).encodeResourceToString(patient)
+        }
 
         then:
         true
@@ -83,10 +98,15 @@ class ConvertPatients2018 extends Specification {
     String name(Patient patient) {
         HumanName name = patient.getNameFirstRep()
         String family = name.family
-//        if (!name.given)
-//            return null
         String given = (name.given) ? name.given.first() : ''
         "${nameCase(family)}; ${nameCase(given)}"
+    }
+
+    String filename(Patient patient) {
+        HumanName name = patient.getNameFirstRep()
+        String family = name.family
+        String given = (name.given) ? name.given.first() : ''
+        "${nameCase(family)}_${nameCase(given)}"
     }
 
     String nameCase(String str) {
