@@ -21,9 +21,13 @@ import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.interactionmapper.InteractionMapper;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.registrymetadata.Metadata;
+import gov.nist.toolkit.registrymetadata.MetadataParser;
+import gov.nist.toolkit.registrymetadata.client.Difference;
+import gov.nist.toolkit.registrymetadata.client.DocumentEntryDiff;
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
 import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
+import gov.nist.toolkit.results.MetadataToMetadataCollectionParser;
 import gov.nist.toolkit.results.client.CodesResult;
 import gov.nist.toolkit.results.client.DocumentEntryDetail;
 import gov.nist.toolkit.results.client.Result;
@@ -58,11 +62,14 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.testengine.Sections;
 import gov.nist.toolkit.testengine.engine.RegistryUtility;
+import gov.nist.toolkit.testengine.engine.TestLogsBuilder;
 import gov.nist.toolkit.testengine.scripts.BuildCollections;
 import gov.nist.toolkit.testengine.scripts.CodesUpdater;
 import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
+import gov.nist.toolkit.testenginelogging.client.LogMapDTO;
 import gov.nist.toolkit.testenginelogging.client.ReportDTO;
 import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
+import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
 import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.tk.TkLoader;
@@ -1155,8 +1162,71 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         }
     }
 
+    /**
+     * This method will compare the original MetedataCollection (from originalGetDocsTestInstance) to the MetadataCollection that was updated.
+     * @param request
+     * @return
+     * @throws Exception
+     */
     @Override
     public List<Result> updateDocumentEntry(UpdateDocumentEntryRequest request) throws Exception {
+        // TODO
+        // 1. get Mc and M from request.originalGetDcocs
+        // 2. compare Mc with Mc' where Mc' is request.toBeUpdatedMc
+        // 3. replace M with differences from Mc and Mc'
+        // 4. run test plan (needs to be created)
+        // 5. return test logs
+        // 6. Client: wire the run command (needs to be created)
+        // 7. Client: add new UI controls to allow 0-1-many value list
+
+
+        TestInstance originalGetDocsTi = request.getOriginalGetDocsTestInstance();
+
+        LogMapDTO logMapDTO;
+        try {
+            logMapDTO = LogRepository.logIn(originalGetDocsTi);
+        } catch (Exception e) {
+            logger.error(ExceptionUtil.exception_details(e, "Logs not available for " + originalGetDocsTi));
+            throw new ToolkitRuntimeException(e);
+        }
+
+        TestLogs testLogs = null;
+        try {
+            testLogs = TestLogsBuilder.build(logMapDTO);
+            testLogs.testInstance = originalGetDocsTi;
+        } catch (Exception e) {
+            String details = ExceptionUtil.exception_details(e);
+            logger.error(details);
+            throw new ToolkitRuntimeException(e);
+        }
+
+        if (!testLogs.isSuccess())
+            throw new ToolkitRuntimeException("originalGetDocsTi contains assertion errors.");
+
+        if (request.getLogEntryindex()<testLogs.size())
+            throw new ToolkitRuntimeException("originalGetDocsTi testLogs is less than 1.");
+
+        Metadata m = null;
+        try {
+            m = MetadataParser.parseNonSubmission(testLogs.getTestLog(request.getLogEntryindex()).inputMetadata);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            throw new ToolkitRuntimeException(e);
+        }
+
+        MetadataCollection mc = MetadataToMetadataCollectionParser.buildMetadataCollection(m, "test");
+
+        DocumentEntryDiff diff = new DocumentEntryDiff();
+        List<Difference> diffs = diff.compare(mc.docEntries.get(0), request.getToBeUpdatedDe());
+
+        for (Difference d : diffs) {
+            logger.info("Found difference: " + d.getMetadataAttributeName());
+        }
+
+
+        ////
+
         return null;
     }
 

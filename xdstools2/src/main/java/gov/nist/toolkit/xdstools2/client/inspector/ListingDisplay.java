@@ -5,6 +5,7 @@ import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.TreeItem;
 import gov.nist.toolkit.registrymetadata.client.*;
 import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.TestInstance;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,13 +20,15 @@ public class ListingDisplay {
 	DataModel data;
 	/** Tree element serving as root for this display */
 	TreeThing root;
+	TestInstance logId;
 
 	Map<String, DataModel> groupByMap = new HashMap<String, DataModel>();
 
-	public ListingDisplay(MetadataInspectorTab tab, DataModel data, TreeThing root) {
+	public ListingDisplay(MetadataInspectorTab tab, DataModel data, TreeThing root, TestInstance logId) {
 		this.tab = tab;
 		this.data = data;
 		this.root = root;
+		this.logId = logId;
 	}
 
 
@@ -135,12 +138,13 @@ public class ListingDisplay {
 	}
 
 	void documentEntries() {
+		int idx=0; // The order of metadata as it appears in log.xml
 		for (DocumentEntry de : data.combinedMetadata.docEntries) {
-			addDe(root, de);
+			addDe(root, de, idx++);
 		}
 	}
 
-	void addDe(TreeThing treeThing, DocumentEntry de) {
+	void addDe(TreeThing treeThing, DocumentEntry de, int idx) {
 		Hyperlink h = HyperlinkFactory.link(tab, de);
 		TreeItem item = new TreeItem(h);
 		item.setUserObject(new MetadataObjectWrapper(MetadataObjectType.DocEntries,de));
@@ -166,7 +170,7 @@ public class ListingDisplay {
 					// "TF-3: Only an Approved DocumentEntry is replaceable."
 					if ("urn:oasis:names:tc:ebxml-regrep:StatusType:Approved".equals(de.status)) {
 						// We should only allow edit when this panel is not the right-part of compare. By chance, when in compare mode, the tree selection is hidden.
-						TreeItem mu = new TreeItem(HyperlinkFactory.metadataUpdate(tab, de, "Action: MetadataUpdate"));
+						TreeItem mu = new TreeItem(HyperlinkFactory.metadataUpdate(tab, de, idx, "Action: MetadataUpdate"));
 						item.addItem(mu);
 					}
 				}

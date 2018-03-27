@@ -7,17 +7,25 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.TextBox;
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
 import gov.nist.toolkit.registrymetadata.client.MetadataObject;
+import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
-import gov.nist.toolkit.xdstools2.client.command.command.ValidateDEMetadataUpdateCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.UpdateDocumentEntryCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.ValidateDocumentEntryCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.shared.command.request.UpdateDocumentEntryRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.ValidateDocumentEntryRequest;
+
+import java.util.List;
 
 public class EditDisplay extends CommonDisplay {
     private Button validateMuBtn = new Button("Validate");
     private Button muBtn = new Button("Update");
     private DocumentEntry de = null;
+    private int idx;
+    private TestInstance logId;
 
     // Edit controls
     private TextBox titleTxt = new TextBox();
@@ -40,7 +48,7 @@ public class EditDisplay extends CommonDisplay {
         @Override
         public void onClick(ClickEvent clickEvent) {
             applyChanges();
-            new ValidateDEMetadataUpdateCommand() {
+            new ValidateDocumentEntryCommand() {
                 @Override
                 public void onComplete(MessageValidationResults result) {
                     if (result!=null) {
@@ -52,11 +60,31 @@ public class EditDisplay extends CommonDisplay {
         }
     }
 
+    private class UpdateClickHandler implements ClickHandler {
 
-    public EditDisplay(MetadataInspectorTab it, final MetadataObject mo) {
+        @Override
+        public void onClick(ClickEvent clickEvent) {
+            applyChanges();
+            new UpdateDocumentEntryCommand() {
+                @Override
+                public void onComplete(List<Result> result) {
+                    if (result.size()>0)
+                        new PopupMessage( "got " + result.get(0).passed() + " "  + result.size());
+                    else
+                        new PopupMessage("no results!");
+                }
+            }.run(new UpdateDocumentEntryRequest(ClientUtils.INSTANCE.getCommandContext(), de, logId, idx));
+
+        }
+    }
+
+
+    public EditDisplay(MetadataInspectorTab it, final MetadataObject mo, int idx, final TestInstance logId) {
         this.detailPanel = it.detailPanel;
         this.metadataCollection = it.data.combinedMetadata;
         this.it = it;
+        this.idx = idx;
+        this.logId = logId;
         if (mo instanceof DocumentEntry) {
             this.de = DocumentEntry.clone((DocumentEntry)mo);
             validateMuBtn.addClickHandler(new ValidateClickHandler(de));

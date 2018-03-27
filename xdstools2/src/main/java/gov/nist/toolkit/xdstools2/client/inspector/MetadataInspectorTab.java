@@ -402,7 +402,7 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 				}
 				*/
 
-				new ListingDisplay(this, dm, new TreeThing(stepTreeItem)).listing();
+				new ListingDisplay(this, dm, new TreeThing(stepTreeItem), res.logId).listing();
 
 				if (data.enableActions && stepResult.toBeRetrieved.size() > 0) {
 					ObjectRefs ors = stepResult.nextNObjectRefs(10);

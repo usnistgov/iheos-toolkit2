@@ -7,9 +7,9 @@ import gov.nist.toolkit.xdstools2.shared.command.request.ValidateDocumentEntryRe
 /**
  * Created by skb1 on 3/16/18.
  */
-public abstract class ValidateDEMetadataUpdateCommand extends GenericCommand<ValidateDocumentEntryRequest,MessageValidationResults>{
+public abstract class ValidateDocumentEntryCommand extends GenericCommand<ValidateDocumentEntryRequest,MessageValidationResults>{
     @Override
     public void run(ValidateDocumentEntryRequest request) {
-        ClientUtils.INSTANCE.getToolkitServices().validateDEMetadataUpdate(request, this);
+        ClientUtils.INSTANCE.getToolkitServices().validateDocumentEntry(request, this);
     }
 }

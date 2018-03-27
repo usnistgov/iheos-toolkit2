@@ -14,6 +14,7 @@ public class ValidateDocumentEntryRequest extends CommandContext{
     public ValidateDocumentEntryRequest(CommandContext context, DocumentEntry de) {
         copyFrom(context);
         this.de = de;
+        this.idx = idx;
     }
 
     public DocumentEntry getDe() {
