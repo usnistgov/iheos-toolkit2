@@ -63,12 +63,14 @@ public abstract class DetailDcmSequenceContent extends Detail {
        * objects, loading them into Lists.
        */
       testEntries = new ArrayList<>();
+      if (test == null) test = new ArrayList<>();
       for (AttributesAndHash entry : test) {
          Entry e = new Entry(entry);
          e.uniqueId = entry.attributes.getString(uniqueSequenceTag);
          testEntries.add(e); 
          }
       stdEntries = new ArrayList<>();
+      if (std == null) std = new ArrayList<>();
       for (AttributesAndHash entry : std) {
          Entry e = new Entry(entry);
          e.uniqueId = entry.attributes.getString(uniqueSequenceTag);
