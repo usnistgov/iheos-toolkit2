@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<NativeDicomModel xml:space="preserve">
+ <DicomAttribute keyword="SOPInstanceUID" tag="00080018" vr="UI">
+  <Value number="1">2.25.193880843752755703630633023020422049279.999</Value>
+ </DicomAttribute>
+
+ <DicomAttribute keyword="SeriesInstanceUID" tag="0020000E" vr="UI">
+  <Value number="1">2.25.129132674778323215451606770953641807791.999</Value>
+ </DicomAttribute>
+</NativeDicomModel>
