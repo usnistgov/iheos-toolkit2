@@ -19,6 +19,7 @@ import org.apache.http.entity.BasicHttpEntity
 import org.apache.http.message.BasicHttpEntityEnclosingRequest
 import org.apache.log4j.Logger
 import org.hl7.fhir.dstu3.model.Bundle
+import org.hl7.fhir.dstu3.model.UriType
 import org.hl7.fhir.instance.model.api.IBaseResource
 
 /**
@@ -47,6 +48,7 @@ class MhdToPnrContentTransform implements ContentRequestTransform {
             resource = ctx.newJsonParser().parseResource(new String(clientContent))
         assert resource instanceof Bundle
         Bundle bundle = resource
+        assert bundle.meta.profile.find { UriType type -> type.value == 'http://ihe.net/fhir/tag/iti-65'}, 'Bundle.meta.profile shall include the value http://ihe.net/fhir/tag/iti-65'
         Submission s = new MhdGenerator(base, ResourceCacheMgr.instance()).buildSubmission(bundle)
         assert s.attachments.size() > 0
         List<BinaryPartSpec> parts = []

@@ -391,47 +391,47 @@
         <Code code="Corrected_Information" display="Corrected Information" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
     </CodeType>
     <CodeType name="typeCode" classScheme="urn:uuid:f0306f51-975f-434e-a61c-c59651d33983">
-        <Code code="11369-6" display="Immunization" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="11488-4" display="Consultation Note" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="11502-2" display="Laboratory report.total" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="11504-8" display="Surgical Operation Note" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="11506-3" display="Progress note" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="11528-7" display="Radiology Report" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="18748-4" display="Diagnostic imaging study" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="18761-7" display="Provider-unspecified Transfer summary" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="18842-5" display="Discharge summary" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="26436-6" display="Laboratory Studies" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="28568-4" display="Physician Emergency department Note" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="28570-0" display="Provider-unspecified Procedure note" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="28651-8" display="Nurse Transfer note" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="34117-2" display="History and physical note" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="34133-9" display="Summary of episode note" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="34755-9" display="Critical care medicine Transfer summary note" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="34895-3" display="Education Note" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="36643-5" display="XR Chest 2 Views" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="42274-1" display="CT Abdomen and Pelvis WO and W contrast IV" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="52521-2" display="Overall Plan of Care/Advance Care Directives" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="54094-8" display="Emergency department Triage note" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="56447-6" display="Plan of Care Note" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="57016-8" display="Privacy Policy Acknowledgement Document" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="57053-1" display="Nurse Emergency department Note" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="57054-9" display="Nurse Emergency department Triage+care note" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="57055-6" display="Antepartum summary" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="57056-4" display="Labor and Delivery admission history and physical" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="57057-2" display="Labor and delivery summary note" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="57058-0" display="Maternal Discharge Summary" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="57059-8" display="Pregnancy visit summary note Narrative" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="57133-1" display="Referral note" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="57833-6" display="Prescription for medication Document" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="60593-1" display="Medication dispensed.extended Document" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="61356-2" display="Medication pharmaceutical advice.extended Document" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="68998-4" display="U.S. standard certificate of live birth - 2003 revision" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="69045-3" display="U.S. standard report of fetal death - 2003 revision" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="72134-0" display="Cancer Event Report" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
+        <Code code="11369-6" display="Immunization" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="11488-4" display="Consultation Note" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="11502-2" display="Laboratory report.total" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="11504-8" display="Surgical Operation Note" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="11506-3" display="Progress note" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="11528-7" display="Radiology Report" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="18748-4" display="Diagnostic imaging study" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="18761-7" display="Provider-unspecified Transfer summary" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="18842-5" display="Discharge summary" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="26436-6" display="Laboratory Studies" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="28568-4" display="Physician Emergency department Note" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="28570-0" display="Provider-unspecified Procedure note" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="28651-8" display="Nurse Transfer note" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="34117-2" display="History and physical note" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="34133-9" display="Summary of episode note" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="34755-9" display="Critical care medicine Transfer summary note" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="34895-3" display="Education Note" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="36643-5" display="XR Chest 2 Views" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="42274-1" display="CT Abdomen and Pelvis WO and W contrast IV" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="52521-2" display="Overall Plan of Care/Advance Care Directives" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="54094-8" display="Emergency department Triage note" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="56447-6" display="Plan of Care Note" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="57016-8" display="Privacy Policy Acknowledgement Document" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="57053-1" display="Nurse Emergency department Note" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="57054-9" display="Nurse Emergency department Triage+care note" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="57055-6" display="Antepartum summary" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="57056-4" display="Labor and Delivery admission history and physical" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="57057-2" display="Labor and delivery summary note" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="57058-0" display="Maternal Discharge Summary" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="57059-8" display="Pregnancy visit summary note Narrative" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="57133-1" display="Referral note" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="57833-6" display="Prescription for medication Document" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="60593-1" display="Medication dispensed.extended Document" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="61356-2" display="Medication pharmaceutical advice.extended Document" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="68998-4" display="U.S. standard certificate of live birth - 2003 revision" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="69045-3" display="U.S. standard report of fetal death - 2003 revision" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="72134-0" display="Cancer Event Report" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
         <Code code="E1762" display="Full Document" codingScheme="1.2.840.10065" system="urn:oid:1.2.840.10065"/>
-        <Code code="36643-5" display="XR Chest 2V" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="42274-1" display="CT Abd+Pelvis WO+W contr IV" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
-        <Code code="72554-6" display="CT Chest+Abd+Pelvis W contr IV" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
+        <Code code="36643-5" display="XR Chest 2V" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="42274-1" display="CT Abd+Pelvis WO+W contr IV" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="72554-6" display="CT Chest+Abd+Pelvis W contr IV" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
         <Code code="XBeR-WD" display="XBeR-WD Type Code" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
         <Code code="XX-Document" display="Unspecified Document Type. Use If Nothing Else Fits" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
     </CodeType>
@@ -457,7 +457,7 @@
         <Code code="HEALTH" display="Health Certificates and Notifications" codingScheme="1.3.6.1.4.1.19376.1.2.6.1" system="urn:oid:1.3.6.1.4.1.19376.1.2.6.1"/>
         <Code code="PATIENT" display="Patient Expression and Preferences" codingScheme="1.3.6.1.4.1.19376.1.2.6.1" system="urn:oid:1.3.6.1.4.1.19376.1.2.6.1"/>
         <Code code="WORKFLOWS" display="Workflow Management" codingScheme="1.3.6.1.4.1.19376.1.2.6.1" system="urn:oid:1.3.6.1.4.1.19376.1.2.6.1"/>
-        <Code code="57016-8" display="Privacy Policy Acknowledgement Document" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org "/>
+        <Code code="57016-8" display="Privacy Policy Acknowledgement Document" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
         <Code code="Consent" display="Consent" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
         <Code code="urn:oid:1.3.6.1.4.1.19376.1.2.1.1.1" display="Digital Signature" codingScheme="1.3.6.1.4.1.19376.1.2.6.1" system="urn:oid:1.3.6.1.4.1.19376.1.2.6.1"/>
     </CodeType>
