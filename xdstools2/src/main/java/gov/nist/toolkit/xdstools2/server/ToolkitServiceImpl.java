@@ -6,6 +6,7 @@ import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
 import gov.nist.toolkit.actortransaction.TransactionErrorCodeDbLoader;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.PidSet;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
@@ -22,6 +23,8 @@ import gov.nist.toolkit.interactionmapper.InteractionMapper;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
+import gov.nist.toolkit.registrymetadata.client.AnyId;
+import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.Difference;
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
 import gov.nist.toolkit.registrymetadata.client.DocumentEntryDiff;
@@ -81,7 +84,9 @@ import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import gov.nist.toolkit.xdsexception.client.NoDifferencesException;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import gov.nist.toolkit.xdstools2.client.GazelleXuaUsername;
 import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TabConfig;
 import gov.nist.toolkit.xdstools2.client.util.ToolkitService;
@@ -93,6 +98,7 @@ import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 import gov.nist.toolkit.xdstools2.shared.command.InitializationResponse;
 import gov.nist.toolkit.xdstools2.shared.command.request.*;
+import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
@@ -1180,14 +1186,17 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         // 7. Client: add new UI controls to allow 0-1-many value list
 
 
-        TestInstance originalGetDocsTi = request.getOriginalGetDocsTestInstance();
+        installCommandContext(request);
+
+        TestInstance originalQueryTi = request.getOriginalQueryTestInstance();
 
         LogMapDTO logMapDTO;
         try {
-            logMapDTO = LogRepository.logIn(originalGetDocsTi);
+            logMapDTO = LogRepository.logIn(originalQueryTi);
         } catch (Exception e) {
-            logger.error(ExceptionUtil.exception_details(e, "Logs not available for " + originalGetDocsTi));
-            throw new ToolkitRuntimeException(e);
+            String message = "Logs not available for " + originalQueryTi;
+            logger.error(ExceptionUtil.exception_details(e, message));
+            throw new ToolkitRuntimeException(message, e);
         }
 
         /*
@@ -1203,34 +1212,108 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         */
 
         if (!logMapDTO.getItems().get(0).getLog().isSuccess())
-            throw new ToolkitRuntimeException("originalGetDocsTi was not successfully run.");
+            throw new ToolkitRuntimeException("originalQueryTi was not successfully run.");
 
 //        if (request.getLogEntryindex()>testLogs.size()-1)
 //            throw new ToolkitRuntimeException("originalGetDocsTi testLogs index mismatched.");
 
+        // transform original query log to M
         Metadata m = null;
         try {
-            m = MetadataParser.parseNonSubmission(logMapDTO.getItems().get(0).getLog().getStep("GetDocuments").getRootString());
+            if (logMapDTO.getItems().get(0).getTestName().equals("GetDocuments/XDS")) {
+                m = MetadataParser.parseNonSubmission(logMapDTO.getItems().get(0).getLog().getStep("GetDocuments").getRootString());
+            } else
+                throw new ToolkitRuntimeException("Unsupported query: " + logMapDTO.getItems().get(0).getTestName());
         }
         catch (Exception e) {
             e.printStackTrace();
             throw new ToolkitRuntimeException(e);
         }
 
+        // compare
         MetadataCollection mcOrig = MetadataToMetadataCollectionParser.buildMetadataCollection(m, "test");
-
         DocumentEntryDiff diff = new DocumentEntryDiff();
         DocumentEntry deOrig = null;
-        for (DocumentEntry de : mcOrig.docEntries) {
-            if (de.id.equals(request.getToBeUpdatedDe().id)) {
-                deOrig = de;
+        if (mcOrig.docEntries.size()>0) {
+            for (DocumentEntry de : mcOrig.docEntries) {
+                if (de.id.equals(request.getToBeUpdated().id)) {
+                    deOrig = de;
+                }
+            }
+            List<Difference> diffs = diff.compare(deOrig, request.getToBeUpdated());
+
+            if (diffs.size()==0) {
+                // No differences
+               throw new NoDifferencesException(deOrig.id);
+            } else {
+                for (Difference d : diffs) {
+                    logger.info("Found difference: " + d.getMetadataAttributeName());
+                }
+            }
+        } else {
+            throw new ToolkitRuntimeException("No documentEntries in log.xml. EventDir: " + request.getOriginalQueryTestInstance().getEventDir());
+        }
+
+        // get submission set and association if it is not in the metadatacollection that was passed into the request object
+        if (request.getMc().submissionSets==null ||  (request.getMc().submissionSets!=null && request.getMc().submissionSets.isEmpty())) {
+            AnyIds ids = new AnyIds(new AnyId(deOrig.id));
+            GetSubmissionSetsRequest getSsRequest = new GetSubmissionSetsRequest(request, request.getSiteSpec(), ids);
+            List<Result> results = getSubmissionSets(getSsRequest);
+            if (results!=null && !results.isEmpty()) {
+                Result getSsResult = results.get(0);
+                LogMapDTO getSslogMapDTO;
+                try {
+                    getSslogMapDTO = LogRepository.logIn(getSsResult.logId);
+                } catch (Exception e) {
+                    String message = "Logs not available for " + getSsResult.logId;
+                    logger.error(ExceptionUtil.exception_details(e,message));
+                    throw new ToolkitRuntimeException(message, e);
+                }
+
+                Metadata getSsM = null;
+                try {
+                    if (getSslogMapDTO.getItems().get(0).getTestName().equals("GetSubmissionSets/XDS")) {
+                        getSsM = MetadataParser.parseNonSubmission(getSslogMapDTO.getItems().get(0).getLog().getStep("GetSubmissionSetsByUUID").getRootString());
+                    } else
+                        throw new ToolkitRuntimeException("Unsupported query: " + logMapDTO.getItems().get(0).getTestName());
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                    throw new ToolkitRuntimeException(e);
+                }
+
+                // compare
+                MetadataCollection mcOrig = MetadataToMetadataCollectionParser.buildMetadataCollection(m, "test");
+
+            } else {
+               throw new ToolkitRuntimeException("GetSubmissionSet returned a null result.");
             }
         }
-        List<Difference> diffs = diff.compare(deOrig, request.getToBeUpdatedDe());
 
-        for (Difference d : diffs) {
-            logger.info("Found difference: " + d.getMetadataAttributeName());
+        if (request.getMc().assocs==null  || (request.getMc().assocs!=null && request.getMc().assocs.isEmpty())) {
+
         }
+
+
+        // save off updated mc to m
+        Metadata m2 = MetadataCollectionToMetadata.buildMetadata(request.to, true);
+
+        List<OMElement> eles = null;
+
+        try {
+            if (metadataV2) {
+                eles = m2.getV2();
+            } else
+                eles = m2.getV3();
+        } catch (XdsInternalException e1) {
+            e1.printStackTrace();
+            System.exit(1);
+        }
+
+        OMElement x = MetadataSupport.om_factory.createOMElement("Metadata", null);
+
+        for (OMElement e : eles)
+            x.addChild(e);
 
 
         ////

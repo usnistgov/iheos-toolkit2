@@ -50,6 +50,12 @@ public class Metadata {
 	// for id, list of classification uuids
 	HashMap<String, List<String>> classificationsOfId = null;
 
+	public static final Map<String,String> metadataAttributeXpath;
+	static {
+		metadataAttributeXpath = new HashMap<>();
+		metadataAttributeXpath.put("title","");
+	}
+
 	public OMElement getMetadata() {
 		return metadata;
 	}

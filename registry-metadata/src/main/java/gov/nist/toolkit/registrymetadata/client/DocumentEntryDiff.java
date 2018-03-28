@@ -6,6 +6,9 @@ import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Only checks the "easy" attributes for now.
+ */
 public class DocumentEntryDiff extends MetadataDiffBase implements IsSerializable, Compare {
 
     public DocumentEntryDiff() {
@@ -30,6 +33,8 @@ public class DocumentEntryDiff extends MetadataDiffBase implements IsSerializabl
         if (dif(a.title, b.title)) {
             differences.add(new Difference("title"));
         }
+
+        // TODO: add more fields to compare.
 
         return differences;
     }

@@ -6,7 +6,6 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.TextBox;
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
-import gov.nist.toolkit.registrymetadata.client.MetadataObject;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
@@ -23,7 +22,7 @@ import java.util.List;
 public class EditDisplay extends CommonDisplay {
     private Button validateMuBtn = new Button("Validate");
     private Button updateBtn = new Button("Update");
-    private DocumentEntry de = null;
+    private DocumentEntry de;
     private TestInstance logId;
 
     // Edit controls
@@ -59,31 +58,35 @@ public class EditDisplay extends CommonDisplay {
             applyChanges();
             new UpdateDocumentEntryCommand() {
                 @Override
-                public void onComplete(List<Result> result) {
-                    if (result.size()>0)
-                        new PopupMessage( "got " + result.get(0).passed() + " "  + result.size());
-                    else
-                        new PopupMessage("no results!");
+                public void onFailure(Throwable throwable) {
+                    new PopupMessage(throwable.toString());
                 }
-            }.run(new UpdateDocumentEntryRequest(ClientUtils.INSTANCE.getCommandContext(), de, logId));
 
+                @Override
+                public void onComplete(List<Result> result) {
+                    if (result!=null) {
+                        if (result.size() > 0)
+                            new PopupMessage("got " + result.get(0).passed() + " " + result.size());
+                        else
+                            new PopupMessage("0 result");
+                    } else {
+                        new PopupMessage("null result!");
+                    }
+                }
+            }.run(new UpdateDocumentEntryRequest(ClientUtils.INSTANCE.getCommandContext(), it.data.siteSpec, it.data.combinedMetadata, de, logId));
         }
     }
 
 
-    public EditDisplay(MetadataInspectorTab it, final MetadataObject mo, final TestInstance logId) {
+    public EditDisplay(MetadataInspectorTab it, final DocumentEntry de, final TestInstance logId) {
         this.detailPanel = it.detailPanel;
         this.metadataCollection = it.data.combinedMetadata;
         this.it = it;
         this.logId = logId;
-        if (mo instanceof DocumentEntry) {
-            this.de = DocumentEntry.clone((DocumentEntry)mo);
-            validateMuBtn.addClickHandler(new ValidateClickHandler());
-            updateBtn.addClickHandler(new UpdateClickHandler());
-            editDetail();
-        } else {
-            throw new ToolkitRuntimeException("Unsupported metadata type.");
-        }
+        this.de = DocumentEntry.clone(de);
+        validateMuBtn.addClickHandler(new ValidateClickHandler());
+        updateBtn.addClickHandler(new UpdateClickHandler());
+        editDetail();
     }
 
    private void editDetail() {

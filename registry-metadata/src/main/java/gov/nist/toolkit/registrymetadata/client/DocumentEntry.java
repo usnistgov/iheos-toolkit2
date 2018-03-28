@@ -4,6 +4,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -114,6 +115,29 @@ public class DocumentEntry extends RegistryObject implements IsSerializable, Ser
 
 	public static DocumentEntry clone(DocumentEntry src) {
 		DocumentEntry dest = new DocumentEntry();
+
+		dest.isFhir = src.isFhir;
+		dest.fullUrl = src.fullUrl;
+
+		dest.id = src.id;
+		dest.idX = src.idX;
+		dest.idDoc = src.idDoc;
+
+		dest.uniqueId = src.uniqueId;
+		dest.uniqueIdX = src.uniqueIdX;
+		dest.uniqueIdDoc = src.uniqueIdDoc;
+
+		dest.home = src.home;
+		dest.homeX = src.homeX;
+		dest.homeDoc = src.homeDoc;
+
+		if (src.extra!=null) {
+			dest.extra = new HashMap<>(src.extra);
+			if (src.extraX!=null) {
+				dest.extraX = new HashMap<>(src.extraX);
+			}
+		}
+
 		dest.lid = src.lid;
 		dest.lidX = src.lidX;
 		dest.lidDoc = src.lidDoc;
@@ -162,9 +186,21 @@ public class DocumentEntry extends RegistryObject implements IsSerializable, Ser
 		dest.sourcePatientIdX = src.sourcePatientIdX;
 		dest.sourcePatientIdDoc = src.sourcePatientIdDoc;
 
+		dest.patientId = src.patientId;
+		dest.patientIdX = src.patientIdX;
+		dest.patientIdDoc = src.patientIdDoc;
+
+		dest.status = src.status;
+		dest.statusX = src.statusX;
+		dest.statusDoc = src.statusDoc;
+
 		dest.title = src.title;
 		dest.titleDoc = src.titleDoc;
 		dest.titleX = src.titleX;
+
+		dest.comments = src.comments;
+		dest.commentsX = src.commentsX;
+		dest.commentsDoc = src.commentsDoc;
 
 		dest.creationTime = src.creationTime;
 		dest.creationTimeX = src.creationTimeX;

@@ -21,7 +21,7 @@ class MuClickHandler implements ClickHandler {
 
 	public void onClick(ClickEvent event) {
 		it.detailPanel.clear();
-		new EditDisplay(it,mo, logId);
+		new EditDisplay(it, mo, logId);
 	}
 
 }

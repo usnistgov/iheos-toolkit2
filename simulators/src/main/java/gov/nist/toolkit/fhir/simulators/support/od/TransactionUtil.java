@@ -34,6 +34,8 @@ public class TransactionUtil {
     public static final int ALL_OD_DOCS_SUPPLIED = -1;
     static Logger logger = Logger.getLogger(TransactionUtil.class);
 
+    static public Result
+
     /**
      * Must have a default Register section in this test.
      */
