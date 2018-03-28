@@ -365,7 +365,7 @@ class MhdGenerator {
                     if (dr.content?.attachment?.url && translateForDisplay)
                         addSlot(builder, 'repositoryUniqueId', dr.content.attachment.url)
 
-                    if (dr.content[0].attachment.hashElement) {
+                    if (dr.content[0].attachment.hashElement.value) {
                         Base64BinaryType hash64 = dr.content[0].attachment.hashElement
                         byte[] hash = HashTranslator.toByteArray(hash64.toString())
                         addSlot(builder, 'hash', new String(hash))
