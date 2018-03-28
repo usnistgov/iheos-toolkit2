@@ -129,13 +129,13 @@
             </rim:Slot>
          </rim:Classification>
          <rim:Classification classifiedObject="Document01"
-               nodeRepresentation="REPORTS" classificationScheme="urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a">
+            nodeRepresentation="MPQ-classcode-1" classificationScheme="urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a">
             <rim:Name>
-               <rim:LocalizedString value="Reports"/>
+               <rim:LocalizedString value="Security"/>
             </rim:Name>
             <rim:Slot name="codingScheme">
                <rim:ValueList>
-                  <rim:Value>1.3.6.1.4.1.19376.1.2.6.1</rim:Value>
+                  <rim:Value>MPQ Testing</rim:Value>
                </rim:ValueList>
             </rim:Slot>
          </rim:Classification>
@@ -329,13 +329,13 @@
             </rim:Slot>
          </rim:Classification>
          <rim:Classification classifiedObject="Document02"
-               nodeRepresentation="REPORTS" classificationScheme="urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a">
+            nodeRepresentation="MPQ-classcode-1" classificationScheme="urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a">
             <rim:Name>
-               <rim:LocalizedString value="Reports"/>
+               <rim:LocalizedString value="Security"/>
             </rim:Name>
             <rim:Slot name="codingScheme">
                <rim:ValueList>
-                  <rim:Value>1.3.6.1.4.1.19376.1.2.6.1</rim:Value>
+                  <rim:Value>MPQ Testing</rim:Value>
                </rim:ValueList>
             </rim:Slot>
          </rim:Classification>
@@ -529,13 +529,13 @@
             </rim:Slot>
          </rim:Classification>
          <rim:Classification classifiedObject="Document03"
-               nodeRepresentation="REPORTS" classificationScheme="urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a">
+            nodeRepresentation="MPQ-classcode-1" classificationScheme="urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a">
             <rim:Name>
-               <rim:LocalizedString value="Reports"/>
+               <rim:LocalizedString value="Security"/>
             </rim:Name>
             <rim:Slot name="codingScheme">
                <rim:ValueList>
-                  <rim:Value>1.3.6.1.4.1.19376.1.2.6.1</rim:Value>
+                  <rim:Value>MPQ Testing</rim:Value>
                </rim:ValueList>
             </rim:Slot>
          </rim:Classification>
