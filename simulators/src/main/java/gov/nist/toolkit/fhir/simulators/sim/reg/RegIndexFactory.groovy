@@ -6,7 +6,7 @@ import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegIndex
 import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegistryFactory
 import org.apache.axiom.om.OMElement
 /**
- * Created by bill on 8/24/15.
+ * Supports tests
  */
 class RegIndexFactory {
 

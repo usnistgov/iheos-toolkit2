@@ -18,6 +18,7 @@ abstract public class AbstractOrchestrationRequest implements Serializable, IsSe
     private boolean useExistingState = true;   // useExistingState == !reset
     private boolean selfTest = false;
     private ActorOption actorOption = new ActorOption();
+    private boolean useTls = false;
 
     public TestSession getTestSession() {
         return testSession;
@@ -69,5 +70,13 @@ abstract public class AbstractOrchestrationRequest implements Serializable, IsSe
 
     public void setActorOption(ActorOption actorOption) {
         this.actorOption = actorOption;
+    }
+
+    public boolean isUseTls() {
+        return useTls;
+    }
+
+    public void setUseTls(boolean useTls) {
+        this.useTls = useTls;
     }
 }

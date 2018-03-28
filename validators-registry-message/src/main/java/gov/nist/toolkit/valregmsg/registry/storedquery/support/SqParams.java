@@ -165,7 +165,11 @@ public class SqParams {
 	public Map<String, Object> getCodedParms() {
 		Map<String, Object> codes = new HashMap<String, Object>();
 		for (String key : params.keySet()) {
-			if (key.endsWith("Code")) {
+			if (
+					key.endsWith("Code") ||
+							key.endsWith("SubmissionSetContentType") ||
+							key.endsWith("CodeList")
+					) {
 				codes.put(key, params.get(key));
 			}
 		}

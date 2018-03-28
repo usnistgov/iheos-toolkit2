@@ -16,7 +16,7 @@ import groovy.transform.TypeChecked
  *
  */
 @TypeChecked
-class SrcOrchestrationBuilder {
+class SrcOrchestrationBuilder extends AbstractOrchestrationBuilder {
     ToolkitApi api
     private Session session
     private SrcOrchestrationRequest request
@@ -24,6 +24,7 @@ class SrcOrchestrationBuilder {
     private ActorOption actorOption = new ActorOption()
 
     public SrcOrchestrationBuilder(ToolkitApi api, Session session, SrcOrchestrationRequest request) {
+        super(session, request)
         this.api = api
         this.request = request
         this.session = session

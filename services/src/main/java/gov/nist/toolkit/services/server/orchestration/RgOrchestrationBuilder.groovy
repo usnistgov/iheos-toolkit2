@@ -24,13 +24,14 @@ import groovy.transform.TypeChecked
  * Build environment for testing Responding Gateway SUT.
  */
 @TypeChecked
-class RgOrchestrationBuilder {
+class RgOrchestrationBuilder extends AbstractOrchestrationBuilder {
     Session session
     RgOrchestrationRequest request
     ToolkitApi api
     Util util
 
     public RgOrchestrationBuilder(ToolkitApi api, Session session, RgOrchestrationRequest request) {
+        super(session, request)
         this.api = api
         this.session = session
         this.request = request
@@ -152,6 +153,7 @@ class RgOrchestrationBuilder {
 
                     // Submit test data
                     try {
+                        rrSite.isTls = request.isUseTls()
                         util.submit(request.testSession.value, rrSite, testInstance12318, simplePid, home)
                     } catch (Exception e) {
                         item12318.setMessage("Initialization of " + request.siteUnderTest.name + " failed:\n" + e.getMessage())

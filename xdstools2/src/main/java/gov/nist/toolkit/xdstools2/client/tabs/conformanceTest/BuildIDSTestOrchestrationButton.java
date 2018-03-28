@@ -137,6 +137,7 @@ public class BuildIDSTestOrchestrationButton extends AbstractOrchestrationButton
       IdsOrchestrationRequest request = new IdsOrchestrationRequest();
       request.setTestSession(new TestSession(testTab.getCurrentTestSession()));
       request.setEnvironmentName(testTab.getEnvironmentSelection());
+       request.setUseTls(isTls());
       request.setUseExistingSimulator(!isResetRequested());
       SiteSpec siteSpec = new SiteSpec(testContext.getSiteName(), new TestSession(testTab.getCurrentTestSession()));
        if (isSaml()) {

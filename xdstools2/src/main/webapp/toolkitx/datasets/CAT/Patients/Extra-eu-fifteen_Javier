@@ -1,0 +1,36 @@
+<Patient xmlns="http://hl7.org/fhir">
+   <id value="8796"/>
+   <meta>
+      <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+   </meta>
+   <identifier>
+      <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+      <value value="IHEBLUE-2717"/>
+   </identifier>
+   <identifier>
+      <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+      <value value="IHEFACILITY-2717"/>
+   </identifier>
+   <identifier>
+      <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+      <value value="IHEGREEN-2717"/>
+   </identifier>
+   <identifier>
+      <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+      <value value="IHERED-2717"/>
+   </identifier>
+   <active value="true"/>
+   <name>
+      <family value="EXTRA-EU-FIFTEEN"/>
+      <given value="Javier"/>
+   </name>
+   <gender value="male"/>
+   <birthDate value="2012-07-12"/>
+   <address>
+      <use value="home"/>
+      <line value="Avenida Hermanos Felgueroso"/>
+      <city value="Gijón/Xixón"/>
+      <postalCode value="33210"/>
+      <country value="ESP"/>
+   </address>
+</Patient>

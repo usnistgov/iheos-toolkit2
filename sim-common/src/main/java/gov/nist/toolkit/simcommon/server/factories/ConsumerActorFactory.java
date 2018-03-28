@@ -55,7 +55,7 @@ public class ConsumerActorFactory  extends AbstractActorFactory implements IActo
      * @throws NoSimulatorException -
      */
     @Override
-    public Site getActorSite(SimulatorConfig asc, Site site) throws NoSimulatorException {
+    public Site buildActorSite(SimulatorConfig asc, Site site) throws NoSimulatorException {
         return (site == null) ? new Site(asc.getDefaultName(), asc.getId().getTestSession()) : site;
     }
 

@@ -35,6 +35,7 @@ public class TransactionSettings {
 	public TransactionTransport transactionTransport = null;
 	
 	public SecurityParams securityParams = null;
+	public FhirContentFormat fhirContentFormat = FhirContentFormat.JSON;
 	
 	public TransactionSettings() {
 		res = new AssertionResults();
@@ -56,6 +57,7 @@ public class TransactionSettings {
 		ts.securityParams = securityParams;
 		ts.testSession = testSession;
 		ts.environmentName = environmentName;
+		ts.fhirContentFormat = fhirContentFormat;
 		return ts;
 	}
 }

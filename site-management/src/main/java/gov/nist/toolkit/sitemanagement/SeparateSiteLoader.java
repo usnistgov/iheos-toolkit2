@@ -3,7 +3,6 @@ package gov.nist.toolkit.sitemanagement;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.utilities.io.Io;
-import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlFileStream;
 import org.apache.axiom.om.OMElement;
 
@@ -37,7 +36,6 @@ public class SeparateSiteLoader extends SiteLoader {
 			if (!file.getName().endsWith("xml"))
 				continue;
 			XmlFileStream xmlFs = XmlFileStream.parse_xml(file);
-//			OMElement conf = Util.parse_xml(file);
 			sites = load(xmlFs.getOmElement(), sites);
 
 			// Cleanup after using the stream
@@ -48,7 +46,7 @@ public class SeparateSiteLoader extends SiteLoader {
 		}
 		return sites;
 	}
-	
+
 	public void saveToFile(File actorsDir, Sites sites) throws Exception {
 		for (Site s : sites.asCollection()) {
 			saveToFile(actorsDir, s);

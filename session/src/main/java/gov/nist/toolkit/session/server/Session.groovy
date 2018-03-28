@@ -60,6 +60,7 @@ public class Session implements SecurityParams {
 	public TransactionSettings transactionSettings = new TransactionSettings();
 	public boolean isAdmin = false;
 	public boolean isSoap = true;
+	public boolean isTls = false;
 	
 	byte[] lastUpload = null;
 	byte[] input2 = null;
@@ -108,8 +109,9 @@ public class Session implements SecurityParams {
 	}
 	
 	public void setTls(boolean tls) {
+		this.isTls = tls;
 		if (siteSpec)
-		siteSpec.isTls = tls;
+			siteSpec.isTls = tls;
 	}
 	
 	public void setSaml(boolean saml) {
@@ -140,6 +142,7 @@ public class Session implements SecurityParams {
 
 	public void setSiteSpec(SiteSpec siteSpec) {
 		this.siteSpec = siteSpec;
+		this.siteSpec.isTls = isTls;
 		transactionSettings = new TransactionSettings();
 		transactionSettings.siteSpec = siteSpec;
 		siteSpec.validate();

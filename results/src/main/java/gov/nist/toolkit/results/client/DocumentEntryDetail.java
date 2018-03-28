@@ -10,6 +10,7 @@ import java.util.List;
  * Created by Sunil Bhaskarla on 5/16/2016.
  */
 public class DocumentEntryDetail implements Serializable, IsSerializable {
+    private static final long serialVersionUID = 1L;
     /**
      *  The Document External Identifier */
     String uniqueId;

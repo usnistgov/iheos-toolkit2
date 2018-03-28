@@ -43,7 +43,7 @@ public class GenericSimulatorFactory extends AbstractActorFactory {
 	}
 
 	@Override
-	public Site getActorSite(SimulatorConfig asc, Site site) {
+	public Site buildActorSite(SimulatorConfig asc, Site site) {
 		return null;
 	}
 

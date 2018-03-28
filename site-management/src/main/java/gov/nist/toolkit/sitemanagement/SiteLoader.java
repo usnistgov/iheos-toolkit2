@@ -46,6 +46,7 @@ public abstract class SiteLoader {
 			throw new XdsInternalException("Site parser: top element of site definition must be site, " +
 					conf.getLocalName() + " found"	);
 		s.setName(conf.getAttributeValue(new QName("name")));
+		s.setOwner(conf.getAttributeValue(new QName("owner")));
 
 		for (Iterator<OMElement> it=conf.getChildElements(); it.hasNext(); ) {
 			OMElement ele = it.next();
@@ -56,6 +57,7 @@ public abstract class SiteLoader {
 			String uid = ele.getAttributeValue(new QName("uid"));
 			String homeatt = ele.getAttributeValue(new QName("home"));
 			String value = ele.getText();
+
 
 			if (homeatt !=null)
 				System.out.println("Warning: transaction element in actors.xml no longer supports the home attribute");
@@ -112,6 +114,9 @@ public abstract class SiteLoader {
 
 		OMAttribute site_name_att = MetadataSupport.om_factory.createOMAttribute("name", null, s.getName());
 		site_ele.addAttribute(site_name_att);
+
+		OMAttribute owner_att = MetadataSupport.om_factory.createOMAttribute("owner", null, s.getOwner());
+		site_ele.addAttribute(owner_att);
 
 		TransactionCollection trans = s.transactions();
 		TransactionCollection repos = s.repositories();

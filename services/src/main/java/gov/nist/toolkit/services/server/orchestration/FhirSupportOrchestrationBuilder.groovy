@@ -24,7 +24,7 @@ import org.hl7.fhir.dstu3.model.Patient
 import org.hl7.fhir.dstu3.model.Resource
 import org.hl7.fhir.instance.model.api.IBaseResource
 @TypeChecked
-class FhirSupportOrchestrationBuilder {
+class FhirSupportOrchestrationBuilder extends AbstractOrchestrationBuilder {
     static private final Logger logger = Logger.getLogger(FhirSupportOrchestrationBuilder.class);
     ToolkitApi api
     private Session session
@@ -40,6 +40,7 @@ class FhirSupportOrchestrationBuilder {
     // use existing state means use existing sim if it exists
 
     FhirSupportOrchestrationBuilder(ToolkitApi api, Session session, FhirSupportOrchestrationRequest request) {
+        super(session, request)
         this.api = api
         this.session = session
         this.request = request
@@ -90,6 +91,7 @@ class FhirSupportOrchestrationBuilder {
 
         try {
             if (needsLoading)
+                siteSpec.isTls = request.isUseTls()
                 util.submit(request.testSession, siteSpec, testInstance)
         } catch (Exception e) {
             String error = "Error submiting Patients to FHIR server ${simId.toString()} \n ${ExceptionUtil.exception_details(e)}"

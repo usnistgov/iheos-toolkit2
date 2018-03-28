@@ -29,7 +29,7 @@ import java.util.List;
  * href="mailto:moultonr@mir.wustl.edu">moultonr@mir.wustl.edu</a>
  *
  */
-public class RigOrchestrationBuilder { 
+public class RigOrchestrationBuilder extends AbstractOrchestrationBuilder {
    static Logger log = Logger.getLogger(IigOrchestrationBuilder.class);   
 
    static final String sutSimulatorName = "simulator_rig";
@@ -42,6 +42,7 @@ public class RigOrchestrationBuilder {
    SimulatorConfig sutSimulatorConfig = null;
    
    public RigOrchestrationBuilder(ToolkitApi api, Session session, RigOrchestrationRequest request) {
+      super(session, request);
       this.api = api;
       this.session = session;
       this.request = request;

@@ -17,7 +17,10 @@ public class Ro  implements Serializable  {
 	private static final long serialVersionUID = 1L;
 	public String id;
 	public String uid;
-	String pathToMetadata;
+	String pathToMetadata;    // this is a relative path based on RegIndex.filename
+							// this is managed by RegIndex
+							// unless it is tagged as non-relative
+	boolean pathIsRelative = false;
 	private StatusValue availabilityStatus = StatusValue.APPROVED;
 	
 	public void setAvailabilityStatus(StatusValue status) {
@@ -74,4 +77,20 @@ public class Ro  implements Serializable  {
         for (Ro r : ros) ids.add(r.getId());
         return ids;
     }
+
+	public boolean isPathIsRelative() {
+		return pathIsRelative;
+	}
+
+	public void setPathIsRelative(boolean pathIsRelative) {
+		this.pathIsRelative = pathIsRelative;
+	}
+
+	public void setPathToMetadata(String pathToMetadata) {
+		this.pathToMetadata = pathToMetadata;
+	}
+
+	public String getPathToMetadata() {
+		return pathToMetadata;
+	}
 }

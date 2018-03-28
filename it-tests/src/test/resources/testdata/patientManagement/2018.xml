@@ -1,0 +1,4095 @@
+<Bundle xmlns="http://hl7.org/fhir">
+   <type value="searchset"/>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8329"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8329"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-992"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-992"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-992"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-992"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="MOORE"/>
+               <given value="CHIP"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1938-02-23"/>
+            <address>
+               <use value="home"/>
+               <line value="10 PINETREE"/>
+               <city value="WEBSTER"/>
+               <state value="MO"/>
+               <postalCode value="63119"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8330"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8330"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-993"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-993"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-993"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-993"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="MOORE"/>
+               <given value="RALPH"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1951-07-06"/>
+            <address>
+               <use value="home"/>
+               <line value="1510 S KINGSHIGHWAY"/>
+               <city value="ST. LOUIS"/>
+               <state value="MO"/>
+               <postalCode value="63110"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8331"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8331"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-994"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-994"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-994"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-994"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="MOHR"/>
+               <given value="ALICE"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="1958-01-30"/>
+            <address>
+               <use value="home"/>
+               <line value="820 JORIE BLVD."/>
+               <city value="OAK BROOK"/>
+               <state value="IL"/>
+               <postalCode value="60523"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8332"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8332"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-995"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-995"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-995"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-995"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="MOODY"/>
+               <given value="WARREN"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1978-08-19"/>
+            <address>
+               <use value="home"/>
+               <line value="1000 CLAYTON RD"/>
+               <city value="CLAYTON"/>
+               <state value="MO"/>
+               <postalCode value="63105"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8333"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8333"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-996"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-996"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-996"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-996"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="MOONEY"/>
+               <given value="STAN"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1978-09-19"/>
+            <address>
+               <use value="home"/>
+               <line value="100 TAYLOR"/>
+               <city value="ST LOUIS"/>
+               <state value="MO"/>
+               <postalCode value="63110"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8334"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8334"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-997"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-997"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-997"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-997"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="FARNSWORTH"/>
+               <given value="STEVE"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1978-12-07"/>
+            <address>
+               <use value="home"/>
+               <line value="820 JORIE BLVD"/>
+               <city value="CHICAGO"/>
+               <state value="IL"/>
+               <postalCode value="60523"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8335"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8335"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-998"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-998"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-998"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-998"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="WALTERS"/>
+               <given value="WILLIAM"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1955-05-04"/>
+            <address>
+               <use value="home"/>
+               <line value="3900 FLORA PL"/>
+               <city value="ST. LOUIS"/>
+               <state value="MO"/>
+               <postalCode value="63110"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8336"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8336"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-999"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-999"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-999"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-999"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="Hon"/>
+               <given value="Albert"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1960-12-31"/>
+            <address>
+               <use value="home"/>
+               <line value="15 N Saguaro"/>
+               <city value="Tucson"/>
+               <state value="AZ"/>
+               <postalCode value="85701"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8337"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8337"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-1000"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-1000"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-1000"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-1000"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="Hon"/>
+               <given value="Charles"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1961-01-31"/>
+            <address>
+               <use value="home"/>
+               <line value="3015 E Sagebrush"/>
+               <city value="Tucson"/>
+               <state value="AZ"/>
+               <postalCode value="85712"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8338"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8338"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-1001"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-1001"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-1001"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-1001"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="Hon"/>
+               <given value="Amy"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="1961-02-28"/>
+            <address>
+               <use value="home"/>
+               <line value="5615 S Palo Verde"/>
+               <city value="Tucson"/>
+               <state value="AZ"/>
+               <postalCode value="85706"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8339"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8339"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-1002"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-1002"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-1002"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-1002"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="Hon"/>
+               <given value="Carrie"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="1961-03-31"/>
+            <address>
+               <use value="home"/>
+               <line value="515 W Cholla"/>
+               <city value="Tucson"/>
+               <state value="AZ"/>
+               <postalCode value="85719"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8340"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8340"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-1003"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-1003"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-1003"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-1003"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="Smith"/>
+               <given value="Albert"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1960-12-31"/>
+            <address>
+               <use value="home"/>
+               <line value="60 N Saguaro"/>
+               <city value="Tucson"/>
+               <state value="AZ"/>
+               <postalCode value="85701"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8341"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8341"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-1004"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-1004"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-1004"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-1004"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="Smith"/>
+               <given value="Charles"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1961-01-31"/>
+            <address>
+               <use value="home"/>
+               <line value="3060 E Sagebrush"/>
+               <city value="Tucson"/>
+               <state value="AZ"/>
+               <postalCode value="85712"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8342"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8342"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-1005"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-1005"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-1005"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-1005"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="Smith"/>
+               <given value="Amy"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="1961-02-28"/>
+            <address>
+               <use value="home"/>
+               <line value="5660 S Palo Verde"/>
+               <city value="Tucson"/>
+               <state value="AZ"/>
+               <postalCode value="85706"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8343"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8343"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-1006"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-1006"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-1006"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-1006"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="Smith"/>
+               <given value="Carrie"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="1961-03-31"/>
+            <address>
+               <use value="home"/>
+               <line value="560 W Cholla"/>
+               <city value="Tucson"/>
+               <state value="AZ"/>
+               <postalCode value="85719"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8344"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8344"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-1014"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-1014"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-1014"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-1014"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="Dsub"/>
+               <given value="Notify-One"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1929-12-24"/>
+            <address>
+               <use value="home"/>
+               <line value="14 Flood Plain"/>
+               <city value="Creve Coeur"/>
+               <state value="MO"/>
+               <postalCode value="63146"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8345"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8345"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-1015"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-1015"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-1015"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-1015"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="Dsub"/>
+               <given value="Notify-Two"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1929-12-25"/>
+            <address>
+               <use value="home"/>
+               <line value="19 Abernathy"/>
+               <city value="St Louis"/>
+               <state value="MO"/>
+               <postalCode value="63101"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8346"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8346"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-1016"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-1016"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-1016"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-1016"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="Dsub"/>
+               <given value="Notify-Three"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1929-12-26"/>
+            <address>
+               <use value="home"/>
+               <line value="100 Bristol"/>
+               <city value="Creve Coeur"/>
+               <state value="MO"/>
+               <postalCode value="63141"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8347"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8347"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-1018"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-1018"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-1018"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-1018"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="MPQ"/>
+               <given value="One"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1950-01-24"/>
+            <address>
+               <use value="home"/>
+               <line value="14 Flood Plain"/>
+               <city value="Creve Coeur"/>
+               <state value="MO"/>
+               <postalCode value="63146"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8348"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8348"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-1019"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-1019"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-1019"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-1019"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="MPQ"/>
+               <given value="Two"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1950-01-25"/>
+            <address>
+               <use value="home"/>
+               <line value="19 Abernathy"/>
+               <city value="St Louis"/>
+               <state value="MO"/>
+               <postalCode value="63101"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8349"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8349"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-1020"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-1020"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-1020"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-1020"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="MPQ"/>
+               <given value="Three"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1950-01-26"/>
+            <address>
+               <use value="home"/>
+               <line value="100 Bristol"/>
+               <city value="Creve Coeur"/>
+               <state value="MO"/>
+               <postalCode value="63141"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8350"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8350"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-1021"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-1021"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-1021"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-1021"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="MPQ"/>
+               <given value="Four"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1950-01-27"/>
+            <address>
+               <use value="home"/>
+               <line value="200 Ballas"/>
+               <city value="Creve Coeur"/>
+               <state value="MO"/>
+               <postalCode value="63141"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8351"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8351"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-1024"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-1024"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-1024"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-1024"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="Dsub"/>
+               <given value="Unsubscribe"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1929-12-29"/>
+            <address>
+               <use value="home"/>
+               <line value="200 Ballas"/>
+               <city value="Creve Coeur"/>
+               <state value="MO"/>
+               <postalCode value="63141"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8352"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8352"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-1039"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-1039"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-1039"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-1039"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="Xcpd"/>
+               <given value="Pat"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="1966-06-05"/>
+            <address>
+               <use value="home"/>
+               <line value="123 MICHIGAN AVENUE"/>
+               <city value="CHICAGO"/>
+               <state value="IL"/>
+               <postalCode value="60601"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8353"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8353"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-1040"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-1040"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-1040"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-1040"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="Xcpd"/>
+               <given value="Pat"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="1977-07-06"/>
+            <address>
+               <use value="home"/>
+               <line value="321 RIVER ROAD"/>
+               <city value="CLEVELAND"/>
+               <state value="OH"/>
+               <postalCode value="44102"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8354"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8354"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-1043"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-1043"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-1043"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-1043"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="XUA"/>
+               <given value="Xavier"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="1929-06-21"/>
+            <address>
+               <use value="home"/>
+               <line value="4040 Key Harbour Dr"/>
+               <city value="St. Joseph"/>
+               <state value="MO"/>
+               <postalCode value="63230"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8355"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8355"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-1724"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-1724"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-1724"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-1724"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="ReferenceIdList"/>
+               <given value="Two"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1983-02-12"/>
+            <address>
+               <use value="home"/>
+               <line value="Singel"/>
+               <city value="Someren"/>
+               <state value="NL-GR"/>
+               <postalCode value="5711ET"/>
+               <country value="NLD"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8356"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8356"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-1725"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-1725"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-1725"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-1725"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="ReferenceIdList"/>
+               <given value="One"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1999-06-19"/>
+            <address>
+               <use value="home"/>
+               <line value="Jonkheer de Jongestraat"/>
+               <city value="Hoogeveen"/>
+               <state value="NL-GR"/>
+               <postalCode value="7901 KH"/>
+               <country value="NLD"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8357"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8357"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2340"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2340"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2340"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2340"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="XPID"/>
+               <given value="Pedro"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="2001-03-23"/>
+            <address>
+               <use value="home"/>
+               <line value="South Elmwood Avenue"/>
+               <city value="Buffalo"/>
+               <state value="NY"/>
+               <postalCode value="14201"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8358"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8358"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2342"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2342"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2342"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2342"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="XPID"/>
+               <given value="Peter"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="2015-12-29"/>
+            <address>
+               <use value="home"/>
+               <line value="South Elmwood Avenue"/>
+               <city value="Elmwood Park"/>
+               <state value="IL"/>
+               <postalCode value="44444"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8359"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8359"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2595"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2595"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2595"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2595"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="SOURCE-ONE"/>
+               <given value="Elsy"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="2017-04-30"/>
+            <address>
+               <use value="home"/>
+               <line value="Old Washington Road"/>
+               <city value="Elkridge"/>
+               <state value="Maryland"/>
+               <postalCode value="21075"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8360"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8360"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2597"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2597"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2597"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2597"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="SOURCE-TWO"/>
+               <given value="Fidelia"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="1980-03-28"/>
+            <address>
+               <use value="home"/>
+               <line value="5 1/2 Mile Road"/>
+               <city value="Caledonia"/>
+               <state value="Wisconsin"/>
+               <postalCode value="53108"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8361"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8361"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2599"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2599"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2599"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2599"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="SOURCE-THREE"/>
+               <given value="Roxie"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="2017-05-18"/>
+            <address>
+               <use value="home"/>
+               <line value="Church Street"/>
+               <city value="Lemon Grove"/>
+               <state value="California"/>
+               <postalCode value="91945"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8362"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8362"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2601"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2601"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2601"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2601"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="SOURCE-FOUR"/>
+               <given value="Jacquie"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="1969-01-22"/>
+            <address>
+               <use value="home"/>
+               <line value="North Meldrum Street"/>
+               <city value="Fort Collins"/>
+               <state value="Colorado"/>
+               <postalCode value="80522-0580"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8363"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8363"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2603"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2603"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2603"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2603"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="SOURCE-FIVE"/>
+               <given value="Dulce"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="2004-07-21"/>
+            <address>
+               <use value="home"/>
+               <line value="Convention Street"/>
+               <city value="Baton Rouge"/>
+               <state value="Louisiana"/>
+               <postalCode value="70802"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8364"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8364"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2605"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2605"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2605"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2605"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="SOURCE-SIX"/>
+               <given value="Rayna"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="1942-06-22"/>
+            <address>
+               <use value="home"/>
+               <line value="Hawthorne Boulevard"/>
+               <city value="Hawthorne"/>
+               <state value="California"/>
+               <postalCode value="90045"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8365"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8365"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2607"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2607"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2607"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2607"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="SOURCE-SEVEN"/>
+               <given value="Alycia"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="1985-10-18"/>
+            <address>
+               <use value="home"/>
+               <line value="1st Street Southwest"/>
+               <city value="Roanoke"/>
+               <state value="Virginia"/>
+               <postalCode value="24016"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8366"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8366"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2611"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2611"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2611"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2611"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="SOURCE-NINE"/>
+               <given value="Mariel"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="2013-07-15"/>
+            <address>
+               <use value="home"/>
+               <line value="Broadturn Road"/>
+               <city value="Blue Point"/>
+               <state value="Maine"/>
+               <postalCode value="04074"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8367"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8367"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2613"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2613"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2613"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2613"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="SOURCE-TEN"/>
+               <given value="Jimmie"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="1935-10-11"/>
+            <address>
+               <use value="home"/>
+               <line value="Mechanicville Road"/>
+               <city value="Bay Shore"/>
+               <state value="New York"/>
+               <postalCode value="11706"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8368"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8368"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2615"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2615"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2615"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2615"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="SOURCE-ELEVEN"/>
+               <given value="Jaymie"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="1967-02-07"/>
+            <address>
+               <use value="home"/>
+               <line value="Duke Road"/>
+               <city value="Cheektowaga"/>
+               <state value="New York"/>
+               <postalCode value="14225"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8369"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8369"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2617"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2617"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2617"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2617"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="SOURCE-TWELVE"/>
+               <given value="Drusilla"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="1990-04-13"/>
+            <address>
+               <use value="home"/>
+               <line value="Ventura Freeway"/>
+               <city value="Thousand Oaks"/>
+               <state value="California"/>
+               <postalCode value="91361"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8370"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8370"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2619"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2619"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2619"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2619"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="SOURCE-THIRTEEN"/>
+               <given value="Monserrate"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="2011-10-07"/>
+            <address>
+               <use value="home"/>
+               <line value="South Pine Drive"/>
+               <city value="Parker"/>
+               <state value="Colorado"/>
+               <postalCode value="80138"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8371"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8371"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2621"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2621"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2621"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2621"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="SOURCE-FOURTEEN"/>
+               <given value="Shirly"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="1997-01-17"/>
+            <address>
+               <use value="home"/>
+               <line value="Imperial Avenue"/>
+               <city value="Westport"/>
+               <state value="Connecticut"/>
+               <postalCode value="06880"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8372"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8372"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2623"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2623"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2623"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2623"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="SOURCE-FIFTEEN"/>
+               <given value="Shirly"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="1953-10-17"/>
+            <address>
+               <use value="home"/>
+               <line value="State Line Avenue"/>
+               <city value="Calumet City"/>
+               <state value="Indiana"/>
+               <postalCode value="46320"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8373"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8373"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2625"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2625"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2625"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2625"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="SOURCE-SIXTEEN"/>
+               <given value="Sharyl"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="1954-12-29"/>
+            <address>
+               <use value="home"/>
+               <line value="North Walnut Street"/>
+               <city value="Grand Island"/>
+               <state value="Nebraska"/>
+               <postalCode value="68802"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8374"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8374"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2627"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2627"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2627"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2627"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="SOURCE-SEVENTEEN"/>
+               <given value="Crystle"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="1962-07-01"/>
+            <address>
+               <use value="home"/>
+               <line value="Wall Street"/>
+               <city value="Bakersfield"/>
+               <state value="California"/>
+               <postalCode value="93301"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8375"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8375"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2629"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2629"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2629"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2629"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="SOURCE-EIGHTEEN"/>
+               <given value="Lakendra"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="2015-04-23"/>
+            <address>
+               <use value="home"/>
+               <line value="Walnut Street"/>
+               <city value="Lockport"/>
+               <state value="New York"/>
+               <postalCode value="14094"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8376"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8376"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2631"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2631"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2631"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2631"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="SOURCE-TWENTY"/>
+               <given value="Micah"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="2010-02-27"/>
+            <address>
+               <use value="home"/>
+               <line value="154th Street"/>
+               <city value="Lawndale"/>
+               <state value="California"/>
+               <postalCode value="90260"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8377"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8377"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2633"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2633"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2633"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2633"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="SOURCE-TWENTYONE"/>
+               <given value="Miguelina"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="1992-06-19"/>
+            <address>
+               <use value="home"/>
+               <line value="Cordes Drive"/>
+               <city value="Mehlville"/>
+               <state value="Missouri"/>
+               <postalCode value="63125"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8378"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8378"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2635"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2635"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2635"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2635"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="SOURCE-TWENTYTWO"/>
+               <given value="Sherell"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="1943-06-01"/>
+            <address>
+               <use value="home"/>
+               <line value="East Eastland Street"/>
+               <city value="Gallatin"/>
+               <state value="Tennessee"/>
+               <postalCode value="37066"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8379"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8379"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2637"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2637"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2637"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2637"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="SOURCE-TWENTYTHREE"/>
+               <given value="Karena"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="1997-06-18"/>
+            <address>
+               <use value="home"/>
+               <line value="Hollywood Drive"/>
+               <city value="Woodbridge Township"/>
+               <state value="New Jersey"/>
+               <postalCode value="07095"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8380"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8380"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2639"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2639"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2639"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2639"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="SOURCE-TWENTYFOUR"/>
+               <given value="Lynelle"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="1975-05-31"/>
+            <address>
+               <use value="home"/>
+               <line value="Woodland Boulevard"/>
+               <city value="DeLand"/>
+               <state value="Florida"/>
+               <postalCode value="32723"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8381"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8381"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2641"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2641"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2641"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2641"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="SOURCE-TWENTYFIVE"/>
+               <given value="Delisa"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="1989-10-06"/>
+            <address>
+               <use value="home"/>
+               <line value="West Florida Avenue"/>
+               <city value="Hemet"/>
+               <state value="California"/>
+               <postalCode value="92543"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8382"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8382"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2643"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2643"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2643"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2643"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="SOURCE-TWENTYSIX"/>
+               <given value="Altha"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="1960-12-30"/>
+            <address>
+               <use value="home"/>
+               <line value="West Foster Street"/>
+               <city value="Melrose"/>
+               <state value="Massachusetts"/>
+               <postalCode value="02176"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8383"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8383"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2645"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2645"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2645"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2645"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="SOURCE-TWENTYSEVEN"/>
+               <given value="Grace"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="2009-06-16"/>
+            <address>
+               <use value="home"/>
+               <line value="Kolb Street"/>
+               <city value="Leesburg"/>
+               <state value="Florida"/>
+               <postalCode value="34748"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8384"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8384"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2647"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2647"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2647"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2647"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="SOURCE-TWENTYEIGHT"/>
+               <given value="Evelynn"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="1979-03-22"/>
+            <address>
+               <use value="home"/>
+               <line value="Thompson Avenue"/>
+               <city value="East Point"/>
+               <state value="Georgia"/>
+               <postalCode value="30344"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8385"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8385"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2649"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2649"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2649"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2649"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="SOURCE-TWENTYNINE"/>
+               <given value="Rebeca"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="1940-06-24"/>
+            <address>
+               <use value="home"/>
+               <line value="Airport Expressway"/>
+               <city value="SeaTac"/>
+               <state value="Washington"/>
+               <postalCode value="98158"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8386"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8386"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2651"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2651"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2651"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2651"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="SOURCE-THIRTY"/>
+               <given value="Vergie"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="1973-01-04"/>
+            <address>
+               <use value="home"/>
+               <line value="South Grand Street"/>
+               <city value="Orange"/>
+               <state value="California"/>
+               <postalCode value="92866"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8387"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8387"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2654"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2654"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2654"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2654"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="EXTRA-ONE"/>
+               <given value="William"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1952-04-05"/>
+            <address>
+               <use value="home"/>
+               <line value="East Walnut Street"/>
+               <city value="Garden City"/>
+               <state value="Kansas"/>
+               <postalCode value="67846"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8388"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8388"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2656"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2656"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2656"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2656"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="EXTRA-TWO"/>
+               <given value="Andrew"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1945-06-10"/>
+            <address>
+               <use value="home"/>
+               <line value="Burcham Drive"/>
+               <city value="East Lansing"/>
+               <state value="Michigan"/>
+               <postalCode value="48823"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8389"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8389"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2658"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2658"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2658"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2658"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="EXTRA-THREE"/>
+               <given value="George"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1950-11-17"/>
+            <address>
+               <use value="home"/>
+               <line value="West Nine Mile Road"/>
+               <city value="Highland Springs"/>
+               <state value="Virginia"/>
+               <postalCode value="23075"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8390"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8390"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2660"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2660"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2660"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2660"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="EXTRA-FOUR"/>
+               <given value="David"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1957-08-13"/>
+            <address>
+               <use value="home"/>
+               <line value="Cherrywood Drive"/>
+               <city value="Sunnyvale"/>
+               <state value="California"/>
+               <postalCode value="94086"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8391"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8391"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2662"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2662"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2662"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2662"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="EXTRA-FIVE"/>
+               <given value="Thomas"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1979-12-12"/>
+            <address>
+               <use value="home"/>
+               <line value="West Washington Avenue"/>
+               <city value="Pearl River"/>
+               <state value="New York"/>
+               <postalCode value="10965"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8392"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8392"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2665"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2665"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2665"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2665"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="EXTRA-SIX"/>
+               <given value="David"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="2002-02-24"/>
+            <address>
+               <use value="home"/>
+               <line value="A Street"/>
+               <city value="Santa Rosa"/>
+               <state value="California"/>
+               <postalCode value="95402"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8393"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8393"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2667"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2667"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2667"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2667"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="EXTRA-SEVEN"/>
+               <given value="Richard"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1957-08-31"/>
+            <address>
+               <use value="home"/>
+               <line value="Taunton Avenue"/>
+               <city value="Rockland"/>
+               <state value="Massachusetts"/>
+               <postalCode value="02371"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8394"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8394"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2669"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2669"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2669"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2669"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="EXTRA-EIGHT"/>
+               <given value="Arthur"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="2002-04-17"/>
+            <address>
+               <use value="home"/>
+               <line value="Spring Park Avenue"/>
+               <city value="Dracut"/>
+               <state value="Massachusetts"/>
+               <postalCode value="01850"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8395"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8395"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2671"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2671"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2671"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2671"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="EXTRA-NINE"/>
+               <given value="Michael"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1980-03-18"/>
+            <address>
+               <use value="home"/>
+               <line value="Oakwood Avenue"/>
+               <city value="Farmington Hills"/>
+               <state value="Michigan"/>
+               <postalCode value="48335"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8396"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8396"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2673"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2673"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2673"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2673"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="EXTRA-TEN"/>
+               <given value="David"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="2005-01-07"/>
+            <address>
+               <use value="home"/>
+               <line value="Hawn Avenue"/>
+               <city value="Shreveport"/>
+               <state value="Louisiana"/>
+               <postalCode value="71107"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8781"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8781"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2702"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2702"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2702"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2702"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="EXTRA-EU-ONE"/>
+               <given value="Theodor"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="2013-06-29"/>
+            <address>
+               <use value="home"/>
+               <line value="Martin-Preihs-Gasse"/>
+               <city value="Traiskirchen"/>
+               <postalCode value="2514"/>
+               <country value="AUT"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8782"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8782"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2703"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2703"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2703"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2703"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="EXTRA-EU-TWO"/>
+               <given value="Jonas"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1986-12-04"/>
+            <address>
+               <use value="home"/>
+               <line value="Eikelstraat"/>
+               <city value="Kalmthout"/>
+               <postalCode value="2920"/>
+               <country value="BEL"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8783"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8783"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2704"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2704"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2704"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2704"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="EXTRA-EU-THREE"/>
+               <given value="Břetík"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1949-10-25"/>
+            <address>
+               <use value="home"/>
+               <line value="Komenského"/>
+               <city value="Písek"/>
+               <postalCode value="39720"/>
+               <country value="CZE"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8784"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8784"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2705"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2705"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2705"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2705"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="EXTRA-EU-FOUR"/>
+               <given value="Per"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1942-02-09"/>
+            <address>
+               <use value="home"/>
+               <line value="Howitzvej"/>
+               <city value="Frederiksberg"/>
+               <postalCode value="2000"/>
+               <country value="DNK"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8785"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8785"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2706"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2706"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2706"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2706"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="EXTRA-EU-FIVE"/>
+               <given value="Enriko"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1999-05-19"/>
+            <address>
+               <use value="home"/>
+               <line value="Järveküla tee"/>
+               <city value="Järve linnaosa"/>
+               <postalCode value="30321"/>
+               <country value="EST"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8786"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8786"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2707"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2707"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2707"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2707"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="EXTRA-EU-SIX"/>
+               <given value="Ilmari"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1994-09-14"/>
+            <address>
+               <use value="home"/>
+               <line value="Kuohunharjuntie"/>
+               <city value="Kangasala"/>
+               <postalCode value="36200"/>
+               <country value="FIN"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8787"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8787"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2708"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2708"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2708"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2708"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="EXTRA-EU-SEVEN"/>
+               <given value="Theodore"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1943-11-29"/>
+            <address>
+               <use value="home"/>
+               <line value="Chemin du Clotay"/>
+               <city value="Viry-Châtillon"/>
+               <postalCode value="91170"/>
+               <country value="FRA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8788"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8788"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2709"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2709"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2709"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2709"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="EXTRA-EU-EIGHT"/>
+               <given value="Claus"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1994-08-28"/>
+            <address>
+               <use value="home"/>
+               <line value="Windmühlenberg"/>
+               <city value="Lüdinghausen"/>
+               <postalCode value="59348"/>
+               <country value="DEU"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8789"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8789"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2710"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2710"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2710"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2710"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="EXTRA-EU-NINE"/>
+               <given value="Βασιλειοσ"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1978-06-03"/>
+            <address>
+               <use value="home"/>
+               <line value="Δ. Σαμαρτζή"/>
+               <city value="Χαλκίδα"/>
+               <postalCode value="34100"/>
+               <country value="GRC"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8790"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8790"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2711"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2711"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2711"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2711"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="EXTRA-EU-TEN"/>
+               <given value="Ferdinando"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1996-10-31"/>
+            <address>
+               <use value="home"/>
+               <line value="Via Croce Tani"/>
+               <city value="Ferentino"/>
+               <postalCode value="03013"/>
+               <country value="ITA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8791"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8791"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2712"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2712"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2712"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2712"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="EXTRA-EU-ELEVEN"/>
+               <given value="Adrianus"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1953-05-12"/>
+            <address>
+               <use value="home"/>
+               <line value="Gasthuisstraat"/>
+               <city value="Meerssen"/>
+               <postalCode value="6231JV"/>
+               <country value="NLD"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8792"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8792"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2713"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2713"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2713"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2713"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="EXTRA-EU-TWELVE"/>
+               <given value="František"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="2006-07-25"/>
+            <address>
+               <use value="home"/>
+               <line value="Jazerná"/>
+               <city value="Galanta"/>
+               <postalCode value="924 01"/>
+               <country value="SVK"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8794"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8794"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2715"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2715"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2715"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2715"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="EXTRA-EU-THIRTEEN"/>
+               <given value="Lars"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1938-06-21"/>
+            <address>
+               <use value="home"/>
+               <line value="Samuel Permans gata"/>
+               <city value="Östersund"/>
+               <postalCode value="831 31"/>
+               <country value="SWE"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8795"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8795"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2716"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2716"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2716"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2716"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="EXTRA-EU-FOURTEEN"/>
+               <given value="Felix"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1961-05-03"/>
+            <address>
+               <use value="home"/>
+               <line value="Schwandenholzstrasse"/>
+               <city value="Kreis 11"/>
+               <postalCode value="8046"/>
+               <country value="CHE"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8796"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8796"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2717"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2717"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2717"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2717"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="EXTRA-EU-FIFTEEN"/>
+               <given value="Javier"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="2012-07-12"/>
+            <address>
+               <use value="home"/>
+               <line value="Avenida Hermanos Felgueroso"/>
+               <city value="Gijón/Xixón"/>
+               <postalCode value="33210"/>
+               <country value="ESP"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8797"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8797"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2718"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2718"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2718"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2718"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="EXTRA-AP-ONE"/>
+               <given value="Bulusu"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1978-02-06"/>
+            <address>
+               <use value="home"/>
+               <line value="MDR123W"/>
+               <city value="chokda"/>
+               <postalCode value="281204"/>
+               <country value="IND"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8800"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8800"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2722"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2722"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2722"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2722"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="吳"/>
+               <given value="怡欣"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="1993-12-23"/>
+            <address>
+               <use value="home"/>
+               <line value="節約街"/>
+               <city value="花蓮市"/>
+               <postalCode value="970"/>
+               <country value="TWN"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8801"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8801"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2723"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2723"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2723"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2723"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="张"/>
+               <given value="思博"/>
+            </name>
+            <gender value="male"/>
+            <birthDate value="1955-06-23"/>
+            <address>
+               <use value="home"/>
+               <line value="Nan Men Jie"/>
+               <city value="Yuxi Shi"/>
+               <postalCode value="653100"/>
+               <country value="CHN"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8802"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8802"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2724"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2724"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2724"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2724"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="斎藤"/>
+               <given value="太一"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="2010-06-05"/>
+            <address>
+               <use value="home"/>
+               <city value="Kuki-shi"/>
+               <postalCode value="349-1106"/>
+               <country value="JPN"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8803"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8803"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2725"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2725"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2725"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2725"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="SOURCE-THIRTYONE"/>
+               <given value="Gracia"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="2004-11-16"/>
+            <address>
+               <use value="home"/>
+               <line value="Southeast Pioneer Way"/>
+               <city value="Oak Harbor"/>
+               <state value="Washington"/>
+               <postalCode value="98277"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8804"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8804"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2726"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2726"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2726"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2726"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="SOURCE-THIRTYTWO"/>
+               <given value="Tereasa"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="1989-06-11"/>
+            <address>
+               <use value="home"/>
+               <line value="Paseo del Lago West"/>
+               <city value="Laguna Woods"/>
+               <state value="California"/>
+               <postalCode value="92637"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8805"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8805"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2727"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2727"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2727"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2727"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="SOURCE-THIRTYTHREE"/>
+               <given value="Carina"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="2007-10-18"/>
+            <address>
+               <use value="home"/>
+               <line value="Southwest Atlantic Street"/>
+               <city value="Tullahoma"/>
+               <state value="Tennessee"/>
+               <postalCode value="37388"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8806"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8806"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2728"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2728"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2728"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2728"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="SOURCE-THIRTYFOUR"/>
+               <given value="Dan"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="1950-07-04"/>
+            <address>
+               <use value="home"/>
+               <line value="South Linden Avenue"/>
+               <city value="Westmont"/>
+               <state value="Illinois"/>
+               <postalCode value="60559"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8807"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8807"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2729"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2729"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2729"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2729"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="SOURCE-THIRTYFIVE"/>
+               <given value="Carolee"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="1998-10-09"/>
+            <address>
+               <use value="home"/>
+               <line value="221st Street"/>
+               <city value="Hawaiian Gardens"/>
+               <state value="California"/>
+               <postalCode value="90716"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8808"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8808"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2730"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2730"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2730"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2730"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="SOURCE-THIRTYSIX"/>
+               <given value="Shanda"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="1971-01-06"/>
+            <address>
+               <use value="home"/>
+               <line value="North James Street"/>
+               <city value="Goldsboro"/>
+               <state value="North Carolina"/>
+               <postalCode value="27530"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8809"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8809"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2731"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2731"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2731"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2731"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="SOURCE-THIRTYSEVEN"/>
+               <given value="Nell"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="2013-05-29"/>
+            <address>
+               <use value="home"/>
+               <line value="East Pearl Street"/>
+               <city value="Miamisburg"/>
+               <state value="Ohio"/>
+               <postalCode value="45342"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8810"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8810"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2732"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2732"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2732"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2732"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="SOURCE-THIRTYEIGHT"/>
+               <given value="Zoe"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="1975-08-22"/>
+            <address>
+               <use value="home"/>
+               <line value="Fremont Boulevard"/>
+               <city value="Fremont"/>
+               <state value="California"/>
+               <postalCode value="94536"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8811"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8811"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2733"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2733"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2733"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2733"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="SOURCE-THIRTYNINE"/>
+               <given value="Adeline"/>
+            </name>
+            <gender value="female"/>
+            <birthDate value="1980-12-17"/>
+            <address>
+               <use value="home"/>
+               <line value="Chaparrall Creek Drive"/>
+               <city value="Hazelwood"/>
+               <state value="Missouri"/>
+               <postalCode value="63042"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8864"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8864"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2736"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2736"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2736"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2736"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="CSL-00277"/>
+            </name>
+            <gender value="male"/>
+            <address>
+               <use value="home"/>
+               <line value="West Walnut Street"/>
+               <city value="Pearland"/>
+               <state value="Texas"/>
+               <postalCode value="77075"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+   <entry>
+      <fullUrl value="https://gazelle.ihe.net/PatientManager//fhir/Patient/8865"/>
+      <resource>
+         <Patient xmlns="http://hl7.org/fhir">
+            <id value="8865"/>
+            <meta>
+               <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+            </meta>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+               <value value="IHEBLUE-2737"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+               <value value="IHEFACILITY-2737"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+               <value value="IHEGREEN-2737"/>
+            </identifier>
+            <identifier>
+               <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+               <value value="IHERED-2737"/>
+            </identifier>
+            <active value="true"/>
+            <name>
+               <family value="C3N-00953"/>
+            </name>
+            <gender value="male"/>
+            <address>
+               <use value="home"/>
+               <line value="North New Florissant Road"/>
+               <city value="Florissant"/>
+               <state value="Missouri"/>
+               <postalCode value="63031"/>
+               <country value="USA"/>
+            </address>
+         </Patient>
+      </resource>
+   </entry>
+</Bundle>

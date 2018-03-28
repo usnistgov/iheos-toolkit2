@@ -1,6 +1,8 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
-import com.google.gwt.cell.client.*;
+import com.google.gwt.cell.client.EditTextCell;
+import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Unit;
@@ -8,33 +10,29 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
-import elemental.client.Browser;
-import elemental.html.Selection;
-import elemental.ranges.Range;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.PidBuilder;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.command.command.GeneratePidCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetAssigningAuthoritiesCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.RetrieveFavPidsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.SendPidToRegistryCommand;
-import gov.nist.toolkit.xdstools2.client.widgets.ScrollingPager;
-import gov.nist.toolkit.xdstools2.client.widgets.buttons.CopyButton;
-import gov.nist.toolkit.xdstools2.shared.command.request.GeneratePidRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.SendPidToRegistryRequest;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.util.CookiesServices;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.widgets.ScrollingPager;
+import gov.nist.toolkit.xdstools2.client.widgets.buttons.CopyButton;
+import gov.nist.toolkit.xdstools2.shared.command.request.GeneratePidRequest;
+import gov.nist.toolkit.xdstools2.shared.command.request.SendPidToRegistryRequest;
 
 import java.io.IOException;
 import java.util.*;
@@ -135,7 +133,7 @@ public class PidFavoritesTab extends GenericQueryTab {
 
         favoritesListPanel.add(new HTML("Favorite Patient IDs"));
         ScrollingPager p = new ScrollingPager();
-        p.setSize("600px","400px");
+        p.setSize("600px","380px");
         p.setDisplay(favoritesListBox);
         favoritesListPanel.add(p);
         favoritesListPanel.setWidth("600px");
@@ -212,16 +210,33 @@ public class PidFavoritesTab extends GenericQueryTab {
         }
     }
 
+    private RadioButton fromSelection;
+    private RadioButton fromAll;
+
     @Override
     protected void configureTabView() {
         setRunButtonText("Send Patient Identity Feed");
         setTlsEnabled(false);
         setSamlEnabled(false);
         setShowInspectButton(false);
-        tabTopPanel.add(new HTML("<h3>Generate V2 Patient Identity Feed</h3><br />(From selection in Favorites)" +
-                "<p>Note that this is NOT integrated with Gazelle Patient Management.  It should be used " +
+        tabTopPanel.add(new HTML("<hr /><h3>Generate V2 Patient Identity Feed</h3><br />"));
+
+        tabTopPanel.add(new HTML("Patient ID to send<br />"));
+        fromSelection = new RadioButton("selection", "Selection in Favorites");
+        fromAll = new RadioButton("selection", "All in Favorites");
+        fromSelection.setValue(true);
+        VerticalPanel selectionPanel = new VerticalPanel();
+        selectionPanel.add(fromSelection);
+        selectionPanel.add(fromAll);
+        tabTopPanel.add(selectionPanel);
+
+        tabTopPanel.add(new HTML("<p>Note that this is NOT integrated with Gazelle Patient Management.  It should be used " +
                 "for private testing only.</p>"));
         queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, false);
+    }
+
+    private boolean sendAll() {
+        return fromAll.getValue();
     }
 
     @Override
@@ -351,17 +366,23 @@ public class PidFavoritesTab extends GenericQueryTab {
         return new ArrayList<Pid>(selectionModel.getSelectedSet());
     }
 
-    Pid getSelectedPid() {
-        List<Pid> pids = getSelectedPids();
+    List<Pid> getSelectedPid() {
+        List<Pid> pids;
+        if (sendAll()) {
+            pids = new ArrayList<>();
+            pids.addAll(configuredPids);
+        } else {
+            pids = getSelectedPids();
+        }
         if (pids.size() == 0) {
             new PopupMessage("Must select a Patient ID");
             return null;
         }
-        if (pids.size() > 1) {
-            new PopupMessage("Must select only one Patient ID");
-            return null;
-        }
-        return pids.get(0);
+//        if (pids.size() > 1) {
+//            new PopupMessage("Must select only one Patient ID");
+//            return null;
+//        }
+        return pids;
     }
 
     Set<Pid> getInputPids() {
@@ -381,7 +402,7 @@ public class PidFavoritesTab extends GenericQueryTab {
 
             if (!verifySiteProvided()) return;
 
-            Pid pid = getSelectedPid();
+            List<Pid> pid = getSelectedPid();
             if (pid == null) return;
 
             rigForRunning();

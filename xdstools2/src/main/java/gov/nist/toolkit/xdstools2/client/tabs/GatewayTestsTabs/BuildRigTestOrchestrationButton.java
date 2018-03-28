@@ -42,6 +42,7 @@ class BuildRIGTestOrchestrationButton extends AbstractOrchestrationButton {
       }
       RigOrchestrationRequest request = new RigOrchestrationRequest();
       request.setTestSession(new TestSession(testTab.getCurrentTestSession()));
+      request.setUseTls(isTls());
      //  request.setIncludeLinkedRIG(includeRIG);
       new BuildRigTestOrchestrationCommand(){
          @Override

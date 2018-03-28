@@ -38,6 +38,10 @@ public class RegistrySimApi {
     public OMElement getDocEle(String id) throws IOException, NoSimException, MetadataException, XdsInternalException {
         DocEntry de = regIndex().mc.docEntryCollection.getById(id);
         if (de == null) return null;
+        if (de.isPathIsRelative()) {
+            de.setPathToMetadata(regIndex().getAbsolutePathForObject(de).toString());
+            de.setPathIsRelative(false);
+        }
         return de.getFullMetadata();
     }
 }

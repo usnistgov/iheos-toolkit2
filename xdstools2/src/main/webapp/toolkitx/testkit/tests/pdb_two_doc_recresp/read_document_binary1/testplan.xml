@@ -1,17 +1,18 @@
 <TestPlan>
-    <Test>pdb_single_doc_xof/read_document_binary</Test>
+    <Test>pdb_two_doc_recresp/read_document_binary</Test>
     <TestStep id="read_Binary">
         <Goal>
             Send a FHIR READ for the Binary resource submitted in the submit section.  The requested
-            mime type is application/fhir+json so the Binary resource is expected back. The contents of the Binary
+            mime type is controlled at the top of the this tool (either application/fhir+json or application/fhir+xml)
+            so the Binary resource is expected back. The contents of the Binary
             resource are extracted and the bytes compared to the original.  They must match.
         </Goal>
         <ExpectedStatus>Success</ExpectedStatus>
         <FhirReadTransaction>
             <MustReturn/>
             <ReferenceDocument>../submit/textfile1.txt</ReferenceDocument>
-            <RequestType>application/fhir+json</RequestType>
-            <UseReport test="pdb_two_doc_xof" section="read_document_reference1" step="read_DR" reportName="BinaryUrl" useAs="Ref"/>
+            <!--<RequestType>application/fhir+json</RequestType>-->
+            <UseReport test="pdb_two_doc_recresp" section="read_document_reference1" step="read_DR" reportName="BinaryUrl" useAs="Ref"/>
         </FhirReadTransaction>
     </TestStep>
 </TestPlan>

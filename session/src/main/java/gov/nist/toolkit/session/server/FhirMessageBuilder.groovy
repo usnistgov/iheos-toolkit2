@@ -18,10 +18,19 @@ import javax.xml.parsers.ParserConfigurationException
 class FhirMessageBuilder {
     Bundle bundle  = null;
     Resource resource = null;
+    boolean isJson = true;
+
+    public FhirMessageBuilder(boolean isJson) {
+        this.isJson = isJson;
+    }
 
     Message build(String name, IBaseResource resource) {
         FhirContext ctx = ToolkitFhirContext.get()
-        String msgStr = ctx.newJsonParser().encodeResourceToString(resource)
+        String msgStr
+        if (isJson) {
+            msgStr = ctx.newJsonParser().encodeResourceToString(resource)
+        } else
+            msgStr = ctx.newXmlParser().encodeResourceToString(resource)
         Message message = new Message().add('', '').add(name, formatMessage(msgStr))
         if (resource instanceof Bundle) {
             bundle = (Bundle) resource;
@@ -29,7 +38,11 @@ class FhirMessageBuilder {
                 String fullUrl = c.getFullUrl();
                 Resource theResource = c.getResource();
                 if (theResource) {
-                    String str = ctx.newJsonParser().encodeResourceToString(theResource);
+                    String str
+                    if (isJson)
+                        str = ctx.newJsonParser().encodeResourceToString(theResource);
+                    else
+                        str = ctx.newXmlParser().encodeResourceToString(theResource);
                     SubMessage subMessage = new SubMessage(theResource.fhirType() + ": " + fullUrl, formatMessage(str));
                     message.addSubMessage(subMessage);
                     subMessage.addSubMessages(extractReferences(theResource));

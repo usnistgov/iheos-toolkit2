@@ -5,6 +5,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimIdFactory;
+import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
@@ -26,6 +27,10 @@ class CreateButtonClickHandler implements ClickHandler {
 		String actorTypeName = simulatorControlTab.actorSelectListBox.getItemText(actorTypeIndex);
 		if (actorTypeName == null || actorTypeName.equals("")) {
 			new PopupMessage("Select actor type first");
+			return;
+		}
+		if (!Xdstools2.getInstance().isSystemSaveEnabled()) {
+			new PopupMessage("You don't have permission to create a new Simulator in this Test Session");
 			return;
 		}
 		String rawSimId = simulatorControlTab.newSimIdTextBox.getValue();

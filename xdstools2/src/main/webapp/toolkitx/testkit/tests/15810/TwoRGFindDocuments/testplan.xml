@@ -60,6 +60,7 @@
         </NullTransaction>
     </TestStep>
   
+    
     <TestStep id="HomeCommunityId">
         <Goal>Validate one DocumentEntry received from each community - homeCommunityIds align with community configurations</Goal>
         <NullTransaction>
@@ -80,7 +81,8 @@
             </Assertions>
         </NullTransaction>
     </TestStep>
-    <TestStep id="MimeType">
+
+    <TestStep id="MimeType1">
         <Goal>Verify mimeType on the two DocumentEntry returned in the query</Goal>
         <NullTransaction>
             <UseReport reportName="$testdata_home$" test="15807" section="onedoc2" step="submit_single_doc" useAs="submittedValue1"/>
@@ -91,16 +93,42 @@
                 <Assert id="">
                     'submittedValue1' = 'returnedValue1' or 'submittedValue1' = 'returnedValue2'
                 </Assert>
+            </Assertions>
+        </NullTransaction>
+    </TestStep>
+
+    <TestStep id="MimeType2">
+        <Goal>Verify mimeType on the two DocumentEntry returned in the query</Goal>
+        <NullTransaction>
+            <UseReport reportName="$testdata_home$" test="15807" section="onedoc2" step="submit_single_doc" useAs="submittedValue1"/>
+            <UseReport reportName="$testdata_home$" test="15807" section="onedoc3" step="submit_single_doc" useAs="submittedValue2"/>
+            <UseReport reportName="$home1$"                      section="THIS"    step="finddocs"          useAs="returnedValue1"/>
+            <UseReport reportName="$home2$"                      section="THIS"    step="finddocs"          useAs="returnedValue2"/>
+            <Assertions>
                 <Assert id="">
                     'submittedValue2' = 'returnedValue1' or 'submittedValue2' = 'returnedValue2'
                 </Assert>
+            </Assertions>
+        </NullTransaction>
+    </TestStep>
+    
+    <TestStep id="MimeType3">
+        <Goal>Verify mimeType on the two DocumentEntry returned in the query</Goal>
+        <NullTransaction>
+            <UseReport reportName="$testdata_home$" test="15807" section="onedoc2" step="submit_single_doc" useAs="submittedValue1"/>
+            <UseReport reportName="$testdata_home$" test="15807" section="onedoc3" step="submit_single_doc" useAs="submittedValue2"/>
+            <UseReport reportName="$home1$"                      section="THIS"    step="finddocs"          useAs="returnedValue1"/>
+            <UseReport reportName="$home2$"                      section="THIS"    step="finddocs"          useAs="returnedValue2"/>
+            <Assertions>
                 <Assert id="">
                     'returnedValue1' != 'returnedValue2'
                 </Assert>
             </Assertions>
         </NullTransaction>
     </TestStep>
-    <TestStep id="DocumentUniqueId">
+    
+    
+    <TestStep id="DocumentUniqueId1">
         <Goal>Verify uniqueId on the two DocumentEntry returned in the query</Goal>
         <NullTransaction>
             <UseReport reportName="$uid$"   test="15807" section="onedoc2" step="submit_single_doc" useAs="submittedValue1"/>
@@ -111,15 +139,41 @@
                 <Assert id="">
                     'submittedValue1' = 'returnedValue1' or 'submittedValue1' = 'returnedValue2'
                 </Assert>
+            </Assertions>
+        </NullTransaction>
+    </TestStep>
+
+    <TestStep id="DocumentUniqueId2">
+        <Goal>Verify uniqueId on the two DocumentEntry returned in the query</Goal>
+        <NullTransaction>
+            <UseReport reportName="$uid$"   test="15807" section="onedoc2" step="submit_single_doc" useAs="submittedValue1"/>
+            <UseReport reportName="$uid$"   test="15807" section="onedoc3" step="submit_single_doc" useAs="submittedValue2"/>
+            <UseReport reportName="$uid_1$"              section="THIS"    step="finddocs"          useAs="returnedValue1"/>
+            <UseReport reportName="$uid_2$"              section="THIS"    step="finddocs"          useAs="returnedValue2"/>
+            <Assertions>
                 <Assert id="">
                     'submittedValue2' = 'returnedValue1' or 'submittedValue2' = 'returnedValue2'
                 </Assert>
+            </Assertions>
+        </NullTransaction>
+    </TestStep>
+    
+    <TestStep id="DocumentUniqueId3">
+        <Goal>Verify uniqueId on the two DocumentEntry returned in the query</Goal>
+        <NullTransaction>
+            <UseReport reportName="$uid$"   test="15807" section="onedoc2" step="submit_single_doc" useAs="submittedValue1"/>
+            <UseReport reportName="$uid$"   test="15807" section="onedoc3" step="submit_single_doc" useAs="submittedValue2"/>
+            <UseReport reportName="$uid_1$"              section="THIS"    step="finddocs"          useAs="returnedValue1"/>
+            <UseReport reportName="$uid_2$"              section="THIS"    step="finddocs"          useAs="returnedValue2"/>
+            <Assertions>
                 <Assert id="">
                     'returnedValue1' != 'returnedValue2'
                 </Assert>
             </Assertions>
         </NullTransaction>
     </TestStep>
+    
+
     <!--
         The two DocumentEntries returned come from /15807/onedoc2/submit_single_doc and /15807/onedoc3/submit_single_doc
     -->
@@ -137,6 +191,54 @@
                 <Assert id="/15807/onedoc3/submit_single_doc repositoryUniqueId must be returned">
                     'submittedValue2' = 'returnedValue1' or 'submittedValue2' = 'returnedValue2'
                 </Assert>
+                <Assert id="repositoryUniqueIds must be different">
+                    'returnedValue1' != 'returnedValue2'
+                </Assert>
+            </Assertions>
+        </NullTransaction>
+    </TestStep>
+    
+
+
+
+
+    <TestStep id="repositoryUniqueId1">
+        <NullTransaction>
+            <UseReport reportName="$testdata_repid$"      test="15807" section="onedoc2" step="submit_single_doc" useAs="submittedValue1"/>
+            <UseReport reportName="$testdata_repid$"      test="15807" section="onedoc3" step="submit_single_doc" useAs="submittedValue2"/>
+            <UseReport reportName="$returned_repositoryUniqueId1$"              section="THIS"    step="finddocs"          useAs="returnedValue1"/>
+            <UseReport reportName="$returned_repositoryUniqueId2$"              section="THIS"    step="finddocs"          useAs="returnedValue2"/>
+            <Assertions>
+                <Assert id="/15807/onedoc2/submit_single_doc repositoryUniqueId must be returned">
+                    'submittedValue1' = 'returnedValue1' or 'submittedValue1' = 'returnedValue2'
+                </Assert>
+            </Assertions>
+        </NullTransaction>
+    </TestStep>
+    
+    
+    <TestStep id="repositoryUniqueId2">
+        <NullTransaction>
+            <UseReport reportName="$testdata_repid$"      test="15807" section="onedoc2" step="submit_single_doc" useAs="submittedValue1"/>
+            <UseReport reportName="$testdata_repid$"      test="15807" section="onedoc3" step="submit_single_doc" useAs="submittedValue2"/>
+            <UseReport reportName="$returned_repositoryUniqueId1$"              section="THIS"    step="finddocs"          useAs="returnedValue1"/>
+            <UseReport reportName="$returned_repositoryUniqueId2$"              section="THIS"    step="finddocs"          useAs="returnedValue2"/>
+            <Assertions>
+                <Assert id="/15807/onedoc3/submit_single_doc repositoryUniqueId must be returned">
+                    'submittedValue2' = 'returnedValue1' or 'submittedValue2' = 'returnedValue2'
+                </Assert>
+            </Assertions>
+        </NullTransaction>
+    </TestStep>
+    
+    
+    <TestStep id="repositoryUniqueIds the same">
+        <NullTransaction>
+            <UseReport reportName="$testdata_repid$"      test="15807" section="onedoc2" step="submit_single_doc" useAs="submittedValue1"/>
+            <UseReport reportName="$testdata_repid$"      test="15807" section="onedoc3" step="submit_single_doc" useAs="submittedValue2"/>
+            <UseReport reportName="$returned_repositoryUniqueId1$"              section="THIS"    step="finddocs"          useAs="returnedValue1"/>
+            <UseReport reportName="$returned_repositoryUniqueId2$"              section="THIS"    step="finddocs"          useAs="returnedValue2"/>
+            <Assertions>
                 <Assert id="repositoryUniqueIds must be different">
                     'returnedValue1' != 'returnedValue2'
                 </Assert>

@@ -55,7 +55,7 @@ public class CrgActorFactory extends AbstractActorFactory implements IActorFacto
       
    }
 
-   public Site getActorSite(SimulatorConfig sc, Site site) throws NoSimulatorException {
+   public Site buildActorSite(SimulatorConfig sc, Site site) throws NoSimulatorException {
       String siteName = sc.getDefaultName();
 
       if (site == null)
@@ -64,8 +64,8 @@ public class CrgActorFactory extends AbstractActorFactory implements IActorFacto
 
       boolean isAsync = false;
 
-      site = new RGActorFactory().getActorSite(sc, site);
-      site = new RigActorFactory().getActorSite(sc, site);
+      site = new RGActorFactory().buildActorSite(sc, site);
+      site = new RigActorFactory().buildActorSite(sc, site);
 
       return site;
    }
