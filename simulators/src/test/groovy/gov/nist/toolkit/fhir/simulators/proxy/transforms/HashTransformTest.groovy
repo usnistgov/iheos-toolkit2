@@ -1,6 +1,6 @@
 package gov.nist.toolkit.fhir.simulators.proxy.transforms
 
-import gov.nist.toolkit.fhir.simulators.mhd.HashTranslator
+import gov.nist.toolkit.simcoresupport.mhd.HashTranslator
 import spock.lang.Specification
 
 class HashTransformTest extends Specification {
