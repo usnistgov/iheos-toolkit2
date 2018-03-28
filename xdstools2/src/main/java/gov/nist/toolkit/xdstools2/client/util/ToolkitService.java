@@ -217,7 +217,7 @@ public interface ToolkitService extends RemoteService  {
 	RawResponse buildIdsTestOrchestration(BuildIdsTestOrchestrationRequest request) throws Exception;
 	RawResponse buildRepTestOrchestration(BuildRepTestOrchestrationRequest request) throws Exception;
 	RawResponse buildRegTestOrchestration(BuildRegTestOrchestrationRequest request) throws Exception;
-	RawResponse buildRSNAEdgeTestOrchestration(BuildRSNAEdgeTestOrchestrationRequest request) throws Exception;
+	RawResponse buildEdgeSrv5TestOrchestration(BuildEdgeSrv5TestOrchestrationRequest request) throws Exception;
    RawResponse buildIdcTestOrchestration(IdcOrchestrationRequest request);
 
 	Map<String, String> getSessionProperties() throws NoServletSessionException;

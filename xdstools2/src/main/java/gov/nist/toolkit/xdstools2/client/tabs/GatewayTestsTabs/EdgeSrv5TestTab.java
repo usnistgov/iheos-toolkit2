@@ -17,6 +17,7 @@ import gov.nist.toolkit.xdstools2.client.command.command.GetTestResultsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.RunMesaTestCommand;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetImagingDocumentsSiteActorManager;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.BuildEdgeSrv5TestOrchestrationButton;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTestResultsRequest;
@@ -35,16 +36,16 @@ import java.util.Map;
  * href="mailto:kelseym@wustl.edu">kelseym@wustl.edu</a>
  *
  */
-public class RSNAEdgeTestTab extends GenericQueryTab implements GatewayTool {
+public class EdgeSrv5TestTab extends GenericQueryTab implements GatewayTool {
 //    final protected ToolkitServiceAsync toolkitService = GWT
 //            .create(ToolkitService.class);
     String selectedActor = ActorType.RSNA_EDGE_DEVICE.getShortName();
     SimulatorConfig config;
     GenericQueryTab genericQueryTab;
-    static final String COLLECTION_NAME =  "rsnaedgetool";
+    static final String COLLECTION_NAME =  "es5";
     final TestSelectionManager testSelectionManager;
 
-    public RSNAEdgeTestTab() {
+    public EdgeSrv5TestTab() {
         super(new GetImagingDocumentsSiteActorManager()); //TODO: Update to correct ActorManager
         testSelectionManager = new TestSelectionManager(this);
     }
@@ -148,8 +149,6 @@ public class RSNAEdgeTestTab extends GenericQueryTab implements GatewayTool {
 
         HorizontalPanel testEnvironmentsPanel = new HorizontalPanel();
         tabTopPanel.add(testEnvironmentsPanel);
-
-        new BuildRSNAEdgeTestOrchestrationButton(this, testEnvironmentsPanel, "Build Test Environment", false);
 
 
         ////////////////////////////////////////////////////////////////////////////////////////////////

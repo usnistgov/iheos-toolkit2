@@ -595,11 +595,11 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return new OrchestrationManager().buildIdcTestEnvironment(s, request);
     }
     @Override
-    public RawResponse buildRSNAEdgeTestOrchestration(BuildRSNAEdgeTestOrchestrationRequest request) throws Exception{
+    public RawResponse buildEdgeSrv5TestOrchestration(BuildEdgeSrv5TestOrchestrationRequest request) throws Exception{
         installCommandContext(request);
         Session s = getSession();
         if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
-        return new OrchestrationManager().buildRSNAEdgeTestEnvironment(s, request.getRsnaEdgeOrchestrationRequest());
+        return new OrchestrationManager().buildEdgeSrv5TestEnvironment(s, request.getEdgeSrv5OrchestrationRequest());
     }
 
     @Override

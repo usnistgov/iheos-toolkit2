@@ -241,7 +241,7 @@ public interface ToolkitServiceAsync {
 	void buildRepTestOrchestration(BuildRepTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 	void buildRegTestOrchestration(BuildRegTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 	void buildRecTestOrchestration(BuildRecTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
-	void buildRSNAEdgeTestOrchestration(BuildRSNAEdgeTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+	void buildEdgeSrv5TestOrchestration(BuildEdgeSrv5TestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
     void buildIdcTestOrchestration(IdcOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 	void getSiteNamesWithRIG(CommandContext context, AsyncCallback<List<String>> callback);
 	void getSiteNamesWithIDS(CommandContext context, AsyncCallback<List<String>> callback);

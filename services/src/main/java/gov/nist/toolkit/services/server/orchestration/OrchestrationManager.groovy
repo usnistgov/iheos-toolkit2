@@ -139,7 +139,7 @@ class OrchestrationManager {
         }
     }
 
-    public RawResponse buildRSNAEdgeTestEnvironment(Session session, RSNAEdgeOrchestrationRequest request) {
+    RawResponse buildEdgeSrv5TestEnvironment(Session session, EdgeSrv5OrchestrationRequest request) {
         try {
             ToolkitApi api
             if(Installation.instance().warHome()) {
@@ -147,7 +147,7 @@ class OrchestrationManager {
             } else {
                 api = ToolkitApi.forInternalUse()
             }
-            return new RSNAEdgeOrchestrationBuilder(api, session, request).buildTestEnvironment();
+            return new EdgeSrv5OrchestrationBuilder(api, session, request).buildTestEnvironment();
         } catch (Exception e) {
             return RawResponseBuilder.build(e);
         }

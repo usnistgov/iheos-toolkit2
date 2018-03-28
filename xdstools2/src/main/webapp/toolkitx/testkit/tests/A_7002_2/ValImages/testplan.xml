@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+	<Test>selftest-iti-18</Test>
+	<RegistryEndpoint>http://localhost:9280/xdstools2/sim/test__rr/reg/sq</RegistryEndpoint>
+	<Rule>ITI-18 to locate KOS for specific patient</Rule>
+	<TestStep id="Query">
+		<ExpectedStatus>Success</ExpectedStatus>
+		<StoredQueryTransaction>
+			<XDSb/>
+			<MetadataFile>query.xml</MetadataFile>
+			<Report name="$doc_uid$" section="Result">
+			//*[local-name()='ExtrinsicObject'][1]/*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab']/@value
+			</Report>
+		</StoredQueryTransaction>
+	</TestStep>
+</TestPlan>

@@ -158,5 +158,15 @@ See collections.txt file for indexing.
 		</tabs>
 	</tab>
 
+	<tab label="Edge Server V5" type="actor" tcCode="es5" displayColorCode="#f8eefd">
+		<tabs label="Profiles">
+			<tab label="RSNA" type="profile" tcCode="rsna">
+				<tabs label="Options">
+					<tab label="Required" type="option" tcCode="" externalStart="true"/>
+				</tabs>
+			</tab>
+		</tabs>
+	</tab>
+
 </tabs>
 

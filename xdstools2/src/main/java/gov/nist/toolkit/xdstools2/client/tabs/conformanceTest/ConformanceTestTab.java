@@ -896,7 +896,9 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 			initializationPanel.add(orchInit.panel());
 		}
 		else if (currentActorOption.isEdgeServerSut()) {
-			// TODO not implemented yet.
+			orchInit = new BuildEdgeSrv5TestOrchestrationButton(this, testContext, testContextView, initializationPanel, label);
+			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
+			initializationPanel.add(orchInit.panel());
 		}
 		else if (currentActorOption.isSrc() && currentActorOption.isMhd()) {
 			orchInit = new BuildSrcTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label, currentActorOption);
