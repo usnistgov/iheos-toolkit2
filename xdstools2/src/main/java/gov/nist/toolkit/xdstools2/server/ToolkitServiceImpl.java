@@ -6,7 +6,7 @@ import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
 import gov.nist.toolkit.actortransaction.TransactionErrorCodeDbLoader;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
-import gov.nist.toolkit.commondatatypes.MetadataSupport;
+import gov.nist.toolkit.common.datatypes.Hl7Date;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.PidSet;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
@@ -25,10 +25,12 @@ import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrymetadata.client.AnyId;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
+import gov.nist.toolkit.registrymetadata.client.Association;
 import gov.nist.toolkit.registrymetadata.client.Difference;
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
 import gov.nist.toolkit.registrymetadata.client.DocumentEntryDiff;
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
+import gov.nist.toolkit.registrymetadata.client.SubmissionSet;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
 import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
 import gov.nist.toolkit.results.MetadataToMetadataCollectionParser;
@@ -65,6 +67,7 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.testengine.Sections;
+import gov.nist.toolkit.testengine.engine.Linkage;
 import gov.nist.toolkit.testengine.engine.RegistryUtility;
 import gov.nist.toolkit.testengine.scripts.BuildCollections;
 import gov.nist.toolkit.testengine.scripts.CodesUpdater;
@@ -86,7 +89,6 @@ import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.NoDifferencesException;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
-import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import gov.nist.toolkit.xdstools2.client.GazelleXuaUsername;
 import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TabConfig;
 import gov.nist.toolkit.xdstools2.client.util.ToolkitService;
@@ -1231,7 +1233,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         }
 
         // compare
-        MetadataCollection mcOrig = MetadataToMetadataCollectionParser.buildMetadataCollection(m, "test");
+        MetadataCollection mcOrig = MetadataToMetadataCollectionParser.buildMetadataCollection(m, "de");
         DocumentEntryDiff diff = new DocumentEntryDiff();
         DocumentEntry deOrig = null;
         if (mcOrig.docEntries.size()>0) {
@@ -1254,6 +1256,8 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
             throw new ToolkitRuntimeException("No documentEntries in log.xml. EventDir: " + request.getOriginalQueryTestInstance().getEventDir());
         }
 
+        MetadataCollection finalMc = new MetadataCollection();
+        SubmissionSet ss = null;
         // get submission set and association if it is not in the metadatacollection that was passed into the request object
         if (request.getMc().submissionSets==null ||  (request.getMc().submissionSets!=null && request.getMc().submissionSets.isEmpty())) {
             AnyIds ids = new AnyIds(new AnyId(deOrig.id));
@@ -1282,21 +1286,56 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
                     throw new ToolkitRuntimeException(e);
                 }
 
-                // compare
-                MetadataCollection mcOrig = MetadataToMetadataCollectionParser.buildMetadataCollection(m, "test");
+                ss = MetadataToMetadataCollectionParser.buildMetadataCollection(m, "ss").submissionSets.get(0);
 
             } else {
                throw new ToolkitRuntimeException("GetSubmissionSet returned a null result.");
             }
+        } else {
+            ss = request.getMc().submissionSets.get(0);
         }
 
-        if (request.getMc().assocs==null  || (request.getMc().assocs!=null && request.getMc().assocs.isEmpty())) {
+//        ss.id = "SubmissionSet01";
+        ss.sourceId = "toolkit"; // TODO: to be retrieved from toolkit.properties
+        ss.submissionTime = new Hl7Date().now();
 
+        finalMc.docEntries.add(request.getToBeUpdated());
+        finalMc.submissionSets.add(ss);
+
+        Association assoc = new Association();
+        assoc.id = "Association01";
+        assoc.source = ss.id;
+        assoc.type = "HasMember";
+        assoc.target = request.getToBeUpdated().id;
+
+        finalMc.assocs.add(assoc);
+
+        Metadata m2 = MetadataCollectionToMetadata.buildMetadata(finalMc, true);
+        List<OMElement> eles = m2.getV3();
+
+        Linkage linkage = new Linkage(null);
+        if (eles.size()==3) {
+            // DocumentEntry
+            linkage.replace_string_in_text_and_attributes(eles.get(0), request.getToBeUpdated().id, "Document01");
+            // SS
+            linkage.replace_string_in_text_and_attributes(eles.get(1), request.getToBeUpdated().id, "Document01");
+            linkage.replace_string_in_text_and_attributes(eles.get(1), ss.id, "SubmissionSet01");
+            // Assocs
+            // Should be ok since we are adding a new one which already has a symbolic id
         }
 
+
+        // TODO: need to replace ids in the finalMc
+
+//        finalMc.submissionSets.add(
+//        finalMc.assocs.add
+
+//        if (request.getMc().assocs==null  || (request.getMc().assocs!=null && request.getMc().assocs.isEmpty())) {
+//        }
 
         // save off updated mc to m
-        Metadata m2 = MetadataCollectionToMetadata.buildMetadata(request.to, true);
+        /*
+        Metadata m2 = MetadataCollectionToMetadata.buildMetadata(finalMc, true);
 
         List<OMElement> eles = null;
 
@@ -1314,7 +1353,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 
         for (OMElement e : eles)
             x.addChild(e);
-
+        */
 
         ////
 
