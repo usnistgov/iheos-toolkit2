@@ -32,14 +32,14 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 		Path indexPath = new File(filename).getParentFile().toPath();
 		File absolute = getSimDb().getObjectFile(DbObjectType.REGISTRY, ro.id);
 		ro.pathToMetadata = indexPath.relativize(absolute.toPath()).toString();
-		ro.pathIsRelative = true;
+//		ro.pathIsRelative = true;
 		logger.info("RegStore: " + absolute + ":" + ro.pathToMetadata);
 		return absolute;
 	}
 
 	// resolve relative to index file parent
 	public Path getAbsolutePathForObject(Ro ro) {
-		if (!(ro.pathIsRelative || !ro.pathToMetadata.startsWith("/")))
+		if (!(ro.isPathIsRelative()))
 			return new File(ro.pathToMetadata).toPath();
 		Path indexPath = new File(filename).getParentFile().toPath();
 		Path path = indexPath.resolve(ro.pathToMetadata);
