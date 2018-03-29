@@ -54,7 +54,7 @@ protected void verifyActorConfigurationOptions(SimulatorConfig sc) {
    
 }
 
-public Site getActorSite(SimulatorConfig sc, Site site) throws NoSimulatorException {
+public Site buildActorSite(SimulatorConfig sc, Site site) throws NoSimulatorException {
    String siteName = sc.getDefaultName();
 
    if (site == null)
@@ -63,8 +63,8 @@ public Site getActorSite(SimulatorConfig sc, Site site) throws NoSimulatorExcept
 
    boolean isAsync = false;
 
-   site = new IGActorFactory().getActorSite(sc, site);
-   site = new IigActorFactory().getActorSite(sc, site);
+   site = new IGActorFactory().buildActorSite(sc, site);
+   site = new IigActorFactory().buildActorSite(sc, site);
 
    return site;
 }

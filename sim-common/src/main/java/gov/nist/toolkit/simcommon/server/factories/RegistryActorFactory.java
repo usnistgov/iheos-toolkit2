@@ -136,7 +136,7 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
 	}
 
 	@Override
-	public Site getActorSite(SimulatorConfig asc, Site site) {
+	public Site buildActorSite(SimulatorConfig asc, Site site) {
 		String siteName = asc.getDefaultName();
 		
 		if (site == null)

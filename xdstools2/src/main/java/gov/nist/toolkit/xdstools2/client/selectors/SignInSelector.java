@@ -4,6 +4,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
+import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.command.command.AddTestSessionCommand;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
@@ -61,7 +62,9 @@ public class SignInSelector implements IsWidget {
             signInStatus.setText(signedOut);
             signOut.setVisible(false);
             signIn.setVisible(true);
+//            Xdstools2.getInstance().exitTestSession();
         }
+        Xdstools2.getInstance().enableTestSessionSelection();
     }
 
     private void switchTestSession(String testSession) {

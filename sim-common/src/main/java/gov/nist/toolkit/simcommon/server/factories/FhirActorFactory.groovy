@@ -48,7 +48,7 @@ class FhirActorFactory extends AbstractActorFactory implements IActorFactory {
     }
 
     @Override
-    Site getActorSite(SimulatorConfig asc, Site site) throws NoSimulatorException {
+    Site buildActorSite(SimulatorConfig asc, Site site) throws NoSimulatorException {
         String siteName = asc.getDefaultName()
 
         if (site == null)

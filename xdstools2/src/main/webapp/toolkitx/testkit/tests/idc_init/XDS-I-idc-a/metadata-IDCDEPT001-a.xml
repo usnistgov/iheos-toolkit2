@@ -114,13 +114,13 @@
          </Classification>
          <!--  Class Code -->
          <Classification classificationScheme="urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a"
-               classifiedObject="Document01" nodeRepresentation="DEMO-Index">
+               classifiedObject="Document01" nodeRepresentation="IMAGESx">
             <Name>
-               <LocalizedString value="Document Index"/>
+               <LocalizedString value="Images"/>
             </Name>
             <Slot name="codingScheme">
                <ValueList>
-                  <Value>1.3.6.1.4.1.21367.100.1</Value>
+                  <Value>1.3.6.1.4.1.19376.1.2.6.1</Value>
                </ValueList>
             </Slot>
          </Classification>
@@ -151,26 +151,26 @@
             </Slot>
          </Classification>
          <Classification classificationScheme="urn:uuid:f33fb8ac-18af-42cc-ae0e-ed0b0bdb91e1"
-               classifiedObject="Document01" nodeRepresentation="Outpatient">
+               classifiedObject="Document01" nodeRepresentation="22232009">
             <Name>
-               <LocalizedString value="Outpatient"/>
+               <LocalizedString value="Hospital"/>
             </Name>
             <Slot name="codingScheme">
                <ValueList>
-                  <Value>Connect-a-thon healthcareFacilityTypeCodes 2</Value>
+                  <Value>2.16.840.1.113883.6.96</Value>
                </ValueList>
             </Slot>
          </Classification>
 
 		<!-- practiceSettingCode for XDS-I -->
          <Classification classificationScheme="urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead"
-               classifiedObject="Document01" nodeRepresentation="R-3027B">
+               classifiedObject="Document01" nodeRepresentation="Practice-A">
             <Name>
                <LocalizedString value="Radiology"/>
             </Name>
             <Slot name="codingScheme">
                <ValueList>
-                  <Value>SRT</Value>
+                  <Value>1.3.6.1.4.1.21367.2017.3</Value>
                </ValueList>
             </Slot>
          </Classification>
@@ -207,7 +207,7 @@
             </Name>
             <Slot name="codingScheme">
                <ValueList>
-                  <Value>DCM</Value>
+                  <Value>1.2.840.10008.2.6.1</Value>
                </ValueList>
             </Slot>
          </Classification>
@@ -218,16 +218,16 @@
             </Name>
             <Slot name="codingScheme">
                <ValueList>
-                  <Value>SRT</Value>
+                  <Value>2.16.840.1.113883.6.96</Value>
                </ValueList>
             </Slot>
          </Classification>
 <!-- End XDS-I -->
 
          <Classification classificationScheme="urn:uuid:f0306f51-975f-434e-a61c-c59651d33983"
-               classifiedObject="Document01" nodeRepresentation="11502-2">
+               classifiedObject="Document01" nodeRepresentation="18748-4">
             <Name>
-               <LocalizedString value="LABORATORY REPORT.TOTAL"/>
+               <LocalizedString value="Diagnostic Imaging Study"/>
             </Name>
             <Slot name="codingScheme">
                <ValueList>
@@ -285,13 +285,13 @@
             </Slot>
          </Classification>
          <Classification classificationScheme="urn:uuid:aa543740-bdda-424e-8c96-df4873be8500"
-               classifiedObject="SubmissionSet01" nodeRepresentation="11502-2">
+               classifiedObject="SubmissionSet01" nodeRepresentation="22232009">
             <Name>
-               <LocalizedString value="LABORATORY REPORT.TOTAL"/>
+               <LocalizedString value="Hospital"/>
             </Name>
             <Slot name="codingScheme">
                <ValueList>
-                  <Value>2.16.840.1.113883.6.1</Value>
+                  <Value>2.16.840.1.113883.6.96</Value>
                </ValueList>
             </Slot>
          </Classification>

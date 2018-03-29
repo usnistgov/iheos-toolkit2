@@ -90,7 +90,8 @@ public class OnDemandDocumentSourceActorFactory extends AbstractActorFactory imp
 
 	}
 
-	public Site getActorSite(SimulatorConfig asc, Site site) {
+	@Override
+	public Site buildActorSite(SimulatorConfig asc, Site site) {
 		String siteName = asc.getDefaultName();
 
 		if (site == null)

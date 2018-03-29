@@ -10,6 +10,7 @@ import java.io.Serializable;
  * of the running test.
  */
 public class TestInstance implements IsSerializable, Serializable {
+   private static final long serialVersionUID = 1L;
 	String id = null;    //  id of the test
 	String section = null;  // this is optional
 	String event = null;

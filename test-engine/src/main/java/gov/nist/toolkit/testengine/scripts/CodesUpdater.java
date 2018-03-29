@@ -1,6 +1,7 @@
 package gov.nist.toolkit.testengine.scripts;
 
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.testengine.Sections;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
@@ -32,7 +33,7 @@ import java.util.logging.Logger;
  * This class performs an update on the default testkit for it to match the configuration file
  * (affinity domain) of a given environment.
  *
- * @see #run(String, String)
+ * @see #run(String, String, TestSession)
  * @see #getOutput()
  * @see #hasErrors()
  *
@@ -184,13 +185,16 @@ public class CodesUpdater {
                 if (file.exists()) {
                     if (!testsFails) {
                         // read the file
+                        if (filePath.contains("11897") && filePath.contains("eventcode")) {
+                            out += "Found it";
+                        }
                         OMElement queryElement = Util.parse_xml(file);
                         ParamParser parser = new ParamParser();
                         SqParams params = parser.parse(queryElement, false);
                         List<SQCodeOr.CodeLet> badCodes = findNonConformingCodes(params);
                         if (!badCodes.isEmpty()) {
-                            LOGGER.info(badCodes.size() + " bad codes to update in query file: " + filePath);
-                            out += badCodes.size() + " bad codes to update in query file: " + filePath + "\n";
+                            LOGGER.info(badCodes.size() + " codes to update in query file: " + filePath);
+                            out += badCodes.size() + " codes to update in query file: " + filePath + "\n";
                             File backupFile = new File(file.toString() + ".bak");
                             if (!backupFile.exists()) {
                                 // backup the unmodified file before updating
@@ -201,6 +205,8 @@ public class CodesUpdater {
                             // update the file itself
                             String returnType = queryElement.getFirstElement().getAttributeValue(new QName("returnType"));
                             Io.stringToFile(file, new OMFormatter(StoredQueryGenerator.generateQueryFile(returnType, params)).toString());
+                        } else {
+                            out += "No codes to update in query file: " + filePath + "\n";
                         }
                     }
                 } else {
@@ -239,8 +245,8 @@ public class CodesUpdater {
                     OMElement metadataElement = Util.parse_xml(file);
                     List<OMElement> badCodes = findNonConformingCodes(metadataElement);
                     if (!badCodes.isEmpty()) {
-                        LOGGER.info(badCodes.size() + " bad codes to update in " + filePath);
-                        out += badCodes.size() + " bad codes to update in query file: " + filePath + '\n';
+                        LOGGER.info(badCodes.size() + " codes to update in " + filePath);
+                        out += badCodes.size() + " codes to update in " + filePath + '\n';
                         File backupFile = new File(file.toString() + ".bak");
                         if (!backupFile.exists()) {
                             // backup the unmodified file before updating
@@ -250,10 +256,12 @@ public class CodesUpdater {
                         updateCodes(badCodes);
                         // update the file itself
                         Io.stringToFile(file, new OMFormatter(metadataElement).toString());
+                    } else {
+                        out += "No codes to update in " + filePath + '\n';
                     }
                 } else {
-                    LOGGER.warning("WARNING: " + filePath + " file does not exist in Testkit where it should be.");
-                    out+="WARNING: " + filePath + " file does not exist in Testkit where it should be.\n";
+                    LOGGER.warning("WARNING: " + filePath + " file referenced in test does not exist.");
+                    out+="WARNING: " + filePath + " file referenced in test does not exist.\n";
                 }
             }
         } catch (Exception e) {
@@ -334,9 +342,11 @@ public class CodesUpdater {
         Code newCode;
         if (replacementMap.containsKey(tmpCode.toString())){
             newCode=replacementMap.get(tmpCode.toString());
+            out += "Old mapping: " + tmpCode + " --> " + newCode + "\n";
         }else{
             newCode=allCodes.pick(code.getClassificationUUID());
             replacementMap.put(tmpCode.toString(),newCode);
+            out += "Old mapping: " + tmpCode + " --> " + newCode + "\n";
         }
         code.code=newCode.getCode();
         code.scheme=newCode.getScheme();
@@ -375,6 +385,9 @@ public class CodesUpdater {
                 // pick a new conforming code out of all the codes available in codes.xml
                 replacementCode=allCodes.pick(classificationUuid);
                 replacementMap.put(oldCode.toString(),replacementCode);
+                out += "New mapping: " + oldCode + " --> " + replacementCode + "\n";
+            } else {
+                out += "Old mapping: " + oldCode + " --> " + replacementCode + "\n";
             }
             // replace the code
             codeToReplace.setAttributeValue(replacementCode.getCode());
@@ -451,54 +464,59 @@ public class CodesUpdater {
      * @param pathToEnvironment destination environment for the testkit (containing codes.xml).
      * @return execution log.
      */
-    public void run(String pathToEnvironment, String pathToTestkit) {
+    public void run(String pathToEnvironment, String pathToTestkit, TestSession testSession) {
+        String outputSeparator = new String("----------------------------------------------------");
         // init environment dir
         File environment = new File(pathToEnvironment);
         // init testkit dir
-        File testkits=new File(environment.getPath()+File.separator+"testkits");
-        File[] testKitFiles = testkits.listFiles();
-        if (testKitFiles != null) {
-            for (File tk : testKitFiles) {
-                if (tk.getName().startsWith(".")) continue;
-                testkit = tk;
-                // init codes
-                allCodes = new CodesFactory().load(new File(environment.getPath() + File.separator + "codes.xml"));
-                if ("default".equals(tk.getName())) {
-                    try {
-                        LOGGER.info("Copying testkit to " + testkit + "...");
-                        FileUtils.copyDirectory(new File(pathToTestkit), testkit);
-                        LOGGER.info("... testkit copied.");
-                        out += "Testkit of referenced copied successfully to " + testkit;
-                    } catch (IOException e) {
-                        error = true;
-                        out += "FAILURE. Could not copy testkit into environment.";
-                        LOGGER.severe(e.getMessage());
-                        return;
-                    }
-                }
-                execute();
-                if (error) return;
-                reset();
-                execute();
-                if (error) return;
-                String outputSeparator = new String("----------------------------------------------------");
-                out = outputSeparator + outputSeparator + "\n" + "   SUCCESS on generating testkit in environment in " +
-                        pathToEnvironment.split("/")[pathToEnvironment.split("/").length - 1] + "\n" +
-                        outputSeparator + outputSeparator + "\n\n" + out;
-                try {
-                    SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyyMMddHHmmss");
-                    File logDirectory = new File(pathToEnvironment, "Testkit update logs");
-                    if (!logDirectory.exists()) {
-                        logDirectory.mkdir();
-                    }
-                    File f = new File(logDirectory, dateFormatter.format(new Date()) + ".out");
-                    LOGGER.info("Creating output log file in " + f.getPath() + "...");
-                    Io.stringToFile(f, out);
-                    LOGGER.info("... file created.");
-                } catch (IOException e) {
-                    LOGGER.severe(e.getMessage());
-                }
+        testkit=new File(environment.getPath()+File.separator+"testkits" + File.separator + testSession);
+        // init codes
+        allCodes = new CodesFactory().load(new File(environment.getPath() + File.separator + "codes.xml"));
+        try {
+            LOGGER.info("Copying testkit to " + testkit + "...");
+            FileUtils.copyDirectory(new File(pathToTestkit), testkit);
+            LOGGER.info("... testkit copied.");
+            out += "Testkit of referenced copied successfully to " + testkit + "\n";
+        } catch (IOException e) {
+            error = true;
+            out += "FAILURE. Could not copy testkit into environment.\n" ;
+            LOGGER.severe(e.getMessage());
+            return;
+        }
+        execute();
+        if (error) return;
+        out += outputSeparator + "\n";
+        out += "Mappings\n\n";
+        for (String from : replacementMap.keySet()) {
+            String to = replacementMap.get(from).toString();
+            out += (from + "  ===>   " + to + "\n");
+        }
+        reset();
+        out += outputSeparator + "\n";
+        out += "Pass 2\n\n";
+        execute();
+        if (error) return;
+        out = outputSeparator + outputSeparator + "\n" + "   SUCCESS on generating testkit in environment in " +
+                pathToEnvironment.split("/")[pathToEnvironment.split("/").length - 1] + "\n" +
+                outputSeparator + outputSeparator + "\n\n" + out;
+        out += outputSeparator + "\n";
+        out += "Mappings\n\n";
+        for (String from : replacementMap.keySet()) {
+            String to = replacementMap.get(from).toString();
+            out += (from + "  ===>   " + to + "\n");
+        }
+        try {
+            SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyyMMddHHmmss");
+            File logDirectory = new File(pathToEnvironment, "Testkit update logs");
+            if (!logDirectory.exists()) {
+                logDirectory.mkdir();
             }
+            File f = new File(logDirectory, dateFormatter.format(new Date()) + ".out");
+            LOGGER.info("Creating output log file in " + f.getPath() + "...");
+            Io.stringToFile(f, out);
+            LOGGER.info("... file created.");
+        } catch (IOException e) {
+            LOGGER.severe(e.getMessage());
         }
     }
 

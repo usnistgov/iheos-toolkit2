@@ -125,7 +125,7 @@ public class Installation {
         }
 		logger.info("Installation: External Cache set to " + externalCache);
 		if (!externalCache.exists()) {
-            logger.info("External Cache does not exist at " + externalCache);
+            logger.fatal("External Cache does not exist at " + externalCache);
             externalCache = null;
             return;
         }
@@ -217,14 +217,34 @@ public class Installation {
     }
 
     public List<TestSession> getTestSessions() {
-        List<TestSession> ts = new ArrayList<>();
+        Set<TestSession> ts = new HashSet<>();
         File tlsFile = testLogCacheDir();
 
-        for (File tlFile : tlsFile.listFiles()) {
-            if (tlFile.isDirectory() && !tlFile.getName().startsWith("."))
-                ts.add(new TestSession(tlFile.getName()));
+        if (tlsFile.exists()) {
+            for (File tlFile : tlsFile.listFiles()) {
+                if (tlFile.isDirectory() && !tlFile.getName().startsWith("."))
+                    ts.add(new TestSession(tlFile.getName()));
+            }
         }
-        return ts;
+
+        tlsFile = simDbFile();
+        if (tlsFile.exists()) {
+            for (File tlFile : tlsFile.listFiles()) {
+                if (tlFile.isDirectory() && !tlFile.getName().startsWith("."))
+                    ts.add(new TestSession(tlFile.getName()));
+            }
+        }
+
+        tlsFile = actorsDir();
+        if (tlsFile.exists()) {
+            for (File tlFile : tlsFile.listFiles()) {
+                if (tlFile.isDirectory() && !tlFile.getName().startsWith("."))
+                    ts.add(new TestSession(tlFile.getName()));
+            }
+        }
+        List<TestSession> testSessions = new ArrayList<>();
+        testSessions.addAll(ts);
+        return testSessions;
     }
 
     public void overrideToolkitPort(String port) {
@@ -499,4 +519,13 @@ public class Installation {
     }
 
 
+    public boolean testSessionExists(TestSession testSession) {
+        return getTestSessions().contains(testSession);
+    }
+
+    public TestSession getDefaultTestSession() {
+        String ts = propertyServiceManager().getDefaultTestSession();
+        if (ts == null || ts.equals("")) return null;
+        return new TestSession(ts);
+    }
 }

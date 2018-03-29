@@ -30,13 +30,24 @@ class FhirClient implements IFhirSearch {
      */
     static post(def uri,  def _body) {
         HttpResponse response
+        def error = null
         try {
+            String contentType = contentType(_body)
             HttpClient httpclient = HttpClients.createDefault()
             HttpPost post = new HttpPost(uri)
             HttpEntity entity = new StringEntity(_body)
-            entity.contentType = 'application/fhir+json'
+            entity.contentType = contentType
+            post.setHeader('Accept', contentType)
             post.setEntity(entity)
             response = httpclient.execute(post)
+            String responseContentType = response.getFirstHeader('Content-Type')
+            if (responseContentType) {
+                responseContentType = responseContentType.split(':')[1].trim()
+                if (responseContentType != contentType)
+                    error = "Requsted Content-Type ${contentType}\nReceived ${responseContentType}"
+            } else {
+                responseContentType = 'text/plain'
+            }
             FhirId locationHeader
             String lhdr = response.getFirstHeader('Location')
             if (lhdr) {
@@ -50,15 +61,26 @@ class FhirClient implements IFhirSearch {
             InputStream is = entity2.getContent()
             String content = Io.getStringFromInputStream(is)
 
-            return [statusLine, content, locationHeader]
+            return [statusLine, content, locationHeader, error]
         } catch (Exception e) {
             logger.error(ExceptionUtil.exception_details(e))
             BasicStatusLine statusLine = new BasicStatusLine(new ProtocolVersion('http', 1, 1), 400, e.getMessage())
-            return [statusLine, null, null]
+            return [statusLine, null, null, null]
         } finally {
             if (response)
                 response.close()
         }
+    }
+
+    static String contentType(String content) {
+        if (isJson(content)) return 'application/fhir+json'
+        return 'application/fhir+xml'
+    }
+
+    static boolean isJson(String content) {
+        if (content == null) return true;
+        if (content.trim().startsWith('{')) return true;
+        return false;
     }
 
     /**
@@ -109,9 +131,13 @@ class FhirClient implements IFhirSearch {
         readResource(uri, 'application/fhir+json')
     }
 
-    static IBaseResource readResource(def uri, def contentType) {
+    static IBaseResource readResource(def uri, String contentType) {
         def (statusLine, body) = get(uri, contentType)
-        return ToolkitFhirContext.get().newJsonParser().parseResource(body)
+        boolean isJson = contentType.contains('json')
+        if (isJson)
+            return ToolkitFhirContext.get().newJsonParser().parseResource(body)
+        else
+            return ToolkitFhirContext.get().newXmlParser().parseResource(body)
     }
 
     /**

@@ -3,10 +3,12 @@ package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
+import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.command.command.DeleteConfigCommand;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.util.SimpleCallback;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.request.SimConfigRequest;
 
 import java.util.ArrayList;
@@ -37,6 +39,10 @@ class DeleteButtonClickHandler implements ClickHandler {
 		if (configList==null) {
 			configList = new ArrayList<>();
 			configList.add(config);
+		}
+		if (!Xdstools2.getInstance().isSystemSaveEnabled()) {
+			new PopupMessage("You don't have permission to delete a Simulator in this Test Session");
+			return;
 		}
 		new DeleteConfigCommand(){
 			@Override

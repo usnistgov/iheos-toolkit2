@@ -2,6 +2,8 @@ package gov.nist.toolkit.xdstools2.client.event.testSession;
 
 import com.google.gwt.user.client.Cookies;
 import gov.nist.toolkit.xdstools2.client.CookieManager;
+import gov.nist.toolkit.xdstools2.client.PasswordManagement;
+import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.command.command.AddTestSessionCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.DeleteMesaTestSessionCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTestSessionNamesCommand;
@@ -115,11 +117,10 @@ public class TestSessionManager2 {
                     @Override
                     public void onComplete(final Map<String, String> tkPropMap) {
                         boolean multiUserModeEnabled = Boolean.parseBoolean(tkPropMap.get("Multiuser_mode"));
-                        boolean casModeEnabled = Boolean.parseBoolean(tkPropMap.get("Cas_mode"));
-                        if (!multiUserModeEnabled && !casModeEnabled) {
+                        if (!multiUserModeEnabled || PasswordManagement.isSignedIn) {
                             if (testSessions!=null && testSessions.size()>0) {
                                 currentTestSession=testSessions.get(0);
-                                load(currentTestSession);
+                                load(Xdstools2.getInstance().defaultTestSession);
                             }
                         }
 

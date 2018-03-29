@@ -3,6 +3,7 @@ package gov.nist.toolkit.sitemanagement.client;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
 import gov.nist.toolkit.xdsexception.client.TkActorNotFoundException;
@@ -61,6 +62,7 @@ public class Site  implements IsSerializable, Serializable {
 	public String home = null;
 	public String pifHost = null;
 	public String pifPort = null;
+	private String owner = null;
 
 	public String pidAllocateURI = null;
 	transient public boolean changed = false;
@@ -497,5 +499,19 @@ public class Site  implements IsSerializable, Serializable {
 
 	public TestSession getTestSession() {
 		return testSession;
+	}
+
+	public String getOwner() {
+		if (owner == null)
+			return TestSession.DEFAULT_TEST_SESSION.getValue();
+		return owner;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
+
+	public boolean hasOwner() {
+		return owner != null;
 	}
 }

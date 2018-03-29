@@ -6,7 +6,7 @@ package gov.nist.toolkit.valregmsg.message;
  *
  */
 public class StoredDocumentInt {
-	public String pathToDocument;
+	public String pathToDocument;   // absolute
 	public String uid;
 	public String mimeType;
 	public String charset;

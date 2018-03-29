@@ -2,6 +2,7 @@ package gov.nist.toolkit.xdstools2.server.gazelle.sysconfig
 
 import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.sitemanagement.SeparateSiteLoader
+import gov.nist.toolkit.sitemanagement.Sites
 import gov.nist.toolkit.sitemanagement.client.Site
 import groovy.transform.TypeChecked
 
@@ -15,12 +16,16 @@ class GenerateSystemShell {
     String gazelleBaseUrl // = 'https://gazelle.ihe.net/EU-CAT/systemConfigurations.seam?testingSessionId=' + testingSession
     GazellePull gazellePull
     TestSession testSession
+    Sites existingSites
+    SeparateSiteLoader siteLoader
 
     GenerateSystemShell(File cache, String gazelleUrl, TestSession testSession) {
         this.cache = cache
         this.gazelleBaseUrl = gazelleUrl
         this.testSession = testSession
         this.gazellePull = new GazellePull(gazelleBaseUrl)
+        siteLoader = new SeparateSiteLoader(testSession)
+        this.existingSites = siteLoader.load(cache, null)
     }
 
     String getLogContents(String systemName) {
@@ -37,8 +42,13 @@ class GenerateSystemShell {
 
 //        if (!generatedSystems.hasErrors) {
             generatedSystems.systems.each { Site site ->
+                site.setOwner(TestSession.GAZELLE_TEST_SESSION.value)
                 try {
-                    new SeparateSiteLoader(testSession).saveToFile(cache, site)
+                    Site existingSite = existingSites.getSite(site.name, testSession)
+                    if (existingSite.owner == TestSession.GAZELLE_TEST_SESSION.value)
+                        new SeparateSiteLoader(testSession).saveToFile(cache, site)
+                    else
+                        log.append("Site ${site.name} not over written, owned by Test Session ${existingSite.owner}")
                 } catch (Exception e) {
                     log.append("Site ${site.name} cannot be saved - conflicts:\n")
                     log.append(e.getMessage())

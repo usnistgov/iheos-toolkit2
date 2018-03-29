@@ -26,15 +26,19 @@ import java.util.Map;
 
 public class QueryServiceManager extends CommonService {
 
-	static Logger logger = Logger.getLogger(QueryServiceManager.class);
-	Session session;
-	TestSession testSession;
+	private static Logger logger = Logger.getLogger(QueryServiceManager.class);
+	private Session session;
+	private TestSession testSession;
 
 	public QueryServiceManager(Session session) {
 		this.session = session;
 		this.testSession = session.getTestSession();
 	}
-	
+
+	public void setTestSession(TestSession testSession) {
+		this.testSession = testSession;
+	}
+
 	public List<Result> registerAndQuery(TestInstance testInstance, SiteSpec site, String pid)  {
 		logger.debug(session.id() + ": " + "registerAndQuery");
 		try {

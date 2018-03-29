@@ -122,18 +122,28 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 //            throw new Exception("installCommandContext: environment name is null");
         }
         setEnvironment(commandContext.getEnvironmentName());
+        if (session().queryServiceManager() != null)
+            session().queryServiceManager().setTestSession(commandContext.getTestSession());
 
-        if (Installation.instance().propertyServiceManager().isSingleUserMode()
-                && "default".equalsIgnoreCase(commandContext.getTestSessionName())) {
+//        if (Installation.instance().propertyServiceManager().isSingleUserMode()
+//                && "default".equalsIgnoreCase(commandContext.getTestSessionName())) {
             setTestSession(commandContext.getTestSessionName());
-        }
+//        }
     }
 
     @Override
     public InitializationResponse getInitialization(CommandContext context) throws Exception {
+        if (Installation.instance().externalCache() == null) {
+            throw new Exception("External Cache does not exist at " + Installation.instance().propertyServiceManager().getPropertyManager().getExternalCache());
+        }
+        if (!Installation.instance().externalCache().exists()) {
+            throw new Exception("Configured External Cache location " + Installation.instance().externalCache() + " does not exist");
+        }
         installCommandContext(context);
         InitializationResponse response = new InitializationResponse();
-        String defaultEnv = Installation.DEFAULT_ENVIRONMENT_NAME;
+        String defaultEnv = Installation.instance().defaultEnvironmentName();
+        if (defaultEnv == null || defaultEnv.equals(""))
+                defaultEnv = Installation.DEFAULT_ENVIRONMENT_NAME;
         if (Installation.instance().propertyServiceManager().isCasMode()) {
               defaultEnv = Installation.instance().propertyServiceManager().getDefaultEnvironment();
               if (defaultEnv==null || "".equals(defaultEnv)) {
@@ -180,7 +190,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<String> getSiteNames(GetSiteNamesRequest request) throws Exception {
         installCommandContext(request);
-        return siteServiceManager.getSiteNames(session().getId(), request.getReload(), request.getSimAlso(), request.getTestSession());
+        return siteServiceManager.getSiteNames(session().getId(), request.getReload(), request.getSimAlso(), request.getTestSession(), request.isQualified());
     }
     @Override
     public Collection<Site> getAllSites(CommandContext commandContext) throws Exception {
@@ -463,8 +473,8 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<String> getTestSessionNames(CommandContext request) throws Exception {
         installCommandContext(request);
-        if (Installation.instance().propertyServiceManager().isMultiuserMode())
-            throw new ToolkitRuntimeException("Function getTestSessionNames() not available in MulitUserMode");
+//        if (Installation.instance().propertyServiceManager().isMultiuserMode())
+//            throw new ToolkitRuntimeException("Function getTestSessionNames() not available in MulitUserMode");
         return TestSessionServiceManager.INSTANCE.getNames();
     }
 
@@ -871,7 +881,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         File environmentFile = Installation.instance().environmentFile(context.getEnvironmentName());
         File defaultTestkit = Installation.instance().internalTestkitFile();
         CodesUpdater updater = new CodesUpdater();
-        updater.run(environmentFile.getAbsolutePath(),defaultTestkit.getAbsolutePath());
+        updater.run(environmentFile.getAbsolutePath(),defaultTestkit.getAbsolutePath(), context.getTestSession());
         return updater.getOutput();
     }
 
@@ -1749,5 +1759,14 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         }
     }
 
+    @Override
+    public String promote(PromoteRequest request) {
+        try {
+            siteServiceManager.promoteSiteToDefault(request.getSite().name, request.getTestSession());
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+        return null;
+    }
 
 }

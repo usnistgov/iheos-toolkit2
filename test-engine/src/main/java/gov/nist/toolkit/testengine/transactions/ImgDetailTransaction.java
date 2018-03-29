@@ -819,6 +819,7 @@ public class ImgDetailTransaction extends BasicTransaction {
          store(engine, cat, rep);
          reportManagerPostRun();
       } catch (Exception e) {
+         e.printStackTrace();
          throw new XdsInternalException("ImgDetailTransaction - sameKOSDcm: " + e.getMessage());
       }
 

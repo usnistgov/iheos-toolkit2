@@ -4,17 +4,19 @@ import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
+import java.util.List;
+
 /**
  *
  */
 public class SendPidToRegistryRequest extends CommandContext {
     SiteSpec siteSpec;
-    Pid pid;
+    List<Pid> pid;
 
     public SendPidToRegistryRequest() {
     }
 
-    public SendPidToRegistryRequest(CommandContext commandContext, SiteSpec siteSpec, Pid pid) {
+    public SendPidToRegistryRequest(CommandContext commandContext, SiteSpec siteSpec, List<Pid> pid) {
         copyFrom(commandContext);
         this.siteSpec = siteSpec;
         this.pid = pid;
@@ -24,7 +26,7 @@ public class SendPidToRegistryRequest extends CommandContext {
         return siteSpec;
     }
 
-    public Pid getPid() {
+    public List<Pid> getPid() {
         return pid;
     }
 }

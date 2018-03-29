@@ -70,7 +70,7 @@ public class RigActorFactory extends AbstractActorFactory implements IActorFacto
    }
 
    @Override
-   public Site getActorSite(SimulatorConfig sc, Site site)
+   public Site buildActorSite(SimulatorConfig sc, Site site)
       throws NoSimulatorException {
 
       if (sc == null || sc.isExpired())

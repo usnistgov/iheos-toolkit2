@@ -162,6 +162,7 @@ public class RegistryFactory {
 			buildAssocIndex(m, ele, delta);
 	}
 
+	// used only for test support
 	static public Ro buildMetadataIndex(OMElement ele, String filePath, MetadataCollection delta) throws MetadataException {
 		Metadata m = MetadataParser.parseObject(ele);
 		if (m.getExtrinsicObjectIds().size() != 0) {

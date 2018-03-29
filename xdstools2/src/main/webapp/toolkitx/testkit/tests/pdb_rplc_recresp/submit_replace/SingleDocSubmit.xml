@@ -2,6 +2,7 @@
     <id value="xds"/>
     <meta>
         <lastUpdated value="2013-07-01T13:11:33Z"/>
+        <profile value="http://ihe.net/fhir/tag/iti-65"/>
     </meta>
     <type value="transaction"/>
     <entry>
@@ -87,14 +88,14 @@
                 <status value="current"/>
                 <type>
                     <coding>
-                        <system value="urn:oid:1.3.6.1.4.1.21367.2017.3"/>
+                        <system value="http://loinc.org"/>
                         <code value="34133-9"/>
                         <display value="Summary of Episode Note"/>
                     </coding>
                 </type>
                 <class>
                     <coding>
-                        <system value="urn:ihe:cat:classCode"/>
+                        <system value="urn:oid:1.3.6.1.4.1.19376.1.2.6.1"/>
                         <code value="REPORTS"/>
                         <display value="Reports"/>
                     </coding>
@@ -119,7 +120,7 @@
                 <description value="Physical"/>
                 <securityLabel>
                     <coding>
-                        <system value="urn:oid:1.3.6.1.4.1.21367.2017.3"/>
+                        <system value="http://hl7.org/fhir/v3/Confidentiality"/>
                         <code value="N"/>
                         <display value="normal"/>
                     </coding>
@@ -131,8 +132,8 @@
                         <url value="file://textfile.txt"/>
                     </attachment>
                     <format>
-                        <system value="urn:oid:1.3.6.1.4.1.21367.2017.3"/>
-                        <code value="urn:ihe:iti:appc:2016:consent"/>
+                        <system value="urn:oid:1.3.6.1.4.1.19376.1.2.3"/>
+                        <code value="urn:ihe:pcc:handp:2008"/>
                     </format>
                 </content>
                 <context>
@@ -145,15 +146,15 @@
                     </period>
                     <practiceSetting>
                         <coding>
-                            <system value="urn:oid:1.3.6.1.4.1.21367.2017.3"/>
-                            <code value="419192003"/>
-                            <display value="Internal Medicine"/>
+                            <system value="http://connectathon.ihe"/>
+                            <code value="Practice-A"/>
+                            <display value="Radiology"/>
                         </coding>
                     </practiceSetting>
                     <facilityType>
                         <coding>
-                            <system value="urn:oid:1.3.6.1.4.1.21367.2017.3"/>
-                            <code value="39350007"/>
+                            <system value="http://www.snomed.org"/>
+                            <code value="225728007"/>
                             <display value="Private physicians group office"/>
                         </coding>
                     </facilityType>
@@ -201,9 +202,9 @@
                 <status value="current"/>
                 <type>
                     <coding>
-                        <system value="urn:oid:1.3.6.1.4.1.21367.2017.3"/>
-                        <code value="34746-8"/>
-                        <display value="Nursing Evaluation and Management Note"/>
+                        <system value="http://www.snomed.org"/>
+                        <code value="419955002"/>
+                        <display value="Residential institution"/>
                     </coding>
                     <text value="History and Physical"/>
                 </type>

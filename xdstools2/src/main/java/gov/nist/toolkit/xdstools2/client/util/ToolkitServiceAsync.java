@@ -284,4 +284,6 @@ public interface ToolkitServiceAsync {
     void fhirRead(FhirReadRequest request, AsyncCallback<List<Result>> async);
 
     void getFhirResult(GetRawLogsRequest request, AsyncCallback<List<Message>> async);
+
+    void promote(PromoteRequest request, AsyncCallback<String> async);
 }

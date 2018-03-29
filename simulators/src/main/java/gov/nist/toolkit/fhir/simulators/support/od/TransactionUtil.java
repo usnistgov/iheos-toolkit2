@@ -197,7 +197,7 @@ public class TransactionUtil {
                     // Another place the StoredDocument gets touched is the Retrieve -- to update the supply state index
                     // StoredDocument storedDocument = repIndex.getDocumentCollection().getStoredDocument(oddeUid);
                     // Begin insert details on the on-demand document entry
-                    StoredDocument storedDocument = new StoredDocument();
+                    StoredDocument storedDocument = new StoredDocument(repIndex);
                     storedDocument.setUid(oddeUid);
                     storedDocument.setEntryDetail(ded);
 //                    storedDocument.setPathToDocument(simDb.getRepositoryDocumentFile(oddeUid).toString());

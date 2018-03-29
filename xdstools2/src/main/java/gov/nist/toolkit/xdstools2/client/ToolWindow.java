@@ -251,6 +251,13 @@ public abstract class ToolWindow {
 		return tabTopPanel;
 	}
 
+	// These two are meant to be overriden by individual window definitions
+	public boolean loaded() {
+		return true;
+	}
 
+	public String notLoadedReason() {
+		return null;
+	}
 
 }

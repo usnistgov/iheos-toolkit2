@@ -175,9 +175,7 @@
                     <version>2.19.1</version>
                     <configuration>
                         <includes>
-                            <!--<include>**/FhirSupportOrchestrationBuilderSpec.java</include>-->
-                            <!--<include>**/MultiQuerySpec.java</include>-->
-                            <!--<include>**/DicomSpec.java</include>-->
+                            <!--<include>**/OdConsumerSpec.java</include>-->
                             <include>**/*Spec.java</include>
                             <include>**/*Test.java</include>
                             <include>**/*IT.java</include>

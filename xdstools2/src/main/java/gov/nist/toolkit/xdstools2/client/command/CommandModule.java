@@ -23,7 +23,8 @@ public abstract class CommandModule<C> implements AsyncCallback<C> {
         String msg = throwable.getMessage();
         if (msg == null)
             msg = this.getClass().getName();
-        new PopupMessage("Request to server failed: " + msg);
+        String trace = "";
+        new PopupMessage("Request to server " + trace + " failed: " + msg);
     }
 
     @Override

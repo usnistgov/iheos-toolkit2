@@ -8,6 +8,7 @@ import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 public class GetSiteNamesRequest extends CommandContext {
     private boolean reload;
     private boolean simAlso;
+    private boolean qualified = false;
 
     public GetSiteNamesRequest() {
     }
@@ -32,5 +33,18 @@ public class GetSiteNamesRequest extends CommandContext {
 
     public void setSimAlso(boolean simAlso){
         this.simAlso=simAlso;
+    }
+
+    public boolean isQualified() {
+        return qualified;
+    }
+
+    public void setQualified(boolean qualified) {
+        this.qualified = qualified;
+    }
+
+    public GetSiteNamesRequest withQualified(boolean qualified) {
+        this.qualified = qualified;
+        return this;
     }
 }

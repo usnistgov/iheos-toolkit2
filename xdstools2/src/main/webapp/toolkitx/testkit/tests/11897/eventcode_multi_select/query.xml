@@ -1,26 +1,28 @@
 
 <query:AdhocQueryRequest xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0">
-    <query:ResponseOption returnComposedObjects="true" returnType="ObjectRef"/>
-    <tag0:AdhocQuery xmlns:tag0="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" id="urn:uuid:14d4debf-8f97-4251-9a74-a90016b0af0d">
-        <tag0:Slot name="$XDSDocumentEntryPatientId">
-            <tag0:ValueList>
-                <tag0:Value>'$patient_id$'</tag0:Value>
-            </tag0:ValueList>
-        </tag0:Slot>
-        <tag0:Slot name="$XDSDocumentEntryStatus">
-            <tag0:ValueList>
-                <tag0:Value>('urn:oasis:names:tc:ebxml-regrep:StatusType:Approved')</tag0:Value>
-            </tag0:ValueList>
-        </tag0:Slot>
-        <tag0:Slot name="$XDSDocumentEntryEventCodeList">
-            <tag0:ValueList>
-                <tag0:Value>('T-D4909^^SNM3')</tag0:Value>
-            </tag0:ValueList>
-        </tag0:Slot>
-        <tag0:Slot name="$XDSDocumentEntryEventCodeList">
-            <tag0:ValueList>
-                <tag0:Value>('T-62002^^SNM3')</tag0:Value>
-            </tag0:ValueList>
-        </tag0:Slot>
-    </tag0:AdhocQuery>
+   <query:ResponseOption returnComposedObjects="true"
+         returnType="ObjectRef"/>
+   <rim:AdhocQuery id="urn:uuid:14d4debf-8f97-4251-9a74-a90016b0af0d"
+         xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0">
+      <rim:Slot name="$XDSDocumentEntryStatus">
+         <rim:ValueList>
+            <rim:Value>('urn:oasis:names:tc:ebxml-regrep:StatusType:Approved')</rim:Value>
+         </rim:ValueList>
+      </rim:Slot>
+      <rim:Slot name="$XDSDocumentEntryPatientId">
+         <rim:ValueList>
+            <rim:Value>'$patient_id$'</rim:Value>
+         </rim:ValueList>
+      </rim:Slot>
+      <rim:Slot name="$XDSDocumentEntryEventCodeList">
+         <rim:ValueList>
+            <rim:Value>('urn:connectathon:bppc:foundational:policy^^1.3.6.1.4.1.21367.2017.3')</rim:Value>
+         </rim:ValueList>
+      </rim:Slot>
+      <rim:Slot name="$XDSDocumentEntryEventCodeList">
+         <rim:ValueList>
+            <rim:Value>('urn:connectathon:policy:full-access^^1.3.6.1.4.1.21367.2017.3')</rim:Value>
+         </rim:ValueList>
+      </rim:Slot>
+   </rim:AdhocQuery>
 </query:AdhocQueryRequest>
