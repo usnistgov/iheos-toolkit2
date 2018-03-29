@@ -125,10 +125,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         if (session().queryServiceManager() != null)
             session().queryServiceManager().setTestSession(commandContext.getTestSession());
 
-        if (Installation.instance().propertyServiceManager().isSingleUserMode()
-                && "default".equalsIgnoreCase(commandContext.getTestSessionName())) {
+//        if (Installation.instance().propertyServiceManager().isSingleUserMode()
+//                && "default".equalsIgnoreCase(commandContext.getTestSessionName())) {
             setTestSession(commandContext.getTestSessionName());
-        }
+//        }
     }
 
     @Override

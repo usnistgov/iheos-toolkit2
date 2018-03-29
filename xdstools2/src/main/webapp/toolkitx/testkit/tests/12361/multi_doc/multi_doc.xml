@@ -163,13 +163,13 @@
             </rim:Slot>
          </rim:Classification>
          <rim:Classification classifiedObject="Document01"
-               nodeRepresentation="22232009" classificationScheme="urn:uuid:f33fb8ac-18af-42cc-ae0e-ed0b0bdb91e1">
+               nodeRepresentation="MPQ-hcftcode-1" classificationScheme="urn:uuid:f33fb8ac-18af-42cc-ae0e-ed0b0bdb91e1">
             <rim:Name>
                <rim:LocalizedString value="Hospital"/>
             </rim:Name>
             <rim:Slot name="codingScheme">
                <rim:ValueList>
-                  <rim:Value>2.16.840.1.113883.6.96</rim:Value>
+                  <rim:Value>MPQ Testing</rim:Value>
                </rim:ValueList>
             </rim:Slot>
          </rim:Classification>

@@ -12,7 +12,7 @@
       <XDSb/>
       <MetadataFile>query.xml</MetadataFile>
       <ExpectedContents>
-        <ObjectRefs count="2"/>
+        <ObjectRefs count="1"/>
       </ExpectedContents>
     </MPQTransaction>
   </TestStep>
