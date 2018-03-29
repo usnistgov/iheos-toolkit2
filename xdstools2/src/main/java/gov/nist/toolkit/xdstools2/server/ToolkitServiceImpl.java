@@ -1298,8 +1298,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
             ss = request.getMc().submissionSets.get(0);
         }
 
-//        ss.id = "SubmissionSet01";
-        ss.sourceId = "toolkit"; // TODO: to be retrieved from toolkit.properties
+        String newSsId = "SubmissionSet01";
+        ss.uniqueId = newSsId;
+        // TODO: sourceId name attribute is missing?
+        ss.sourceId = "1.3.6.1.4.1.21367.4"; // TODO: to be retrieved from toolkit.properties
         ss.submissionTime = new Hl7Date().now();
 
         /* This is needed because the linkage string replacer will replace all attributes
@@ -1311,7 +1313,6 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         finalMc.submissionSets.add(ss);
 
         String newDeId = "Document01";
-        String newSsId = "SubmissionSet01";
         Association assoc = new Association();
         assoc.id = "Association01";
 
