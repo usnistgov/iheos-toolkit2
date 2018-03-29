@@ -9,6 +9,7 @@ import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
+import gov.nist.toolkit.xdsexception.client.NoDifferencesException;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdstools2.client.command.command.UpdateDocumentEntryCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.ValidateDocumentEntryCommand;
@@ -59,7 +60,10 @@ public class EditDisplay extends CommonDisplay {
             new UpdateDocumentEntryCommand() {
                 @Override
                 public void onFailure(Throwable throwable) {
-                    new PopupMessage(throwable.toString());
+                    if (throwable instanceof NoDifferencesException) {
+                       new PopupMessage("No differences found. Do you want to continue?");
+                    } else
+                        new PopupMessage(throwable.toString());
                 }
 
                 @Override

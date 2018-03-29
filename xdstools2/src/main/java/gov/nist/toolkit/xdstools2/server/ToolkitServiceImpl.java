@@ -7,6 +7,7 @@ import gov.nist.toolkit.actortransaction.TransactionErrorCodeDbLoader;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.common.datatypes.Hl7Date;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.PidSet;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
@@ -80,6 +81,8 @@ import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.tk.TkLoader;
 import gov.nist.toolkit.tk.client.TkProps;
+import gov.nist.toolkit.utilities.io.Io;
+import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.XmlFormatter;
 import gov.nist.toolkit.valregmsg.message.SchemaValidation;
 import gov.nist.toolkit.valregmsg.validation.factories.CommonMessageValidatorFactory;
@@ -1225,7 +1228,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
             if (logMapDTO.getItems().get(0).getTestName().equals("GetDocuments/XDS")) {
                 m = MetadataParser.parseNonSubmission(logMapDTO.getItems().get(0).getLog().getStep("GetDocuments").getRootString());
             } else
-                throw new ToolkitRuntimeException("Unsupported query: " + logMapDTO.getItems().get(0).getTestName());
+                throw new ToolkitRuntimeException("Was expecting GetDocuments/XDS. Unsupported query: " + logMapDTO.getItems().get(0).getTestName());
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -1279,14 +1282,14 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
                     if (getSslogMapDTO.getItems().get(0).getTestName().equals("GetSubmissionSets/XDS")) {
                         getSsM = MetadataParser.parseNonSubmission(getSslogMapDTO.getItems().get(0).getLog().getStep("GetSubmissionSetsByUUID").getRootString());
                     } else
-                        throw new ToolkitRuntimeException("Unsupported query: " + logMapDTO.getItems().get(0).getTestName());
+                        throw new ToolkitRuntimeException("Was expecting GetSubmissionSets/XDS. Unsupported query: " + getSslogMapDTO.getItems().get(0).getTestName());
                 }
                 catch (Exception e) {
                     e.printStackTrace();
                     throw new ToolkitRuntimeException(e);
                 }
 
-                ss = MetadataToMetadataCollectionParser.buildMetadataCollection(m, "ss").submissionSets.get(0);
+                ss = MetadataToMetadataCollectionParser.buildMetadataCollection(getSsM, "ss").submissionSets.get(0);
 
             } else {
                throw new ToolkitRuntimeException("GetSubmissionSet returned a null result.");
@@ -1299,63 +1302,55 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         ss.sourceId = "toolkit"; // TODO: to be retrieved from toolkit.properties
         ss.submissionTime = new Hl7Date().now();
 
+        /* This is needed because the linkage string replacer will replace all attributes
+        including the lid to the same value as new Document id so the original lid is lost.
+        Temporarily change this lid and restore it to the original value through another string replace. */
+        String tempLid = "$templid01$";
+        request.getToBeUpdated().lid = "$templid01$";
         finalMc.docEntries.add(request.getToBeUpdated());
         finalMc.submissionSets.add(ss);
 
+        String newDeId = "Document01";
+        String newSsId = "SubmissionSet01";
         Association assoc = new Association();
         assoc.id = "Association01";
-        assoc.source = ss.id;
+
+        assoc.source = newSsId;
         assoc.type = "HasMember";
-        assoc.target = request.getToBeUpdated().id;
+        assoc.target = newDeId;
 
         finalMc.assocs.add(assoc);
 
         Metadata m2 = MetadataCollectionToMetadata.buildMetadata(finalMc, true);
         List<OMElement> eles = m2.getV3();
 
+        // TODO: need to replace ids in the finalMc
         Linkage linkage = new Linkage(null);
         if (eles.size()==3) {
             // DocumentEntry
-            linkage.replace_string_in_text_and_attributes(eles.get(0), request.getToBeUpdated().id, "Document01");
+            linkage.replace_string_in_text_and_attributes(eles.get(0), request.getToBeUpdated().id, newDeId);
+            linkage.replace_string_in_text_and_attributes(eles.get(0), tempLid, deOrig.lid);
             // SS
-            linkage.replace_string_in_text_and_attributes(eles.get(1), request.getToBeUpdated().id, "Document01");
-            linkage.replace_string_in_text_and_attributes(eles.get(1), ss.id, "SubmissionSet01");
+            linkage.replace_string_in_text_and_attributes(eles.get(1), request.getToBeUpdated().id, newDeId);
+            linkage.replace_string_in_text_and_attributes(eles.get(1), ss.id, newSsId);
             // Assocs
             // Should be ok since we are adding a new one which already has a symbolic id
         }
 
 
-        // TODO: need to replace ids in the finalMc
-
-//        finalMc.submissionSets.add(
-//        finalMc.assocs.add
-
-//        if (request.getMc().assocs==null  || (request.getMc().assocs!=null && request.getMc().assocs.isEmpty())) {
-//        }
-
-        // save off updated mc to m
-        /*
-        Metadata m2 = MetadataCollectionToMetadata.buildMetadata(finalMc, true);
-
-        List<OMElement> eles = null;
-
-        try {
-            if (metadataV2) {
-                eles = m2.getV2();
-            } else
-                eles = m2.getV3();
-        } catch (XdsInternalException e1) {
-            e1.printStackTrace();
-            System.exit(1);
-        }
-
         OMElement x = MetadataSupport.om_factory.createOMElement("Metadata", null);
 
         for (OMElement e : eles)
             x.addChild(e);
-        */
 
-        ////
+        File outFile = new File("/home/skb1/tmpTest/out.xml");
+
+        try {
+            Io.stringToFile(outFile, new OMFormatter(x).toString());
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+
 
         return null;
     }
