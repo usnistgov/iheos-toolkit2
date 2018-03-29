@@ -131,6 +131,12 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 
     @Override
     public InitializationResponse getInitialization(CommandContext context) throws Exception {
+        if (Installation.instance().externalCache() == null) {
+            throw new Exception("External Cache does not exist at " + Installation.instance().propertyServiceManager().getPropertyManager().getExternalCache());
+        }
+        if (!Installation.instance().externalCache().exists()) {
+            throw new Exception("Configured External Cache location " + Installation.instance().externalCache() + " does not exist");
+        }
         installCommandContext(context);
         InitializationResponse response = new InitializationResponse();
         String defaultEnv = Installation.DEFAULT_ENVIRONMENT_NAME;

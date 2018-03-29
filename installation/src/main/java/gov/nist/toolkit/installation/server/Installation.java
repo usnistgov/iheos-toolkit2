@@ -125,7 +125,7 @@ public class Installation {
         }
 		logger.info("Installation: External Cache set to " + externalCache);
 		if (!externalCache.exists()) {
-            logger.info("External Cache does not exist at " + externalCache);
+            logger.fatal("External Cache does not exist at " + externalCache);
             externalCache = null;
             return;
         }
@@ -219,6 +219,9 @@ public class Installation {
     public List<TestSession> getTestSessions() {
         List<TestSession> ts = new ArrayList<>();
         File tlsFile = testLogCacheDir();
+
+        if (!tlsFile.exists())
+            return ts;
 
         for (File tlFile : tlsFile.listFiles()) {
             if (tlFile.isDirectory() && !tlFile.getName().startsWith("."))
