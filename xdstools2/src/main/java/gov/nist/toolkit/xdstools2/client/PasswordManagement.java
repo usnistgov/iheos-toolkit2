@@ -15,7 +15,7 @@ import java.util.List;
 public class PasswordManagement {
 	static public String adminPassword = "";  // loaded when this tab is created (at launch)
 	static public boolean isSignedIn = false;
-	static List<AsyncCallback<Boolean>> signInCallbacks = new ArrayList<AsyncCallback<Boolean>>();
+	static private List<AsyncCallback<Boolean>> signInCallbacks = new ArrayList<AsyncCallback<Boolean>>();
 	
 	public static void addSignInCallback(AsyncCallback<Boolean> callback) {
 		signInCallbacks.add(callback);
@@ -40,9 +40,9 @@ public class PasswordManagement {
 		signInCallbacks.clear();
 	}
 	
-	static public boolean comparePassword(String password) {
+	static public void comparePassword(String password) {
 		isSignedIn = adminPassword.equals(password);
-		return isSignedIn;
+//		return isSignedIn;
 	}
 
 

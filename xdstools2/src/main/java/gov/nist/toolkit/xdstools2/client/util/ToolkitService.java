@@ -323,4 +323,6 @@ public interface ToolkitService extends RemoteService  {
     List<Result> fhirSearch(FhirSearchRequest var1) throws Exception;
 
     List<Result> fhirRead(FhirReadRequest request) throws Exception;
+
+    String promote(PromoteRequest request);
 }

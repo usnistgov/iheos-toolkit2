@@ -42,9 +42,11 @@ public class SiteTransactionTable extends FlexTable {
             if (alreadyDisplayed.contains(trans.getName()))
                 continue;
             hasContent = true;
-            setText(row, 0, trans.getName());
-            setText(row, 1, sorter.getTls(trans.getName()));
-            setText(row++, 2, sorter.getNoTls(trans.getName()));
+            if (sorter.hasEndpoints(trans.getName())) {
+                setText(row, 0, trans.getName());
+                setText(row, 1, sorter.getTls(trans.getName()));
+                setText(row++, 2, sorter.getNoTls(trans.getName()));
+            }
             alreadyDisplayed.add(trans.getName());
         }
 

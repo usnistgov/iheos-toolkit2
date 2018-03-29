@@ -43,13 +43,15 @@ class TestSessionServiceManager {
             cache = Installation.instance().propertyServiceManager().getTestLogCache();
 
             if (name == null || name.equals(""))
-                throw new Exception("Cannot create test session with no name");
+                throw new Exception("Test Session Name cannot create test session with no name");
             if (name.contains("__"))
-                throw new Exception("Cannot contain a double underscore (__)");
+                throw new Exception("Test Session Name cannot contain a double underscore (__)");
             if (name.contains(" "))
-                throw new Exception("Cannot contain spaces");
+                throw new Exception("Test Session Name cannot contain spaces");
             if (name.contains("\t"))
-                throw new Exception("Cannot contain tabs");
+                throw new Exception("Test Session Name cannot contain tabs");
+            if (name.any { String x -> x >= 'A' && x <= 'Z'})
+                throw new Exception("Test Session Name cannot contain upper case")
         } catch (Exception e) {
             logger.error("addMesaTestSession", e);
             throw new Exception(e.getMessage());
@@ -95,6 +97,8 @@ class TestSessionServiceManager {
 
     boolean delete(TestSession testSession) throws Exception  {
         File cache;
+        if (testSession == Installation.instance().getDefaultTestSession())
+            throw new Exception("Cannot delete default Test Session")
         try {
             cache = Installation.instance().propertyServiceManager().getTestLogCache();
 

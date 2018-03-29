@@ -3,17 +3,12 @@ package gov.nist.toolkit.simcommon.server
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.actortransaction.client.TransactionInstance
 import gov.nist.toolkit.configDatatypes.client.Pid
-
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder
 import gov.nist.toolkit.http.*
 import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.installation.shared.TestSession
-import gov.nist.toolkit.simcommon.client.BadSimIdException
-import gov.nist.toolkit.simcommon.client.NoSimException
-import gov.nist.toolkit.simcommon.client.SimId
-import gov.nist.toolkit.simcommon.client.SimIdFactory
-import gov.nist.toolkit.simcommon.client.SimulatorConfig
+import gov.nist.toolkit.simcommon.client.*
 import gov.nist.toolkit.simcommon.server.index.SiTypeWrapper
 import gov.nist.toolkit.simcommon.server.index.SimIndex
 import gov.nist.toolkit.utilities.io.Io
@@ -40,7 +35,7 @@ public class SimDb {
 	//	private File dbRoot = null;  // base of the simulator db
 	private String event = null;
 	private Date eventDate;
-	private File simDir = null;   // directory within simdb that represents this event
+	private File simDir = null;   // directory within simdb that represents this simulator
 	private String actor = null;
 	private String transaction = null;
 	private File transactionDir = null;
@@ -208,11 +203,18 @@ public class SimDb {
 		if (!simDir.isDirectory())
 			throw new ToolkitRuntimeException("Cannot create content in Simulator database, creation of " + simDir.toString() + " failed");
 
-		// add this for safety when deleting simulators -
-		if (!isSimDir(simDir)) {
-			Io.stringToFile(simSafetyFile(), simId.toString());
-		}
+		createSimSafetyFile()
+//		// add this for safety when deleting simulators -
+//		if (!isSimDir(simDir)) {
+//			Io.stringToFile(simSafetyFile(), simId.toString());
+//		}
+	}
 
+	void createSimSafetyFile() {
+		// add this for safety when deleting simulators -
+//		if (!isSimDir(simDir)) {
+			Io.stringToFile(simSafetyFile(), simId.toString());
+//		}
 	}
 
 	void openMostRecentEvent(ActorType actor, TransactionType transaction) {
@@ -1083,7 +1085,8 @@ public class SimDb {
 		Io.delete(f);
 	}
 
-	public void rename(String fileNameBase, String newFileNameBase) throws IOException {
+	@Obsolete
+	void rename(String fileNameBase, String newFileNameBase) throws IOException {
 
 		File from = getDBFilePrefix(fileNameBase);
 		File to = getDBFilePrefix(newFileNameBase);
@@ -1092,6 +1095,12 @@ public class SimDb {
 		if (!stat)
 			throw new IOException("Rename failed");
 
+	}
+
+	// name of sim directory is the name we want
+	// make sure internals are up to date with it
+	void updateSimConfiguration() {
+		createSimSafetyFile()  // actually update
 	}
 
 	private File findEventDir(String trans, String event) {

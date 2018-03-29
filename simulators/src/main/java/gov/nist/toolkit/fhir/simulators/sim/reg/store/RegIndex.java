@@ -5,12 +5,14 @@ import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.simcommon.client.NoSimException;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimulatorStats;
+import gov.nist.toolkit.simcommon.server.DbObjectType;
 import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
 import java.io.*;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -20,10 +22,30 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 
 	private static final long serialVersionUID = 1L;
 	public MetadataCollection mc;
-	private String filename;
+	private String filename;  // of the index file
 	public Calendar cacheExpires;
 	transient private SimDb db;
 	private SimId simId;
+
+	// path is created relative to index file parent folder
+	File installInternalPath(Ro ro) {
+		Path indexPath = new File(filename).getParentFile().toPath();
+		File absolute = getSimDb().getObjectFile(DbObjectType.REGISTRY, ro.id);
+		ro.pathToMetadata = indexPath.relativize(absolute.toPath()).toString();
+//		ro.pathIsRelative = true;
+		logger.info("RegStore: " + absolute + ":" + ro.pathToMetadata);
+		return absolute;
+	}
+
+	// resolve relative to index file parent
+	public Path getAbsolutePathForObject(Ro ro) {
+		if (!(ro.isPathIsRelative()))
+			return new File(ro.pathToMetadata).toPath();
+		Path indexPath = new File(filename).getParentFile().toPath();
+		Path path = indexPath.resolve(ro.pathToMetadata);
+		logger.info("RegRead: " + path);
+		return path;
+	}
 
 	public RegIndex() {}
 
@@ -31,14 +53,12 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 		this.filename = filename;
 		this.simId = simId;
 		try {
-//		logger.debug("Restore Registry Index");
-			logger.debug("Attempting to Restore Registry Index");
+			logger.debug("Restore Registry Index for " + simId.toString() + " from " + filename);
 			restore();
 			mc.regIndex = this;
 			mc.setDirty(false);
 		} catch (Exception e) {
-			// no existing database - initialize instead
-			logger.debug("No existing - creating new");
+			logger.debug("Creating new Registry Index for " + simId.toString() + " at " + filename);
 			mc = new MetadataCollection();
 			mc.init();
 			mc.regIndex = this;
@@ -169,6 +189,7 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 	}
 
 	public MetadataCollection getMetadataCollection() {
+		mc.regIndex = this;
 		return mc;
 	}
 

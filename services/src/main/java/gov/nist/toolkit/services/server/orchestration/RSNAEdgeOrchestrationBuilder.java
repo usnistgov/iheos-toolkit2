@@ -27,7 +27,7 @@ import java.util.List;
  * href="mailto:kelseym@mir.wustl.edu">kelseym@mir.wustl.edu</a>
  *
  */
-public class RSNAEdgeOrchestrationBuilder {
+public class RSNAEdgeOrchestrationBuilder extends AbstractOrchestrationBuilder {
    static Logger log = Logger.getLogger(RSNAEdgeOrchestrationBuilder.class);
 
    static final String sutSimulatorName = "simulator_rsnaedge";
@@ -40,6 +40,7 @@ public class RSNAEdgeOrchestrationBuilder {
    SimulatorConfig sutSimulatorConfig = null;
 
    public RSNAEdgeOrchestrationBuilder(ToolkitApi api, Session session, RSNAEdgeOrchestrationRequest request) {
+      super(session, request);
       this.api = api;
       this.session = session;
       this.request = request;

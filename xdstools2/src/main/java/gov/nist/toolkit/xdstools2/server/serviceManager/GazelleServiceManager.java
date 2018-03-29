@@ -28,7 +28,7 @@ public class GazelleServiceManager extends CommonService {
     boolean unitTest = false;
     boolean initDone = false;
     String testSessionId = null;
-    TestSession testSession;
+    TestSession testSession = TestSession.DEFAULT_TEST_SESSION;
 
     public GazelleServiceManager(Session session) throws XdsException {
         this.session = session;

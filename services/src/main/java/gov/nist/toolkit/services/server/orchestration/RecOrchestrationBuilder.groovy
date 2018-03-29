@@ -24,7 +24,7 @@ import groovy.transform.TypeChecked
  *
  */
 @TypeChecked
-class RecOrchestrationBuilder {
+class RecOrchestrationBuilder extends AbstractOrchestrationBuilder {
     ToolkitApi api
     private Session session
     private RecOrchestrationRequest request
@@ -32,6 +32,7 @@ class RecOrchestrationBuilder {
     private ActorOption actorOption = new ActorOption()
 
     public RecOrchestrationBuilder(ToolkitApi api, Session session, RecOrchestrationRequest request) {
+        super(session, request)
         this.api = api
         this.request = request
         this.session = session

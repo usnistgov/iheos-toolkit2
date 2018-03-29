@@ -18,6 +18,7 @@ import gov.nist.toolkit.xdstools2.client.command.command.PutSimConfigCommand;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.intf.SimConfigMgrIntf;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.AdminPasswordDialogBox;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.request.SimConfigRequest;
 
 import java.util.List;
@@ -267,6 +268,11 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
                 return;
             }
         }
+        if (!Xdstools2.getInstance().isSystemSaveEnabled()) {
+            new PopupMessage("You don't have permission to update a Simulator in this Test Session");
+            return;
+        }
+
         saveSimConfigPreAuthorized();
     }
 

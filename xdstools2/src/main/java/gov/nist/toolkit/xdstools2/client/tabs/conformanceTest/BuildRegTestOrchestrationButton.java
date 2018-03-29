@@ -90,6 +90,7 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
         RegOrchestrationRequest request = new RegOrchestrationRequest();
         request.selfTest(isSelfTest());
         request.setPifType((v2Feed.isChecked()) ? PifType.V2 : PifType.NONE);
+        request.setUseTls(isTls());
         request.setTestSession(testSession);
         request.setEnvironmentName(testTab.getEnvironmentSelection());
         request.setUseExistingState(!isResetRequested());

@@ -2,6 +2,7 @@ package gov.nist.toolkit.fhir.simulators.mhd
 
 import gov.nist.toolkit.fhir.server.utility.IFhirSearch
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry
+import gov.nist.toolkit.simcoresupport.mhd.HashTranslator
 import gov.nist.toolkit.simcoresupport.proxy.util.SimProxyBase
 import org.apache.log4j.Logger
 import org.hl7.fhir.dstu3.model.*

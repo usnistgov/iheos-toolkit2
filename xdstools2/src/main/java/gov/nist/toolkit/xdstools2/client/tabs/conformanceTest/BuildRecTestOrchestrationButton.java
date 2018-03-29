@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.RadioButton;
 import gov.nist.toolkit.actortransaction.client.ActorOption;
 import gov.nist.toolkit.actortransaction.client.IheItiProfile;
 import gov.nist.toolkit.installation.shared.TestSession;
@@ -12,6 +13,7 @@ import gov.nist.toolkit.services.client.RecOrchestrationResponse;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.command.command.BuildRecTestOrchestrationCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.client.widgets.OrchestrationSupportTestsDisplay;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 import gov.nist.toolkit.xdstools2.shared.command.request.BuildRecTestOrchestrationRequest;
@@ -28,6 +30,10 @@ public class BuildRecTestOrchestrationButton extends AbstractOrchestrationButton
     private FlowPanel initializationResultsPanel = new FlowPanel();
     private boolean testingAClient = false;
 
+    private String formatGroup = "Format Group";
+    private RadioButton xmlFormatRadioButton = new RadioButton(formatGroup, "XML");
+    private RadioButton jsonFormatRadioButton = new RadioButton(formatGroup, "JSON");
+
     BuildRecTestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextView testContextView, Panel initializationPanel, String label, ActorOption actorOption) {
         this.initializationPanel = initializationPanel;
         this.testTab = testTab;
@@ -39,6 +45,10 @@ public class BuildRecTestOrchestrationButton extends AbstractOrchestrationButton
 
         build();
         panel().add(initializationResultsPanel);
+    }
+
+    String getFormat() {
+        return (jsonFormatRadioButton.isChecked()) ? "json" : "xml";
     }
 
 
@@ -73,6 +83,7 @@ public class BuildRecTestOrchestrationButton extends AbstractOrchestrationButton
         RecOrchestrationRequest request = new RecOrchestrationRequest(actorOption);
         request.setTestSession(new TestSession(testTab.getCurrentTestSession()));
         request.setEnvironmentName(testTab.getEnvironmentSelection());
+        request.setUseTls(isTls());
         request.setUseExistingState(!isResetRequested());
         request.getActorOption().copyFrom(testTab.getCurrentActorOption());
         if (!testingAClient && testContext.getSiteUnderTest() != null) {
@@ -96,8 +107,17 @@ public class BuildRecTestOrchestrationButton extends AbstractOrchestrationButton
                 testTab.setOrchestrationResponse(orchResponse);
                 testTab.setRecOrchestrationResponse(orchResponse);
 
-                initializationResultsPanel.add(new HTML("Initialization Complete" +
-                "<h2>Organization</h2>" +
+                initializationResultsPanel.add(new HTML("Initialization Complete"));
+
+                initializationResultsPanel.add(new HTML("<h2>Format</h2>"));
+
+                jsonFormatRadioButton.setChecked(true);
+                HorizontalFlowPanel formatPanel = new HorizontalFlowPanel();
+                formatPanel.add(jsonFormatRadioButton);
+                formatPanel.add(xmlFormatRadioButton);
+                initializationResultsPanel.add(formatPanel);
+
+                initializationResultsPanel.add(new HTML("<h2>Organization</h2>" +
                 "The MHD Recipient/Responder must be configured as a single system in toolkit (one FHIR Base Address). " +
                 "except that the Provide Document Bundle transaction has a separate configuration so it can have a " +
                 "different URL."));

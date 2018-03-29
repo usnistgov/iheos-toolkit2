@@ -140,6 +140,7 @@ public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton 
         RgOrchestrationRequest request = new RgOrchestrationRequest();
         request.setOnDemand(isOnDemand);  // much of the rest is ignored if this is true
         request.setTestSession(new TestSession(testTab.getCurrentTestSession()));
+        request.setUseTls(isTls());
         request.setUseExposedRR(usingExposedRR());
         request.setUseSimAsSUT(false);
 

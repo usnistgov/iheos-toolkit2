@@ -844,7 +844,10 @@ public abstract class GenericQueryTab  extends ToolWindow {
         int i = lb.getSelectedIndex();
         if ( i == -1)
             return null;
-        return lb.getValue(i);
+        String value = lb.getValue(i);
+        if (value.contains(":"))  // qualified name (owner:name)
+            return value.split(":")[1];
+        return value;
     }
 
     List<Site> getSiteList(TransactionType tt) {

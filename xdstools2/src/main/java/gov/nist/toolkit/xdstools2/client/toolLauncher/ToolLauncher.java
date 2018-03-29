@@ -208,6 +208,10 @@ public class ToolLauncher implements ClickHandler {
 		ToolDef def = getToolDef(requestedName);
 		ToolWindow tool = getTool(def);
 		if (tool == null) return null;
+		if (!tool.loaded()) {
+			new PopupMessage(tool.notLoadedReason());
+			return null;
+		}
 		tool.onTabLoad(true, def.tabName);
 		return tool;
 	}

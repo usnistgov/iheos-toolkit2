@@ -39,6 +39,7 @@ class BuildRSNAEdgeTestOrchestrationButton extends AbstractOrchestrationButton {
        }
        RSNAEdgeOrchestrationRequest request = new RSNAEdgeOrchestrationRequest();
        request.setTestSession(new TestSession(testTab.getCurrentTestSession()));
+       request.setUseTls(isTls());
        new BuildRSNAEdgeTestOrchestrationCommand(){
            @Override
            public void onComplete(RawResponse rawResponse) {

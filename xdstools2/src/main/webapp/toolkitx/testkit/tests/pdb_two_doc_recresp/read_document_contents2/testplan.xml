@@ -12,7 +12,7 @@
             <AcceptType>text/plain</AcceptType>
             <ReferenceDocument>../submit/textfile2.txt</ReferenceDocument>
             <RequestType>text/plain</RequestType>
-            <UseReport test="pdb_two_doc_xof" section="read_document_reference2" step="read_DR" reportName="BinaryUrl" useAs="Ref"/>
+            <UseReport test="pdb_two_doc_recresp" section="read_document_reference2" step="read_DR" reportName="BinaryUrl" useAs="Ref"/>
         </FhirReadTransaction>
     </TestStep>
 </TestPlan>

@@ -157,6 +157,14 @@ public class PropertyServiceManager {
 		return getPropertyManager().getDefaultAssigningAuthority();
 	}
 
+	public String getDefaultTestSession() {
+		return getPropertyManager().getDefaultTestSession();
+	}
+
+	public boolean getDefaultTestSessionIsProtected() {
+		return getPropertyManager().getDefaultTestSessionIsProtected();
+	}
+
 	public String getProxyPort() {
 		return getPropertyManager().getProxyPort();
 	}

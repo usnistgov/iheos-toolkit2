@@ -93,7 +93,7 @@ public class ODRGActorFactory extends AbstractActorFactory implements IActorFact
    }
 
    @Override
-   public Site getActorSite(SimulatorConfig sc, Site site)
+   public Site buildActorSite(SimulatorConfig sc, Site site)
       throws NoSimulatorException {
 
       if (sc == null || sc.isExpired())
@@ -127,8 +127,8 @@ public class ODRGActorFactory extends AbstractActorFactory implements IActorFact
 
          site.setHome(sc.get(SimulatorProperties.homeCommunityId).asString());
 
-         site = new RegistryActorFactory().getActorSite(sc, site);
-         site = new OnDemandDocumentSourceActorFactory().getActorSite(sc, site);
+         site = new RegistryActorFactory().buildActorSite(sc, site);
+         site = new OnDemandDocumentSourceActorFactory().buildActorSite(sc, site);
 
          return site;
       } catch (Throwable t) {
