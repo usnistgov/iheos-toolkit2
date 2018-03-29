@@ -27,7 +27,7 @@ class FhirCreateTransaction extends BasicFhirTransaction {
     def updateMasterIdentifier(def resource) {
         if ((resource instanceof DocumentManifest) || (resource instanceof DocumentReference)) {
             Identifier id = resource.getMasterIdentifier()
-            id.value = UniqueIdAllocator.getInstance(null).allocate()
+            id.value = 'urn:oid:' + UniqueIdAllocator.getInstance(null).allocate()
             resource.masterIdentifier = id
         } else if (resource instanceof Bundle) {
             Bundle bundle = resource
