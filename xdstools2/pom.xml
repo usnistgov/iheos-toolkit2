@@ -534,6 +534,7 @@
                     <failOnError>true</failOnError>
 					<!--<logLevel>ALL</logLevel>-->
 					<style>OBFUSCATED</style>
+                    <!--<style>DETAILED</style>-->
 					<compileSourcesArtifacts>
 						<compileSourcesArtifact>${project.groupId}:installation</compileSourcesArtifact>
 						<compileSourcesArtifact>${project.groupId}:tk</compileSourcesArtifact>

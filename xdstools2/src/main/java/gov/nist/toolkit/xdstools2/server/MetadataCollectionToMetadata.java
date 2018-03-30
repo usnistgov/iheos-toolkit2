@@ -148,7 +148,7 @@ public class MetadataCollectionToMetadata {
 			m.addSlot(ssEle, "submissionTime", ss.submissionTime);
 		
 		if (ss.sourceId != null && !ss.sourceId.equals(""))
-			m.addExternalId(ssEle, "urn:uuid:554ac39e-e3fe-47fe-b233-965d2a147832", ss.sourceId);
+			m.addExternalId(ssEle, "urn:uuid:554ac39e-e3fe-47fe-b233-965d2a147832", ss.sourceId, MetadataSupport.XDSSubmissionSet_sourceid_name);
 		
 		addClassification(ssEle, ss.contentTypeCode, "urn:uuid:aa543740-bdda-424e-8c96-df4873be8500");
 		
@@ -231,7 +231,7 @@ public class MetadataCollectionToMetadata {
 			m.setStatus(aEle, a.status);
 
 		if (a.previousVersion != null && !a.previousVersion.equals(""))
-			m.addSlot(aEle, "previousVersion", a.previousVersion);
+			m.addSlot(aEle, "PreviousVersion", a.previousVersion);
 		
 		if (a.ssStatus != null && !a.ssStatus.equals("")) 
 			m.addSlot(aEle, "SubmissionSetStatus", a.ssStatus);

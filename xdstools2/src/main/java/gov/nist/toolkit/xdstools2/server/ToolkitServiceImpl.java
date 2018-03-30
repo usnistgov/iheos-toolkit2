@@ -70,6 +70,7 @@ import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.testengine.Sections;
 import gov.nist.toolkit.testengine.engine.Linkage;
 import gov.nist.toolkit.testengine.engine.RegistryUtility;
+import gov.nist.toolkit.testengine.engine.UniqueIdAllocator;
 import gov.nist.toolkit.testengine.scripts.BuildCollections;
 import gov.nist.toolkit.testengine.scripts.CodesUpdater;
 import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
@@ -1298,8 +1299,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
             ss = request.getMc().submissionSets.get(0);
         }
 
-        String newSsId = "SubmissionSet01";
-        ss.uniqueId = newSsId;
+
+        UniqueIdAllocator allocator = UniqueIdAllocator.getInstance(null);
+        ss.uniqueId = allocator.allocate();
+
         // TODO: sourceId name attribute is missing?
         ss.sourceId = "1.3.6.1.4.1.21367.4"; // TODO: to be retrieved from toolkit.properties
         ss.submissionTime = new Hl7Date().now();
@@ -1316,9 +1319,12 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         Association assoc = new Association();
         assoc.id = "Association01";
 
+        String newSsId = "SubmissionSet01";
         assoc.source = newSsId;
         assoc.type = "HasMember";
         assoc.target = newDeId;
+        assoc.previousVersion = deOrig.version;
+        assoc.ssStatus = "Original";
 
         finalMc.assocs.add(assoc);
 
@@ -1332,7 +1338,6 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
             linkage.replace_string_in_text_and_attributes(eles.get(0), request.getToBeUpdated().id, newDeId);
             linkage.replace_string_in_text_and_attributes(eles.get(0), tempLid, deOrig.lid);
             // SS
-            linkage.replace_string_in_text_and_attributes(eles.get(1), request.getToBeUpdated().id, newDeId);
             linkage.replace_string_in_text_and_attributes(eles.get(1), ss.id, newSsId);
             // Assocs
             // Should be ok since we are adding a new one which already has a symbolic id
