@@ -231,7 +231,7 @@ class TestSelectionManager {
         }.run(new GetTestDetailsRequest(ClientUtils.INSTANCE.getCommandContext(), tool.getSelectedTest()));
     }
 
-    Button buildLogLauncher(final String simId, String label) {
+    public Button buildLogLauncher(final String simId, String label) {
         Button button = new Button(label);
         button.addClickHandler(new ClickHandler() {
             @Override

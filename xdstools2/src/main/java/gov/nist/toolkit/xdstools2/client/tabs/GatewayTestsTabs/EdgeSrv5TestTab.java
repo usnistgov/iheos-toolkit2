@@ -4,26 +4,19 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
-import gov.nist.toolkit.xdstools2.client.command.command.GetTestResultsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.RunMesaTestCommand;
-import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetImagingDocumentsSiteActorManager;
-import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.BuildEdgeSrv5TestOrchestrationButton;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
-import gov.nist.toolkit.xdstools2.shared.command.request.GetTestResultsRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.RunTestRequest;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,11 +32,11 @@ import java.util.Map;
 public class EdgeSrv5TestTab extends GenericQueryTab implements GatewayTool {
 //    final protected ToolkitServiceAsync toolkitService = GWT
 //            .create(ToolkitService.class);
-    String selectedActor = ActorType.RSNA_EDGE_DEVICE.getShortName();
-    SimulatorConfig config;
-    GenericQueryTab genericQueryTab;
+    String selectedActor = ActorType.EDGE_SERVER_5.getShortName();
+    List<SimulatorConfig> rgConfigs;
+    public GenericQueryTab genericQueryTab;
     static final String COLLECTION_NAME =  "es5";
-    final TestSelectionManager testSelectionManager;
+    public final TestSelectionManager testSelectionManager;
 
     public EdgeSrv5TestTab() {
         super(new GetImagingDocumentsSiteActorManager()); //TODO: Update to correct ActorManager
@@ -69,6 +62,17 @@ public class EdgeSrv5TestTab extends GenericQueryTab implements GatewayTool {
 
     }
 
+    public TestSelectionManager getTestSelectionManager() {
+        return testSelectionManager;
+    }
+
+    public void setRgConfigs(List<SimulatorConfig> list) {
+        rgConfigs = list;
+    }
+    public List<SimulatorConfig> getRgConfigs() {
+        return rgConfigs;
+    }
+
     @Override
     protected void configureTabView() {
 
@@ -88,11 +92,11 @@ public class EdgeSrv5TestTab extends GenericQueryTab implements GatewayTool {
         genericQueryTitle = "Select System Under Test";
         genericQueryInstructions = new HTML(
            
-           "<p><strike>When the test is run a Retrieve Imaging Document Set (RAD-69) " +
-           "transaction will be sent to the Initiating Imaging Gateway " +
-           "selected below. This will start the test. Before running a test, " +
-           "make sure your Initiating Imaging Gateway is configured to send " +
-           "to the Responding Imaging Gateways above. </stike></p>" +
+           "<p>When the test is run Lorem ipsum dolor sit amet, consectetur " +
+               "adipiscing elit. Integer nec odio. Praesent libero. Sed " +
+               "cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh " +
+               "elementum imperdiet. Duis sagittis ipsum. Praesent mauris. " +
+               "Fusce nec tellus sed augue semper porta. </p>" +
                         
            "<p> This tool uses only non-TLS endpoints. TLS selection is disabled.</p>" +
 
@@ -183,8 +187,8 @@ public class EdgeSrv5TestTab extends GenericQueryTab implements GatewayTool {
                         
            "<h2>Run Test</h2>" +
            
-           "<p>Initiate the test from the Toolkit Image Document Consumer. " +
-           "After the test is run the Image Document Consumer's logs can be " +
+           "<p>Initiate the test from the Edge Server. " +
+           "After the test is run the simulated Clearing House logs can be " +
            "displayed with Inspect Results.</p>"
         ));
 
@@ -196,6 +200,7 @@ public class EdgeSrv5TestTab extends GenericQueryTab implements GatewayTool {
     class Runner implements ClickHandler {
 
         public void onClick(ClickEvent event) {
+            try {
             resultPanel.clear();
 
 			if (getCurrentTestSession().isEmpty()) {
@@ -205,12 +210,12 @@ public class EdgeSrv5TestTab extends GenericQueryTab implements GatewayTool {
 
             if (!verifySiteProvided()) return;
 
-			addStatusBox();
-			getGoButton().setEnabled(false);
-			getInspectButton().setEnabled(false);
+//			addStatusBox();
+//			getGoButton().setEnabled(false);
+//			getInspectButton().setEnabled(false);
 
             Map<String, String> parms = new HashMap<>();
-            parms.put("$testdata_home$", config.get(SimulatorProperties.homeCommunityId).asString());
+//      parms.put("$testdata_home$", config.get(SimulatorProperties.homeCommunityId).asString());
 
             Panel logLaunchButtonPanel = rigForRunning();
             logLaunchButtonPanel.clear();
@@ -229,45 +234,31 @@ public class EdgeSrv5TestTab extends GenericQueryTab implements GatewayTool {
                     queryCallback.onSuccess(result);
                 }
             }.run(new RunTestRequest(getCommandContext(),getSiteSelection(),new TestInstance(testToRun),parms,true,testSelectionManager.getSelectedSections()));
-        }
+
+            } catch (Exception e) {
+                new PopupMessage(e.getMessage());
+            }
+
+            }
     }
 
     Button addTestEnvironmentInspectorButton(final String siteName) {
         return addTestEnvironmentInspectorButton(siteName, "Inspect Test Data - " + siteName);
     }
 
-    Button addTestEnvironmentInspectorButton(final String siteName, String label) {
+    public Button addTestEnvironmentInspectorButton(final String siteName, String label) {
         Button button = new Button(label);
         button.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent clickEvent) {
-                List<TestInstance> tests = new ArrayList<TestInstance>();
-                tests.add(new TestInstance("15807"));
-                new GetTestResultsCommand(){
-                    @Override
-                    public void onComplete(Map<String, Result> stringResultMap) {
-                        Result result = stringResultMap.get("15807");
-                        if (result == null) {
-                            new PopupMessage("Results not available");
-                            return;
-                        }
-                        SiteSpec siteSpec = new SiteSpec(siteName, ActorType.RESPONDING_GATEWAY, null, new TestSession(getCurrentTestSession()));
-
-                        MetadataInspectorTab itab = new MetadataInspectorTab();
-                        List<Result> results = new ArrayList<Result>();
-                        results.add(result);
-                        itab.setResults(results);
-                        itab.setSiteSpec(siteSpec);
-                        itab.onTabLoad(true, "Insp");
-                    }
-                }.run(new GetTestResultsRequest(getCommandContext(),tests));
+                new PopupMessage("TODO");
             }
         });
         return button;
     }
 
     public String getWindowShortName() {
-        return "igtests";
+        return "estests";
     }
 
 }

@@ -119,7 +119,8 @@ public class ActorOptionConfig extends ActorOption {
     }
 
     public boolean isEdgeServerSut() {
-        return false;
+        return actorTypeId != null
+                && ActorType.EDGE_SERVER_5.getActorCode().equals(actorTypeId);
     }
 
     public boolean isOnDemand() {

@@ -5,11 +5,10 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
 import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.actortransaction.client.ParamType;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.installation.shared.TestSession;
-import gov.nist.toolkit.services.client.RawResponse;
-import gov.nist.toolkit.services.client.EdgeSrv5OrchestrationRequest;
-import gov.nist.toolkit.services.client.EdgeSrv5OrchestrationResponse;
+import gov.nist.toolkit.services.client.*;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
@@ -18,15 +17,14 @@ import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 import gov.nist.toolkit.xdstools2.shared.command.request.BuildEdgeSrv5TestOrchestrationRequest;
 
-public class BuildEdgeSrv5TestOrchestrationButton extends AbstractOrchestrationButton {
+public class BuildES5TestOrchestrationButton  extends AbstractOrchestrationButton {
     private ConformanceTestTab testTab;
     private Panel initializationPanel;
     private FlowPanel initializationResultsPanel = new FlowPanel();
     private TestContext testContext;
     private TestContextView testContextView;
 
-    public BuildEdgeSrv5TestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextView testContextView,
-                                         Panel initializationPanel, String label) {
+    BuildES5TestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextView testContextView, Panel initializationPanel, String label) {
         this.initializationPanel = initializationPanel;
         this.testTab = testTab;
         this.testContext = testContext;
@@ -34,20 +32,9 @@ public class BuildEdgeSrv5TestOrchestrationButton extends AbstractOrchestrationB
 
         HTML instructions = new HTML(
                 "<p>" +
-                        "The System Under Test (SUT) is a Version 5 Edge Server. " +
-                        "The diagram below shows the test environment with the SUT in orange. " +
-                        "The test software creates and configures the simulators in the diagram. " +
-                        "</p>" +
-
-                        "<p>" +
-                        "After you have initialized the test environment, you should see the full set of configuration " +
-                        "parameters needed to configure and test your system. " +
-                        "</p>" +
-
-                        "<p>"  +
-                        "You need to configure your Edge Server to communicate with the " +
-                        "simulators shown in the diagram. " +
-                        "</p>");
+                        "TODO" +
+                        "</p>"
+        );
 
         initializationPanel.add(instructions);
 
@@ -58,7 +45,6 @@ public class BuildEdgeSrv5TestOrchestrationButton extends AbstractOrchestrationB
         setResetLabel("Reset");
         build();
         panel().add(initializationResultsPanel);
-
     }
 
     public void orchestrate() {
@@ -76,11 +62,7 @@ public class BuildEdgeSrv5TestOrchestrationButton extends AbstractOrchestrationB
         request.setEnvironmentName(testTab.getEnvironmentSelection());
         request.setUseExistingState(!isResetRequested());
         SiteSpec siteSpec = new SiteSpec(testContext.getSiteName(), new TestSession(testTab.getCurrentTestSession()));
-        /*
-        if (isSaml()) {
-            setSamlAssertion(siteSpec);
-        }
-        */
+
         request.setSiteUnderTest(siteSpec);
 
         testTab.setSiteToIssueTestAgainst(siteSpec);
@@ -98,8 +80,6 @@ public class BuildEdgeSrv5TestOrchestrationButton extends AbstractOrchestrationB
                 initializationResultsPanel.add(new HTML("Initialization Complete"));
 
                 if (testContext.getSiteUnderTest() != null) {
-                    initializationResultsPanel.add(new HTML("<h2>System Under Test Configuration</h2>"));
-                    initializationResultsPanel.add(new HTML("Site: " + testContext.getSiteUnderTest().getName()));
                     // TODO
                 }
 
@@ -109,7 +89,7 @@ public class BuildEdgeSrv5TestOrchestrationButton extends AbstractOrchestrationB
                 FlexTable table = new FlexTable();
                 int row = 0;
                 // Pass through simulators in Orchestra enum order
-                for (Orchestra o : Orchestra.values()) {
+                for (BuildRIGTestOrchestrationButton.Orchestra o : BuildRIGTestOrchestrationButton.Orchestra.values()) {
                     // get matching simulator config
                     SimulatorConfig sim = null;
                     for (SimulatorConfig c : orchResponse.getSimulatorConfigs()) {
@@ -139,13 +119,14 @@ public class BuildEdgeSrv5TestOrchestrationButton extends AbstractOrchestrationB
                 }
                 initializationResultsPanel.add(table);
 
+                initializationResultsPanel.add(new HTML("<p>Configure your " +
+                        "Responding Imaging Gateway SUT to forward Retrieve Imaging " +
+                        "Document Set Requests to these Imaging Document Sources<hr/>"));
 
                 testTab.displayTestCollection(testTab.getMainView().getTestsPanel());
             }
         }.run(new BuildEdgeSrv5TestOrchestrationRequest(ClientUtils.INSTANCE.getCommandContext(),request));
-    }
-
-    @SuppressWarnings("javadoc")
+    } @SuppressWarnings("javadoc")
     public enum Orchestra {
 
         ch_reg ("Clearinghouse Registry", ActorType.REGISTRY, new SimulatorConfigElement[] { }),
@@ -169,8 +150,8 @@ public class BuildEdgeSrv5TestOrchestrationButton extends AbstractOrchestrationB
         public SimulatorConfigElement[] getElements() {
             return elements;
         }
-
         public String[] getDisplayProps() {
+            // TODO
             switch (actorType) {
                 case REGISTRY:
                 case REPOSITORY:
@@ -179,5 +160,8 @@ public class BuildEdgeSrv5TestOrchestrationButton extends AbstractOrchestrationB
             }
             return new String[0];
         }
-    }
+
+    } // EO Orchestra enum
+
+
 }

@@ -423,6 +423,20 @@ public enum ActorType implements IsSerializable, Serializable {
             IheItiProfile.MHD,
             Arrays.asList(OptionType.REQUIRED)
     ),
+    EDGE_SERVER_5 (
+            "Edge Server 5",
+            Arrays.asList("EDGE_SERVER_5"),
+            "es5",
+            "",
+            "",
+            Arrays.asList(TransactionType.NONE),
+            false,
+            null,
+            false,
+            Constants.USE_SHORTNAME,
+            IheItiProfile.XDS_I,
+            Arrays.asList(OptionType.REQUIRED)
+    ),
     FHIR_SUPPORT(
             "FHIR Support",
             Arrays.asList(""),

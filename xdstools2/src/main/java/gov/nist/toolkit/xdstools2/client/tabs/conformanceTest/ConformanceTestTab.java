@@ -47,6 +47,7 @@ import gov.nist.toolkit.xdstools2.client.event.testContext.TestContextChangedEve
 import gov.nist.toolkit.xdstools2.client.event.testContext.TestContextChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
+import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.BuildEdgeSrv5TestOrchestrationButton;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.BuildIGTestOrchestrationButton;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.LaunchInspectorClickHandler;
@@ -896,7 +897,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 			initializationPanel.add(orchInit.panel());
 		}
 		else if (currentActorOption.isEdgeServerSut()) {
-			orchInit = new BuildEdgeSrv5TestOrchestrationButton(this, testContext, testContextView, initializationPanel, label);
+			orchInit = new BuildES5TestOrchestrationButton(this, testContext, testContextView, initializationPanel, label);
 			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
 			initializationPanel.add(orchInit.panel());
 		}
