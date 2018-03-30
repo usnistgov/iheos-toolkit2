@@ -8,8 +8,7 @@
 # This script is generic. If it is named build.vm.sh it will use
 # build.vm.stuff as the update content directory
 
-VERSION=5
-BUILDDIR=~/tk
+BUILDDIR=`pwd`
 
 BASEDIR=$(dirname $0)
 if [ $BASEDIR='.' ];
@@ -26,24 +25,12 @@ cd xdstools2/target
 WARNAME=$(basename *.war .war)
 
 
-cd ~/tk
+
+cd $BUILDDIR
 mkdir xdstools2/target/$WARNAME/javadoc
 bash $BASEDIR/genapidoc.sh xdstools2/target/$WARNAME/javadoc
 
 cd xdstools2
 mvn -o site
 
-cd target
-rm -r $WARNAME/site
-
-pwd
-echo "warname is $WARNAME"
-
-mv site $WARNAME
-
-cd $WARNAME
-jar cf ../xdstools$VERSION.war *
-
-cd ${BASEDIR}/${SCRIPTNAME}.stuff
-jar uf ~/tk/xdstools2/target/xdstools$VERSION.war WEB-INF
 
