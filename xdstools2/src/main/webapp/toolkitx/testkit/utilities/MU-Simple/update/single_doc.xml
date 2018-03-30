@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lcm:SubmitObjectsRequest xmlns:lcm="urn:oasis:names:tc:ebxml-regrep:xsd:lcm:3.0">
+    <rim:RegistryObjectList xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0">$metadata_update$</rim:RegistryObjectList>
+</lcm:SubmitObjectsRequest>
+
+

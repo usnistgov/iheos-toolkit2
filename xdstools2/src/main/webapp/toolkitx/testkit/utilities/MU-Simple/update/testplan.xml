@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>MU-Simple/update</Test>
+  <Rule>Update original DocumentEntry</Rule>
+  <TestStep id="update">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <MuTransaction>
+      <ParseMetadata>False</ParseMetadata>
+      <NoAssignUids/>
+      <XDSb/>
+      <NoPatientId/>
+      <MetadataFile>single_doc.xml</MetadataFile>
+    </MuTransaction>
+  </TestStep>
+</TestPlan>

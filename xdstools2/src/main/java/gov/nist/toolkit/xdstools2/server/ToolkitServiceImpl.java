@@ -7,7 +7,6 @@ import gov.nist.toolkit.actortransaction.TransactionErrorCodeDbLoader;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.common.datatypes.Hl7Date;
-import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.PidSet;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
@@ -82,7 +81,6 @@ import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.tk.TkLoader;
 import gov.nist.toolkit.tk.client.TkProps;
-import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.XmlFormatter;
 import gov.nist.toolkit.valregmsg.message.SchemaValidation;
@@ -1185,7 +1183,8 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         // TODO
         // 1. get Mc and M from request.originalGetDcocs
         // 2. compare Mc with Mc' where Mc' is request.toBeUpdatedMc
-        // 3. replace M with differences from Mc and Mc'
+        //   Skip. replace M with differences from Mc and Mc'. This method is not necessary.
+        // 3. Translate entire Mc' to new M', warn when there are no changes.
         // 4. run test plan (needs to be created)
         // 5. return test logs
         // 6. Client: wire the run command (needs to be created)
@@ -1331,7 +1330,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         Metadata m2 = MetadataCollectionToMetadata.buildMetadata(finalMc, true);
         List<OMElement> eles = m2.getV3();
 
-        // TODO: need to replace ids in the finalMc
+        // Need to replace ids in the finalMc
         Linkage linkage = new Linkage(null);
         if (eles.size()==3) {
             // DocumentEntry
@@ -1342,20 +1341,64 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
             // Assocs
             // Should be ok since we are adding a new one which already has a symbolic id
         }
+/*
+        <lcm:SubmitObjectsRequest xmlns:lcm="urn:oasis:names:tc:ebxml-regrep:xsd:lcm:3.0">
+    <rim:RegistryObjectList xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0">
+    </rim:RegistryObjectList>
+</lcm:SubmitObjectsRequest>
+*/
 
+//        OMElement registryObjectList = MetadataSupport.om_factory.createOMElement("RegistryObjectList", MetadataSupport.ebRIMns3);
+//        for (OMElement e : eles) {
+//            registryObjectList.addChild(e);
+//        }
+//
+//        OMElement submitObjectsRequest = MetadataSupport.om_factory.createOMElement("SubmitObjectsRequest", MetadataSupport.ebLcm3);
+//        submitObjectsRequest.addChild(registryObjectList);
 
-        OMElement x = MetadataSupport.om_factory.createOMElement("Metadata", null);
-
-        for (OMElement e : eles)
-            x.addChild(e);
-
-        File outFile = new File("/home/skb1/tmpTest/out.xml");
-
-        try {
-            Io.stringToFile(outFile, new OMFormatter(x).toString());
-        } catch (IOException e1) {
-            e1.printStackTrace();
+        // Run the test plan with dynamic metadata content as a param
+        StringBuilder metadataSb = new StringBuilder();
+        for (OMElement e : eles) {
+            metadataSb.append(new OMFormatter(e).toString());
         }
+
+        // begin debug
+//        File outFile = new File("/home/skb1/tmpTest/out.xml");
+//        try {
+//            Io.stringToFile(outFile, metadataSb.toString());
+//        } catch (IOException e1) {
+//            e1.printStackTrace();
+//        }
+        // end debug
+
+        TestInstance testInstance = new TestInstance("MU-Simple",request.getTestSession());
+//
+//        TestKitSearchPath searchPath = session().getTestkitSearchPath();
+//        logger.info(searchPath.toString());
+//        TestKit testKit = searchPath.getTestKitForTest(testInstance.getId());
+//        TestDefinition testDef = testKit.getTestDef(testInstance.getId());
+//
+//        List<String> sections = testDef.getSectionIndex();
+//        for (String s : sections) {
+//            if (s.equals("update")) {
+//
+//            }
+//        }
+
+
+        List<String> sections = new ArrayList<String>();
+        Map<String, String> params = new HashMap<String, String>();
+//        params.put("$myfile$","/home/skb1/tmpTest/out.xml");
+        params.put("$metadata_update$", metadataSb.toString());
+        Result updateResult = session().xdsTestServiceManager().xdstest(
+               testInstance
+                , sections
+                , params
+                , null
+                , null
+                ,true);
+
+        logger.info("Update result was: " + updateResult.passed());
 
 
         return null;
