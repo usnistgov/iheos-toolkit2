@@ -7,6 +7,7 @@ import gov.nist.toolkit.actortransaction.TransactionErrorCodeDbLoader;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.common.datatypes.Hl7Date;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.PidSet;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
@@ -1348,19 +1349,19 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 </lcm:SubmitObjectsRequest>
 */
 
-//        OMElement registryObjectList = MetadataSupport.om_factory.createOMElement("RegistryObjectList", MetadataSupport.ebRIMns3);
-//        for (OMElement e : eles) {
-//            registryObjectList.addChild(e);
-//        }
-//
-//        OMElement submitObjectsRequest = MetadataSupport.om_factory.createOMElement("SubmitObjectsRequest", MetadataSupport.ebLcm3);
-//        submitObjectsRequest.addChild(registryObjectList);
+        OMElement registryObjectList = MetadataSupport.om_factory.createOMElement("RegistryObjectList", MetadataSupport.ebRIMns3);
+        for (OMElement e : eles) {
+            registryObjectList.addChild(e);
+        }
+
+        OMElement submitObjectsRequest = MetadataSupport.om_factory.createOMElement("SubmitObjectsRequest", MetadataSupport.ebLcm3);
+        submitObjectsRequest.addChild(registryObjectList);
 
         // Run the test plan with dynamic metadata content as a param
-        StringBuilder metadataSb = new StringBuilder();
-        for (OMElement e : eles) {
-            metadataSb.append(new OMFormatter(e).toString());
-        }
+//        StringBuilder metadataSb = new StringBuilder();
+//        for (OMElement e : eles) {
+//            metadataSb.append(new OMFormatter(e).toString());
+//        }
 
         // begin debug
 //        File outFile = new File("/home/skb1/tmpTest/out.xml");
@@ -1386,15 +1387,17 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 //        }
 
 
-        List<String> sections = new ArrayList<String>();
-        Map<String, String> params = new HashMap<String, String>();
+        List<String> sections = new ArrayList<>();
+        Map<String, String> params = new HashMap<>();
+        Map<String, Object> params2 = new HashMap<>();
 //        params.put("$myfile$","/home/skb1/tmpTest/out.xml");
-        params.put("$metadata_update$", metadataSb.toString());
+//        params.put("$metadata_update$", metadataSb.toString());
+        params2.put("MUObject", submitObjectsRequest);
         Result updateResult = session().xdsTestServiceManager().xdstest(
                testInstance
                 , sections
                 , params
-                , null
+                , params2
                 , null
                 ,true);
 

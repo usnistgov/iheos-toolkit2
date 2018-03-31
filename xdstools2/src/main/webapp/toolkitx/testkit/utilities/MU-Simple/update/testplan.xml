@@ -4,11 +4,11 @@
   <TestStep id="update">
     <ExpectedStatus>Success</ExpectedStatus>
     <MuTransaction>
-      <ParseMetadata>False</ParseMetadata>
-      <NoAssignUids/>
       <XDSb/>
       <NoPatientId/>
-      <MetadataFile>single_doc.xml</MetadataFile>
+      <NoAssignUids/>
+      <ParseMetadata>False</ParseMetadata>
+      <MetadataExL2MapKey>MUObject</MetadataExL2MapKey>
     </MuTransaction>
   </TestStep>
 </TestPlan>

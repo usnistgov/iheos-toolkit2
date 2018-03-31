@@ -18,6 +18,4 @@ public class MuTransaction extends RegisterTransaction {
 	protected String getBasicTransactionName() {
 		return "update";
 	}
-
-
 }
