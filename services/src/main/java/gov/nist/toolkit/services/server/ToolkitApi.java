@@ -227,6 +227,7 @@ public class ToolkitApi {
         siteSpec.setName(siteName);
         siteSpec.setTls(isTls);
         siteSpec.validate();
+        session.isTls = isTls;
         if (session.getTestSession() == null) session.setTestSession(testSession);
         // TODO create environment name in following call?
         return xdsTestServiceManager().runMesaTest(environmentName,testSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
