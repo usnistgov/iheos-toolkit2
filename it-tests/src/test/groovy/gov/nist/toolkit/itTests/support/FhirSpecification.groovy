@@ -12,9 +12,11 @@ class FhirSpecification extends ToolkitSpecification {
 
     def startGrizzlyWithFhir(String port) {
         remoteToolkitPort = port
-        server = new GrizzlyController()
-        server.start(remoteToolkitPort);
-        server.withFhirServlet()
+        if (localServerMode) {
+            server = new GrizzlyController()
+            server.start(remoteToolkitPort);
+            server.withFhirServlet()
+        }
         Installation.instance().overrideToolkitPort(remoteToolkitPort)  // ignore toolkit.properties
     }
 
