@@ -21,11 +21,11 @@ public class CodeFilterBank  {
     List<CodeFilter> codeFilters = new ArrayList<>();
     public CodesConfiguration codesConfiguration = null;
     public int codeBoxSize = 2;
+    StatusDisplay statusDisplay;
 
-    GenericQueryTab queryTab;
 
-    public CodeFilterBank(GenericQueryTab genericQueryTab) {
-        this.queryTab = genericQueryTab;
+    public CodeFilterBank(StatusDisplay statusDisplay) {
+        this.statusDisplay = statusDisplay;
         bind();
     }
 
@@ -35,14 +35,14 @@ public class CodeFilterBank  {
             public void onComplete(CodesResult result) {
                 for (AssertionResult a : result.result.assertions.assertions) {
                     if (!a.status) {
-                        queryTab.resultPanel.add(GenericQueryTab.addHTML("<font color=\"#FF0000\">" + a.assertion + "</font>"));
+                        statusDisplay.getResultPanel().add(GenericQueryTab.addHTML("<font color=\"#FF0000\">" + a.assertion + "</font>"));
                     }
                 }
                 codesConfiguration = result.codesConfiguration;
                 for (CodeFilter codeFilter : codeFilters) {
                     codeFilter.editButton.addClickHandler(
                             new CodeEditButtonSelector(
-                                    queryTab,
+                                    statusDisplay,
                                     codesConfiguration.getCodeConfiguration(codeFilter.codeName),
                                     codeFilter.selectedCodes
                             )

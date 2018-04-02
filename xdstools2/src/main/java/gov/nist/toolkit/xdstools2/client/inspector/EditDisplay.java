@@ -4,8 +4,12 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
+import gov.nist.toolkit.results.client.CodesConfiguration;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
@@ -15,19 +19,40 @@ import gov.nist.toolkit.xdstools2.client.command.command.UpdateDocumentEntryComm
 import gov.nist.toolkit.xdstools2.client.command.command.ValidateDocumentEntryCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.CodeFilterBank;
+import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.StatusDisplay;
 import gov.nist.toolkit.xdstools2.shared.command.request.UpdateDocumentEntryRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.ValidateDocumentEntryRequest;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EditDisplay extends CommonDisplay {
     private Button validateMuBtn = new Button("Validate");
     private Button updateBtn = new Button("Update");
     private DocumentEntry de;
     private TestInstance logId;
+    Map<String, List<String>> codeSpec = new HashMap<String, List<String>>();
 
     // Edit controls
     private TextBox titleTxt = new TextBox();
+    private TextBox commentsTxt = new TextBox();
+    CodeFilterBank codeFilterBank;
+    HTML statusBox = new HTML();
+    VerticalPanel resultPanel = new VerticalPanel();
+    StatusDisplay statusDisplay = new StatusDisplay() {
+        @Override
+        public VerticalPanel getResultPanel() {
+            return resultPanel;
+        }
+
+        @Override
+        public void setStatus(String message, boolean status) {
+            statusBox.setHTML(HtmlMarkup.bold(HtmlMarkup.red(message, status)));
+        }
+    };
+
 
 //    HTML errorMsgs = new HTML();
 
@@ -35,6 +60,26 @@ public class EditDisplay extends CommonDisplay {
         if (de==null) throw new ToolkitRuntimeException("Unexpected null documentEntry");
 
         de.title = titleTxt.getText();
+        de.comments = commentsTxt.getText();
+
+        codeSpec.clear();
+        de.classCode.clear();
+        addToCodeSpec(codeSpec);
+        de.classCode.addAll(codeSpec.get(CodesConfiguration.ClassCode));
+    }
+
+    public void addToCodeSpec(Map<String, List<String>> codeSpec) {
+//        deStatusFilter.addToCodeSpec(codeSpec, CodesConfiguration.DocumentEntryStatus);
+//        creationTimeFromFilter.addToCodeSpec(codeSpec, CodesConfiguration.CreationTimeFrom);
+//        creationTimeToFilter.addToCodeSpec(codeSpec, CodesConfiguration.CreationTimeTo);
+//        serviceStartTimeFromFilter.addToCodeSpec(codeSpec, CodesConfiguration.ServiceStartTimeFrom);
+//        serviceStartTimeToFilter.addToCodeSpec(codeSpec, CodesConfiguration.ServiceStartTimeTo);
+//        serviceStopTimeFromFilter.addToCodeSpec(codeSpec, CodesConfiguration.ServiceStopTimeFrom);
+//        serviceStopTimeToFilter.addToCodeSpec(codeSpec, CodesConfiguration.ServiceStopTimeTo);
+//        authorFilter.addToCodeSpec(codeSpec, CodesConfiguration.AuthorPerson);
+//        onDemandFilter.addToCodeSpec(codeSpec, CodesConfiguration.DocumentEntryType);
+//        returnFilter.addToCodeSpec(codeSpec, CodesConfiguration.ReturnsType);
+        codeFilterBank.addToCodeSpec(codeSpec);
     }
 
     private class ValidateClickHandler implements ClickHandler {
@@ -68,6 +113,7 @@ public class EditDisplay extends CommonDisplay {
 
                 @Override
                 public void onComplete(List<Result> result) {
+                    // TODO: should we append the result to the Inspector?
                     if (result!=null) {
                         if (result.size() > 0)
                             new PopupMessage("got " + result.get(0).passed() + " " + result.size());
@@ -90,6 +136,10 @@ public class EditDisplay extends CommonDisplay {
         this.de = DocumentEntry.clone(de);
         validateMuBtn.addClickHandler(new ValidateClickHandler());
         updateBtn.addClickHandler(new UpdateClickHandler());
+
+        // The collective validate bank being assembled
+        codeFilterBank = new CodeFilterBank(statusDisplay);
+
         editDetail();
     }
 
@@ -117,6 +167,9 @@ public class EditDisplay extends CommonDisplay {
        ft.setWidget(row, 1, updateBtn);
        row++;
 
+       /**
+        * See ITI TF Vol 3. Table 4.2.3.2-1: DocumentEntry Metadata Attribute Definition (previously Table 4.1-5)
+        */
         try {
             if (!de.isFhir) {
                 ft.setHTML(row, 0, bold("objectType", b));
@@ -131,7 +184,9 @@ public class EditDisplay extends CommonDisplay {
             row++;
 
             ft.setHTML(row, 0, bold("comments", b));
-            ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.comments, de.commentsX));
+//            ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.comments, de.commentsX));
+            commentsTxt.setText(de.comments);
+            ft.setWidget(row, 1, commentsTxt);
             row++;
 
             ft.setHTML(row, 0, bold("id", b));
@@ -214,30 +269,53 @@ public class EditDisplay extends CommonDisplay {
             // don't know how to handle diffs yet on extra metadata
             row = displayDetail(ft, row, b, de.extra, de.extraX);
 
-            row = displayDetail(ft, row, b, "classCode", de.classCode, de.classCodeX);
+//            row = displayDetail(ft, row, b, "classCode", de.classCode, de.classCodeX);
 
-            row = displayDetail(ft, row, b, "confCodes", de.confCodes, de.confCodesX);
+//            row = displayDetail(ft, row, b, "confCodes", de.confCodes, de.confCodesX);
+//
+//            row = displayDetail(ft, row, b, "eventCodeList", de.eventCodeList, de.eventCodeListX);
+//
+//            row = displayDetail(ft, row, b, "formatCode", de.formatCode, de.formatCodeX);
+//
+//            row = displayDetail(ft, row, b, "healthcareFacilityType", de.hcftc, de.hcftcX);
+//
+//            row = displayDetail(ft, row, b, "practiceSetting", de.pracSetCode, de.pracSetCodeX);
+//
+//            row = displayDetail(ft, row, b, "typeCode", de.typeCode, de.typeCodeX);
+//
+//            row = displayDetail(ft, row, b, de.authors, de.authorsX);
 
-            row = displayDetail(ft, row, b, "eventCodeList", de.eventCodeList, de.eventCodeListX);
+            // XDS Codes
+            codeFilterBank.addFilter(ft, row, 0, CodesConfiguration.ClassCode);
+            row++;
 
-            row = displayDetail(ft, row, b, "formatCode", de.formatCode, de.formatCodeX);
+            // TODO: configure addToCodeSpec
 
-            row = displayDetail(ft, row, b, "healthcareFacilityType", de.hcftc, de.hcftcX);
+//            codeFilterBank.addFilter(paramGrid, prow, 1, CodesConfiguration.TypeCode);
+//            prow++;
+//            codeFilterBank.addFilter(paramGrid, prow, 1, CodesConfiguration.FormatCode);
+//            prow++;
+//            codeFilterBank.addFilter(paramGrid, prow, 1, CodesConfiguration.HealthcareFacilityTypeCode);
+//            prow++;
+//            codeFilterBank.addFilter(paramGrid, prow, 1, CodesConfiguration.PracticeSettingCode);
+//            prow++;
+//            codeFilterBank.addFilter(paramGrid, prow, 1, CodesConfiguration.ConfidentialityCode);
+//            prow++;
+//            codeFilterBank.addFilter(paramGrid, prow, 1, CodesConfiguration.EventCodeList);
+//            prow++;
 
-            row = displayDetail(ft, row, b, "practiceSetting", de.pracSetCode, de.pracSetCodeX);
-
-            row = displayDetail(ft, row, b, "typeCode", de.typeCode, de.typeCodeX);
-
-            row = displayDetail(ft, row, b, de.authors, de.authorsX);
         } catch (Exception ex) {
             new PopupMessage(ex.toString());
         } finally {
             ft.setWidget(row, 0, validateMuBtn);
             ft.setWidget(row, 1, updateBtn);
             row++;
+            ft.setWidget(row, 0, statusBox);
+            row++;
+            ft.setWidget(row, 0, resultPanel);
+            row++;
             detailPanel.add(ft);
         }
 
     }
-
 }

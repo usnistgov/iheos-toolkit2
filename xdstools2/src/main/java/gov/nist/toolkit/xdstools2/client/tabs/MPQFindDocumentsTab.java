@@ -58,7 +58,7 @@ public class MPQFindDocumentsTab extends GenericQueryTab {
 		genericQueryTab=this;
 
 		FlowPanel flowPanel=new FlowPanel();
-		codeFilterBank = new CodeFilterBank(/*toolkitService, */genericQueryTab);
+		codeFilterBank = new CodeFilterBank(genericQueryTab);
 
 		FlexTable paramGrid = new FlexTable();
 

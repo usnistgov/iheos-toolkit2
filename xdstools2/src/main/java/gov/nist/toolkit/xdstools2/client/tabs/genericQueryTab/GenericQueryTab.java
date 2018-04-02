@@ -13,7 +13,11 @@ import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.installation.shared.TestSession;
-import gov.nist.toolkit.registrymetadata.client.*;
+import gov.nist.toolkit.registrymetadata.client.AnyId;
+import gov.nist.toolkit.registrymetadata.client.AnyIds;
+import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
+import gov.nist.toolkit.registrymetadata.client.ObjectRef;
+import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.results.client.AssertionResult;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
@@ -44,6 +48,7 @@ import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.util.InformationLink;
 import gov.nist.toolkit.xdstools2.client.widgets.PidWidget;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.StatusDisplay;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetStsSamlAssertionRequest;
 
 import java.util.ArrayList;
@@ -57,7 +62,7 @@ import java.util.Map;
  * and allow the results to be inspected
  * @author bill
  */
-public abstract class GenericQueryTab  extends ToolWindow {
+public abstract class GenericQueryTab  extends ToolWindow implements StatusDisplay {
     GenericQueryTab me;
     private final SiteLoader siteLoader = new SiteLoader(this);
     static public TransactionOfferings transactionOfferings = null;  // Loaded from server
@@ -653,6 +658,12 @@ public abstract class GenericQueryTab  extends ToolWindow {
         tabTopPanel.add(msgBox);
     }
 
+    @Override
+    public VerticalPanel getResultPanel() {
+        return resultPanel;
+    }
+
+    @Override
     public void setStatus(String message, boolean status) {
         statusBox.setHTML(HtmlMarkup.bold(red(message,status)));
     }
@@ -1091,5 +1102,4 @@ public abstract class GenericQueryTab  extends ToolWindow {
         }
 
     }
-
 }
