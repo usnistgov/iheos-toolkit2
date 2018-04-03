@@ -18,12 +18,6 @@ import org.junit.Rule
 import org.junit.rules.TestName
 import spock.lang.Shared
 import spock.lang.Specification
-
-import javax.ws.rs.client.Client
-import javax.ws.rs.client.ClientBuilder
-import javax.ws.rs.client.WebTarget
-import javax.ws.rs.core.Response
-
 /**
  *
  */
@@ -35,7 +29,7 @@ class ToolkitSpecification extends Specification {
     @Shared ToolkitApi api
     @Shared Session session
     @Shared static String remoteToolkitPort = '8889'
-    @Shared static final boolean localServerMode
+    @Shared static final boolean localServerMode = true
 
     /*
      * When running it-tests as part of the build, the it-tests plugin launches a one-time startup http server.
@@ -43,7 +37,6 @@ class ToolkitSpecification extends Specification {
      * When running a single IT test inside the IDE, a local server is required.
      *
      * This block below will decide which mode the test is running in to automatically use the server as needed.
-     */
     static {
         try {
             Client client = ClientBuilder.newClient()
@@ -58,9 +51,9 @@ class ToolkitSpecification extends Specification {
             localServerMode = true
         }
     }
+     */
 
     def setupSpec() {  // there can be multiple setupSpec() fixture methods - they all get run
-
         Installation.instance().setServletContextName("");
         session = UnitTestEnvironmentManager.setupLocalToolkit()
         api = UnitTestEnvironmentManager.localToolkitApi()

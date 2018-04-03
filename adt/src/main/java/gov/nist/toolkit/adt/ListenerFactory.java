@@ -61,7 +61,7 @@ public class ListenerFactory {
         tpi.simId = simId;
         tpi.timeoutInMilli = timeoutinMilli;
 //        threadPool.add(tpi);
-        if (tpi.thread == null || !tpi.isInUse()) { // not started
+        if (tpi.thread == null) { // not started
             Thread thread = new Thread(new AdtSocketListener(tpi));
             tpi.thread = thread;
             thread.start();
