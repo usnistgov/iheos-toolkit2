@@ -60,12 +60,25 @@ public class EditDisplay extends CommonDisplay {
         if (de==null) throw new ToolkitRuntimeException("Unexpected null documentEntry");
 
         de.title = titleTxt.getText();
+        de.titleX = "";
+        de.titleDoc = "";
         de.comments = commentsTxt.getText();
+        de.commentsX = "";
+        de.commentsDoc = "";
 
         codeSpec.clear();
-        de.classCode.clear();
         addToCodeSpec(codeSpec);
-        de.classCode.addAll(codeSpec.get(CodesConfiguration.ClassCode));
+
+        if (de.classCode!=null) {
+            de.classCode.clear();
+            if (codeSpec.containsKey(CodesConfiguration.ClassCode)) {
+                de.classCode.addAll(codeSpec.get(CodesConfiguration.ClassCode));
+            }
+           if (de.classCodeX!=null)
+               de.classCodeX.clear();
+           if (de.classCodeDoc!=null)
+               de.classCodeDoc.clear();
+        }
     }
 
     public void addToCodeSpec(Map<String, List<String>> codeSpec) {
@@ -269,25 +282,42 @@ public class EditDisplay extends CommonDisplay {
             // don't know how to handle diffs yet on extra metadata
             row = displayDetail(ft, row, b, de.extra, de.extraX);
 
+            // TODO: pre-select codes in CodeFilter upon initial load
+            // TODO: fix error on Validate that says classCode is required
+            // ERROR: DocumentEntry(urn:uuid:367ce7da-71a8-4d95-bf64-981da9ec8868): Classification(urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a)(Class Code) is required but missing
+
 //            row = displayDetail(ft, row, b, "classCode", de.classCode, de.classCodeX);
-
-//            row = displayDetail(ft, row, b, "confCodes", de.confCodes, de.confCodesX);
-//
-//            row = displayDetail(ft, row, b, "eventCodeList", de.eventCodeList, de.eventCodeListX);
-//
-//            row = displayDetail(ft, row, b, "formatCode", de.formatCode, de.formatCodeX);
-//
-//            row = displayDetail(ft, row, b, "healthcareFacilityType", de.hcftc, de.hcftcX);
-//
-//            row = displayDetail(ft, row, b, "practiceSetting", de.pracSetCode, de.pracSetCodeX);
-//
-//            row = displayDetail(ft, row, b, "typeCode", de.typeCode, de.typeCodeX);
-//
-//            row = displayDetail(ft, row, b, de.authors, de.authorsX);
-
             // XDS Codes
             codeFilterBank.addFilter(ft, row, 0, CodesConfiguration.ClassCode);
             row++;
+
+//            row = displayDetail(ft, row, b, "confCodes", de.confCodes, de.confCodesX);
+            codeFilterBank.addFilter(ft, row, 0, CodesConfiguration.ConfidentialityCode);
+            row++;
+
+//            row = displayDetail(ft, row, b, "eventCodeList", de.eventCodeList, de.eventCodeListX);
+            codeFilterBank.addFilter(ft, row, 0, CodesConfiguration.EventCodeList);
+            row++;
+
+//            row = displayDetail(ft, row, b, "formatCode", de.formatCode, de.formatCodeX);
+            codeFilterBank.addFilter(ft, row, 0, CodesConfiguration.FormatCode);
+            row++;
+
+//            row = displayDetail(ft, row, b, "healthcareFacilityType", de.hcftc, de.hcftcX);
+            codeFilterBank.addFilter(ft, row, 0, CodesConfiguration.HealthcareFacilityTypeCode);
+            row++;
+
+//            row = displayDetail(ft, row, b, "practiceSetting", de.pracSetCode, de.pracSetCodeX);
+            codeFilterBank.addFilter(ft, row, 0, CodesConfiguration.PracticeSettingCode);
+            row++;
+//
+//            row = displayDetail(ft, row, b, "typeCode", de.typeCode, de.typeCodeX);
+            codeFilterBank.addFilter(ft, row, 0, CodesConfiguration.TypeCode);
+            row++;
+//
+//            row = displayDetail(ft, row, b, de.authors, de.authorsX);
+
+
 
             // TODO: configure addToCodeSpec
 
