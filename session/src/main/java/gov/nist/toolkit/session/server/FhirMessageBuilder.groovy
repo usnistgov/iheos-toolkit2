@@ -8,6 +8,7 @@ import gov.nist.toolkit.session.shared.SubMessage
 import gov.nist.toolkit.testengine.fhir.FhirSupport
 import gov.nist.toolkit.utilities.message.MultipartFormatter
 import groovy.json.JsonOutput
+import groovy.xml.XmlUtil
 import org.hl7.fhir.dstu3.model.*
 import org.hl7.fhir.exceptions.FHIRException
 import org.hl7.fhir.instance.model.api.IBaseResource
@@ -93,6 +94,7 @@ class FhirMessageBuilder {
         switch (type) {
             case "DocumentManifest":
                 DocumentManifest x = (DocumentManifest) resource;
+                addResource(subMessages, type, 'Base Resource', resourceWithoutContained(x))
                 addReference(subMessages, "Subject", x.getSubject());
                 addReference(subMessages, "Author", x.getAuthor());
                 addReference(subMessages, "Recipient", x.getRecipient());
@@ -102,6 +104,7 @@ class FhirMessageBuilder {
                 break;
             case "DocumentReference":
                 DocumentReference xdr = (DocumentReference) resource
+                addResource(subMessages, type, 'Base Resource', resourceWithoutContained(xdr))
                 addReference(subMessages, "Subject", xdr.getSubject());
                 addReference(subMessages, "Author", xdr.getAuthor());
                 addReference(subMessages, 'SourcePatient', xdr.context.sourcePatientInfo)
@@ -148,8 +151,20 @@ class FhirMessageBuilder {
         }
     }
 
-    private void addResource(List<SubMessage> subMessages, String type, Resource resource) {
-        subMessages.add(new SubMessage("${type} ${resource.id}", FhirSupport.format(resource)))
+    private void addResource(List<SubMessage> subMessages, String type, String name, Resource resource) {
+        subMessages.add(new SubMessage(name, FhirSupport.format(resource)))
+    }
+
+    private static Resource resourceWithoutContained(Resource resource) {
+        FhirContext ctx = ToolkitFhirContext.get()
+        String resourceXmlString = ctx.newXmlParser().encodeResourceToString(resource)
+        def node = new XmlSlurper().parseText(resourceXmlString)
+        node.'**'.each {
+            if (it.name() == 'contained')
+                it.replaceNode { }
+        }
+        String resultString = XmlUtil.serialize(node)
+        (Resource) ctx.newXmlParser().parseResource(resultString)
     }
 
     static String formatMessage(String message) throws IOException, SAXException, ParserConfigurationException {
