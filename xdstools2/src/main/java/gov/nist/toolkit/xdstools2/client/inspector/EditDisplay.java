@@ -39,6 +39,11 @@ public class EditDisplay extends CommonDisplay {
     // Edit controls
     private TextBox titleTxt = new TextBox();
     private TextBox commentsTxt = new TextBox();
+    private TextBox creationTimeTxt = new TextBox();
+    private TextBox serviceStartTimeTxt = new TextBox();
+    private TextBox serviceStopTimeTxt = new TextBox();
+    private TextBox languageCodeTxt = new TextBox();
+    private TextBox legalAuthenticatorTxt = new TextBox();
     CodeFilterBank codeFilterBank;
     HTML statusBox = new HTML();
     VerticalPanel resultPanel = new VerticalPanel();
@@ -63,9 +68,30 @@ public class EditDisplay extends CommonDisplay {
         de.title = titleTxt.getText();
         de.titleX = "";
         de.titleDoc = "";
+
         de.comments = commentsTxt.getText();
         de.commentsX = "";
         de.commentsDoc = "";
+
+        de.creationTime = creationTimeTxt.getText();
+        de.creationTimeX = "";
+        de.creationTimeDoc = "";
+
+        de.serviceStartTime = serviceStartTimeTxt.getText();
+        de.serviceStartTimeX = "";
+        de.serviceStartTimeDoc = "";
+
+        de.serviceStopTime = serviceStopTimeTxt.getText();
+        de.serviceStopTimeX = "";
+        de.serviceStopTimeDoc = "";
+
+        de.lang = languageCodeTxt.getText();
+        de.langX = "";
+        de.langDoc = "";
+
+        de.legalAuth = legalAuthenticatorTxt.getText();
+        de.legalAuthX = "";
+        de.legalAuthDoc = "";
 
         codeSpecMap.clear();
         addToCodeSpec(codeSpecMap);
@@ -196,15 +222,14 @@ public class EditDisplay extends CommonDisplay {
                 }
 
                 @Override
-                public void onComplete(List<Result> result) {
+                public void onComplete(Result result) {
                     // TODO: should we append the result to the Inspector?
                     if (result!=null) {
-                        if (result.size() > 0)
-                            new PopupMessage("got " + result.get(0).passed() + " " + result.size());
-                        else
-                            new PopupMessage("0 result");
+                        if (result.passed()) {
+                            new PopupMessage("Update was successful.");
+                        }
                     } else {
-                        new PopupMessage("null result!");
+                        new PopupMessage("Update failed: Null result.");
                     }
                 }
             }.run(new UpdateDocumentEntryRequest(ClientUtils.INSTANCE.getCommandContext(), it.data.siteSpec, it.data.combinedMetadata, de, logId));
@@ -230,7 +255,7 @@ public class EditDisplay extends CommonDisplay {
    private void editDetail() {
        detailPanel.clear();
 //		detailPanel.add(HyperlinkFactory.addHTML("<h4>Document Entry</h4>"));
-        String title = (de.isFhir) ? "<h4>Document Entry (translated from DocumentReference)</h4>" : "<h4>Metadata Update - Document Entry</h4>";
+        String title = (de.isFhir) ? "<h4>Document Entry (translated from DocumentReference)</h4>" : "<h4>Metadata Update (Trial Version) - Document Entry</h4>";
         addTitle(HyperlinkFactory.addHTML(title));
         FlexTable ft = new FlexTable();
         int row=0;
@@ -325,23 +350,33 @@ public class EditDisplay extends CommonDisplay {
             row++;
 
             ft.setHTML(row, 0, bold("lang", b));
-            ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.lang, de.langX));
+//            ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.lang, de.langX));
+            languageCodeTxt.setText(de.lang);
+            ft.setWidget(row, 1, languageCodeTxt);
             row++;
 
             ft.setHTML(row, 0, bold("legalAuthenticator", b));
-            ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.legalAuth, de.legalAuthX));
+//            ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.legalAuth, de.legalAuthX));
+            legalAuthenticatorTxt.setText(de.legalAuth);
+            ft.setWidget(row, 1, legalAuthenticatorTxt);
             row++;
 
             ft.setHTML(row, 0, bold("serviceStartTime", b));
-            ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.serviceStartTime, de.serviceStartTimeX));
+//            ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.serviceStartTime, de.serviceStartTimeX));
+            serviceStartTimeTxt.setText(de.serviceStartTime);
+            ft.setWidget(row, 1, serviceStartTimeTxt);
             row++;
 
             ft.setHTML(row, 0, bold("serviceStopTime", b));
-            ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.serviceStopTime, de.serviceStopTimeX));
+//            ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.serviceStopTime, de.serviceStopTimeX));
+            serviceStopTimeTxt.setText(de.serviceStopTime);
+            ft.setWidget(row, 1, serviceStopTimeTxt);
             row++;
 
             ft.setHTML(row, 0, bold("creationTime", b));
-            ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.creationTime, de.creationTimeX));
+//            ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.creationTime, de.creationTimeX));
+            creationTimeTxt.setText(de.creationTime);
+            ft.setWidget(row, 1, creationTimeTxt);
             row++;
 
             ft.setHTML(row, 0, bold("sourcePatientId", b));
@@ -427,7 +462,7 @@ public class EditDisplay extends CommonDisplay {
                 }
             }
 //
-//            row = displayDetail(ft, row, b, de.authors, de.authorsX);
+            row = displayDetail(ft, row, b, de.authors, de.authorsX);
 
 
             // TODO: configure addToCodeSpec
