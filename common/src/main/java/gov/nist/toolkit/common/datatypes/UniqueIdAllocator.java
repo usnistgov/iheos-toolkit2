@@ -1,6 +1,4 @@
-package gov.nist.toolkit.testengine.engine;
-
-import gov.nist.toolkit.common.datatypes.Hl7Date;
+package gov.nist.toolkit.common.datatypes;
 
 /**
  * Allocate new uniqueIds.  This is done in several stages. On disk are two files, a base file and and increment file.
@@ -11,7 +9,7 @@ import gov.nist.toolkit.common.datatypes.Hl7Date;
  * @author bill
  *
  */
-public class UniqueIdAllocator extends IdAllocator {
+public class UniqueIdAllocator  {
 
 	static public synchronized UniqueIdAllocator getInstance() {
 		return new UniqueIdAllocator();

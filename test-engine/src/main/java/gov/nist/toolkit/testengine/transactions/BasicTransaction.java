@@ -290,7 +290,7 @@ public abstract class BasicTransaction  {
 		linkage = new Linkage(testConfig, instruction_output, metadata);
 		linkage.addLinkage("$now$", new Hl7Date().now());
 		linkage.addLinkage("$lastyear$", new Hl7Date().lastyear());
-		linkage.addLinkage("$AlternatePatientId$", new PatientIdAllocator(testConfig).getAltPatientId());
+//		linkage.addLinkage("$AlternatePatientId$", new PatientIdAllocator(testConfig).getAltPatientId());
 		linkage.compileLinkage();
 	}
 

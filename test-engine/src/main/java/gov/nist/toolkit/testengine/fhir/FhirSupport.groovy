@@ -7,7 +7,9 @@ import gov.nist.toolkit.utilities.io.Io
 import org.apache.commons.httpclient.HttpStatus
 import org.apache.http.HttpResponse
 import org.hl7.fhir.dstu3.model.Binary
+import org.hl7.fhir.dstu3.model.DomainResource
 import org.hl7.fhir.dstu3.model.OperationOutcome
+import org.hl7.fhir.instance.model.api.IBaseReference
 import org.hl7.fhir.instance.model.api.IBaseResource
 
 class FhirSupport {
@@ -38,6 +40,17 @@ class FhirSupport {
             resource =  ctx.newXmlParser().parseResource(content)
             ctx.newXmlParser().setPrettyPrint(true).encodeResourceToString(resource)
         }
+    }
+
+    static DomainResource duplicate(DomainResource resource) {
+        FhirContext ctx = ToolkitFhirContext.get()
+        ctx.newJsonParser().parseResource(ctx.newJsonParser().encodeResourceToString(resource)) as DomainResource
+    }
+
+    static DomainResource withoutContained(DomainResource resource) {
+        DomainResource copy = duplicate(resource)
+        copy.setContained(new ArrayList())
+        copy
     }
 
     static mimeTypes = [

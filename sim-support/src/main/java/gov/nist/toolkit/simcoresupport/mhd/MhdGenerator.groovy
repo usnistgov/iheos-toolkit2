@@ -1,5 +1,6 @@
 package gov.nist.toolkit.simcoresupport.mhd
 
+import gov.nist.toolkit.common.datatypes.UniqueIdAllocator
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder
@@ -401,8 +402,13 @@ class MhdGenerator {
                     if (dr.context?.event)
                         addClassificationFromCodeableConcept(builder, dr.context.event, 'urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4', entryUUID)
 
-                    if (dr.masterIdentifier?.value)
-                        addExternalIdentifier(builder, 'urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab', unURN(dr.masterIdentifier.value), rMgr.newId(), entryUUID, 'XDSDocumentEntry.uniqueId')
+                    String masterId
+                    if (dr.masterIdentifier?.value) {
+                        masterId = unURN(dr.masterIdentifier.value)
+                    } else {
+                        masterId = UniqueIdAllocator.getInstance().allocate()
+                    }
+                    addExternalIdentifier(builder, 'urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab', masterId, rMgr.newId(), entryUUID, 'XDSDocumentEntry.uniqueId')
 
                     if (dr.subject?.hasReference())
                         addSubject(builder, fullUrl, entryUUID, 'urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427', dr.subject, 'XDSDocumentEntry.patientId')

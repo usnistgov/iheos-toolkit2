@@ -16,7 +16,7 @@ import org.xml.sax.SAXException
 import javax.xml.parsers.ParserConfigurationException
 
 class FhirMessageBuilder {
-    Bundle bundle  = null;
+    Bundle bundle = null;
     Resource resource = null;
     boolean isJson = true;
 
@@ -96,14 +96,15 @@ class FhirMessageBuilder {
                 addReference(subMessages, "Subject", x.getSubject());
                 addReference(subMessages, "Author", x.getAuthor());
                 addReference(subMessages, "Recipient", x.getRecipient());
-                for (DocumentManifest.DocumentManifestContentComponent comp: x.getContent()) {
+                for (DocumentManifest.DocumentManifestContentComponent comp : x.getContent()) {
                     addReference(subMessages, "Content", comp.getPReference());
                 }
                 break;
             case "DocumentReference":
-                DocumentReference xdr = (DocumentReference) resource;
+                DocumentReference xdr = (DocumentReference) resource
                 addReference(subMessages, "Subject", xdr.getSubject());
                 addReference(subMessages, "Author", xdr.getAuthor());
+                addReference(subMessages, 'SourcePatient', xdr.context.sourcePatientInfo)
                 addReference(subMessages, "Authenticator", xdr.getAuthenticator());
                 addReference(subMessages, "Custodian", xdr.getCustodian());
                 for (DocumentReference.DocumentReferenceRelatesToComponent dr : xdr.getRelatesTo()) {
@@ -124,13 +125,13 @@ class FhirMessageBuilder {
         if (reference == null)
             return;
         String ref = reference.getReference();
-        if (ref != null && !ref.equals("")) {
+        if (ref != null && ref != "") {
             String refType = 'Ref'
-            String value = "";
+            String value
             try {
                 IBaseResource refres
                 refres = findInBundle(ref)
-                refType = 'Bundle'
+                refType = 'in Bundle'
                 if (!refres) {
                     refres = findContained(ref)
                     refType = 'Contained'
@@ -141,10 +142,14 @@ class FhirMessageBuilder {
                 }
                 value = FhirSupport.format(refres);
             } catch (Exception e) {
-                value = "Unreadable";
+                value = "Unreadable"
             }
             subMessages.add(new SubMessage(type + " (${refType}) " + ref, value));
         }
+    }
+
+    private void addResource(List<SubMessage> subMessages, String type, Resource resource) {
+        subMessages.add(new SubMessage("${type} ${resource.id}", FhirSupport.format(resource)))
     }
 
     static String formatMessage(String message) throws IOException, SAXException, ParserConfigurationException {

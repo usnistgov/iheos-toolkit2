@@ -510,12 +510,6 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return session().xdsTestServiceManager().getTestResults(request.getTestIds(), request.getEnvironmentName(), request.getTestSession());
     }
 
-
-    @Override
-    public String getNewPatientId(String assigningAuthority)  throws NoServletSessionException { return session().xdsTestServiceManager().getNewPatientId(assigningAuthority); }
-//    public String delTestResults(List<TestInstance> testInstances, String testSession )  throws NoServletSessionException {
-//        session().xdsTestServiceManager().delTestResults(testInstances, getCurrentEnvironment(), testSession); return "";
-//    }
     @Override
     public List<Test> deleteAllTestResults(AllTestRequest request) throws Exception {
         installCommandContext(request);

@@ -19,6 +19,8 @@ import org.hl7.fhir.instance.model.api.IBaseResource
  */
 class FhirCreateTransaction extends BasicFhirTransaction {
     static private final Logger logger = Logger.getLogger(FhirCreateTransaction.class);
+    boolean addMasterIdentifier = false
+
 
     FhirCreateTransaction(StepContext s_ctx, OMElement instruction, OMElement instruction_output) {
         super(s_ctx, instruction, instruction_output)
@@ -27,7 +29,7 @@ class FhirCreateTransaction extends BasicFhirTransaction {
     def updateMasterIdentifier(def resource) {
         if ((resource instanceof DocumentManifest) || (resource instanceof DocumentReference)) {
             Identifier id = resource.getMasterIdentifier()
-            id.value = 'urn:oid:' + UniqueIdAllocator.getInstance(null).allocate()
+            id.value = 'urn:oid:' + UniqueIdAllocator.getInstance().allocate()
             resource.masterIdentifier = id
         } else if (resource instanceof Bundle) {
             Bundle bundle = resource
@@ -92,8 +94,8 @@ class FhirCreateTransaction extends BasicFhirTransaction {
         if (patientReference)
             updatePatientReference(resource, patientReference)
 
-        // assign new new masterIdentifier to all DocumentRefernce and Documeent Manifest objects
-        if (resource instanceof Resource)
+        // assign new new masterIdentifier to all DocumentReference and Document Manifest objects
+        if (addMasterIdentifier)
             updateMasterIdentifier(resource)
 
         if (originalDocUrls) {
@@ -236,7 +238,12 @@ class FhirCreateTransaction extends BasicFhirTransaction {
 
     @Override
     protected void parseInstruction(OMElement part) throws XdsInternalException, MetadataException {
-        super.parseInstruction(part)
+        String part_name = part.getLocalName()
+
+        if (part_name == 'AddMasterIdentifier')
+            addMasterIdentifier = true
+        else
+            super.parseInstruction(part)
     }
 
     @Override

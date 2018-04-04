@@ -3,6 +3,7 @@ package gov.nist.toolkit.services.server;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.Pid;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.fhir.simulators.proxy.util.ResourceParser;
@@ -373,19 +374,19 @@ public class SimulatorServiceManager extends CommonService {
 	public String delete(SimulatorConfig config) throws Exception  {
 		logger.debug(session.id() + ": " + "delete " + config.getId());
         GenericSimulatorFactory.delete(config.getId());
-        // This looks like it's redundant??
-		// Both GenericSimulatorFactory.delete and SimulatorApi(session).delete
-		// call gov.nist.toolkit.simcommon.server.AbstractActorFactory#delete(SimId) ??
-		//        new SimulatorApi(session).delete(config.getId());
 		SimServlet.deleteSim(config.getId());
+		if (config.get(SimulatorProperties.simulatorGroup) != null) {
+			List<String> group = config.get(SimulatorProperties.simulatorGroup).asList();
+			for (String id : group) {
+				deleteSimById(SimIdFactory.simIdBuilder(id));
+			}
+		}
 		return "";
-//		try {
-//			new SimCache().deleteSimConfig(config.getId());
-//		} catch (IOException e) {
-//			logger.error("delete", e);
-//			throw new Exception(e.getMessage());
-//		}
-//		return "";
+	}
+
+	private void deleteSimById(SimId simId) throws Exception {
+		GenericSimulatorFactory.delete(simId);
+		SimServlet.deleteSim(simId);
 	}
 
 	public String deleteConfigs(List<SimulatorConfig> configs) {
