@@ -20,7 +20,6 @@ import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
-import gov.nist.toolkit.session.server.services.UpdateDocumentEntry;
 import gov.nist.toolkit.session.shared.Message;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.Simulator;
@@ -131,7 +130,7 @@ public interface ToolkitService extends RemoteService  {
 
     SimId getFullSimId(GetFullSimIdRequest request) throws Exception;
 
-    List<Result> updateDocumentEntry(UpdateDocumentEntryRequest request) throws Exception;
+    Result updateDocumentEntry(UpdateDocumentEntryRequest request) throws Exception;
     MessageValidationResults validateDocumentEntry(ValidateDocumentEntryRequest request) throws Exception;
     
     MessageValidationResults validateMessage(ValidateMessageRequest request) throws Exception;

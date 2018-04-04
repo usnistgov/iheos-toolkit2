@@ -82,7 +82,6 @@ import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.tk.TkLoader;
 import gov.nist.toolkit.tk.client.TkProps;
-import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.XmlFormatter;
 import gov.nist.toolkit.valregmsg.message.SchemaValidation;
 import gov.nist.toolkit.valregmsg.validation.factories.CommonMessageValidatorFactory;
@@ -1180,7 +1179,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
      * @throws Exception
      */
     @Override
-    public List<Result> updateDocumentEntry(UpdateDocumentEntryRequest request) throws Exception {
+    public Result updateDocumentEntry(UpdateDocumentEntryRequest request) throws Exception {
         // TODO
         // 1. get Mc and M from request.originalGetDcocs
         // 2. compare Mc with Mc' where Mc' is request.toBeUpdatedMc
@@ -1304,7 +1303,8 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         ss.uniqueId = allocator.allocate();
 
         // TODO: sourceId name attribute is missing?
-        ss.sourceId = "1.3.6.1.4.1.21367.4"; // TODO: to be retrieved from toolkit.properties
+        // TODO: to be retrieved from toolkit.properties
+        ss.sourceId = "1.3.6.1.4.1.21367.4";
         ss.submissionTime = new Hl7Date().now();
 
         /* This is needed because the linkage string replacer will replace all attributes
@@ -1341,6 +1341,8 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
             linkage.replace_string_in_text_and_attributes(eles.get(1), ss.id, newSsId);
             // Assocs
             // Should be ok since we are adding a new one which already has a symbolic id
+        } else {
+           throw new ToolkitRuntimeException("MU error: Expecting 3 elements, found: " + eles.size());
         }
 /*
         <lcm:SubmitObjectsRequest xmlns:lcm="urn:oasis:names:tc:ebxml-regrep:xsd:lcm:3.0">
@@ -1404,7 +1406,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         logger.info("Update result was: " + updateResult.passed());
 
 
-        return null;
+        return updateResult;
     }
 
     @Override
