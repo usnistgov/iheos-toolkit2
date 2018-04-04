@@ -54,10 +54,11 @@ public class CodeFilterBank  {
         }.run(ClientUtils.INSTANCE.getCommandContext());
     }
 
-    public void addFilter(FlexTable paramGrid, int prow, int col, String filterName) {
+    public CodeFilter addFilter(FlexTable paramGrid, int prow, int col, String filterName) {
         CodeFilter codeFilter = new CodeFilter(paramGrid, prow, col, CodesConfiguration.getTitle(filterName), filterName, codeBoxSize);
         addCodeFilter(codeFilter);
         prow++;
+        return codeFilter;
     }
 
     public int addCodeFiltersByName(List<String> names, FlexTable paramGrid, int startingRow, int col, int boxSize) {

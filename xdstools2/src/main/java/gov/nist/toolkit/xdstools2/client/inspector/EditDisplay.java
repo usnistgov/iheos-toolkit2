@@ -19,6 +19,7 @@ import gov.nist.toolkit.xdstools2.client.command.command.UpdateDocumentEntryComm
 import gov.nist.toolkit.xdstools2.client.command.command.ValidateDocumentEntryCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.CodeFilter;
 import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.CodeFilterBank;
 import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.StatusDisplay;
 import gov.nist.toolkit.xdstools2.shared.command.request.UpdateDocumentEntryRequest;
@@ -33,7 +34,7 @@ public class EditDisplay extends CommonDisplay {
     private Button updateBtn = new Button("Update");
     private DocumentEntry de;
     private TestInstance logId;
-    Map<String, List<String>> codeSpec = new HashMap<String, List<String>>();
+    Map<String, List<String>> codeSpecMap = new HashMap<String, List<String>>();
 
     // Edit controls
     private TextBox titleTxt = new TextBox();
@@ -66,20 +67,89 @@ public class EditDisplay extends CommonDisplay {
         de.commentsX = "";
         de.commentsDoc = "";
 
-        codeSpec.clear();
-        addToCodeSpec(codeSpec);
+        codeSpecMap.clear();
+        addToCodeSpec(codeSpecMap);
 
         if (de.classCode!=null) {
             de.classCode.clear();
-            if (codeSpec.containsKey(CodesConfiguration.ClassCode)) {
-                de.classCode.addAll(codeSpec.get(CodesConfiguration.ClassCode));
+            if (codeSpecMap.containsKey(CodesConfiguration.ClassCode)) {
+                de.classCode.addAll(codeSpecMap.get(CodesConfiguration.ClassCode));
             }
            if (de.classCodeX!=null)
                de.classCodeX.clear();
            if (de.classCodeDoc!=null)
                de.classCodeDoc.clear();
         }
+
+        if (de.confCodes!=null) {
+            de.confCodes.clear();
+            if (codeSpecMap.containsKey(CodesConfiguration.ConfidentialityCode)) {
+                de.confCodes.addAll(codeSpecMap.get(CodesConfiguration.ConfidentialityCode));
+            }
+            if (de.confCodesX!=null)
+                de.confCodesX.clear();
+            if (de.confCodesDoc!=null)
+                de.confCodesDoc.clear();
+        }
+
+        if (de.eventCodeList!=null) {
+            de.eventCodeList.clear();
+            if (codeSpecMap.containsKey(CodesConfiguration.EventCodeList)) {
+                de.eventCodeList.addAll(codeSpecMap.get(CodesConfiguration.EventCodeList));
+            }
+            if (de.eventCodeListX!=null)
+                de.eventCodeListX.clear();
+            if (de.eventCodeListDoc!=null)
+                de.eventCodeListDoc.clear();
+        }
+
+        if (de.formatCode!=null) {
+            de.formatCode.clear();
+            if (codeSpecMap.containsKey(CodesConfiguration.FormatCode)) {
+                de.formatCode.addAll(codeSpecMap.get(CodesConfiguration.FormatCode));
+            }
+            if (de.formatCodeX!=null)
+                de.formatCodeX.clear();
+            if (de.formatCodeDoc!=null)
+                de.formatCodeDoc.clear();
+        }
+
+        if (de.hcftc!=null) {
+            de.hcftc.clear();
+            if (codeSpecMap.containsKey(CodesConfiguration.HealthcareFacilityTypeCode)) {
+                de.hcftc.addAll(codeSpecMap.get(CodesConfiguration.HealthcareFacilityTypeCode));
+            }
+            if (de.hcftcX!=null)
+                de.hcftcX.clear();
+            if (de.hcftcDoc!=null)
+                de.hcftcDoc.clear();
+        }
+
+        if (de.pracSetCode!=null) {
+            de.pracSetCode.clear();
+            if (codeSpecMap.containsKey(CodesConfiguration.PracticeSettingCode)) {
+                de.pracSetCode.addAll(codeSpecMap.get(CodesConfiguration.PracticeSettingCode));
+            }
+            if (de.pracSetCodeX!=null)
+                de.pracSetCodeX.clear();
+            if (de.pracSetCodeDoc!=null)
+                de.pracSetCodeDoc.clear();
+        }
+
+
+        if (de.typeCode!=null) {
+            de.typeCode.clear();
+            if (codeSpecMap.containsKey(CodesConfiguration.TypeCode)) {
+                de.typeCode.addAll(codeSpecMap.get(CodesConfiguration.TypeCode));
+            }
+            if (de.typeCodeX!=null)
+                de.typeCodeX.clear();
+            if (de.typeCodeDoc!=null)
+                de.typeCodeDoc.clear();
+        }
+
     }
+
 
     public void addToCodeSpec(Map<String, List<String>> codeSpec) {
 //        deStatusFilter.addToCodeSpec(codeSpec, CodesConfiguration.DocumentEntryStatus);
@@ -93,6 +163,7 @@ public class EditDisplay extends CommonDisplay {
 //        onDemandFilter.addToCodeSpec(codeSpec, CodesConfiguration.DocumentEntryType);
 //        returnFilter.addToCodeSpec(codeSpec, CodesConfiguration.ReturnsType);
         codeFilterBank.addToCodeSpec(codeSpec);
+
     }
 
     private class ValidateClickHandler implements ClickHandler {
@@ -283,40 +354,80 @@ public class EditDisplay extends CommonDisplay {
             row = displayDetail(ft, row, b, de.extra, de.extraX);
 
             // TODO: pre-select codes in CodeFilter upon initial load
-            // TODO: fix error on Validate that says classCode is required
-            // ERROR: DocumentEntry(urn:uuid:367ce7da-71a8-4d95-bf64-981da9ec8868): Classification(urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a)(Class Code) is required but missing
+            // TODO: add a new code that is not in the configuration
+//            See classificationDescription.requiredSchemes
 
 //            row = displayDetail(ft, row, b, "classCode", de.classCode, de.classCodeX);
             // XDS Codes
-            codeFilterBank.addFilter(ft, row, 0, CodesConfiguration.ClassCode);
+            CodeFilter classCodeSelector = codeFilterBank.addFilter(ft, row, 0, CodesConfiguration.ClassCode);
             row++;
+            // pre-load classCode
+            if (de.classCode!=null) {
+                for (String classCodeStr : de.classCode) {
+                    classCodeSelector.selectedCodes.addItem(classCodeStr);
+                }
+            }
 
 //            row = displayDetail(ft, row, b, "confCodes", de.confCodes, de.confCodesX);
-            codeFilterBank.addFilter(ft, row, 0, CodesConfiguration.ConfidentialityCode);
+            CodeFilter confCodeSelector = codeFilterBank.addFilter(ft, row, 0, CodesConfiguration.ConfidentialityCode);
             row++;
+            // pre-load confCode
+            if (de.confCodes!=null) {
+               for (String confCodeStr : de.confCodes) {
+                   confCodeSelector.selectedCodes.addItem(confCodeStr);
+               }
+            }
 
-//            row = displayDetail(ft, row, b, "eventCodeList", de.eventCodeList, de.eventCodeListX);
-            codeFilterBank.addFilter(ft, row, 0, CodesConfiguration.EventCodeList);
+//          row = displayDetail(ft, row, b, "eventCodeList", de.eventCodeList, de.eventCodeListX);
+            CodeFilter eventCodeListSel = codeFilterBank.addFilter(ft, row, 0, CodesConfiguration.EventCodeList);
             row++;
+            // pre-load eventCodeList
+            if (de.eventCodeList!=null) {
+                for (String eventCodeListStr : de.eventCodeList) {
+                    eventCodeListSel.selectedCodes.addItem(eventCodeListStr);
+                }
+            }
 
 //            row = displayDetail(ft, row, b, "formatCode", de.formatCode, de.formatCodeX);
-            codeFilterBank.addFilter(ft, row, 0, CodesConfiguration.FormatCode);
+            CodeFilter formatCodeSel = codeFilterBank.addFilter(ft, row, 0, CodesConfiguration.FormatCode);
             row++;
+            // pre-load formatCode
+            if (de.formatCode!=null) {
+               for (String formatCodeStr : de.formatCode) {
+                   formatCodeSel.selectedCodes.addItem(formatCodeStr);
+               }
+            }
 
 //            row = displayDetail(ft, row, b, "healthcareFacilityType", de.hcftc, de.hcftcX);
-            codeFilterBank.addFilter(ft, row, 0, CodesConfiguration.HealthcareFacilityTypeCode);
+            CodeFilter hcftcSel = codeFilterBank.addFilter(ft, row, 0, CodesConfiguration.HealthcareFacilityTypeCode);
             row++;
+            // pre-load formatCode
+            if (de.hcftc!=null) {
+                for (String hcftcCodeStr : de.hcftc) {
+                    hcftcSel.selectedCodes.addItem(hcftcCodeStr);
+                }
+            }
 
 //            row = displayDetail(ft, row, b, "practiceSetting", de.pracSetCode, de.pracSetCodeX);
-            codeFilterBank.addFilter(ft, row, 0, CodesConfiguration.PracticeSettingCode);
+            CodeFilter pracSel = codeFilterBank.addFilter(ft, row, 0, CodesConfiguration.PracticeSettingCode);
             row++;
+            // pre-load
+            if (de.pracSetCode!=null) {
+                for (String pracCodeStr : de.pracSetCode) {
+                    pracSel.selectedCodes.addItem(pracCodeStr);
+                }
+            }
 //
 //            row = displayDetail(ft, row, b, "typeCode", de.typeCode, de.typeCodeX);
-            codeFilterBank.addFilter(ft, row, 0, CodesConfiguration.TypeCode);
+            CodeFilter typeCodeSel = codeFilterBank.addFilter(ft, row, 0, CodesConfiguration.TypeCode);
             row++;
+            if (de.typeCode!=null) {
+                for (String typeCodeStr : de.typeCode) {
+                    typeCodeSel.selectedCodes.addItem(typeCodeStr);
+                }
+            }
 //
 //            row = displayDetail(ft, row, b, de.authors, de.authorsX);
-
 
 
             // TODO: configure addToCodeSpec
