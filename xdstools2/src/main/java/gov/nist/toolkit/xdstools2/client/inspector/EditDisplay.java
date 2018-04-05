@@ -2,9 +2,12 @@ package gov.nist.toolkit.xdstools2.client.inspector;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -53,6 +56,8 @@ public class EditDisplay extends CommonDisplay {
     VerticalPanel resultPanel = new VerticalPanel();
     private Button addAuthorBtn = new Button("add");
     private List<EditFieldsForAuthor> editFieldsForAuthorList = new ArrayList<>();
+    private int authorRow; // This approach can be used as long as no other fields, except author, are changing.
+    final static private int authorRowsUsedPerRecord = 5; // This approach can be used as long as no other fields, except author, are changing.
     StatusDisplay statusDisplay = new StatusDisplay() {
         @Override
         public VerticalPanel getResultPanel() {
@@ -516,48 +521,100 @@ public class EditDisplay extends CommonDisplay {
         }
     }
 
-    int editAuthor(FlexTable ft, int row, boolean bold, List<Author> authors) {
+    int editAuthor(final FlexTable ft, int beginRow, final boolean bold, List<Author> authors) {
+        authorRow = beginRow;
+        int row = beginRow;
         ft.setHTML(row, 0, "author");
         ft.setWidget(row, 1, addAuthorBtn);
         row++;
-
-        if (authors == null)
-            return row;
-
-        for (Author author : authors) {
-            EditFieldsForAuthor editFieldsForAuthor = new EditFieldsForAuthor();
-            editFieldsForAuthorList.add(editFieldsForAuthor);
-
-            ft.setHTML(row, 0, bold("&nbsp;person", bold));
-            editFieldsForAuthor.personTxt.setText(author.person);
-            ft.setWidget(row, 1, editFieldsForAuthor.personTxt);
-            row++;
-
-            EditFieldForAuthor editFieldForAuthor = new EditFieldForAuthor();
-            editFieldsForAuthor.fieldMap.put("institutions", editFieldForAuthor);
-            row = editAuthorDetail(ft, row, bold, "Institutions", author.institutions, editFieldForAuthor);
-
-            editFieldForAuthor = new EditFieldForAuthor();
-            editFieldsForAuthor.fieldMap.put("roles", editFieldForAuthor);
-            row = editAuthorDetail(ft, row, bold, "Roles", author.roles, editFieldForAuthor);
-
-            editFieldForAuthor = new EditFieldForAuthor();
-            editFieldsForAuthor.fieldMap.put("specialties", editFieldForAuthor);
-            row = editAuthorDetail(ft, row, bold, "Specialties", author.specialties, editFieldForAuthor);
-
-            editFieldForAuthor = new EditFieldForAuthor();
-            editFieldsForAuthor.fieldMap.put("telecom", editFieldForAuthor);
-            row = editAuthorDetail(ft, row, bold, "Telecom", author.telecom, editFieldForAuthor);
+        if (authors.size()>0) {
+            addAuthorBtn.setTitle("Add a new author to the end of the list.");
         }
+        addAuthorBtn.addClickHandler(new ClickHandler() {
+                 @Override
+                 public void onClick(ClickEvent clickEvent) {
+                     int newAuthorRow = authorRow+1 + (editFieldsForAuthorList.size()*authorRowsUsedPerRecord); // Seeks up to the last Author
+                     for (int i = 0; i < authorRowsUsedPerRecord; i++) {
+                         ft.insertRow(newAuthorRow);
+                     }
+                     addAuthorRecord(ft, newAuthorRow, bold, new Author());
+                 }
+        });
+
+        if (authors != null) {
+         for (Author author : authors) {
+             row = addAuthorRecord(ft, row, bold, author);
+            }
+         }
 
         return row;
     }
 
+    private int addAuthorRecord(final FlexTable ft, int row, boolean bold, final Author author) {
+        final EditFieldsForAuthor editFieldsForAuthor = new EditFieldsForAuthor();
+        editFieldsForAuthorList.add(editFieldsForAuthor);
+
+        editFieldsForAuthor.beginRow = row;
+        ft.setHTML(row, 0, bold("&nbsp;person", bold));
+        editFieldsForAuthor.personTxt.setText(author.person);
+        FlowPanel personPanel = new FlowPanel();
+        personPanel.add(editFieldsForAuthor.personTxt);
+        Image removeAuthorImg = new Image("icons/exclude-button.png");
+        removeAuthorImg.setTitle("Remove Author");
+        removeAuthorImg.setAltText("Minus symbol");
+        removeAuthorImg.setStyleName("copyBtn"); // reuse
+        personPanel.add(removeAuthorImg);
+        removeAuthorImg.addClickHandler(
+                new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent clickEvent) {
+                    SafeHtmlBuilder safeHtmlBuilder = new SafeHtmlBuilder();
+                    safeHtmlBuilder.appendHtmlConstant("<img src=\"icons/exclude-button.png\" title=\"Remove Author\" height=\"16\" width=\"16\"/>");
+                    safeHtmlBuilder.appendHtmlConstant("Confirm remove author " + (author.person!=null?author.person:""));
+
+                    VerticalPanel body = new VerticalPanel();
+                    body.add(new HTML("<p>Remove author?<br/></p>"));
+                    Button actionBtn =  new Button("Ok");
+                    actionBtn.addClickHandler(new ClickHandler() {
+                        @Override
+                        public void onClick(ClickEvent clickEvent) {
+
+                            for (int i = 0; i < authorRowsUsedPerRecord; i++) {
+                                ft.removeRow(editFieldsForAuthor.beginRow);
+                            }
+                            editFieldsForAuthorList.remove(editFieldsForAuthor);
+                        }
+                    });
+                    new PopupMessage(safeHtmlBuilder.toSafeHtml() , body, actionBtn);
+                }
+            });
 
 
-    int editAuthorDetail(FlexTable ft, int row, boolean bold, String key, List<String> values, EditFieldForAuthor editFieldForAuthor) {
+        ft.setWidget(row, 1, personPanel);
+        row++;
 
-        ListBox listBox = editFieldForAuthor.listBox;
+        EditFieldForAuthor editFieldForAuthor = new EditFieldForAuthor();
+        editFieldsForAuthor.fieldMap.put("institutions", editFieldForAuthor);
+        row = editAuthorDetail(ft, row, bold, "institutions", author.institutions, editFieldForAuthor);
+
+        editFieldForAuthor = new EditFieldForAuthor();
+        editFieldsForAuthor.fieldMap.put("roles", editFieldForAuthor);
+        row = editAuthorDetail(ft, row, bold, "roles", author.roles, editFieldForAuthor);
+
+        editFieldForAuthor = new EditFieldForAuthor();
+        editFieldsForAuthor.fieldMap.put("specialties", editFieldForAuthor);
+        row = editAuthorDetail(ft, row, bold, "specialties", author.specialties, editFieldForAuthor);
+
+        editFieldForAuthor = new EditFieldForAuthor();
+        editFieldsForAuthor.fieldMap.put("telecom", editFieldForAuthor);
+        row = editAuthorDetail(ft, row, bold, "telecom", author.telecom, editFieldForAuthor);
+        return row;
+    }
+
+
+    int editAuthorDetail(FlexTable ft, int row, boolean bold, final String key, List<String> values, EditFieldForAuthor editFieldForAuthor) {
+
+        final ListBox listBox = editFieldForAuthor.listBox;
         ft.setHTML(row, 0, bold("&nbsp;&nbsp;" + key, bold));
         if ((values != null && !values.isEmpty())) {
             if (values == null)

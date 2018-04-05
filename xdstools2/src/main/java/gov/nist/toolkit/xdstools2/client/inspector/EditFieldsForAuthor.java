@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class EditFieldsForAuthor {
+    int beginRow;
     TextBox personTxt = new TextBox();
     Map<String, EditFieldForAuthor> fieldMap = new HashMap<>();
 
