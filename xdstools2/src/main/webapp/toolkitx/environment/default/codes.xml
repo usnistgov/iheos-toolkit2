@@ -75,49 +75,49 @@
         <Code code="1.2.840.10065.1.12.1.16" display="Modification Signature" codingScheme="1.2.840.10065" system="urn:oid:1.2.840.10065"/>
         <Code code="1.2.840.10065.1.12.1.17" display="Administrative (Error/Edit) Signature" codingScheme="1.2.840.10065" system="urn:oid:1.2.840.10065"/>
         <Code code="1.2.840.10065.1.12.1.18" display="Timestamp Signature" codingScheme="1.2.840.10065" system="urn:oid:1.2.840.10065"/>
-        <Code code="AR" display="Autorefraction" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="BMD" display="Bone Mineral Densitometry" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="BDUS" display="Ultrasound Bone Densitometry" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="EPS" display="Cardiac Electrophysiology" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="CR" display="Computed Radiography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="CT" display="Computed Tomography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="DOCD" display="Document Digitizer Equipment" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="DX" display="Digital Radiography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="ECG" display="Electrocardiography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="ES" display="Endoscopy" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="FILMD" display="Film Digitizer" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="GM" display="General Microscopy" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="HD" display="Hemodynamic Waveform" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="IO" display="Intra-oral Radiography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="IVOCT" display="Intravascular Optical Coherence Tomography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="IVUS" display="Intravascular Ultrasound" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="KER" display="Keratometry" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="LEN" display="Lensometry" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="KO" display="Key Object Selection" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="MG" display="Mammography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="MR" display="Magnetic Resonance" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="NM" display="Nuclear Medicine" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="OAM" display="Ophthalmic Axial Measurements" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="OCT" display="Optical Coherence Tomography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="OPM" display="Ophthalmic Mapping" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="OP" display="Ophthalmic Photography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="OPR" display="Ophthalmic Refraction" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="OPT" display="Ophthalmic Tomography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="OPV" display="Ophthalmic Visual Field" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="OSS" display="Optical Surface Scanner" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="OT" display="Other Modality" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="PX" display="Panoramic X-Ray" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="PT" display="Positron emission tomography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="RF" display="Radiofluoroscopy" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="RG" display="Radiographic imaging" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="RT" display="Radiation Therapy Device" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="SM" display="Slide Microscopy" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="SR" display="Structured Report Document" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="SRF" display="Subjective Refraction" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="US" display="Ultrasound" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="VA" display="Visual Acuity" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="XA" display="X-Ray Angiography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
-        <Code code="XC" display="External-camera Photography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
+        <Code code="AR" display="Autorefraction" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="BMD" display="Bone Mineral Densitometry" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="BDUS" display="Ultrasound Bone Densitometry" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="EPS" display="Cardiac Electrophysiology" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="CR" display="Computed Radiography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="CT" display="Computed Tomography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="DOCD" display="Document Digitizer Equipment" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="DX" display="Digital Radiography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="ECG" display="Electrocardiography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="ES" display="Endoscopy" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="FILMD" display="Film Digitizer" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="GM" display="General Microscopy" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="HD" display="Hemodynamic Waveform" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="IO" display="Intra-oral Radiography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="IVOCT" display="Intravascular Optical Coherence Tomography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="IVUS" display="Intravascular Ultrasound" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="KER" display="Keratometry" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="LEN" display="Lensometry" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="KO" display="Key Object Selection" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="MG" display="Mammography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="MR" display="Magnetic Resonance" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="NM" display="Nuclear Medicine" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="OAM" display="Ophthalmic Axial Measurements" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="OCT" display="Optical Coherence Tomography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="OPM" display="Ophthalmic Mapping" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="OP" display="Ophthalmic Photography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="OPR" display="Ophthalmic Refraction" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="OPT" display="Ophthalmic Tomography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="OPV" display="Ophthalmic Visual Field" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="OSS" display="Optical Surface Scanner" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="OT" display="Other Modality" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="PX" display="Panoramic X-Ray" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="PT" display="Positron emission tomography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="RF" display="Radiofluoroscopy" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="RG" display="Radiographic imaging" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="RT" display="Radiation Therapy Device" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="SM" display="Slide Microscopy" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="SR" display="Structured Report Document" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="SRF" display="Subjective Refraction" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="US" display="Ultrasound" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="VA" display="Visual Acuity" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="XA" display="X-Ray Angiography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="XC" display="External-camera Photography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
         <Code code="T-42500" display="Abdominal aorta" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
         <Code code="T-B3000" display="Adrenal gland" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
         <Code code="T-42300" display="Aortic arch" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
@@ -249,7 +249,7 @@
         <Code code="T-12730" display="Patella" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
         <Code code="T-D6000" display="Pelvis" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
         <Code code="R-FAB58" display="Pelvis and lower extremities" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="113681" display="Phantom" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
+        <Code code="113681" display="Phantom" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
         <Code code="T-92000" display="Prostate" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
         <Code code="T-59600" display="Rectum" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
         <Code code="T-11300" display="Rib" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
@@ -507,7 +507,7 @@
         <Code code="urn:ihe:rad:TEXT" display="Radiology XDS-I Text" codingScheme="1.3.6.1.4.1.19376.1.2.3" system="urn:oid:1.3.6.1.4.1.19376.1.2.3"/>
         <Code code="urn:ihe:rad:PDF" display="Radiology XDS-I PDF" codingScheme="1.3.6.1.4.1.19376.1.2.3" system="urn:oid:1.3.6.1.4.1.19376.1.2.3"/>
         <Code code="urn:ihe:rad:CDA:ImagingReportStructuredHeadings:2013" display="Radiology XDS-I Structured CDA" codingScheme="1.3.6.1.4.1.19376.1.2.3" system="urn:oid:1.3.6.1.4.1.19376.1.2.3"/>
-        <Code code="1.2.840.10008.5.1.4.1.1.88.59" display="Key Object Selection Document" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM "/>
+        <Code code="1.2.840.10008.5.1.4.1.1.88.59" display="Key Object Selection Document" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
         <Code code="urn:ihe:card:imaging:2011" display="Cardiac Imaging Report" codingScheme="1.3.6.1.4.1.19376.1.2.3" system="urn:oid:1.3.6.1.4.1.19376.1.2.3"/>
         <Code code="urn:ihe:card:CRC:2012" display="Cardiology CRC" codingScheme="1.3.6.1.4.1.19376.1.2.3" system="urn:oid:1.3.6.1.4.1.19376.1.2.3"/>
         <Code code="urn:ihe:card:EPRC-IE:2014" display="Cardiology EPRC-IE" codingScheme="1.3.6.1.4.1.19376.1.2.3" system="urn:oid:1.3.6.1.4.1.19376.1.2.3"/>
