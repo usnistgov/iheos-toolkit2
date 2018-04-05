@@ -34,7 +34,8 @@ public class AuthorFilter extends Widget implements QueryFilter {
                     @Override
                     public void onClick(ClickEvent clickEvent) {
                         try {
-                            new AuthorPicker(inputAuthorList).show();
+                            String title = "Enter Author Person(s) Names (use % to match any characters and _ to match a single character):";
+                            new AuthorPicker(title, inputAuthorList).show();
                         } catch (Exception e) {
                             //TODO genericquerytab not accessible from here
                             new PopupMessage(e.getMessage());

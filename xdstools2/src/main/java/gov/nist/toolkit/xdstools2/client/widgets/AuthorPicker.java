@@ -10,9 +10,9 @@ public class AuthorPicker extends DialogBox {
 	final ListBox authorList = new ListBox();
 
 	@SuppressWarnings("unchecked")
-	public AuthorPicker(ListBox toUpdate) throws Exception {
+	public AuthorPicker(String title, ListBox toUpdate) throws Exception {
 		final ListBox listBoxToUpdate = toUpdate; // addTest the selected author names to the list displayed on the tab, when closing the dialogbox
-		setText("Enter Author Person(s) Names (use % to match any characters and _ to match a single character):");
+		setText(title);
 
 		FlexTable mainTable = new FlexTable();
 		mainTable.setWidget(0, 0, addAuthorBox);
@@ -34,6 +34,7 @@ public class AuthorPicker extends DialogBox {
 			public void onClick(ClickEvent event) {
 				AuthorPicker.this.hide();
 
+				listBoxToUpdate.setVisible(true);
 				listBoxToUpdate.clear();
 				for (int i=0; i<authorList.getItemCount(); i++) {
 					listBoxToUpdate.addItem(authorList.getValue(i));
@@ -54,7 +55,7 @@ public class AuthorPicker extends DialogBox {
 		add.addClickHandler(new AddClickHandler());
 		buttonPanel.add(add);
 
-		Button rm = new Button("<==Remove");
+		Button rm = new Button("Remove");
 		rm.addClickHandler(new RmClickHandler());
 		buttonPanel.add(rm);
 

@@ -5,9 +5,11 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.http.client.HtmlMarkup;
+import gov.nist.toolkit.registrymetadata.client.Author;
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
 import gov.nist.toolkit.results.client.CodesConfiguration;
 import gov.nist.toolkit.results.client.Result;
@@ -18,6 +20,7 @@ import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdstools2.client.command.command.UpdateDocumentEntryCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.ValidateDocumentEntryCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.widgets.AuthorPicker;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.CodeFilter;
 import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.CodeFilterBank;
@@ -25,6 +28,7 @@ import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.StatusDisplay;
 import gov.nist.toolkit.xdstools2.shared.command.request.UpdateDocumentEntryRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.ValidateDocumentEntryRequest;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +51,8 @@ public class EditDisplay extends CommonDisplay {
     CodeFilterBank codeFilterBank;
     HTML statusBox = new HTML();
     VerticalPanel resultPanel = new VerticalPanel();
+    private Button addAuthorBtn = new Button("add");
+    private List<EditFieldsForAuthor> editFieldsForAuthorList = new ArrayList<>();
     StatusDisplay statusDisplay = new StatusDisplay() {
         @Override
         public VerticalPanel getResultPanel() {
@@ -172,6 +178,21 @@ public class EditDisplay extends CommonDisplay {
                 de.typeCodeX.clear();
             if (de.typeCodeDoc!=null)
                 de.typeCodeDoc.clear();
+        }
+
+        if (de.authors==null) {
+            de.authors = new ArrayList<>();
+        }
+        de.authors.clear();
+        for (EditFieldsForAuthor newA : editFieldsForAuthorList) {
+            Author a = new Author();
+            a.person = newA.personTxt.getText();
+            a.institutions = newA.fieldMap.get("institutions").getValuesFromListBox();
+            a.roles = newA.fieldMap.get("roles").getValuesFromListBox();
+            a.specialties = newA.fieldMap.get("specialties").getValuesFromListBox();
+            a.telecom = newA.fieldMap.get("telecom").getValuesFromListBox();
+
+            de.authors.add(a);
         }
 
     }
@@ -462,7 +483,8 @@ public class EditDisplay extends CommonDisplay {
                 }
             }
 //
-            row = displayDetail(ft, row, b, de.authors, de.authorsX);
+//            row = displayDetail(ft, row, b, de.authors, de.authorsX);
+            row = editAuthor(ft, row, b, de.authors);
 
 
             // TODO: configure addToCodeSpec
@@ -492,6 +514,78 @@ public class EditDisplay extends CommonDisplay {
             row++;
             detailPanel.add(ft);
         }
+    }
+
+    int editAuthor(FlexTable ft, int row, boolean bold, List<Author> authors) {
+        ft.setHTML(row, 0, "author");
+        ft.setWidget(row, 1, addAuthorBtn);
+        row++;
+
+        if (authors == null)
+            return row;
+
+        for (Author author : authors) {
+            EditFieldsForAuthor editFieldsForAuthor = new EditFieldsForAuthor();
+            editFieldsForAuthorList.add(editFieldsForAuthor);
+
+            ft.setHTML(row, 0, bold("&nbsp;person", bold));
+            editFieldsForAuthor.personTxt.setText(author.person);
+            ft.setWidget(row, 1, editFieldsForAuthor.personTxt);
+            row++;
+
+            EditFieldForAuthor editFieldForAuthor = new EditFieldForAuthor();
+            editFieldsForAuthor.fieldMap.put("institutions", editFieldForAuthor);
+            row = editAuthorDetail(ft, row, bold, "Institutions", author.institutions, editFieldForAuthor);
+
+            editFieldForAuthor = new EditFieldForAuthor();
+            editFieldsForAuthor.fieldMap.put("roles", editFieldForAuthor);
+            row = editAuthorDetail(ft, row, bold, "Roles", author.roles, editFieldForAuthor);
+
+            editFieldForAuthor = new EditFieldForAuthor();
+            editFieldsForAuthor.fieldMap.put("specialties", editFieldForAuthor);
+            row = editAuthorDetail(ft, row, bold, "Specialties", author.specialties, editFieldForAuthor);
+
+            editFieldForAuthor = new EditFieldForAuthor();
+            editFieldsForAuthor.fieldMap.put("telecom", editFieldForAuthor);
+            row = editAuthorDetail(ft, row, bold, "Telecom", author.telecom, editFieldForAuthor);
+        }
+
+        return row;
+    }
+
+
+
+    int editAuthorDetail(FlexTable ft, int row, boolean bold, String key, List<String> values, EditFieldForAuthor editFieldForAuthor) {
+
+        ListBox listBox = editFieldForAuthor.listBox;
+        ft.setHTML(row, 0, bold("&nbsp;&nbsp;" + key, bold));
+        if ((values != null && !values.isEmpty())) {
+            if (values == null)
+                values = new ArrayList<>();
+            for (String value : values) {
+                listBox.addItem(value);
+            }
+        } else {
+            listBox.setVisible(false);
+        }
+        ft.setWidget(row, 1, listBox);
+
+        Button editButton = editFieldForAuthor.editBtn;
+        ft.setWidget(row, 2, editButton);
+        editButton.addClickHandler(
+                new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent clickEvent) {
+                        try {
+                            String title = "Edit " + key;
+                            new AuthorPicker(title, listBox).show();
+                        } catch (Exception e) {
+                            new PopupMessage(e.getMessage());
+                        }
+                    }
+                });
+
+        return row+1;
 
     }
 }
