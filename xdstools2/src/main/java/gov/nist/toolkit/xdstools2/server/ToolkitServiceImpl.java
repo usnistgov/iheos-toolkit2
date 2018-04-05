@@ -1279,13 +1279,22 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public Result getSimulatorEventRequest(GetSimulatorEventRequest request) throws Exception {
         installCommandContext(request);
-        return new SimulatorServiceManager(session()).getSimulatorEventRequestAsResult(request.getTransactionInstance());
+        try {
+            return new SimulatorServiceManager(session()).getSimulatorEventRequestAsResult(request.getTransactionInstance());
+        } catch (Throwable e) {
+            logger.error(ExceptionUtil.exception_details(e));
+            throw e;
+        }
     }
     @Override
     public Result getSimulatorEventResponse(GetSimulatorEventRequest request) throws Exception {
         installCommandContext(request);
-        Result result = new SimulatorServiceManager(session()).getSimulatorEventResponseAsResult(request.getTransactionInstance());
-        return result;
+        try {
+            return new SimulatorServiceManager(session()).getSimulatorEventResponseAsResult(request.getTransactionInstance());
+        } catch (Throwable e) {
+            logger.error(ExceptionUtil.exception_details(e));
+            throw e;
+        }
     }
     @Override
     public List<String> getTransactionErrorCodeRefs(GetTransactionErrorCodeRefsRequest request) throws Exception {

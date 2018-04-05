@@ -519,7 +519,8 @@ public class SimulatorServiceManager extends CommonService {
 		SimDb db = null;
 		try {
 			SimId simId = SimIdFactory.simIdBuilder(ti.simId);
-			db = new SimDb(simId);
+			db = new SimDb(simId, ti.actorType.getActorCode(), ti.trans, false);
+			db.setEvent(ti.messageId);
 		} catch (Exception e) {
 			throw new Exception("Cannot load simulator event - " + e.getMessage(), e);
 		}
@@ -539,7 +540,8 @@ public class SimulatorServiceManager extends CommonService {
 		SimDb db = null;
 		try {
 			SimId simId = SimIdFactory.simIdBuilder(ti.simId);
-			db = new SimDb(simId);
+			db = new SimDb(simId, ti.actorType.getActorCode(), ti.trans, false);
+			db.setEvent(ti.messageId);
 		} catch (Exception e) {
 			throw new Exception("Cannot load simulator event - " + e.getMessage(), e);
 		}
