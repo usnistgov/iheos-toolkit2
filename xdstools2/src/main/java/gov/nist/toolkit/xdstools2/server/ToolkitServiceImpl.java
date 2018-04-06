@@ -1307,7 +1307,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         }
 
 
-        UniqueIdAllocator allocator = UniqueIdAllocator.getInstance(null);
+        UniqueIdAllocator allocator = UniqueIdAllocator.getInstance();
         ss.uniqueId = allocator.allocate();
 
         // TODO: sourceId name attribute is missing?
