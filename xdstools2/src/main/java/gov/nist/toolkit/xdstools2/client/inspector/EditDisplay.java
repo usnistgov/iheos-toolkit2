@@ -235,7 +235,7 @@ public class EditDisplay extends CommonDisplay {
                 @Override
                 public void onComplete(MessageValidationResults result) {
                     if (result!=null) {
-                        new PopupMessage(result.getHtmlResults());
+                        new PopupMessage("Validation passed " + result.getHtmlResults());
                     }
                     else new PopupMessage("result is null");
                 }
@@ -308,6 +308,7 @@ public class EditDisplay extends CommonDisplay {
         // The collective validate bank being assembled
         codeFilterBank = new CodeFilterBank(statusDisplay);
         sourcePatientInfoLBox.setVisibleItemCount(codeFilterBank.codeBoxSize);
+        validateMuBtn.setTitle("Validate class codes as configured in Toolkit");
 
         editDetail();
     }
