@@ -108,7 +108,7 @@ public class SQFactory extends StoredQueryFactory {
 		}
 		else if (query_id.equals(MetadataSupport.SQ_FindDocumentsForMultiplePatients)) {
 			setTestMessage("FindDocumentsForMulitplePatients");
-//			storedQueryImpl = new EbXML21FindDocumentsForMultiplePatients(sqs);
+			storedQueryImpl = new FindDocumentsForMultiplePatientsSim(sqs);
 		}
 		else if (query_id.equals(MetadataSupport.SQ_FindFoldersForMultiplePatients)) {
 			setTestMessage("FindFoldersForMulitplePatients");

@@ -58,21 +58,21 @@ class RetrieveResponseToFhirTransform implements ContentResponseTransform {
                 }
             }
 
-            Binary binary = new Binary()
-            binary.contentTypeElement = new CodeType(contents[0].mimeType)
-            binary.setContent(contents[0].content)
-            binary.id = contents[0].documentUniqueId
+            String mimeType = contents[0].mimeType
 
-            return WrapResourceInHttpResponse.wrap(base.chooseContentType(), binary, HttpStatus.SC_OK)
+            if (SimProxyBase.fhirTypes.contains(base.requestedContentType)) {
+                Binary binary = new Binary()
+                binary.contentTypeElement = new CodeType(mimeType)
+                binary.setContent(contents[0].content)
+                binary.id = contents[0].documentUniqueId
 
+                return WrapResourceInHttpResponse.wrap(base.requestedContentType, binary, HttpStatus.SC_OK)
+            } else {
+                return WrapResourceInHttpResponse.wrap(mimeType, contents[0].content, HttpStatus.SC_OK, '')
+            }
 
         } catch (Throwable e) {
             OperationOutcome oo = FhirSupport.operationOutcomeFromThrowable(e)
-//            OperationOutcome.OperationOutcomeIssueComponent com = new OperationOutcome.OperationOutcomeIssueComponent()
-//            com.setSeverity(OperationOutcome.IssueSeverity.FATAL)
-//            com.setCode(OperationOutcome.IssueType.EXCEPTION)
-//            com.setDiagnostics(ExceptionUtil.exception_details(e))
-//            oo.addIssue(com)
             return WrapResourceInHttpResponse.wrap(base.chooseContentType(), oo, HttpStatus.SC_OK)
         }
     }

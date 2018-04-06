@@ -359,8 +359,9 @@ public class XdsTestServiceManager extends CommonService {
 			if (!input.equals("")) {
 				try {
 					// FHIR content
+					boolean isJson = input.trim().startsWith("{");
 					IBaseResource resource = FhirSupport.parse(input);
-					result.add(new FhirMessageBuilder().build("", resource).setName(testLog.stepName + " Request"));
+					result.add(new FhirMessageBuilder(isJson).build("", resource).setName(testLog.stepName + " Request"));
 				} catch (Exception e) {
 					// non-FHIR content (failed parse)
 					result.add(new MessageBuilder().build("", input).setName(testLog.stepName + " Request"));
@@ -373,7 +374,8 @@ public class XdsTestServiceManager extends CommonService {
 			try {
 				// FHIR content
 				IBaseResource resource = FhirSupport.parse(output);
-				result.add(new FhirMessageBuilder().build("", resource).setName(testLog.stepName + " Response"));
+				boolean isJson = output.trim().startsWith("{");
+				result.add(new FhirMessageBuilder(isJson).build("", resource).setName(testLog.stepName + " Response"));
 			} catch (Exception e) {
 				// non-FHIR content (failed parse)
 				result.add(new MessageBuilder().build("", output).setName(testLog.stepName + " Response"));
@@ -820,6 +822,8 @@ public class XdsTestServiceManager extends CommonService {
 		List<File> testLogDirs = new ArrayList<>();
 		TestLogCache testLogCache = getTestLogCache();
 		File sessionDir = testLogCache.getSessionDir(testSession);
+		if (!sessionDir.exists())
+			return testLogDirs;
 		File[] files = sessionDir.listFiles();
 		for (File file : files) {
 			if (!file.isDirectory()) continue;
@@ -1131,12 +1135,6 @@ public class XdsTestServiceManager extends CommonService {
 		return new ArrayList<String>(listing);
 	}
 
-	public String getNewPatientId(String assigningAuthority) {
-		if (session != null)
-			logger.debug(session.id() + ": " + "getNewPatientId()");
-		return session.allocateNewPid(assigningAuthority).asString();
-	}
-
 	public Map<String, String> getCollectionNames(String collectionSetName) throws Exception  {
 		logger.debug(session.id() + ": " + "getCollectionNames(" + collectionSetName + ")");
 		Map<String,String> collectionNames=new HashMap<String,String>();
@@ -1153,18 +1151,24 @@ public class XdsTestServiceManager extends CommonService {
 		return collectionNames;
 	}
 
-	public List<Result> sendPidToRegistry(SiteSpec site, Pid pid, String environmentName, TestSession testSession) throws Exception {
+	public List<Result> sendPidToRegistry(SiteSpec site, List<Pid> pid, String environmentName, TestSession testSession) throws Exception {
 		if (session != null)
 			logger.debug(session.id() + ": " + "sendPidToRegistry(" + pid + ")");
-		if (session.xt == null) {
-			TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, testSession);
-			session.xt = new Xdstest2(Installation.instance().toolkitxFile(), searchPath, session, testSession);
-		}
+
+		List<Result> results = new ArrayList<>();
 		session.setSiteSpec(site);
 		Map<String, String> params = new HashMap<>();
-		params.put("$pid$", pid.asString());
 		TestInstance testInstance = new TestInstance("PidFeed", testSession);
-		return asList(new UtilityRunner(this, TestRunType.UTILITY).run(session, params, null, null, testInstance, null, true));
+		for (Pid aPid : pid) {
+			if (session.xt == null) {
+				TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, testSession);
+				session.xt = new Xdstest2(Installation.instance().toolkitxFile(), searchPath, session, testSession);
+			}
+
+			params.put("$pid$", aPid.asString());
+			results.add(new UtilityRunner(this, TestRunType.UTILITY).run(session, params, null, null, testInstance, null, true));
+		}
+		return results;
 	}
 
 
@@ -1288,10 +1292,13 @@ public class XdsTestServiceManager extends CommonService {
 	}
 
 	public void setAssignedSiteForTestSession(TestSession testSession, String siteName) throws IOException {
+		if (!Installation.instance().testSessionExists(testSession))
+			throw new IOException("Test Session " + testSession + " does not exist");
 		TestLogCache testLogCache = getTestLogCache();
 		File testSessionDir = testLogCache.getSessionDir(testSession);
-		if (!testSessionDir.exists() || !testSessionDir.isDirectory())
-			throw new IOException("Test Session " + testSession + " does not exist");
+		testSessionDir.mkdirs();
+//		if (!testSessionDir.exists() || !testSessionDir.isDirectory())
+//			throw new IOException("Test Session " + testSession + " does not exist");
 		if (siteName == null) {
 			Io.delete(new File(testSessionDir, SITEFILE));
 		} else {

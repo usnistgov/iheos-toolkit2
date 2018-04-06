@@ -136,7 +136,7 @@ class RegistryResponseToOperationOutcomeTransform implements ContentResponseTran
     }
 
     def withoutUrnUuid(String str) {
-        if (str.startsWith('urn:uuid:'))
+        if (str?.startsWith('urn:uuid:'))
             return str.substring('urn:uuid:'.size())
         return str
     }

@@ -13,7 +13,7 @@ import java.io.Serializable;
  * href="mailto:kelseym@mir.wustl.edu">kelseym@mir.wustl.edu</a>
  *
  */
-public class RSNAEdgeOrchestrationRequest implements Serializable {
+public class RSNAEdgeOrchestrationRequest extends AbstractOrchestrationRequest implements Serializable {
    private static final long serialVersionUID = 1L;
 
    TestSession testSession;

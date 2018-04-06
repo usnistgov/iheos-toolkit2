@@ -45,4 +45,9 @@ public class CommandContext implements Serializable, IsSerializable {
     public TestSession getTestSession() {
         return new TestSession(testSessionName);
     }
+
+    public CommandContext withTestSession(String testSession) {
+        this.testSessionName = testSession;
+        return this;
+    }
 }

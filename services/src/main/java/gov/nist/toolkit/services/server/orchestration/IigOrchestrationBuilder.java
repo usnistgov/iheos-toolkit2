@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * Build environment for Testing Initiating Imaging Gateway SUT.
  */
-public class IigOrchestrationBuilder {
+public class IigOrchestrationBuilder extends AbstractOrchestrationBuilder {
    static Logger log = Logger.getLogger(IigOrchestrationBuilder.class);   
 
    static final String sutSimulatorName = "simulator_iig";
@@ -38,6 +38,7 @@ public class IigOrchestrationBuilder {
    SimulatorConfig sutSimulatorConfig = null;
    
    public IigOrchestrationBuilder(ToolkitApi api, Session session, IigOrchestrationRequest request) {
+      super(session, request);
       this.api = api;
       this.session = session;
       this.request = request;

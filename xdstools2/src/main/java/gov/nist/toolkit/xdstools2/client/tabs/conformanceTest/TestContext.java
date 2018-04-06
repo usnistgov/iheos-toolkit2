@@ -131,6 +131,8 @@ public class TestContext implements SiteManager {
         return toolWindow.getCurrentTestSession();
     }
 
+    public void setTestSession(String testSession) { toolWindow.setCurrentTestSession(testSession);}
+
     public void setSiteSelectionValidator(SiteSelectionValidator siteSelectionValidator) {
         this.siteSelectionValidator = siteSelectionValidator;
     }

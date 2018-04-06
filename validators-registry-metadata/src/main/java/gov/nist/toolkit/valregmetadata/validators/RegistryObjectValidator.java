@@ -101,6 +101,9 @@ public class RegistryObjectValidator {
             } else if (MetadataSupport.XDSDocumentEntry_patientid_uuid.equals(ei.getIdentificationScheme())){
                 new CxFormat(er, mo.identifyingString() + ": " + ei.identifyingString(), "ITI TF-3: Table 4.1.7")
                         .validate(ei.getValue());
+            } else if (MetadataSupport.XDSSubmissionSet_uniqueid_uuid.equals(ei.getIdentificationScheme())) {
+                new OidFormat(er, mo.identifyingString() + ": " + ei.identifyingString(), externalIdentifierDescription(desc, ei.getIdentificationScheme()))
+                        .validate(ei.getValue());
             }
         }
     }

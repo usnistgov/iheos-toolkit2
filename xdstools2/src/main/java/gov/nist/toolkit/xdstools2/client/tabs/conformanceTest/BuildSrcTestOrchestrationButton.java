@@ -53,6 +53,7 @@ public class BuildSrcTestOrchestrationButton  extends AbstractOrchestrationButto
         request.setTestSession(new TestSession(testTab.getCurrentTestSession()));
         request.setEnvironmentName(testTab.getEnvironmentSelection());
         request.setUseExistingState(!isResetRequested());
+        request.setUseTls(isTls());
         request.getActorOption().copyFrom(testTab.getCurrentActorOption());
 
         testTab.setSiteToIssueTestAgainst(null);

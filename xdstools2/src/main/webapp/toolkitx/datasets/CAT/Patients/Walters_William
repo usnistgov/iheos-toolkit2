@@ -1,0 +1,37 @@
+<Patient xmlns="http://hl7.org/fhir">
+   <id value="8335"/>
+   <meta>
+      <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+   </meta>
+   <identifier>
+      <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+      <value value="IHERED-998"/>
+   </identifier>
+   <identifier>
+      <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+      <value value="IHEGREEN-998"/>
+   </identifier>
+   <identifier>
+      <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+      <value value="IHEBLUE-998"/>
+   </identifier>
+   <identifier>
+      <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+      <value value="IHEFACILITY-998"/>
+   </identifier>
+   <active value="true"/>
+   <name>
+      <family value="WALTERS"/>
+      <given value="WILLIAM"/>
+   </name>
+   <gender value="male"/>
+   <birthDate value="1955-05-04"/>
+   <address>
+      <use value="home"/>
+      <line value="3900 FLORA PL"/>
+      <city value="ST. LOUIS"/>
+      <state value="MO"/>
+      <postalCode value="63110"/>
+      <country value="USA"/>
+   </address>
+</Patient>

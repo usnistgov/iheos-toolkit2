@@ -22,7 +22,7 @@ public class TestMgmt extends OMGenerator {
 		HashMap<String, String> unique_ids = new HashMap<String, String>();    // model id field => uniqueID assigned
 
 
-			IdAllocator allocator = UniqueIdAllocator.getInstance(testConfig);
+			IdAllocator allocator = UniqueIdAllocator.getInstance();
 			// for all ExtrinsicObjects
 			allocator.assign(metadata, "ExtrinsicObject", MetadataSupport.XDSDocumentEntry_uniqueid_uuid, unique_ids, no_assign_uid_to);
 
@@ -41,13 +41,13 @@ public class TestMgmt extends OMGenerator {
 
 		IdAllocator allocator = (forced_patient_id == null) ? new PatientIdAllocator(testConfig) : new PatientIdAllocator(testConfig, forced_patient_id);
 		// for all ExtrinsicObjects
-		String pid = allocator.assign(metadata, "ExtrinsicObject", MetadataSupport.XDSDocumentEntry_patientid_uuid, ids, null);
+		allocator.assign(metadata, "ExtrinsicObject", MetadataSupport.XDSDocumentEntry_patientid_uuid, ids, null);
 
 		// for all SubmissionSets
-		pid = allocator.assign(metadata, "RegistryPackage", MetadataSupport.XDSSubmissionSet_patientid_uuid, ids, null);
+		allocator.assign(metadata, "RegistryPackage", MetadataSupport.XDSSubmissionSet_patientid_uuid, ids, null);
 
 		// for all Folders
-		pid = allocator.assign(metadata, "RegistryPackage", MetadataSupport.XDSFolder_patientid_uuid, ids, null);
+		allocator.assign(metadata, "RegistryPackage", MetadataSupport.XDSFolder_patientid_uuid, ids, null);
 
 
 		return ids;

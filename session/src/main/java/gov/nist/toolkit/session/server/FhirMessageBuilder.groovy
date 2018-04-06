@@ -3,11 +3,13 @@ package gov.nist.toolkit.session.server
 import ca.uhn.fhir.context.FhirContext
 import gov.nist.toolkit.fhir.context.ToolkitFhirContext
 import gov.nist.toolkit.fhir.server.utility.FhirClient
+import gov.nist.toolkit.session.server.services.FhirCreate
 import gov.nist.toolkit.session.shared.Message
 import gov.nist.toolkit.session.shared.SubMessage
 import gov.nist.toolkit.testengine.fhir.FhirSupport
 import gov.nist.toolkit.utilities.message.MultipartFormatter
 import groovy.json.JsonOutput
+import groovy.xml.XmlUtil
 import org.hl7.fhir.dstu3.model.*
 import org.hl7.fhir.exceptions.FHIRException
 import org.hl7.fhir.instance.model.api.IBaseResource
@@ -16,12 +18,21 @@ import org.xml.sax.SAXException
 import javax.xml.parsers.ParserConfigurationException
 
 class FhirMessageBuilder {
-    Bundle bundle  = null;
+    Bundle bundle = null;
     Resource resource = null;
+    boolean isJson = true;
+
+    public FhirMessageBuilder(boolean isJson) {
+        this.isJson = isJson;
+    }
 
     Message build(String name, IBaseResource resource) {
         FhirContext ctx = ToolkitFhirContext.get()
-        String msgStr = ctx.newJsonParser().encodeResourceToString(resource)
+        String msgStr
+        if (isJson) {
+            msgStr = ctx.newJsonParser().encodeResourceToString(resource)
+        } else
+            msgStr = ctx.newXmlParser().encodeResourceToString(resource)
         Message message = new Message().add('', '').add(name, formatMessage(msgStr))
         if (resource instanceof Bundle) {
             bundle = (Bundle) resource;
@@ -29,7 +40,11 @@ class FhirMessageBuilder {
                 String fullUrl = c.getFullUrl();
                 Resource theResource = c.getResource();
                 if (theResource) {
-                    String str = ctx.newJsonParser().encodeResourceToString(theResource);
+                    String str
+                    if (isJson)
+                        str = ctx.newJsonParser().encodeResourceToString(theResource);
+                    else
+                        str = ctx.newXmlParser().encodeResourceToString(theResource);
                     SubMessage subMessage = new SubMessage(theResource.fhirType() + ": " + fullUrl, formatMessage(str));
                     message.addSubMessage(subMessage);
                     subMessage.addSubMessages(extractReferences(theResource));
@@ -80,19 +95,31 @@ class FhirMessageBuilder {
         switch (type) {
             case "DocumentManifest":
                 DocumentManifest x = (DocumentManifest) resource;
+                addResource(subMessages, type, 'Base Resource', resourceWithoutContained(x))
                 addReference(subMessages, "Subject", x.getSubject());
                 addReference(subMessages, "Author", x.getAuthor());
                 addReference(subMessages, "Recipient", x.getRecipient());
-                for (DocumentManifest.DocumentManifestContentComponent comp: x.getContent()) {
+                for (DocumentManifest.DocumentManifestContentComponent comp : x.getContent()) {
                     addReference(subMessages, "Content", comp.getPReference());
                 }
                 break;
             case "DocumentReference":
-                DocumentReference xdr = (DocumentReference) resource;
+                DocumentReference xdr = (DocumentReference) resource
+                addResource(subMessages, type, 'Base Resource', resourceWithoutContained(xdr))
                 addReference(subMessages, "Subject", xdr.getSubject());
                 addReference(subMessages, "Author", xdr.getAuthor());
+                addReference(subMessages, 'SourcePatient', xdr.context.sourcePatientInfo)
                 addReference(subMessages, "Authenticator", xdr.getAuthenticator());
                 addReference(subMessages, "Custodian", xdr.getCustodian());
+
+                String url = xdr.contentFirstRep.attachment.url
+                if (url?.startsWith('/')) {
+                    IBaseResource external = FhirClient.readResource(url)
+                    addResource(subMessages, 'Binary', 'Binary: ' + '(External) ' + url, (Resource) external)
+                } else {
+                    addResource(subMessages, 'Binary', 'Binary: ' + '(in Bundle) ' + url, (Resource) findInBundle(url))
+                }
+
                 for (DocumentReference.DocumentReferenceRelatesToComponent dr : xdr.getRelatesTo()) {
                     addReference(subMessages, dr.getCode().getDisplay(), dr.getTarget());
                 }
@@ -111,13 +138,13 @@ class FhirMessageBuilder {
         if (reference == null)
             return;
         String ref = reference.getReference();
-        if (ref != null && !ref.equals("")) {
+        if (ref != null && ref != "") {
             String refType = 'Ref'
-            String value = "";
+            String value
             try {
                 IBaseResource refres
                 refres = findInBundle(ref)
-                refType = 'Bundle'
+                refType = 'in Bundle'
                 if (!refres) {
                     refres = findContained(ref)
                     refType = 'Contained'
@@ -128,10 +155,26 @@ class FhirMessageBuilder {
                 }
                 value = FhirSupport.format(refres);
             } catch (Exception e) {
-                value = "Unreadable";
+                value = "Unreadable"
             }
             subMessages.add(new SubMessage(type + " (${refType}) " + ref, value));
         }
+    }
+
+    private void addResource(List<SubMessage> subMessages, String type, String name, Resource resource) {
+        subMessages.add(new SubMessage(name, FhirSupport.format(resource)))
+    }
+
+    private static Resource resourceWithoutContained(Resource resource) {
+        FhirContext ctx = ToolkitFhirContext.get()
+        String resourceXmlString = ctx.newXmlParser().encodeResourceToString(resource)
+        def node = new XmlSlurper().parseText(resourceXmlString)
+        node.'**'.each {
+            if (it.name() == 'contained')
+                it.replaceNode { }
+        }
+        String resultString = XmlUtil.serialize(node)
+        (Resource) ctx.newXmlParser().parseResource(resultString)
     }
 
     static String formatMessage(String message) throws IOException, SAXException, ParserConfigurationException {

@@ -47,7 +47,8 @@ public class RepositoryRegistryActorFactory extends AbstractActorFactory impleme
 		
 	}
 
-	public Site getActorSite(SimulatorConfig sc, Site site) {
+	@Override
+	public Site buildActorSite(SimulatorConfig sc, Site site) {
 		String siteName = sc.getDefaultName();
 
 		if (site == null)
@@ -56,8 +57,8 @@ public class RepositoryRegistryActorFactory extends AbstractActorFactory impleme
 
 		boolean isAsync = false;
 
-		site = new RegistryActorFactory().getActorSite(sc, site);
-		site = new RepositoryActorFactory().getActorSite(sc, site);
+		site = new RegistryActorFactory().buildActorSite(sc, site);
+		site = new RepositoryActorFactory().buildActorSite(sc, site);
 
 		return site;
 	}

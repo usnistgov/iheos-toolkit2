@@ -42,6 +42,7 @@ class BuildIIGTestOrchestrationButton extends AbstractOrchestrationButton {
       }
       IigOrchestrationRequest request = new IigOrchestrationRequest();
       request.setTestSession(new TestSession(testTab.getCurrentTestSession()));
+      request.setUseTls(isTls());
       // request.setIncludeLinkedIIG(includeIIG);
       new BuildIIGTestOrchestrationCommand(){
          @Override

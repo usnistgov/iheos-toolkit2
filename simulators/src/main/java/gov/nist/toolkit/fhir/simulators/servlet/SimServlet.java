@@ -34,7 +34,6 @@ import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.client.XdsException;
 import org.apache.axiom.om.OMElement;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -48,7 +47,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public class SimServlet  extends HttpServlet {
@@ -56,7 +54,7 @@ public class SimServlet  extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	static ServletConfig config;
+	static ServletConfig config = null;
 	Map<String, String> headers = new HashMap<String, String>();
 	String contentType;
 	HttpHeader contentTypeHeader;
@@ -71,6 +69,8 @@ public class SimServlet  extends HttpServlet {
 	@Override
 	public void init(ServletConfig sConfig) throws ServletException {
 		super.init(sConfig);
+		if (config != null)
+			return;
 		config = sConfig;
 		logger.info("Initializing toolkit in SimServlet");
 		File warHome = new File(config.getServletContext().getRealPath("/"));
@@ -590,65 +590,72 @@ public class SimServlet  extends HttpServlet {
 
 
 		}
-		catch (InvocationTargetException e) {
+		catch (Throwable e) {
 			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
 			logger.error(ExceptionUtil.exception_details(e));
 			responseSent = true;
 		}
-		catch (IllegalAccessException e) {
-			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
-			logger.error(ExceptionUtil.exception_details(e));
-			responseSent = true;
-		}
-		catch (InstantiationException e) {
-			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
-			logger.error(ExceptionUtil.exception_details(e));
-			responseSent = true;
-		}
-		catch (RuntimeException e) {
-			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
-			logger.error(ExceptionUtil.exception_details(e));
-			responseSent = true;
-		}
-		catch (IOException e) {
-			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
-			logger.error(ExceptionUtil.exception_details(e));
-			responseSent = true;
-		}
-		catch (HttpHeaderParseException e) {
-			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
-			logger.error(ExceptionUtil.exception_details(e));
-			responseSent = true;
-		} catch (ClassNotFoundException e) {
-			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
-			logger.error(ExceptionUtil.exception_details(e));
-			responseSent = true;
-		} catch (XdsException e) {
-			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
-			logger.error(ExceptionUtil.exception_details(e));
-			responseSent = true;
-		} catch (NoSimException e) {
-			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
-			logger.error(ExceptionUtil.exception_details(e));
-			responseSent = true;
-		} catch (ParseException e) {
-			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
-			logger.error(ExceptionUtil.exception_details(e));
-			responseSent = true;
-		}
-		catch (Exception e) {
-			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
-			logger.error(ExceptionUtil.exception_details(e));
-			responseSent = true;
-		}
-		catch (AssertionError e) {
-			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
-			logger.error(ExceptionUtil.exception_details(e));
-			responseSent = true;
-		}
+//		catch (InvocationTargetException e) {
+//			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
+//			logger.error(ExceptionUtil.exception_details(e));
+//			responseSent = true;
+//		}
+//		catch (IllegalAccessException e) {
+//			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
+//			logger.error(ExceptionUtil.exception_details(e));
+//			responseSent = true;
+//		}
+//		catch (InstantiationException e) {
+//			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
+//			logger.error(ExceptionUtil.exception_details(e));
+//			responseSent = true;
+//		}
+//		catch (RuntimeException e) {
+//			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
+//			logger.error(ExceptionUtil.exception_details(e));
+//			responseSent = true;
+//		}
+//		catch (IOException e) {
+//			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
+//			logger.error(ExceptionUtil.exception_details(e));
+//			responseSent = true;
+//		}
+//		catch (HttpHeaderParseException e) {
+//			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
+//			logger.error(ExceptionUtil.exception_details(e));
+//			responseSent = true;
+//		} catch (ClassNotFoundException e) {
+//			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
+//			logger.error(ExceptionUtil.exception_details(e));
+//			responseSent = true;
+//		} catch (XdsException e) {
+//			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
+//			logger.error(ExceptionUtil.exception_details(e));
+//			responseSent = true;
+//		} catch (NoSimException e) {
+//			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
+//			logger.error(ExceptionUtil.exception_details(e));
+//			responseSent = true;
+//		} catch (ParseException e) {
+//			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
+//			logger.error(ExceptionUtil.exception_details(e));
+//			responseSent = true;
+//		}
+//		catch (Exception e) {
+//			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
+//			logger.error(ExceptionUtil.exception_details(e));
+//			responseSent = true;
+//		}
+//		catch (AssertionError e) {
+//			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
+//			logger.error(ExceptionUtil.exception_details(e));
+//			responseSent = true;
+//		}
 		finally {
 			mvc.run();
 			closeOut(response);
+			if (responseSent)
+				return;
 		}
 
 		// Is mvc.run really required here again since it is already called in the Finally block?
@@ -768,7 +775,7 @@ public class SimServlet  extends HttpServlet {
 		synchronized(config) {
 			regIndex = (RegIndex) servletContext.getAttribute("Reg_" + simid);
 			if (regIndex == null) {
-				logger.debug("Creating new RegIndex for " + simid);
+				logger.debug("Creating new RegIndex for " + simid + " in in-memory cache");
 				regIndex = new RegIndex(registryIndexFile, simid);
 				regIndex.setSimDb(db);
 				servletContext.setAttribute("Reg_" + simid, regIndex);

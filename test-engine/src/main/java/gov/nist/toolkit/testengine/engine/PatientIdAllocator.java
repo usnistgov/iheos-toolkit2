@@ -2,14 +2,10 @@ package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.common.datatypes.Hl7Date;
-import gov.nist.toolkit.http.httpclient.HttpClient;
-import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.log4j.Logger;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintStream;
 
 
 /**
@@ -17,7 +13,7 @@ import java.io.PrintStream;
  *
  */
 public class PatientIdAllocator extends IdAllocator {
-	static String current_pid = null; 
+	private static String current_pid = null;
 
 	static Logger logger = Logger.getLogger(PatientIdAllocator.class);
 
@@ -25,87 +21,19 @@ public class PatientIdAllocator extends IdAllocator {
 		current_pid = null;  // done at end of each test step
 	}
 
-	void loadCurrent() throws IOException, XdsInternalException  {
-		current_pid =  loadPatientId();
-	}
-
-	public String useAlternatePatientId() throws IOException, XdsInternalException  {
-		current_pid = loadAltPatientId();
-		return current_pid;
-	}
-
-	public String useNewAlternatePatientId() throws XdsInternalException, FileNotFoundException {
-		current_pid = getNewPatientId();
-		saveAltPatientId(current_pid);
-		return current_pid;
+	private void loadCurrent() throws IOException, XdsInternalException  {
+//		current_pid =  loadPatientId();
 	}
 
 	public PatientIdAllocator(TestConfig config) throws XdsInternalException {
 		super(config);
 	}
 
-	PatientIdAllocator() { }
+	private PatientIdAllocator() { }
 
 	public PatientIdAllocator(TestConfig config, String patient_id) {
 		super(config);
 		current_pid = patient_id;
-	}
-
-	void savePatientId(String patientId) throws XdsInternalException, FileNotFoundException {
-		PrintStream ps = new PrintStream(patientIdFile);
-		ps.print(patientId);
-		ps.close();
-	}
-
-	String loadPatientId() throws IOException, XdsInternalException {
-		//return Io.stringFromFile(patientIdFile).trim();
-		String id = null;
-
-		try {
-			id = Io.stringFromFile(patientIdFile).trim();
-		} catch (FileNotFoundException e) {
-			// try to initialize 
-			try {
-				id = getNewPatientId();
-			} catch (XdsInternalException e1) {
-				// give up
-				throw new XdsInternalException("Cannot allocate Patient ID", e1);
-			}
-			savePatientId(id);
-		}
-		return id;
-	}
-
-	void saveAltPatientId(String patientId) throws XdsInternalException, FileNotFoundException {
-		PrintStream ps = new PrintStream(altPatientIdFile);
-		ps.print(patientId);
-		ps.close();
-	}
-
-	String loadAltPatientId() throws IOException, XdsInternalException {
-		String id = null;
-
-		try {
-			id = Io.stringFromFile(altPatientIdFile).trim();
-		} catch (FileNotFoundException e) {
-			// try to initialize 
-			try {
-				id = getNewPatientId();
-			} catch (XdsInternalException e1) {
-				// give up
-				throw new XdsInternalException("Cannot allocate Patient ID", e1);
-			}
-			saveAltPatientId(id);
-		}
-		return id;
-	}
-
-	public String getAltPatientId() throws XdsInternalException {
-		try {
-		return loadAltPatientId();
-		} catch (IOException e) {
-			throw new XdsInternalException("Cannot getRetrievedDocumentsModel alternate patient id", e);
-		}
 	}
 
 	/**
@@ -123,32 +51,9 @@ public class PatientIdAllocator extends IdAllocator {
 		}
 	}
 
-	public String useNewPatientId() throws XdsInternalException, FileNotFoundException {
-		current_pid = getNewPatientId();
-		this.savePatientId(current_pid);
-		return current_pid;
-	}
-
-	public String getNewPatientId() throws XdsInternalException {
-		String newPid = "";
-		if (testConfig.pid_allocate_endpoint != null && !testConfig.pid_allocate_endpoint.equals("")) {
-			try {
-				logger.debug("Requesting new Patient ID from " + testConfig.pid_allocate_endpoint);
-				newPid = HttpClient.httpGet(testConfig.pid_allocate_endpoint);
-				newPid = newPid.trim();
-			} catch (Exception e) {
-				throw new XdsInternalException("Call to allocate new Patient Id failed: URI was " + testConfig.pid_allocate_endpoint ,e);
-			}
-		}
-		else 
-			System.out.println("WARNING: PID allocation service not configured (or disabled in code), using Patient ID coded in test or tool");
-		return newPid;
-
-	}
-
-	String base;
-	int cnt;
-	static PatientIdAllocator patientIdAllocator;
+	private String base;
+	private int cnt;
+	private static PatientIdAllocator patientIdAllocator;
 
 	static {
 		patientIdAllocator = new PatientIdAllocator();

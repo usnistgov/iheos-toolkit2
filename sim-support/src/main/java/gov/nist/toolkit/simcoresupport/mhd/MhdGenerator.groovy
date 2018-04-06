@@ -1,5 +1,6 @@
 package gov.nist.toolkit.simcoresupport.mhd
 
+import gov.nist.toolkit.common.datatypes.UniqueIdAllocator
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder
@@ -7,7 +8,6 @@ import gov.nist.toolkit.fhir.server.resourceMgr.ResolverConfig
 import gov.nist.toolkit.fhir.server.resourceMgr.ResourceCacheMgr
 import gov.nist.toolkit.fhir.server.resourceMgr.ResourceMgr
 import gov.nist.toolkit.fhir.server.utility.UriBuilder
-import gov.nist.toolkit.simcoresupport.mhd.Attachment
 import gov.nist.toolkit.simcoresupport.mhd.errors.ResourceNotAvailable
 import gov.nist.toolkit.simcoresupport.mhd.errors.ResourceTypeNotAllowedInPDB
 import gov.nist.toolkit.simcoresupport.proxy.util.ReturnableErrorException
@@ -25,12 +25,11 @@ import java.text.SimpleDateFormat
  *
  */
 
-// TODO - add hash
-// TODO - add languageCode
 // TODO - add legalAuthenticator
 // TODO - add sourcePatientInfo
 // TODO - add referenceIdList
-// TODO - add case where Patient not in bundle
+// TODO - add author
+// TODO - add case where Patient not in bundle?????
 
 /**
  * Association id = ID06
@@ -308,9 +307,9 @@ class MhdGenerator {
             identifier.value = value
         else {
             identifier = new Identifier()
-            .setSystem('urn:ietf:rfc:3986')
-            .setUse(Identifier.IdentifierUse.OFFICIAL)
-            .setValue(value)
+                    .setSystem('urn:ietf:rfc:3986')
+                    .setUse(Identifier.IdentifierUse.OFFICIAL)
+                    .setValue(value)
             resource.addIdentifier(identifier)
         }
         resource
@@ -351,59 +350,76 @@ class MhdGenerator {
                 mimeType: dr.content[0].attachment.contentType)
                 //status: getStatus(dr))
                 {
-            // 20130701231133
-            if (dr.indexed)
-                addSlot(builder, 'creationTime', [translateDateTime(dr.indexed)])
+                    // 20130701231133
+                    if (dr.indexed)
+                        addSlot(builder, 'creationTime', [translateDateTime(dr.indexed)])
 
-            if (dr.context?.period?.start)
-                addSlot(builder, 'serviceStartTime', [translateDateTime(dr.context.period.start)])
+                    if (dr.context?.period?.start)
+                        addSlot(builder, 'serviceStartTime', [translateDateTime(dr.context.period.start)])
 
-            if (dr.context?.period?.end)
-                addSlot(builder, 'serviceStopTime', [translateDateTime(dr.context.period.end)])
+                    if (dr.context?.period?.end)
+                        addSlot(builder, 'serviceStopTime', [translateDateTime(dr.context.period.end)])
 
-            if (dr.content[0].attachment.language)
-                addSlot(builder, 'languageCode', dr.content.attachment.language)
+                    if (dr.content[0].attachment.language)
+                        addSlot(builder, 'languageCode', dr.content.attachment.language)
 
-            if (dr.content?.attachment?.url && translateForDisplay)
-                addSlot(builder, 'repositoryUniqueId', dr.content.attachment.url)
+                    if (dr.content?.attachment?.url && translateForDisplay)
+                        addSlot(builder, 'repositoryUniqueId', dr.content.attachment.url)
 
-            if (dr.context?.sourcePatientInfo)
-                this.addSourcePatient(builder, dr.context.sourcePatientInfo)
+                    if (dr.content[0].attachment.hashElement.value) {
+                        Base64BinaryType hash64 = dr.content[0].attachment.hashElement
+                        byte[] hash = HashTranslator.toByteArray(hash64.toString())
+                        addSlot(builder, 'hash', new String(hash))
+                    }
 
-            if (dr.description)
-                addName(builder, dr.description)
+                    if (dr.context?.sourcePatientInfo)
+                        this.addSourcePatient(builder, dr.context.sourcePatientInfo)
 
-            if (dr.type)
-                addClassificationFromCodeableConcept(builder, dr.type, 'urn:uuid:f0306f51-975f-434e-a61c-c59651d33983', entryUUID)
+                    if (dr.description)
+                        addName(builder, dr.description)
 
-            if (dr.class_)
-                addClassificationFromCodeableConcept(builder, dr.class_, 'urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a', entryUUID)
+                    if (dr.type)
+                        addClassificationFromCodeableConcept(builder, dr.type, 'urn:uuid:f0306f51-975f-434e-a61c-c59651d33983', entryUUID)
 
-            if (dr.securityLabel?.coding)
-                addClassificationFromCoding(builder, dr.securityLabel[0].coding[0], 'urn:uuid:f4f85eac-e6cb-4883-b524-f2705394840f', entryUUID)
+                    if (dr.class_)
+                        addClassificationFromCodeableConcept(builder, dr.class_, 'urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a', entryUUID)
 
-            if (dr.content.format.size() > 0) {
-                Coding format = dr.content.format[0]
-                if (format.system)
-                    addClassificationFromCoding(builder, dr.content[0].format, 'urn:uuid:a09d5840-386c-46f2-b5ad-9c3699a4309d', entryUUID)
-            }
+                    if (dr.securityLabel?.coding)
+                        addClassificationFromCoding(builder, dr.securityLabel[0].coding[0], 'urn:uuid:f4f85eac-e6cb-4883-b524-f2705394840f', entryUUID)
 
-            if (dr.context?.facilityType)
-                addClassificationFromCodeableConcept(builder, dr.context.facilityType, 'urn:uuid:f33fb8ac-18af-42cc-ae0e-ed0b0bdb91e1', entryUUID)
+                    if (dr.content.format.size() > 0) {
+                        Coding format = dr.content.format[0]
+                        if (format.system)
+                            addClassificationFromCoding(builder, dr.content[0].format, 'urn:uuid:a09d5840-386c-46f2-b5ad-9c3699a4309d', entryUUID)
+                    }
 
-            if (dr.context?.practiceSetting)
-                addClassificationFromCodeableConcept(builder, dr.context.practiceSetting, 'urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead', entryUUID)
+                    if (dr.context?.facilityType)
+                        addClassificationFromCodeableConcept(builder, dr.context.facilityType, 'urn:uuid:f33fb8ac-18af-42cc-ae0e-ed0b0bdb91e1', entryUUID)
 
-            if (dr.context?.event)
-                addClassificationFromCodeableConcept(builder, dr.context.event, 'urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4', entryUUID)
+                    if (dr.context?.practiceSetting)
+                        addClassificationFromCodeableConcept(builder, dr.context.practiceSetting, 'urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead', entryUUID)
 
-            if (dr.masterIdentifier?.value)
-                addExternalIdentifier(builder, 'urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab', unURN(dr.masterIdentifier.value), rMgr.newId(), entryUUID, 'XDSDocumentEntry.uniqueId')
+                    if (dr.context?.event)
+                        addClassificationFromCodeableConcept(builder, dr.context.event, 'urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4', entryUUID)
 
-            if (dr.subject?.hasReference())
-                addSubject(builder, fullUrl, entryUUID, 'urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427', dr.subject, 'XDSDocumentEntry.patientId')
+                    String masterId
+                    if (dr.masterIdentifier?.value) {
+                        masterId = unURN(dr.masterIdentifier.value)
+                    } else {
+                        masterId = UniqueIdAllocator.getInstance().allocate()
+                    }
+                    addExternalIdentifier(builder, 'urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab', masterId, rMgr.newId(), entryUUID, 'XDSDocumentEntry.uniqueId')
 
-        }
+                    if (dr.subject?.hasReference())
+                        addSubject(builder, fullUrl, entryUUID, 'urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427', dr.subject, 'XDSDocumentEntry.patientId')
+
+                    if (dr.author) {
+                        dr.author.each { Reference ref ->
+
+                        }
+                    }
+
+                }
         return entryUUID
     }
 
@@ -462,6 +478,25 @@ class MhdGenerator {
         addSlot(builder, 'sourcePatientId', [pid])
     }
 
+    def addAuthor(builder, Reference reference) {
+        if (!reference.reference)
+            return
+        logger.info("Resolve ${reference.reference} as Author")
+        def extra = 'DocumentReference.author.reference must reference Contained Practitioner or Organization resource'
+        def (url, ref) = rMgr.resolveReference(null, reference.reference, new ResolverConfig().containedRequired())
+        if (!ref) {
+            new ResourceNotAvailable(errorLogger, null, reference.reference, extra, 'Table 4.5.1.1-1: FHIR DocumentReference mapping to DocumentEntry')
+            return
+        }
+        if (ref instanceof Practitioner) {
+
+        } else if (ref instanceof Organization) {
+
+        } else {
+            asser
+        }
+    }
+
     // TODO must be absolute reference
     def addSubject(builder, URI fullUrl, containingObjectId, scheme,  org.hl7.fhir.dstu3.model.Reference subject, attName) {
         def ref1 = UriBuilder.build(subject.getReference())
@@ -518,8 +553,12 @@ class MhdGenerator {
             if (dm.type)
                 addClassificationFromCodeableConcept(builder, dm.type, 'urn:uuid:aa543740-bdda-424e-8c96-df4873be8500', entryUUID)
 
+            String masterId
             if (dm.masterIdentifier?.value)
-                addExternalIdentifier(builder, 'urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8', unURN(dm.masterIdentifier.value), rMgr.newId(), entryUUID, 'XDSSubmissionSet.uniqueId')
+                masterId = dm.masterIdentifier.value
+            else
+                masterId = UniqueIdAllocator.getInstance().allocate()
+            addExternalIdentifier(builder, 'urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8', unURN(masterId), rMgr.newId(), entryUUID, 'XDSSubmissionSet.uniqueId')
 
             if (dm.source?.value) {
                 addExternalIdentifier(builder, 'urn:uuid:554ac39e-e3fe-47fe-b233-965d2a147832', unURN(dm.source), rMgr.newId(), entryUUID, 'XDSSubmissionSet.sourceId')
@@ -788,7 +827,7 @@ class MhdGenerator {
 
     def close() {
         er.sectionHeading("MhdGenerator done")
-            proxyBase?.simDb?.logErrorRecorder(er)
+        proxyBase?.simDb?.logErrorRecorder(er)
     }
 
 }

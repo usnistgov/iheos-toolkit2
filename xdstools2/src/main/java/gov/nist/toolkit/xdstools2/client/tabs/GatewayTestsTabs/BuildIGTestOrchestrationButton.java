@@ -1,7 +1,13 @@
 package gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs;
 
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.client.OptionType;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.services.client.IgOrchestrationRequest;
@@ -10,16 +16,18 @@ import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.command.command.BuildIGTestOrchestrationCommand;
 import gov.nist.toolkit.xdstools2.client.tabs.FindDocumentsLauncher;
-import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.*;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.ActorOptionConfig;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.ConformanceTestTab;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.SiteDisplay;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TestContext;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TestContextView;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TestRunner;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.OrchestrationSupportTestsDisplay;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 import gov.nist.toolkit.xdstools2.shared.command.request.BuildIgTestOrchestrationRequest;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Build Orchestration for testing an Inititating Gateway.
@@ -59,18 +67,9 @@ public class BuildIGTestOrchestrationButton extends AbstractOrchestrationButton 
         panel().add(initializationResultsPanel);
     }
 
-    static private final String AD_OPTION = "ad";
-    public static List<ActorAndOption> ACTOR_OPTIONS = new ArrayList<>();
-    static {  // non-option must be listed first
-        ACTOR_OPTIONS = java.util.Arrays.asList(
-                new ActorAndOption("ig", "", "non-Affinity Domain Option", true),
-                new ActorAndOption("ig", AD_OPTION, "Affinity Domain Option", false),
-                new ActorAndOption("ig", XUA_OPTION, "XUA/Affinity Domain Option", false));
-
-    }
 
     private SiteSpec siteUnderTest(IgOrchestrationResponse orchResponse) {
-        if (AD_OPTION.equals(actorOption.getOptionId()) && testContext.getSiteUnderTest() != null) {
+        if ((OptionType.AFFINITY_DOMAIN.equals(actorOption.getOptionId()) || OptionType.XUA.equals(actorOption.getOptionId()) && testContext.getSiteUnderTest() != null)) {
             return testContext.getSiteUnderTest().siteSpec();
         }
         return orchResponse.getSupportRG1().siteSpec();
@@ -83,6 +82,7 @@ public class BuildIGTestOrchestrationButton extends AbstractOrchestrationButton 
         }
         IgOrchestrationRequest request = new IgOrchestrationRequest();
         request.setUseExistingState(!isResetRequested());
+        request.setUseTls(isTls());
         request.setTestSession(new TestSession(testTab.getCurrentTestSession()));
         request.setIncludeLinkedIG(includeIG);
 
@@ -96,7 +96,7 @@ public class BuildIGTestOrchestrationButton extends AbstractOrchestrationButton 
                 testTab.setOrchestrationResponse(orchResponse);
                 SiteSpec siteUnderTest = siteUnderTest(orchResponse);
                 testTab.setSiteToIssueTestAgainst(siteUnderTest);
-                if (AD_OPTION.equals(actorOption.getOptionId()))
+                if (OptionType.AFFINITY_DOMAIN.equals(actorOption.getOptionId()))
                     orchResponse.setExternalStart(true);
 
                 initializationResultsPanel.add(new HTML("Initialization Complete"));

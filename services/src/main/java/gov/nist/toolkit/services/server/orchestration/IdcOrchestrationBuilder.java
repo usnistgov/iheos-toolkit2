@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * Build environment for testing Imaging Document Consumer SUT.
  */
-public class IdcOrchestrationBuilder {
+public class IdcOrchestrationBuilder extends AbstractOrchestrationBuilder {
    static Logger log = Logger.getLogger(IdsOrchestrationBuilder.class);
 
    public static final String rrSimulatorName = "rr";
@@ -42,6 +42,7 @@ public class IdcOrchestrationBuilder {
    SimulatorConfig rrSimulatorConfig = null;
 
    public IdcOrchestrationBuilder(ToolkitApi api, Session session, IdcOrchestrationRequest request) {
+      super(session, request);
       this.api = api;
       this.session = session;
       this.request = request;
@@ -94,6 +95,7 @@ public class IdcOrchestrationBuilder {
             TestInstanceManager.initializeTestInstance(request.getTestSession(), new TestInstance("idc_init", request.getTestSession()));
          MessageItem initMsgItem = response.addMessage(initTest, true, "");
          try {
+            SiteBuilder.siteSpecFromSimId(rrSimulatorConfig.getId()).isTls = request.isUseTls();
             util.submit(request.getTestSession(), SiteBuilder.siteSpecFromSimId(rrSimulatorConfig.getId()), initTest);
          } catch (Exception e) {
             initMsgItem.setMessage("Initialization of " + rrSimulatorConfig.getId() + " failed:\n" + e.getMessage());

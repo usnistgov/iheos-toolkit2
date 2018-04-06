@@ -89,7 +89,10 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
 			addFixedEndpoint(sc, SimulatorProperties.storedQueryEndpoint,    actorType, TransactionType.STORED_QUERY, false);
 			addFixedEndpoint(sc, SimulatorProperties.storedQueryTlsEndpoint, actorType, TransactionType.STORED_QUERY, true);
 
-            addFixedEndpoint(sc, SimulatorProperties.updateEndpoint,       actorType, TransactionType.UPDATE,     false);
+			addFixedEndpoint(sc, SimulatorProperties.multiPatientQueryEndpoint,    actorType, TransactionType.MPQ, false);
+			addFixedEndpoint(sc, SimulatorProperties.multiPatientQueryTlsEndpoint, actorType, TransactionType.MPQ, true);
+
+			addFixedEndpoint(sc, SimulatorProperties.updateEndpoint,       actorType, TransactionType.UPDATE,     false);
             addFixedEndpoint(sc, SimulatorProperties.updateTlsEndpoint,    actorType, TransactionType.UPDATE,     true);
 		}
 
@@ -133,7 +136,7 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
 	}
 
 	@Override
-	public Site getActorSite(SimulatorConfig asc, Site site) {
+	public Site buildActorSite(SimulatorConfig asc, Site site) {
 		String siteName = asc.getDefaultName();
 		
 		if (site == null)
@@ -184,8 +187,23 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
 				asc.get(SimulatorProperties.storedQueryTlsEndpoint).asString(),
 				true, 
 				isAsync));
-		
-//		SimulatorConfigElement updateElement = asc.get(SimulatorProperties.UPDATE_METADATA_OPTION);
+
+		site.addTransaction(new TransactionBean(
+				TransactionType.MPQ.getCode(),
+				RepositoryType.NONE,
+				asc.get(SimulatorProperties.multiPatientQueryEndpoint).asString(),
+				false,
+				isAsync));
+		site.addTransaction(new TransactionBean(
+				TransactionType.MPQ.getCode(),
+				RepositoryType.NONE,
+				asc.get(SimulatorProperties.multiPatientQueryTlsEndpoint).asString(),
+				true,
+				isAsync));
+
+
+
+		//		SimulatorConfigElement updateElement = asc.get(SimulatorProperties.UPDATE_METADATA_OPTION);
 //		if (updateElement.asBoolean()) {
 			site.addTransaction(new TransactionBean(
 					TransactionType.UPDATE.getCode(),

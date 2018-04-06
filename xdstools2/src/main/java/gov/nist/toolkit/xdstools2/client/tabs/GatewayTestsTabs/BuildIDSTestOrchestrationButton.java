@@ -38,6 +38,7 @@ class BuildIDSTestOrchestrationButton extends AbstractOrchestrationButton {
         }
         IdsOrchestrationRequest request = new IdsOrchestrationRequest();
         request.setTestSession(new TestSession(testTab.getCurrentTestSession()));
+        request.setUseTls(isTls());
         new BuildIdsTestOrchestrationCommand(){
             @Override
             public void onComplete(RawResponse rawResponse) {

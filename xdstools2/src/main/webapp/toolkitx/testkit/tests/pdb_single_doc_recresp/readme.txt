@@ -1,4 +1,4 @@
-MHD Document Recipient/Responder Lifecyle (text/plain)
+MHD Recipient/Responder Lifecyle (text/plain)
 
 <p>The MHD Document Recipient may
 implement the XDS ON FHIR option and require an XDS Document Repository/Registry pair behind it or may operate without

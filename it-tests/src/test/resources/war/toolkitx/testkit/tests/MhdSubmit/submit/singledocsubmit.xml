@@ -2,6 +2,7 @@
     <id value="xds"/>
     <meta>
         <lastUpdated value="2013-07-01T13:11:33Z"/>
+        <profile value="http://ihe.net/fhir/tag/iti-65"/>
     </meta>
     <type value="transaction"/>
     <entry>

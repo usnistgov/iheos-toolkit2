@@ -19,6 +19,7 @@ import org.apache.http.entity.BasicHttpEntity
 import org.apache.http.message.BasicHttpEntityEnclosingRequest
 import org.apache.log4j.Logger
 import org.hl7.fhir.dstu3.model.Bundle
+import org.hl7.fhir.dstu3.model.UriType
 import org.hl7.fhir.instance.model.api.IBaseResource
 
 /**
@@ -33,20 +34,23 @@ class MhdToPnrContentTransform implements ContentRequestTransform {
         String contentType = request.allHeaders.find { Header h -> h.name.equalsIgnoreCase('content-type') }.value
 
         if (!contentType.startsWith('application/fhir'))
-            throw new SimProxyTransformException("Content-Type is ${contentType} - expected application/fhir")
+            throw new SimProxyTransformException("Content-Type is ${contentType} - expected application/fhir+json or application/fhir+xml")
 
         byte[] clientContent = base.clientLogger.content
         assert clientContent, "Content is null"
 
         FhirContext ctx = FileSystemResourceCache.ctx
 
+        assert contentType.endsWith('+xml') || contentType.endsWith('+json'), "Content type ${contentType} is not valid"
+
         IBaseResource resource = null
         if (contentType.contains('+xml'))
             resource = ctx.newXmlParser().parseResource(new String(clientContent))
         else if (contentType.contains('+json'))
             resource = ctx.newJsonParser().parseResource(new String(clientContent))
-        assert resource instanceof Bundle
+        assert resource instanceof Bundle, "Unable to parse Bundle"
         Bundle bundle = resource
+        assert bundle.meta.profile.find { UriType type -> type.value == 'http://ihe.net/fhir/tag/iti-65'}, 'Bundle.meta.profile shall include the value http://ihe.net/fhir/tag/iti-65'
         Submission s = new MhdGenerator(base, ResourceCacheMgr.instance()).buildSubmission(bundle)
         assert s.attachments.size() > 0
         List<BinaryPartSpec> parts = []

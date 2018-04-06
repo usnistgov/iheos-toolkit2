@@ -19,34 +19,55 @@ class SaveButtonClickHandler implements ClickHandler {
 	}
 	
 	public void onClick(ClickEvent event) {
+		save();
+	}
+
+	public boolean save() {
 		if (actorConfigTab.currentEditSite.getName().equals(actorConfigTab.newSiteName)) {
 			new PopupMessage("You must give site a real name before saving");
-			return;
+			return false;
 		}
+		if (!Xdstools2.getInstance().isSystemSaveEnabled()) {
+			new PopupMessage("You don't have permission to create a save/update a System in this Test Session");
+			return false;
+		}
+//		if (actorConfigTab.currentEditSite.getOwner().equals(TestSession.GAZELLE_TEST_SESSION.getValue())) {
+//			actorConfigTab.currentEditSite.setOwner(Xdstools2.getInstance().getTestSessionManager().getCurrentTestSession());
+//		}
+		if (!actorConfigTab.currentEditSite.getOwner().equals(Xdstools2.getInstance().getTestSessionManager().getCurrentTestSession())
+				&&  !PasswordManagement.isSignedIn) {
+			new PopupMessage("You cannot update a System you do not own");
+			return false;
+		}
+
 		actorConfigTab.currentEditSite.cleanup();
 		StringBuffer errors = new StringBuffer();
 		actorConfigTab.currentEditSite.validate(errors);
 		if (errors.length() > 0) {
 			new PopupMessage(errors.toString());
-			return;
+			return false;
 		}
 
 		if (PasswordManagement.isSignedIn) {
+			if (!actorConfigTab.currentEditSite.hasOwner())
+				actorConfigTab.currentEditSite.setOwner(actorConfigTab.currentEditSite.getTestSession().getValue());
 			actorConfigTab.saveSignedInCallback.onSuccess(true);
 			((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireActorsConfigUpdatedEvent();
+			actorConfigTab.loadExternalSites();
 		}
 		else {
 			if (Xdstools2.getInstance().multiUserModeEnabled && !Xdstools2.getInstance().casModeEnabled) {
+				if (!actorConfigTab.currentEditSite.hasOwner())
+					actorConfigTab.currentEditSite.setOwner(actorConfigTab.currentEditSite.getTestSession().getValue());
 				actorConfigTab.saveSignedInCallback.onSuccess(true);
 				actorConfigTab.loadExternalSites();
 				((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireActorsConfigUpdatedEvent();
 			} else {
 				new PopupMessage("You must be signed in as admin");
+				return false;
 			}
-//			PasswordManagement.addSignInCallback(actorConfigTab.saveSignedInCallback);
-//
-//			new AdminPasswordDialogBox(actorConfigTab.getTabTopPanel());
 		}
+		return true;
 	}
 
 }

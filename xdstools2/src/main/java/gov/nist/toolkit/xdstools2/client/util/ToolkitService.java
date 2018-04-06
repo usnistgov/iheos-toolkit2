@@ -264,8 +264,7 @@ public interface ToolkitService extends RemoteService  {
 	Test runSingleTest(RunSingleTestRequest request) throws Exception;
 	TestOverviewDTO deleteSingleTestResult(DeleteSingleTestRequest request) throws Exception;
 
-	String setTestSession(String sessionName) throws NoServletSessionException;
-	String getNewPatientId(String assigningAuthority) throws NoServletSessionException;
+	String setTestSession(String sessionName) throws NoServletSessionException ;
 	List<String> getTransactionErrorCodeRefs(GetTransactionErrorCodeRefsRequest refsRequest) throws Exception;
 
 	String getServletContextName();
@@ -326,4 +325,6 @@ public interface ToolkitService extends RemoteService  {
     List<Result> fhirSearch(FhirSearchRequest var1) throws Exception;
 
     List<Result> fhirRead(FhirReadRequest request) throws Exception;
+
+    String promote(PromoteRequest request);
 }

@@ -107,6 +107,7 @@ public class BuildRIGTestOrchestrationButton extends AbstractOrchestrationButton
         RigOrchestrationRequest request = new RigOrchestrationRequest();
         request.setTestSession(new TestSession(testTab.getCurrentTestSession()));
         request.setEnvironmentName(testTab.getEnvironmentSelection());
+        request.setUseTls(isTls());
         request.setUseExistingState(!isResetRequested());
         SiteSpec siteSpec = new SiteSpec(testContext.getSiteName(), new TestSession(testTab.getCurrentTestSession()));
         /*

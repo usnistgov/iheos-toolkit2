@@ -110,10 +110,10 @@ class DsSimCommonSpec extends ToolkitSpecification {
             assert compositeUid : "Internal test error. Image $img in found, not in imagineDocumentUids"
             String[] uids = compositeUid.split(":")
             Path path = java.nio.file.Paths.get(imageCache, simConfig.get(SimulatorProperties.idsImageCache).asString(), uids[0], uids[1], uids[2])
-            String documentpfn = doc.pathToDocument.getAbsolutePath()
+            String documentpfn = doc.pathToDocument.toFile().getAbsolutePath()
             String expectedpfn = path.toString()
             assert documentpfn.startsWith(expectedpfn) : "expected $expectedpfn, found $documentpfn"
-            String pfn = doc.pathToDocument.getName()
+            String pfn = doc.pathToDocument.toFile().getName()
             assert pfn in transferSyntaxUids : "Transfer Syntax UID $pfn not in Request"
 
             // Validate other Document fields

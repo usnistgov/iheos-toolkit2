@@ -1,0 +1,37 @@
+<Patient xmlns="http://hl7.org/fhir">
+   <id value="8364"/>
+   <meta>
+      <profile value="https://gazelle.ihe.net/PatientManager/fhir/StructureDefinition/PatientFhirIHE"/>
+   </meta>
+   <identifier>
+      <system value="urn:oid:1.3.6.1.4.1.21367.13.20.1000"/>
+      <value value="IHERED-2605"/>
+   </identifier>
+   <identifier>
+      <system value="urn:oid:1.3.6.1.4.1.21367.13.20.2000"/>
+      <value value="IHEGREEN-2605"/>
+   </identifier>
+   <identifier>
+      <system value="urn:oid:1.3.6.1.4.1.21367.13.20.3000"/>
+      <value value="IHEBLUE-2605"/>
+   </identifier>
+   <identifier>
+      <system value="urn:oid:1.3.6.1.4.1.21367.3000.1.6"/>
+      <value value="IHEFACILITY-2605"/>
+   </identifier>
+   <active value="true"/>
+   <name>
+      <family value="SOURCE-SIX"/>
+      <given value="Rayna"/>
+   </name>
+   <gender value="female"/>
+   <birthDate value="1942-06-22"/>
+   <address>
+      <use value="home"/>
+      <line value="Hawthorne Boulevard"/>
+      <city value="Hawthorne"/>
+      <state value="California"/>
+      <postalCode value="90045"/>
+      <country value="USA"/>
+   </address>
+</Patient>

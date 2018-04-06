@@ -21,21 +21,15 @@ class WrapResourceInHttpResponse {
 
 
     static BasicHttpResponse wrap(String contentType, IBaseResource resource, int httpCode, String reason) {
-        FhirContext ctx = FileSystemResourceCache.ctx
-//        String httpCodeString = EnglishReasonPhraseCatalog.INSTANCE.getReason(httpCode, Locale.ENGLISH)
         BasicHttpResponse outcome = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion('HTTP', 1, 1), httpCode, reason))
         inResponse(outcome, contentType, resource)
-//        outcome.addHeader('Content-Type', contentType)
-//        outcome.addHeader('Date', new HttpDateGenerator().currentDate)
-//        String content
-//        if (contentType.contains('json')) {
-//            content = ctx.newJsonParser().encodeResourceToString(resource)
-//        } else {
-//            content = ctx.newXmlParser().encodeResourceToString(resource)
-//        }
-//        outcome.setEntity(new StringEntity(content))
         return outcome
+    }
 
+    static BasicHttpResponse wrap(String contentType, byte[] content, int httpCode, String reason) {
+        BasicHttpResponse outcome = new BasicHttpResponse(new BasicStatusLine(new ProtocolVersion('HTTP', 1, 1), httpCode, reason))
+        inResponse(outcome, contentType, new String(content))
+        return outcome
     }
 
     static void inResponse(HttpResponse response, String contentType, IBaseResource resource) {
@@ -49,7 +43,7 @@ class WrapResourceInHttpResponse {
         inResponse(response, contentType, content)
     }
 
-        static void inResponse(HttpResponse response, String contentType, String content) {
+    static void inResponse(HttpResponse response, String contentType, String content) {
         response.addHeader('Content-Type', contentType)
         response.addHeader('Date', new HttpDateGenerator().currentDate)
         response.setEntity(new StringEntity(content))

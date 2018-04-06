@@ -3,6 +3,7 @@ package gov.nist.toolkit.services.server;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.Pid;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.fhir.simulators.proxy.util.ResourceParser;
@@ -217,12 +218,14 @@ public class SimulatorServiceManager extends CommonService {
 
 	private Message subParseMessage(Message message) {
 		try {
-			IBaseResource resource = ResourceParser.parse(message.getParts().get(1));
-			Message message2 = new FhirMessageBuilder().build("", resource);
+			String rawMsg = message.getParts().get(1);
+			boolean isJson = rawMsg.trim().startsWith("{");
+			IBaseResource resource = ResourceParser.parse(rawMsg);
+			Message message2 = new FhirMessageBuilder(isJson).build("", resource);
 			message2.getParts().set(0, message.getParts().get(0));
 			return message2;
 		} catch (Exception e) {
-			logger.info("Message not FHIR format");
+			logger.info("Message not FHIR format - " + ExceptionUtil.exception_details(e));
 		}
 		return message;
 	}
@@ -371,19 +374,19 @@ public class SimulatorServiceManager extends CommonService {
 	public String delete(SimulatorConfig config) throws Exception  {
 		logger.debug(session.id() + ": " + "delete " + config.getId());
         GenericSimulatorFactory.delete(config.getId());
-        // This looks like it's redundant??
-		// Both GenericSimulatorFactory.delete and SimulatorApi(session).delete
-		// call gov.nist.toolkit.simcommon.server.AbstractActorFactory#delete(SimId) ??
-		//        new SimulatorApi(session).delete(config.getId());
 		SimServlet.deleteSim(config.getId());
+		if (config.get(SimulatorProperties.simulatorGroup) != null) {
+			List<String> group = config.get(SimulatorProperties.simulatorGroup).asList();
+			for (String id : group) {
+				deleteSimById(SimIdFactory.simIdBuilder(id));
+			}
+		}
 		return "";
-//		try {
-//			new SimCache().deleteSimConfig(config.getId());
-//		} catch (IOException e) {
-//			logger.error("delete", e);
-//			throw new Exception(e.getMessage());
-//		}
-//		return "";
+	}
+
+	private void deleteSimById(SimId simId) throws Exception {
+		GenericSimulatorFactory.delete(simId);
+		SimServlet.deleteSim(simId);
 	}
 
 	public String deleteConfigs(List<SimulatorConfig> configs) {
@@ -516,7 +519,8 @@ public class SimulatorServiceManager extends CommonService {
 		SimDb db = null;
 		try {
 			SimId simId = SimIdFactory.simIdBuilder(ti.simId);
-			db = new SimDb(simId);
+			db = new SimDb(simId, ti.actorType.getActorCode(), ti.trans, false);
+			db.setEvent(ti.messageId);
 		} catch (Exception e) {
 			throw new Exception("Cannot load simulator event - " + e.getMessage(), e);
 		}
@@ -536,7 +540,8 @@ public class SimulatorServiceManager extends CommonService {
 		SimDb db = null;
 		try {
 			SimId simId = SimIdFactory.simIdBuilder(ti.simId);
-			db = new SimDb(simId);
+			db = new SimDb(simId, ti.actorType.getActorCode(), ti.trans, false);
+			db.setEvent(ti.messageId);
 		} catch (Exception e) {
 			throw new Exception("Cannot load simulator event - " + e.getMessage(), e);
 		}

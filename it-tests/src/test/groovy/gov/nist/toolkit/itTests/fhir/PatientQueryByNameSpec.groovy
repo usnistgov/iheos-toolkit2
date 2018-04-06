@@ -2,6 +2,7 @@ package gov.nist.toolkit.itTests.fhir
 
 import ca.uhn.fhir.context.FhirContext
 import ca.uhn.fhir.parser.IParser
+import gov.nist.toolkit.fhir.server.utility.FhirClient
 import gov.nist.toolkit.fhir.server.utility.FhirId
 import gov.nist.toolkit.fhir.support.SimIndexManager
 import gov.nist.toolkit.installation.server.Installation
@@ -9,8 +10,10 @@ import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.FhirSpecification
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.SimDb
+import gov.nist.toolkit.testengine.fhir.FhirSupport
 import org.apache.http.message.BasicStatusLine
 import org.hl7.fhir.dstu3.model.Bundle
+import org.hl7.fhir.dstu3.model.IdType
 import org.hl7.fhir.dstu3.model.OperationOutcome
 import org.hl7.fhir.dstu3.model.Patient
 import org.hl7.fhir.dstu3.model.Resource
@@ -113,6 +116,22 @@ class PatientQueryByNameSpec extends FhirSpecification {
 
         then:
         patients.size() == 1
+
+        when:
+        Patient patient = (Patient) patients[0]
+        String id = patient.id
+
+        then:
+        id.contains('http')
+        id.contains('_history')
+
+        when:
+        id = id.substring(0, id.indexOf('/_history'))
+        def patientRes = FhirClient.readResource(id)
+
+        then:
+        patientRes instanceof Patient
+
     }
 
 

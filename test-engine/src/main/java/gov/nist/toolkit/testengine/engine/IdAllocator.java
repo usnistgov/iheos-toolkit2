@@ -14,12 +14,6 @@ import java.util.List;
 
 public abstract class IdAllocator {
 	TestConfig testConfig;
-
-	String mgmt_dir;
-	File patientIdFile;
-	File altPatientIdFile;
-	protected File uniqueIdBaseFile;
-	protected File uniqueIdIncrFile;
 	File sourceIdFile;
 
 	abstract String allocate() throws XdsInternalException;
@@ -30,19 +24,16 @@ public abstract class IdAllocator {
 	//
 	//
 
-	public IdAllocator(TestConfig config) {
+	IdAllocator(TestConfig config) {
 		if (config != null) {
-			testConfig = config;
-			mgmt_dir = testConfig.testmgmt_dir;
-			patientIdFile = new File(mgmt_dir + File.separator + "patientid.txt");
-			altPatientIdFile = new File(mgmt_dir + File.separator + "patientid_alt.txt");
-			uniqueIdBaseFile = new File(mgmt_dir + File.separator + "uniqueid_base.txt");
-			uniqueIdIncrFile = new File(mgmt_dir + File.separator + "uniqueid_incr.txt");
+			String mgmt_dir = config.testmgmt_dir;
 			sourceIdFile = new File(mgmt_dir + File.separator + "sourceid.txt");
 		}
 	}
 
-	IdAllocator() {}
+	IdAllocator() {
+
+	}
 
 	public String assign(Metadata metadata, String object_type, String external_identifier_uuid, HashMap<String, String> assignments, String no_assign_uid_to)
 	throws XdsInternalException {

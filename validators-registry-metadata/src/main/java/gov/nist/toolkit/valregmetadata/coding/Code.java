@@ -31,6 +31,6 @@ public class Code {
 	}
 	
 	public String toString() {
-		return code + "^" + scheme + "^" + display;
+		return code + "^" + display + "^" + scheme;
 	}
 }

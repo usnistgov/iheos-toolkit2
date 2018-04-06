@@ -14,7 +14,7 @@ public class RepIndex implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	public DocumentCollection dc;
-	String filename;
+	public String filename;
 	public Calendar cacheExpires;
 	SimId simId;
 
@@ -38,6 +38,7 @@ public class RepIndex implements Serializable {
 		}
 	}
 
+
 	public void restore() throws Exception, ClassNotFoundException {
 		synchronized(this) {
 			dc = RepIndex.restoreRepository(filename);
@@ -50,9 +51,12 @@ public class RepIndex implements Serializable {
 		ObjectInputStream in = null;
 		DocumentCollection dc;
 		try {
-				fis = new FileInputStream(filename);
-				in = new ObjectInputStream(fis);
-				dc = (DocumentCollection) in.readObject();
+			fis = new FileInputStream(filename);
+			in = new ObjectInputStream(fis);
+			dc = (DocumentCollection) in.readObject();
+		} catch (Throwable e) {
+			logger.fatal("Failed to restore Repository Index from " + filename);
+			throw e;
 		} finally {
 			if (in!=null)
 				in.close();
@@ -72,7 +76,7 @@ public class RepIndex implements Serializable {
 		}
 	}
 
-	static void saveRepository(DocumentCollection dc, String filename) throws IOException {
+	private static void saveRepository(DocumentCollection dc, String filename) throws IOException {
 		logger.debug("Save Repository Index");
 		FileOutputStream fos = null;
 		ObjectOutputStream out = null;

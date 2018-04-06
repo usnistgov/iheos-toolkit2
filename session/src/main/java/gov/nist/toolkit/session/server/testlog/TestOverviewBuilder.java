@@ -1,5 +1,6 @@
 package gov.nist.toolkit.session.server.testlog;
 
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.client.logtypes.SectionOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.StepOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
@@ -31,8 +32,10 @@ public class TestOverviewBuilder {
     private TestDefinition testDefinition;
     private TestOverviewDTO testOverview = new TestOverviewDTO();
     private XdsTestServiceManager testServiceManager;
+    private Session session;
 
     public TestOverviewBuilder(Session session, TestLogDetails testLogDetails) throws Exception {
+        this.session = session;
         this.testLogDetails = testLogDetails;
         this.testId = testLogDetails.getTestInstance().getId();
         this.testDefinition = session.getTestkitSearchPath().getTestDefinition(testId);
@@ -44,6 +47,7 @@ public class TestOverviewBuilder {
     public TestOverviewDTO build() throws Exception {
         testOverview.setPass(true);  // will be updated by addSections()
         testOverview.setName(testId);
+        testOverview.setTestInstance(new TestInstance(testId, session.getTestSession()));
         ReadMe readme = testDefinition.getTestReadme();
         if (readme != null) {
             testOverview.setTitle(stripHeaderMarkup(readme.line1));
