@@ -64,6 +64,21 @@ public class OMFormatter {
 		return buf.toString();
 	}
 
+	public String toRawString() {
+		buf = new StringBuffer();
+		indentForElement="";
+		indentForAttribute="";
+		nl="";
+		lt = "<";
+		space = " ";
+		indentation = -1;
+
+		//buf.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+		if (ele != null)
+			element(ele, true);
+		return buf.toString();
+	}
+
 	public String toHtml() {
 		buf = new StringBuffer();
 		indentForElement="&nbsp;&nbsp;&nbsp;";

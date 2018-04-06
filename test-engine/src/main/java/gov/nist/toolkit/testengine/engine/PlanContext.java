@@ -297,7 +297,7 @@ public class PlanContext extends BasicContext {
 				logFile = testConfig.logFile;
                 logger.info("Writing log file " + logFile);
 				results_document.build();
-				String results_string = new OMFormatter(results_document).toString();
+				String results_string = new OMFormatter(results_document).toRawString();
 				byte[] bytes = results_string.getBytes();
 				String x = new String(bytes);
 
