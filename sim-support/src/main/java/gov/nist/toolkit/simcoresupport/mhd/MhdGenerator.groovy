@@ -553,8 +553,12 @@ class MhdGenerator {
             if (dm.type)
                 addClassificationFromCodeableConcept(builder, dm.type, 'urn:uuid:aa543740-bdda-424e-8c96-df4873be8500', entryUUID)
 
+            String masterId
             if (dm.masterIdentifier?.value)
-                addExternalIdentifier(builder, 'urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8', unURN(dm.masterIdentifier.value), rMgr.newId(), entryUUID, 'XDSSubmissionSet.uniqueId')
+                masterId = dm.masterIdentifier.value
+            else
+                masterId = UniqueIdAllocator.getInstance().allocate()
+            addExternalIdentifier(builder, 'urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8', unURN(masterId), rMgr.newId(), entryUUID, 'XDSSubmissionSet.uniqueId')
 
             if (dm.source?.value) {
                 addExternalIdentifier(builder, 'urn:uuid:554ac39e-e3fe-47fe-b233-965d2a147832', unURN(dm.source), rMgr.newId(), entryUUID, 'XDSSubmissionSet.sourceId')

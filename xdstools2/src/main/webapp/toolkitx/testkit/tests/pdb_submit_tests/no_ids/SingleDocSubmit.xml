@@ -108,12 +108,6 @@
                 <author>
                     <reference value="#a4"/>
                 </author>
-                <relatesTo>
-                    <code value="replaces"/>
-                    <target>
-                        <reference value="docref1"/>
-                    </target>
-                </relatesTo>
                 <description value="Physical"/>
                 <securityLabel>
                     <coding>
@@ -197,8 +191,8 @@
                 <type>
                     <coding>
                         <system value="http://www.snomed.org"/>
-                        <code value="419955002"/>
-                        <display value="Residential institution"/>
+                        <code value="225728007"/>
+                        <display value="Accident and Emergency department"/>
                     </coding>
                     <text value="History and Physical"/>
                 </type>

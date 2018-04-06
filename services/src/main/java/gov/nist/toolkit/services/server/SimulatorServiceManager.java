@@ -225,7 +225,7 @@ public class SimulatorServiceManager extends CommonService {
 			message2.getParts().set(0, message.getParts().get(0));
 			return message2;
 		} catch (Exception e) {
-			logger.info("Message not FHIR format");
+			logger.info("Message not FHIR format - " + ExceptionUtil.exception_details(e));
 		}
 		return message;
 	}

@@ -3,6 +3,7 @@ package gov.nist.toolkit.session.server
 import ca.uhn.fhir.context.FhirContext
 import gov.nist.toolkit.fhir.context.ToolkitFhirContext
 import gov.nist.toolkit.fhir.server.utility.FhirClient
+import gov.nist.toolkit.session.server.services.FhirCreate
 import gov.nist.toolkit.session.shared.Message
 import gov.nist.toolkit.session.shared.SubMessage
 import gov.nist.toolkit.testengine.fhir.FhirSupport
@@ -110,6 +111,15 @@ class FhirMessageBuilder {
                 addReference(subMessages, 'SourcePatient', xdr.context.sourcePatientInfo)
                 addReference(subMessages, "Authenticator", xdr.getAuthenticator());
                 addReference(subMessages, "Custodian", xdr.getCustodian());
+
+                String url = xdr.contentFirstRep.attachment.url
+                if (url?.startsWith('/')) {
+                    IBaseResource external = FhirClient.readResource(url)
+                    addResource(subMessages, 'Binary', 'Binary: ' + '(External) ' + url, (Resource) external)
+                } else {
+                    addResource(subMessages, 'Binary', 'Binary: ' + '(in Bundle) ' + url, (Resource) findInBundle(url))
+                }
+
                 for (DocumentReference.DocumentReferenceRelatesToComponent dr : xdr.getRelatesTo()) {
                     addReference(subMessages, dr.getCode().getDisplay(), dr.getTarget());
                 }
