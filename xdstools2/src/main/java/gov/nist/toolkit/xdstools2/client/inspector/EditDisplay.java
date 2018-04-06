@@ -57,10 +57,10 @@ public class EditDisplay extends CommonDisplay {
     CodeFilterBank codeFilterBank;
     HTML statusBox = new HTML();
     VerticalPanel resultPanel = new VerticalPanel();
-    private Button addAuthorBtn = new Button("add");
+    private Button addAuthorBtn = new Button("add author");
     private List<EditFieldsForAuthor> editFieldsForAuthorList = new ArrayList<>();
     private int authorRow; // This approach can be used as long as no other fields, except author, are changing.
-    final static private int authorRowsUsedPerRecord = 5; // This approach can be used as long as no other fields, except author, are changing.
+    final static private int authorRowsUsedPerRecord = 6; // This approach can be used as long as no other fields, except author, are changing.
     StatusDisplay statusDisplay = new StatusDisplay() {
         @Override
         public VerticalPanel getResultPanel() {
@@ -597,12 +597,9 @@ public class EditDisplay extends CommonDisplay {
     int editAuthor(final FlexTable ft, int beginRow, final boolean bold, List<Author> authors) {
         authorRow = beginRow;
         int row = beginRow;
-        ft.setHTML(row, 0, "author");
-        ft.setWidget(row, 1, addAuthorBtn);
-        row++;
-        if (authors.size()>0) {
-            addAuthorBtn.setTitle("Add a new author to the end of the list.");
-        }
+
+        // Header (none)
+
         addAuthorBtn.addClickHandler(new ClickHandler() {
                  @Override
                  public void onClick(ClickEvent clickEvent) {
@@ -614,21 +611,28 @@ public class EditDisplay extends CommonDisplay {
                  }
         });
 
+        // Body
         if (authors != null) {
          for (Author author : authors) {
              row = addAuthorRecord(ft, row, bold, author);
             }
          }
 
+         // Footer
+        ft.setWidget(row, 1, addAuthorBtn);
+
         return row;
     }
 
     private int addAuthorRecord(final FlexTable ft, int row, boolean bold, final Author author) {
+        ft.setHTML(row, 0, "author");
+        row++;
+
         final EditFieldsForAuthor editFieldsForAuthor = new EditFieldsForAuthor();
         editFieldsForAuthorList.add(editFieldsForAuthor);
 
         editFieldsForAuthor.beginRow = row;
-        ft.setHTML(row, 0, bold("&nbsp;person", bold));
+        ft.setHTML(row, 0, bold("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;person", bold));
         editFieldsForAuthor.personTxt.setText(author.person);
         FlowPanel personPanel = new FlowPanel();
         personPanel.add(editFieldsForAuthor.personTxt);
@@ -688,7 +692,7 @@ public class EditDisplay extends CommonDisplay {
     int editAuthorDetail(FlexTable ft, int row, boolean bold, final String key, List<String> values, EditFieldForAuthor editFieldForAuthor) {
 
         final ListBox listBox = editFieldForAuthor.listBox;
-        ft.setHTML(row, 0, bold("&nbsp;&nbsp;" + key, bold));
+        ft.setHTML(row, 0, bold("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + key, bold));
         popListBox(listBox, values);
         ft.setWidget(row, 1, listBox);
 

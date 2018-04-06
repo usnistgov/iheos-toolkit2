@@ -91,7 +91,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
             if (currentObjectType!=null) {
                 MetadataObjectType currentObjectTypeSelection = MetadataObjectType.valueOf(currentObjectType);
                 if (currentObjectTypeSelection != null) {
-                    return view.getTableMap().get(currentObjectTypeSelection).diffSelect.getValue();
+                    return view.getTableMap().get(currentObjectTypeSelection).compareSelect.getValue();
                 }
             }
             return false;
@@ -121,7 +121,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
                         view.metadataObjectSelector.updateSiteSelectedView(requestedObjectType.name());
                     }
 
-                    view.getTableMap().get(requestedObjectType).diffSelect.setValue(false,true);
+                    view.getTableMap().get(requestedObjectType).compareSelect.setValue(false,true);
                     view.getTableMap().get(requestedObjectType).setSelectedRow(objectWrapper.getObject(), true);
                     view.getTableMap().get(requestedObjectType).pageToBeIn();
                 } catch (Exception ex) {
@@ -143,7 +143,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
                 doSingleMode();
                 dataTable.lastSelectedObject = toFocus;
                 dataTable.compareObject = null;
-                dataTable.diffSelect.setValue(false,true);
+                dataTable.compareSelect.setValue(false,true);
                 TreeItem treeItem = doFocusTreeItem(objectType, view.metadataInspectorLeft.getTreeList(), null, toFocus, view.metadataInspectorLeft.getCurrentSelectedTreeItem());
                 if (treeItem!=null)
                     view.metadataInspectorLeft.setCurrentSelectedTreeItem(treeItem);
@@ -301,7 +301,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
                 if (dataTable!=null) {
                     dataTable.setData(dataMap.get(targetObjectType));
                     dataTable.asWidget().setVisible(true);
-                    if (!dataTable.diffSelect.getValue()) {
+                    if (!dataTable.compareSelect.getValue()) {
                         doSingleMode();
                         MetadataObject lastSelection = (MetadataObject)dataTable.lastSelectedObject;
                         if (lastSelection!=null) {

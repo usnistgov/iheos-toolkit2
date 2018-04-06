@@ -63,7 +63,7 @@ abstract class AssocDataTable extends DataTable<Association> implements IsWidget
     @Override
     void addTableColumns() {
 
-        if (diffSelect.getValue()) {
+        if (compareSelect.getValue()) {
             dataTable.addColumn(new Column<Association, Boolean>(new CheckboxCell(true, false)) {
                 @Override
                 public Boolean getValue(Association object) {
@@ -371,7 +371,7 @@ abstract class AssocDataTable extends DataTable<Association> implements IsWidget
     void setData(List<Association> associationList) {
         dataProvider.getList().clear();
         if (associationList!=null) {
-            diffSelect.setEnabled(associationList.size()>1);
+            compareSelect.setEnabled(associationList.size()>1);
             dataProvider.getList().addAll(associationList);
         }
 

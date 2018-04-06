@@ -57,7 +57,7 @@ abstract class SubmissionSetDataTable extends DataTable<SubmissionSet> implement
     @Override
     void addTableColumns() {
 
-        if (diffSelect.getValue()) {
+        if (compareSelect.getValue()) {
             dataTable.addColumn(new Column<SubmissionSet, Boolean>(new CheckboxCell(true, false)) {
                 @Override
                 public Boolean getValue(SubmissionSet object) {
@@ -291,7 +291,7 @@ abstract class SubmissionSetDataTable extends DataTable<SubmissionSet> implement
     void setData(List<SubmissionSet> submissionSetList) {
         dataProvider.getList().clear();
         if (submissionSetList!=null) {
-            diffSelect.setVisible(submissionSetList.size()>1);
+            compareSelect.setVisible(submissionSetList.size()>1);
             dataProvider.getList().addAll(submissionSetList);
         }
 

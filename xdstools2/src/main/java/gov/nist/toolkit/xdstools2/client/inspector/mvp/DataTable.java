@@ -64,7 +64,8 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
      * Compare only shows two objects side by side.
      * Diff should show/highlight the differences.
      */
-    CheckBox diffSelect = new CheckBox("Compare");
+    CheckBox compareSelect = new CheckBox("Compare");
+    CheckBox highlightDifferences = new CheckBox("Highlight differences");
 
     ColumnSortEvent.ListHandler<T> columnSortHandler = new ColumnSortEvent.ListHandler<T>(
             dataProvider.getList());
@@ -95,8 +96,6 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
         this.placeHolderRow = placeHolderRow;
         this.keyProvider = keyProvider;
 
-
-
         // Begin adding to the containerPanel
         addColumnSelectionCheckboxes();
         addDiffModeCheckbox();
@@ -104,12 +103,14 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
         addDataTable();
 
         if (displayDiff) {
-            diffSelect.addStyleName("block");
-            diffSelect.setVisible(true);
+            compareSelect.addStyleName("block");
+            compareSelect.setVisible(true);
             initDiffSelectionMode();
             multiSelect.setVisible(false);
+            highlightDifferences.setVisible(true);
         } else {
-            diffSelect.setVisible(false);
+            compareSelect.setVisible(false);
+            highlightDifferences.setVisible(false);
             multiSelect.setVisible(true);
             initMultiSelectionMode();
         }
@@ -127,17 +128,18 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
     }
 
     protected void addDiffModeCheckbox() {
-        containerPanel.add(diffSelect);
+        containerPanel.add(compareSelect);
+        containerPanel.add(highlightDifferences);
         containerPanel.add(multiSelect);
     }
 
     private void diffModeSelectionHandler() {
-        if (diffSelect.isVisible()) {
-            diffSelect.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+        if (compareSelect.isVisible()) {
+            compareSelect.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
                 @Override
                 public void onValueChange(ValueChangeEvent<Boolean> valueChangeEvent) {
-                    setupDiffMode(diffSelect.getValue());
-                    if (diffSelect.getValue()) {
+                    setupDiffMode(compareSelect.getValue());
+                    if (compareSelect.getValue()) {
                         clearActionDataList();
                         removeTableColumns();
                         addTableColumns();

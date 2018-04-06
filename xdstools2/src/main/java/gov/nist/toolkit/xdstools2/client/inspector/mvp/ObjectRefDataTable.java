@@ -46,7 +46,7 @@ abstract class ObjectRefDataTable extends DataTable<ObjectRef> implements IsWidg
     @Override
     void addTableColumns() {
 
-        if (diffSelect.getValue()) {
+        if (compareSelect.getValue()) {
             dataTable.addColumn(new Column<ObjectRef, Boolean>(new CheckboxCell(true, false)) {
                 @Override
                 public Boolean getValue(ObjectRef object) {
@@ -176,7 +176,7 @@ abstract class ObjectRefDataTable extends DataTable<ObjectRef> implements IsWidg
     void setData(List<ObjectRef> objectRefList) {
         dataProvider.getList().clear();
         if (objectRefList!=null) {
-            diffSelect.setEnabled(objectRefList.size()>1);
+            compareSelect.setEnabled(objectRefList.size()>1);
             dataProvider.getList().addAll(objectRefList);
         }
 
