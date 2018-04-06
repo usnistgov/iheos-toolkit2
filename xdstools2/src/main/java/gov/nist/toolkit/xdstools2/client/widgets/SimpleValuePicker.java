@@ -4,6 +4,9 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SimpleValuePicker extends DialogBox {
 	int listSize = 25;
 	final TextBox addValueBox = new TextBox();
@@ -81,6 +84,16 @@ public class SimpleValuePicker extends DialogBox {
 			listBox.removeItem(selectedIndex);
 		}
 
+	}
+
+	public static List<String> getValuesFromListBox(ListBox listBox) {
+		List<String> values = new ArrayList<String>();
+
+		for (int i=0; i<listBox.getItemCount(); i++) {
+			values.add(listBox.getValue(i));
+		}
+
+		return values;
 	}
 
 

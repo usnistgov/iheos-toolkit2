@@ -23,8 +23,10 @@ import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdstools2.client.command.command.UpdateDocumentEntryCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.ValidateDocumentEntryCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
-import gov.nist.toolkit.xdstools2.client.widgets.SimpleValuePicker;
+import gov.nist.toolkit.xdstools2.client.widgets.AuthorPicker;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.widgets.SimpleValuePicker;
+import gov.nist.toolkit.xdstools2.client.widgets.SourcePatientInfoPicker;
 import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.CodeFilter;
 import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.CodeFilterBank;
 import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.StatusDisplay;
@@ -51,6 +53,7 @@ public class EditDisplay extends CommonDisplay {
     private TextBox serviceStopTimeTxt = new TextBox();
     private TextBox languageCodeTxt = new TextBox();
     private TextBox legalAuthenticatorTxt = new TextBox();
+    private ListBox sourcePatientInfoLBox = new ListBox();
     CodeFilterBank codeFilterBank;
     HTML statusBox = new HTML();
     VerticalPanel resultPanel = new VerticalPanel();
@@ -192,13 +195,19 @@ public class EditDisplay extends CommonDisplay {
         for (EditFieldsForAuthor newA : editFieldsForAuthorList) {
             Author a = new Author();
             a.person = newA.personTxt.getText();
-            a.institutions = newA.fieldMap.get("institutions").getValuesFromListBox();
-            a.roles = newA.fieldMap.get("roles").getValuesFromListBox();
-            a.specialties = newA.fieldMap.get("specialties").getValuesFromListBox();
-            a.telecom = newA.fieldMap.get("telecom").getValuesFromListBox();
+            a.institutions = SimpleValuePicker.getValuesFromListBox(newA.fieldMap.get("institutions").listBox);
+            a.roles = SimpleValuePicker.getValuesFromListBox(newA.fieldMap.get("roles").listBox);
+            a.specialties = SimpleValuePicker.getValuesFromListBox(newA.fieldMap.get("specialties").listBox);
+            a.telecom = SimpleValuePicker.getValuesFromListBox(newA.fieldMap.get("telecom").listBox);
 
             de.authors.add(a);
         }
+
+        if (de.sourcePatientInfo==null) {
+            de.sourcePatientInfo = new ArrayList<>();
+        }
+        de.sourcePatientInfo.clear();
+        de.sourcePatientInfo.addAll(SimpleValuePicker.getValuesFromListBox(sourcePatientInfoLBox));
 
     }
 
@@ -274,6 +283,7 @@ public class EditDisplay extends CommonDisplay {
 
         // The collective validate bank being assembled
         codeFilterBank = new CodeFilterBank(statusDisplay);
+        sourcePatientInfoLBox.setVisibleItemCount(codeFilterBank.codeBoxSize);
 
         editDetail();
     }
@@ -409,7 +419,8 @@ public class EditDisplay extends CommonDisplay {
             ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.sourcePatientId, de.sourcePatientIdX));
             row++;
 
-            row = displayDetail(ft, row, b, "sourcePatientInfo", de.sourcePatientInfo, de.sourcePatientInfoX);
+//            row = displayDetail(ft, row, b, "sourcePatientInfo", de.sourcePatientInfo, de.sourcePatientInfoX);
+            row = editSourcePatientInfoRecord(ft, row, b, "sourcePatientInfo", de.sourcePatientInfo);
 
             // don't know how to handle diffs yet on extra metadata
             row = displayDetail(ft, row, b, de.extra, de.extraX);
@@ -521,6 +532,43 @@ public class EditDisplay extends CommonDisplay {
         }
     }
 
+    int editSourcePatientInfoRecord(final FlexTable ft, int beginRow, final boolean bold, String label, List<String> values) {
+        int row = beginRow;
+        ft.setHTML(row, 0, bold(label, bold));
+        popListBox(sourcePatientInfoLBox, values);
+        ft.setWidget(row, 1, sourcePatientInfoLBox);
+
+        Button editButton = new Button("edit");
+        ft.setWidget(row, 2, editButton);
+        editButton.addClickHandler(
+                new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent clickEvent) {
+                        try {
+                            String title = "Edit " + label;
+                            new SourcePatientInfoPicker(title, sourcePatientInfoLBox).show();
+                        } catch (Exception e) {
+                            new PopupMessage(e.getMessage());
+                        }
+                    }
+                });
+
+        return row+1;
+
+    }
+
+    private void popListBox(ListBox listBox, List<String> values) {
+        if ((values != null && !values.isEmpty())) {
+            if (values == null)
+                values = new ArrayList<>();
+            for (String value : values) {
+                listBox.addItem(value);
+            }
+        } else {
+            listBox.setVisible(false);
+        }
+    }
+
     int editAuthor(final FlexTable ft, int beginRow, final boolean bold, List<Author> authors) {
         authorRow = beginRow;
         int row = beginRow;
@@ -616,15 +664,7 @@ public class EditDisplay extends CommonDisplay {
 
         final ListBox listBox = editFieldForAuthor.listBox;
         ft.setHTML(row, 0, bold("&nbsp;&nbsp;" + key, bold));
-        if ((values != null && !values.isEmpty())) {
-            if (values == null)
-                values = new ArrayList<>();
-            for (String value : values) {
-                listBox.addItem(value);
-            }
-        } else {
-            listBox.setVisible(false);
-        }
+        popListBox(listBox, values);
         ft.setWidget(row, 1, listBox);
 
         Button editButton = editFieldForAuthor.editBtn;
@@ -635,7 +675,7 @@ public class EditDisplay extends CommonDisplay {
                     public void onClick(ClickEvent clickEvent) {
                         try {
                             String title = "Edit " + key;
-                            new SimpleValuePicker(title, listBox).show();
+                            new AuthorPicker(title, listBox).show();
                         } catch (Exception e) {
                             new PopupMessage(e.getMessage());
                         }

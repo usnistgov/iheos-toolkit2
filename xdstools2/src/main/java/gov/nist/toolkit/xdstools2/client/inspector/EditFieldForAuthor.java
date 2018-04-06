@@ -17,13 +17,5 @@ public class EditFieldForAuthor {
     }
 
 
-    List<String> getValuesFromListBox() {
-        List<String> values = new ArrayList<String>();
 
-        for (int i=0; i<listBox.getItemCount(); i++) {
-            values.add(listBox.getValue(i));
-        }
-
-        return values;
-    }
 }
