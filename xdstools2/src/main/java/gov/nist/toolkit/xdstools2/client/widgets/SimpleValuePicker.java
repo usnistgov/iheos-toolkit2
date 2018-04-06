@@ -4,40 +4,40 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 
-public class AuthorPicker extends DialogBox {
+public class SimpleValuePicker extends DialogBox {
 	int listSize = 25;
-	final TextBox addAuthorBox = new TextBox();
-	final ListBox authorList = new ListBox();
+	final TextBox addValueBox = new TextBox();
+	final ListBox listBox = new ListBox();
 
 	@SuppressWarnings("unchecked")
-	public AuthorPicker(String title, ListBox toUpdate) throws Exception {
+	public SimpleValuePicker(String title, ListBox toUpdate) throws Exception {
 		final ListBox listBoxToUpdate = toUpdate; // addTest the selected author names to the list displayed on the tab, when closing the dialogbox
 		setText(title);
 
 		FlexTable mainTable = new FlexTable();
-		mainTable.setWidget(0, 0, addAuthorBox);
+		mainTable.setWidget(0, 0, addValueBox);
 
 		VerticalPanel buttonPanel = new VerticalPanel();
 		mainTable.setWidget(0, 1, buttonPanel);
 
 		// Add authors entered in a previous edit, to the list of authors
 		for (int i=0; i<listBoxToUpdate.getItemCount(); i++) {
-			authorList.addItem(listBoxToUpdate.getValue(i));
+			listBox.addItem(listBoxToUpdate.getValue(i));
 		}
 
-		authorList.setVisibleItemCount(listSize);
-		mainTable.setWidget(0, 2, authorList);
+		listBox.setVisibleItemCount(listSize);
+		mainTable.setWidget(0, 2, listBox);
 
 
 		Button ok = new Button("OK");
 		ok.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				AuthorPicker.this.hide();
+				SimpleValuePicker.this.hide();
 
 				listBoxToUpdate.setVisible(true);
 				listBoxToUpdate.clear();
-				for (int i=0; i<authorList.getItemCount(); i++) {
-					listBoxToUpdate.addItem(authorList.getValue(i));
+				for (int i = 0; i< listBox.getItemCount(); i++) {
+					listBoxToUpdate.addItem(listBox.getValue(i));
 				}
 			}
 		});
@@ -46,7 +46,7 @@ public class AuthorPicker extends DialogBox {
 		cancel.addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
-				AuthorPicker.this.hide();
+				SimpleValuePicker.this.hide();
 			}
 
 		});
@@ -67,18 +67,18 @@ public class AuthorPicker extends DialogBox {
 
 	class AddClickHandler implements ClickHandler {
 		public void onClick(ClickEvent event) {
-			if (addAuthorBox.getText() == "")
+			if (addValueBox.getText() == "")
 				return;
-			authorList.addItem(addAuthorBox.getText());
+			listBox.addItem(addValueBox.getText());
 		}
 	}
 
 	class RmClickHandler implements ClickHandler {
 		public void onClick(ClickEvent event) {
-			int selectedIndex = authorList.getSelectedIndex();
+			int selectedIndex = listBox.getSelectedIndex();
 			if (selectedIndex == -1)
 				return;
-			authorList.removeItem(selectedIndex);
+			listBox.removeItem(selectedIndex);
 		}
 
 	}

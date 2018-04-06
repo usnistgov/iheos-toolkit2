@@ -23,7 +23,7 @@ import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdstools2.client.command.command.UpdateDocumentEntryCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.ValidateDocumentEntryCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
-import gov.nist.toolkit.xdstools2.client.widgets.AuthorPicker;
+import gov.nist.toolkit.xdstools2.client.widgets.SimpleValuePicker;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.CodeFilter;
 import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.CodeFilterBank;
@@ -635,7 +635,7 @@ public class EditDisplay extends CommonDisplay {
                     public void onClick(ClickEvent clickEvent) {
                         try {
                             String title = "Edit " + key;
-                            new AuthorPicker(title, listBox).show();
+                            new SimpleValuePicker(title, listBox).show();
                         } catch (Exception e) {
                             new PopupMessage(e.getMessage());
                         }
