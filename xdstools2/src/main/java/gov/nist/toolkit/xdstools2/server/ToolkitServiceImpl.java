@@ -1236,6 +1236,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         }
 
         // compare
+
         MetadataCollection mcOrig = MetadataToMetadataCollectionParser.buildMetadataCollection(m, "de");
         DocumentEntryDiff diff = new DocumentEntryDiff();
         DocumentEntry deOrig = null;
@@ -1245,16 +1246,19 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
                     deOrig = de;
                 }
             }
-            List<Difference> diffs = diff.compare(deOrig, request.getToBeUpdated());
+            if (! request.isNoCompare()) {
+                List<Difference> diffs = diff.compare(deOrig, request.getToBeUpdated());
 
-            if (diffs.size()==0) {
-                // No differences
-               throw new NoDifferencesException(deOrig.id);
-            } else {
-                for (Difference d : diffs) {
-                    logger.info("Found difference: " + d.getMetadataAttributeName());
+                if (diffs.size()==0) {
+                    // No differences
+                    throw new NoDifferencesException(deOrig.id);
+                } else {
+                    for (Difference d : diffs) {
+                        logger.info("Found difference: " + d.getMetadataAttributeName());
+                    }
                 }
             }
+
         } else {
             throw new ToolkitRuntimeException("No documentEntries in log.xml. EventDir: " + request.getOriginalQueryTestInstance().getEventDir());
         }

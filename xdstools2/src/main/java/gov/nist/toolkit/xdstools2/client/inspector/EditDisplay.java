@@ -251,23 +251,47 @@ public class EditDisplay extends CommonDisplay {
                 @Override
                 public void onFailure(Throwable throwable) {
                     if (throwable instanceof NoDifferencesException) {
-                       new PopupMessage("No differences found. Do you want to continue?");
+//                       new PopupMessage("No differences found. Do you want to continue?");
+                        SafeHtmlBuilder safeHtmlBuilder = new SafeHtmlBuilder();
+                        safeHtmlBuilder.appendHtmlConstant("<img src=\"icons2/red_questionmark-24.png\" title=\"Question\" height=\"16\" width=\"16\"/>");
+                        safeHtmlBuilder.appendHtmlConstant("No differences detected -- confirm metadata update");
+
+                        VerticalPanel body = new VerticalPanel();
+                        body.add(new HTML("<p>Continue?<br/></p>"));
+                        Button actionBtn =  new Button("Ok");
+                        actionBtn.addClickHandler(new ClickHandler() {
+                            @Override
+                            public void onClick(ClickEvent clickEvent) {
+                                new UpdateDocumentEntryCommand() {
+                                    @Override
+                                    public void onComplete(Result result) {
+                                       doPostUpdate(result);
+                                    }
+                                }.run(new UpdateDocumentEntryRequest(ClientUtils.INSTANCE.getCommandContext(), it.data.siteSpec, it.data.combinedMetadata, de, logId, true));
+                            }
+                        });
+                        new PopupMessage(safeHtmlBuilder.toSafeHtml() , body, actionBtn);
                     } else
                         new PopupMessage(throwable.toString());
                 }
 
                 @Override
                 public void onComplete(Result result) {
-                    // TODO: should we append the result to the Inspector?
-                    if (result!=null) {
-                        if (result.passed()) {
-                            new PopupMessage("Update was successful.");
-                        }
-                    } else {
-                        new PopupMessage("Update failed: Null result.");
-                    }
+                    doPostUpdate(result);
+
                 }
-            }.run(new UpdateDocumentEntryRequest(ClientUtils.INSTANCE.getCommandContext(), it.data.siteSpec, it.data.combinedMetadata, de, logId));
+            }.run(new UpdateDocumentEntryRequest(ClientUtils.INSTANCE.getCommandContext(), it.data.siteSpec, it.data.combinedMetadata, de, logId, false));
+        }
+
+        public void doPostUpdate(Result result) {
+            // TODO: should we append the result to the Inspector?
+            if (result!=null) {
+                if (result.passed()) {
+                    new PopupMessage("Update was successful.");
+                }
+            } else {
+                new PopupMessage("Update failed: Null result.");
+            }
         }
     }
 
@@ -532,7 +556,7 @@ public class EditDisplay extends CommonDisplay {
         }
     }
 
-    int editSourcePatientInfoRecord(final FlexTable ft, int beginRow, final boolean bold, String label, List<String> values) {
+    int editSourcePatientInfoRecord(final FlexTable ft, int beginRow, final boolean bold, final String label, List<String> values) {
         int row = beginRow;
         ft.setHTML(row, 0, bold(label, bold));
         popListBox(sourcePatientInfoLBox, values);

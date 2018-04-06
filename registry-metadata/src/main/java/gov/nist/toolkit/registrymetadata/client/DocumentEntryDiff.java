@@ -87,6 +87,12 @@ public class DocumentEntryDiff extends MetadataDiffBase implements IsSerializabl
             differences.add(new Difference("Author"));
         }
 
+        if (dif(a.sourcePatientInfo, b.sourcePatientInfo)) {
+            differences.add(new Difference("sourcePatientInfo"));
+        }
+
+        // TODO how to compare extra metadata?
+
         // TODO: add more fields to compare.
 
         return differences;

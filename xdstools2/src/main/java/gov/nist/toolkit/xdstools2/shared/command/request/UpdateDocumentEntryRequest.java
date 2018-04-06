@@ -14,15 +14,17 @@ public class UpdateDocumentEntryRequest extends CommandContext {
     MetadataCollection mc;
     DocumentEntry toBeUpdated;
     TestInstance originalQueryTestInstance;
+    boolean noCompare;
 
     public UpdateDocumentEntryRequest(){}
 
-    public UpdateDocumentEntryRequest(CommandContext context, SiteSpec siteSpec, MetadataCollection mc, DocumentEntry toBeUpdated, TestInstance originalQueryTestInstance) {
+    public UpdateDocumentEntryRequest(CommandContext context, SiteSpec siteSpec, MetadataCollection mc, DocumentEntry toBeUpdated, TestInstance originalQueryTestInstance, boolean noCompare) {
         copyFrom(context);
         this.siteSpec = siteSpec;
         this.mc = mc;
         this.toBeUpdated = toBeUpdated;
         this.originalQueryTestInstance = originalQueryTestInstance;
+        this.noCompare = noCompare;
     }
 
     public DocumentEntry getToBeUpdated() {
@@ -39,5 +41,9 @@ public class UpdateDocumentEntryRequest extends CommandContext {
 
     public SiteSpec getSiteSpec() {
         return siteSpec;
+    }
+
+    public boolean isNoCompare() {
+        return noCompare;
     }
 }
