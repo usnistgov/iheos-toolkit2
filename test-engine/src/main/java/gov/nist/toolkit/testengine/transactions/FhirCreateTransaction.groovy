@@ -14,6 +14,9 @@ import org.apache.http.message.BasicStatusLine
 import org.apache.log4j.Logger
 import org.hl7.fhir.dstu3.model.*
 import org.hl7.fhir.instance.model.api.IBaseResource
+
+import javax.print.Doc
+
 /**
  *
  */
@@ -71,12 +74,63 @@ class FhirCreateTransaction extends BasicFhirTransaction {
         }
     }
 
+    static stripMetaFromContainedResources(Resource resource) {
+        if (!resource)
+            return
+        if (resource instanceof Bundle) {
+            Bundle b = (Bundle) resource
+            b.entry.each { Bundle.BundleEntryComponent comp ->
+                Resource r = comp.getResource()
+                stripMetaFromContainedResources(r)
+            }
+        }
+        if (resource instanceof DocumentManifest) {
+            DocumentManifest dm = (DocumentManifest) resource
+            dm.contained.each { Resource r ->
+                stripMetaFromContainedResources(r)
+            }
+            dm.meta.versionId = null
+            dm.meta.lastUpdated = null
+            return
+        }
+        if (resource instanceof DocumentReference) {
+            DocumentReference dm = (DocumentReference) resource
+            dm.contained.each { Resource r ->
+                stripMetaFromContainedResources(r)
+            }
+            dm.meta.versionId = null
+            dm.meta.lastUpdated = null
+            return
+        }
+        if (resource instanceof Practitioner) {
+            Practitioner dm = (Practitioner) resource
+            dm.contained.each { Resource r ->
+                stripMetaFromContainedResources(r)
+            }
+            dm.meta.versionId = null
+            dm.meta.lastUpdated = null
+            return
+        }
+        if (resource instanceof Patient) {
+            Patient dm = (Patient) resource
+            dm.contained.each { Resource r ->
+                stripMetaFromContainedResources(r)
+            }
+            dm.meta.versionId = null
+            dm.meta.lastUpdated = null
+            return
+        }
+
+    }
+
     @Override
     void doRun(IBaseResource resource, String urlExtension) {
         assert endpoint, 'TestClient:FhirCreateTransaction: endpoint is null'
 
         String patientReference = null
         Map<String, String> originalDocUrls = [:]
+
+        stripMetaFromContainedResources(resource)
 
         if (useReportManager) {
             patientReference = useReportManager.get('$patient_reference$')
