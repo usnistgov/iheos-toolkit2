@@ -25,7 +25,7 @@
         <Code code="35971002" display="Ambulatory care site" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
         <Code code="44860005" display="Free-standing rehabilitation clinic" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
         <Code code="419955002" display="Residential institution" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="MPQ-hcftcode-1" display="MPQ" codingScheme="MPQ Testing" system="http://connectathon.ihe/mpq"/>
+        <Code code="MPQ-hcftcode-1" display="MPQ" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe/mpq"/>
     </CodeType>
     <CodeType name="practiceSettingCode" classScheme="urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead">
         <Code code="Practice-A" display="Radiology" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
@@ -463,7 +463,7 @@
         <Code code="urn:oid:1.3.6.1.4.1.19376.1.2.1.1.1" display="Digital Signature" codingScheme="1.3.6.1.4.1.19376.1.2.6.1" system="urn:oid:1.3.6.1.4.1.19376.1.2.6.1"/>
         
         <!-- bill -->
-        <Code code="MPQ-classcode-1" codingScheme="MPQ Testing" 
+        <Code code="MPQ-classcode-1" codingScheme="1.3.6.1.4.1.21367.2017.3"
             display = "Security" />
     </CodeType>
     <CodeType name="formatCode" classScheme="urn:uuid:a09d5840-386c-46f2-b5ad-9c3699a4309d">
