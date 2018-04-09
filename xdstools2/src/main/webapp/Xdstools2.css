@@ -377,7 +377,7 @@ h3 {
   cursor: wait;
 }
 .HP{
-  margin-top:10px;
+  margin-top:10px !important;
 }
 .HP .gwt-Button {
   margin-right: 10px;

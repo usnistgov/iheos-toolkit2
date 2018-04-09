@@ -10,8 +10,16 @@ import java.util.List;
  * Only checks the "easy" attributes for now.
  */
 public class DocumentEntryDiff extends MetadataDiffBase implements IsSerializable, Compare {
+    /**
+     * Exclude metadata attributes which are not handled by current implementation of metadata update
+     */
+    boolean updateMode = false;
 
     public DocumentEntryDiff() {
+    }
+
+    public DocumentEntryDiff(boolean updateMode) {
+        this.updateMode = updateMode;
     }
 
     @Override
@@ -31,21 +39,94 @@ public class DocumentEntryDiff extends MetadataDiffBase implements IsSerializabl
 
 
         // TODO: To use metadata attribute constants from CodesConfiguration, the classes need to be relocated to a module that is accessible.
-        if (dif(a.title, b.title)) {
-            differences.add(new Difference("title"));
+        if (!updateMode) {
+            if (dif(a.objectType, b.objectType)) {
+                differences.add(new Difference("objectType"));
+            }
         }
 
-        if (dif(a.version, b.version)) {
-            differences.add(new Difference("version"));
+        if (dif(a.title, b.title)) {
+            differences.add(new Difference("title"));
         }
 
         if (dif(a.comments, b.comments)) {
             differences.add(new Difference("comments"));
         }
 
+        if (!updateMode) {
+            if (dif(a.id, b.id)) {
+                differences.add(new Difference("id"));
+            }
+        }
+
+        if (!updateMode) {
+            if (dif(a.lid, b.lid)) {
+                differences.add(new Difference("lid"));
+            }
+        }
+
+        if (!updateMode) {
+            if (dif(a.version, b.version)) {
+                differences.add(new Difference("version"));
+            }
+        }
+
+        if (!updateMode) {
+            if (dif(a.uniqueId, b.uniqueId)) {
+                differences.add(new Difference("uniqueId"));
+            }
+        }
+
+         if (!updateMode) {
+             if (dif(a.patientId, b.patientId)) {
+                 differences.add(new Difference("patientId"));
+             }
+         }
+
+        if (!updateMode) {
+            if (dif(a.status, b.status)) {
+                differences.add(new Difference("status"));
+            }
+        }
+
+        if (!updateMode) {
+            if (dif(a.home, b.home)) {
+                differences.add(new Difference("homeCommunityId"));
+            }
+        }
+
+        if (!updateMode) {
+            if (dif(a.mimeType, b.mimeType)) {
+                differences.add(new Difference("mimeType"));
+            }
+        }
+
+        if (!updateMode) {
+            if (dif(a.hash, b.hash)) {
+                differences.add(new Difference("hash"));
+            }
+        }
+
+        if (!updateMode) {
+            if (dif(a.size, b.size)) {
+                differences.add(new Difference("size"));
+            }
+        }
+
+        if (!updateMode) {
+            if (dif(a.repositoryUniqueId, b.repositoryUniqueId)) {
+                differences.add(new Difference("repositoryUniqueId"));
+            }
+        }
+
         if (dif(a.lang, b.lang)) {
             differences.add(new Difference("lang"));
         }
+
+        if (dif(a.legalAuth, b.legalAuth)) {
+            differences.add(new Difference("legalAuthenticator"));
+        }
+
 
         if (dif(a.serviceStartTime, b.serviceStartTime)) {
             differences.add(new Difference("serviceStartTime"));
@@ -57,6 +138,16 @@ public class DocumentEntryDiff extends MetadataDiffBase implements IsSerializabl
 
         if (dif(a.creationTime, b.creationTime)) {
             differences.add(new Difference("creationTime"));
+        }
+
+        if (!updateMode) {
+            if (dif(a.sourcePatientId, b.sourcePatientId)) {
+                differences.add(new Difference("sourcePatientId"));
+            }
+        }
+
+        if (dif(a.sourcePatientInfo, b.sourcePatientInfo)) {
+            differences.add(new Difference("sourcePatientInfo"));
         }
 
         if (dif(a.classCode, b.classCode)) {
@@ -91,13 +182,9 @@ public class DocumentEntryDiff extends MetadataDiffBase implements IsSerializabl
             differences.add(new Difference("author"));
         }
 
-        if (dif(a.sourcePatientInfo, b.sourcePatientInfo)) {
-            differences.add(new Difference("sourcePatientInfo"));
-        }
 
-        // TODO: add more fields to compare.
         // TODO how to compare extra metadata?
-        // TODO referenceIdList when it is available to compare
+        // TODO referenceIdList when it is available to compare. Update the tooltip on highlightDifferences checkbox in DataTable.
 
 
         return differences;

@@ -248,7 +248,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
 
         // DocEntry highlight indicator
         if (isSelectedType(MetadataObjectType.DocEntries)) {
-            doShowHighlightIndicator(isSelected, "Limited capability.");
+            doShowHighlightIndicator(isSelected, "Limited capability: Excludes ReferenceIdList and extraMetadata.");
         } else {
             doShowHighlightIndicator(false, "");
         }

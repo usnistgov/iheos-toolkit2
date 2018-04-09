@@ -230,14 +230,22 @@ public class EditDisplay extends CommonDisplay {
     private class ValidateClickHandler implements ClickHandler {
         @Override
         public void onClick(ClickEvent clickEvent) {
+            validateMuBtn.setEnabled(false);
             applyChanges();
             new ValidateDocumentEntryCommand() {
                 @Override
+                public void onFailure(Throwable throwable) {
+                    super.onFailure(throwable);
+                    validateMuBtn.setEnabled(true);
+                }
+
+                @Override
                 public void onComplete(MessageValidationResults result) {
+                    validateMuBtn.setEnabled(true);
                     if (result!=null) {
                         new PopupMessage("Validation passed " + result.getHtmlResults());
                     }
-                    else new PopupMessage("result is null");
+                    else new PopupMessage("Validation failed: No result returned.");
                 }
             }.run(new ValidateDocumentEntryRequest(ClientUtils.INSTANCE.getCommandContext(), de));
         }
@@ -246,10 +254,12 @@ public class EditDisplay extends CommonDisplay {
     private class UpdateClickHandler implements ClickHandler {
         @Override
         public void onClick(ClickEvent clickEvent) {
+            updateBtn.setEnabled(false);
             applyChanges();
             new UpdateDocumentEntryCommand() {
                 @Override
                 public void onFailure(Throwable throwable) {
+                    updateBtn.setEnabled(true);
                     if (throwable instanceof NoDifferencesException) {
 //                       new PopupMessage("No differences found. Do you want to continue?");
                         SafeHtmlBuilder safeHtmlBuilder = new SafeHtmlBuilder();
@@ -277,6 +287,7 @@ public class EditDisplay extends CommonDisplay {
 
                 @Override
                 public void onComplete(Result result) {
+                    updateBtn.setEnabled(true);
                     doPostUpdate(result);
 
                 }
@@ -288,6 +299,7 @@ public class EditDisplay extends CommonDisplay {
             if (result!=null) {
                 if (result.passed()) {
                     new PopupMessage("Update was successful.");
+                    it.addToHistory(result);
                 }
             } else {
                 new PopupMessage("Update failed: Null result.");
@@ -310,7 +322,7 @@ public class EditDisplay extends CommonDisplay {
         // The collective validate bank being assembled
         codeFilterBank = new CodeFilterBank(statusDisplay);
         sourcePatientInfoLBox.setVisibleItemCount(codeFilterBank.codeBoxSize);
-        validateMuBtn.setTitle("Validate class codes as configured in Toolkit");
+        validateMuBtn.setTitle("Validate codes as configured in Toolkit");
 
         editDetail();
     }

@@ -1242,7 +1242,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         // compare
 
         MetadataCollection mcOrig = MetadataToMetadataCollectionParser.buildMetadataCollection(m, "de");
-        DocumentEntryDiff diff = new DocumentEntryDiff();
+        DocumentEntryDiff diff = new DocumentEntryDiff(true);
         DocumentEntry deOrig = null;
         if (mcOrig.docEntries.size()>0) {
             for (DocumentEntry de : mcOrig.docEntries) {
