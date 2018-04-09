@@ -107,10 +107,8 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
             compareSelect.setVisible(true);
             initDiffSelectionMode();
             multiSelect.setVisible(false);
-            highlightDifferences.setVisible(true);
         } else {
             compareSelect.setVisible(false);
-            highlightDifferences.setVisible(false);
             multiSelect.setVisible(true);
             initMultiSelectionMode();
         }
@@ -130,6 +128,7 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
     protected void addDiffModeCheckbox() {
         containerPanel.add(compareSelect);
         containerPanel.add(highlightDifferences);
+        highlightDifferences.setVisible(false);
         containerPanel.add(multiSelect);
     }
 
@@ -146,9 +145,9 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
                         initDiffSelectionMode();
 //                        assignDiffSelectionModel();
                         resizeTable();
-           if (lastSelectedObject!=null) {
-                selectionModel.setSelected(lastSelectedObject,true);
-            }
+                        if (lastSelectedObject!=null) {
+                            selectionModel.setSelected(lastSelectedObject,true);
+                        }
                     } else {
                        clearActionDataList();
                       removeTableColumns();
@@ -417,6 +416,7 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
         dataTable.setSkipRowHoverCheck(true);
         dataTable.setSkipRowHoverFloatElementCheck(true);
         dataTable.getElement().getStyle().setProperty("wordWrap","break-word");
+        dataTable.getElement().getStyle().setMarginTop(20, Style.Unit.PX);
 
         containerPanel.add(dataTable);
 

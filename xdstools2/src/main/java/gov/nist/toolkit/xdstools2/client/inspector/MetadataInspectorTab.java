@@ -16,6 +16,7 @@ import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
+import gov.nist.toolkit.registrymetadata.client.MetadataObject;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.results.client.AssertionResult;
 import gov.nist.toolkit.results.client.AssertionResults;
@@ -64,6 +65,13 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 
 	List<Tree> treeList = new ArrayList<>();
 	TreeItem currentSelectedTreeItem;
+	MetadataObject comparableMetadata;
+
+	// main panel
+	HorizontalPanel hpanel = new HorizontalPanel();
+	Collection<Result> results;
+	private SiteSpec siteSpec;
+
 
 	public MetadataInspectorTab() {
 	}
@@ -106,13 +114,6 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 		}
 	}
 
-
-
-	// main panel
-	HorizontalPanel hpanel = new HorizontalPanel();
-	Collection<Result> results;
-	private SiteSpec siteSpec;
-	
 	public void setResults(Collection<Result> results) { this.results = results; }
 	public void setSiteSpec(SiteSpec ss) { siteSpec = ss; }
 
@@ -687,6 +688,14 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 
 	public void setCurrentSelectedTreeItem(TreeItem currentSelectedTreeItem) {
 		this.currentSelectedTreeItem = currentSelectedTreeItem;
+	}
+
+	public MetadataObject getComparableMetadata() {
+		return comparableMetadata;
+	}
+
+	public void setComparableMetadata(MetadataObject comparableMetadata) {
+		this.comparableMetadata = comparableMetadata;
 	}
 
 	@Override

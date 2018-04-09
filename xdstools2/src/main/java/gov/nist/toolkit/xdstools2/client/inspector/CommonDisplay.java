@@ -7,6 +7,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.registrymetadata.client.Author;
+import gov.nist.toolkit.registrymetadata.client.Difference;
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
 
 import java.util.ArrayList;
@@ -133,6 +134,31 @@ public abstract class CommonDisplay {
             row = displayDetail(ft, row, bold, "telecom", author.telecom, "");
         }
 
+        return row;
+    }
+
+    int displayDetail(FlexTable ft, int row, List<Difference> diffs, List<Author> authors, List<String> xml) {
+        if (authors == null)
+            authors = new ArrayList<>();
+        if (xml == null)
+            xml = new ArrayList<>();
+        int xmlI = 0;
+        if (diffs.contains(new Difference("author"))) {
+            ft.setHTML(row, 0, highlight("author(s)"));   // this is only a hint/general indicator until we compare the full details of Author
+            row++;
+        }
+        for (Author author : authors) {
+            ft.setHTML(row, 0, "author");
+            ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, author.person, xml.get(xmlI)));
+            //			ft.setText(row, 1, author.person);
+            row++;
+            xmlI++;
+
+            row = displayDetail(ft, row, false, "institutions", author.institutions, "");
+            row = displayDetail(ft, row, false, "roles", author.roles, "");
+            row = displayDetail(ft, row, false, "specialties", author.specialties, "");
+            row = displayDetail(ft, row, false, "telecom", author.telecom, "");
+        }
 
         return row;
     }
@@ -146,5 +172,15 @@ public abstract class CommonDisplay {
     void displayText(String title, String html) {
         addTitle(HyperlinkFactory.addHTML("<h4>" + title + "</h4>"));
         detailPanel.add(new HTML(html));
+    }
+
+    String highlight(String msg, List<Difference> diffs) {
+        if (diffs!=null && diffs.contains(new Difference(msg)))
+            return highlight(msg);
+        return msg;
+    }
+
+    String highlight(String txt) {
+        return "<span class='test-row-yellow'>" + txt + "</span>";
     }
 }

@@ -303,7 +303,9 @@ public class EditDisplay extends CommonDisplay {
         this.logId = logId;
         this.de = DocumentEntry.clone(de);
         validateMuBtn.addClickHandler(new ValidateClickHandler());
+        validateMuBtn.addStyleName("HP");
         updateBtn.addClickHandler(new UpdateClickHandler());
+        updateBtn.addStyleName("HP");
 
         // The collective validate bank being assembled
         codeFilterBank = new CodeFilterBank(statusDisplay);
@@ -603,11 +605,13 @@ public class EditDisplay extends CommonDisplay {
         addAuthorBtn.addClickHandler(new ClickHandler() {
                  @Override
                  public void onClick(ClickEvent clickEvent) {
-                     int newAuthorRow = authorRow+1 + (editFieldsForAuthorList.size()*authorRowsUsedPerRecord); // Seeks up to the last Author
+                     // Seeks up to the last Author
+                     int newAuthorRow = authorRow + (editFieldsForAuthorList.size()*authorRowsUsedPerRecord);
                      for (int i = 0; i < authorRowsUsedPerRecord; i++) {
                          ft.insertRow(newAuthorRow);
                      }
-                     addAuthorRecord(ft, newAuthorRow, bold, new Author());
+                     int row = addAuthorRecord(ft, newAuthorRow, bold, new Author());
+
                  }
         });
 
@@ -619,24 +623,33 @@ public class EditDisplay extends CommonDisplay {
          }
 
          // Footer
-        ft.setWidget(row, 1, addAuthorBtn);
+        row = addAuthorFooter(row, ft);
+
 
         return row;
     }
 
-    private int addAuthorRecord(final FlexTable ft, int row, boolean bold, final Author author) {
-        ft.setHTML(row, 0, "author");
-        row++;
+    private int addAuthorFooter(int beginRow, FlexTable ft) {
+        int row = beginRow;
+        ft.setHTML(row, 0, "&nbsp;");
+        ft.setWidget(row, 1, addAuthorBtn);
+        return row+1;
+    }
 
+    private int addAuthorRecord(final FlexTable ft, int row, boolean bold, final Author author) {
         final EditFieldsForAuthor editFieldsForAuthor = new EditFieldsForAuthor();
         editFieldsForAuthorList.add(editFieldsForAuthor);
 
         editFieldsForAuthor.beginRow = row;
+
+        ft.setHTML(row, 0, "author");
+        row++;
+
         ft.setHTML(row, 0, bold("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;person", bold));
         editFieldsForAuthor.personTxt.setText(author.person);
         FlowPanel personPanel = new FlowPanel();
         personPanel.add(editFieldsForAuthor.personTxt);
-        Image removeAuthorImg = new Image("icons/exclude-button.png");
+        Image removeAuthorImg = new Image("icons/exclude-button-red.png");
         removeAuthorImg.setTitle("Remove Author");
         removeAuthorImg.setAltText("Minus symbol");
         removeAuthorImg.setStyleName("copyBtn"); // reuse
@@ -646,7 +659,7 @@ public class EditDisplay extends CommonDisplay {
                 @Override
                 public void onClick(ClickEvent clickEvent) {
                     SafeHtmlBuilder safeHtmlBuilder = new SafeHtmlBuilder();
-                    safeHtmlBuilder.appendHtmlConstant("<img src=\"icons/exclude-button.png\" title=\"Remove Author\" height=\"16\" width=\"16\"/>");
+                    safeHtmlBuilder.appendHtmlConstant("<img src=\"icons/exclude-button-red.png\" title=\"Remove Author\" />");
                     safeHtmlBuilder.appendHtmlConstant("Confirm remove author " + (author.person!=null?author.person:""));
 
                     VerticalPanel body = new VerticalPanel();
@@ -660,6 +673,12 @@ public class EditDisplay extends CommonDisplay {
                                 ft.removeRow(editFieldsForAuthor.beginRow);
                             }
                             editFieldsForAuthorList.remove(editFieldsForAuthor);
+                            // Adjust all beginRows in list after removing an author record
+                            int count = 0;
+                            for (EditFieldsForAuthor e : editFieldsForAuthorList) {
+                                  e.beginRow = authorRow + authorRowsUsedPerRecord * count;
+                                  count++;
+                            }
                         }
                     });
                     new PopupMessage(safeHtmlBuilder.toSafeHtml() , body, actionBtn);

@@ -35,12 +35,16 @@ public class DocumentEntryDiff extends MetadataDiffBase implements IsSerializabl
             differences.add(new Difference("title"));
         }
 
+        if (dif(a.version, b.version)) {
+            differences.add(new Difference("version"));
+        }
+
         if (dif(a.comments, b.comments)) {
             differences.add(new Difference("comments"));
         }
 
         if (dif(a.lang, b.lang)) {
-            differences.add(new Difference("languageCode"));
+            differences.add(new Difference("lang"));
         }
 
         if (dif(a.serviceStartTime, b.serviceStartTime)) {
@@ -60,7 +64,7 @@ public class DocumentEntryDiff extends MetadataDiffBase implements IsSerializabl
         }
 
         if (dif(a.confCodes, b.confCodes)) {
-            differences.add(new Difference("confidentialityCode"));
+            differences.add(new Difference("confCodes"));
         }
 
         if (dif(a.eventCodeList, b.eventCodeList)) {
@@ -84,16 +88,17 @@ public class DocumentEntryDiff extends MetadataDiffBase implements IsSerializabl
         }
 
         if (difa(a.authors, b.authors)) {
-            differences.add(new Difference("Author"));
+            differences.add(new Difference("author"));
         }
 
         if (dif(a.sourcePatientInfo, b.sourcePatientInfo)) {
             differences.add(new Difference("sourcePatientInfo"));
         }
 
-        // TODO how to compare extra metadata?
-
         // TODO: add more fields to compare.
+        // TODO how to compare extra metadata?
+        // TODO referenceIdList when it is available to compare
+
 
         return differences;
     }

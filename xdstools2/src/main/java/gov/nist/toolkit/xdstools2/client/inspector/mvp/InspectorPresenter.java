@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client.inspector.mvp;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Hyperlink;
@@ -12,6 +13,7 @@ import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
 import gov.nist.toolkit.registrymetadata.client.MetadataObject;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractPresenter;
 import gov.nist.toolkit.xdstools2.client.inspector.DataNotification;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
@@ -87,13 +89,6 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
         view.metadataInspectorLeft.setDataNotification(new DataNotification() {
             @Override
         public boolean inCompare() {
-            String currentObjectType = view.metadataObjectSelector.getCurrentSelection();
-            if (currentObjectType!=null) {
-                MetadataObjectType currentObjectTypeSelection = MetadataObjectType.valueOf(currentObjectType);
-                if (currentObjectTypeSelection != null) {
-                    return view.getTableMap().get(currentObjectTypeSelection).compareSelect.getValue();
-                }
-            }
             return false;
         }
 
@@ -156,6 +151,11 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
               if (treeItem!=null)
                 view.metadataInspectorLeft.setCurrentSelectedTreeItem(treeItem);
             }
+
+            @Override
+            public MetadataObject getComparable() {
+                return null;
+            }
         });
         view.metadataInspectorRight.setDataNotification(new DataNotification() {
             @Override
@@ -166,7 +166,14 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
 
             @Override
             public boolean inCompare() {
-                return view.metadataInspectorLeft.getDataNotification().inCompare();
+                String currentObjectType = view.metadataObjectSelector.getCurrentSelection();
+                if (currentObjectType!=null) {
+                    MetadataObjectType currentObjectTypeSelection = MetadataObjectType.valueOf(currentObjectType);
+                    if (currentObjectTypeSelection != null) {
+                        return view.getTableMap().get(currentObjectTypeSelection).compareSelect.getValue();
+                    }
+                }
+                return false;
             }
 
             @Override
@@ -176,6 +183,19 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
 
             @Override
             public void onHistoryContentModeChanged(MetadataObjectWrapper objectWrapper) {}
+
+            /**
+             *
+             * @return Null if nothing to compare against
+             */
+            @Override
+            public MetadataObject getComparable() {
+                if (inCompare()) {
+                   return view.metadataInspectorRight.getComparableMetadata();
+                } else {
+                    return null;
+                }
+            }
         });
         setupInspectorWidget(view.metadataInspectorRight);
         metadataCollection = setupInspectorWidget(view.metadataInspectorLeft);
@@ -225,6 +245,13 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
         // hide history pane when Diff is selected
         view.metadataInspectorRight.showHistory(!isSelected);
         view.metadataInspectorRight.showStructure(!isSelected);
+
+        // DocEntry highlight indicator
+        if (isSelectedType(MetadataObjectType.DocEntries)) {
+            doShowHighlightIndicator(isSelected, "Limited capability.");
+        } else {
+            doShowHighlightIndicator(false, "");
+        }
     }
 
     private MetadataCollection setupInspectorWidget(MetadataInspectorTab inspector) {
@@ -235,7 +262,17 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
     }
 
     public void doDiffAction(MetadataObjectType metadataObjectType, MetadataObject left, MetadataObject right) {
-
+        if (isSelectedType(MetadataObjectType.DocEntries)) {
+            /*
+             add Mo.right to insp.right
+                Call stack to the method that needs to compare:
+                Hyperlink h = HyperlinkFactory.link(tab, de);
+                HistorySelector(MetadataInspectorTab it, MetadataObject o)
+             access Mo.right from new DetailDisplay(it).displayDetail(mo, MetadataDiff.nullObject(mo));
+                call compare from detaildisp
+             */
+          view.metadataInspectorRight.setComparableMetadata(left);
+        }
         view.inspectorWrapper.add(view.metadataInspectorRight.asWidget());
 
        view.metadataInspectorLeft.showHistory(false);
@@ -247,6 +284,42 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
        TreeItem compare = doFocusTreeItem(metadataObjectType, view.metadataInspectorRight.getTreeList(), null, right, view.metadataInspectorLeft.getCurrentSelectedTreeItem());
        if (compare!=null)
             view.metadataInspectorRight.setCurrentSelectedTreeItem(compare);
+
+
+
+    }
+
+    /**
+     *  DocumentEntry has a highlight differences feature
+     */
+    void doShowHighlightIndicator(boolean isSelected, String toolTip) {
+        DataTable dataTable = getDataTable(getCurrentSelectedType());
+        CheckBox highlightDiffCbx = dataTable.highlightDifferences;
+        highlightDiffCbx.setVisible(isSelected);
+        highlightDiffCbx.setValue(isSelected);
+        highlightDiffCbx.setTitle(toolTip);
+        highlightDiffCbx.setEnabled(false);
+    }
+
+    MetadataObjectType getCurrentSelectedType() {
+        String currentObjectType = view.metadataObjectSelector.getCurrentSelection();
+        if (currentObjectType != null) {
+            MetadataObjectType currentObjectTypeSelection = MetadataObjectType.valueOf(currentObjectType);
+            return currentObjectTypeSelection;
+        }
+        throw new ToolkitRuntimeException("Object type not selected");
+    }
+
+    boolean isSelectedType(MetadataObjectType metadataObjectType) {
+        return getCurrentSelectedType().equals(metadataObjectType);
+    }
+    DataTable getDataTable(MetadataObjectType metadataObjectType) {
+        if (metadataObjectType==null)
+            metadataObjectType = getCurrentSelectedType();
+
+        if (view.tableMap.containsKey(metadataObjectType))
+            return view.tableMap.get(metadataObjectType);
+        throw new ToolkitRuntimeException("DataTable for " + metadataObjectType.name() + " does not exist.");
     }
 
     /*
