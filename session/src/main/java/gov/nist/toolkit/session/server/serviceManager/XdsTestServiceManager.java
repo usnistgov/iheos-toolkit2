@@ -1135,12 +1135,6 @@ public class XdsTestServiceManager extends CommonService {
 		return new ArrayList<String>(listing);
 	}
 
-	public String getNewPatientId(String assigningAuthority) {
-		if (session != null)
-			logger.debug(session.id() + ": " + "getNewPatientId()");
-		return session.allocateNewPid(assigningAuthority).asString();
-	}
-
 	public Map<String, String> getCollectionNames(String collectionSetName) throws Exception  {
 		logger.debug(session.id() + ": " + "getCollectionNames(" + collectionSetName + ")");
 		Map<String,String> collectionNames=new HashMap<String,String>();

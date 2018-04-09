@@ -187,7 +187,7 @@
                   </rim:Classification>
                   <rim:ExternalIdentifier
                      identificationScheme="urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8"
-                     value="#UNIQUE_ID_SS#"
+                     value="1.2.3.4.5"
                      objectType="urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:ExternalIdentifier"
                      id="id_15" registryObject="urn:uuid:96bd4589-6975-43bf-81e8-9cf1701d0f10">
                      <rim:Name>

@@ -1,9 +1,3 @@
 # Release Notes #
 
-[Version 2.202.9](2_202_9.html)  - May 19, 2016
-
-[Version 2.202.8](2_202_8.html)  - May 13, 2016
-
-[Version 2.202.7](2_202_7.html)
-
-[Version 2.202.0](202_0.html)
+[All Versions](https://github.com/usnistgov/iheos-toolkit2/releases) 

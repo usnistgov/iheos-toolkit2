@@ -113,6 +113,7 @@ public class BuildFhirSupportOrchestrationButton extends AbstractOrchestrationBu
         }
 
         initializationResultsPanel.add(new HTML("<h2>Patients</h2>"));
+        initializationResultsPanel.add(new HTML("<p>This list was created by querying the server.</p>"));
         FlexTable table = buildTable();
 
         int row=0;

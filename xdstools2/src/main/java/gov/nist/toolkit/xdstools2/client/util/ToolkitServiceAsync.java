@@ -51,7 +51,6 @@ public interface ToolkitServiceAsync {
     void getTkProps(AsyncCallback<TkProps> callback);
     void getSessionProperties(AsyncCallback<Map<String, String>> callback);
     void setSessionProperties(Map<String, String> props, AsyncCallback callback);
-    void getNewPatientId(String assigningAuthority, AsyncCallback<String> callback);
 
     void getDefaultAssigningAuthority(CommandContext context, AsyncCallback<String> callback) ;
     void getAttributeValue(String username, String attName, AsyncCallback<String> callback);

@@ -14,11 +14,16 @@ import org.apache.http.message.BasicStatusLine
 import org.apache.log4j.Logger
 import org.hl7.fhir.dstu3.model.*
 import org.hl7.fhir.instance.model.api.IBaseResource
+
+import javax.print.Doc
+
 /**
  *
  */
 class FhirCreateTransaction extends BasicFhirTransaction {
     static private final Logger logger = Logger.getLogger(FhirCreateTransaction.class);
+    boolean addMasterIdentifier = false
+
 
     FhirCreateTransaction(StepContext s_ctx, OMElement instruction, OMElement instruction_output) {
         super(s_ctx, instruction, instruction_output)
@@ -27,7 +32,7 @@ class FhirCreateTransaction extends BasicFhirTransaction {
     def updateMasterIdentifier(def resource) {
         if ((resource instanceof DocumentManifest) || (resource instanceof DocumentReference)) {
             Identifier id = resource.getMasterIdentifier()
-            id.value = 'urn:oid:' + UniqueIdAllocator.getInstance(null).allocate()
+            id.value = 'urn:oid:' + UniqueIdAllocator.getInstance().allocate()
             resource.masterIdentifier = id
         } else if (resource instanceof Bundle) {
             Bundle bundle = resource
@@ -69,12 +74,63 @@ class FhirCreateTransaction extends BasicFhirTransaction {
         }
     }
 
+    static stripMetaFromContainedResources(Resource resource) {
+        if (!resource)
+            return
+        if (resource instanceof Bundle) {
+            Bundle b = (Bundle) resource
+            b.entry.each { Bundle.BundleEntryComponent comp ->
+                Resource r = comp.getResource()
+                stripMetaFromContainedResources(r)
+            }
+        }
+        if (resource instanceof DocumentManifest) {
+            DocumentManifest dm = (DocumentManifest) resource
+            dm.contained.each { Resource r ->
+                stripMetaFromContainedResources(r)
+            }
+            dm.meta.versionId = null
+            dm.meta.lastUpdated = null
+            return
+        }
+        if (resource instanceof DocumentReference) {
+            DocumentReference dm = (DocumentReference) resource
+            dm.contained.each { Resource r ->
+                stripMetaFromContainedResources(r)
+            }
+            dm.meta.versionId = null
+            dm.meta.lastUpdated = null
+            return
+        }
+        if (resource instanceof Practitioner) {
+            Practitioner dm = (Practitioner) resource
+            dm.contained.each { Resource r ->
+                stripMetaFromContainedResources(r)
+            }
+            dm.meta.versionId = null
+            dm.meta.lastUpdated = null
+            return
+        }
+        if (resource instanceof Patient) {
+            Patient dm = (Patient) resource
+            dm.contained.each { Resource r ->
+                stripMetaFromContainedResources(r)
+            }
+            dm.meta.versionId = null
+            dm.meta.lastUpdated = null
+            return
+        }
+
+    }
+
     @Override
     void doRun(IBaseResource resource, String urlExtension) {
         assert endpoint, 'TestClient:FhirCreateTransaction: endpoint is null'
 
         String patientReference = null
         Map<String, String> originalDocUrls = [:]
+
+        stripMetaFromContainedResources(resource)
 
         if (useReportManager) {
             patientReference = useReportManager.get('$patient_reference$')
@@ -92,8 +148,8 @@ class FhirCreateTransaction extends BasicFhirTransaction {
         if (patientReference)
             updatePatientReference(resource, patientReference)
 
-        // assign new new masterIdentifier to all DocumentRefernce and Documeent Manifest objects
-        if (resource instanceof Resource)
+        // assign new new masterIdentifier to all DocumentReference and Document Manifest objects
+        if (addMasterIdentifier)
             updateMasterIdentifier(resource)
 
         if (originalDocUrls) {
@@ -236,7 +292,12 @@ class FhirCreateTransaction extends BasicFhirTransaction {
 
     @Override
     protected void parseInstruction(OMElement part) throws XdsInternalException, MetadataException {
-        super.parseInstruction(part)
+        String part_name = part.getLocalName()
+
+        if (part_name == 'AddMasterIdentifier')
+            addMasterIdentifier = true
+        else
+            super.parseInstruction(part)
     }
 
     @Override

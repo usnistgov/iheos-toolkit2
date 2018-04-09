@@ -61,6 +61,8 @@ public class PatientResourceProvider implements IToolkitResourceProvider {
         ToolkitResourceProvider tk = new ToolkitResourceProvider(getResourceType(), requestDetails)
 
         File f = tk.readOperation(theId)
+        if (!f)
+            throw new InternalErrorException("Object ${theId} does not exist")
         FileReader fr = null
 
         try {

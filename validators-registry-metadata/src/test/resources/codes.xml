@@ -249,10 +249,10 @@
 		some really restricted codes that are not used elsewhere.  Do not submit metadata with 
 		these codes unless you are testing MPQ -->
 
-		<Code code="MPQ-classcode-1" codingScheme="MPQ Testing"
+		<Code code="MPQ-classcode-1" codingScheme="1.3.6.1.4.1.21367.2017.3"
 			display="MPQ-classcode-1" />
 
-		<Code code="MPQ-classcode-2" codingScheme="MPQ Testing"
+		<Code code="MPQ-classcode-2" codingScheme="1.3.6.1.4.1.21367.2017.3"
 			display="MPQ-classcode-2" />
 			
 	    <!--  added for BPPC -->
@@ -690,9 +690,9 @@
 		some really restricted codes that are not used elsewhere.  Do not submit metadata with 
 		these codes unless you are testing MPQ -->
 
-		<Code code="MPQ-hcftcode-1" codingScheme="MPQ Testing"
+		<Code code="MPQ-hcftcode-1" codingScheme="1.3.6.1.4.1.21367.2017.3"
 			display="MPQ-hcftcode-1" />
-		<Code code="MPQ-hcftcode-2" codingScheme="MPQ Testing"
+		<Code code="MPQ-hcftcode-2" codingScheme="1.3.6.1.4.1.21367.2017.3"
 			display="MPQ-hcftcode-2" />
 		
 	</CodeType>
@@ -1325,9 +1325,9 @@
 		some really restricted codes that are not used elsewhere.  Do not submit metadata with 
 		these codes unless you are testing MPQ -->
 
-		<Code code="MPQ-eventcode-1" codingScheme="MPQ Testing"
+		<Code code="MPQ-eventcode-1" codingScheme="1.3.6.1.4.1.21367.2017.3"
 			display="MPQ-eventcode-1" />
-		<Code code="MPQ-eventcode-2" codingScheme="MPQ Testing"
+		<Code code="MPQ-eventcode-2" codingScheme="1.3.6.1.4.1.21367.2017.3"
 			display="MPQ-eventcode-2" />
 		
 		<!-- XDW - added 12 Nov 13 -->

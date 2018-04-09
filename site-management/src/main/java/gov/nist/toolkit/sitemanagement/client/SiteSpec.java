@@ -156,12 +156,12 @@ public class SiteSpec implements Serializable, IsSerializable {
 	public void validate() {
 		if (name == null || name.equalsIgnoreCase(""))
 			throw new ToolkitRuntimeException("SiteSpec does not validate - no name - " + toString());
-		if (name.contains("__")) {
-			String[] parts = name.split("__");
-			String theTestSession = parts[0];
-			if (!theTestSession.equals(testSession.getValue()))
-				throw new ToolkitRuntimeException("SiteSpec does not validate - name has embedded testsession which does not match supplied test session is illegal - name is " + name + " testsession is " + testSession);
-		}
+//		if (name.contains("__")) {
+//			String[] parts = name.split("__");
+//			String theTestSession = parts[0];
+//			if (!theTestSession.equals(testSession.getValue()))
+//				throw new ToolkitRuntimeException("SiteSpec does not validate - name has embedded testsession which does not match supplied test session is illegal - name is " + name + " testsession is " + testSession);
+//		}
 		if (testSession == null)
 			throw new ToolkitRuntimeException("SiteSpec does not validate - no TestSession - " + toString());
 	}

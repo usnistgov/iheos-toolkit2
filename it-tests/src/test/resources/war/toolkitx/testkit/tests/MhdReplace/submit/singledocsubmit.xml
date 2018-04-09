@@ -192,7 +192,7 @@
                 </contained>
                 <masterIdentifier>
                     <system value="http://example.org/documents"/>
-                    <value value="23425234234-2346"/>
+                    <value value="urn:oid:1.2.3.4"/>
                 </masterIdentifier>
                 <identifier>
                     <system value="http://example.org/documents"/>

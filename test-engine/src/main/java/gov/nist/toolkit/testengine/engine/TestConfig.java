@@ -34,7 +34,7 @@ public class TestConfig {
 	
 	// REST service to call to allocate a patient id for testing 
 	// Configured in actors.xml
-	 public String pid_allocate_endpoint = null;
+	 //public String pid_allocate_endpoint = null;
 	
 	 public Site site = null;
 	 

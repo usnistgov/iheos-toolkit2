@@ -190,7 +190,7 @@
                 </rim:ExternalIdentifier>
                 <rim:ExternalIdentifier
                         identificationScheme="urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab"
-                        value="1.2009.9.1.2455"
+                        value="1.2.009.9.1.2455"
                         objectType="urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:ExternalIdentifier"
                         id="id_10" registryObject="Document01">
                     <rim:Name>
@@ -254,7 +254,7 @@
                 </rim:Classification>
                 <rim:ExternalIdentifier
                         identificationScheme="urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8"
-                        value="2009.9.1.2456"
+                        value="1.2.3.2009.9.1.2456"
                         objectType="urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:ExternalIdentifier"
                         id="id_13" registryObject="SubmissionSet01">
                     <rim:Name>

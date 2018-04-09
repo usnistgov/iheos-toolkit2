@@ -262,7 +262,6 @@ public interface ToolkitService extends RemoteService  {
 	TestOverviewDTO deleteSingleTestResult(DeleteSingleTestRequest request) throws Exception;
 
 	String setTestSession(String sessionName) throws NoServletSessionException ;
-	String getNewPatientId(String assigningAuthority) throws NoServletSessionException ;
 	List<String> getTransactionErrorCodeRefs(GetTransactionErrorCodeRefsRequest refsRequest) throws Exception;
 
 	String getServletContextName();

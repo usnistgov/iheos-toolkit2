@@ -54,7 +54,7 @@ public class SimServlet  extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	static ServletConfig config;
+	static ServletConfig config = null;
 	Map<String, String> headers = new HashMap<String, String>();
 	String contentType;
 	HttpHeader contentTypeHeader;
@@ -69,6 +69,8 @@ public class SimServlet  extends HttpServlet {
 	@Override
 	public void init(ServletConfig sConfig) throws ServletException {
 		super.init(sConfig);
+		if (config != null)
+			return;
 		config = sConfig;
 		logger.info("Initializing toolkit in SimServlet");
 		File warHome = new File(config.getServletContext().getRealPath("/"));
