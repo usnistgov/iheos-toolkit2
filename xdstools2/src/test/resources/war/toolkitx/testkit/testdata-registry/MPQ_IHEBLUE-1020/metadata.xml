@@ -144,7 +144,7 @@
         </rim:Name>
         <rim:Slot name="codingScheme">
           <rim:ValueList>
-            <rim:Value>MPQ Testing</rim:Value>
+            <rim:Value>1.3.6.1.4.1.21367.2017.3</rim:Value>
           </rim:ValueList>
         </rim:Slot>
       </rim:Classification>
