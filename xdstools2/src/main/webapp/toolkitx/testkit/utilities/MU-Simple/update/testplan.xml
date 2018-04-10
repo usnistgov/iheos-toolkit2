@@ -9,6 +9,18 @@
       <NoAssignUids/>
       <ParseMetadata>False</ParseMetadata>
       <MetadataExL2MapKey>MUObject</MetadataExL2MapKey>
+        <Report name="lid" section="InputMetadata">                
+		//*[local-name()='ExtrinsicObject']/@lid
+	</Report>
+        <Report name="objectType" section="InputMetadata">                
+		//*[local-name()='ExtrinsicObject']/@objectType
+	</Report>
+	<Report name="docUniqueId" section="InputMetadata">                
+		//*[local-name()='ExtrinsicObject']/*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab']/@value
+	</Report>
+	<Report name="patientId" section="InputMetadata">
+		//*[local-name()='ExtrinsicObject']/*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446']/@value
+	</Report>
     </MuTransaction>
   </TestStep>
 </TestPlan>

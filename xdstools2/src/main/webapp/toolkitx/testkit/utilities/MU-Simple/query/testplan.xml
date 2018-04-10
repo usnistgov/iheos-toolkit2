@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>MU-Simple/query</Test>
+  <Rule>GetDocuments Stored Query by logical Id</Rule>
+  <TestStep id="lid_query">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetDocuments</SQ>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <InteractionSequence useId="StoredQueryTransactionByDocAdmin"/>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+
+      <UseReport reportName="lid" section="update" step="update" useAs="$lid$"/>
+
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>
