@@ -263,11 +263,11 @@ public class EditDisplay extends CommonDisplay {
                     if (throwable instanceof NoDifferencesException) {
 //                       new PopupMessage("No differences found. Do you want to continue?");
                         SafeHtmlBuilder safeHtmlBuilder = new SafeHtmlBuilder();
-                        safeHtmlBuilder.appendHtmlConstant("<img src=\"icons2/red_questionmark-24.png\" title=\"Question\" height=\"16\" width=\"16\"/>");
-                        safeHtmlBuilder.appendHtmlConstant("No differences detected -- confirm metadata update");
+                        safeHtmlBuilder.appendHtmlConstant("<img src=\"icons/about-16.png\" title=\"Information\" />");
+                        safeHtmlBuilder.appendHtmlConstant("No differences detected");
 
                         VerticalPanel body = new VerticalPanel();
-                        body.add(new HTML("<p>Continue?<br/></p>"));
+                        body.add(new HTML("<p>Proceed with Update?<br/></p>"));
                         Button actionBtn =  new Button("Ok");
                         actionBtn.addClickHandler(new ClickHandler() {
                             @Override
