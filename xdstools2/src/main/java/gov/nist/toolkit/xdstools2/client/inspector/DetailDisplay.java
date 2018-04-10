@@ -1,18 +1,22 @@
 package gov.nist.toolkit.xdstools2.client.inspector;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import gov.nist.toolkit.registrymetadata.client.*;
+import gov.nist.toolkit.registrymetadata.client.Association;
+import gov.nist.toolkit.registrymetadata.client.Difference;
+import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
+import gov.nist.toolkit.registrymetadata.client.DocumentEntryDiff;
+import gov.nist.toolkit.registrymetadata.client.Folder;
+import gov.nist.toolkit.registrymetadata.client.MetadataObject;
+import gov.nist.toolkit.registrymetadata.client.ObjectRef;
+import gov.nist.toolkit.registrymetadata.client.ResourceItem;
+import gov.nist.toolkit.registrymetadata.client.SubmissionSet;
 import gov.nist.toolkit.results.client.AssertionResult;
 import gov.nist.toolkit.results.client.AssertionResults;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class DetailDisplay extends CommonDisplay {
 	public DetailDisplay(MetadataInspectorTab it) {
@@ -144,14 +148,18 @@ public class DetailDisplay extends CommonDisplay {
 
 	private void displayDetail(DocumentEntry de, DocumentEntry diff) {
 		List<Difference> diffs = null;
+		String diffsLabel = "";
 		if (diff!=null) {
 			diffs = new DocumentEntryDiff().compare(de, diff);
+			if (diffs!=null) {
+				diffsLabel = " (" + diffs.size() + " differences)";
+			}
 		} else {
 			diffs = new ArrayList<>();
 		}
 
 //		detailPanel.add(HyperlinkFactory.addHTML("<h4>Document Entry</h4>"));
-		String title = (de.isFhir) ? "<h4>Document Entry (translated from DocumentReference)</h4>" : "<h4>Document Entry</h4>";
+		String title = (de.isFhir) ? "<h4>Document Entry (translated from DocumentReference)</h4>" : "<h4>Document Entry" + diffsLabel + "</h4>";
 		addTitle(HyperlinkFactory.addHTML(title));
 		FlexTable ft = new FlexTable();
 		int row=0;

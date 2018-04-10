@@ -85,7 +85,7 @@ public class DocumentEntryDiff extends MetadataDiffBase implements IsSerializabl
 
         if (!updateMode) {
             if (dif(a.status, b.status)) {
-                differences.add(new Difference("status"));
+                differences.add(new Difference("availabilityStatus"));
             }
         }
 
@@ -167,11 +167,11 @@ public class DocumentEntryDiff extends MetadataDiffBase implements IsSerializabl
         }
 
         if (dif(a.hcftc, b.hcftc)) {
-            differences.add(new Difference("healthcareFacilityTypeCode"));
+            differences.add(new Difference("healthcareFacilityType"));
         }
 
         if (dif(a.pracSetCode, b.pracSetCode)) {
-            differences.add(new Difference("practiceSettingCode"));
+            differences.add(new Difference("practiceSetting"));
         }
 
         if (dif(a.typeCode, b.typeCode)) {
