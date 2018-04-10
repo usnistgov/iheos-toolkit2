@@ -20,6 +20,7 @@ import java.util.List;
 abstract class DocEntryDataTable extends DataTable<DocumentEntry> implements IsWidget {
 
     private FlowPanel widgetPanel = new FlowPanel();
+    private static String STATUS_COLUMN_NAME = "Status";
     private static String ID_COLUMN_NAME = "Id";
     private static String LID_COLUMN_NAME = "Lid";
     private static String VERSION_COLUMN_NAME = "Version";
@@ -31,10 +32,11 @@ abstract class DocEntryDataTable extends DataTable<DocumentEntry> implements IsW
     private FlowPanel columnSelectionPanel = new FlowPanel();
 
     private static List<AnnotatedItem> columnList = Arrays.asList(
-            new AnnotatedItem(true, ID_COLUMN_NAME),
+            new AnnotatedItem(false, STATUS_COLUMN_NAME),
+            new AnnotatedItem(false, ID_COLUMN_NAME),
             new AnnotatedItem(true, LID_COLUMN_NAME),
             new AnnotatedItem(true, VERSION_COLUMN_NAME),
-            new AnnotatedItem(true, TITLE_COLUMN_NAME),
+            new AnnotatedItem(false, TITLE_COLUMN_NAME),
             new AnnotatedItem(true, HOME_ID_COLUMN_NAME),
             new AnnotatedItem(false, REPOSITORY_UNIQUE_ID),
             new AnnotatedItem(false, HASH_COLUMN_NAME),
@@ -73,6 +75,30 @@ abstract class DocEntryDataTable extends DataTable<DocumentEntry> implements IsW
             }, "Select");
         }
 
+        if (columnToBeDisplayedIsChecked(STATUS_COLUMN_NAME)) {
+            TextColumn<DocumentEntry> statusColumn = new TextColumn<DocumentEntry>() {
+                @Override
+                public String getValue(DocumentEntry de) {
+                    return de.status.toString();
+                }
+
+            };
+            statusColumn.setSortable(true);
+            columnSortHandler.setComparator(statusColumn,
+                    new Comparator<DocumentEntry>() {
+                        public int compare(DocumentEntry o1, DocumentEntry o2) {
+                            if (o1 == o2) {
+                                return 0;
+                            }
+
+                            if (o1 != null && o1.status != null) {
+                                return (o2 != null && o2.status != null) ? o1.status.toString().compareTo(o2.status.toString()) : 1;
+                            }
+                            return -1;
+                        }
+                    });
+            dataTable.addColumn(statusColumn, STATUS_COLUMN_NAME);
+        }
         if (columnToBeDisplayedIsChecked(ID_COLUMN_NAME)) {
             TextColumn<DocumentEntry> idColumn = new TextColumn<DocumentEntry>() {
                 @Override

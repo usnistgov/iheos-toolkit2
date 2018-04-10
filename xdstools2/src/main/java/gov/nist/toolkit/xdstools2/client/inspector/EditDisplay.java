@@ -3,14 +3,7 @@ package gov.nist.toolkit.xdstools2.client.inspector;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.registrymetadata.client.Author;
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
@@ -37,6 +30,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static gov.nist.toolkit.http.client.HtmlMarkup.red;
 
 public class EditDisplay extends CommonDisplay {
     private Button validateMuBtn = new Button("Validate");
@@ -70,7 +65,7 @@ public class EditDisplay extends CommonDisplay {
 
         @Override
         public void setStatus(String message, boolean status) {
-            statusBox.setHTML(HtmlMarkup.bold(HtmlMarkup.red(message, status)));
+            statusBox.setHTML(HtmlMarkup.bold(red(message, status)));
         }
     };
 
@@ -302,7 +297,17 @@ public class EditDisplay extends CommonDisplay {
                     new PopupMessage("Update was successful.");
                     it.addToHistory(result);
                 } else {
-                    new PopupMessage("Update failed.");
+                    if (result.assertions!=null) {
+//                        message = result.assertions.toString();
+                        SafeHtmlBuilder caption = new SafeHtmlBuilder();
+                        caption.appendHtmlConstant(red("Update failed."));
+                        SafeHtmlBuilder message = new SafeHtmlBuilder();
+                        message.appendEscaped(result.assertions.toString());
+                        new PopupMessage(caption.toSafeHtml(), new HTML(message.toSafeHtml()).asWidget());
+                    }
+                    else {
+                        new PopupMessage("Update failed.");
+                    }
                     it.addToHistory(result);
                 }
             } else {
