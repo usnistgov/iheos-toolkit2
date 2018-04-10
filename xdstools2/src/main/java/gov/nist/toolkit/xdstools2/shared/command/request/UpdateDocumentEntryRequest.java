@@ -4,6 +4,7 @@ import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.xdstools2.client.inspector.QueryOrigin;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
 /**
@@ -15,16 +16,18 @@ public class UpdateDocumentEntryRequest extends CommandContext {
     DocumentEntry toBeUpdated;
     TestInstance originalQueryTestInstance;
     boolean noCompare;
+    QueryOrigin queryOrigin;
 
     public UpdateDocumentEntryRequest(){}
 
-    public UpdateDocumentEntryRequest(CommandContext context, SiteSpec siteSpec, MetadataCollection mc, DocumentEntry toBeUpdated, TestInstance originalQueryTestInstance, boolean noCompare) {
+    public UpdateDocumentEntryRequest(CommandContext context, SiteSpec siteSpec, MetadataCollection mc, DocumentEntry toBeUpdated, TestInstance originalQueryTestInstance, boolean noCompare, QueryOrigin queryOrigin) {
         copyFrom(context);
         this.siteSpec = siteSpec;
         this.mc = mc;
         this.toBeUpdated = toBeUpdated;
         this.originalQueryTestInstance = originalQueryTestInstance;
         this.noCompare = noCompare;
+        this.queryOrigin = queryOrigin;
     }
 
     public DocumentEntry getToBeUpdated() {
@@ -45,5 +48,9 @@ public class UpdateDocumentEntryRequest extends CommandContext {
 
     public boolean isNoCompare() {
         return noCompare;
+    }
+
+    public QueryOrigin getQueryOrigin() {
+        return queryOrigin;
     }
 }

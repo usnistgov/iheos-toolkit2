@@ -224,7 +224,7 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 				addTreeSelectionHandler(contentTree);
 			}
 
-			new ListingDisplay(this, data, new TreeThing(contentTree), null).listing();
+			new ListingDisplay(this, data, new TreeThing(contentTree), null, null).listing();
 
 			historyPanel.add(contentTree);
 		}
@@ -403,7 +403,8 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 				}
 				*/
 
-				new ListingDisplay(this, dm, new TreeThing(stepTreeItem), res.logId).listing();
+				QueryOrigin queryOrigin = new QueryOrigin(res.logId.getId().toString(), stepResult.section, stepResult.stepName);
+				new ListingDisplay(this, dm, new TreeThing(stepTreeItem), res.logId, queryOrigin).listing();
 
 				if (data.enableActions && stepResult.toBeRetrieved.size() > 0) {
 					ObjectRefs ors = stepResult.nextNObjectRefs(10);

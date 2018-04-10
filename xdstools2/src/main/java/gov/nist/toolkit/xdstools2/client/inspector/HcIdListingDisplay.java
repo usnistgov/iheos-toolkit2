@@ -71,7 +71,7 @@ public class HcIdListingDisplay {
                 }
             }
         } else {
-            new ListingDisplay(tab, data, root, null).listing();
+            new ListingDisplay(tab, data, root, null, null).listing();
         }
 
     }
@@ -163,7 +163,7 @@ public class HcIdListingDisplay {
            DataModel dm = ListingDisplay.newDataModel(data.results);
            dm.siteSpec = data.siteSpec;
 
-           ListingDisplay listingDisplay = new ListingDisplay(tab,dm,root,null);
+           ListingDisplay listingDisplay = new ListingDisplay(tab,dm,root,null, null);
            hcIdListings.put(hcId, listingDisplay);
            return listingDisplay;
        }

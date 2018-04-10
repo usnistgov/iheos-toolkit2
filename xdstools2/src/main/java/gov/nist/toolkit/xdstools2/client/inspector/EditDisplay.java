@@ -43,6 +43,7 @@ public class EditDisplay extends CommonDisplay {
     private Button updateBtn = new Button("Update");
     private DocumentEntry de;
     private TestInstance logId;
+    private QueryOrigin queryOrigin;
     Map<String, List<String>> codeSpecMap = new HashMap<String, List<String>>();
 
     // Edit controls
@@ -277,7 +278,7 @@ public class EditDisplay extends CommonDisplay {
                                     public void onComplete(Result result) {
                                        doPostUpdate(result);
                                     }
-                                }.run(new UpdateDocumentEntryRequest(ClientUtils.INSTANCE.getCommandContext(), it.data.siteSpec, it.data.combinedMetadata, de, logId, true));
+                                }.run(new UpdateDocumentEntryRequest(ClientUtils.INSTANCE.getCommandContext(), it.data.siteSpec, it.data.combinedMetadata, de, logId, true, queryOrigin));
                             }
                         });
                         new PopupMessage(safeHtmlBuilder.toSafeHtml() , body, actionBtn);
@@ -291,7 +292,7 @@ public class EditDisplay extends CommonDisplay {
                     doPostUpdate(result);
 
                 }
-            }.run(new UpdateDocumentEntryRequest(ClientUtils.INSTANCE.getCommandContext(), it.data.siteSpec, it.data.combinedMetadata, de, logId, false));
+            }.run(new UpdateDocumentEntryRequest(ClientUtils.INSTANCE.getCommandContext(), it.data.siteSpec, it.data.combinedMetadata, de, logId, false, queryOrigin));
         }
 
         public void doPostUpdate(Result result) {
@@ -311,12 +312,13 @@ public class EditDisplay extends CommonDisplay {
     }
 
 
-    public EditDisplay(MetadataInspectorTab it, final DocumentEntry de, final TestInstance logId) {
+    public EditDisplay(MetadataInspectorTab it, final DocumentEntry de, final TestInstance logId, QueryOrigin queryOrigin) {
         this.detailPanel = it.detailPanel;
         this.metadataCollection = it.data.combinedMetadata;
         this.it = it;
         this.logId = logId;
         this.de = DocumentEntry.clone(de);
+        this.queryOrigin = queryOrigin;
         validateMuBtn.addClickHandler(new ValidateClickHandler());
         validateMuBtn.addStyleName("HP");
         updateBtn.addClickHandler(new UpdateClickHandler());

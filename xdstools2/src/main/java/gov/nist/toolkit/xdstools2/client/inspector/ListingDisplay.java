@@ -21,14 +21,16 @@ public class ListingDisplay {
 	/** Tree element serving as root for this display */
 	TreeThing root;
 	TestInstance logId;
+	QueryOrigin queryOrigin;
 
 	Map<String, DataModel> groupByMap = new HashMap<String, DataModel>();
 
-	public ListingDisplay(MetadataInspectorTab tab, DataModel data, TreeThing root, TestInstance logId) {
+	public ListingDisplay(MetadataInspectorTab tab, DataModel data, TreeThing root, TestInstance logId, QueryOrigin queryOrigin) {
 		this.tab = tab;
 		this.data = data;
 		this.root = root;
 		this.logId = logId;
+		this.queryOrigin = queryOrigin;
 	}
 
 
@@ -172,9 +174,9 @@ public class ListingDisplay {
 					 But for testing purposes, this is enabled.
 					*/
 					// We should only allow edit when this panel is not the right-part of compare. By chance, when in compare mode, the tree selection is hidden.
-					if (de.id!=null && de.id.startsWith("urn:uuid:")) {
+					if (de.id!=null && de.id.startsWith("urn:uuid:") && (queryOrigin!=null && queryOrigin.hasValues())) {
 					    // Symbolic Id is indicative of a submission data, not as it was stored by the target registry. Exclude this from metadata update.
-						TreeItem mu = new TreeItem(HyperlinkFactory.metadataUpdate(tab, de, logId, "Action: MetadataUpdate"));
+						TreeItem mu = new TreeItem(HyperlinkFactory.metadataUpdate(tab, de, logId,  queryOrigin, "Action: MetadataUpdate"));
 						item.addItem(mu);
 					}
 				}

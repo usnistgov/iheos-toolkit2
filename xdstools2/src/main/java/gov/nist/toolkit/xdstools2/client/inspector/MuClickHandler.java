@@ -12,17 +12,19 @@ class MuClickHandler implements ClickHandler {
 	DocumentEntry de;
 	MetadataInspectorTab it;
 	TestInstance logId;
+	QueryOrigin queryOrigin;
 
-	MuClickHandler(MetadataInspectorTab it, DocumentEntry de, TestInstance logId) {
+	MuClickHandler(MetadataInspectorTab it, DocumentEntry de, TestInstance logId, QueryOrigin queryOrigin) {
 		this.de = de;
 		this.it = it;
 		this.logId = logId;
+		this.queryOrigin = queryOrigin;
 	}
 
 	public void onClick(ClickEvent event) {
 		it.detailPanel.clear();
 //		it.showStructure(false);
-		new EditDisplay(it, de, logId);
+		new EditDisplay(it, de, logId, queryOrigin);
 	}
 
 }

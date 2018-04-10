@@ -1229,11 +1229,19 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         // transform original query log to M
         Metadata m = null;
         try {
-            if (logMapDTO.getItems().get(0).getTestName().equals("GetDocuments/XDS")) {
-                m = MetadataParser.parseNonSubmission(logMapDTO.getItems().get(0).getLog().getStep("GetDocuments").getRootString());
-            } else
-                throw new ToolkitRuntimeException("Was expecting GetDocuments/XDS. Unsupported query: " + logMapDTO.getItems().get(0).getTestName());
-        }
+
+          for (String key : logMapDTO.getKeys()) {
+            if (key.equals(request.getQueryOrigin().getTestName() + "/" +request.getQueryOrigin().getSectionName())) {
+                int idx = logMapDTO.getKeys().indexOf(key);
+                TestStepLogContentDTO step = logMapDTO.getItems().get(idx).getLog().getStep(request.getQueryOrigin().getStepName());
+                m = MetadataParser.parseNonSubmission(step.getRootString());
+                break;
+            }
+          }
+          if (m==null) {
+             throw new ToolkitRuntimeException("Was expecting " + request.getQueryOrigin().getTestName() + ". Unsupported query: " + logMapDTO.getItems().get(0).getTestName() + ". Log fetch failed for QueryOrigin: " + request.getQueryOrigin().toString());
+          }
+         }
         catch (Exception e) {
             e.printStackTrace();
             throw new ToolkitRuntimeException(e);

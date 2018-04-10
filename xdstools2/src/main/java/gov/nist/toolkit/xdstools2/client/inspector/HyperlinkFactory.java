@@ -15,10 +15,10 @@ import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 public class HyperlinkFactory {
 
-	static Hyperlink metadataUpdate(MetadataInspectorTab it, DocumentEntry de, TestInstance logId, String text) {
+	static Hyperlink metadataUpdate(MetadataInspectorTab it, DocumentEntry de, TestInstance logId, QueryOrigin queryOrigin, String text) {
 		Hyperlink h = new Hyperlink();
 		h.setText(text);
-		h.addClickHandler(new MuClickHandler(it, de, logId));
+		h.addClickHandler(new MuClickHandler(it, de, logId, queryOrigin));
 		return h;
 	}
 	
