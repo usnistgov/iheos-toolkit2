@@ -264,7 +264,7 @@ public class EditDisplay extends CommonDisplay {
 //                       new PopupMessage("No differences found. Do you want to continue?");
                         SafeHtmlBuilder safeHtmlBuilder = new SafeHtmlBuilder();
                         safeHtmlBuilder.appendHtmlConstant("<img src=\"icons/about-16.png\" title=\"Information\" />");
-                        safeHtmlBuilder.appendHtmlConstant("No differences detected");
+                        safeHtmlBuilder.appendHtmlConstant("&nbsp;No differences detected");
 
                         VerticalPanel body = new VerticalPanel();
                         body.add(new HTML("<p>Proceed with Update?<br/></p>"));
@@ -299,6 +299,9 @@ public class EditDisplay extends CommonDisplay {
             if (result!=null) {
                 if (result.passed()) {
                     new PopupMessage("Update was successful.");
+                    it.addToHistory(result);
+                } else {
+                    new PopupMessage("Update failed.");
                     it.addToHistory(result);
                 }
             } else {
