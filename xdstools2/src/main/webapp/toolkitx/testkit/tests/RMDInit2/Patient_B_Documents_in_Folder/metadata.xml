@@ -85,7 +85,7 @@
             </Slot>
             <Slot name="authorRole" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
                <ValueList xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-                  <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">Primary Surgon</Value>
+                  <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">Primary Surgeon</Value>
                </ValueList>
             </Slot>
             <Slot name="authorSpecialty" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
@@ -107,10 +107,10 @@
             </Slot>
          </Classification>
          <Classification classificationScheme="urn:uuid:f4f85eac-e6cb-4883-b524-f2705394840f"
-               classifiedObject="Document01" nodeRepresentation="R"
+               classifiedObject="Document01" nodeRepresentation="N"
                xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <Name xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <LocalizedString value="Restricted"
+               <LocalizedString value="normal"
                      xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
             </Name>
             <Slot name="codingScheme" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
@@ -120,10 +120,10 @@
             </Slot>
          </Classification>
          <Classification classificationScheme="urn:uuid:a09d5840-386c-46f2-b5ad-9c3699a4309d"
-               classifiedObject="Document01" nodeRepresentation="urn:ihe:iti:bppc:2007"
+               classifiedObject="Document01" nodeRepresentation="urn:ihe:pcc:handp:2008"
                xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <Name xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <LocalizedString value="urn:ihe:iti:bppc:2007"
+               <LocalizedString value="History and Physical Specification"
                      xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
             </Name>
             <Slot name="codingScheme" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
@@ -146,10 +146,10 @@
             </Slot>
          </Classification>
          <Classification classificationScheme="urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead"
-               classifiedObject="Document01" nodeRepresentation="Practice-D"
+               classifiedObject="Document01" nodeRepresentation="Practice-F"
                xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <Name xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <LocalizedString value="Pathology" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
+               <LocalizedString value="Family Practice" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
             </Name>
             <Slot name="codingScheme" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
                <ValueList xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
@@ -158,36 +158,23 @@
             </Slot>
          </Classification>
          <Classification classificationScheme="urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4"
-               classifiedObject="Document01" nodeRepresentation="urn:connectathon:bppc:foundational:policy"
+               classifiedObject="Document01" nodeRepresentation="T-AB001"
                xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <Name xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <LocalizedString value="Foundational Connectathon Read-Access Policy"
+               <LocalizedString value="Ear"
                      xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
             </Name>
             <Slot name="codingScheme" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
                <ValueList xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-                  <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">1.3.6.1.4.1.21367.2017.3</Value>
-               </ValueList>
-            </Slot>
-         </Classification>
-         <Classification classificationScheme="urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4"
-               classifiedObject="Document01" nodeRepresentation="urn:connectathon:policy:full-access"
-               xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-            <Name xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <LocalizedString value="FULL ACCESS TO ALL POLICY"
-                     xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
-            </Name>
-            <Slot name="codingScheme" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <ValueList xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-                  <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">1.3.6.1.4.1.21367.2017.3</Value>
+                  <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">2.16.840.1.113883.6.96</Value>
                </ValueList>
             </Slot>
          </Classification>
          <Classification classificationScheme="urn:uuid:f0306f51-975f-434e-a61c-c59651d33983"
-               classifiedObject="Document01" nodeRepresentation="11502-2"
+               classifiedObject="Document01" nodeRepresentation="11488-4"
                xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <Name xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <LocalizedString value="LABORATORY REPORT.TOTAL"
+               <LocalizedString value="Consultation Note"
                      xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
             </Name>
             <Slot name="codingScheme" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
@@ -294,7 +281,7 @@
             </Slot>
             <Slot name="authorRole" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
                <ValueList xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-                  <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">Primary Surgon</Value>
+                  <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">Primary Surgeon</Value>
                </ValueList>
             </Slot>
             <Slot name="authorSpecialty" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
@@ -316,10 +303,10 @@
             </Slot>
          </Classification>
          <Classification classificationScheme="urn:uuid:f4f85eac-e6cb-4883-b524-f2705394840f"
-               classifiedObject="Document02" nodeRepresentation="R"
+               classifiedObject="Document02" nodeRepresentation="N"
                xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <Name xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <LocalizedString value="Restricted"
+               <LocalizedString value="normal"
                      xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
             </Name>
             <Slot name="codingScheme" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
@@ -332,7 +319,7 @@
                classifiedObject="Document02" nodeRepresentation="urn:ihe:iti:bppc:2007"
                xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <Name xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <LocalizedString value="urn:ihe:iti:bppc:2007"
+               <LocalizedString value="Basic Patient Privacy Consents"
                      xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
             </Name>
             <Slot name="codingScheme" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
@@ -393,10 +380,10 @@
             </Slot>
          </Classification>
          <Classification classificationScheme="urn:uuid:f0306f51-975f-434e-a61c-c59651d33983"
-               classifiedObject="Document02" nodeRepresentation="11502-2"
+               classifiedObject="Document02" nodeRepresentation="57016-8"
                xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <Name xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <LocalizedString value="LABORATORY REPORT.TOTAL"
+               <LocalizedString value="Privacy Policy Acknowledgement Document"
                      xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
             </Name>
             <Slot name="codingScheme" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
@@ -449,7 +436,7 @@
             </Slot>
             <Slot name="authorRole" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
                <ValueList xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-                  <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">Primary Surgon</Value>
+                  <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">Primary Surgeon</Value>
                </ValueList>
             </Slot>
             <Slot name="authorSpecialty" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
