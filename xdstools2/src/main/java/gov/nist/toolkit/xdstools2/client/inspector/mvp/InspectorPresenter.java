@@ -9,6 +9,8 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
+import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
+import gov.nist.toolkit.registrymetadata.client.DocumentEntryDiff;
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
 import gov.nist.toolkit.registrymetadata.client.MetadataObject;
 import gov.nist.toolkit.results.client.Result;
@@ -354,9 +356,17 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
             String currentObjectType = view.metadataObjectSelector.getCurrentSelection();
             if (currentObjectType != null) {
                 MetadataObjectType currentObjectTypeSelection = MetadataObjectType.valueOf(currentObjectType);
+                // 1. refresh the table data for the current selected metadata type
                 if (currentObjectTypeSelection != null) {
                     view.getTableMap().get(currentObjectTypeSelection).setData(dataMap.get(currentObjectTypeSelection));
                 }
+                // 2. refresh the table data for the other metadata types
+                for (MetadataObjectType type : MetadataObjectType.values()) {
+                   if (!type.equals(currentObjectTypeSelection)) {
+                      view.getTableMap().get(type).setData(dataMap.get(type));
+                   }
+                }
+
             }
         } catch (Exception ex) {}
     }
@@ -543,6 +553,10 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
 
                 if (source.id != null ? !source.id.equals(target.id) : target.id != null) {
                     return false;
+                }
+
+                if (target instanceof DocumentEntry) {
+                    return (new DocumentEntryDiff().compare(source,target).isEmpty());
                 }
 
                 return source.home != null ? source.home.equals(target.home) : target.home == null || "".equals(target.home);

@@ -188,14 +188,19 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 		historyPanel.add(new HTML("<h3>Assertions</h3>"));
 		
 		StringBuffer buf = new StringBuffer();
+		assertionsToSb(result, buf);
+
+		historyPanel.add(new HTML(buf.toString()));
+		
+	}
+
+	void assertionsToSb(Result result, StringBuffer buf) {
 		for (AssertionResult ar : result.assertions.assertions) {
 			if (!isEmpty(ar.assertion))
 				buf.append(redAsText(htmlize(ar.assertion), ar.status)).append("<br />");
 			if (!isEmpty(ar.info))
 				buf.append(redAsText(htmlize(ar.info), ar.status)).append("<br />");
 		}
-		historyPanel.add(new HTML(buf.toString()));
-		
 	}
 	
 	String htmlize(String s) {

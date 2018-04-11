@@ -291,22 +291,23 @@ public class EditDisplay extends CommonDisplay {
         }
 
         public void doPostUpdate(Result result) {
-            // TODO: should we append the result to the Inspector?
             if (result!=null) {
                 if (result.passed()) {
+                    if (result.assertions!=null)
+                        displayResult(result);
                     new PopupMessage("Update was successful.");
                     it.addToHistory(result);
                 } else {
                     if (result.assertions!=null) {
-//                        message = result.assertions.toString();
                         SafeHtmlBuilder caption = new SafeHtmlBuilder();
                         caption.appendHtmlConstant(red("Update failed."));
-                        SafeHtmlBuilder message = new SafeHtmlBuilder();
-                        message.appendEscaped(result.assertions.toString());
-                        new PopupMessage(caption.toSafeHtml(), new HTML(message.toSafeHtml()).asWidget());
+                        if (result.assertions!=null) {
+                            HTML html = new HTML(displayResult(result));
+                            new PopupMessage(caption.toSafeHtml(), html.asWidget());
+                        }
                     }
                     else {
-                        new PopupMessage("Update failed.");
+                        new PopupMessage("Update failed. (No assertions found to report.)");
                     }
                     it.addToHistory(result);
                 }
@@ -314,6 +315,20 @@ public class EditDisplay extends CommonDisplay {
                 new PopupMessage("Update failed: Null result.");
             }
         }
+    }
+
+    private String displayResult(Result result) {
+        StringBuffer buf = new StringBuffer();
+        it.assertionsToSb(result, buf);
+        resultPanel.clear();
+        if (!result.passed()) {
+            resultPanel.add(new HTML(red(bold("Status: Failed.<br/>",true))));
+        } else {
+            resultPanel.add(new HTML(bold("Status: Passed.<br/>",true)));
+        }
+        HTML msgBody = new HTML(buf.toString());
+        resultPanel.add(msgBody);
+        return buf.toString();
     }
 
 
@@ -333,6 +348,7 @@ public class EditDisplay extends CommonDisplay {
         codeFilterBank = new CodeFilterBank(statusDisplay);
         sourcePatientInfoLBox.setVisibleItemCount(codeFilterBank.codeBoxSize);
         validateMuBtn.setTitle("Validate codes as configured in Toolkit");
+        resultPanel.setStyleName("HP");
 
         editDetail();
     }
@@ -576,6 +592,7 @@ public class EditDisplay extends CommonDisplay {
             ft.setWidget(row, 0, statusBox);
             row++;
             ft.setWidget(row, 0, resultPanel);
+            ft.getFlexCellFormatter().setColSpan(row, 0, 3);
             row++;
             detailPanel.add(ft);
         }
