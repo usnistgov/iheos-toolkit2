@@ -17,6 +17,8 @@ import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.testengine.engine.Linkage;
+import gov.nist.toolkit.testengine.engine.SourceIdAllocator;
+import gov.nist.toolkit.testengine.engine.TestConfig;
 import gov.nist.toolkit.testengine.engine.UniqueIdAllocator;
 import gov.nist.toolkit.testenginelogging.client.LogMapDTO;
 import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
@@ -175,8 +177,11 @@ public class MetadataUpdate {
         UniqueIdAllocator allocator = UniqueIdAllocator.getInstance();
         ss.uniqueId = allocator.allocate();
 
-        // TODO:       SourceIdAllocator needs TestConfig. Where to get it from???
-        ss.sourceId = "1.3.6.1.4.1.21367.4";
+        try {
+            ss.sourceId = new SourceIdAllocator(TestConfig.testConfigWithTestMgmt()).allocate();
+        } catch (Exception ex) {
+            ss.sourceId = "1.3.6.1.4.1.21367.4";
+        }
         ss.submissionTime = new Hl7Date().now();
 
         /* This is needed because the linkage string replacer will replace all attributes
