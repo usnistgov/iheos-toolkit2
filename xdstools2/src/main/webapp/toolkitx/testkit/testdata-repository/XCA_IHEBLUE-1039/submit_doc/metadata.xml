@@ -69,14 +69,14 @@
          </Slot>
          <Slot name="sourcePatientId" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <ValueList xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">IHEBLUE-1039^^^&amp;1.3.6.1.4.1.21367.13.20.3000&amp;ISO</Value>
+               <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">IHEFACILITY-1039^^^&amp;1.3.6.1.4.1.21367.3000.1.6&amp;ISO</Value>
             </ValueList>
          </Slot>
          <Slot name="sourcePatientInfo" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <ValueList xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">PID-3|IHEBLUE-1039^^^&amp;1.3.6.1.4.1.21367.13.20.3000&amp;ISO</Value>
+               <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">PID-3|IHEFACILITY-1039^^^&amp;1.3.6.1.4.1.21367.3000.1.6&amp;ISO</Value>
                <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">PID-5|Xcpd^Pat^^^</Value>
-               <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">PID-7|19660606</Value>
+               <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">PID-7|19660605</Value>
                <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">PID-8|F</Value>
                <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">PID-11|123 MICHIGAN AVENUE^CHICAGO^IL^60601^USA</Value>
             </ValueList>
@@ -132,10 +132,10 @@
             </Slot>
          </Classification>
          <Classification classificationScheme="urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a"
-               classifiedObject="Document01" nodeRepresentation="WORKFLOWS"
+               classifiedObject="Document01" nodeRepresentation="REPORTS"
                xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <Name xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <LocalizedString value="Workflow Management"
+               <LocalizedString value="Reports"
                      xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
             </Name>
             <Slot name="codingScheme" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
@@ -145,36 +145,36 @@
             </Slot>
          </Classification>
          <Classification classificationScheme="urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4"
-               classifiedObject="Document01" nodeRepresentation="urn:connectathon:policy:deny-access"
+               classifiedObject="Document01" nodeRepresentation="T-D9700"
                xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <Name xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <LocalizedString value="DENY ACCESS TO ALL POLICY"
+               <LocalizedString value="Foot"
                      xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
             </Name>
             <Slot name="codingScheme" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
                <ValueList xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-                  <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">1.3.6.1.4.1.21367.2017.3</Value>
+                  <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">2.16.840.1.113883.6.96</Value>
                </ValueList>
             </Slot>
          </Classification>
          <Classification classificationScheme="urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4"
-               classifiedObject="Document01" nodeRepresentation="1.3.6.1.4.1.21367.2017.7.104"
+               classifiedObject="Document01" nodeRepresentation="CT"
                xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <Name xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <LocalizedString value="Limit-document-visibility Policy"
+               <LocalizedString value="Computed Tomography"
                      xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
             </Name>
             <Slot name="codingScheme" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
                <ValueList xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-                  <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">1.3.6.1.4.1.21367.2017.3</Value>
+                  <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">1.2.840.10008.2.6.1</Value>
                </ValueList>
             </Slot>
          </Classification>
          <Classification classificationScheme="urn:uuid:f4f85eac-e6cb-4883-b524-f2705394840f"
-               classifiedObject="Document01" nodeRepresentation="V"
+               classifiedObject="Document01" nodeRepresentation="N"
                xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <Name xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <LocalizedString value="very restricted"
+               <LocalizedString value="normal"
                      xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
             </Name>
             <Slot name="codingScheme" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
@@ -187,7 +187,7 @@
                classifiedObject="Document01" nodeRepresentation="urn:ihe:pcc:xds-ms:2007"
                xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <Name xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <LocalizedString value="urn:ihe:pcc:xds-ms:2007"
+               <LocalizedString value="XDS Medical Summaries"
                      xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
             </Name>
             <Slot name="codingScheme" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
@@ -197,10 +197,10 @@
             </Slot>
          </Classification>
          <Classification classificationScheme="urn:uuid:f33fb8ac-18af-42cc-ae0e-ed0b0bdb91e1"
-               classifiedObject="Document01" nodeRepresentation="264372000"
+               classifiedObject="Document01" nodeRepresentation="22232009"
                xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <Name xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <LocalizedString value="Pharmacy" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
+               <LocalizedString value="Hospital" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
             </Name>
             <Slot name="codingScheme" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
                <ValueList xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
@@ -209,10 +209,10 @@
             </Slot>
          </Classification>
          <Classification classificationScheme="urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead"
-               classifiedObject="Document01" nodeRepresentation="Practice-B"
+               classifiedObject="Document01" nodeRepresentation="Practice-A"
                xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <Name xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <LocalizedString value="Cardiology"
+               <LocalizedString value="Radiology"
                      xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
             </Name>
             <Slot name="codingScheme" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
@@ -222,10 +222,10 @@
             </Slot>
          </Classification>
          <Classification classificationScheme="urn:uuid:f0306f51-975f-434e-a61c-c59651d33983"
-               classifiedObject="Document01" nodeRepresentation="11506-3"
+               classifiedObject="Document01" nodeRepresentation="11528-7"
                xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <Name xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <LocalizedString value="Progress note"
+               <LocalizedString value="Radiology Report"
                      xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
             </Name>
             <Slot name="codingScheme" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
@@ -288,10 +288,10 @@
             </Slot>
          </Classification>
          <Classification classificationScheme="urn:uuid:aa543740-bdda-424e-8c96-df4873be8500"
-               classifiedObject="SubmissionSet01" nodeRepresentation="44860005"
+               classifiedObject="SubmissionSet01" nodeRepresentation="22232009"
                xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <Name xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <LocalizedString value="Free-standing rehabilitation clinic"
+               <LocalizedString value="Hospital"
                      xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
             </Name>
             <Slot name="codingScheme" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
