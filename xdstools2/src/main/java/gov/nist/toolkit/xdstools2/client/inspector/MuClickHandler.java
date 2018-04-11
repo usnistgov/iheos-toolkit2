@@ -4,6 +4,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
 import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 /**
  * Metadata update selector
@@ -24,7 +25,12 @@ class MuClickHandler implements ClickHandler {
 	public void onClick(ClickEvent event) {
 		it.detailPanel.clear();
 //		it.showStructure(false);
-		new EditDisplay(it, de, logId, queryOrigin);
+		try {
+			EditDisplay editDisplay = new EditDisplay(it, de, logId, queryOrigin);
+			editDisplay.editDetail();
+		} catch (Exception ex) {
+			new PopupMessage(ex.toString());
+		}
 	}
 
 }
