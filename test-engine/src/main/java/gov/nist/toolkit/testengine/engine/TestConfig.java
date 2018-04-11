@@ -1,5 +1,6 @@
 package gov.nist.toolkit.testengine.engine;
 
+import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.soap.axis2.Soap;
@@ -11,6 +12,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class TestConfig {
+
+	static public TestConfig testConfigWithTestMgmt() {
+		TestConfig tc = new TestConfig();
+		File toolkit = Installation.instance().toolkitxFile();
+		tc.testmgmt_dir = toolkit + File.separator + "xdstest";
+		return tc;
+	}
 
 	public TestConfig() {}
 

@@ -44,8 +44,14 @@ class GenerateSystemShell {
             generatedSystems.systems.each { Site site ->
                 site.setOwner(TestSession.GAZELLE_TEST_SESSION.value)
                 try {
-                    Site existingSite = existingSites.getSite(site.name, testSession)
-                    if (existingSite.owner == TestSession.GAZELLE_TEST_SESSION.value)
+                    Site existingSite
+                    try {
+                        existingSite = existingSites.getSite(site.name, testSession)
+                    } catch (Exception e) {
+                        // site does not exist
+                        existingSite = null
+                    }
+                    if (!existingSite || existingSite.owner == TestSession.GAZELLE_TEST_SESSION.value)
                         new SeparateSiteLoader(testSession).saveToFile(cache, site)
                     else
                         log.append("Site ${site.name} not over written, owned by Test Session ${existingSite.owner}")

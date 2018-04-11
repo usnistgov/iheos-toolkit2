@@ -2,7 +2,7 @@
 <!-- 
     Update 4/06/2018 by Steve Moore and Lynn Felhofer (generated from spreadsheet)
     Update 3/21/2018 by Steve Moore and Lynn Felhofer (generated from spreadsheet)
---->
+-->
 <Codes>
     <CodeType name="confidentialityCode" classScheme="urn:uuid:f4f85eac-e6cb-4883-b524-f2705394840f">
         <Code code="L" display="low" codingScheme="2.16.840.1.113883.5.25" system="http://hl7.org/fhir/v3/Confidentiality"/>
