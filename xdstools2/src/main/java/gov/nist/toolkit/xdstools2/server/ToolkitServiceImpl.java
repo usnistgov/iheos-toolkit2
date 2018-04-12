@@ -302,6 +302,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         installCommandContext(request);
         QueryServiceManager mgr = session().queryServiceManager();
         List<Result> results = new ArrayList<>();
+        session().isTls = request.getSite().isTls;
 
         for (Submission submission : request.getSubmissions()) {
             List<Result> myResults = mgr.registerAndQuery(submission.getTestInstance(), request.getSite(), submission.getPid());
@@ -313,92 +314,113 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<Result> lifecycleValidation(LifecycleValidationRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().lifecycleValidation(request.getSite(), request.getPid());
     }
     @Override
     public List<Result> folderValidation(FoldersRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().folderValidation(request.getSite(), request.getPid());
     }
     @Override
     public List<Result> submitRegistryTestdata(SubmitTestdataRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().submitRegistryTestdata(request.getSite(), request.getDataSetName(), request.getPid());
     }
     @Override
     public List<Result> submitRepositoryTestdata(SubmitTestdataRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().submitRepositoryTestdata(request.getSite(), request.getDataSetName(), request.getPid());
     }
     @Override
     public List<Result> submitXDRTestdata(SubmitTestdataRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().submitXDRTestdata(request.getSite(),request.getDataSetName(), request.getPid());
     }
     @Override
     public List<Result> provideAndRetrieve(ProvideAndRetrieveRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().provideAndRetrieve(request.getSite(), request.getPid());
     }
     @Override
     public List<Result> findDocuments(FindDocumentsRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSiteSpec().isTls;
         return session().queryServiceManager().findDocuments(request.getSiteSpec(), request.getPid(), request.isOnDemand());
     }
     @Override
-    public List<Result> findDocumentsByRefId(FindDocumentsRequest request) throws Exception  { return session().queryServiceManager().findDocumentsByRefId(request.getSiteSpec(), request.getPid(), request.getRefIds()); }
+    public List<Result> findDocumentsByRefId(FindDocumentsRequest request) throws Exception  {
+        session().isTls = request.getSiteSpec().isTls;
+        return session().queryServiceManager().findDocumentsByRefId(request.getSiteSpec(), request.getPid(), request.getRefIds());
+    }
     @Override
     public List<Result> getDocuments(GetDocumentsRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().getDocuments(request.getSite(), request.getIds());
     }
     @Override
     public List<Result> findFolders(FoldersRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().findFolders(request.getSite(), request.getPid()); }
     @Override
     public List<Result> getFolders(GetFoldersRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().getFolders(request.getSite(), request.getAnyIds());
     }
     @Override
     public List<Result> getFoldersForDocument(GetFoldersRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().getFoldersForDocument(request.getSite(), request.getAnyIds());
     }
     @Override
     public List<Result> getFolderAndContents(GetFoldersRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().getFolderAndContents(request.getSite(), request.getAnyIds()); }
     @Override
     public List<Result> getAssociations(GetAssociationsRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().getAssociations(request.getSite(), request.getIds());
     }
     @Override
     public List<Result> getObjects(GetObjectsRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().getObjects(request.getSite(), request.getIds());
     }
     @Override
     public List<Result> getSubmissionSets(GetSubmissionSetsRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().getSubmissionSets(request.getSite(), request.getIds());
     }
     @Override
     public List<Result> getSSandContents(GetSubmissionSetAndContentsRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSiteSpec().isTls;
         return session().queryServiceManager().getSSandContents(request.getSiteSpec(), request.getSsid(), request.getCodeSpec());
     }
     @Override
     public List<Result> srcStoresDocVal(GetSrcStoresDocValRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSiteSpec().isTls;
         return session().queryServiceManager().srcStoresDocVal(request.getSiteSpec(), request.getSsid());
     }
     @Override
     public List<Result> retrieveDocument(RetrieveDocumentRequest request) throws Exception {
         try {
             installCommandContext(request);
+            session().isTls = request.getSite().isTls;
             String uid = request.getUids().uids.get(0).repositoryUniqueId;
             if (uid==null)  // For XDS tools, the repository UID is set in the RetrieveDocument#run method's setSiteSpec call.
                 return session().queryServiceManager().retrieveDocument(request.getSite(), request.getUids());
@@ -419,23 +441,27 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<Result> retrieveImagingDocSet(RetrieveImagingDocSetRequest request) throws Exception {
         installCommandContext(request);
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().retrieveImagingDocSet(request.getSite(), request.getUids(), request.getStudyRequest(), request.getTransferSyntax());
     }
 
     @Override
     public List<Result> getRelated(GetRelatedRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().getRelated(request.getSite(),request.getObjectRef(), request.getAssocs());
     }
     @Override
     public List<Result> getAll(GetAllRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().getAll(request.getSite(), request.getPid(), request.getCodesSpec());
     }
     @Override
     public List<Result> findDocuments2(FindDocuments2Request request) throws Exception  {
         installCommandContext(request);
         System.out.println("Running findDocuments2 service");
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().findDocuments2(request.getSite(), request.getPid(), request.getCodesSpec());
     }
 
@@ -443,12 +469,14 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     public List<Result> mpqFindDocuments(SiteSpec site, String pid,
                                          List<String> classCodes, List<String> hcftCodes,
                                          List<String> eventCodes) throws NoServletSessionException {
+        session().isTls = site.isTls;
         return session().queryServiceManager().mpqFindDocuments(site, pid, classCodes, hcftCodes,
                 eventCodes);
     }
     @Override
     public List<Result> mpqFindDocuments(MpqFindDocumentsRequest request) throws Exception {
         installCommandContext(request);
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().mpqFindDocuments(request.getSite(), request.getPid(), request.getSelectedCodes());
     }
 
@@ -772,11 +800,13 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<Result> runMesaTest(RunTestRequest request)  throws Exception {
         installCommandContext(request);
+        session().isTls = request.getSiteSpec().isTls;
         return session().xdsTestServiceManager().runMesaTest(request.getEnvironmentName(), request.getTestSession(), request.getSiteSpec(), request.getTestInstance(), request.getSections(), request.getParams(), null, request.isStopOnFirstFailure());
     }
     @Override
     public TestOverviewDTO runTest(RunTestRequest request) throws Exception {
         installCommandContext(request);
+        session().isTls = request.getSiteSpec().isTls;
         List<String> sections = new ArrayList<>();
         if (request.getTestInstance().getSection() != null) sections.add(request.getTestInstance().getSection());
         setEnvironment(request.getEnvironmentName());

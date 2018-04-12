@@ -223,10 +223,10 @@
             </Slot>
          </Classification>
          <Classification classificationScheme="urn:uuid:f0306f51-975f-434e-a61c-c59651d33983"
-               classifiedObject="Document01" nodeRepresentation="57152-1"
+            classifiedObject="Document01" nodeRepresentation="11369-6"
                xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <Name xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <LocalizedString value="Pharmacy Referral note"
+               <LocalizedString value="Immunization"
                      xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
             </Name>
             <Slot name="codingScheme" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
