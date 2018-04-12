@@ -1,182 +1,49 @@
-
-<html>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-  <title>NIST Document Sharing Test Facility</title>
-  <!-- <style type="text/css">@import url('style.css');</style>   -->
-  <script language="JavaScript" id="_fed_an_js_tag" src="/js/federated-analytics.all.min.js?agency=NIST&subagency=ihexds&pua=UA-42404149-45&yt=true"></script>
-  <style>
-    table.lamp {
-      width:100%;
-      border:1px solid #d4d4d4;
-    }
-    table.lamp th, td {
-      padding:10px;
-    }
-    table.lamp th {
-      width:40px;
-    }
-    #header {
-      background-color:gold;
-      color:black;
-      text-align:center;
-      padding:5px;
-    }
-    #nav {
-      line-height:30px;
-      background-color:#eeeeee;
-      height:100%;
-      width:200px;
-      float:left;
-      padding:5px;
-    }
-    #section {
-      width:600px;
-      float:left;
-      padding:10px;
-    }
-    #footer {
-      background-color:gold;
-      color:black;
-      clear:both;
-      padding:5px;
-    }
-    ul.horizontal_menu li {
-      display: inline;
-      list-style-type: none;
-      margin: 5px;
-      padding: 2px;
-    }
-    ul
-    {
-      list-style-type: none;
-      padding:0;
-      margin:0;
-    }
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Document Sharing Tools</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
   </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
 </head>
-
 <body>
-<div id="header">
-  <h1>NIST Document Sharing Test Facility</h1>
-</div>
-
-<div id="nav">
-  <strong>Toolkit</strong><br />
-  <ul>
-    <li><a href="http://ihexds.nist.gov/XdsDocs/site/index.html">Documentation</a>
-    <li><a href="https://hit-dev.nist.gov:12091/xdstools2">Internet Installation</a>
-    <li><a href="https://bitbucket.org/iheos/toolkit2">Open Source</a>
-    <li><a href="https://bitbucket.org/iheos/toolkit2/downloads">Downloads</a>
-    <li><a href="http://ihexds.nist.gov/XdsDocs/site/releasenotes/index.html">Release notes</a>
-  </ul>
-
-  <strong>Public Registry</strong><br />
-  <ul>
-    <li><a href="http://ihewiki.wustl.edu/wiki/index.php/XDS_Main_Page#Test_Event_Configuration">Endpoints</a>
-    <li><a href="http://ihexds.nist.gov:12090/xdsref/codes/codes.xml">Affinity Domain Configuration</a>
-    <li><a href="http://ihexds.nist.gov:12090/xdstools/pidallocate">Patient ID Feed</a></li>
-    <li><a href="http://ihexds.nist.gov:12090/LogReader">Log Reader</a></li>
-    <li><a href="http://sourceforge.net/projects/iheos">Open Source</a></li>
-  </ul>
-
-  <strong>Tests</strong><br />
-  <ul>
-    <li><a href="http://ihewiki.wustl.edu/wiki/index.php/XDS_Main_Page#How_To_Test">How to test</a>
-    <li><a href="http://ihewiki.wustl.edu/wiki/index.php/XDS_Test_Kit_Test_Requirements">Organized by transaction</a>
-    <li><a href="http://ihewiki.wustl.edu/wiki/index.php/XDS_Test_Kit_Test_Descriptions">Organized by test number</a></li>
-  </ul>
-
-  <strong>Older links</strong><br />
-  <ul>
-    <li><a href="http://ihexds.nist.gov/links.html">Old Links page</a>
-    <li><a href="http://ihewiki.wustl.edu/wiki/index.php/XDS_Main_Page">Main testing page</a>
-  </ul>
-</div>
-
-<div id="section">
-  This site supports the <a href="http://ihe.net">IHE</a> effort in Document Sharing
-  as part of the IT Infrastructure Domain with testing, tools, and technical expertise.
-
-  <h2>Introduction</h2>
-  <p>This server is operated by the National Institute of Standards and Technology (NIST) in support
-    of Cross-Enterprise Document Sharing (XDS) and related profiles published by Integrating
-    the Healthcare Environment (<a href="http://ihe.net/">IHE</a>). This family of profiles is now
-    referred to as Document Sharing.</p>
-
-  <p>This test facility is based on the <a href="http://www.ihe.net/Technical_Framework/index.cfm#IT">IHE
-    IT Infrastructure Technical Framework</a>.</p>
-
-  <p>All testing done against this facility is considered conformance testing: testing against a reference.
-    The primary goal of IHE is interoperability testing where implementations are tested against other implementations.
-    Conformance testing always preceeds interoperability testing.  Interoperability testing in IHE takes place at
-    <a href="http://www.iheusa.org/connectathon-registration.aspx">IHE Connectathons</a>.</p>
-
-  <h2>Tools Overview</h2>
-  <a name="tools"/>
-
-  <h3>Public Registry Server</h3>
-  <p>A service run on the Internet that is a testing reference for
-    the XDS.b profile and parts of the XCA profile. This server offers a
-    reference for testing clients, actors that initiate network connections with a partner.</p>
-
-  <p>The Public Registry is available for local use in two forms: binary downlaod and VMWare download.
-    See the link to Downloads (above).</p>
-
-  <h3>XDS Toolkit</h3>
-  <a name="toolkit"/>
-  <p>A downloadable tool that contains a large number of tools within it. It is
-    intended to operate in a developer's lab so that concerns about firewalls and Internet access do
-    not interupt testing. It is packaged as a Web ARchive (WAR) file and can be run on any Servlet
-    container (Tomcat, Jetty, etc.). We currently use
-    <a href="http://tomcat.apache.org/download-70.cgi">Tomcat 7</a>. We have heard reports
-    that using other servlet containers may require moving some JAR files to operate correctly.</p>
-
-  <p>Toolkit can be downloaded from <a href="https://bitbucket.org/iheos/toolkit2/downloads">here</a>.
-    The release notes are found <a href="http://ihexds.nist.gov/XdsDocs/site/releasenotes/index.html">here</a>.
-  </p>
-
-  <p>We host an Internet copy of toolkit <a href="https://hit-dev.nist.gov:12091/xdstools2">here</a>.
-
-  <p>Discussion of this tool is done on the XDS Implementers mailing list. Membership
-    can be requested via <a href="http://groups.google.com/group/ihe-xds-implementors">here</a>.
-  </p>
-
-  <h2>Open source</h2>
-
-  <p>The sources for this test facility are available as open source. See the side tray for links.</p>
-
-  <h2>Scope</h2>
-  <p>This test facility covers the testing of the following IHE Profiles and Supplements:
-  </p><ul>
-  <li>XDS.b
-  </li><li>XDR (full metadata and limited metadata)
-</li><li>XDM (full metadata and limited metadata)
-</li><li>XCA
-</li><li>MPQ
-</li><li>Metadata Update
-</li></ul>
-
-  <h2>Contacts</h2>
-  <p>XDS Implementers mailing list<br>
-    ihe-xds-implementors@googlegroups.com</p>
-  <p>Bill Majurski<br>
-    bill At nist doT gov<br />
-    bmajur At gmail DOT com</p>
-
-</div>
-
-
-<div id="footer">
-  <ul class="horizontal_menu">
-    <li>Last Modified: May 20, 2016</li>
-    <li><a href="http://www.nist.gov/public_affairs/privacy.htm">PRIVACY POLICY/SECURITY NOTICE</a></li>
-  </ul>
-  <ul class="horizontal_menu">
-    <li>SDCT Division Webmaster: <a href="mailto:webmaster-sdct@nist.gov">webmaster-sdct@nist.gov</a></li>
-    <li><a href="http://www.doc.gov/">NIST is an agency of the U.S. Commerce Department</a></li>
-  </ul>
-</div>
+<header>
+<h1 class="title">Document Sharing Tools</h1>
+</header>
+<h1 id="document-sharing-tools">Document Sharing Tools</h1>
+<p>Bill Majurski (bmajur@gmail.com), Sunil Bhaskaria</p>
+<h2 id="important-links">Important links</h2>
+<p>Download latest codes.xml from <a href="https://github.com/usnistgov/iheos-toolkit2/releases/latest">here</a></p>
+<p>Download latest Toolkit from <a href="https://github.com/usnistgov/iheos-toolkit2/releases/latest">here</a></p>
+<p>How to update your System configurations in Toolkit (pull from Gazelle and other options) <a href="https://github.com/usnistgov/iheos-toolkit2/wiki/Managing-System-Configurations-at-Connectathon">here</a></p>
+<h2 id="news-for-monday">News for Monday</h2>
+<h2 id="big-changes-from-last-year">Big changes from last year</h2>
+<h3 id="public-registry-has-retired">Public Registry has retired</h3>
+<p>The Public Registry is now retired. It is not on the network in The Hague and it will removed from the Internet around May 1. XDS Toolkit is replacing it.</p>
+<p>XDS Toolkit now has several modes of operation.</p>
+<p>single user - the default when you download and run it on your machine</p>
+<p>multi-user - this will run on our Internet server. Each user’s data is private.</p>
+<p>Connectathon - this is multi-user with a default user</p>
+<p>CAS - (IHE Conformity Assessment) multi-user with restrictions placed on user creation.</p>
+<p>At Connectathon the RED, GREEN, and BLUE copies of the Public Registry are replaced with Toolkit simulators.</p>
+<p>How does this change Connectathon?</p>
+<p>The change to Registry/Repository simulators for RED/GREEN/BLUE should not much accept that now the logs are viewed from the <strong>New Simulator Logs</strong> menu on the left side of Toolkit.</p>
+<h3 id="more-options-for-managing-system-configurations-in-toolkit">More options for managing system configurations in Toolkit</h3>
+<p>There are more options for managing System definitions including user created private configurations. See <a href="https://github.com/usnistgov/iheos-toolkit2/wiki/Managing-System-Configurations-at-Connectathon">here</a> for details.</p>
+<h3 id="new-tests-and-tools-for-mhd-and-fhir-in-general.">New tests and tools for MHD and FHIR in general.</h3>
+<p>The Conformance Tool now has tests for MHD Document Recipient/Responder</p>
+<p>A new tool labeled <strong>FHIR Search</strong> in the menu can read/display any FHIR resource and perform a limited set of queries on DocumentReferences.</p>
+<p>A new tool labels <strong>Submit Resource</strong> can write a collection of pre-loaded FHIR resouces to any FHIR server. All of the Connectathon Patients are available here.</p>
+<h3 id="inspector-has-new-support-for-metadata-update">Inspector has new support for Metadata Update</h3>
+<p>With the display of a DocumentEntry, an update can be composed and sent back to the same Registry.</p>
 </body>
 </html>
-
