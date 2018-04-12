@@ -239,7 +239,20 @@ public class EditDisplay extends CommonDisplay {
                 public void onComplete(MessageValidationResults result) {
                     validateMuBtn.setEnabled(true);
                     if (result!=null) {
-                        new PopupMessage("Validation passed " + result.getHtmlResults());
+                        SafeHtmlBuilder caption = new SafeHtmlBuilder();
+                        int strSize = result.getHtmlResults().length(); // About using the string size approach: result.hasErrors doesn't seem to work? It almost always returns false.
+                        caption.appendHtmlConstant("Validation " + ((strSize==0)?"passed":"message(s)<br/>"));
+                        SafeHtmlBuilder body = new SafeHtmlBuilder();
+                        body.appendHtmlConstant(result.getHtmlResults());
+                        if (strSize!=0) {
+                            VerticalPanel verticalPanel = new VerticalPanel();
+                            verticalPanel.add(new HTML(bold(caption.toSafeHtml().asString(),true)));
+                            verticalPanel.add(new HTML(body.toSafeHtml()));
+                            displayResult(verticalPanel);
+                        } else {
+                            clearResult();
+                        }
+                        new PopupMessage(caption.toSafeHtml(), new HTML(body.toSafeHtml()).asWidget());
                     }
                     else new PopupMessage("Validation failed: No result returned.");
                 }
@@ -320,7 +333,7 @@ public class EditDisplay extends CommonDisplay {
     private String displayResult(Result result) {
         StringBuffer buf = new StringBuffer();
         it.assertionsToSb(result, buf);
-        resultPanel.clear();
+        clearResult();
         if (!result.passed()) {
             resultPanel.add(new HTML(red(bold("Status: Failed.<br/>",true))));
         } else {
@@ -329,6 +342,15 @@ public class EditDisplay extends CommonDisplay {
         HTML msgBody = new HTML(buf.toString());
         resultPanel.add(msgBody);
         return buf.toString();
+    }
+
+    private void clearResult() {
+        resultPanel.clear();
+    }
+
+    private void displayResult(Widget widget) {
+        clearResult();
+       resultPanel.add(widget);
     }
 
 
