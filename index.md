@@ -7,6 +7,8 @@ Bill Majurski (bmajur@gmail.com), Sunil Bhaskaria
 
 ## Important links
 
+Toolkit at Connectathon is [here](http://172.16.0.72:8080/toolkit)
+
 Download latest codes.xml from [here](https://github.com/usnistgov/iheos-toolkit2/releases/latest)
 
 Download latest Toolkit from [here](https://github.com/usnistgov/iheos-toolkit2/releases/latest)
