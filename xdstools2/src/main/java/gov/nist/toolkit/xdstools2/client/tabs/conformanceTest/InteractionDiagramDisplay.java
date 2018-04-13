@@ -63,17 +63,23 @@ public class InteractionDiagramDisplay extends FlowPanel {
                                 public void onComplete(List<InteractingEntity> result) {
                                     diagram.setEntityList(result);
                                     diagram.draw();
+                                    if ((diagram!=null && diagram.hasMeaningfulDiagram())) {
+                                        add(new HTML("<p><b>Interaction Sequence:</b></p>"));
+                                        add(diagram);
+                                        add(new HTML("<br/>"));
+                                    }
                                 }
                             }.run(new SetSutInitiatedTransactionInstanceRequest(ClientUtils.INSTANCE.getCommandContext(), diagram.getEntityList(), SimIdFactory.simIdBuilder(getTestTarget().getName()), getPid()));
                         } else {
                             diagram.draw();
+                            if ((diagram!=null && diagram.hasMeaningfulDiagram())) {
+                                add(new HTML("<p><b>Interaction Sequence:</b></p>"));
+                                add(diagram);
+                                add(new HTML("<br/>"));
+                            }
                         }
 
-                        if ((diagram!=null && diagram.hasMeaningfulDiagram())) {
-                            add(new HTML("<p><b>Interaction Sequence:</b></p>"));
-                            add(diagram);
-                            add(new HTML("<br/>"));
-                        }
+
                     }
 
 
