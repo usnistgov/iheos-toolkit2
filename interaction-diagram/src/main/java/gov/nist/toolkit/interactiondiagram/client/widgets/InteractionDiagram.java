@@ -49,7 +49,7 @@ public class InteractionDiagram extends Composite {
     static final int LL_BOX_WIDTH = 82;
     static final int LL_BOX_HEIGHT = 50;
     static final int TRANSACTION_PAIR_WIDTH=190;   // request origin | ------ width: 190px ------> | request destination
-    static final int MAX_LL_DISPLAY_NAME = 16;
+    static final int MAX_LL_DISPLAY_NAME = 14;
 
     private int g_depth = 0;
     private int g_x = 0;
