@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.LayoutPanel;
@@ -14,9 +15,11 @@ import gov.nist.toolkit.xdstools2.client.abstracts.AbstractToolkitActivity;
 import gov.nist.toolkit.xdstools2.client.abstracts.ActivityDisplayer;
 import gov.nist.toolkit.xdstools2.client.abstracts.GenericMVP;
 import gov.nist.toolkit.xdstools2.client.command.command.GetFullSimId;
+import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.injector.Injector;
 import gov.nist.toolkit.xdstools2.client.tabs.models.SimIdsModel;
 import gov.nist.toolkit.xdstools2.client.util.ClientFactoryImpl;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetFullSimIdRequest;
 
 /**
@@ -68,6 +71,7 @@ public class SimMsgViewerActivity extends AbstractToolkitActivity implements IsW
     @Override
     public void start(final AcceptsOneWidget acceptsOneWidget, final EventBus eventBus) {
         GWT.log("Starting SimMsgViewer Activity - simName is " + simName + " event is " + event);
+
         presenter = Injector.INSTANCE.getSimMsgViewerPresenter();
         view =      Injector.INSTANCE.getSimMsgViewerView();
         displayer = Injector.INSTANCE.getToolkitAppDisplayer();
@@ -79,11 +83,29 @@ public class SimMsgViewerActivity extends AbstractToolkitActivity implements IsW
             new GetFullSimId() {
 
                 @Override
-                public void onComplete(SimId simId) {
+                public void onComplete(final SimId simId) {
                     GWT.log("SimId is " + simId.toString());
-                    presenter.setCurrentSimId(simId);
-                    presenter.setTitle("Log " + simId.toString());
-                    finish(acceptsOneWidget, eventBus);
+
+
+                    final String currentTestSession = simId.getTestSession().getValue();
+
+                    // let all the other events get handled - then override them with this
+                    // setting the correct testsession is critical
+                    // even a short delay puts us at the end of the queue
+                    Timer timer = new Timer() {
+
+                        @Override
+                        public void run() {
+                            ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, currentTestSession));
+                            ClientUtils.INSTANCE.getTestSessionManager().setCurrentTestSession(currentTestSession);
+                            presenter.setCurrentSimId(simId);
+                            presenter.setTitle("Log " + simId.toString());
+                            finish(acceptsOneWidget, eventBus);
+                        }
+                    };
+                    timer.schedule(1);
+
+
                 }
 
             }.run(new GetFullSimIdRequest(Xdstools2.getHomeTab().getCommandContext(), SimIdFactory.simIdBuilder(simName)));
