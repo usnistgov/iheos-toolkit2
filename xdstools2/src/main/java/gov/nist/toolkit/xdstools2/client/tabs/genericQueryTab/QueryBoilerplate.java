@@ -100,7 +100,7 @@ public class QueryBoilerplate {
 		} else {   // Select by transaction (used in GetDocuments tab)
 			if (genericQueryTab.transactionSelectionManager != null) {
 				SiteSpec siteSpec = genericQueryTab.transactionSelectionManager.generateSiteSpec();
-				siteSpec.isTls = this.genericQueryTab.tlsOptionEnabled;
+				siteSpec.isTls = this.genericQueryTab.doTls.getValue();
 				genericQueryTab.setCommonSiteSpec(siteSpec);
 				return siteSpec;
 			}
