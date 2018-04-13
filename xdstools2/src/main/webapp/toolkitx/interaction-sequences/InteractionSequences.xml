@@ -36,6 +36,14 @@ Limited by the TestOverviewBuilder class, this makes an assumption that only one
 		</Actor>
 	</InteractionSequence>
 
+	<InteractionSequence id="MuTransaction">
+		<Actor role="Document Administrator" provider="TestClient">
+			<Transaction type="update">
+				<Actor role="Document Registry" provider="Simulator"/>
+			</Transaction>
+		</Actor>
+	</InteractionSequence>
+
 	<InteractionSequence id="ProvideAndRegisterTransaction">
 			<Actor role="Document Source" provider="TestClient">
 				<Transaction type="prb">
@@ -50,6 +58,14 @@ Limited by the TestOverviewBuilder class, this makes an assumption that only one
 
 	<InteractionSequence id="StoredQueryTransaction">
 		<Actor role="XDS Document Consumer" provider="TestClient">
+			<Transaction type="sq">
+				<Actor role="Document Registry" provider="Simulator"/>
+			</Transaction>
+		</Actor>
+	</InteractionSequence>
+
+	<InteractionSequence id="StoredQueryTransactionByDocAdmin">
+		<Actor role="Document Administrator" provider="TestClient">
 			<Transaction type="sq">
 				<Actor role="Document Registry" provider="Simulator"/>
 			</Transaction>

@@ -37,8 +37,12 @@ public class RegisterTransaction extends BasicTransaction {
 			soap_1_2 = false;
 		}
 
-		if (metadata_filename == null)
-			throw new XdsInternalException("No MetadataFile element found for RegisterTransaction instruction within step " + this.s_ctx.get("step_id"));
+		if (request_element == null) {
+			if (metadata_filename == null)
+				throw new XdsInternalException("No MetadataFile element found for RegisterTransaction instruction within step " + this.s_ctx.get("step_id"));
+			else
+				throw new XdsInternalException("No Metadata in memory element found for RegisterTransaction instruction within step " + this.s_ctx.get("step_id"));
+		}
 
 		if (parse_metadata && !no_convert) {
 			Metadata metadata = MetadataParser.parse(request);

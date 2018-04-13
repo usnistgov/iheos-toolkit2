@@ -43,7 +43,7 @@ abstract class ResourceDataTable extends DataTable<ResourceItem> implements IsWi
 
     @Override
     void addTableColumns() {
-        if (diffSelect.getValue()) {
+        if (compareSelect.getValue()) {
             dataTable.addColumn(new Column<ResourceItem, Boolean>(new CheckboxCell(true, false)) {
                 @Override
                 public Boolean getValue(ResourceItem object) {
@@ -123,7 +123,7 @@ abstract class ResourceDataTable extends DataTable<ResourceItem> implements IsWi
     void setData(List<ResourceItem> resourceItems) {
         dataProvider.getList().clear();
         if (resourceItems!=null) {
-            diffSelect.setEnabled(resourceItems.size()>1);
+            compareSelect.setEnabled(resourceItems.size()>1);
             dataProvider.getList().addAll(resourceItems);
         }
 

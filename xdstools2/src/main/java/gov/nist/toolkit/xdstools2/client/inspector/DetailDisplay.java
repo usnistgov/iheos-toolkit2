@@ -1,24 +1,24 @@
 package gov.nist.toolkit.xdstools2.client.inspector;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import gov.nist.toolkit.registrymetadata.client.*;
+import gov.nist.toolkit.registrymetadata.client.Association;
+import gov.nist.toolkit.registrymetadata.client.Difference;
+import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
+import gov.nist.toolkit.registrymetadata.client.DocumentEntryDiff;
+import gov.nist.toolkit.registrymetadata.client.Folder;
+import gov.nist.toolkit.registrymetadata.client.MetadataObject;
+import gov.nist.toolkit.registrymetadata.client.ObjectRef;
+import gov.nist.toolkit.registrymetadata.client.ResourceItem;
+import gov.nist.toolkit.registrymetadata.client.SubmissionSet;
 import gov.nist.toolkit.results.client.AssertionResult;
 import gov.nist.toolkit.results.client.AssertionResults;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-public class DetailDisplay {
-	VerticalPanel detailPanel;
-	MetadataCollection metadataCollection;
-	MetadataInspectorTab it;
-
+public class DetailDisplay extends CommonDisplay {
 	public DetailDisplay(MetadataInspectorTab it) {
 		this.detailPanel = it.detailPanel;
 		this.metadataCollection = it.data.combinedMetadata;
@@ -52,8 +52,14 @@ public class DetailDisplay {
 		detailPanel.clear();
 		if (mo instanceof SubmissionSet) 
 			displayDetail((SubmissionSet) mo, (SubmissionSet)diff);
-		if (mo instanceof DocumentEntry) 
-			displayDetail((DocumentEntry) mo, (DocumentEntry)diff);
+		if (mo instanceof DocumentEntry) {
+			DocumentEntry compareTo = null;
+			if (it.dataNotification!=null) {
+				compareTo = (DocumentEntry)it.dataNotification.getComparable();
+			}
+			displayDetail((DocumentEntry) mo, compareTo);
+
+		}
 		if (mo instanceof Folder) 
 			displayDetail((Folder) mo, (Folder) diff);
 		if (mo instanceof Association) 
@@ -62,107 +68,6 @@ public class DetailDisplay {
 			displayDetail((ObjectRef) mo);
 		if (mo instanceof ResourceItem)
 			displayDetail((ResourceItem) mo);
-	}
-
-	int displayDetail(FlexTable ft, int row, boolean bold, String label, List<String> values, String xml) {
-		int startRow = row;
-		if (values == null)
-			values = new ArrayList<>();
-		for (String value : values) {
-			if (row == startRow) {
-				ft.setHTML(row, 0, bold(label, bold));
-			}
-			if (xml == null || xml.equals(""))
-				ft.setHTML(row, 1, value.replaceAll(" ", "&nbsp;"));
-			else
-				ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, value, xml));
-			row++;
-		}
-		return row;
-	}
-
-	int displayDetail(FlexTable ft, int row, boolean bold, Map<String, List<String>> values, Map<String, String> xmls) {
-		int startRow = row;
-        if (values != null) {
-            for (String name : values.keySet()) {
-                for (String value : values.get(name)) {
-                    String xml = xmls.get(name);
-                    if (row == startRow) {
-                        ft.setHTML(row, 0, bold(name, bold));
-                    }
-                    if (xml == null || xml.equals(""))
-                        ft.setHTML(row, 1, value.replaceAll(" ", "&nbsp;"));
-                    else
-                        ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, value, xml));
-                    row++;
-                }
-            }
-        }
-		return row;
-	}
-
-	int displayDetail(FlexTable ft, int row, boolean bold, String label,List<String> values, List<String> xml) {
-		if (values == null)
-			values = new ArrayList<>();
-		if (xml == null)
-			xml = new ArrayList<>();
-		int startRow = row;
-		int rowI = 0;
-		for (String value : values) {
-			if (row == startRow) {
-				ft.setHTML(row, 0, bold(label, bold));
-			}
-			//			ft.setHTML(row, 1, value.replaceAll(" ", "&nbsp;"));
-			ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, value, xml.get(rowI)));
-			row++;
-			rowI++;
-		}
-		return row;
-	}
-
-	int displayDetail(FlexTable ft, int row, boolean bold, List<Author> authors, String xml) {
-		for (Author author : authors) {
-			ft.setHTML(row, 0, bold("author", bold));
-			ft.setText(row, 1, author.person);
-			row++;
-
-			row = displayDetail(ft, row, bold, "institutions", author.institutions, xml);
-			row = displayDetail(ft, row, bold, "roles", author.roles, xml);
-			row = displayDetail(ft, row, bold, "specialties", author.specialties, xml);
-			row = displayDetail(ft, row, bold, "telecom", author.telecom, xml);
-		}
-
-
-		return row;
-	}
-
-	int displayDetail(FlexTable ft, int row, boolean bold, List<Author> authors, List<String> xml) {
-		if (authors == null)
-			authors = new ArrayList<>();
-		if (xml == null)
-			xml = new ArrayList<>();
-		int xmlI = 0;
-		for (Author author : authors) {
-			ft.setHTML(row, 0, bold("author", bold));
-			ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, author.person, xml.get(xmlI)));
-			//			ft.setText(row, 1, author.person);
-			row++;
-			xmlI++;
-
-			row = displayDetail(ft, row, bold, "institutions", author.institutions, "");
-			row = displayDetail(ft, row, bold, "roles", author.roles, "");
-			row = displayDetail(ft, row, bold, "specialties", author.specialties, "");
-			row = displayDetail(ft, row, bold, "telecom", author.telecom, "");
-		}
-
-
-		return row;
-	}
-	
-	String bold(String msg, boolean condition) {
-		if (condition)
-			return "<b>" + msg + "</b>";
-		return msg;
 	}
 
 
@@ -228,35 +133,11 @@ public class DetailDisplay {
 		row = displayDetail(ft, row, b, "contentTypeCode", ss.contentTypeCode, ss.contentTypeCodeX);
 		
 		b = diff.intendedRecipients != null;
-		row = displayDetail(ft, row,  b, "indendedRecipient", ss.intendedRecipients, ss.intendedRecipientsX);
+		row = displayDetail(ft, row,  b, "intendedRecipient", ss.intendedRecipients, ss.intendedRecipientsX);
 
 		b = diff.authors != null;
 		row = displayDetail(ft, row, b, ss.authors, ss.authorsX);
 
-	}
-
-	void addTitle(HTML title) {
-		FlowPanel flowPanel = new FlowPanel();
-		title.addStyleName("left");
-		flowPanel.add(title);
-		if (it.dataNotification!=null) {
-		    if (it.dataNotification.inCompare()) {
-		        HTML closeX = new HTML("X");
-		        closeX.setTitle("Close");
-		        closeX.addStyleName("requiredFieldLabel");
-		        closeX.addStyleName("outsetBorder");
-		        closeX.addStyleName("right");
-		        closeX.addClickHandler(new ClickHandler() {
-					@Override
-					public void onClick(ClickEvent clickEvent) {
-						it.dataNotification.onCloseOffDetail(it.currentSelectedTreeItem);
-					}
-				});
-				flowPanel.add(closeX);
-			}
-
-		}
-	    detailPanel.add(flowPanel);
 	}
 
 	private void displayDetail(ResourceItem ri) {
@@ -266,153 +147,135 @@ public class DetailDisplay {
 	}
 
 	private void displayDetail(DocumentEntry de, DocumentEntry diff) {
+		List<Difference> diffs = null;
+		String diffsLabel = "";
+		if (diff!=null) {
+			diffs = new DocumentEntryDiff().compare(de, diff);
+			if (diffs!=null) {
+				diffsLabel = " (" + diffs.size() + " difference(s))";
+			}
+		} else {
+			diffs = new ArrayList<>();
+		}
+
 //		detailPanel.add(HyperlinkFactory.addHTML("<h4>Document Entry</h4>"));
-		String title = (de.isFhir) ? "<h4>Document Entry (translated from DocumentReference)</h4>" : "<h4>Document Entry</h4>";
+		String title = (de.isFhir) ? "<h4>Document Entry (translated from DocumentReference)</h4>" : "<h4>Document Entry" + diffsLabel + "</h4>";
 		addTitle(HyperlinkFactory.addHTML(title));
 		FlexTable ft = new FlexTable();
 		int row=0;
-		boolean b;
+		boolean b = false;
 
 		try {
 			if (!de.isFhir) {
-				b = diff.objectType != null;
 				ft.setHTML(row, 0, bold("objectType", b));
 				ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.objectType, de.objectTypeX));
 				row++;
 			}
 
-			b = diff.title != null;
-			ft.setHTML(row, 0, bold("title", b));
+			ft.setHTML(row, 0, highlight("title", diffs));
 			ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.title, de.titleX));
 			row++;
 
-			b = diff.comments != null;
-			ft.setHTML(row, 0, bold("comments", b));
+			ft.setHTML(row, 0, highlight("comments", diffs));
 			ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.comments, de.commentsX));
 			row++;
 
-			b = diff.id != null;
-			ft.setHTML(row, 0, bold("id", b));
+			ft.setHTML(row, 0, highlight("id", diffs));
 			ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.id, de.idX));
 			row++;
 
 			if (!de.isFhir) {
-				b = diff.lid != null;
-				ft.setHTML(row, 0, bold("lid", b));
+				ft.setHTML(row, 0, highlight("lid", diffs));
 				ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.lid, de.lidX));
 				row++;
 			}
 
 			if (!de.isFhir) {
-				b = diff.version != null;
-				ft.setHTML(row, 0, bold("version", b));
+				ft.setHTML(row, 0, highlight("version", diffs));
 				ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.version, de.versionX));
 				row++;
 			}
 
-			b = diff.uniqueId != null;
-			ft.setHTML(row, 0, bold("uniqueId", b));
+			ft.setHTML(row, 0, highlight("uniqueId", diffs));
 			ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.uniqueId, de.uniqueIdX));
 			row++;
 
-			b = diff.patientId != null;
-			ft.setHTML(row, 0, bold("patientId", b));
+			ft.setHTML(row, 0, highlight("patientId", diffs));
 			ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.patientId, de.patientIdX));
 			row++;
 
-			b = diff.status != null;
-			ft.setHTML(row, 0, bold("availabilityStatus", b));
+			ft.setHTML(row, 0, highlight("availabilityStatus", diffs));
 			ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.status, de.statusX));
 			row++;
 
 			if (!de.isFhir) {
-				b = diff.home != null;
-				ft.setHTML(row, 0, bold("homeCommunityId", b));
+				ft.setHTML(row, 0, highlight("homeCommunityId", diffs));
 				ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.home, de.homeX));
 				row++;
 			}
 
-			b = diff.mimeType != null;
-			ft.setHTML(row, 0, bold("mimeType", b));
+			ft.setHTML(row, 0, highlight("mimeType", diffs));
 			ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.mimeType, de.mimeTypeX));
 			row++;
 
-			b = diff.hash != null;
-			ft.setHTML(row, 0, bold("hash", b));
+			ft.setHTML(row, 0, highlight("hash", diffs));
 			ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.hash, de.hashX));
 			row++;
 
-			b = diff.size != null;
-			ft.setHTML(row, 0, bold("size", b));
+			ft.setHTML(row, 0, highlight("size", diffs));
 			ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.size, de.sizeX));
 			row++;
 
-			b = diff.repositoryUniqueId != null;
 			title = (de.isFhir) ? "content.url" : "repositoryUniqueId";
-			ft.setHTML(row, 0, bold(title, b));
+			ft.setHTML(row, 0, highlight(title, diffs));
 			ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.repositoryUniqueId, de.repositoryUniqueIdX));
 			row++;
 
-			b = diff.lang != null;
-			ft.setHTML(row, 0, bold("lang", b));
+			ft.setHTML(row, 0, highlight("lang", diffs));
 			ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.lang, de.langX));
 			row++;
 
-			b = diff.legalAuth != null;
-			ft.setHTML(row, 0, bold("legalAuthenticator", b));
+			ft.setHTML(row, 0, highlight("legalAuthenticator", diffs));
 			ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.legalAuth, de.legalAuthX));
 			row++;
 
-			b = diff.serviceStartTime != null;
-			ft.setHTML(row, 0, bold("serviceStartTime", b));
+			ft.setHTML(row, 0, highlight("serviceStartTime", diffs));
 			ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.serviceStartTime, de.serviceStartTimeX));
 			row++;
 
-			b = diff.serviceStopTime != null;
-			ft.setHTML(row, 0, bold("serviceStopTime", b));
+			ft.setHTML(row, 0, highlight("serviceStopTime", diffs));
 			ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.serviceStopTime, de.serviceStopTimeX));
 			row++;
 
-			b = diff.creationTime != null;
-			ft.setHTML(row, 0, bold("creationTime", b));
+			ft.setHTML(row, 0, highlight("creationTime", diffs));
 			ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.creationTime, de.creationTimeX));
 			row++;
 
-			b = diff.sourcePatientId != null;
-			ft.setHTML(row, 0, bold("sourcePatientId", b));
+			ft.setHTML(row, 0, highlight("sourcePatientId", diffs));
 			ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, de.sourcePatientId, de.sourcePatientIdX));
 			row++;
 
-			b = diff.sourcePatientInfo != null;
-			row = displayDetail(ft, row, b, "sourcePatientInfo", de.sourcePatientInfo, de.sourcePatientInfoX);
+			row = displayDetail(ft, row, false, highlight("sourcePatientInfo", diffs), de.sourcePatientInfo, de.sourcePatientInfoX);
 
 			// don't know how to handle diffs yet on extra metadata
 			b = false;
 			row = displayDetail(ft, row, b, de.extra, de.extraX);
 
-			b = diff.classCode != null;
-			row = displayDetail(ft, row, b, "classCode", de.classCode, de.classCodeX);
+			row = displayDetail(ft, row, false, highlight("classCode", diffs), de.classCode, de.classCodeX);
 
-			b = diff.confCodes != null;
-			row = displayDetail(ft, row, b, "confCodes", de.confCodes, de.confCodesX);
+			row = displayDetail(ft, row, false, highlight("confCodes", diffs), de.confCodes, de.confCodesX);
 
-			b = diff.eventCodeList != null;
-			row = displayDetail(ft, row, b, "eventCodeList", de.eventCodeList, de.eventCodeListX);
+			row = displayDetail(ft, row, false, highlight("eventCodeList", diffs), de.eventCodeList, de.eventCodeListX);
 
-			b = diff.formatCode != null;
-			row = displayDetail(ft, row, b, "formatCode", de.formatCode, de.formatCodeX);
+			row = displayDetail(ft, row, false, highlight("formatCode", diffs), de.formatCode, de.formatCodeX);
 
-			b = diff.hcftc != null;
-			row = displayDetail(ft, row, b, "healthcareFacilityType", de.hcftc, de.hcftcX);
+			row = displayDetail(ft, row, false, highlight("healthcareFacilityType", diffs), de.hcftc, de.hcftcX);
 
-			b = diff.pracSetCode != null;
-			row = displayDetail(ft, row, b, "practiceSetting", de.pracSetCode, de.pracSetCodeX);
+			row = displayDetail(ft, row, false, highlight("practiceSetting", diffs), de.pracSetCode, de.pracSetCodeX);
 
-			b = diff.typeCode != null;
-			row = displayDetail(ft, row, b, "typeCode", de.typeCode, de.typeCodeX);
+			row = displayDetail(ft, row, false, highlight("typeCode", diffs), de.typeCode, de.typeCodeX);
 
-			b = diff.authors != null;
-			row = displayDetail(ft, row, b, de.authors, de.authorsX);
+			row = displayDetail(ft, row, diffs, de.authors, de.authorsX);
 
 		} finally {
 			detailPanel.add(ft);
@@ -557,11 +420,6 @@ public class DetailDisplay {
 		detailPanel.add(HyperlinkFactory.addHTML("id = " + o.id));
 		detailPanel.add(HyperlinkFactory.addHTML("home = " + o.home));
 
-	}
-
-	void displayText(String title, String html) {
-		addTitle(HyperlinkFactory.addHTML("<h4>" + title + "</h4>"));
-		detailPanel.add(new HTML(html));
 	}
 
 }

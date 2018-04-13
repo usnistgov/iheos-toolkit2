@@ -53,7 +53,7 @@ abstract class FoldersDataTable extends DataTable<Folder> implements IsWidget {
     @Override
     void addTableColumns() {
 
-        if (diffSelect.getValue()) {
+        if (compareSelect.getValue()) {
             dataTable.addColumn(new Column<Folder, Boolean>(new CheckboxCell(true, false)) {
                 @Override
                 public Boolean getValue(Folder object) {
@@ -236,7 +236,7 @@ abstract class FoldersDataTable extends DataTable<Folder> implements IsWidget {
     void setData(List<Folder> folderList) {
         dataProvider.getList().clear();
         if (folderList!=null) {
-            diffSelect.setEnabled(folderList.size()>1);
+            compareSelect.setEnabled(folderList.size()>1);
             dataProvider.getList().addAll(folderList);
         }
 

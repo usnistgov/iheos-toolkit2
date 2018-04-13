@@ -48,7 +48,7 @@ public class CodesConfiguration implements IsSerializable {
 		titles.put(FormatCode, "Format Code");
 		titles.put(HealthcareFacilityTypeCode, "Healthcare Facility Type Code");
 		titles.put(PracticeSettingCode, "Practice Setting Code");
-		titles.put(EventCodeList, "SimResource Code List");
+		titles.put(EventCodeList, "Event Code List"); // Was "SimResource Code List"??
 		titles.put(TypeCode, "Type Code");
 		titles.put(FolderCodeList, "Folder Code List");
 		titles.put(AssociationDocumentation, "Association Documentation");
@@ -64,7 +64,6 @@ public class CodesConfiguration implements IsSerializable {
 		titles.put(ServiceStopTimeFrom, "Service Stop Time From");
 		titles.put(ServiceStopTimeTo, "Service Stop Time To");
 		titles.put(AuthorPerson, "Author Person");
-
 	}
 
 	static public String getTitle(String codeName) { return titles.get(codeName);}

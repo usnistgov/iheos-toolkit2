@@ -13,7 +13,7 @@ import java.util.TreeMap;
 public class RepositoryIdListingDisplay extends ListingDisplay {
 
 	public RepositoryIdListingDisplay(MetadataInspectorTab tab, DataModel data, TreeThing root) {
-		super(tab, data, root);
+		super(tab, data, root, null, null);
 	}
 
 	/**

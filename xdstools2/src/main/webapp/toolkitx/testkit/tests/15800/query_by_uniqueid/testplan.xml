@@ -8,6 +8,7 @@
     </Rule>
     <ExpectedStatus>Success</ExpectedStatus>
     <StoredQueryTransaction>
+      <InteractionSequence useId="StoredQueryTransactionByDocAdmin"/>
       <XDSb/>
       <MetadataFile>query.xml</MetadataFile>
       <UseId testdir="../original" id="Document01" symbol="$uid$" step="original" section="AssignedUids"/>

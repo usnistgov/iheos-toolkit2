@@ -7,12 +7,20 @@ import com.google.gwt.user.client.ui.Hyperlink;
 import gov.nist.toolkit.registrymetadata.client.*;
 import gov.nist.toolkit.results.client.AssertionResults;
 import gov.nist.toolkit.results.client.StepResult;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.TestDocumentation;
 import gov.nist.toolkit.xdstools2.client.tabs.GetRelatedTab;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 public class HyperlinkFactory {
+
+	static Hyperlink metadataUpdate(MetadataInspectorTab it, DocumentEntry de, TestInstance logId, QueryOrigin queryOrigin, String text) {
+		Hyperlink h = new Hyperlink();
+		h.setText(text);
+		h.addClickHandler(new MuClickHandler(it, de, logId, queryOrigin));
+		return h;
+	}
 	
 	static Hyperlink link(MetadataInspectorTab it, AssertionResults ar, String text) {
 		Hyperlink h = new Hyperlink();

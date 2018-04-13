@@ -1021,7 +1021,16 @@ public abstract class BasicTransaction  {
 //			request_element = part.getFirstElement();
 //		}
 //		else
-		if (part_name.equals("MetadataFile")) {
+		if (part_name.equals("MetadataExL2MapKey")) {
+			String key = part.getText();
+			Map<String,Object> extraLinkage2 = planContext.getExtraLinkage2();
+			if (extraLinkage2!=null && extraLinkage2.containsKey(key)) {
+				if (extraLinkage2.get(key) instanceof OMElement) {
+					OMElement e = (OMElement)extraLinkage2.get(key);
+					setMetadata(e);
+				}
+			}
+		} else if (part_name.equals("MetadataFile")) {
 			metadata_filename = testConfig.testplanDir + File.separator + part.getText();
 			testLog.add_name_value(this.instruction_output, "MetadataFile", metadata_filename);
 		}

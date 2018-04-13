@@ -1,6 +1,7 @@
 package gov.nist.toolkit.interactionmodel.server;
 
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
+import gov.nist.toolkit.interactionmodel.shared.TransactionSequenceNotFoundException;
 import gov.nist.toolkit.utilities.xml.Util;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
@@ -108,17 +109,18 @@ public class InteractionSequences {
 
                    }
                }
-
-
            }
        return actorIe;
 
     }
 
-    public static List<InteractingEntity> getInteractionSequenceById(String sequenceId) throws Exception {
-        if (getSequencesMap()!=null && sequenceId!=null)
+    public static List<InteractingEntity> getInteractionSequenceById(String sequenceId) throws TransactionSequenceNotFoundException {
+        if (getSequencesMap()!=null && sequenceId!=null) {
+            if (!getSequencesMap().containsKey(sequenceId)) {
+                throw new TransactionSequenceNotFoundException(sequenceId + " is not found in the interaction sequence mapping (check InteractionSequences.xml file).", sequenceId);
+            }
             return getSequencesMap().get(sequenceId);
-        return null;
+        } return null;
     }
 
     public static Map<String, List<InteractingEntity>> getSequencesMap() {

@@ -2,7 +2,11 @@ package gov.nist.toolkit.xdstools2.client.widgets.queryFilter;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.xdstools2.client.widgets.AuthorPicker;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
@@ -34,7 +38,8 @@ public class AuthorFilter extends Widget implements QueryFilter {
                     @Override
                     public void onClick(ClickEvent clickEvent) {
                         try {
-                            new AuthorPicker(inputAuthorList).show();
+                            String title = "Enter Author Person(s) Names (use % to match any characters and _ to match a single character):";
+                            new AuthorPicker(title, inputAuthorList).show();
                         } catch (Exception e) {
                             //TODO genericquerytab not accessible from here
                             new PopupMessage(e.getMessage());

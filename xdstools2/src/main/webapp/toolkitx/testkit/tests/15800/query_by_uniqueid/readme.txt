@@ -1,6 +1,9 @@
 
 
 This uses a GetDocuments query to fetch the DocumentEntries by the common uniqueId.  It will return two DocumentEntries (both versions).
+Because we want both versions of a DocumentEntry MetadataLevel=2 is specified.  Section 3.18.4.1.2.3.5.1.1 MetadataLevel parameter states that
+If $MetadataLevel is 1 (one), the Document Registry shall not return the following metadata
+patterns in the Stored Query response: DocumentEntry and Folder objects that are not the latest version.
 
 Validation are run on the query results:
 * same_logicalId - both have same logicalId

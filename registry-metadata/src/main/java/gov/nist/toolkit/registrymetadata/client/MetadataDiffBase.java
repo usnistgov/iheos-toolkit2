@@ -45,7 +45,7 @@ public class MetadataDiffBase {
 		if (x.size() == 1 && y.size() == 1) return dif(x.get(0), x.get(0));
 		if (x.size() != y.size()) return true;
 		
-		for (int i=0; i<x.size(); i++)
+		for (int i=0; i<x.size(); i++) // This method is order dependent
 			if (dif(x.get(i), y.get(i))) return true;
 		return false;
 	}

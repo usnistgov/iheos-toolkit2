@@ -5,14 +5,15 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.ListBox;
 import gov.nist.toolkit.results.client.CodeConfiguration;
 import gov.nist.toolkit.xdstools2.client.widgets.CodePicker;
+import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.StatusDisplay;
 
 public class CodeEditButtonSelector implements ClickHandler {
 	CodeConfiguration cc;
 	ListBox toUpdate;
-	GenericQueryTab genericQueryTab;
+	StatusDisplay statusDisplay;
 
-	public CodeEditButtonSelector(GenericQueryTab genericQueryTab, CodeConfiguration cc, ListBox listBoxToUpdate) {
-		this.genericQueryTab = genericQueryTab;
+	public CodeEditButtonSelector(StatusDisplay statusDisplay, CodeConfiguration cc, ListBox listBoxToUpdate) {
+		this.statusDisplay = statusDisplay;
 		this.cc = cc;
 		toUpdate = listBoxToUpdate;
 	}
@@ -20,7 +21,7 @@ public class CodeEditButtonSelector implements ClickHandler {
 		try {
 			new CodePicker(cc, toUpdate).show();
 		} catch (Exception e) {
-			genericQueryTab.setStatus(e.getMessage(), false);
+			statusDisplay.setStatus(e.getMessage(), false);
 		}
 	}
 

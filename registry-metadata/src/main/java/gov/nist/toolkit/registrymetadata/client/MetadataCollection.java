@@ -102,13 +102,31 @@ public class MetadataCollection implements IsSerializable, Serializable {
 			MetadataObject fmo = (MetadataObject) f;
 			
 			boolean exists = false;
+			boolean sameIdButDifferentData = false;
+			List<Object> oldO = new ArrayList<>();
+			List<Object> newO = new ArrayList<>();
 			for (Object t : to) {
 				MetadataObject tmo = (MetadataObject) t;
-				if (tmo.id != null && tmo.id.equals(fmo.id)) { 
+				if (tmo.id != null && tmo.id.equals(fmo.id)) {
+					if (tmo instanceof DocumentEntry) {
+						if (! new DocumentEntryDiff().compare((DocumentEntry)t, (DocumentEntry)f).isEmpty()) {
+								sameIdButDifferentData = true;
+								oldO.add(t);
+								newO.add(f);
+						}
+					}
 					exists = true;
 					break;
 				}
 			}
+
+			if (sameIdButDifferentData && ! oldO.isEmpty()) {
+			    for (int idx=0; idx < oldO.size(); idx++) {
+			    	to.remove(oldO.get(idx));
+			    	to.add(newO.get(idx));
+				}
+			}
+
 			if (!exists)
 				to.add(f);
 		}
@@ -122,6 +140,4 @@ public class MetadataCollection implements IsSerializable, Serializable {
 		addNoDup(assocs, mc.assocs);
 		addNoDup(objectRefs, mc.objectRefs);
 	}
-	
-	
 }

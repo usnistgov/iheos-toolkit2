@@ -3,6 +3,7 @@ package gov.nist.toolkit.testkitutilities;
 import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.interactionmodel.server.InteractionSequences;
+import gov.nist.toolkit.interactionmodel.shared.TransactionSequenceNotFoundException;
 import gov.nist.toolkit.testkitutilities.client.Gather;
 import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
 import gov.nist.toolkit.testkitutilities.client.StepDefinitionDAO;
@@ -18,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -113,6 +115,7 @@ public class TestDefinition {
 	}
 
 	private final static QName TEST_QNAME = new QName("test");
+	private final static QName ID = new QName("id");
 
 	private SectionDefinitionDAO parseTestPlan(OMElement sectionEle, String sectionName) {
 		SectionDefinitionDAO section = new SectionDefinitionDAO(sectionName);
@@ -135,36 +138,51 @@ public class TestDefinition {
 			for (OMElement stepEle : XmlUtil.decendentsWithLocalName(sectionEle, "TestStep")) {
 				OMElement goalEle = XmlUtil.firstChildWithLocalName(stepEle, "Goal");
 				StepDefinitionDAO step = new StepDefinitionDAO();
-				step.setId(stepEle.getAttributeValue(new QName("id")));
+				step.setId(stepEle.getAttributeValue(ID));
 
 				for (OMElement trans : XmlUtil.descendantsWithLocalNameEndsWith(stepEle, "Transaction")) {
-					step.setTransaction(trans.getLocalName());
-					OMElement interactionSeq = XmlUtil.firstChildWithLocalName(trans, "InteractionSequence");
-					try {
-						InteractionSequences.init(Installation.instance().getInteractionSequencesFile());
-						String transactionKey = null;
-						if (interactionSeq == null) {
-							transactionKey = step.getTransaction();
-						} else {
-							transactionKey = InteractionSequences.xformSequenceToEntity(interactionSeq);
-						}
-						if (InteractionSequences.getInteractionSequenceById(transactionKey)!=null) {
-
-							List<InteractingEntity> src = InteractionSequences.getInteractionSequenceById(transactionKey);
-							List<InteractingEntity> copyIeList = new ArrayList<>();
-
-							if (src!=null) {
-								for (InteractingEntity ie : src) {
-									copyIeList.add(ie.copy());
+				    if (trans.getParent() instanceof OMElement && !"Rule".equals(((OMElement) trans.getParent()).getLocalName())) {
+						step.setTransaction(trans.getLocalName());
+						OMElement interactionSeq = XmlUtil.firstChildWithLocalName(trans, "InteractionSequence");
+						try {
+							InteractionSequences.init(Installation.instance().getInteractionSequencesFile());
+							String transactionKey = null;
+							if (interactionSeq == null) {
+								transactionKey = step.getTransaction();
+							} else {
+								String idVal = interactionSeq.getAttributeValue(new QName("useId"));
+								if (idVal!=null && !"".equals(idVal)) {
+								 	transactionKey = idVal;
 								}
-								step.setInteractionSequence(copyIeList);
+								// To use an embedded sequence uncomment this line.
+								// transactionKey = InteractionSequences.xformSequenceToEntity(interactionSeq);
 							}
+							try {
+								if (InteractionSequences.getInteractionSequenceById(transactionKey) != null) {
+									List<InteractingEntity> src = InteractionSequences.getInteractionSequenceById(transactionKey);
+									List<InteractingEntity> copyIeList = new ArrayList<>();
 
-							if (goalEle==null)
+									if (src != null) {
+										for (InteractingEntity ie : src) {
+											copyIeList.add(ie.copy());
+										}
+										step.setInteractionSequence(copyIeList);
+									}
+
+									if (goalEle == null)
+										section.addStep(step);
+								}
+							} catch (TransactionSequenceNotFoundException tsnfe) {
+								InteractingEntity ie = new InteractingEntity();
+								ie.setStatus(InteractingEntity.INTERACTIONSTATUS.UNKNOWN);
+								ie.setErrors(Arrays.asList(new String[]{TransactionSequenceNotFoundException.class.getSimpleName() + ":" + trans.getLocalName() +  ": Transaction is not mappable." + tsnfe.toString()}));
+								step.setInteractionSequence(new ArrayList<InteractingEntity>());
+								step.getInteractionSequence().add(ie);
 								section.addStep(step);
-							break;
-						}
-					} catch (Exception ex) {}
+							}
+						} catch (Exception ex) {}
+						break; // limit one transaction diagram per step
+					}
 				}
 
 				// parse goals

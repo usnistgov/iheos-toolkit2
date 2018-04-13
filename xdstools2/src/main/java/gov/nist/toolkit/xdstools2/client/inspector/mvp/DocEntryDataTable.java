@@ -20,7 +20,10 @@ import java.util.List;
 abstract class DocEntryDataTable extends DataTable<DocumentEntry> implements IsWidget {
 
     private FlowPanel widgetPanel = new FlowPanel();
+    private static String STATUS_COLUMN_NAME = "Status";
     private static String ID_COLUMN_NAME = "Id";
+    private static String LID_COLUMN_NAME = "Lid";
+    private static String VERSION_COLUMN_NAME = "Version";
     private static String HOME_ID_COLUMN_NAME = "HomeId";
     private static String REPOSITORY_UNIQUE_ID = "ReposId";
     private static String TITLE_COLUMN_NAME = "Title";
@@ -29,9 +32,12 @@ abstract class DocEntryDataTable extends DataTable<DocumentEntry> implements IsW
     private FlowPanel columnSelectionPanel = new FlowPanel();
 
     private static List<AnnotatedItem> columnList = Arrays.asList(
-            new AnnotatedItem(true,ID_COLUMN_NAME),
-            new AnnotatedItem(true, TITLE_COLUMN_NAME),
-            new AnnotatedItem(true,HOME_ID_COLUMN_NAME),
+            new AnnotatedItem(true, STATUS_COLUMN_NAME),
+            new AnnotatedItem(false, ID_COLUMN_NAME),
+            new AnnotatedItem(true, LID_COLUMN_NAME),
+            new AnnotatedItem(true, VERSION_COLUMN_NAME),
+            new AnnotatedItem(false, TITLE_COLUMN_NAME),
+            new AnnotatedItem(false, HOME_ID_COLUMN_NAME),
             new AnnotatedItem(false, REPOSITORY_UNIQUE_ID),
             new AnnotatedItem(false, HASH_COLUMN_NAME),
             new AnnotatedItem(false, SIZE_COLUMN_NAME)
@@ -54,7 +60,7 @@ abstract class DocEntryDataTable extends DataTable<DocumentEntry> implements IsW
     @Override
     void addTableColumns() {
 
-        if (diffSelect.getValue()) {
+        if (compareSelect.getValue()) {
             dataTable.addColumn(new Column<DocumentEntry, Boolean>(new CheckboxCell(true, false)) {
                 @Override
                 public Boolean getValue(DocumentEntry object) {
@@ -69,6 +75,30 @@ abstract class DocEntryDataTable extends DataTable<DocumentEntry> implements IsW
             }, "Select");
         }
 
+        if (columnToBeDisplayedIsChecked(STATUS_COLUMN_NAME)) {
+            TextColumn<DocumentEntry> statusColumn = new TextColumn<DocumentEntry>() {
+                @Override
+                public String getValue(DocumentEntry de) {
+                    return de.status.toString();
+                }
+
+            };
+            statusColumn.setSortable(true);
+            columnSortHandler.setComparator(statusColumn,
+                    new Comparator<DocumentEntry>() {
+                        public int compare(DocumentEntry o1, DocumentEntry o2) {
+                            if (o1 == o2) {
+                                return 0;
+                            }
+
+                            if (o1 != null && o1.status != null) {
+                                return (o2 != null && o2.status != null) ? o1.status.toString().compareTo(o2.status.toString()) : 1;
+                            }
+                            return -1;
+                        }
+                    });
+            dataTable.addColumn(statusColumn, STATUS_COLUMN_NAME);
+        }
         if (columnToBeDisplayedIsChecked(ID_COLUMN_NAME)) {
             TextColumn<DocumentEntry> idColumn = new TextColumn<DocumentEntry>() {
                 @Override
@@ -92,6 +122,54 @@ abstract class DocEntryDataTable extends DataTable<DocumentEntry> implements IsW
                         }
                     });
             dataTable.addColumn(idColumn, ID_COLUMN_NAME);
+        }
+        if (columnToBeDisplayedIsChecked(LID_COLUMN_NAME)) {
+            TextColumn<DocumentEntry> lidColumn = new TextColumn<DocumentEntry>() {
+                @Override
+                public String getValue(DocumentEntry de) {
+                    return de.lid.toString();
+                }
+
+            };
+            lidColumn.setSortable(true);
+            columnSortHandler.setComparator(lidColumn,
+                    new Comparator<DocumentEntry>() {
+                        public int compare(DocumentEntry o1, DocumentEntry o2) {
+                            if (o1 == o2) {
+                                return 0;
+                            }
+
+                            if (o1 != null && o1.lid != null) {
+                                return (o2 != null && o2.lid != null) ? o1.lid.toString().compareTo(o2.lid.toString()) : 1;
+                            }
+                            return -1;
+                        }
+                    });
+            dataTable.addColumn(lidColumn, LID_COLUMN_NAME);
+        }
+        if (columnToBeDisplayedIsChecked(VERSION_COLUMN_NAME)) {
+            TextColumn<DocumentEntry> versionColumn = new TextColumn<DocumentEntry>() {
+                @Override
+                public String getValue(DocumentEntry de) {
+                    return de.version.toString();
+                }
+
+            };
+            versionColumn.setSortable(true);
+            columnSortHandler.setComparator(versionColumn,
+                    new Comparator<DocumentEntry>() {
+                        public int compare(DocumentEntry o1, DocumentEntry o2) {
+                            if (o1 == o2) {
+                                return 0;
+                            }
+
+                            if (o1 != null && o1.version!= null) {
+                                return (o2 != null && o2.version != null) ? o1.version.toString().compareTo(o2.version.toString()) : 1;
+                            }
+                            return -1;
+                        }
+                    });
+            dataTable.addColumn(versionColumn, VERSION_COLUMN_NAME);
         }
         if (columnToBeDisplayedIsChecked(TITLE_COLUMN_NAME)) {
             TextColumn<DocumentEntry> titleColumn = new TextColumn<DocumentEntry>() {
@@ -251,7 +329,7 @@ abstract class DocEntryDataTable extends DataTable<DocumentEntry> implements IsW
     void setData(List<DocumentEntry> objectRefList) {
         dataProvider.getList().clear();
         if (objectRefList!=null) {
-            diffSelect.setEnabled(objectRefList.size()>1);
+            compareSelect.setEnabled(objectRefList.size()>1);
             dataProvider.getList().addAll(objectRefList);
         }
     }

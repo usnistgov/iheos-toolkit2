@@ -86,22 +86,26 @@ public class CodePicker extends DialogBox {
 	private void loadAvailableCodes(CodeConfiguration cc, boolean showDetail)  {
 		availableCodes.clear();
 		for (String codeDef : cc.codes) {
-			try {
-			String value;
-			if (showDetail)
-				value = codeDef;
-			else
-				value = new Code(codeDef).display;
-			availableCodes.addItem(value, codeDef);
-			} catch (Exception e) {}
+			addCodeItem(showDetail, codeDef);
 		}
 	}
 
-	boolean chosenHasCode(String codeDef) {
+	private void addCodeItem(boolean showDetail, String codeDef) {
+		try {
+        String value;
+        if (showDetail)
+            value = codeDef;
+        else
+            value = new Code(codeDef).display;
+        availableCodes.addItem(value, codeDef);
+        } catch (Exception e) {}
+	}
+
+	private boolean listHasCode(final ListBox listBox, String codeDef) {
 		if (codeDef == null || codeDef.equals(""))
 			return false;
-		for (int i=0; i<chosenCodes.getItemCount(); i++) {
-			if ( codeDef.equals(chosenCodes.getValue(i)))
+		for (int i=0; i<listBox.getItemCount(); i++) {
+			if ( codeDef.equals(listBox.getValue(i)))
 				return true;
 		}
 		return false;
@@ -113,7 +117,7 @@ public class CodePicker extends DialogBox {
 			if ( selectedIndex == -1)
 				return;
 			String codeDef = availableCodes.getValue(selectedIndex);
-			if (!chosenHasCode(codeDef))
+			if (!listHasCode(chosenCodes, codeDef))
 				chosenCodes.addItem(codeDef);
 		}
 	}
@@ -123,9 +127,15 @@ public class CodePicker extends DialogBox {
 			int selectedIndex = chosenCodes.getSelectedIndex();
 			if (selectedIndex == -1)
 				return;
+			// Metadata Update use case: begin handling of codes that may not exist in the codes configuration
+			// Since removing a code that doesn't exist in the codes configuration will not be selectable again, temporarily add it to the code box to be able to restore it again.
+			String value = chosenCodes.getValue(selectedIndex);
+            if (!listHasCode(availableCodes,value)) {
+            	addCodeItem(true, value); // default showDetail to true to avoid mixing it in with the default code configuration
+			}
+			// end
 			chosenCodes.removeItem(selectedIndex);
 		}
-
 	}
 
 

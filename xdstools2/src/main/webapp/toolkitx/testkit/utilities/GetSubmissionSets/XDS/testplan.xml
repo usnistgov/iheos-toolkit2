@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestPlan>
-    <Test>11905/basic</Test>
+    <Test>GetSubmissionSets/XDS</Test>
     
     <TestStep id="GetSubmissionSetsByUUID">
         <Rule>

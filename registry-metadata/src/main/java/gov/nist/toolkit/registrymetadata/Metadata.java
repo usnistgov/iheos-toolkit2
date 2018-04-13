@@ -20,6 +20,7 @@ import java.io.File;
 import java.util.*;
 
 public class Metadata {
+	public static final String MU_NOT_SUPPORTED = "1.1";
 	protected OMFactory fac;
 	boolean interpretAsSubmission = true;
 	// private final static Logger logger = Logger.getLogger(Metadata.class);
@@ -48,6 +49,12 @@ public class Metadata {
 	List<String> objectsReferenced = null;
 	// for id, list of classification uuids
 	HashMap<String, List<String>> classificationsOfId = null;
+
+	public static final Map<String,String> metadataAttributeXpath;
+	static {
+		metadataAttributeXpath = new HashMap<>();
+		metadataAttributeXpath.put("title","");
+	}
 
 	public OMElement getMetadata() {
 		return metadata;
@@ -1083,6 +1090,7 @@ public class Metadata {
 
 		String myid = allocate_id();
 		e.addAttribute("id", myid, null);
+		// Do not set the lid attribute.
 		e.addAttribute("objectType", "urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:Classification", null);
 		e.addAttribute("classificationScheme", uuid, null);
 		e.addAttribute("classifiedObject", ele.getAttributeValue(MetadataSupport.id_qname), null);
@@ -1274,7 +1282,7 @@ public class Metadata {
 	static public String getVersion(OMElement ele) {
 		OMElement ve = XmlUtil.firstChildWithLocalName(ele, "VersionInfo");
 		if (ve == null)
-			return "1.1";
+			return MU_NOT_SUPPORTED;
 		return ve.getAttributeValue(MetadataSupport.versionname_qname);
 	}
 
@@ -1891,6 +1899,8 @@ public class Metadata {
 				"targetObject", null, targetUuid));
 		assoc.addAttribute(MetadataSupport.om_factory.createOMAttribute("id",
 				null, allocate_id()));
+
+		addAssociation(assoc);
 		return assoc;
 	}
 

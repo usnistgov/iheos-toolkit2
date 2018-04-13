@@ -467,17 +467,6 @@
 
 		<plugins>
 			<plugin>
-				<groupId>org.apache.tomcat.maven</groupId>
-				<artifactId>tomcat7-maven-plugin</artifactId>
-				<version>2.1</version>
-				<configuration>
-					<url>http://localhost:8080/manager/text</url>
-					<username>admin</username>
-					<password></password>
-				</configuration>
-			</plugin>
-
-			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<!-- 2.8.0-01 and later require maven-compiler-plugin 3.1 or higher -->
 				<version>3.1</version>
@@ -547,6 +536,7 @@
                     <failOnError>true</failOnError>
 					<!--<logLevel>ALL</logLevel>-->
 					<style>OBFUSCATED</style>
+                    <!--<style>DETAILED</style>-->
 					<compileSourcesArtifacts>
 						<compileSourcesArtifact>${project.groupId}:installation</compileSourcesArtifact>
 						<compileSourcesArtifact>${project.groupId}:tk</compileSourcesArtifact>

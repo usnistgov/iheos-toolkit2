@@ -16,6 +16,7 @@ import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
+import gov.nist.toolkit.registrymetadata.client.MetadataObject;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.results.client.AssertionResult;
 import gov.nist.toolkit.results.client.AssertionResults;
@@ -64,6 +65,13 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 
 	List<Tree> treeList = new ArrayList<>();
 	TreeItem currentSelectedTreeItem;
+	MetadataObject comparableMetadata;
+
+	// main panel
+	HorizontalPanel hpanel = new HorizontalPanel();
+	Collection<Result> results;
+	private SiteSpec siteSpec;
+
 
 	public MetadataInspectorTab() {
 	}
@@ -106,13 +114,6 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 		}
 	}
 
-
-
-	// main panel
-	HorizontalPanel hpanel = new HorizontalPanel();
-	Collection<Result> results;
-	private SiteSpec siteSpec;
-	
 	public void setResults(Collection<Result> results) { this.results = results; }
 	public void setSiteSpec(SiteSpec ss) { siteSpec = ss; }
 
@@ -187,14 +188,19 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 		historyPanel.add(new HTML("<h3>Assertions</h3>"));
 		
 		StringBuffer buf = new StringBuffer();
+		assertionsToSb(result, buf);
+
+		historyPanel.add(new HTML(buf.toString()));
+		
+	}
+
+	void assertionsToSb(Result result, StringBuffer buf) {
 		for (AssertionResult ar : result.assertions.assertions) {
 			if (!isEmpty(ar.assertion))
 				buf.append(redAsText(htmlize(ar.assertion), ar.status)).append("<br />");
 			if (!isEmpty(ar.info))
 				buf.append(redAsText(htmlize(ar.info), ar.status)).append("<br />");
 		}
-		historyPanel.add(new HTML(buf.toString()));
-		
 	}
 	
 	String htmlize(String s) {
@@ -223,7 +229,7 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 				addTreeSelectionHandler(contentTree);
 			}
 
-			new ListingDisplay(this, data, new TreeThing(contentTree)).listing();
+			new ListingDisplay(this, data, new TreeThing(contentTree), null, null).listing();
 
 			historyPanel.add(contentTree);
 		}
@@ -402,7 +408,8 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 				}
 				*/
 
-				new ListingDisplay(this, dm, new TreeThing(stepTreeItem)).listing();
+				QueryOrigin queryOrigin = new QueryOrigin(res.logId.getId().toString(), stepResult.section, stepResult.stepName);
+				new ListingDisplay(this, dm, new TreeThing(stepTreeItem), res.logId, queryOrigin).listing();
 
 				if (data.enableActions && stepResult.toBeRetrieved.size() > 0) {
 					ObjectRefs ors = stepResult.nextNObjectRefs(10);
@@ -652,19 +659,29 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 				@Override
 				public void onSelection(SelectionEvent<TreeItem> selectionEvent) {
 					TreeItem selectedItem = (TreeItem)selectionEvent.getSelectedItem();
-					if (selectedItem.getUserObject()!=null) {
-						if (currentSelectedTreeItem!=null) {
-							currentSelectedTreeItem.getWidget().removeStyleName("insetBorder");
+					TreeItem itemToSelect = selectedItem;
+					if (selectedItem.getUserObject()==null) {
+						// If available, get the parent of child as selected, when something like Action:Metadataupdate was selected.
+						TreeItem parent = selectedItem.getParentItem();
+						if (parent.getUserObject() != null && parent.getUserObject() instanceof MetadataObjectWrapper) {
+							itemToSelect = parent;
+						} else {
+							// Return if no parent to select
+							return;
 						}
-						selectedItem.getWidget().addStyleName("insetBorder");
-						currentSelectedTreeItem = selectedItem;
-						if (selectedItem.getUserObject()!=null && selectedItem.getUserObject() instanceof MetadataObjectWrapper) {
-							MetadataObjectWrapper userObject = (MetadataObjectWrapper) selectedItem.getUserObject();
-							dataNotification.onObjectSelected(userObject);
-							if (selectedItem.getWidget() !=null && selectedItem.getWidget() instanceof Hyperlink) {
-								((Hyperlink) selectedItem.getWidget()).fireEvent(new ClickEvent() {
-								});
-							}
+					}
+					// Already at the parent level
+					if (currentSelectedTreeItem!=null) {
+						currentSelectedTreeItem.getWidget().removeStyleName("insetBorder");
+					}
+					itemToSelect.getWidget().addStyleName("insetBorder");
+					currentSelectedTreeItem = itemToSelect;
+					if (itemToSelect.getUserObject()!=null && itemToSelect.getUserObject() instanceof MetadataObjectWrapper) {
+						MetadataObjectWrapper userObject = (MetadataObjectWrapper) itemToSelect.getUserObject();
+						dataNotification.onObjectSelected(userObject);
+						if (itemToSelect.getWidget() !=null && itemToSelect.getWidget() instanceof Hyperlink) {
+							((Hyperlink) itemToSelect.getWidget()).fireEvent(new ClickEvent() {
+							});
 						}
 					}
 				}
@@ -677,6 +694,14 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 
 	public void setCurrentSelectedTreeItem(TreeItem currentSelectedTreeItem) {
 		this.currentSelectedTreeItem = currentSelectedTreeItem;
+	}
+
+	public MetadataObject getComparableMetadata() {
+		return comparableMetadata;
+	}
+
+	public void setComparableMetadata(MetadataObject comparableMetadata) {
+		this.comparableMetadata = comparableMetadata;
 	}
 
 	@Override

@@ -16,13 +16,20 @@ import java.util.List;
 
 public class MetadataCollectionToMetadata {
 	Metadata m = new Metadata();
+	boolean allowSymbolicIds = false;
 	
 	static public Metadata buildMetadata(MetadataCollection mc) {
-		MetadataCollectionToMetadata mcm = new MetadataCollectionToMetadata(mc);
+		return buildMetadata(mc, false);
+	}
+
+	static public Metadata buildMetadata(MetadataCollection mc, boolean allowSymbolicIds) {
+		MetadataCollectionToMetadata mcm = new MetadataCollectionToMetadata(mc, allowSymbolicIds);
+		mcm.allowSymbolicIds = allowSymbolicIds;
 		return mcm.m;
 	}
 	
-	MetadataCollectionToMetadata(MetadataCollection mc) {
+	MetadataCollectionToMetadata(MetadataCollection mc, boolean allowSymbolicIds) {
+		this.allowSymbolicIds = allowSymbolicIds;
 		for (DocumentEntry de : mc.docEntries) 
 			buildDocumentEntry(de);
 		for (SubmissionSet ss : mc.submissionSets) 
@@ -46,7 +53,7 @@ public class MetadataCollectionToMetadata {
 		if (de.uniqueId != null && !de.uniqueId.equals(""))
 			m.addDocumentEntryUniqueId(eo, de.uniqueId);
 		
-		if(de.lid != null && !de.lid.equals("") && de.lid.startsWith("urn:uuid:"))
+		if(de.lid != null && !de.lid.equals("") && (de.lid.startsWith("urn:uuid:") || allowSymbolicIds) )
 			m.addLid(eo, de.lid);
 		if (de.version != null && !de.version.equals("") && de.id.startsWith("urn:uuid:"))
 			m.setVersion(eo, de.version);
@@ -141,7 +148,7 @@ public class MetadataCollectionToMetadata {
 			m.addSlot(ssEle, "submissionTime", ss.submissionTime);
 		
 		if (ss.sourceId != null && !ss.sourceId.equals(""))
-			m.addExternalId(ssEle, "urn:uuid:554ac39e-e3fe-47fe-b233-965d2a147832", ss.sourceId);
+			m.addExternalId(ssEle, "urn:uuid:554ac39e-e3fe-47fe-b233-965d2a147832", ss.sourceId, MetadataSupport.XDSSubmissionSet_sourceid_name);
 		
 		addClassification(ssEle, ss.contentTypeCode, "urn:uuid:aa543740-bdda-424e-8c96-df4873be8500");
 		
@@ -224,7 +231,7 @@ public class MetadataCollectionToMetadata {
 			m.setStatus(aEle, a.status);
 
 		if (a.previousVersion != null && !a.previousVersion.equals(""))
-			m.addSlot(aEle, "previousVersion", a.previousVersion);
+			m.addSlot(aEle, "PreviousVersion", a.previousVersion);
 		
 		if (a.ssStatus != null && !a.ssStatus.equals("")) 
 			m.addSlot(aEle, "SubmissionSetStatus", a.ssStatus);
@@ -247,11 +254,27 @@ public class MetadataCollectionToMetadata {
 	}
 	
 	static public void main(String[] args) {
-		File infile = new File("/Users/bill/dev/testkit/tests/11966/submit/single_doc.xml");
+		File inFile = null;
+		File outFile = null;
+		boolean metadataV2 = false;
+
+		if (args.length==3) {
+			try {
+				inFile = new File(args[0]);
+				outFile = new File(args[1]);
+				metadataV2 = Boolean.parseBoolean(args[2]);
+			} catch (Exception ex) {
+				throw new IllegalArgumentException(ex);
+			}
+		} else {
+		 	inFile = new File("/Users/bill/dev/testkit/tests/11966/submit/single_doc.xml");
+		 	outFile = new File("/Users/bill/tmp/submission.xml");
+		}
+
 		Metadata m = null;
 		
 		try {
-			m = MetadataParser.parseNonSubmission(infile);
+			m = MetadataParser.parseNonSubmission(inFile);
 		} 
 		catch (Exception e) {
 			e.printStackTrace();
@@ -260,12 +283,15 @@ public class MetadataCollectionToMetadata {
 		
 		MetadataCollection mc = MetadataToMetadataCollectionParser.buildMetadataCollection(m, "test");
 		
-		Metadata m2 = MetadataCollectionToMetadata.buildMetadata(mc);
+		Metadata m2 = MetadataCollectionToMetadata.buildMetadata(mc, true);
 		
 		List<OMElement> eles = null;
 		
 		try {
-			eles = m2.getV3();
+		    if (metadataV2) {
+		    	eles = m2.getV2();
+			} else
+				eles = m2.getV3();
 		} catch (XdsInternalException e1) {
 			e1.printStackTrace();
 			System.exit(1);
@@ -277,7 +303,7 @@ public class MetadataCollectionToMetadata {
 			x.addChild(e);
 		
 		try {
-			Io.stringToFile(new File("/Users/bill/tmp/submission.xml"), new OMFormatter(x).toString());
+			Io.stringToFile(outFile, new OMFormatter(x).toString());
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}

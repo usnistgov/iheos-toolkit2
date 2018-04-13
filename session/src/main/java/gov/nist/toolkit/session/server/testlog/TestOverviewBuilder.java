@@ -102,6 +102,7 @@ public class TestOverviewBuilder {
                                 stepOverview = new StepOverviewDTO();
                                 StepDefinitionDAO stepSrc = sectionDef.getStep(stepName);
                                 stepOverview.setName(stepSrc.getId());
+                                stepOverview.setTransaction(stepSrc.getTransaction());
                                 sectionOverview.getStepNames().add(stepName);
                                 sectionOverview.getSteps().put(stepName,stepOverview);
                             }

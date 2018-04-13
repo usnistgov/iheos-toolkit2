@@ -7,5 +7,6 @@
     <inherits name='com.google.gwt.user.User' />
     <inherits name="gov.nist.toolkit.installation.installation"/>
     <inherits name="gov.nist.toolkit.configDatatypes.datatypes"/>
+    <inherits name="gov.nist.toolkit.actortransaction.actorTransaction"/>
     <source path="client" />
 </module>

@@ -58,7 +58,7 @@ public interface ToolkitService extends RemoteService  {
 
 
 	/* Test management */
-	Map<String, Result> getTestResults(GetTestResultsRequest resultsRequest) throws Exception ;
+	Map<String, Result> getTestResults(GetTestResultsRequest resultsRequest) throws Exception;
 	LogFileContentDTO getTestLogDetails(GetTestLogDetailsRequest request) throws Exception;
 
     Map<String, String> getCollectionNames(GetCollectionRequest request) throws Exception;
@@ -73,9 +73,9 @@ public interface ToolkitService extends RemoteService  {
 
     List<String> getTestIndex(GetTestDetailsRequest request) throws Exception;
 
-    List<Result> runMesaTest(RunTestRequest request) throws Exception ;
+    List<Result> runMesaTest(RunTestRequest request) throws Exception;
 	TestOverviewDTO runTest(RunTestRequest request) throws Exception;
-	boolean isPrivateMesaTesting() throws NoServletSessionException ;
+	boolean isPrivateMesaTesting() throws NoServletSessionException;
 
 	boolean testSessionExists(CommandContext request) throws Exception;
 	TestSession buildTestSession() throws Exception;
@@ -85,7 +85,7 @@ public interface ToolkitService extends RemoteService  {
 	boolean deleteTestSession(CommandContext context) throws Exception;
 
 	/* Simulator Management */
-	List<String> getActorTypeNames(CommandContext context) throws Exception ;
+	List<String> getActorTypeNames(CommandContext context) throws Exception;
 	Simulator getNewSimulator(GetNewSimulatorRequest request) throws Exception;
 	List<SimulatorConfig> getSimConfigs(GetSimConfigsRequest request) throws Exception;
 	List<SimulatorConfig> getAllSimConfigs(GetAllSimConfigsRequest user) throws Exception;
@@ -102,8 +102,8 @@ public interface ToolkitService extends RemoteService  {
 	Result getSimulatorEventResponse(GetSimulatorEventRequest request) throws Exception;
 
 	String setToolkitProperties(SetToolkitPropertiesRequest request) throws Exception;
-	Map<String, String> getToolkitProperties(CommandContext context) throws Exception ;
-	boolean reloadPropertyFile() throws NoServletSessionException ;
+	Map<String, String> getToolkitProperties(CommandContext context) throws Exception;
+	boolean reloadPropertyFile() throws NoServletSessionException;
 
 	Message getTransactionRequest(GetTransactionRequest request) throws Exception;
 	Message getTransactionResponse(GetTransactionRequest request) throws Exception;
@@ -130,15 +130,18 @@ public interface ToolkitService extends RemoteService  {
 
     SimId getFullSimId(GetFullSimIdRequest request) throws Exception;
 
+    Result updateDocumentEntry(UpdateDocumentEntryRequest request) throws Exception;
+    MessageValidationResults validateDocumentEntry(ValidateDocumentEntryRequest request) throws Exception;
+    
     MessageValidationResults validateMessage(ValidateMessageRequest request) throws Exception;
 
 	List<String> getSiteNames(GetSiteNamesRequest request) throws Exception;
 	List<String> getRegistryNames() throws Exception;
 	List<String> getRepositoryNames() throws Exception;
-	List<String> getRGNames() throws NoServletSessionException ;
-	List<String> getIGNames() throws NoServletSessionException ;
+	List<String> getRGNames() throws NoServletSessionException;
+	List<String> getIGNames() throws NoServletSessionException;
 	List<String> getTestdataSetListing(GetTestdataSetListingRequest request)  throws Exception;
-	CodesResult getCodesConfiguration(CommandContext context) throws Exception ;
+	CodesResult getCodesConfiguration(CommandContext context) throws Exception;
 	TransactionOfferings getTransactionOfferings(CommandContext commandContext) throws Exception;
 
 	List<String> reloadSites(boolean simAlso) throws Exception;
@@ -148,47 +151,47 @@ public interface ToolkitService extends RemoteService  {
 	String saveSite(SaveSiteRequest request) throws Exception;
 	String deleteSite(DeleteSiteRequest request) throws Exception;
 
-	List<Result> getSSandContents(GetSubmissionSetAndContentsRequest request) throws Exception ;
-	List<Result> srcStoresDocVal(GetSrcStoresDocValRequest request) throws Exception ;
-	List<Result> findDocuments(FindDocumentsRequest request) throws Exception ;
-	List<Result> findDocumentsByRefId(FindDocumentsRequest request) throws Exception ;
-	List<Result> findFolders(FoldersRequest request) throws Exception ;
+	List<Result> getSSandContents(GetSubmissionSetAndContentsRequest request) throws Exception;
+	List<Result> srcStoresDocVal(GetSrcStoresDocValRequest request) throws Exception;
+	List<Result> findDocuments(FindDocumentsRequest request) throws Exception;
+	List<Result> findDocumentsByRefId(FindDocumentsRequest request) throws Exception;
+	List<Result> findFolders(FoldersRequest request) throws Exception;
 	// FIXME this method has far too many parameters we need to change that by one object.
-	List<Result> getDocuments(GetDocumentsRequest request) throws Exception ;
-	List<Result> getFolders(GetFoldersRequest request) throws Exception ;
-	List<Result> getFoldersForDocument(GetFoldersRequest request) throws Exception ;
-	List<Result> getFolderAndContents(GetFoldersRequest request) throws Exception ;
-	List<Result> getObjects(GetObjectsRequest request) throws Exception ;
-	List<Result> getAssociations(GetAssociationsRequest request) throws Exception ;
-	List<Result> getSubmissionSets(GetSubmissionSetsRequest request) throws Exception ;
-	List<Result> registerAndQuery(RegisterAndQueryRequest request) throws Exception ;
-	List<Result> getRelated(GetRelatedRequest request) throws Exception ;
+	List<Result> getDocuments(GetDocumentsRequest request) throws Exception;
+	List<Result> getFolders(GetFoldersRequest request) throws Exception;
+	List<Result> getFoldersForDocument(GetFoldersRequest request) throws Exception;
+	List<Result> getFolderAndContents(GetFoldersRequest request) throws Exception;
+	List<Result> getObjects(GetObjectsRequest request) throws Exception;
+	List<Result> getAssociations(GetAssociationsRequest request) throws Exception;
+	List<Result> getSubmissionSets(GetSubmissionSetsRequest request) throws Exception;
+	List<Result> registerAndQuery(RegisterAndQueryRequest request) throws Exception;
+	List<Result> getRelated(GetRelatedRequest request) throws Exception;
 	List<Result> retrieveDocument(RetrieveDocumentRequest request) throws Exception;
 	List<Result> retrieveImagingDocSet(RetrieveImagingDocSetRequest request) throws Exception;
-	List<Result> submitRegistryTestdata(SubmitTestdataRequest request) throws Exception ;
-	List<Result> submitRepositoryTestdata(SubmitTestdataRequest request) throws Exception ;
-	List<Result> submitXDRTestdata(SubmitTestdataRequest request) throws Exception ;
-	List<Result> provideAndRetrieve(ProvideAndRetrieveRequest request) throws Exception ;
-	List<Result> lifecycleValidation(LifecycleValidationRequest request) throws Exception ;
-	List<Result> folderValidation(FoldersRequest request) throws Exception ;
+	List<Result> submitRegistryTestdata(SubmitTestdataRequest request) throws Exception;
+	List<Result> submitRepositoryTestdata(SubmitTestdataRequest request) throws Exception;
+	List<Result> submitXDRTestdata(SubmitTestdataRequest request) throws Exception;
+	List<Result> provideAndRetrieve(ProvideAndRetrieveRequest request) throws Exception;
+	List<Result> lifecycleValidation(LifecycleValidationRequest request) throws Exception;
+	List<Result> folderValidation(FoldersRequest request) throws Exception;
 
 	List<Result> mpqFindDocuments(MpqFindDocumentsRequest request) throws Exception;
 	List<Result> getAll(GetAllRequest request) throws Exception;
 	List<Result> findDocuments2(FindDocuments2Request request) throws Exception;
 
-	TestLogs getRawLogs(GetRawLogsRequest request) throws Exception ;
+	TestLogs getRawLogs(GetRawLogsRequest request) throws Exception;
 	List<Message> getFhirResult(GetRawLogsRequest request) throws Exception;
 
-	String getAdminPassword(CommandContext context) throws Exception ;
+	String getAdminPassword(CommandContext context) throws Exception;
 
 	String getTestplanAsText(GetTestplanAsTextRequest request) throws Exception;
 	TestPartFileDTO getSectionTestPartFile(GetSectionTestPartFileRequest request) throws Exception;
 	TestPartFileDTO loadTestPartContent(LoadTestPartContentRequest request) throws Exception;
 	String getHtmlizedString(String xml) throws Exception;
 
-	String getImplementationVersion(CommandContext context) throws Exception ;
+	String getImplementationVersion(CommandContext context) throws Exception;
 
-	List<String> getUpdateNames() throws NoServletSessionException ;
+	List<String> getUpdateNames() throws NoServletSessionException;
 	List<TestInstance> getTestlogListing(String sessionName) throws Exception;
 	List<TestOverviewDTO> getTestsOverview(GetTestsOverviewRequest request) throws Exception;
 	List<SectionDefinitionDAO> getTestSectionsDAOs(GetTestSectionsDAOsRequest request) throws Exception;

@@ -90,7 +90,7 @@
         <module>proxy</module>
         <module>it-tests</module>
         <!--<module>it-tests/pomForIsolatedTests.xml</module>-->
-        <module>it-tests-maven-plugin</module>
+        <!--<module>it-tests-maven-plugin</module>-->
     </modules>
 
     <profiles>

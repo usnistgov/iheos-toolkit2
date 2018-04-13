@@ -20,7 +20,16 @@ import gov.nist.toolkit.installation.server.PropertyServiceManager;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.interactionmapper.InteractionMapper;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
-import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.registrymetadata.Metadata;
+import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
+import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
+import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
+import gov.nist.toolkit.results.client.CodesResult;
+import gov.nist.toolkit.results.client.DocumentEntryDetail;
+import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.Test;
+import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest;
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationResponse;
 import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
@@ -48,6 +57,7 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.testengine.Sections;
+import gov.nist.toolkit.testengine.engine.RegistryUtility;
 import gov.nist.toolkit.testengine.scripts.BuildCollections;
 import gov.nist.toolkit.testengine.scripts.CodesUpdater;
 import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
@@ -61,6 +71,8 @@ import gov.nist.toolkit.utilities.xml.XmlFormatter;
 import gov.nist.toolkit.valregmsg.message.SchemaValidation;
 import gov.nist.toolkit.valregmsg.validation.factories.CommonMessageValidatorFactory;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
+import gov.nist.toolkit.valsupport.client.ValidationContext;
+import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdstools2.client.GazelleXuaUsername;
@@ -85,7 +97,13 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 
 @SuppressWarnings("serial")
 public class ToolkitServiceImpl extends RemoteServiceServlet implements
@@ -284,6 +302,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         installCommandContext(request);
         QueryServiceManager mgr = session().queryServiceManager();
         List<Result> results = new ArrayList<>();
+        session().isTls = request.getSite().isTls;
 
         for (Submission submission : request.getSubmissions()) {
             List<Result> myResults = mgr.registerAndQuery(submission.getTestInstance(), request.getSite(), submission.getPid());
@@ -295,92 +314,113 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<Result> lifecycleValidation(LifecycleValidationRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().lifecycleValidation(request.getSite(), request.getPid());
     }
     @Override
     public List<Result> folderValidation(FoldersRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().folderValidation(request.getSite(), request.getPid());
     }
     @Override
     public List<Result> submitRegistryTestdata(SubmitTestdataRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().submitRegistryTestdata(request.getSite(), request.getDataSetName(), request.getPid());
     }
     @Override
     public List<Result> submitRepositoryTestdata(SubmitTestdataRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().submitRepositoryTestdata(request.getSite(), request.getDataSetName(), request.getPid());
     }
     @Override
     public List<Result> submitXDRTestdata(SubmitTestdataRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().submitXDRTestdata(request.getSite(),request.getDataSetName(), request.getPid());
     }
     @Override
     public List<Result> provideAndRetrieve(ProvideAndRetrieveRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().provideAndRetrieve(request.getSite(), request.getPid());
     }
     @Override
     public List<Result> findDocuments(FindDocumentsRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSiteSpec().isTls;
         return session().queryServiceManager().findDocuments(request.getSiteSpec(), request.getPid(), request.isOnDemand());
     }
     @Override
-    public List<Result> findDocumentsByRefId(FindDocumentsRequest request) throws Exception  { return session().queryServiceManager().findDocumentsByRefId(request.getSiteSpec(), request.getPid(), request.getRefIds()); }
+    public List<Result> findDocumentsByRefId(FindDocumentsRequest request) throws Exception  {
+        session().isTls = request.getSiteSpec().isTls;
+        return session().queryServiceManager().findDocumentsByRefId(request.getSiteSpec(), request.getPid(), request.getRefIds());
+    }
     @Override
     public List<Result> getDocuments(GetDocumentsRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().getDocuments(request.getSite(), request.getIds());
     }
     @Override
     public List<Result> findFolders(FoldersRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().findFolders(request.getSite(), request.getPid()); }
     @Override
     public List<Result> getFolders(GetFoldersRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().getFolders(request.getSite(), request.getAnyIds());
     }
     @Override
     public List<Result> getFoldersForDocument(GetFoldersRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().getFoldersForDocument(request.getSite(), request.getAnyIds());
     }
     @Override
     public List<Result> getFolderAndContents(GetFoldersRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().getFolderAndContents(request.getSite(), request.getAnyIds()); }
     @Override
     public List<Result> getAssociations(GetAssociationsRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().getAssociations(request.getSite(), request.getIds());
     }
     @Override
     public List<Result> getObjects(GetObjectsRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().getObjects(request.getSite(), request.getIds());
     }
     @Override
     public List<Result> getSubmissionSets(GetSubmissionSetsRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().getSubmissionSets(request.getSite(), request.getIds());
     }
     @Override
     public List<Result> getSSandContents(GetSubmissionSetAndContentsRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSiteSpec().isTls;
         return session().queryServiceManager().getSSandContents(request.getSiteSpec(), request.getSsid(), request.getCodeSpec());
     }
     @Override
     public List<Result> srcStoresDocVal(GetSrcStoresDocValRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSiteSpec().isTls;
         return session().queryServiceManager().srcStoresDocVal(request.getSiteSpec(), request.getSsid());
     }
     @Override
     public List<Result> retrieveDocument(RetrieveDocumentRequest request) throws Exception {
         try {
             installCommandContext(request);
+            session().isTls = request.getSite().isTls;
             String uid = request.getUids().uids.get(0).repositoryUniqueId;
             if (uid==null)  // For XDS tools, the repository UID is set in the RetrieveDocument#run method's setSiteSpec call.
                 return session().queryServiceManager().retrieveDocument(request.getSite(), request.getUids());
@@ -401,23 +441,27 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<Result> retrieveImagingDocSet(RetrieveImagingDocSetRequest request) throws Exception {
         installCommandContext(request);
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().retrieveImagingDocSet(request.getSite(), request.getUids(), request.getStudyRequest(), request.getTransferSyntax());
     }
 
     @Override
     public List<Result> getRelated(GetRelatedRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().getRelated(request.getSite(),request.getObjectRef(), request.getAssocs());
     }
     @Override
     public List<Result> getAll(GetAllRequest request) throws Exception  {
         installCommandContext(request);
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().getAll(request.getSite(), request.getPid(), request.getCodesSpec());
     }
     @Override
     public List<Result> findDocuments2(FindDocuments2Request request) throws Exception  {
         installCommandContext(request);
         System.out.println("Running findDocuments2 service");
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().findDocuments2(request.getSite(), request.getPid(), request.getCodesSpec());
     }
 
@@ -425,12 +469,14 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     public List<Result> mpqFindDocuments(SiteSpec site, String pid,
                                          List<String> classCodes, List<String> hcftCodes,
                                          List<String> eventCodes) throws NoServletSessionException {
+        session().isTls = site.isTls;
         return session().queryServiceManager().mpqFindDocuments(site, pid, classCodes, hcftCodes,
                 eventCodes);
     }
     @Override
     public List<Result> mpqFindDocuments(MpqFindDocumentsRequest request) throws Exception {
         installCommandContext(request);
+        session().isTls = request.getSite().isTls;
         return session().queryServiceManager().mpqFindDocuments(request.getSite(), request.getPid(), request.getSelectedCodes());
     }
 
@@ -754,11 +800,13 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<Result> runMesaTest(RunTestRequest request)  throws Exception {
         installCommandContext(request);
+        session().isTls = request.getSiteSpec().isTls;
         return session().xdsTestServiceManager().runMesaTest(request.getEnvironmentName(), request.getTestSession(), request.getSiteSpec(), request.getTestInstance(), request.getSections(), request.getParams(), null, request.isStopOnFirstFailure());
     }
     @Override
     public TestOverviewDTO runTest(RunTestRequest request) throws Exception {
         installCommandContext(request);
+        session().isTls = request.getSiteSpec().isTls;
         List<String> sections = new ArrayList<>();
         if (request.getTestInstance().getSection() != null) sections.add(request.getTestInstance().getSection());
         setEnvironment(request.getEnvironmentName());
@@ -1140,6 +1188,69 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
             throw e;
         }
     }
+
+    /**
+     * This method will compare the original MetedataCollection (from originalGetDocsTestInstance) to the MetadataCollection that was updated.
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public Result updateDocumentEntry(UpdateDocumentEntryRequest request) throws Exception {
+        installCommandContext(request);
+        Result result = new MetadataUpdate(session()).updateDocumentEntry(request);
+
+        logger.info("Update result was: " + result.passed());
+        return result;
+    }
+
+    @Override
+    public MessageValidationResults validateDocumentEntry(ValidateDocumentEntryRequest request) throws Exception {
+        MessageValidationResults mvr = new MessageValidationResults();
+        installCommandContext(request);
+        RegistryErrorListGenerator regErrorListGen  = null;
+
+        ValidationContext vc = DefaultValidationContextFactory.validationContext();
+//        if ("r".equals(tname)) vc.isR = true;
+//        vc.isStableOrODDE
+        vc.isMU = true;
+
+        try {
+            logger.info("Codes file is " + session().getCodesFile());
+            vc.setCodesFilename(session().getCodesFile().toString());
+        } catch (Exception e) {
+           // What to do here?
+        }
+        try {
+            MetadataCollection mc = new MetadataCollection();
+            mc.docEntries.add(request.getDe());
+            Metadata m2 = MetadataCollectionToMetadata.buildMetadata(mc, true);
+            regErrorListGen = RegistryUtility.metadata_validator(m2, vc);
+        } catch (Exception e) {
+            // not all responses contain metadata
+            regErrorListGen = new RegistryErrorListGenerator(RegistryErrorListGenerator.version_3);
+        }
+
+        // THis is useful?
+//        regErrorListGen.has_errors()
+//        regErrorListGen.getErrMsgs()
+//        regErrorListGen.getErrorsAndWarnings()
+
+        ArrayList<String> validatorErrors = new RegistryResponseParser(regErrorListGen.getRegistryErrorList()).get_error_code_contexts();
+
+        if (validatorErrors.size() != 0) {
+            StringBuilder msg = new StringBuilder();
+            for (int i=0; i<validatorErrors.size(); i++) {
+                msg.append(validatorErrors.get(i));
+                msg.append("\n");
+            }
+            mvr.addHtmlResults(msg.toString());
+        }
+
+        return mvr;
+    }
+
+
 
     @Override
     public MessageValidationResults validateMessage(ValidateMessageRequest request) throws Exception {
@@ -1715,7 +1826,6 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         logger.debug(sessionID + ": getAllDatasets()");
         return DatasetFactory.getAllDatasets();
     }
-
 
     @Override
     public List<Result> fhirCreate(FhirCreateRequest request) throws Exception {

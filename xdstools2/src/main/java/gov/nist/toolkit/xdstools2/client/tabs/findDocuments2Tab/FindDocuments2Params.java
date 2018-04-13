@@ -5,7 +5,12 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.results.client.CodesConfiguration;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
-import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.*;
+import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.AuthorFilter;
+import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.CodeFilterBank;
+import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.OnDemandFilter;
+import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.ReturnTypeFilter;
+import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.StatusFilter;
+import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.TimeFilter;
 
 import java.util.List;
 import java.util.Map;
@@ -34,10 +39,14 @@ public class FindDocuments2Params {
     CodeFilterBank codeFilterBank;
     ReturnTypeFilter returnFilter;
     Label errorLabel;
+    GenericQueryTab genericQueryTab;
+
+
 
     public FindDocuments2Params(/*ToolkitServiceAsync toolkitService, */GenericQueryTab genericQueryTab){
+        this.genericQueryTab = genericQueryTab;
         // The collective validate bank being assembled
-        codeFilterBank = new CodeFilterBank(/*toolkitService, */genericQueryTab);
+        codeFilterBank = new CodeFilterBank(genericQueryTab);
 
         errorLabel = new Label();
 
