@@ -32,12 +32,12 @@ abstract class DocEntryDataTable extends DataTable<DocumentEntry> implements IsW
     private FlowPanel columnSelectionPanel = new FlowPanel();
 
     private static List<AnnotatedItem> columnList = Arrays.asList(
-            new AnnotatedItem(false, STATUS_COLUMN_NAME),
+            new AnnotatedItem(true, STATUS_COLUMN_NAME),
             new AnnotatedItem(false, ID_COLUMN_NAME),
             new AnnotatedItem(true, LID_COLUMN_NAME),
             new AnnotatedItem(true, VERSION_COLUMN_NAME),
             new AnnotatedItem(false, TITLE_COLUMN_NAME),
-            new AnnotatedItem(true, HOME_ID_COLUMN_NAME),
+            new AnnotatedItem(false, HOME_ID_COLUMN_NAME),
             new AnnotatedItem(false, REPOSITORY_UNIQUE_ID),
             new AnnotatedItem(false, HASH_COLUMN_NAME),
             new AnnotatedItem(false, SIZE_COLUMN_NAME)

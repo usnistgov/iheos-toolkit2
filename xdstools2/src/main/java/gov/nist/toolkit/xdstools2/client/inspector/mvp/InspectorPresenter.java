@@ -360,12 +360,13 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
                 if (currentObjectTypeSelection != null) {
                     view.getTableMap().get(currentObjectTypeSelection).setData(dataMap.get(currentObjectTypeSelection));
                 }
+                // This is probably not needed since doSwitchTable takes care of it.
                 // 2. refresh the table data for the other metadata types
-                for (MetadataObjectType type : MetadataObjectType.values()) {
-                   if (!type.equals(currentObjectTypeSelection)) {
-                      view.getTableMap().get(type).setData(dataMap.get(type));
-                   }
-                }
+//                for (MetadataObjectType type : MetadataObjectType.values()) {
+//                   if (!type.equals(currentObjectTypeSelection)) {
+//                      view.getTableMap().get(type).setData(dataMap.get(type));
+//                   }
+//                }
 
             }
         } catch (Exception ex) {}
