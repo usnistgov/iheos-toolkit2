@@ -35,7 +35,7 @@ public class GetFolderAndContents implements ClickHandler {
 					it.addToHistory(result);
 				}
 			}
-		}.run(new GetFoldersRequest(ClientUtils.INSTANCE.getCommandContext(),null, new AnyIds(ids)));
+		}.run(new GetFoldersRequest(ClientUtils.INSTANCE.getCommandContext(),it.getSiteSpec(), new AnyIds(ids)));
 	}
 	
 
