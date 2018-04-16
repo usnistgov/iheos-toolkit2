@@ -8,6 +8,10 @@ class HashTranslator {
         DatatypeConverter.parseHexBinary(hash)
     }
 
+    static byte[] toByteArrayFromBase64Binary(String hash) {
+        DatatypeConverter.parseBase64Binary(hash)
+    }
+
     static String fromByteArray(byte[] bytes) {
         DatatypeConverter.printHexBinary(bytes).toLowerCase()
     }

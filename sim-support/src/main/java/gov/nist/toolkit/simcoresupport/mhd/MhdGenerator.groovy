@@ -368,7 +368,8 @@ class MhdGenerator {
 
                     if (dr.content[0].attachment.hashElement.value) {
                         Base64BinaryType hash64 = dr.content[0].attachment.hashElement
-                        byte[] hash = HashTranslator.toByteArray(hash64.toString())
+//                        byte[] hash = HashTranslator.toByteArray(hash64.toString())
+                        byte[] hash = HashTranslator.toByteArrayFromBase64Binary(hash64.toString())
                         addSlot(builder, 'hash', new String(hash))
                     }
 
