@@ -33,13 +33,16 @@ class MhdToPnrContentTransform implements ContentRequestTransform {
         logger.info('Running MhdToPnrContentTransform')
         String contentType = request.allHeaders.find { Header h -> h.name.equalsIgnoreCase('content-type') }.value
 
-        if (!contentType.startsWith('application/fhir'))
+        if (!contentType || !contentType.startsWith('application/fhir'))
             throw new SimProxyTransformException("Content-Type is ${contentType} - expected application/fhir+json or application/fhir+xml")
 
         byte[] clientContent = base.clientLogger.content
         assert clientContent, "Content is null"
 
         FhirContext ctx = FileSystemResourceCache.ctx
+
+        if (contentType.contains(';'))
+            contentType = contentType.split(';').first()
 
         assert contentType.endsWith('+xml') || contentType.endsWith('+json'), "Content type ${contentType} is not valid"
 

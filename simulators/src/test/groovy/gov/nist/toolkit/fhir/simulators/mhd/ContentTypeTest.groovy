@@ -1,0 +1,14 @@
+package gov.nist.toolkit.fhir.simulators.mhd
+
+import spock.lang.Specification
+
+class ContentTypeTest extends Specification {
+
+    def 'test'() {
+        when:
+        def contentType = 'application/fhir+xml;charset=utf-8'
+
+        then:
+        contentType.split(';').first() == 'application/fhir+xml'
+    }
+}
