@@ -14,6 +14,7 @@ import gov.nist.toolkit.simcoresupport.proxy.util.ReturnableErrorException
 import gov.nist.toolkit.simcoresupport.proxy.util.SimProxyBase
 import gov.nist.toolkit.utilities.id.UuidAllocator
 import gov.nist.toolkit.xdsexception.ExceptionUtil
+import groovy.transform.TypeChecked
 import groovy.xml.MarkupBuilder
 import org.apache.log4j.Logger
 import org.hl7.fhir.dstu3.model.*
@@ -40,6 +41,7 @@ import java.text.SimpleDateFormat
  *
  * ExtrinsicObject id = ID07
  */
+
 
 class MhdGenerator {
     static private final Logger logger = Logger.getLogger(MhdGenerator.class);
@@ -106,7 +108,7 @@ class MhdGenerator {
         return identifiers.find { it.getUse() == Identifier.IdentifierUse.USUAL }
     }
 
-    static boolean isUuidUrn(ref) {
+    static boolean isUuidUrn(String ref) {
         ref.startsWith('urn:uuid') || ref.startsWith('urn:oid')
     }
 
@@ -134,7 +136,7 @@ class MhdGenerator {
         }
     }
 
-    def addSlot(builder, name, values) {
+    def addSlot(builder, String name, List<String> values) {
         builder.Slot(name: name) {
             ValueList {
                 values.each {
@@ -370,8 +372,8 @@ class MhdGenerator {
                         Base64BinaryType hash64 = dr.content[0].attachment.hashElement
 //                        byte[] hash = HashTranslator.toByteArray(hash64.toString())
                         byte[] hash = HashTranslator.toByteArrayFromBase64Binary(hash64.asStringValue())
-                        String hashString = hash.encodeHex().toString()
-                        addSlot(builder, 'hash', hashString)
+                        String hashString = hash.encodeHex().toString() as String
+                        addSlot(builder, 'hash', [hashString])
                     }
 
                     if (dr.context?.sourcePatientInfo)
