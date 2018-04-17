@@ -38,7 +38,7 @@ class ProvideDocumentBundleTransaction extends FhirCreateTransaction {
             Bundle returnBundle = returnResource
 
             // 3.65.4.2.2 Message Semantics
-            if (returnBundle.type.toCode() != BundleType.TRANSACTIONRESPONSE.toCode())
+            if (returnBundle?.type?.toCode() != BundleType.TRANSACTIONRESPONSE.toCode())
                 err("Bundle type returned was ${returnBundle.type}, ${BundleType.TRANSACTIONRESPONSE} is required")
 
             // 3.65.4.2.2 Message Semantics
