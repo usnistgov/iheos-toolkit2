@@ -110,7 +110,7 @@ class RegistryResponseToOperationOutcomeTransform implements ContentResponseTran
             return WrapResourceInHttpResponse.wrap(
                     base.chooseContentType(),
                     bundle,
-                    (base.fhirVerb == FhirVerb.TRANSACTION) ? HttpStatus.SC_CREATED : HttpStatus.SC_OK
+                    HttpStatus.SC_OK
             )
 
         } catch (Throwable e) {
