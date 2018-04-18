@@ -21,6 +21,7 @@ import org.hl7.fhir.dstu3.model.*
 import org.hl7.fhir.dstu3.model.codesystems.DocumentReferenceStatus
 import org.hl7.fhir.instance.model.api.IBaseResource
 
+import javax.xml.bind.DatatypeConverter
 import java.text.SimpleDateFormat
 /**
  *
@@ -370,10 +371,21 @@ class MhdGenerator {
 
                     if (dr.content[0].attachment.hashElement.value) {
                         Base64BinaryType hash64 = dr.content[0].attachment.hashElement
-//                        byte[] hash = HashTranslator.toByteArray(hash64.toString())
-                        byte[] hash = HashTranslator.toByteArrayFromBase64Binary(hash64.asStringValue())
-                        String hashString = hash.encodeHex().toString() as String
+                        logger.info("value is ${hash64.getValue()}")
+                        logger.info("base64Binary is ${hash64.asStringValue()}")
+                        byte[] hash = hash64.getValue() //DatatypeConverter.parseBase64Binary(hash64.asStringValue())
+                        logger.info("via groovy = ${hash.encodeHex().toString()}")
+
+                        logger.info("encoded is ${hash.toString()}")
+
+                        String hashString = DatatypeConverter.printHexBinary(hash)
+                        logger.info("hexBinary is ${hashString}")
                         addSlot(builder, 'hash', [hashString])
+
+//                        byte[] hash = HashTranslator.toByteArray(hash64.toString())
+//                        byte[] hash = HashTranslator.toByteArrayFromBase64Binary(hash64.asStringValue())
+//                        String hashString = hash.encodeHex().toString() as String
+//                        addSlot(builder, 'hash', [hashString])
                     }
 
                     if (dr.context?.sourcePatientInfo)
