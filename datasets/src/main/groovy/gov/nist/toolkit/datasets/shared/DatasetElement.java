@@ -49,4 +49,8 @@ public class DatasetElement implements Serializable, IsSerializable {
     public String getFile() {
         return file;
     }
+
+    public String getName() {
+        return name;
+    }
 }
