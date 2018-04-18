@@ -60,6 +60,7 @@ public class InspectorActivity extends AbstractToolkitActivity {
         view =      Injector.INSTANCE.getInspectorView();
         displayer = Injector.INSTANCE.getToolkitAppDisplayer();
         assert(presenter != null);
+        assert(displayer != null);
 
         presenter.setTitle("ResultInspector");
         presenter.setDataModel(place.getResults());
