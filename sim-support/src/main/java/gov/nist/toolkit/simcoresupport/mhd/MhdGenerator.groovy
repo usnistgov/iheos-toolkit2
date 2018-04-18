@@ -416,7 +416,7 @@ class MhdGenerator {
                         addClassificationFromCodeableConcept(builder, dr.context.practiceSetting, 'urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead', entryUUID)
 
                     if (dr.context?.event)
-                        addClassificationFromCodeableConcept(builder, dr.context.event?.first, 'urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4', entryUUID)
+                        addClassificationFromCodeableConcept(builder, dr.context.event?.first(), 'urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4', entryUUID)
 
                     String masterId
                     if (dr.masterIdentifier?.value) {
