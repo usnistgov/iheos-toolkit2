@@ -36,7 +36,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.util.List;
 import java.util.Properties;
 
 /**
@@ -53,8 +52,7 @@ public class SequoiaHeaderBuilder {
         MessageFactory factory = MessageFactory.newInstance(SOAPConstants.SOAP_1_2_PROTOCOL);
         SOAPMessage emptySoapMessage = factory.createMessage();
         insertAssertionIntoSoapHeader(emptySoapMessage.getSOAPHeader(), assertionStr);
-        File keystoreFile = settings.securityParams.getKeystore();
-        String keystorePath = keystoreFile.getAbsolutePath();
+        String keystorePath = getKeystorePath(settings.environmentName);
         String keystorePassword = settings.securityParams.getKeystorePassword();
         String privateKeyAlias = getPrivateKeyAlias(settings.environmentName);
         LOG.info("call to SOAPHeader modifier");
@@ -83,6 +81,10 @@ public class SequoiaHeaderBuilder {
             LOG.error("returned header is null");
             throw new Exception("Returned header is null");
         }
+    }
+
+    private static String getPrivateKeyAlias(String environmentName) {
+        return getProperty(environmentName, "privateKeyAlias");
     }
 
     private static void insertAssertionIntoSoapHeader(SOAPHeader soapHeader, String assertionStr) throws Exception {
@@ -117,7 +119,6 @@ public class SequoiaHeaderBuilder {
             Transformer t = TransformerFactory.newInstance().newTransformer();
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-            t.setOutputProperty(OutputKeys.INDENT, "yes");
             t.transform(new DOMSource(node), new StreamResult(baos));
             return baos;
         } catch (TransformerException e) {
@@ -137,7 +138,7 @@ public class SequoiaHeaderBuilder {
         }
     }
 
-    private static String getPrivateKeyAlias(String environmentName) {
+    private static String getProperty(String environmentName, String propertyName ) {
         File propertiesFile = Installation.instance().getKeystorePropertiesFile(environmentName);
         if (!propertiesFile.exists() || propertiesFile.isDirectory())
             return null;
@@ -153,7 +154,15 @@ public class SequoiaHeaderBuilder {
                 IOUtils.closeQuietly(is);
             }
         }
-        return props.getProperty("privateKeyAlias");
+        return props.getProperty(propertyName);
     }
+
+    private static String getKeystorePath(String environmentName){
+        return getProperty(environmentName, "keyStorePathForSignature");
+    }
+
+
+
+
 
 }
