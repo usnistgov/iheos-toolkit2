@@ -1,6 +1,7 @@
 package gov.nist.toolkit.fhir.simulators.proxy.transforms
 
 import ca.uhn.fhir.context.FhirContext
+import gov.nist.toolkit.configDatatypes.client.FhirVerb
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.fhir.server.resourceMgr.FileSystemResourceCache
 import gov.nist.toolkit.fhir.simulators.fhir.OperationOutcomeGenerator
@@ -106,7 +107,11 @@ class RegistryResponseToOperationOutcomeTransform implements ContentResponseTran
                 logger.info("...${resource.class.simpleName} ${resource.id} ==> ${comp.fullUrl}")
             }
 
-            return WrapResourceInHttpResponse.wrap(base.chooseContentType(), bundle, HttpStatus.SC_OK)
+            return WrapResourceInHttpResponse.wrap(
+                    base.chooseContentType(),
+                    bundle,
+                    HttpStatus.SC_OK
+            )
 
         } catch (Throwable e) {
             OperationOutcome oo = new OperationOutcome()

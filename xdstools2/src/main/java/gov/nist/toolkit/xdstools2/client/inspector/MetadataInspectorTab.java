@@ -408,7 +408,8 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 				}
 				*/
 
-				QueryOrigin queryOrigin = new QueryOrigin(res.logId.getId().toString(), stepResult.section, stepResult.stepName);
+				String testName = (res.logId != null) ? res.logId.getId() : "";
+				QueryOrigin queryOrigin = new QueryOrigin(testName, stepResult.section, stepResult.stepName);
 				new ListingDisplay(this, dm, new TreeThing(stepTreeItem), res.logId, queryOrigin).listing();
 
 				if (data.enableActions && stepResult.toBeRetrieved.size() > 0) {

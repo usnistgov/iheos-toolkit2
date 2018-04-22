@@ -84,7 +84,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
         },200);
     }
 
-    private void setData() {
+    private void    setData() {
         GWT.log("In setData");
 
         GWT.log("result list size is: " + results.size());

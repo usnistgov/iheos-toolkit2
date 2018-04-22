@@ -166,7 +166,13 @@ class FhirCreateTransaction extends BasicFhirTransaction {
 
         def fullEndpoint = "${endpoint}${urlExtension}"
 
-        reportManager.add('Base', getBaseUrl())   // endpoint)
+        String base = null
+        try {
+            base = getBaseUrl()
+        } catch (Exception e) {
+            // ignore
+        }
+        reportManager.add('Base', base)   // endpoint)
         reportManager.add('Url', fullEndpoint)
 
         testLog.add_name_value(instruction_output, 'OutHeader', "POST ${fullEndpoint}")

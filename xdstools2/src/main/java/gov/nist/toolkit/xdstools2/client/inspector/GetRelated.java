@@ -36,7 +36,7 @@ public class GetRelated implements ClickHandler {
 			public void onComplete(List<Result> result) {
 				it.addToHistory(result);
 			}
-		}.run(new GetRelatedRequest(ClientUtils.INSTANCE.getCommandContext(),null,or,assocs));
+		}.run(new GetRelatedRequest(ClientUtils.INSTANCE.getCommandContext(),it.getSiteSpec(),or,assocs));
 	}
 
 	public void onClick(ClickEvent event) {

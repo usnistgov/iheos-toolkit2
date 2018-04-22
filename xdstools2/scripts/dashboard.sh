@@ -9,7 +9,7 @@
 # value approved for use at NA Connectathon
 pid='911^^^IHERED&1.3.6.1.4.1.21367.13.20.1000&ISO'
 
-environment="NA2015"
+environment="cat"
 
 # Development machine
 #home=/Users/bill
@@ -19,9 +19,9 @@ environment="NA2015"
 
 # Deploy on nistred
 home=/home/bill
-war=$home/tomcat1/webapps/xdstools2
-externalCache=$home/tmp/toolkit2
-servlet_jar=$home/tomcat1/common/lib/servlet-api.jar
+war=/opt/tomcat/webapps/xdstools
+externalCache=$home/tmp/ec
+servlet_jar=/opt/tomcat/common/lib/servlet-api.jar
 
 # Location for classes and libraries
 webinf=$war/WEB-INF

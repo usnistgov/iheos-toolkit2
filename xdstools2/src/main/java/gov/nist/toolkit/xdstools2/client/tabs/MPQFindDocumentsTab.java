@@ -95,6 +95,7 @@ public class MPQFindDocumentsTab extends GenericQueryTab {
 	@Override
 	protected void configureTabView() {
 		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
+		setCommonPatientId("");  // necessary so common PID doesn't bleed into this query - could have no pid
 	}
 
 	class Runner implements ClickHandler {

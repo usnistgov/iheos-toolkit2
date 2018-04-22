@@ -14,12 +14,14 @@ import gov.nist.toolkit.simcoresupport.proxy.util.ReturnableErrorException
 import gov.nist.toolkit.simcoresupport.proxy.util.SimProxyBase
 import gov.nist.toolkit.utilities.id.UuidAllocator
 import gov.nist.toolkit.xdsexception.ExceptionUtil
+import groovy.transform.TypeChecked
 import groovy.xml.MarkupBuilder
 import org.apache.log4j.Logger
 import org.hl7.fhir.dstu3.model.*
 import org.hl7.fhir.dstu3.model.codesystems.DocumentReferenceStatus
 import org.hl7.fhir.instance.model.api.IBaseResource
 
+import javax.xml.bind.DatatypeConverter
 import java.text.SimpleDateFormat
 /**
  *
@@ -40,6 +42,7 @@ import java.text.SimpleDateFormat
  *
  * ExtrinsicObject id = ID07
  */
+
 
 class MhdGenerator {
     static private final Logger logger = Logger.getLogger(MhdGenerator.class);
@@ -106,7 +109,7 @@ class MhdGenerator {
         return identifiers.find { it.getUse() == Identifier.IdentifierUse.USUAL }
     }
 
-    static boolean isUuidUrn(ref) {
+    static boolean isUuidUrn(String ref) {
         ref.startsWith('urn:uuid') || ref.startsWith('urn:oid')
     }
 
@@ -134,7 +137,7 @@ class MhdGenerator {
         }
     }
 
-    def addSlot(builder, name, values) {
+    def addSlot(builder, String name, List<String> values) {
         builder.Slot(name: name) {
             ValueList {
                 values.each {
@@ -368,8 +371,21 @@ class MhdGenerator {
 
                     if (dr.content[0].attachment.hashElement.value) {
                         Base64BinaryType hash64 = dr.content[0].attachment.hashElement
-                        byte[] hash = HashTranslator.toByteArray(hash64.toString())
-                        addSlot(builder, 'hash', new String(hash))
+                        logger.info("value is ${hash64.getValue()}")
+                        logger.info("base64Binary is ${hash64.asStringValue()}")
+                        byte[] hash = hash64.getValue() //DatatypeConverter.parseBase64Binary(hash64.asStringValue())
+                        logger.info("via groovy = ${hash.encodeHex().toString()}")
+
+                        logger.info("encoded is ${hash.toString()}")
+
+                        String hashString = DatatypeConverter.printHexBinary(hash).toLowerCase()
+                        logger.info("hexBinary is ${hashString}")
+                        addSlot(builder, 'hash', [hashString])
+
+//                        byte[] hash = HashTranslator.toByteArray(hash64.toString())
+//                        byte[] hash = HashTranslator.toByteArrayFromBase64Binary(hash64.asStringValue())
+//                        String hashString = hash.encodeHex().toString() as String
+//                        addSlot(builder, 'hash', [hashString])
                     }
 
                     if (dr.context?.sourcePatientInfo)
@@ -400,7 +416,7 @@ class MhdGenerator {
                         addClassificationFromCodeableConcept(builder, dr.context.practiceSetting, 'urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead', entryUUID)
 
                     if (dr.context?.event)
-                        addClassificationFromCodeableConcept(builder, dr.context.event, 'urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4', entryUUID)
+                        addClassificationFromCodeableConcept(builder, dr.context.event?.first(), 'urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4', entryUUID)
 
                     String masterId
                     if (dr.masterIdentifier?.value) {

@@ -30,7 +30,7 @@ public class Retrieve implements ClickHandler {
 			public void onComplete(List<Result> result) {
 				it.addToHistory(result);
 			}
-		}.run(new RetrieveDocumentRequest(ClientUtils.INSTANCE.getCommandContext(),null ,uids));
+		}.run(new RetrieveDocumentRequest(ClientUtils.INSTANCE.getCommandContext(),it.getSiteSpec() ,uids));
 	}
 
 	public Retrieve(MetadataInspectorTab it, Uid docUid) {

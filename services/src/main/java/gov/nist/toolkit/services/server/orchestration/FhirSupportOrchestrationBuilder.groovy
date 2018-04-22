@@ -1,10 +1,15 @@
 package gov.nist.toolkit.services.server.orchestration
 
 import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
+import gov.nist.toolkit.datasets.server.DatasetFactory
+import gov.nist.toolkit.datasets.shared.DatasetElement
+import gov.nist.toolkit.datasets.shared.DatasetModel
 import gov.nist.toolkit.fhir.server.utility.FhirClient
 import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.installation.shared.TestSession
+import gov.nist.toolkit.results.server.SiteBuilder
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationResponse
@@ -14,6 +19,7 @@ import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
 import gov.nist.toolkit.simcoresupport.proxy.util.SimProxyBase
+import gov.nist.toolkit.sitemanagement.client.Site
 import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import gov.nist.toolkit.xdsexception.ExceptionUtil
 import groovy.transform.TypeChecked
@@ -90,9 +96,25 @@ class FhirSupportOrchestrationBuilder extends AbstractOrchestrationBuilder {
         }
 
         try {
-            if (needsLoading)
+            if (needsLoading) {
                 siteSpec.isTls = request.isUseTls()
                 util.submit(request.testSession, siteSpec, testInstance)
+//                Site site = SiteBuilder.siteFromSiteSpec(siteSpec, session.id)
+//                URI uri = new URI(site.getEndpoint(TransactionType.FHIR, false, false) + '/Patient')
+//
+//                // Load dataset CAT/Patient
+//                List<DatasetModel> dsms = DatasetFactory.getAllDatasets()
+//                dsms.each { DatasetModel dsm ->
+//                    dsm.items.each { DatasetElement dse ->
+//                        if (dse.name == 'CAT' && dse.type == 'Patient') {
+//                            File file = new File(Installation.instance().datasets().toString() + File.separator + dse.path)
+//                            assert file.exists(), "File ${file} does not exist"
+//                            String body = file.text
+//                            FhirClient.post(uri, body)
+//                        }
+//                    }
+//                }
+            }
         } catch (Exception e) {
             String error = "Error submiting Patients to FHIR server ${simId.toString()} \n ${ExceptionUtil.exception_details(e)}"
             response.addMessage(testInstance, false, error)

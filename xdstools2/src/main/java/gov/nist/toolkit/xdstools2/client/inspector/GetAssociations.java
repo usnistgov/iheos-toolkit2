@@ -33,7 +33,7 @@ public class GetAssociations implements ClickHandler {
 					it.addToHistory(result);
 				}
 			}
-		}.run(new GetAssociationsRequest(ClientUtils.INSTANCE.getCommandContext(),null,ids));
+		}.run(new GetAssociationsRequest(ClientUtils.INSTANCE.getCommandContext(),it.getSiteSpec(),ids));
 	}
 	
 	public GetAssociations(MetadataInspectorTab it, ObjectRefs ids) {

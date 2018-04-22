@@ -33,7 +33,7 @@ public class GetSubmissionSets implements ClickHandler {
 			public void onComplete(List<Result> result) {
 				it.addToHistory(result);
 			}
-		}.run(new GetSubmissionSetsRequest(ClientUtils.INSTANCE.getCommandContext(),null,new AnyIds(ids)));
+		}.run(new GetSubmissionSetsRequest(ClientUtils.INSTANCE.getCommandContext(),it.getSiteSpec(), new AnyIds(ids)));
 	}
 
 	public GetSubmissionSets(MetadataInspectorTab it, ObjectRefs ids) {
