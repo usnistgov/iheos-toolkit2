@@ -46,7 +46,7 @@ public class SimCommon {
 	public SimulatorConfig simConfig = null;
 	public HttpServletRequest request = null;
 	public HttpServletResponse response = null;
-	OutputStream os = null;
+	public OutputStream os = null;
 	ValidateMessageService vms = new ValidateMessageService(null);
 	boolean faultReturned = false;
 	boolean responseSent = false;

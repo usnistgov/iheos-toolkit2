@@ -20,9 +20,24 @@ public enum ActorType implements IsSerializable, Serializable {
             "XDR Document Source",
             Arrays.asList("XDR_Source"),
             "xdrsrc",
-            "gov.nist.toolkit.simulators.sim.src.XdrDocSrcActorSimulator",
-            Arrays.asList(TransactionType.XDR_PROVIDE_AND_REGISTER),
+            "gov.nist.toolkit.simulators.sim.fixed.FixedReplySimulator",
+            Arrays.asList(TransactionType.ANY),
             false,
+            null
+    ),
+    FIXED_REPLY(
+            "Fixed Reply",
+            Arrays.asList(""),
+            "fixed",
+            "gov.nist.toolkit.simulators.sim.fixed.FixedReplySimulator",
+            Arrays.asList(TransactionType.PROVIDE_AND_REGISTER,
+                    TransactionType.REGISTER,
+                    TransactionType.RETRIEVE,
+                    TransactionType.XC_RETRIEVE,
+                    TransactionType.XC_QUERY,
+                    TransactionType.QD,
+                    TransactionType.RD),
+            true,
             null
     ),
     REGISTRY(
@@ -459,9 +474,12 @@ public enum ActorType implements IsSerializable, Serializable {
             return null;
 
         for (ActorType actor : values()) {
-            if (actor.name.equals(name)) return actor;
-            if (actor.shortName.equals(name)) return actor;
-            if (actor.altNames.contains(name)) return actor;
+            if (actor.name.equals(name))
+                return actor;
+            if (actor.shortName.equals(name))
+                return actor;
+            if (actor.altNames.contains(name))
+                return actor;
         }
         return null;
     }

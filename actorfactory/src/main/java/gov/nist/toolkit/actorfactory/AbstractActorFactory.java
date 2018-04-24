@@ -61,6 +61,7 @@ public abstract class AbstractActorFactory {
       factories.put(ActorType.IMAGING_DOC_SOURCE.getName(), 		new ImagingDocSourceActorFactory());
       factories.put(ActorType.COMBINED_INITIATING_GATEWAY.getName(), new CigActorFactory());
       factories.put(ActorType.COMBINED_RESPONDING_GATEWAY.getName(), new CrgActorFactory());
+		factories.put(ActorType.FIXED_REPLY.getName(), new FixedReplyFactory());
 	}
 
 	static public AbstractActorFactory getActorFactory(ActorType at) {

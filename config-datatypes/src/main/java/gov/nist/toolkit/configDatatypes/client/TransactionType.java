@@ -34,7 +34,8 @@ public enum TransactionType implements Serializable, IsSerializable {
     XC_RET_IMG_DOC_SET("RAD-75", "Cross-Community Ret Img Doc Set", "xcr.ids", "xcr.ids.b", "xcr.ids.as", true, "urn:ihe:rad:2011:CrossGatewayRetrieveImagingDocumentSet", "urn:ihe:rad:2011:CrossGatewayRetrieveImagingDocumentSetResponse", true),
     STS("STS", "Secure Token Service", "sts", "sts", "sts.as", true, "sts", "sts", true),
 	QD("QD", "Sequoia Query Document", "qd", "qd", "qd.as", false, "urn:ihe:iti:2007:CrossGatewayQuery", "urn:ihe:iti:2007:CrossGatewayQueryResponse", false),
-	RD("RD", "Sequoia Retrieve Document", "rd", "rd", "rd.as", false, "urn:ihe:iti:2007:CrossGatewayRetrieve", "urn:ihe:iti:2007:CrossGatewayRetrieveResponse", true);
+	RD("RD", "Sequoia Retrieve Document", "rd", "rd", "rd.as", false, "urn:ihe:iti:2007:CrossGatewayRetrieve", "urn:ihe:iti:2007:CrossGatewayRetrieveResponse", true),
+    ANY("ANY", "Any", "any", "any", "any.as", false, "action", "action", false);
 
 	private static final long serialVersionUID = 1L;
     String id = "";
