@@ -15,6 +15,10 @@
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>installation</artifactId>
         </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>xds-exceptions</artifactId>
+        </dependency>
     </dependencies>
 
 <build>

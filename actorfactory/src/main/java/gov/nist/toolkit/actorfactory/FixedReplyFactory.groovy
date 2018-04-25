@@ -1,19 +1,16 @@
-package gov.nist.toolkit.actorfactory;
+package gov.nist.toolkit.actorfactory
 
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.Simulator;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.actortransaction.client.ParamType;
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
-import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.sitemanagement.client.TransactionBean;
+import gov.nist.toolkit.actorfactory.client.SimId
+import gov.nist.toolkit.actorfactory.client.Simulator
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig
+import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.actortransaction.client.ParamType
+import gov.nist.toolkit.configDatatypes.SimulatorProperties
+import gov.nist.toolkit.configDatatypes.client.TransactionType
+import gov.nist.toolkit.sitemanagement.client.Site
+import gov.nist.toolkit.sitemanagement.client.TransactionBean
 import gov.nist.toolkit.xdsexception.NoSimulatorException
-import groovy.transform.TypeChecked;
-
-import java.util.Arrays;
-import java.util.List;
+import groovy.transform.TypeChecked
 
 @TypeChecked
 class FixedReplyFactory extends AbstractActorFactory {
@@ -27,9 +24,6 @@ class FixedReplyFactory extends AbstractActorFactory {
         TransactionType.QD,
         TransactionType.RD)
 
-    FixedReplyFactory() {
-
-    }
 
     @Override
     protected Simulator buildNew(SimManager simm, SimId simId, boolean configureBase) throws Exception {

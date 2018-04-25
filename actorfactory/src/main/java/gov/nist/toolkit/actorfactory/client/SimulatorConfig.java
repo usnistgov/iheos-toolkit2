@@ -260,4 +260,18 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 		this.vc = vc;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		SimulatorConfig that = (SimulatorConfig) o;
+
+		if (expired != that.expired) return false;
+		if (id != null ? !id.equals(that.id) : that.id != null) return false;
+		if (actorType != null ? !actorType.equals(that.actorType) : that.actorType != null) return false;
+		if (expires != null ? !expires.equals(that.expires) : that.expires != null) return false;
+		return elements != null ? elements.equals(that.elements) : that.elements == null;
+	}
+
 }
