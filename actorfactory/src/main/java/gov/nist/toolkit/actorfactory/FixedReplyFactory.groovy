@@ -53,6 +53,8 @@ class FixedReplyFactory extends AbstractActorFactory {
 
         addEditableConfig(sc, SimulatorProperties.replyFile, ParamType.TEXT, "");
         addEditableConfig(sc, SimulatorProperties.mimeType, ParamType.TEXT, "text/plain");
+        addEditableConfig(sc, SimulatorProperties.mtomResponse, ParamType.BOOLEAN, false);
+
         return new Simulator(sc);
     }
 

@@ -44,7 +44,8 @@ class FixedReplySimulator extends BaseDsActorSimulator {
         File resultFile = new File(resultFileName)
         assert resultFile.exists()
 
-        dsSimCommon.sendHttpResponse(Util.parse_xml(resultFile), er, true)
+        boolean isMtomResponse = getSimulatorConfig().getConfigEle(SimulatorProperties.mtomResponse).asBoolean().booleanValue()
+        dsSimCommon.sendHttpResponse(Util.parse_xml(resultFile), er, isMtomResponse)
         return false
     }
 

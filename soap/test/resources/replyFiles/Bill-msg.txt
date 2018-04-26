@@ -1,0 +1,42 @@
+<S:Envelope xmlns:S="http://www.w3.org/2003/05/soap-envelope">
+    <S:Header>
+        <wsa:Action xmlns:wsa="http://www.w3.org/2005/08/addressing"
+            xmlns:s="http://www.w3.org/2003/05/soap-envelope" s:mustUnderstand="1"
+            >urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-bResponse</wsa:Action>
+        <wsa:RelatesTo xmlns:wsa="http://www.w3.org/2005/08/addressing"
+            >urn:uuid:A0333E98F34A9C1C761524505193337</wsa:RelatesTo>
+    </S:Header>
+    <S:Body>
+        <rs:RegistryResponse xmlns:rs="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0"
+            status="urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Failure">
+            <rs:RegistryErrorList>
+                <rs:RegistryError
+                    codeContext="DocumentEntry(urn:uuid:2afa3e71-46b2-490b-9350-822644809838): the code 1.3.6.1.4.1.21367.100.1(DEMO-Procedure) is not found in the Affinity Domain configuration"
+                    errorCode="XDSRegistryMetadataError" location="CodeValidation"
+                    severity="urn:oasis:names:tc:ebxml-regrep:ErrorSeverityType:Error"/>
+                <rs:RegistryError
+                    codeContext="DocumentEntry(urn:uuid:2afa3e71-46b2-490b-9350-822644809838): the code Connect-a-thon healthcareFacilityTypeCodes 2(Outpatient) is not found in the Affinity Domain configuration"
+                    errorCode="XDSRegistryMetadataError" location="CodeValidation"
+                    severity="urn:oasis:names:tc:ebxml-regrep:ErrorSeverityType:Error"/>
+                <rs:RegistryError
+                    codeContext="DocumentEntry(urn:uuid:2afa3e71-46b2-490b-9350-822644809838): the code Connect-a-thon practiceSettingCodes(Dialysis) is not found in the Affinity Domain configuration"
+                    errorCode="XDSRegistryMetadataError" location="CodeValidation"
+                    severity="urn:oasis:names:tc:ebxml-regrep:ErrorSeverityType:Error"/>
+                <rs:RegistryError
+                    codeContext="DocumentEntry(urn:uuid:2afa3e71-46b2-490b-9350-822644809838): the code SNM3(T-D4909) is not found in the Affinity Domain configuration"
+                    errorCode="XDSRegistryMetadataError" location="CodeValidation"
+                    severity="urn:oasis:names:tc:ebxml-regrep:ErrorSeverityType:Error"/>
+                <rs:RegistryError
+                    codeContext="DocumentEntry(urn:uuid:2afa3e71-46b2-490b-9350-822644809838): the code SNM3(T-62002) is not found in the Affinity Domain configuration"
+                    errorCode="XDSRegistryMetadataError" location="CodeValidation"
+                    severity="urn:oasis:names:tc:ebxml-regrep:ErrorSeverityType:Error"/>
+                <rs:RegistryError
+                    codeContext="SubmissionSet(urn:uuid:ed4faf7c-2f8e-4d73-8025-bfdc267d10b9): the code 2.16.840.1.113883.6.1(11502-2) is not found in the Affinity Domain configuration"
+                    errorCode="XDSRegistryMetadataError" location="CodeValidation"
+                    severity="urn:oasis:names:tc:ebxml-regrep:ErrorSeverityType:Error"/>
+            </rs:RegistryErrorList>
+        </rs:RegistryResponse>
+    </S:Body>
+</S:Envelope>
+
+

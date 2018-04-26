@@ -329,4 +329,6 @@ public class SimulatorProperties {
     public static final String replyFile = "Reply File";
 
     public static final String mimeType = "Mime Type";
+
+    public static final String mtomResponse = "MTOM response";
 }
