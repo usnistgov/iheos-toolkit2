@@ -576,7 +576,7 @@ public class DsSimCommon {
                 simCommon.db.putResponseBody(respStr);
 //                Io.stringToFile(simCommon.db.getResponseBodyFile(), respStr);
             simCommon.os.write(respStr.getBytes());
-            if (simCommon.vc.requiresMtom()) {
+            if (simCommon.vc.requiresMtom() && multipartOk) {
                 this.writeAttachments(simCommon.os, er);
                 simCommon.os.write(getTrailer().toString().getBytes());
             }
