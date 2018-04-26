@@ -5,6 +5,7 @@ import gov.nist.toolkit.dsig.XMLDSigProcessor;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.securityCommon.SecurityParamsImpl;
+import gov.nist.toolkit.soap.axis2.handlers.header.security.BypassMustUnderstand;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
@@ -32,6 +33,8 @@ import org.apache.axis2.context.ConfigurationContextFactory;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.context.OperationContext;
 import org.apache.axis2.description.AxisService;
+import org.apache.axis2.engine.AxisConfiguration;
+import org.apache.axis2.engine.Phase;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
@@ -44,7 +47,11 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 
@@ -60,6 +67,8 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class Soap implements SoapInterface {
+	// TODO: Two loggers ??
+
     static Logger logger = Logger.getLogger(Soap.class);
 
 	private static Logger log = Logger.getLogger(Soap.class);
@@ -403,6 +412,7 @@ public class Soap implements SoapInterface {
 		if (!finished)
 			throw lastFault;
 
+
 		// vbeera: modified code -START-
 		MessageContext outMsgCtx = null;
 		if (useWSSEC) {
@@ -432,6 +442,22 @@ public class Soap implements SoapInterface {
 			outMsgCtx = new MessageContext();
 		}
 		// vbeera: modified code -END-
+
+        if (Installation.instance().propertyServiceManager().getPropertyManager().isBypassSecurityHeaderMuOnResponse()) {
+			// Sequoia: begin attach handler
+			AxisConfiguration axisConfiguration = serviceClient.getAxisConfiguration();
+			if (axisConfiguration != null) {
+				List<Phase> inPhases = axisConfiguration.getInFlowPhases();
+				if (inPhases != null) {
+					for (Phase p : inPhases) {
+						if ("Security".equals(p.getPhaseName())) {
+							p.addHandler(new BypassMustUnderstand(), p.getHandlerCount());
+						}
+					}
+				}
+			}
+		}
+		// end
 
 		Options options = outMsgCtx.getOptions();
 		// options.setProperty(AddressingConstants.ADD_MUST_UNDERSTAND_TO_ADDRESSING_HEADERS,
@@ -520,6 +546,8 @@ public class Soap implements SoapInterface {
 
 		if (async)
 			operationClient.setCallback(callback);
+
+
 
 		log.info(String.format("******************************** BEFORE SOAP SEND to %s ****************************", endpoint));
         AxisFault soapFault = null;
