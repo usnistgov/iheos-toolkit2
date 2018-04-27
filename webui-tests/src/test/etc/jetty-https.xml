@@ -41,7 +41,7 @@
           </Array>
         </Arg>
         <Set name="host"><Property name="jetty.host" /></Set>
-        <Set name="port"><Property name="https.port" default="443" /></Set>
+        <Set name="port"><Property name="https.port" default="8443" /></Set> <!-- on Ubuntu use ports above 1024 -->
         <Set name="idleTimeout"><Property name="https.timeout" default="30000"/></Set>
         <Set name="soLingerTime"><Property name="https.soLingerTime" default="-1"/></Set>
         <Set name="acceptorPriorityDelta"><Property name="ssl.acceptorPriorityDelta" default="0"/></Set>

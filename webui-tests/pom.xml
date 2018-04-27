@@ -53,19 +53,20 @@
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>2.19.1</version>
                 <configuration>
-                    <!-- debug individual tests -->
-                    <!--<includes>-->
-                        <!--<include>**/SimulatorManagerSpec.java</include>-->
+                    <!-- Note: Tests only support Multiuser_mode=false and Cas_mode=false. May be this can be checked at runtime and throw a graceful error message. -->
+                    <!-- Uncomment below to debug individual tests -->
+                    <includes>
+                        <include>**/SimulatorManagerSpec.java</include>
                         <!--<include>**/RegistryActorSimulatorSpec.java</include>-->
                         <!--<include>**/RepositoryActorSimulatorSpec.java</include>-->
                         <!--<include>**/RecipientActorSimulatorSpec.java</include>-->
                         <!--<include>**/RespondingGatewayActorSimulatorSpec.java</include>-->
-                    <!--</includes>-->
-                    <!-- Run all tests -->
-                    <includes>
-                        <include>**/SimulatorManagerSpec.java</include>
-                        <include>**/*ActorSimulatorSpec.java</include>
                     </includes>
+                    <!-- Uncomment below to Run all tests -->
+                    <!--<includes>-->
+                        <!--<include>**/SimulatorManagerSpec.java</include>-->
+                        <!--<include>**/*ActorSimulatorSpec.java</include>-->
+                    <!--</includes>-->
                     <!-- We should NOT ignore test failures. TestFailureIgnore should be false. -->
                     <testFailureIgnore>false</testFailureIgnore>
                 </configuration>
