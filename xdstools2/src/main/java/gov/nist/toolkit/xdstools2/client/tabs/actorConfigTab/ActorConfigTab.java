@@ -98,11 +98,12 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
 
 		loadGazelleFeedAvailableStatus();
 
+		tabTopPanel.add(new InformationLink("System configuration help", "Managing System Configurations at Connectathon"));
+
 		HTML title = new HTML();
 		title.setHTML("<h2>Configure Systems</h2>");
 		tabTopPanel.add(title);
 
-		tabTopPanel.add(new InformationLink("System configuration help", "Managing System Configurations at Connectathon"));
 
 
 
