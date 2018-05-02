@@ -135,7 +135,7 @@ class RegistryActorSimulatorSpec extends ConformanceActor {
             - Is there a java.net.ConnectException: Connection refused: connect message in the jetty log? Try a different port number range in toolkit.properties.
         2. Check SUT URLs for the two stored query orchestration tests.
          */
-        then:
+        then: 'There should be no orchestration test failures'
         elementList!=null && elementList.size()==0
 
         when:
