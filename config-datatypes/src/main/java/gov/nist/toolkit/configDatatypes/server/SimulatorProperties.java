@@ -366,4 +366,10 @@ public class SimulatorProperties {
     public static final String simProxyResponseTransformations = "SimProxy Response Transformations";
 
     public static final String simulatorGroup = "Simulator Group";
+
+    public static final String replyFile = "Reply File";
+
+    public static final String mimeType = "Mime Type";
+
+    public static final String mtomResponse = "MTOM response";
 }

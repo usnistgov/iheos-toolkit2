@@ -659,7 +659,9 @@ public class DsSimCommon {
                 simCommon.os.write(respStr.getBytes());
             if (simCommon.vc.requiresMtom()) {
                 this.writeAttachments(simCommon.os, er);
-                simCommon.os.write(getTrailer().toString().getBytes());
+                if (multipartOk) {
+                    simCommon.os.write(getTrailer().toString().getBytes());
+                }
             }
             generateLog();
 //            SimulatorConfigElement callbackElement = getSimulatorConfig().getRetrievedDocumentsModel(SimulatorConfig.TRANSACTION_NOTIFICATION_URI);

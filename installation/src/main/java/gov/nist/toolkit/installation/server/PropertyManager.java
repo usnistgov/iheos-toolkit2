@@ -19,6 +19,7 @@ public class PropertyManager {
 	static private final String EXTERNAL_CACHE      = "External_Cache";
 	static private final String USE_ACTORS_FILE     = "Use_Actors_File";
 	static public  final String ENABLE_SAML			= "Enable_SAML";
+	static public  final String BYPASS_SECURITYHDRMU = "Bypass_SecurityHeaderMu";
 	static private final String TESTKIT             = "Testkit";
 	static private final String LISTENER_PORT_RANGE = "Listener_Port_Range";
 	static private final String AUTO_INIT_CONFORMANCE_TOOL = "Auto_init_conformance_tool";
@@ -185,13 +186,22 @@ public class PropertyManager {
 		return (String) toolkitProperties.get(GAZELLE_CONFIG_URL);
 	}
 
+	public boolean isBypassSecurityHeaderMuOnResponse() {
+		loadProperties();
+		String use = (String) toolkitProperties.get(BYPASS_SECURITYHDRMU);
+		if (use == null)
+			return false;
+		use = use.trim().toLowerCase();
+		return "true".compareToIgnoreCase(use) == 0;
+	}
+
 	public boolean isEnableSaml() {
 		loadProperties();
 		String use = (String) toolkitProperties.get(ENABLE_SAML);
 		if (use == null)
 			return true;
 		use = use.trim().toLowerCase();
-		return "true".compareTo(use) == 0;
+		return "true".compareToIgnoreCase(use) == 0;
 	}
 
 	public String getExternalCache() {

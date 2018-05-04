@@ -32,5 +32,3 @@ bash $BASEDIR/genapidoc.sh xdstools2/target/$WARNAME/javadoc
 
 cd xdstools2
 mvn -o site
-
-

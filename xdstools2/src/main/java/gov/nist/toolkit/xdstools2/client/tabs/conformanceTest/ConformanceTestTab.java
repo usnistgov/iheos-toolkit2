@@ -1030,7 +1030,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 				stsTestInstance.setSection("samlassertion-issue");
 				SiteSpec stsSpec =  new SiteSpec("GazelleSts", TestSession.DEFAULT_TEST_SESSION);
 				Map<String, String> params = new HashMap<>();
-				String xuaUsername = "Xuagood";
+				String xuaUsername = "valid";
 				if (orchInit.isXuaOption()) {
 					xuaUsername = getXuaUsernameFromTestplan(testInstance);
 				}

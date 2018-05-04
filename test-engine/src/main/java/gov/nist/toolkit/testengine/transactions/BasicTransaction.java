@@ -75,6 +75,7 @@ public abstract class BasicTransaction  {
 	protected boolean soap_1_2 = true;
 	protected boolean async = false;
 	protected boolean isStableOrODDE = false;
+	protected boolean useSequoiaHeader;
 	/**
 	HttpTransaction uses a separate Body.txt file. In this case we need to tell not run reportManagerPreRun since the subclass will run the parameter replacement on its own.
 	 */
@@ -96,6 +97,7 @@ public abstract class BasicTransaction  {
 
 	List<OMElement> additionalHeaders = null;
 	List<OMElement> wsSecHeaders = null;
+	OMElement sequoiaHeader;
 	ReportManager reportManager = null;
 	UseReportManager useReportManager = null;
 	TestConfig testConfig;
@@ -1146,6 +1148,9 @@ public abstract class BasicTransaction  {
 			}
 		} else if (part_name.equals("InteractionSequence")) {
 				// Nothing to parse here at the moment.
+		} else if (part_name.equals("UseSequoiaHeader")) {
+		    useSequoiaHeader = true;
+			testLog.add_simple_element(this.instruction_output, "UseSequoiaHeader");
 		} else {
 			throw new XdsInternalException("BasicTransaction: Don't understand instruction " + part_name);
 		}
@@ -1305,11 +1310,18 @@ public abstract class BasicTransaction  {
 	}
 
 	public OMElement getSecurityEl(String assertionStr) throws XdsInternalException  {
-		String wsse = "<wsse:Security soapenv:mustUnderstand=\"true\" xmlns:soapenv=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:wsse=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\">"
-		+ assertionStr
-		+ "</wsse:Security>";
-
-		return Util.parse_xml(wsse);
+		if (useSequoiaHeader) {
+			try {
+				return SequoiaHeaderBuilder.buildSequoiaSecurityHeader(endpoint, assertionStr, transactionSettings);
+			} catch (Exception e) {
+				throw new XdsInternalException("Cannot build Sequoia security header: " + e.getMessage(), e);
+			}
+		} else /* normal STS assertion */ {
+			String wsse = "<wsse:Security soapenv:mustUnderstand=\"true\" xmlns:soapenv=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:wsse=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\">"
+			+ assertionStr
+			+ "</wsse:Security>";
+			return Util.parse_xml(wsse);
+		}
 	}
 
 	protected void soapCall(OMElement requestBody) throws Exception {

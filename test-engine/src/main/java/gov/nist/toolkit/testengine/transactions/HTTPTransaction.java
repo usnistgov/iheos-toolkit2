@@ -15,8 +15,10 @@ import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.xpath.AXIOMXPath;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpPost;
@@ -33,6 +35,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,11 +72,14 @@ import java.util.Map;
  * processed in the usual way.</ol>
  */
 public class HTTPTransaction extends BasicTransaction {
+    private static final String DEFAULT_STS_USERNAME = "valid";
     Map<String, List<String>> headers = new HashMap<>();
     File file;
     String transType;
     String stsQuery;
     boolean hasLinkage;
+    private static final String DEFAULT_PASS = "connectathon";
+    private static final String BASIC = "Basic ";
 
     public HTTPTransaction(StepContext s_ctx, OMElement instruction, OMElement instruction_output) {
         super(s_ctx, instruction, instruction_output);
@@ -103,13 +109,14 @@ public class HTTPTransaction extends BasicTransaction {
         * value) must match one of the transaction type names of a 
         * TransactionType value.
         */
+        System.out.println("HTTPTransaction::run");
         if (endpoint == null || endpoint.equals("")) {
             if (transType == null)
                 throw new XdsInternalException("HttpTransaction - type is null");
             TransactionType ttype = TransactionType.find(transType);
             if (ttype == null)
                 throw new XdsInternalException("HttpTransaction - transaction type " + transType + " does not map to a defined transaction type");
-
+            System.out.println("HTTPTransaction::run");
             parseEndpoint(ttype);
 
             if (endpoint == null || endpoint.equals(""))
@@ -125,6 +132,9 @@ public class HTTPTransaction extends BasicTransaction {
                 for (String value : values) {
                     httpPost.addHeader(name, value);
                 }
+            }
+            if (TestSupportTransactions.SecureTokenService.equals(transType)){
+                httpPost.addHeader(HttpHeaders.AUTHORIZATION, getBasicAuthenticator());
             }
             testLog.add_name_value(instruction_output, "OutHeader", headersToString());
 
@@ -358,5 +368,20 @@ public class HTTPTransaction extends BasicTransaction {
 
     public void setHasLinkage(boolean hasLinkage) {
         this.hasLinkage = hasLinkage;
+    }
+
+    private String getBasicAuthenticator() {
+        String username = null;
+        if (testConfig != null && testConfig.gazelleXuaUsername != null) {
+            username = testConfig.gazelleXuaUsername;
+        } else {
+            username = DEFAULT_STS_USERNAME;
+        }
+        StringBuilder builder = new StringBuilder(username);
+        builder.append(':');
+        builder.append(DEFAULT_PASS);
+        byte[] authenticator = builder.toString().getBytes(Charset.forName("UTF-8"));
+        byte[] b64Authenticator = Base64.encodeBase64(authenticator);
+        return BASIC + new String(b64Authenticator, Charset.forName("UTF-8"));
     }
 }
