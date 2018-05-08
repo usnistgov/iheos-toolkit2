@@ -160,6 +160,14 @@ public class SimServlet  extends HttpServlet {
 				handleSiteDownload(response, parts);
 				return;
 			}
+			in = uri.indexOf("/codes/");
+			logger.info("codes in is " + in);
+			if (in != -1) {
+				logger.info("working on codes");
+				parts = uri.substring(in + "/codes/".length()).split("\\/");
+				handleCodesDownload(response, parts);
+				return;
+			}
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		} catch (Exception e) {
@@ -339,6 +347,42 @@ public class SimServlet  extends HttpServlet {
 			response.getOutputStream().print(siteString);
 			response.getOutputStream().close();
 			response.addHeader("Content-Disposition", "attachment; filename=" + site.getName() + ".xml");
+		} catch (Exception e) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			return;
+		}
+		response.setStatus(HttpServletResponse.SC_OK);
+	}
+
+	// handle codes.xml download
+	void handleCodesDownload(HttpServletResponse response, String[] parts) {
+		String envName;
+
+		try {
+			envName       = parts[0];
+		} catch (Exception e) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			return;
+		}
+		logger.debug("codes download of " + envName);
+
+		if (envName == null || envName.trim().equals("")) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			return;
+		}
+
+		SimDb db;
+		try {
+			File codesFile = new File(Installation.instance().environmentFile(envName), "codes.xml");
+			if (!codesFile.exists()) {
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				return;
+			}
+			String codesContent = Io.stringFromFile(codesFile);
+			response.setContentType("text/xml");
+			response.getOutputStream().print(codesContent);
+			response.getOutputStream().close();
+			response.addHeader("Content-Disposition", "attachment; filename=" + "codes.xml");
 		} catch (Exception e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
