@@ -3,6 +3,7 @@ package gov.nist.toolkit.validatorsSoapMessage.message;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
+import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.StepResult;
@@ -79,7 +80,8 @@ public class StsSamlValidator extends AbstractMessageValidator {
                         String query = "samlassertion-validate";
 
                         XdsTestServiceManager xdsTestServiceManager = new XdsTestServiceManager(null);
-                        List<Result> results = xdsTestServiceManager.querySts("GazelleSts", query, params, false, TestSession.DEFAULT_TEST_SESSION);
+                        String stsActor = Installation.instance().propertyServiceManager().getStsActorName();
+                        List<Result> results = xdsTestServiceManager.querySts(stsActor, query, params, false, TestSession.DEFAULT_TEST_SESSION);
 
                         if (results.size() == 1) {
                             if (!results.get(0).passed()) {

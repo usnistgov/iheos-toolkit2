@@ -1736,7 +1736,8 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         XdsTestServiceManager xtsm = session().getXdsTestServiceManager();
         String step = "issue";
         String query = request.getTestInstance().getSection();
-        List<Result> results = xtsm.querySts("GazelleSts",query,request.getParams(), false, request.getTestSession());
+        String stsActor = Installation.instance().propertyServiceManager().getStsActorName();
+        List<Result> results = xtsm.querySts(stsActor,query,request.getParams(), false, request.getTestSession());
 
         if (results!=null) {
             if (results.size() == 1) {

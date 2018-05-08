@@ -127,14 +127,15 @@ public class HTTPTransaction extends BasicTransaction {
             CloseableHttpClient httpClient = HttpClients.createDefault();
             HttpPost httpPost = new HttpPost(endpoint);
 
+            if (TestSupportTransactions.SecureTokenService.equals(transType)){
+                addHeader(headers,HttpHeaders.AUTHORIZATION, getBasicAuthenticator());
+            }
+
             for (String name : headers.keySet()) {
                 List<String> values = headers.get(name);
                 for (String value : values) {
                     httpPost.addHeader(name, value);
                 }
-            }
-            if (TestSupportTransactions.SecureTokenService.equals(transType)){
-                httpPost.addHeader(HttpHeaders.AUTHORIZATION, getBasicAuthenticator());
             }
             testLog.add_name_value(instruction_output, "OutHeader", headersToString());
 

@@ -1,4 +1,4 @@
-<site name="GazelleSts">
+<site name="GazelleStsPicketLink">
 	<transaction name="sts" secure="1">https://gazelle.ihe.net/picketlink-sts</transaction>
 </site>
 
