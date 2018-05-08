@@ -276,6 +276,14 @@ public class Installation {
         return f;
     }
 
+    public File testSessionMgmtDir() {
+        return new File(Installation.instance().externalCache(), "TestSessionMgmt");
+    }
+
+    public File testSessionMgmtDir(TestSession testSession) {
+        return new File(new File(Installation.instance().externalCache(), "TestSessionMgmt"), testSession.getValue());
+    }
+
     public File simDbFile() {
         return new File(externalCache(), "simdb");
     }

@@ -32,6 +32,7 @@ class TestSessionFactory {
         File testLogFile = Installation.instance().testLogCache(testSession)
         testLogFile.mkdirs()
         Installation.instance().actorsDir(testSession).mkdirs()
+        Installation.instance().testSessionMgmtDir(testSession).mkdirs()
     }
 
     /*

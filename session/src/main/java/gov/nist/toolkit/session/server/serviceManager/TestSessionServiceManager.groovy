@@ -14,6 +14,7 @@ class TestSessionServiceManager {
     public static final TestSessionServiceManager INSTANCE = new TestSessionServiceManager();
     private static final Logger logger = Logger.getLogger(TestSessionServiceManager.class);
 
+    // create with a nonce name
     TestSession create() {
         TestSession testSession;
 
@@ -37,11 +38,8 @@ class TestSessionServiceManager {
 
     boolean create(TestSession testSession) throws Exception  {
         String name = testSession.getValue();
-        File cache;
 
         try {
-            cache = Installation.instance().propertyServiceManager().getTestLogCache();
-
             if (name == null || name.equals(""))
                 throw new Exception("Test Session Name cannot create test session with no name");
             if (name.contains("__"))
@@ -56,14 +54,15 @@ class TestSessionServiceManager {
             logger.error("addMesaTestSession", e);
             throw new Exception(e.getMessage());
         }
-        File dir = new File(cache.toString() + File.separator + name);
-        dir.mkdir();
+        TestSessionFactory.initialize(testSession)
         return true;
     }
 
     List<String> getNames()  {
-        List<String> a = (inSimDb() + inActors() + inTestLogs()) as List
-        return a
+//        Installation.instance().testSessionMgmtDir().listFiles().findAll { File f ->
+//            f.isDirectory() && !f.name.startsWith('.')
+//        }.collect { File f -> f.name } as List
+        (inSimDb() + inActors() + inTestLogs() + inMgmt()) as List
 //        Installation.instance().getTestSessions().collect { TestSession ts -> ts.value}
     }
 
@@ -94,6 +93,12 @@ class TestSessionServiceManager {
         }.collect { File f -> f.name } as Set
     }
 
+    Set<String> inMgmt() {
+        Installation.instance().testSessionMgmtDir().listFiles().findAll { File f ->
+            f.isDirectory() && !f.name.startsWith('.')
+        }.collect { File f -> f.name } as Set
+    }
+
 
     boolean delete(TestSession testSession) throws Exception  {
         File cache;
@@ -118,6 +123,9 @@ class TestSessionServiceManager {
         Io.delete(SimDb.getSimDbFile(testSession));
 
         Io.delete(Installation.instance().actorsDir(testSession));
+
+        Io.delete(Installation.instance().testSessionMgmtDir(testSession));
+
         return true;
     }
 
