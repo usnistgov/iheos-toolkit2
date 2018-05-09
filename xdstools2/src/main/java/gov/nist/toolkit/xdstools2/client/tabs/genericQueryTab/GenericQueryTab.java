@@ -364,7 +364,7 @@ public abstract class GenericQueryTab  extends ToolWindow implements StatusDispl
                     if (sites==null || (sites!=null && sites.size()==0)) {
                         samlListBox.setSelectedIndex(0);
                         samlListBox.setEnabled(false);
-                        fp.add(new HTML("<span class=\"serverResponseLabelError\">GazelleSts site is not configured. Please check External Cache Actor site configuration.</span>"));
+                        fp.add(new HTML("<span class=\"serverResponseLabelError\">GazelleSts site is not configured. Please check the Sts_ActorName property value in toolkit.properties and its actor file in External Cache.</span>"));
                     }
                     fp.setVisible(true);
                     samlLabel.setVisible(true);
@@ -706,9 +706,18 @@ public abstract class GenericQueryTab  extends ToolWindow implements StatusDispl
 
                         String selectedValue = samlListBox.getSelectedValue();
                         if (samlEnabled && !"NoSaml".equals(selectedValue)) {
-                            TestInstance testInstance = new TestInstance("GazelleSts");
+                            Map<String,String> tkPropMap = ClientUtils.INSTANCE.getTkPropMap();
+                            String stsActorName = null;
+                            String stsTpName = null;
+                            if (tkPropMap!=null) {
+                                stsActorName = tkPropMap.get("Sts_ActorName");
+                                stsTpName = tkPropMap.get("Sts_TpName");
+                            } else {
+                                new PopupMessage("Error reading tkPropMap cache.");
+                            }
+                            TestInstance testInstance = new TestInstance(stsTpName);
                             testInstance.setSection("samlassertion-issue");
-                            SiteSpec stsSpec =  new SiteSpec(new TestSession("GazelleSts"));
+                            SiteSpec stsSpec =  new SiteSpec(new TestSession(stsActorName));
                             Map<String, String> params = new HashMap<>();
                             params.put("$saml-username$",selectedValue);
                             new GetStsSamlAssertionCommand(){

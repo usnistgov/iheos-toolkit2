@@ -1023,12 +1023,21 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 		if (orchInit.isSaml()) {
 			if (testIterator == null /* Signifies individual test runner */) {
+				Map<String,String> tkPropMap = ClientUtils.INSTANCE.getTkPropMap();
+				String stsActorName = null;
+				String stsTpName = null;
+				if (tkPropMap!=null) {
+					stsActorName = tkPropMap.get("Sts_ActorName");
+					stsTpName = tkPropMap.get("Sts_TpName");
+				} else {
+					new PopupMessage("Error reading tkPropMap cache.");
+				}
 				// STS SAML assertion
 				// This has to be here because we need to retrieve the assertion just in time before the test executes. Any other way will be confusing to debug and more importantly the assertion will not be fresh.
 				// Interface can be refactored to support mulitple run methods such as runTest[WithSamlOption] and runTest.
-				TestInstance stsTestInstance = new TestInstance("GazelleSts", TestSession.DEFAULT_TEST_SESSION);
+				TestInstance stsTestInstance = new TestInstance(stsTpName, TestSession.DEFAULT_TEST_SESSION);
 				stsTestInstance.setSection("samlassertion-issue");
-				SiteSpec stsSpec =  new SiteSpec("GazelleSts", TestSession.DEFAULT_TEST_SESSION);
+				SiteSpec stsSpec =  new SiteSpec(stsActorName, TestSession.DEFAULT_TEST_SESSION);
 				Map<String, String> params = new HashMap<>();
 				String xuaUsername = "valid";
 				if (orchInit.isXuaOption()) {

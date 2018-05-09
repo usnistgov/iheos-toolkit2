@@ -1,7 +1,6 @@
 package gov.nist.toolkit.installation.server;
 
 import gov.nist.toolkit.utilities.io.Io;
-import gov.nist.toolkit.xdsexception.client.TkActorNotFoundException;
 import gov.nist.toolkit.xdsexception.client.TkNotFoundException;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
@@ -25,7 +24,8 @@ public class PropertyManager {
 	/**
 	 * Same name is used for both the sts actor and its related sts test plan
 	 */
-	static public  final String STS_ACTOR_NAME_AND_TP_NAME = "Sts_ActorName_and_TpName";
+	static public  final String STS_ACTOR_NAME = "Sts_ActorName";
+	static public  final String STS_TESTPLAN_NAME = "Sts_TpName";
 	static private final String TESTKIT             = "Testkit";
 	static private final String LISTENER_PORT_RANGE = "Listener_Port_Range";
 	static private final String AUTO_INIT_CONFORMANCE_TOOL = "Auto_init_conformance_tool";
@@ -194,15 +194,20 @@ public class PropertyManager {
 
 	public String getStsActorName() throws TkNotFoundException {
 		loadProperties();
-		String value = (String) toolkitProperties.get(STS_ACTOR_NAME_AND_TP_NAME);
+		String value = (String) toolkitProperties.get(STS_ACTOR_NAME);
 		if (value!=null && !"".equals(value)) {
 			return value;
 		}
-		throw new TkNotFoundException(STS_ACTOR_NAME_AND_TP_NAME + " is not configured.", "toolkit.properties");
+		throw new TkNotFoundException(STS_ACTOR_NAME + " is not configured.", "toolkit.properties");
 	}
 
 	public String getStsTpName() throws TkNotFoundException {
-		return getStsActorName();
+		loadProperties();
+		String value = (String) toolkitProperties.get(STS_TESTPLAN_NAME);
+		if (value!=null && !"".equals(value)) {
+			return value;
+		}
+		throw new TkNotFoundException(STS_TESTPLAN_NAME + " is not configured.", "toolkit.properties");
 	}
 
 	public boolean isBypassSecurityHeaderMuOnResponse() {

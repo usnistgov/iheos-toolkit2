@@ -28,6 +28,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.jaxen.JaxenException;
+import org.opensaml.xml.signature.P;
 
 import javax.xml.namespace.QName;
 import java.io.ByteArrayInputStream;
@@ -372,11 +373,11 @@ public class HTTPTransaction extends BasicTransaction {
     }
 
     private String getBasicAuthenticator() {
-        String username = null;
-        if (testConfig != null && testConfig.gazelleXuaUsername != null) {
-            username = testConfig.gazelleXuaUsername;
-        } else {
-            username = DEFAULT_STS_USERNAME;
+        String username =  DEFAULT_STS_USERNAME;
+        if (testConfig != null) {
+            testConfig.gazelleXuaUsername = transactionSettings.siteSpec.getGazelleXuaUsername();
+            if (testConfig.gazelleXuaUsername != null)
+                username = testConfig.gazelleXuaUsername;
         }
         StringBuilder builder = new StringBuilder(username);
         builder.append(':');

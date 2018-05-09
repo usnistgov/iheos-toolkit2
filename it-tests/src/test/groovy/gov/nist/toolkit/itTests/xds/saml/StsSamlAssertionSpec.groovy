@@ -85,6 +85,7 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
 
     def 'Make sure the GazelleSts site can be retrieved from the Actor file'() {
         when:
+        // Note: To find actors, this getAllSites uses the site=name attribute inside the xml file to, but not through the xml file name itself.
         Collection<Site> sites = new SimCache().getAllSites(TestSession.DEFAULT_TEST_SESSION)
 
         for (Site site : sites) {
@@ -122,7 +123,7 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
         sections.add("samlassertion-issue")
         Map<String, String> params = new HashMap<>()
 //      params.put('$saml-username$',"Xuagood")
-        params.put('$saml-username$',"Valid")
+        params.put('$saml-username$',"valid")
         boolean stopOnFirstError = true
 
         and: 'Run samlassertion-issue'

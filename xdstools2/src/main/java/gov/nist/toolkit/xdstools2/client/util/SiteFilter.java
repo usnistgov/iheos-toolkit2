@@ -22,9 +22,10 @@ public class SiteFilter {
     private TransactionOfferings transactionOfferings;
     private static List<String> excludedSites = new ArrayList<>();
 
-    static {
-        excludedSites.add("GazelleSts");
-    }
+    // Probably no longer need this with the introduction of Site#determineActorTypeByTransactionsInSite
+//    static {
+//        excludedSites.add("GazelleSts");
+//    }
 
     public SiteFilter(TransactionOfferings transactionOfferings) {
         this.transactionOfferings = transactionOfferings;
