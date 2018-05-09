@@ -937,7 +937,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		if (parts.length>1) {
 			return parts[parts.length-1];
 		} else {
-			new PopupMessage("Test Id needs be suffixed with '_Xuausername': TestId_Xuausername.");
+			new PopupMessage("Test Id needs be suffixed with '_username' like so: testId_username.");
 			return null;
 		}
 	}
