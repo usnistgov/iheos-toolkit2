@@ -165,6 +165,7 @@ public class SimServlet  extends HttpServlet {
 			if (in != -1) {
 				logger.info("working on codes");
 				parts = uri.substring(in + "/codes/".length()).split("\\/");
+				if (parts.length < 1) return;
 				handleCodesDownload(response, parts);
 				return;
 			}
@@ -355,7 +356,7 @@ public class SimServlet  extends HttpServlet {
 	}
 
 	// handle codes.xml download
-	void handleCodesDownload(HttpServletResponse response, String[] parts) {
+	private void handleCodesDownload(HttpServletResponse response, String[] parts) {
 		String envName;
 
 		try {
@@ -371,7 +372,6 @@ public class SimServlet  extends HttpServlet {
 			return;
 		}
 
-		SimDb db;
 		try {
 			File codesFile = new File(Installation.instance().environmentFile(envName), "codes.xml");
 			if (!codesFile.exists()) {

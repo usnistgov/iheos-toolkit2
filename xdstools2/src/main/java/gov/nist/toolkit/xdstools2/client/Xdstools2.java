@@ -27,6 +27,7 @@ import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorT
 import gov.nist.toolkit.xdstools2.client.util.ClientFactory;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.util.TabWatcher;
+import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.InitializationResponse;
 
@@ -56,6 +57,7 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 	public static String wikiBaseUrl = null;
 	public boolean multiUserModeEnabled;
 	public boolean casModeEnabled;
+	public static String servletContextName;
 
 	private static TkProps props = new TkProps();
 
@@ -124,11 +126,23 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 					ClientUtils.INSTANCE.getTestSessionManager().setCurrentTestSession(defaultTestSession);
 				defaultTestSessionisProtected = "true".equalsIgnoreCase(tkPropMap.get("Default_Test_Session_is_Protected"));
 
+				menuPanel.setSpacing(10);
+
+				HorizontalFlowPanel envPanel = new HorizontalFlowPanel();
 				// No environment selector for CAS mode, but allow for single user mode and multi user mode
 				if (!casModeEnabled) {
-					menuPanel.add(environmentManager);
-					menuPanel.setSpacing(10);
+					envPanel.add(environmentManager);
 				}
+
+				Anchor anchor = new Anchor("Codes");
+				anchor.addClickHandler(new ClickHandler() {
+					@Override
+					public void onClick(ClickEvent clickEvent) {
+						Window.open(Xdstools2.servletContextName + "/sim/codes/" + environmentManager.getSelectedEnvironment(), "_blank","");
+					}
+				});
+				envPanel.add(anchor);
+				menuPanel.add(envPanel);
 
 				testSessionSelector = new TestSessionSelector(getTestSessionManager().getTestSessions(), getTestSessionManager().getCurrentTestSession());
 				testSessionSelector.setVisibility(false);
@@ -281,6 +295,7 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 				getTestSessionManager().setTestSessions(var1.getTestSessions());
 				toolkitBaseUrl = var1.getToolkitBaseUrl();
 				wikiBaseUrl = var1.getWikiBaseUrl();
+				servletContextName = var1.getServletContextName();
 				run2();  // cannot be run until this completes
 			}
 
