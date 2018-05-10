@@ -30,7 +30,7 @@ fi
 
 mvn clean install -P Bill -D skipTests
 
-sh pre-release.sh
+bash pre-release.sh
 
-sh package-release.sh $PROPERTIESNAME
+bash package-release.sh $PROPERTIESNAME
 
