@@ -1,0 +1,16 @@
+
+<TestPlan>
+  <Test>ACP-RD-I-0000.0/retrieve</Test>
+  <TestStep id="retrieve">
+  <ExpectedStatus>Success</ExpectedStatus>
+  <XCRTransaction>
+	<!-- begin Sequoia -->
+	<UseSequoiaHeader/>
+    <ExpectedMimeType>text/plain</ExpectedMimeType>
+    <ReferenceDocument uid="$docuid$">../../testdata/12318/my_document.txt</ReferenceDocument>
+    <MetadataFile>retrieve.xml</MetadataFile>
+  <!-- end Sequoia -->
+  </XCRTransaction>
+</TestStep>
+
+</TestPlan>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>ACP-QD-RD-R-0000.0-2011od/ACP-RD-R-0000.0</Test>
+  <TestStep id="RD-R-0000.0">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <XCRTransaction>
+	<!-- begin Sequoia -->
+	<UseSequoiaHeader/>
+      <UseReport test="ACP-QD-RD-R-0000.0-2011od" section="ACP-QD-R-0000.0" reportName="$doc_uid_1$" step="ACP-QD-R-0000.0" useAs="$docuid1$"/>
+      <UseReport test="ACP-QD-RD-R-0000.0-2011od" section="ACP-QD-R-0000.0" reportName="$requestHome$" step="ACP-QD-R-0000.0" useAs="$home$"/>
+      <UseReport test="ACP-QD-RD-R-0000.0-2011od" section="ACP-QD-R-0000.0" reportName="$repositoryUniqueId$" step="ACP-QD-R-0000.0" useAs="$repositoryuid$"/>
+      <ExpectedMimeType>text/plain</ExpectedMimeType>
+      <ReferenceDocument uid="$docuid1$">../../references/D-000000010.1.txt</ReferenceDocument>
+      <MetadataFile>query.xml</MetadataFile>
+      <Assertions>
+        <DataRef file="THIS" as="output"/>
+        <Assert id="TwoDocuments">
+              		count(//XCRTransaction/Result[1]/*[local-name()='RetrieveDocumentSetResponse']/*[local-name()='DocumentResponse']) = "1"
+         		</Assert>
+      </Assertions>
+    <!-- end Sequoia -->
+  </XCRTransaction>
+  </TestStep>
+</TestPlan>

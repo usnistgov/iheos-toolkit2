@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>ACP-QD-I-0000.0/validate</Test>
+    <TestStep id="finddocs">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <Rule>
+            <Transaction>QD</Transaction>
+            <SQ>Test FindDocuments XGC</SQ>
+            <Assertion>LeafClass return</Assertion>
+        </Rule>
+        <NullTransaction>
+        </NullTransaction>
+    </TestStep>
+</TestPlan>

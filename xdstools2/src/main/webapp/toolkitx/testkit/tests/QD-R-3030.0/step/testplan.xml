@@ -1,0 +1,34 @@
+
+<TestPlan>
+  <Test>QD-R-3030.0/step</Test>
+  <TestStep id="step">
+  <ExpectedStatus>Success</ExpectedStatus>
+  <Rule>
+    <Transaction>XGQ</Transaction>
+    <SQ>Test basic QD</SQ>
+    <Assertion>LeafClass return</Assertion>
+  </Rule>
+  <XCQTransaction>
+	<!-- begin Sequoia -->
+	<UseSequoiaHeader/>
+    <MetadataFile>query.xml</MetadataFile>
+    <Assertions>
+      <DataRef file="THIS" as="output"/>
+      <Assert id="ExtrinsicObjectCount"> 
+                    count(//XCQTransaction[@step="step"]/Result/*[local-name(.)='AdhocQueryResponse']/*[local-name(.)='RegistryObjectList']/*[local-name(.)='ExtrinsicObject']) = 1
+                </Assert>
+      <Assert id="ObjectDocumentUniqueId"> 
+        //XCQTransaction[1]/Result[1]/*[namespace-uri()='urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0' and local-name()='AdhocQueryResponse'][1]/*[namespace-uri()='urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0' and local-name()='RegistryObjectList'][1]/*[namespace-uri()='urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0' and local-name()='ExtrinsicObject'][1]/*[namespace-uri()='urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0' and local-name()='ExtrinsicObject']/*[namespace-uri()='urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0' and local-name()='ExternalIdentifier' and @identificationScheme = 'urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab']/@value = 'D-000000200.10'
+      </Assert>
+      <Assert id="ObjectAuthorPerson"> 
+ //XCQTransaction[1]/Result[1]/*[namespace-uri()='urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0' and local-name()='AdhocQueryResponse'][1]/*[namespace-uri()='urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0' and local-name()='RegistryObjectList'][1]/*[namespace-uri()='urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0' and local-name()='ExtrinsicObject'][1]/*[namespace-uri()='urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0' and local-name()='Classification']/*[namespace-uri()='urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0' and local-name()='Slot' and @name='authorPerson']/*[namespace-uri()='urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0' and local-name()='ValueList']/*[namespace-uri()='urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0' and local-name()='Value'][1]/text() = '^Huntér^Michael^^^'
+      </Assert>
+	<Assert id="ObjectStatus">
+//XCQTransaction[1]/Result[1]/*[namespace-uri()='urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0' and local-name()='AdhocQueryResponse'][1]/*[namespace-uri()='urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0' and local-name()='RegistryObjectList'][1]/*[namespace-uri()='urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0' and local-name()='ExtrinsicObject'][1]/@status = 'urn:oasis:names:tc:ebxml-regrep:StatusType:Approved'
+	</Assert>
+    </Assertions>
+  <!-- end Sequoia -->
+  </XCQTransaction>
+</TestStep>
+
+</TestPlan>
