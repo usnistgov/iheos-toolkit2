@@ -4,6 +4,7 @@ import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.installation.server.TestSessionFactory
 import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.session.server.Session
+import gov.nist.toolkit.installation.server.ExpirationPolicy
 import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.utilities.io.Io
 import groovy.transform.TypeChecked
@@ -15,7 +16,7 @@ class TestSessionServiceManager {
     private static final Logger logger = Logger.getLogger(TestSessionServiceManager.class);
 
     // create with a nonce name
-    TestSession create() {
+    static TestSession create() {
         TestSession testSession;
 
         while (true) {
@@ -27,16 +28,16 @@ class TestSessionServiceManager {
         }
     }
 
-    boolean exists(TestSession testSession)  {
+    static boolean exists(TestSession testSession)  {
         return exists(testSession.getValue());
     }
 
-    boolean exists(String testSessionName)  {
+    static boolean exists(String testSessionName)  {
         if (testSessionName == null) return false;
         return getNames().contains(testSessionName);
     }
 
-    boolean create(TestSession testSession) throws Exception  {
+    static boolean create(TestSession testSession) throws Exception  {
         String name = testSession.getValue();
 
         try {
@@ -55,52 +56,18 @@ class TestSessionServiceManager {
             throw new Exception(e.getMessage());
         }
         TestSessionFactory.initialize(testSession)
-        return true;
-    }
 
-    List<String> getNames()  {
-//        Installation.instance().testSessionMgmtDir().listFiles().findAll { File f ->
-//            f.isDirectory() && !f.name.startsWith('.')
-//        }.collect { File f -> f.name } as List
-        (inSimDb() + inActors() + inTestLogs() + inMgmt()) as List
-//        Installation.instance().getTestSessions().collect { TestSession ts -> ts.value}
-    }
+        ExpirationPolicy policy = (testSession == TestSession.DEFAULT_TEST_SESSION) ? ExpirationPolicy.NEVER : ExpirationPolicy.NO_ACTIVITY_FOR_30_DAYS
+        TestSessionFactory.setExpirationPolicy(testSession, policy)
 
-    boolean isConsistant() {
         return true
-//        Set<String> sims = inSimDb()
-//        Set<String> actors = inActors()
-//        Set<String> testLogs = inTestLogs()
-//
-//        sims == actors && actors == testLogs
     }
 
-    Set<String> inSimDb() {
-        Installation.instance().simDbFile().listFiles().findAll { File f ->
-            f.isDirectory() && !f.name.startsWith('.')
-        }.collect { File f -> f.name } as Set
+    static List<String> getNames()  {
+        TestSessionFactory.getNames()
     }
 
-    Set<String> inActors() {
-        Installation.instance().actorsDir().listFiles().findAll { File f ->
-            f.isDirectory() && !f.name.startsWith('.')
-        }.collect { File f -> f.name } as Set
-    }
-
-    Set<String> inTestLogs() {
-        Installation.instance().testLogCache().listFiles().findAll { File f ->
-            f.isDirectory() && !f.name.startsWith('.')
-        }.collect { File f -> f.name } as Set
-    }
-
-    Set<String> inMgmt() {
-        Installation.instance().testSessionMgmtDir().listFiles().findAll { File f ->
-            f.isDirectory() && !f.name.startsWith('.')
-        }.collect { File f -> f.name } as Set
-    }
-
-
-    boolean delete(TestSession testSession) throws Exception  {
+    static boolean delete(TestSession testSession) throws Exception  {
         File cache;
         if (testSession == Installation.instance().getDefaultTestSession())
             throw new Exception("Cannot delete default Test Session")
@@ -129,14 +96,13 @@ class TestSessionServiceManager {
         return true;
     }
 
-    void setTestSession(Session session, TestSession testSession) {
+    static void setTestSession(Session session, TestSession testSession) {
         session.setTestSession(testSession);
     }
 
-    TestSession getTestSession(Session session) {
+    static TestSession getTestSession(Session session) {
         if (session == null) return null;
         return session.getTestSession();
     }
-
 
 }

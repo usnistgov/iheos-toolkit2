@@ -124,8 +124,6 @@ class ToolkitSpecification extends Specification {
                 server = null
             }
             ListenerFactory.terminateAll()
-
-            assert TestSessionServiceManager.INSTANCE.isConsistant()
         }
     }
 

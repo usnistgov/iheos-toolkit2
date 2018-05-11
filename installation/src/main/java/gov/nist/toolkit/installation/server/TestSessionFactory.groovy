@@ -33,7 +33,86 @@ class TestSessionFactory {
         testLogFile.mkdirs()
         Installation.instance().actorsDir(testSession).mkdirs()
         Installation.instance().testSessionMgmtDir(testSession).mkdirs()
+        // set default properties for any test sessions that are not
+        // so initialized
+        for (String testSessionName : getNames()) {
+            TestSession testSession2 = new TestSession(testSessionName)
+            Installation.instance().testSessionMgmtDir(testSession2).mkdirs()
+            getPolicyProperties(testSession2)
+        }
     }
+
+    static List<String> getNames()  {
+        (inSimDb() + inActors() + inTestLogs() + inMgmt()) as List
+    }
+
+    static Set<String> inSimDb() {
+        Installation.instance().simDbFile().listFiles().findAll { File f ->
+            f.isDirectory() && !f.name.startsWith('.')
+        }.collect { File f -> f.name } as Set
+    }
+
+    static Set<String> inActors() {
+        Installation.instance().actorsDir().listFiles().findAll { File f ->
+            f.isDirectory() && !f.name.startsWith('.')
+        }.collect { File f -> f.name } as Set
+    }
+
+    static Set<String> inTestLogs() {
+        Installation.instance().testLogCache().listFiles().findAll { File f ->
+            f.isDirectory() && !f.name.startsWith('.')
+        }.collect { File f -> f.name } as Set
+    }
+
+    static Set<String> inMgmt() {
+        Installation.instance().testSessionMgmtDir().listFiles().findAll { File f ->
+            f.isDirectory() && !f.name.startsWith('.')
+        }.collect { File f -> f.name } as Set
+    }
+
+    /*
+      Test Session Policies
+     */
+
+    static private final String ExpirationPolicyLabel = 'ExpirationPolicy'
+
+    static private Properties defaultProperties = new Properties()
+    static private Properties nonDefaultProperties = new Properties()
+    static {
+        defaultProperties.setProperty(ExpirationPolicyLabel, ExpirationPolicy.NEVER.toString())
+        nonDefaultProperties.setProperty(ExpirationPolicyLabel, ExpirationPolicy.NO_ACTIVITY_FOR_30_DAYS.toString())
+    }
+
+    static File policyPropertiesFile(TestSession testSession) {
+        new File(Installation.instance().testSessionMgmtDir(testSession), "policy.properties")
+    }
+
+    static void setExpirationPolicy(TestSession testSession, ExpirationPolicy expirationPolicy) {
+        Properties properties = getPolicyProperties(testSession)
+        properties.setProperty(ExpirationPolicyLabel, expirationPolicy.toString())
+        savePolicyProperties(testSession, properties)
+    }
+
+    static ExpirationPolicy getExpirationPolicy(TestSession testSession) {
+        Properties properties = getPolicyProperties(testSession)
+        ExpirationPolicy.valueOf(ExpirationPolicy, properties.getProperty(ExpirationPolicyLabel))
+    }
+
+    private static Properties getPolicyProperties(TestSession testSession) {
+        Properties properties = new Properties()
+        try {
+            properties.load(new FileInputStream(policyPropertiesFile(testSession)))
+        } catch (IOException e) {
+            savePolicyProperties(testSession, (testSession == TestSession.DEFAULT_TEST_SESSION) ? defaultProperties : nonDefaultProperties)
+            properties.load(new FileInputStream(policyPropertiesFile(testSession)))
+        }
+        properties
+    }
+
+    private static void savePolicyProperties(TestSession testSession, Properties properties) {
+        properties.store(new FileOutputStream(policyPropertiesFile(testSession)), '')
+    }
+
 
     /*
     static createMarkerFile(File parent) {
