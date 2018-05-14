@@ -94,7 +94,6 @@
     </modules>
 
     <profiles>
-
         <profile>
             <id>WebUI-Tests</id>
             <activation>
@@ -104,7 +103,6 @@
                 <module>webui-tests</module>
             </modules>
         </profile>
-
     </profiles>
 
 
