@@ -77,8 +77,9 @@ public class Installation {
     }
 
     static public Installation instance() {
-        if (me == null)
+        if (me == null) {
             me = new Installation();
+        }
         return me;
     }
 
@@ -130,6 +131,8 @@ public class Installation {
             return;
         }
         logger.info("Toolkit running at " + propertyServiceManager().getToolkitHost() + ":" + propertyServiceManager().getToolkitPort());
+
+        TestSessionFactory.initialize(TestSession.DEFAULT_TEST_SESSION);
     }
 
     public static String asFilenameBase(Date date) {
@@ -274,6 +277,14 @@ public class Installation {
         File f = new File(actorsDir(), testSession.getValue());
         f.mkdirs();
         return f;
+    }
+
+    public File testSessionMgmtDir() {
+        return new File(Installation.instance().externalCache(), "TestSessionMgmt");
+    }
+
+    public File testSessionMgmtDir(TestSession testSession) {
+        return new File(new File(Installation.instance().externalCache(), "TestSessionMgmt"), testSession.getValue());
     }
 
     public File simDbFile() {

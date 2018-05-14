@@ -1,6 +1,7 @@
 package gov.nist.toolkit.services.server.testSession
 
 import gov.nist.toolkit.installation.server.ExternalCacheManager
+import gov.nist.toolkit.installation.server.TestSessionFactory
 import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.session.server.serviceManager.TestSessionServiceManager
 import gov.nist.toolkit.simcommon.server.SimDb
@@ -11,7 +12,6 @@ import spock.lang.Specification
 class BasicTest extends Specification {
     @Shared SimDb simDb = new SimDb()
     @Shared TestSessionServiceManager sm = TestSessionServiceManager.INSTANCE
-    @Shared String DEFAULT = TestSession.DEFAULT_TEST_SESSION.value
 
     def setupSpec() {
 
@@ -35,10 +35,9 @@ class BasicTest extends Specification {
         def testSession = sm.create()
 
         then:
-        sm.inSimDb().contains(testSession.value)
-        sm.inActors().contains(testSession.value)
-        sm.inTestLogs().contains(testSession.value)
-        sm.isConsistant()
+        TestSessionFactory.inSimDb().contains(testSession.value)
+        TestSessionFactory.inActors().contains(testSession.value)
+        TestSessionFactory.inTestLogs().contains(testSession.value)
     }
 
     def 'test delete' () {
@@ -47,10 +46,9 @@ class BasicTest extends Specification {
         sm.delete(testSession)
 
         then:
-        !sm.inSimDb().contains(testSession.value)
-        !sm.inActors().contains(testSession.value)
-        !sm.inTestLogs().contains(testSession.value)
-        sm.isConsistant()
+        !TestSessionFactory.inSimDb().contains(testSession.value)
+        !TestSessionFactory.inActors().contains(testSession.value)
+        !TestSessionFactory.inTestLogs().contains(testSession.value)
     }
 
     def 'test delete all'() {
@@ -65,10 +63,9 @@ class BasicTest extends Specification {
         }
 
         then:
-        sm.inSimDb() == [TestSession.DEFAULT_TEST_SESSION.value] as Set
-        sm.inActors() == [TestSession.DEFAULT_TEST_SESSION.value] as Set
-        sm.inTestLogs() == [TestSession.DEFAULT_TEST_SESSION.value] as Set
-        sm.isConsistant()
+        TestSessionFactory.inSimDb() == [TestSession.DEFAULT_TEST_SESSION.value] as Set
+        TestSessionFactory.inActors() == [TestSession.DEFAULT_TEST_SESSION.value] as Set
+        TestSessionFactory.inTestLogs() == [TestSession.DEFAULT_TEST_SESSION.value] as Set
     }
 
 

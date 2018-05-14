@@ -4,8 +4,11 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+import gov.nist.toolkit.session.client.TestSessionStats;
+import gov.nist.toolkit.session.client.TestSessionStatsTool;
 import gov.nist.toolkit.xdstools2.client.LoadGazelleConfigsClickHandler;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTestSessionStatsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetToolkitPropertiesCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.RemoveOldSimulatorsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.SetToolkitPropertiesCommand;
@@ -14,6 +17,7 @@ import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.util.InformationLink;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.TestkitConfigTool;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestSessionStatsRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.SetToolkitPropertiesRequest;
 
 import java.util.ArrayList;
@@ -88,6 +92,17 @@ public class ToolConfigTab extends GenericQueryTab {
 		/* new code for testkit update */
 		TestkitConfigTool tkconf=new TestkitConfigTool(getTabContainer());
 		container.add(tkconf);
+
+        final FlowPanel tsStatsPanel = new FlowPanel();
+        container.add(tsStatsPanel);
+        new GetTestSessionStatsCommand() {
+
+            @Override
+            public void onComplete(List<TestSessionStats> result) {
+                tsStatsPanel.add(new TestSessionStatsTool(result).asWidget());
+            }
+        }.run(new GetTestSessionStatsRequest(getCommandContext()));
+        container.add(new HTML("<hr />"));
 
 		return container;
 	}

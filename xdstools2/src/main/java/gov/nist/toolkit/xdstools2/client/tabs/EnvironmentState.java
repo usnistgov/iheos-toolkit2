@@ -33,7 +33,7 @@ public class EnvironmentState {
 	 * @param environmentName
 	 */
 	public void initEnvironmentName(String environmentName) {
-		this.environmentName = environmentName;
+		setEnvironmentName(environmentName);
 	}
 
 	public List<String> getEnvironmentNameChoices() {

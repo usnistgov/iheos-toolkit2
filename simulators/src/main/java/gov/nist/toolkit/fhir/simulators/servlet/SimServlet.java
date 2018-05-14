@@ -18,6 +18,7 @@ import gov.nist.toolkit.http.HttpHeader;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.http.ParseException;
 import gov.nist.toolkit.installation.server.Installation;
+import gov.nist.toolkit.installation.server.TestSessionFactory;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.simcommon.client.NoSimException;
 import gov.nist.toolkit.simcommon.client.SimId;
@@ -631,6 +632,8 @@ public class SimServlet  extends HttpServlet {
 					}
 				}
 			}
+
+			TestSessionFactory.updateTimestanp(dsSimCommon.simDb().getTestSession());
 
 
 		}

@@ -1390,6 +1390,8 @@ public class SimDb {
 	}
 
 	TestSession getTestSession() {
+		if (!testSession)
+			testSession = simId.testSession
 		return testSession
 	}
 
