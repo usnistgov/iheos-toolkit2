@@ -69,7 +69,7 @@ class ToolkitSpecification extends Specification {
     // clean out simdb, testlogcache, and actors
     def cleanupDir() {
         if (localServerMode) {
-            TestSessionServiceManager.INSTANCE.inTestLogs().each { String testSessionName ->
+            TestSessionFactory.inTestLogs().each { String testSessionName ->
                 Io.delete(Installation.instance().testLogCache(new TestSession(testSessionName)))
             }
             Installation.instance().simDbFile(TestSession.DEFAULT_TEST_SESSION).mkdirs()
