@@ -5,7 +5,7 @@
 # Do the whole build including installing the toolkit.properties file
 
 function usage() {
-	echo "Usage: $SCRIPTNAME configuration-name [httpsUI=on|off]"
+	echo "Usage: $SCRIPTNAME configuration-name [httpsUI]"
 	echo "Where configuration-name is a directory under properties/"
 	echo "that holds a toolkit.properties file to incorporate."
 	echo "httpsUI uses a profile activated web.xml configured to redirect http UI requests to https."
@@ -33,7 +33,7 @@ fi
 
 if [ ! -z $HTTPSUI ]
 then
-    if [ $HTTPSUI = "on" ]
+    if [ $HTTPSUI = "httpsUI" ]
     then
         echo "httpsUI option is on."
 #	    Note: If HTTPS UI web.xml configuration is desired you must use an additional -PhttpsUI maven profile.
