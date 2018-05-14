@@ -1,7 +1,9 @@
 package gov.nist.toolkit.installation.server
 
+import gov.nist.toolkit.installation.shared.ExpirationPolicy
 import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.utilities.id.UuidAllocator
+import gov.nist.toolkit.utilities.io.Io
 import groovy.transform.TypeChecked
 
 @TypeChecked
@@ -38,7 +40,7 @@ class TestSessionFactory {
         for (String testSessionName : getNames()) {
             TestSession testSession2 = new TestSession(testSessionName)
             Installation.instance().testSessionMgmtDir(testSession2).mkdirs()
-            getPolicyProperties(testSession2)
+            getPolicyProperties(testSession2)  // installs default if not present
         }
     }
 
@@ -68,6 +70,47 @@ class TestSessionFactory {
         Installation.instance().testSessionMgmtDir().listFiles().findAll { File f ->
             f.isDirectory() && !f.name.startsWith('.')
         }.collect { File f -> f.name } as Set
+    }
+
+    static final String TIMESTAMEFILE = 'timestamp'
+
+    static void updateTimestanp(TestSession testSession) {
+        Io.stringToFile(
+                new File(Installation.instance().testSessionMgmtDir(testSession), TIMESTAMEFILE)
+                , 'X')
+    }
+
+    static long sinceModification(TestSession testSession) {
+        long lastModified = new File(Installation.instance().testSessionMgmtDir(testSession), TIMESTAMEFILE).lastModified()
+        System.currentTimeMillis() - lastModified
+    }
+
+    static long _1_DAY_IN_MILLI =  24 * 60 * 60 * 1000
+    static long _30_DAYS_IN_MILLI = 30 * _1_DAY_IN_MILLI
+
+    static boolean isExpired(TestSession testSession) {
+        ExpirationPolicy ePolicy = getExpirationPolicy(testSession)
+        if (ePolicy == ExpirationPolicy.NO_ACTIVITY_FOR_30_DAYS) {
+            return sinceModification(testSession) > _30_DAYS_IN_MILLI
+        }
+        false
+    }
+
+    static String expiresDescription(TestSession testSession) {
+        ExpirationPolicy ePolicy = getExpirationPolicy(testSession)
+        if (ePolicy == ExpirationPolicy.NO_ACTIVITY_FOR_30_DAYS) {
+            long modification = sinceModification(testSession)
+            int idays = modification / _1_DAY_IN_MILLI as Integer
+            idays = 30 - idays
+            String.valueOf(idays) + " Days"
+        } else {
+            "Never"
+        }
+    }
+
+    static Date lastUpdated(TestSession testSession) {
+        long lastModified = new File(Installation.instance().testSessionMgmtDir(testSession), TIMESTAMEFILE).lastModified()
+        new Date(lastModified)
     }
 
     /*

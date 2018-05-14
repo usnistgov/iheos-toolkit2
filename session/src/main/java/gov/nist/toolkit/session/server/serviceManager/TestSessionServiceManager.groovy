@@ -3,8 +3,9 @@ package gov.nist.toolkit.session.server.serviceManager
 import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.installation.server.TestSessionFactory
 import gov.nist.toolkit.installation.shared.TestSession
+import gov.nist.toolkit.session.client.TestSessionStats
 import gov.nist.toolkit.session.server.Session
-import gov.nist.toolkit.installation.server.ExpirationPolicy
+import gov.nist.toolkit.installation.shared.ExpirationPolicy
 import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.utilities.io.Io
 import groovy.transform.TypeChecked
@@ -35,6 +36,23 @@ class TestSessionServiceManager {
     static boolean exists(String testSessionName)  {
         if (testSessionName == null) return false;
         return getNames().contains(testSessionName);
+    }
+
+    static boolean isExpired(TestSession testSession) {
+        TestSessionFactory.isExpired(testSession)
+    }
+
+    static List<TestSessionStats> getTestSessionStats() {
+        getNames().collect { String testSessionName ->
+            TestSession testSession = new TestSession(testSessionName)
+            TestSessionStats stat = new TestSessionStats()
+            stat.testSession = testSession
+            stat.expired = isExpired(testSession)
+            stat.expires = "${TestSessionFactory.expiresDescription(testSession)}"
+            stat.expirationPolicy = TestSessionFactory.getExpirationPolicy(testSession)
+            stat.lastUpdated = TestSessionFactory.lastUpdated(testSession).toString()
+            stat
+        }
     }
 
     static boolean create(TestSession testSession) throws Exception  {

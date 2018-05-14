@@ -18,6 +18,7 @@ import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest;
 import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
+import gov.nist.toolkit.session.client.TestSessionStats;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
 import gov.nist.toolkit.session.shared.Message;
@@ -72,6 +73,8 @@ public interface ToolkitService extends RemoteService  {
     String getTestReadme(GetTestDetailsRequest request) throws Exception;
 
     List<String> getTestIndex(GetTestDetailsRequest request) throws Exception;
+
+    List<TestSessionStats> getTestSessionStats(CommandContext commandContext) throws Exception;
 
     List<Result> runMesaTest(RunTestRequest request) throws Exception;
 	TestOverviewDTO runTest(RunTestRequest request) throws Exception;
