@@ -1,1 +1,0 @@
-The Testing Tool transmits to the System a synchronous Retrieve Documents request for one document using the parameters extracted from the previous QD response.

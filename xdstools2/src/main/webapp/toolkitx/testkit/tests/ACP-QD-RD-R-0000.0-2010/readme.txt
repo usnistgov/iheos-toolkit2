@@ -1,1 +1,0 @@
-Access Consent Policy Query and Retrieve (2010 systems)
