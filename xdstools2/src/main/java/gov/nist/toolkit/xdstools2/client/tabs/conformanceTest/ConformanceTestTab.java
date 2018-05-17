@@ -426,7 +426,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 			return;
 		}
 
-		if (siteToIssueTestAgainst != null) {
+		if (siteToIssueTestAgainst != null && !(siteToIssueTestAgainst.getName()=="" || siteToIssueTestAgainst.getName()==null)) {
 			new GetSiteCommand() {
 				@Override
 				public void onFailure(Throwable throwable) {
@@ -454,12 +454,20 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 			new GetAssignedSiteForTestSessionCommand() {
 				@Override
+				public void onFailure(Throwable throwable) {
+					new PopupMessage("GetAssignedSiteForTestSessionCommand failed: Unable to determine if SUT has been assigned in Test Context.");
+				}
+
+				@Override
 				public void onComplete(final String result) {
 					testContext.setCurrentSiteSpec(result);
 					testContextView.updateTestingContextDisplay();
 
-					if (result == null) return;
-					if (result.equals(NONE)) return;
+					if ((result == null) || NONE.equals(result)) {
+						updateDisplayedActorAndOptionType();
+						return;
+					}
+
 					new GetSiteCommand() {
 						@Override
 						public void onFailure(Throwable throwable) {

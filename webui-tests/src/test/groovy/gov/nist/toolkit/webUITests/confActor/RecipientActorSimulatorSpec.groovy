@@ -52,7 +52,7 @@ class RecipientActorSimulatorSpec extends ConformanceActor {
         page != null
     }
 
-    def 'No weird popup or error message presented in a dialog box.'() {
+    def 'No unexpected popup or error message presented in a dialog box.'() {
         when:
         List<HtmlDivision> elementList = page.getByXPath("//div[contains(@class,'gwt-DialogBox')]")
 
