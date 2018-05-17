@@ -38,6 +38,7 @@ import gov.nist.toolkit.services.server.RawResponseBuilder;
 import gov.nist.toolkit.services.server.SimulatorServiceManager;
 import gov.nist.toolkit.services.server.orchestration.OrchestrationManager;
 import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
+import gov.nist.toolkit.session.client.TestSessionStats;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
 import gov.nist.toolkit.session.server.Session;
@@ -499,13 +500,13 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     public boolean testSessionExists(CommandContext request) throws Exception {
         installCommandContext(request);
         logCall("testSessionExists");
-        return TestSessionServiceManager.INSTANCE.exists(request.getTestSessionName());
+        return TestSessionServiceManager.exists(request.getTestSessionName());
     }
 
     @Override
     public TestSession buildTestSession() throws Exception {
         logCall("buildTestSession");
-        return TestSessionServiceManager.INSTANCE.create();
+        return TestSessionServiceManager.create();
     }
 
     @Override
@@ -513,7 +514,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         TestSession testSession = new TestSession(sessionName);
         if (sessionName != null && !testSession.equals(TestSessionServiceManager.INSTANCE.getTestSession(session())))
             logCall("setTestSession " + sessionName);
-        TestSessionServiceManager.INSTANCE.setTestSession(session(), testSession);
+        TestSessionServiceManager.setTestSession(session(), testSession);
         return sessionName;
     }
     @Override
@@ -521,19 +522,19 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         installCommandContext(request);
 //        if (Installation.instance().propertyServiceManager().isMultiuserMode())
 //            throw new ToolkitRuntimeException("Function getTestSessionNames() not available in MulitUserMode");
-        return TestSessionServiceManager.INSTANCE.getNames();
+        return TestSessionServiceManager.getNames();
     }
 
     @Override
     public boolean addTestSession(CommandContext context) throws Exception {
         logCall("addTestSession " + context.getTestSessionName());
-        return TestSessionServiceManager.INSTANCE.create(context.getTestSession());
+        return TestSessionServiceManager.create(context.getTestSession());
     }
 
     @Override
     public boolean deleteTestSession(CommandContext context) throws Exception {
         logCall("deleteTestSession " + context.getTestSessionName());
-        return TestSessionServiceManager.INSTANCE.delete(context.getTestSession());
+        return TestSessionServiceManager.delete(context.getTestSession());
     }
 
 
@@ -795,6 +796,12 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     public String getTestReadme(GetTestDetailsRequest request) throws Exception {
         installCommandContext(request);
         return session().xdsTestServiceManager().getTestReadme(request.getTest());
+    }
+
+    @Override
+    public List<TestSessionStats> getTestSessionStats(CommandContext commandContext) throws Exception {
+        installCommandContext(commandContext);
+        return TestSessionServiceManager.getTestSessionStats();
     }
 
     @Override

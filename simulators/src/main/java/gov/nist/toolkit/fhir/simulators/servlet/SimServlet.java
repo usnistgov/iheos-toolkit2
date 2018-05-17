@@ -18,6 +18,7 @@ import gov.nist.toolkit.http.HttpHeader;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.http.ParseException;
 import gov.nist.toolkit.installation.server.Installation;
+import gov.nist.toolkit.installation.server.TestSessionFactory;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.simcommon.client.NoSimException;
 import gov.nist.toolkit.simcommon.client.SimId;
@@ -158,6 +159,15 @@ public class SimServlet  extends HttpServlet {
 				logger.info("working on siteconfig");
 				parts = uri.substring(in + "/siteconfig/".length()).split("\\/");
 				handleSiteDownload(response, parts);
+				return;
+			}
+			in = uri.indexOf("/codes/");
+			logger.info("codes in is " + in);
+			if (in != -1) {
+				logger.info("working on codes");
+				parts = uri.substring(in + "/codes/".length()).split("\\/");
+				if (parts.length < 1) return;
+				handleCodesDownload(response, parts);
 				return;
 			}
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -339,6 +349,41 @@ public class SimServlet  extends HttpServlet {
 			response.getOutputStream().print(siteString);
 			response.getOutputStream().close();
 			response.addHeader("Content-Disposition", "attachment; filename=" + site.getName() + ".xml");
+		} catch (Exception e) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			return;
+		}
+		response.setStatus(HttpServletResponse.SC_OK);
+	}
+
+	// handle codes.xml download
+	private void handleCodesDownload(HttpServletResponse response, String[] parts) {
+		String envName;
+
+		try {
+			envName       = parts[0];
+		} catch (Exception e) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			return;
+		}
+		logger.debug("codes download of " + envName);
+
+		if (envName == null || envName.trim().equals("")) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			return;
+		}
+
+		try {
+			File codesFile = new File(Installation.instance().environmentFile(envName), "codes.xml");
+			if (!codesFile.exists()) {
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				return;
+			}
+			String codesContent = Io.stringFromFile(codesFile);
+			response.setContentType("text/xml");
+			response.getOutputStream().print(codesContent);
+			response.getOutputStream().close();
+			response.addHeader("Content-Disposition", "attachment; filename=" + "codes.xml");
 		} catch (Exception e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
@@ -587,6 +632,8 @@ public class SimServlet  extends HttpServlet {
 					}
 				}
 			}
+
+			TestSessionFactory.updateTimestanp(dsSimCommon.simDb().getTestSession());
 
 
 		}

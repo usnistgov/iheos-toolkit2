@@ -21,8 +21,12 @@ public class BuildCollections extends HttpServlet {
     private File testkitOut;
 
     public static String SECTIONS[] = { "testdata", "tests", "examples", "selftest" };
-    private Map<String, List<String>> collections = new HashMap<String, List<String>>();
+    private Map<String, List<String>> collections = new HashMap<>();
     private boolean error;
+
+    private void reset() {
+        collections = new HashMap<>();
+    }
 
    public void init(ServletConfig sConfig) throws ServletException {
       logger.info("Indexing testkit");
@@ -220,6 +224,7 @@ public class BuildCollections extends HttpServlet {
       for (File testkit : Installation.instance().getAllTestkits()) {
          testkitIn = testkit;
          testkitOut = testkit;
+         reset();
          scan();
          try {
             write();

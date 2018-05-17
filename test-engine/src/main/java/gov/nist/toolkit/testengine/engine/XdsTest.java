@@ -1,6 +1,7 @@
 package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.installation.server.Installation;
+import gov.nist.toolkit.installation.server.TestSessionFactory;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
 import gov.nist.toolkit.results.client.TestInstance;
@@ -203,6 +204,8 @@ public class XdsTest {
 					File now = Installation.instance().newArchiveDir();
 					testConfig.archiveLogFile = new File(now, "log.xml");
 				}
+				TestSessionFactory.updateTimestanp(logRepository.getTestSession());
+
 				writeLogFiles = true;
 
 				PlanContext plan = new PlanContext();		
