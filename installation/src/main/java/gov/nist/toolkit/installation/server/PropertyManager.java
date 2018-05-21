@@ -20,7 +20,7 @@ public class PropertyManager {
 	static private final String EXTERNAL_CACHE      = "External_Cache";
 	static private final String USE_ACTORS_FILE     = "Use_Actors_File";
 	static public  final String ENABLE_SAML			= "Enable_SAML";
-	static public  final String BYPASS_SECURITYHDRMU = "Bypass_SecurityHeaderMu";
+	static public  final String BYPASS_SECURITYHDR_MU_ON_INCOMING_RESPONSE = "Bypass_SecurityHeaderMuOnIncomingResponse";
 	/**
 	 * Same name is used for both the sts actor and its related sts test plan
 	 */
@@ -212,7 +212,7 @@ public class PropertyManager {
 
 	public boolean isBypassSecurityHeaderMuOnResponse() {
 		loadProperties();
-		String use = (String) toolkitProperties.get(BYPASS_SECURITYHDRMU);
+		String use = (String) toolkitProperties.get(BYPASS_SECURITYHDR_MU_ON_INCOMING_RESPONSE);
 		if (use == null)
 			return false;
 		use = use.trim().toLowerCase();
