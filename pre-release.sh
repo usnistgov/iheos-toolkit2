@@ -31,4 +31,4 @@ mkdir xdstools2/target/$WARNAME/javadoc
 bash $BASEDIR/genapidoc.sh xdstools2/target/$WARNAME/javadoc
 
 cd xdstools2
-mvn -o site -Ddependency.locations.enabled=false
+mvn -o site
