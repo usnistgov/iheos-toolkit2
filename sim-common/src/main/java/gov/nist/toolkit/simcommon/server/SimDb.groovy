@@ -511,12 +511,14 @@ public class SimDb {
 		FSDirectory dir = null
 		try {
 				dir = FSDirectory.open(indexFile.toPath())
-//				for (String s : dir.listAll(indexFile.toPath())) {
-//					dir.deleteFile(s)
-//				}
+				for (String s : dir.listAll(indexFile.toPath())) {
+					dir.deleteFile(s)
+				}
+			/* Lucene v7.0.1
                 if (dir.checkPendingDeletions()) {
 					dir.deletePendingFiles()
 				}
+				*/
 		} catch (Exception ex) {
 			logger.error(ex.toString())
 		} finally {
