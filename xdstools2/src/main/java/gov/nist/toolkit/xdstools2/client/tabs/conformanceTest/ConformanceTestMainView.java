@@ -22,7 +22,7 @@ public class ConformanceTestMainView {
     private final TabBar actorTabBar = new TabBar();            // tab bar at the top for selecting actor types
     private final UserDefinedTabBar profileTabBar = new UserDefinedTabBar();
     private final UserDefinedTabBar optionsTabBar = new UserDefinedTabBar();
-    private final Anchor indexAnchor = new Anchor("Index");
+    private final Anchor indexAnchor = new Anchor("Overview");
 
     private HTML testSessionDescription = new HTML();
     private FlowPanel testSessionDescriptionPanel = new FlowPanel();
@@ -38,11 +38,12 @@ public class ConformanceTestMainView {
 
         HorizontalFlowPanel actorpanel = new HorizontalFlowPanel();
         indexAnchor.getElement().getStyle().setMarginLeft(0, Style.Unit.PX);
+        actorpanel.add(new InformationLink("Help with Conformance Test tool", "Conformance-Test-Tool").asWidget());
         toolPanel.add(indexAnchor);
         HTML actorToTest = new HTML("Actor to test");
 //        actorToTest.addStyleName("section-title");
         actorpanel.add(actorToTest);
-        actorpanel.add(new InformationLink("Help with Conformance Test tool", "Conformance-Test-Tool").asWidget());
+
         toolPanel.add(actorpanel);
         tabBarPanel.add(actorTabBar);
         tabBarPanel.add(new HTML("Profile"));
