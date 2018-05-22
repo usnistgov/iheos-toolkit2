@@ -89,6 +89,7 @@
         <module>sim-proxy</module>
         <module>proxy</module>
         <module>it-tests</module>
+        <module>plugin-support</module>
         <!--<module>it-tests/pomForIsolatedTests.xml</module>-->
         <!--<module>it-tests-maven-plugin</module>-->
     </modules>
