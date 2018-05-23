@@ -314,4 +314,22 @@
     </welcome-file-list>
 
 
+    <!-- Require HTTPS only for the following url-patterns . -->
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>HTTPSOnly</web-resource-name>
+            <url-pattern>/xdstools2/toolkit</url-pattern>   <!-- The GWT RPC backend -->
+            <url-pattern>/Xdstools2.html</url-pattern>      <!-- The single-page application -->
+            <url-pattern>/Xdstools2.html/*</url-pattern>    <!-- The single-page application wildcard -->
+            <url-pattern>/#</url-pattern>                   <!-- Default page -->
+            <url-pattern>/#*</url-pattern>                  <!-- Tool URL, for example /#ConfActor -->
+            <url-pattern>/Xdstools2.html#*</url-pattern>    <!-- Tool URL wildcard -->
+        </web-resource-collection>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+
+
+
 </web-app>
