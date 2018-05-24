@@ -315,20 +315,20 @@
 
 
     <!-- Require HTTPS only for the following url-patterns . -->
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>HTTPSOnly</web-resource-name>
-            <url-pattern>/xdstools2/toolkit</url-pattern>   <!-- The GWT RPC backend -->
-            <url-pattern>/Xdstools2.html</url-pattern>      <!-- The single-page application -->
-            <url-pattern>/Xdstools2.html/*</url-pattern>    <!-- The single-page application wildcard -->
-            <url-pattern>/#</url-pattern>                   <!-- Default page -->
-            <url-pattern>/#*</url-pattern>                  <!-- Tool URL, for example /#ConfActor -->
-            <url-pattern>/Xdstools2.html#*</url-pattern>    <!-- Tool URL wildcard -->
-        </web-resource-collection>
-        <user-data-constraint>
-            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
-        </user-data-constraint>
-    </security-constraint>
+    <!--<security-constraint>-->
+        <!--<web-resource-collection>-->
+            <!--<web-resource-name>HTTPSOnly</web-resource-name>-->
+            <!--<url-pattern>/xdstools2/toolkit</url-pattern>   &lt;!&ndash; The GWT RPC backend &ndash;&gt;-->
+            <!--<url-pattern>/Xdstools2.html</url-pattern>      &lt;!&ndash; The single-page application &ndash;&gt;-->
+            <!--<url-pattern>/Xdstools2.html/*</url-pattern>    &lt;!&ndash; The single-page application wildcard &ndash;&gt;-->
+            <!--<url-pattern>/#</url-pattern>                   &lt;!&ndash; Default page &ndash;&gt;-->
+            <!--<url-pattern>/#*</url-pattern>                  &lt;!&ndash; Tool URL, for example /#ConfActor &ndash;&gt;-->
+            <!--<url-pattern>/Xdstools2.html#*</url-pattern>    &lt;!&ndash; Tool URL wildcard &ndash;&gt;-->
+        <!--</web-resource-collection>-->
+        <!--<user-data-constraint>-->
+            <!--<transport-guarantee>CONFIDENTIAL</transport-guarantee>-->
+        <!--</user-data-constraint>-->
+    <!--</security-constraint>-->
 
 
 
