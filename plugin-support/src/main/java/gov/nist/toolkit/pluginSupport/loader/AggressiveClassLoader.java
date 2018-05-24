@@ -9,8 +9,8 @@ import java.util.Set;
  */
 public abstract class AggressiveClassLoader extends ClassLoader {
 
-    Set<String> loadedClasses = new HashSet<>();
-    Set<String> unavaiClasses = new HashSet<>();
+    private Set<String> loadedClasses = new HashSet<>();
+    private Set<String> unavaiClasses = new HashSet<>();
     private ClassLoader parent = AggressiveClassLoader.class.getClassLoader();
 
     @Override
@@ -39,7 +39,7 @@ public abstract class AggressiveClassLoader extends ClassLoader {
      * @param name
      * @return
      */
-    public Class<?> load(String name) {
+    Class<?> load(String name) {
         try {
             return loadClass(name);
         } catch (ClassNotFoundException e) {
@@ -49,7 +49,7 @@ public abstract class AggressiveClassLoader extends ClassLoader {
 
     protected abstract byte[] loadNewClass(String name);
 
-    public Class<?> loadClass(byte[] classData, String name) {
+    private Class<?> loadClass(byte[] classData, String name) {
         Class<?> clazz = defineClass(name, classData, 0, classData.length);
         if (clazz != null) {
             if (clazz.getPackage() == null) {
@@ -60,7 +60,7 @@ public abstract class AggressiveClassLoader extends ClassLoader {
         return clazz;
     }
 
-    public static String toFilePath(String name) {
+    static String toFilePath(String name) {
         return name.replaceAll("\\.", "/") + ".class";
     }
 }

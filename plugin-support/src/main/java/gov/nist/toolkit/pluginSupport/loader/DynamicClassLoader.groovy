@@ -6,11 +6,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
 
-public class DynamicClassLoader extends AggressiveClassLoader {
+class DynamicClassLoader extends AggressiveClassLoader {
     private LinkedList<Loader> loaders = new LinkedList<>();
 
-    DynamicClassLoader(String... paths) {
+    DynamicClassLoader(String... paths) throws IOException {
         for (String path : paths) {
             File file = new File(path);
 
@@ -23,7 +25,7 @@ public class DynamicClassLoader extends AggressiveClassLoader {
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public DynamicClassLoader(Collection<File> paths) {
+    DynamicClassLoader(Collection<File> paths) throws IOException {
         for (File file : paths) {
             Loader loader = loader(file);
             if (loader == null) {
@@ -34,11 +36,13 @@ public class DynamicClassLoader extends AggressiveClassLoader {
     }
 
 
-    private static Loader loader(File file) {
+    private static Loader loader(File file) throws IOException {
         if (!file.exists()) {
             return null;
         } else if (file.isDirectory()) {
             return new DirLoader(file);
+        } else if (file.getName().endsWith("jar")) {
+            return new JarLoader(new JarFile(file));
         } else {
             throw new RuntimeException("Jarloader not supported");
         }
@@ -60,7 +64,8 @@ public class DynamicClassLoader extends AggressiveClassLoader {
             this.dir = dir;
         }
 
-        public byte[] load(String filePath) {
+        @Override
+        byte[] load(String filePath) {
             File file = findFile(filePath, dir);
             if (file == null) {
                 return null;
@@ -71,6 +76,32 @@ public class DynamicClassLoader extends AggressiveClassLoader {
             } catch (IOException e) {
                 return null;
             }
+        }
+    }
+
+    static class JarLoader implements Loader {
+        JarFile jarFile;
+
+        JarLoader(JarFile jarFile) {
+            this.jarFile = jarFile;
+        }
+
+        byte[] load(String filePath) {
+            ZipEntry entry = jarFile.getJarEntry(filePath);
+            if (entry == null) {
+                return null;
+            }
+            try {
+                return Io.getBytesFromInputStream(jarFile.getInputStream(entry));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        void finalize() throws Throwable {
+            jarFile.close();
+            super.finalize();
         }
     }
 
