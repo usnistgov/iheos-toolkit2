@@ -4,7 +4,8 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
 
 /**
- * The URL will be created as http://APP#Tool:toolId
+ * The URL will be created as
+ * http://APP#Tool:toolId
  * so the URL carries the name of this class!
  */
 public class Tool extends Place {
