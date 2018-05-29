@@ -1,5 +1,7 @@
 package gov.nist.toolkit.testkitutilities;
 
+import gov.nist.toolkit.installation.server.Installation;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.utilities.io.Io;
 import org.apache.log4j.Logger;
@@ -14,15 +16,39 @@ import java.util.*;
  *
  */
 public class TestKit {
-	private
-	File	testKit;
-//	String sessionId;
+	private File	testKit;
 
 	static Logger logger = Logger.getLogger(TestKit.class);
 
 	public TestKit(File testKit  /*, String sessionId  */) {
 		this.testKit = testKit;
-//		this.sessionId = sessionId;
+	}
+
+	static public void delete(String environmentName, TestSession testSession) {
+		File root = getRoot(environmentName, testSession);
+		Io.delete(root);
+	}
+
+		static public File getRoot(String environmentName, TestSession testSession) {
+		String sep = File.separator;
+		StringBuilder buf = new StringBuilder();
+		buf.append(Installation.instance().environmentFile().toString());
+		buf.append(sep).append(environmentName);
+		buf.append(sep).append("testkits");
+		buf.append(sep).append(testSession.getValue());
+		return new File(buf.toString());
+	}
+
+	static public void generateStructure(String environmentName, TestSession testSession) {
+		File root = getRoot(environmentName, testSession);
+		for (Sections section : Sections.values()) {
+			File sectionFile = new File(root, section.getSection());
+			sectionFile.mkdirs();
+		}
+	}
+
+	static public boolean exists(String environmentName, TestSession testSession) {
+		return getRoot(environmentName, testSession).exists();
 	}
 	
 	/**
@@ -41,6 +67,11 @@ public class TestKit {
 		return new File(testKit.toString() + File.separator + "testdata");
 	}
 
+	enum PluginType  { ASSERTION }
+
+	public File getPluginDir(PluginType pluginType) {
+		return new File(testKit.toString() + File.separator + "plugins" + File.separator + pluginType.name());
+	}
 	
 	private String[] testkitSections = { "tests", "testdata", "examples", "utilities", "testdata-repository", "testdata-registry", "testdata-xdr" };
 	

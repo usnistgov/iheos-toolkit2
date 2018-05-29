@@ -13,6 +13,10 @@
     <dependencies>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
+            <artifactId>testkit-utilities</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
             <artifactId>utilities</artifactId>
         </dependency>
         <dependency>
