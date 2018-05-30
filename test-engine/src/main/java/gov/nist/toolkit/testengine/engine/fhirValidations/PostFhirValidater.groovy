@@ -2,9 +2,9 @@ package gov.nist.toolkit.testengine.engine.fhirValidations
 
 import gov.nist.toolkit.testengine.engine.FhirSimulatorTransaction
 
-class PostValidater extends AbstractValidater {
+class PostFhirValidater extends AbstractFhirValidater {
 
-    PostValidater(SimReference theSimReference) {
+    PostFhirValidater(SimReference theSimReference) {
         super(theSimReference, 'Request is HTTP POST')
 
     }

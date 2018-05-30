@@ -32,7 +32,7 @@ class MhdClientTransaction extends BasicTransaction {
     private List <String> errs;
 
     @Override
-    public void processAssertion(AssertionEngine engine, Assertion a, OMElement assertion_output) throws XdsInternalException {
+    void processAssertion(AssertionEngine engine, Assertion a, OMElement assertion_output) throws XdsInternalException {
         XdsInternalException xdsInternalException = null;
         errs = new ArrayList <>();
         try {
@@ -57,10 +57,10 @@ class MhdClientTransaction extends BasicTransaction {
     }
 
     def verifyFindSingleDRSubmit(SimReference simReference) {
-        List<AbstractValidater> validaters = [
-                new PostValidater(simReference),
-                new StatusValidater(simReference, '200'),
-                new SingleDocSubmissionValidater(simReference)
+        List<AbstractFhirValidater> validaters = [
+                new PostFhirValidater(simReference),
+                new StatusFhirValidater(simReference, '200'),
+                new SingleDocSubmissionFhirValidater(simReference)
         ]
         SimDb simDb = new SimDb(simReference.simId)
         String trans = simReference.transactionType.code
@@ -69,7 +69,7 @@ class MhdClientTransaction extends BasicTransaction {
             throw new XdsInternalException("No ${simReference.transactionType.name} transactions found in simlog for ${simReference.simId}")
 
         s_ctx.addDetail("#Validations run against all ${simReference.transactionType.name} transactions", '')
-        validaters.each {AbstractValidater val ->
+        validaters.each { AbstractFhirValidater val ->
             s_ctx.addDetail(val.filterDescription, '')
         }
 
@@ -81,7 +81,7 @@ class MhdClientTransaction extends BasicTransaction {
             String label = ti.toString()
             String thisUrl = transaction.url + " (${label})"
             boolean hasError = false
-            validaters.collect { AbstractValidater validater ->
+            validaters.collect { AbstractFhirValidater validater ->
                 validater.validate(transaction)
             }.each {ValidaterResult result ->
                 if (result.match) {

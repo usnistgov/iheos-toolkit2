@@ -2,7 +2,7 @@ package gov.nist.toolkit.testengine.engine.fhirValidations
 
 import gov.nist.toolkit.testengine.engine.FhirSimulatorTransaction
 
-class StatusValidater extends AbstractValidater {
+class StatusFhirValidater extends AbstractFhirValidater {
     int code
 
     @Override
@@ -11,7 +11,7 @@ class StatusValidater extends AbstractValidater {
             new ValidaterResult(transaction, this, match)
     }
 
-    StatusValidater(SimReference theSimReference, String statusCode) {
+    StatusFhirValidater(SimReference theSimReference, String statusCode) {
         super(theSimReference, "Status code ${statusCode} was returned")
         code = statusCode.toInteger()
     }

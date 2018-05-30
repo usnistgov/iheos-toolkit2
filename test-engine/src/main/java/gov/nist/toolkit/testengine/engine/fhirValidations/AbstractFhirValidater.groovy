@@ -2,7 +2,7 @@ package gov.nist.toolkit.testengine.engine.fhirValidations
 
 import gov.nist.toolkit.testengine.engine.FhirSimulatorTransaction
 
-abstract class AbstractValidater {
+abstract class AbstractFhirValidater {
     SimReference simReference
     String filterDescription
     StringBuilder log = new StringBuilder()
@@ -10,7 +10,7 @@ abstract class AbstractValidater {
 
     abstract ValidaterResult validate(FhirSimulatorTransaction transaction)
 
-    AbstractValidater(SimReference theSimReference, String theFilterDescription) {
+    AbstractFhirValidater(SimReference theSimReference, String theFilterDescription) {
         simReference = theSimReference
         filterDescription = theFilterDescription
     }

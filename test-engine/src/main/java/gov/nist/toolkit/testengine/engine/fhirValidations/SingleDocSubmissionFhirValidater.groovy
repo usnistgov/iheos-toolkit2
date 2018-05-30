@@ -6,7 +6,7 @@ import org.hl7.fhir.dstu3.model.DocumentManifest
 import org.hl7.fhir.dstu3.model.DocumentReference
 import org.hl7.fhir.dstu3.model.Resource
 
-class SingleDocSubmissionValidater extends AbstractValidater {
+class SingleDocSubmissionFhirValidater extends AbstractFhirValidater {
     @Override
     ValidaterResult validate(FhirSimulatorTransaction transaction) {
             boolean match = transaction.request instanceof Bundle && isSingleDocSubmission(transaction.request) && !isErrors()
@@ -31,7 +31,7 @@ class SingleDocSubmissionValidater extends AbstractValidater {
         documentManifest && documentReferences.size() > 0
     }
 
-    SingleDocSubmissionValidater(SimReference theSimReference) {
+    SingleDocSubmissionFhirValidater(SimReference theSimReference) {
         super(theSimReference, 'Submission of a Single Document Reference with the Document Manifest')
     }
 }

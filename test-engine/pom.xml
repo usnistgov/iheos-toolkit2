@@ -18,6 +18,10 @@
 	<dependencies>
 		<dependency>
 			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>plugins</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
 			<artifactId>soap</artifactId>
 		</dependency>
 		<dependency>
