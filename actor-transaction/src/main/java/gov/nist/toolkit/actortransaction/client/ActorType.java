@@ -4,6 +4,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.configDatatypes.client.FhirVerb;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.xdsexception.client.TkActorNotFoundException;
+import org.apache.http.annotation.Obsolete;
 
 import java.io.Serializable;
 import java.util.*;
@@ -740,9 +741,13 @@ Stack Trace:
      * names are customized to make this mapping unique.  This goes
      * beyond the definition in the TF.
      *
+     * NOT SAFE - THERE CAN BE MULTIPLE ACTORS DECLARING SINGLE
+     * TRANSACTIONTYPE
+     *
      * @param tt
      * @return
      */
+    @Obsolete
     static public ActorType getActorType(TransactionType tt) {
         if (tt == null)
             return null;
