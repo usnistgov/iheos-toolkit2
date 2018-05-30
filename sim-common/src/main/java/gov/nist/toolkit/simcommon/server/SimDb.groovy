@@ -13,6 +13,7 @@ import gov.nist.toolkit.simcommon.server.index.SiTypeWrapper
 import gov.nist.toolkit.simcommon.server.index.SimIndex
 import gov.nist.toolkit.utilities.io.Io
 import gov.nist.toolkit.utilities.io.ZipDir
+import gov.nist.toolkit.xdsexception.ExceptionUtil
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException
 import groovy.transform.TypeChecked
 import org.apache.commons.io.comparator.NameFileComparator
@@ -177,7 +178,7 @@ public class SimDb {
 	 * @param simId
 	 * @throws NoSimException
 	 */
-	public SimDb(SimId simId) throws NoSimException {
+	SimDb(SimId simId) throws NoSimException {
 		assert simId?.testSession?.value
 		File dbRoot = getSimDbFile(simId);
 		this.simId = simId;
@@ -204,17 +205,15 @@ public class SimDb {
 			throw new ToolkitRuntimeException("Cannot create content in Simulator database, creation of " + simDir.toString() + " failed");
 
 		createSimSafetyFile()
-//		// add this for safety when deleting simulators -
-//		if (!isSimDir(simDir)) {
-//			Io.stringToFile(simSafetyFile(), simId.toString());
-//		}
 	}
 
 	void createSimSafetyFile() {
 		// add this for safety when deleting simulators -
-//		if (!isSimDir(simDir)) {
+		try {
 			Io.stringToFile(simSafetyFile(), simId.toString());
-//		}
+		} catch (Exception e) {
+			logger.fatal("Cannot create safety file for simulator ${simId} - \n${ExceptionUtil.exception_details(e)}")
+		}
 	}
 
 	void openMostRecentEvent(ActorType actor, TransactionType transaction) {
@@ -266,33 +265,24 @@ public class SimDb {
 			throw new IOException("Simulator ID TestSession is null");
 	}
 
-	private void validateCurrentSimId() throws IOException { validateSimId(simId);}
-
 	private File simSafetyFile() { return new File(simDir, "simId.txt"); }
-	public boolean isSim() {
+
+	boolean isSim() {
 		if (simDir == null) return false;
 		return new File(simDir, "simId.txt").exists();
 	}
 	private static boolean isSimDir(File dir) { return new File(dir, "simId.txt").exists(); }
 
 
-	public Date getEventDate() {
+	Date getEventDate() {
 		return eventDate;
 	}
-
-//	SimDb(SimId simId, ActorType actor, TransactionType transaction) {
-//		this(simId, actor, transaction, false)
-//	}
 
 	SimDb(SimId simId, ActorType actor, TransactionType transaction, boolean openToLastTransaction) {
 		this(simId, actor.shortName, transaction.shortName, openToLastTransaction)
 	}
 
-//	public SimDb(SimId simId, String actor, String transaction) {
-//		this(simId, actor, transaction, false)
-//	}
-
-	public SimDb(SimId simId, String actor, String transaction, boolean openToLastTransaction) {
+	SimDb(SimId simId, String actor, String transaction, boolean openToLastTransaction) {
 		this(simId);
 		assert actor
 		this.actor = actor;
@@ -450,7 +440,7 @@ public class SimDb {
 	/**
 	 * Delete simulator
 	 */
-	public void delete() {
+	void delete() {
 		if (isSim()) {
 			if (simId != null) {
 				File indexFile = getIndexFile(simId);
