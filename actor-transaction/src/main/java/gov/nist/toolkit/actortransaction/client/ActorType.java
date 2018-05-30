@@ -717,7 +717,7 @@ Stack Trace:
     }
 
     static public List<String> getActorNames() {
-        List<String> names = new ArrayList<String>();
+        List<String> names = new ArrayList<>();
 
         for (ActorType a : values())
             names.add(a.name);
