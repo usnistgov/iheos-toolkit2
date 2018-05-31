@@ -8,7 +8,7 @@ class GroovyLoaderTest extends Specification {
     def 'Loader Test'() {
         setup:
         def topDir = System.getProperty("user.dir")
-        def testDir = topDir + '/src/test/groovy'
+        def testDir = topDir + '/plugin-support/src/test/groovy'
         println testDir
         PluginClassLoader loader = new PluginClassLoader(testDir)
 

@@ -67,10 +67,23 @@ public class TestKit {
 		return new File(testKit.toString() + File.separator + "testdata");
 	}
 
-	enum PluginType  { ASSERTION }
+	public enum PluginType  {
+		FHIR_ASSERTION("FhirAssertion");
+
+		private String name;
+
+		PluginType(String name) {
+			this.name = name;
+		}
+
+		public String getPathName() {
+			return name;
+		}
+
+	}
 
 	public File getPluginDir(PluginType pluginType) {
-		return new File(testKit.toString() + File.separator + "plugins" + File.separator + pluginType.name());
+		return new File(testKit.toString() + File.separator + "plugins" + File.separator + pluginType.getPathName());
 	}
 	
 	private String[] testkitSections = { "tests", "testdata", "examples", "utilities", "testdata-repository", "testdata-registry", "testdata-xdr" };

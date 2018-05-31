@@ -1,7 +1,9 @@
 package gov.nist.toolkit.testengine.engine.fhirValidations
 
 import gov.nist.toolkit.testengine.engine.FhirSimulatorTransaction
+import groovy.transform.ToString
 
+@ToString
 class ValidaterResult {
     FhirSimulatorTransaction transaction
     AbstractFhirValidater filter

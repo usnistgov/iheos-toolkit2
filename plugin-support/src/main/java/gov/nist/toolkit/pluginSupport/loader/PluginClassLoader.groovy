@@ -4,20 +4,23 @@ package gov.nist.toolkit.pluginSupport.loader
 
 class PluginClassLoader extends GroovyClassLoader {
     private LinkedList<Loader> loaders = new LinkedList<>()
-    private PluginClassLoader INSTANCE
+    PluginClassLoader INSTANCE
 
     // directories in classpath
     PluginClassLoader(String... paths) throws IOException {
+        this(paths.collect {String ele -> new File(ele)})
+    }
+
+    PluginClassLoader(List<File> paths) throws IOException {
         INSTANCE = this
         setShouldRecompile(true)
-        for (String path : paths) {
-            File file = new File(path);
+        for (File file : paths) {
 
-            Loader loader = loader(file);
+            Loader loader = loader(file)
             if (loader == null) {
-                throw new RuntimeException("Path not exists " + path);
+                throw new RuntimeException("Path not exists " + file)
             }
-            loaders.add(loader);
+            loaders.add(loader)
         }
     }
 
