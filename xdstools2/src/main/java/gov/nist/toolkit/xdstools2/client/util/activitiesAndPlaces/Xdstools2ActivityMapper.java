@@ -47,8 +47,9 @@ public class Xdstools2ActivityMapper implements ActivityMapper {
         }
 
         if (place instanceof  Tool) {
+            Tool tool = (Tool)place;
             ToolActivity toolActivity = clientFactory.getToolActivity();
-            toolActivity.setToolId(((Tool) place).getToolId());
+            toolActivity.setState(tool.getState());
             System.out.println("Go to " + ((Tool) place).getToolId());
             pushHomeTabToBackground();
             return toolActivity;

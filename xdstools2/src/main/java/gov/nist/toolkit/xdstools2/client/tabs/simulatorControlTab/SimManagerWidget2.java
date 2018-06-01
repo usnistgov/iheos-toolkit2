@@ -958,7 +958,7 @@ public class SimManagerWidget2 extends Composite {
     }
 
     private void defaultEditTabAction(SimulatorConfig config) {
-        new SimConfigEditTabLoader(hostTab, config).load();
+        new SimConfigEditorTabLoader(hostTab, config).load();
     }
 
 

@@ -16,15 +16,19 @@ import gov.nist.toolkit.xdstools2.client.tabs.findDocuments2Tab.FindDocuments2Ta
 import gov.nist.toolkit.xdstools2.client.tabs.getAllTab.GetAllTab;
 import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorTab;
 import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewer;
+import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.SimConfigEditorTabLoader;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.SimulatorControlTab;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.TestsOverviewTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.toolContext.State;
+import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.toolContext.Token;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ToolLauncher implements ClickHandler {
+	private State state;
 	private String tabType;
 	private SiteSpec siteSpec = null;
 	private RegistryObject ro = null;
@@ -48,6 +52,7 @@ public class ToolLauncher implements ClickHandler {
 	final static public String simulatorMessageViewTabLabel = "Simulator Logs";
 	final static public String newSimulatorMessageViewTabLabel = "New Simulator Logs";
 	final static public String simulatorControlTabLabel = "Simulators";
+	final static public String simulatorConfigEditTabLabel = "SimConfig";
 	final static public String srcStoresDocValTabLabel = "XDS.b_Doc_Source_Stores_Document";
 	final static public String documentRetrieveTabLabel = "RetrieveDocuments";
 	final static public String allocatePatientIdTabLabel = "Allocate Patient ID for the Public Registry";
@@ -75,8 +80,6 @@ public class ToolLauncher implements ClickHandler {
 	final static public String SysConfigTabLabel = "SUT Configuration";
 	final static public String submitResourceTabLabel = "Submit Resource";
 
-
-
 	final static public String conformanceTestsLabel = "Conformance Tests";
 	final static public String toolConfigTabLabel = "Toolkit configuration";
 
@@ -103,6 +106,7 @@ public class ToolLauncher implements ClickHandler {
 		tools.add(new ToolDef(simulatorMessageViewTabLabel, "SimMsgs", "SimMsgs"));
 		tools.add(new ToolDef(newSimulatorMessageViewTabLabel, "New SimMsgs", "New SimMsgs"));
 		tools.add(new ToolDef(simulatorControlTabLabel, "SimCntl", "SimCntl"));
+		tools.add(new ToolDef(simulatorConfigEditTabLabel, "SimConfig", "SimConfig"));
 		tools.add(new ToolDef(srcStoresDocValTabLabel, "SrcStores", "SrcStores"));
 		tools.add(new ToolDef(documentRetrieveTabLabel, "DocRet", "DocRet"));
 //		tools.addTest(new ToolDef(allocatePatientIdTabLabel, "FindDocs", "FindDocs"));
@@ -181,6 +185,11 @@ public class ToolLauncher implements ClickHandler {
 		if (menuName.equals(simulatorMessageViewTabLabel)) return new SimulatorMessageViewTab();
 		if (menuName.equals(newSimulatorMessageViewTabLabel)) return new NewToolLauncher().launch(new SimMsgViewer());
 		if (menuName.equals(simulatorControlTabLabel)) return new SimulatorControlTab();
+		if (menuName.equals(simulatorConfigEditTabLabel)) {
+			SimConfigEditorTabLoader tool = new SimConfigEditorTabLoader();
+			tool.load(state);
+			return tool.getTab();
+		}
 		if (menuName.equals(toolConfigTabLabel)) return new ToolConfigTab();
 		if (menuName.equals(mesaTabLabel)) return new MesaTestTab();
 		if (menuName.equals(conformanceTestsLabel)) return new ConformanceTestTab();
@@ -217,6 +226,9 @@ public class ToolLauncher implements ClickHandler {
 	}
 
 	public ToolWindow launch() {
+	    if (tabType==null && state!=null) {
+	    	tabType = state.getValue(Token.TOOLID);
+		}
 		return launch(tabType);
 	}
 
@@ -226,6 +238,10 @@ public class ToolLauncher implements ClickHandler {
 
 	public ToolLauncher(String tabType) {
 		this.tabType = tabType;
+	}
+
+	public ToolLauncher(State state) {
+		this.state = state;
 	}
 
 	public ToolLauncher(String tabType, SiteSpec siteSpec, RegistryObject ro) {
