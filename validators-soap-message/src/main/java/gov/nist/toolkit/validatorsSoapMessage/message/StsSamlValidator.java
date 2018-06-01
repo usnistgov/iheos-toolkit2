@@ -53,7 +53,7 @@ public class StsSamlValidator extends AbstractMessageValidator {
                 er.registerValidator(this);
 
                 OMElement securityEl = null;
-                List<OMElement> secEls = XmlUtil.decendentsWithLocalName(header, "Security");
+                List<OMElement> secEls = XmlUtil.decendentsWithLocalName(header, "Security", 1);
                 if (secEls.size() == 1) {
                     er.detail("Found one Security element.");
                     securityEl = secEls.get(0);
@@ -62,7 +62,7 @@ public class StsSamlValidator extends AbstractMessageValidator {
                     er.err(XdsErrorCode.Code.SoapFault, new Exception("Security element (SAML) was expected. Security element count is "+secEls.size()+", should be one."));
                 }
                 if (securityEl != null) {
-                    List<OMElement> assertionEls = XmlUtil.decendentsWithLocalName(securityEl, "Assertion");
+                    List<OMElement> assertionEls = XmlUtil.decendentsWithLocalName(securityEl, "Assertion", 1);
                     if (assertionEls!=null) {
                         if (assertionEls.size()!=1) {
                             er.err(XdsErrorCode.Code.SoapFault, new Exception("SAML assertion was expected. Assertion element count is "+assertionEls.size()+", should be one."));
