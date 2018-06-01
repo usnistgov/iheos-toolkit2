@@ -68,16 +68,26 @@ public class TestKit {
 	}
 
 	public enum PluginType  {
-		FHIR_ASSERTION("FhirAssertion");
+		FHIR_ASSERTION("FhirAssertion", "FHIR");
 
-		private String name;
+		private String pathName;
+		private String assertionName;
 
-		PluginType(String name) {
-			this.name = name;
+		PluginType(String pathName, String assertionName) {
+			this.pathName = pathName;
+			this.assertionName = assertionName;
 		}
 
 		public String getPathName() {
-			return name;
+			return pathName;
+		}
+
+		public static PluginType get(String name) {
+			for (PluginType type : values()) {
+				if (name.equals(type.pathName)) return type;
+				if (name.equals(type.assertionName)) return type;
+			}
+			return null;
 		}
 
 	}

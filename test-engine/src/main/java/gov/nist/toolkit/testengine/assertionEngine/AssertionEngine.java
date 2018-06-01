@@ -51,6 +51,11 @@ public class AssertionEngine {
    /** log.xml element to put test results under */
    OMElement output = null;
 
+   ToolkitEnvironment toolkitEnvironment;
+
+   public AssertionEngine(ToolkitEnvironment toolkitEnvironment) {
+      this.toolkitEnvironment = toolkitEnvironment;
+   }
 
    /**
     * Add detail message to output. passed detail is escaped for HTML, then set
@@ -180,7 +185,7 @@ public class AssertionEngine {
          if (linkage != null) {
             linkage.apply(asser);
          }
-         assertions.add(new Assertion(asser, testConfig, date()));
+         assertions.add(new Assertion(toolkitEnvironment, asser, testConfig, date()));
       }
    }
 

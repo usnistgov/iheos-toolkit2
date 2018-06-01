@@ -4,6 +4,7 @@ import gov.nist.toolkit.common.datatypes.Hl7Date;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.installation.server.Installation;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.registrymetadata.IdParser;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
@@ -39,7 +40,7 @@ import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
 import java.util.*;
 
-public abstract class BasicTransaction  {
+public abstract class BasicTransaction  implements ToolkitEnvironment {
 	protected OMElement instruction;
 	protected OMElement instruction_output;
 	PlanContext planContext = null;
@@ -114,6 +115,10 @@ public abstract class BasicTransaction  {
 	public StepContext getStepContext() {
 		return s_ctx;
 	}
+
+	public String getEnvironment() { return getStepContext().getEnvironment(); }
+
+	public TestSession getTestSession() { return getStepContext().getTestSession(); }
 
 	public UseReportManager getUseReportManager() { return useReportManager; }
 
@@ -1222,7 +1227,7 @@ public abstract class BasicTransaction  {
 
 	public void runAssertionEngine(OMElement step_output, ErrorReportingInterface eri, OMElement assertion_output) throws XdsInternalException {
 
-      AssertionEngine engine = new AssertionEngine();
+      AssertionEngine engine = new AssertionEngine(this);
       engine.setDataRefs(data_refs);
       engine.setCaller(this);
 

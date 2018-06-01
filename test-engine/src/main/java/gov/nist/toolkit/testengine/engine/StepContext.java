@@ -2,6 +2,7 @@ package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.testengine.transactions.*;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMAttribute;
@@ -35,6 +36,10 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 	public TransactionSettings getTransactionSettings() {
 		return transactionSettings;
 	}
+
+	public String getEnvironment() { return transactionSettings.environmentName; }
+
+	public TestSession getTestSession() { return transactionSettings.testSession; }
 
 	public void setTestConfig(TestConfig config) {
 		testConfig = config;
