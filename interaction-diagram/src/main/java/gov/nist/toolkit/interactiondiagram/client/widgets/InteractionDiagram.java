@@ -1164,8 +1164,9 @@ public class InteractionDiagram extends Composite {
 //        text.appendChild(textValue);
         group.appendChild(rect);
 
+        // Max display line is only 3 or NUM_LINES. Need to enforce this limit.
         OMSVGTextElement providerTextEl = doc.createSVGTextElement();
-        String[] providerNameLabel = splitName(name, MAX_LL_DISPLAY_NAME, "-", true);
+        String[] providerNameLabel = splitName(name, MAX_LL_DISPLAY_NAME, ".", true);
         providerTextEl =  multiLineLabel(ll.getLl_stem_center(),2, providerNameLabel,9, MAX_LL_DISPLAY_NAME);
         group.appendChild(providerTextEl);
 
@@ -1193,6 +1194,9 @@ public class InteractionDiagram extends Composite {
         String[] lines = new String[2];
         if (name!=null && name.length()>truncateTo && truncateTo>trailingString.length()) {
              lines[0] = name.substring(0, truncateTo-trailingString.length()) + trailingString;
+             if (singleLineOnly) {
+                 return new String[]{lines[0]};
+             }
              int charsRemaining = name.length() - truncateTo;
              if (charsRemaining > truncateTo) {
                  lines[1] = name.substring(truncateTo-1, truncateTo*2-lineLimitExceededString.length()) + lineLimitExceededString;

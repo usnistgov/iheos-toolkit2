@@ -17,7 +17,7 @@
     <parent>
         <groupId>gov.nist.toolkit</groupId>
         <artifactId>tk-deps</artifactId>
-        <version>6.4.0-SMAPSHOT</version>
+		<version>6.4.0-SNAPSHOT</version>
         <relativePath>/tk-deps/pom.xml</relativePath>
     </parent>
 
@@ -96,7 +96,6 @@
     </modules>
 
     <profiles>
-
         <profile>
             <id>WebUI-Tests</id>
             <activation>
@@ -106,7 +105,6 @@
                 <module>webui-tests</module>
             </modules>
         </profile>
-
     </profiles>
 
 

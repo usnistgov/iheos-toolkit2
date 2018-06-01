@@ -37,7 +37,7 @@ import java.util.*;
  *
  */
 public abstract class AbstractActorFactory {
-	static public Logger logger = Logger.getLogger(AbstractActorFactory.class);
+	static Logger logger = Logger.getLogger(AbstractActorFactory.class);
 
 	/*
 	 *
@@ -518,10 +518,14 @@ public abstract class AbstractActorFactory {
 		SimDb simdb;
 		File simCntlFile;
 		try {
-			simdb = new SimDb(simid);
-			simCntlFile = simdb.getSimulatorControlFile();
-			SimulatorConfig config = restoreSimulator(simCntlFile.toString());
-			return config;
+			if (SimDb.exists(simid)) {
+				simdb = new SimDb(simid);
+				simCntlFile = simdb.getSimulatorControlFile();
+				SimulatorConfig config = restoreSimulator(simCntlFile.toString());
+				return config;
+			} else {
+				return null;
+			}
 		} catch (Exception e) {
 			if (okifNotExist) return null;
 			throw e;
@@ -530,9 +534,12 @@ public abstract class AbstractActorFactory {
 	}	
 
 	static public SimulatorConfig getSimConfig(SimId simulatorId) throws Exception {
-		SimDb simdb = new SimDb(simulatorId);
-		File simCntlFile = simdb.getSimulatorControlFile();
-		return restoreSimulator(simCntlFile.toString());
+		if (SimDb.exists(simulatorId)) {
+			SimDb simdb = new SimDb(simulatorId);
+			File simCntlFile = simdb.getSimulatorControlFile();
+			return restoreSimulator(simCntlFile.toString());
+		}
+		throw new ToolkitRuntimeException("No simulator for simId: " + simulatorId.toString());
 	}
 
 	protected boolean isEndpointSecure(String endpoint) {

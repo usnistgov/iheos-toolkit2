@@ -135,9 +135,8 @@ class MhdClientTransaction extends BasicTransaction {
             String trans = simTransactionElement.getAttributeValue(new QName("transaction"));
             TransactionType tType = TransactionType.find(trans);
             if (tType == null) throw new XdsInternalException(a.toString() + " invalid transaction");
-            ActorType aType = ActorType.getActorType(tType);
             TestInstance ti = testConfig.testInstance;
-            SimId simId = new SimId(ti.testSession, id, aType.getShortName());
+            SimId simId = SimDb.getFullSimId(new SimId(ti.testSession, id))
             return new SimReference(simId, tType)
         } catch (XdsInternalException ie) {
             errs.add("Error decoding reference to simulator transaction from testplan assertion: " + ie.getMessage());

@@ -12,6 +12,7 @@ import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.installation.server.PropertyManager;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.testengine.assertionEngine.Assertion;
 import gov.nist.toolkit.testengine.assertionEngine.AssertionEngine;
 import gov.nist.toolkit.testengine.engine.*;
@@ -1016,9 +1017,8 @@ public class ImgDetailTransaction extends BasicTransaction {
          String pid = simTransactionElement.getAttributeValue(new QName("pid"));
          TransactionType tType = TransactionType.find(trans);
          if (tType == null) throw new XdsInternalException(a.toString() + " invalid transaction");
-         ActorType aType = ActorType.getActorType(tType);
          TestInstance ti = testConfig.testInstance;
-         SimId simId = new SimId(ti.getTestSession(), id, aType.getShortName());
+         SimId simId = SimDb.getFullSimId(new SimId(ti.getTestSession(), id));
          SimulatorTransaction simulatorTransaction = SimulatorTransaction.get(simId, tType, pid, null);
          try {
             switch (piece.toUpperCase()) {
@@ -1048,7 +1048,7 @@ public class ImgDetailTransaction extends BasicTransaction {
       if (tType == null) throw new XdsInternalException(a.toString() + " invalid transaction");
       ActorType aType = ActorType.getActorType(tType);
       TestInstance ti = testConfig.testInstance;
-      SimId simId = new SimId(ti.getTestSession(), id, aType.getShortName());
+      SimId simId = SimDb.getFullSimId(new SimId(ti.getTestSession(), id));
       return SimulatorTransaction.get(simId, tType, pid, null);
       } catch (XdsInternalException ie) {
          errs.add("Error loading simulator transaction" + ie.getMessage());

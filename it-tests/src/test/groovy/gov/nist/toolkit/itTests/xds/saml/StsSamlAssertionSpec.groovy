@@ -3,6 +3,7 @@ package gov.nist.toolkit.itTests.xds.saml
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.TransactionType
+import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.Result
@@ -37,7 +38,8 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
     @Shared Session tkSession
     @Shared SimConfig rrConfig = null
 
-    @Shared String gazelleSiteName = "GazelleSts" // Two choices: Use "GazelleSts" or "GazelleSts-bad"
+    @Shared String stsActorName = Installation.instance().propertyServiceManager().stsActorName // Two choices: Use "GazelleSts" or "GazelleSts-bad"
+    @Shared String tpName = Installation.instance().propertyServiceManager().stsTpName
 
     def setupSpec() {   // one time setup done when class launched
         startGrizzly('8889')
@@ -60,13 +62,16 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
 
     def setGazelleStsSite() {
 
-        String gazelleStsEndpoint = "https://gazelle.ihe.net/picketlink-sts"
+        // Picketlink-sts to be obsolete
+        // String gazelleStsEndpoint = "https://gazelle.ihe.net/picketlink-sts"
+        // New Sts service
+        String gazelleStsEndpoint =  "https://gazelle.ihe.net/gazelle-sts"
         String transName = "sts";
         String endpoint = gazelleStsEndpoint
         boolean isSecure = true;
         boolean isAsync = false;
 
-        gazelleStsSite = new Site(gazelleSiteName, TestSession.DEFAULT_TEST_SESSION)
+        gazelleStsSite = new Site(stsActorName, TestSession.DEFAULT_TEST_SESSION)
         gazelleStsSite.addTransaction(transName, endpoint, isSecure, isAsync);
 
         // Adding a site dynamically doesn't work. Must use Actors.xml file.
@@ -80,10 +85,11 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
 
     def 'Make sure the GazelleSts site can be retrieved from the Actor file'() {
         when:
+        // Note: To find actors, this getAllSites uses the site=name attribute inside the xml file to, but not through the xml file name itself.
         Collection<Site> sites = new SimCache().getAllSites(TestSession.DEFAULT_TEST_SESSION)
 
         for (Site site : sites) {
-            if (gazelleSiteName.equals(site.getName())) {
+            if (stsActorName.equals(site.getName())) {
                 gazelleStsSite = site;
                 System.out.println("Found site: <" + site.getName() +"> endpoint: " + site.getEndpoint(TransactionType.STS, true, false))
             }
@@ -112,18 +118,19 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
 
     def 'Get SAML Assertion'(){
         when:
-        String siteName = gazelleStsSite.getName()
-        TestInstance testId = new TestInstance("GazelleSts", TestSession.DEFAULT_TEST_SESSION)
+        TestInstance testId = new TestInstance(tpName, TestSession.DEFAULT_TEST_SESSION)
         List<String> sections = new ArrayList<>()
         sections.add("samlassertion-issue")
         Map<String, String> params = new HashMap<>()
-        params.put('$saml-username$',"Xuagood")
+//      params.put('$saml-username$',"Xuagood")
+        params.put('$saml-username$',"valid")
         boolean stopOnFirstError = true
 
         and: 'Run samlassertion-issue'
 //        No need to set this: session.setTls(true)
         // Main parameter for the TLS is the isTls flag in the runTest method
-        List<Result> results = api.runTest(TestSession.DEFAULT_TEST_SESSION.value, siteName, true, testId, sections, params, stopOnFirstError)
+        // Basic authentication for Sts is automatically handled in the HttpTransaction
+        List<Result> results = api.runTest(TestSession.DEFAULT_TEST_SESSION.value, stsActorName, true, testId, sections, params, stopOnFirstError)
 
         then:
         results.size() == 1
@@ -132,8 +139,7 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
 
     def 'Validate SAML Assertion'() {
         when:
-        String siteName = gazelleStsSite.getName()
-        TestInstance testId = new TestInstance("GazelleSts", TestSession.DEFAULT_TEST_SESSION)
+        TestInstance testId = new TestInstance(tpName, TestSession.DEFAULT_TEST_SESSION)
         List<String> sections = new ArrayList<>()
         sections.add("samlassertion-validate")
         Map<String, String> params = new HashMap<>()
@@ -142,7 +148,7 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
         and: 'Run samlassertion-validate'
 //        For it-tests, there is no need to set this: session.setTls(true) BUT it is required for the non-api type main code.
         // Main parameter for the TLS is the isTls flag in the runTest method
-        List<Result> results = api.runTest(TestSession.DEFAULT_TEST_SESSION.value, siteName, true, testId, sections, params, stopOnFirstError)
+        List<Result> results = api.runTest(TestSession.DEFAULT_TEST_SESSION.value, stsActorName, true, testId, sections, params, stopOnFirstError)
 
         then:
         results.size() == 1

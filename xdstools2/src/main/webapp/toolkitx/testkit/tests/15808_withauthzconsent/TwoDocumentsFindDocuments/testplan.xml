@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <!-- Data for this test is loaded by 15807-->
+    <Test>15808_withauthzconsent/TwoDocumentsFindDocuments</Test>
+    <TestStep id="finddocs">
+        <Goal>FindDocuments query returns two DocumentEntries from same Community</Goal>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <Rule>
+            <Transaction>XCQ</Transaction>
+            <SQ>Test FindDocuments Cross-Community - two documents from single community</SQ>
+            <Assertion>LeafClass return</Assertion>
+        </Rule>
+        <IGQTransaction>
+            <MetadataFile>query.xml</MetadataFile>
+            <UseId testdir="../../15807/twodoc" id="SubmissionSet01" step="submit"
+                   section="AssignedPatientId" symbol="$patient_id$"/>
+
+  
+        </IGQTransaction>
+    </TestStep>
+    
+</TestPlan>

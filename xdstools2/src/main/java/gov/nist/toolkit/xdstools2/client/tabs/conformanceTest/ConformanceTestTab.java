@@ -155,9 +155,9 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		mainView.getProfileTabBar().addSelectionHandler(new ProfileSelectionHandler());
 		mainView.getOptionsTabBar().addSelectionHandler(new OptionSelectionHandler());
 
-		mainView.getMenuImage().addStyleName("iconbutton");
-		mainView.getMenuImage().setTitle("Index");
-		mainView.getMenuImage().addClickHandler(new ClickHandler() {
+		mainView.getIndexAnchor().addStyleName("iconbutton");
+		mainView.getIndexAnchor().setTitle("Overview of Actor/Profile/Option");
+		mainView.getIndexAnchor().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent clickEvent) {
 				mainView.getTabBarPanel().setVisible(false);
@@ -426,7 +426,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 			return;
 		}
 
-		if (siteToIssueTestAgainst != null) {
+		if (siteToIssueTestAgainst != null && !(siteToIssueTestAgainst.getName()=="" || siteToIssueTestAgainst.getName()==null)) {
 			new GetSiteCommand() {
 				@Override
 				public void onFailure(Throwable throwable) {
@@ -454,12 +454,20 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 			new GetAssignedSiteForTestSessionCommand() {
 				@Override
+				public void onFailure(Throwable throwable) {
+					new PopupMessage("GetAssignedSiteForTestSessionCommand failed: Unable to determine if SUT has been assigned in Test Context.");
+				}
+
+				@Override
 				public void onComplete(final String result) {
 					testContext.setCurrentSiteSpec(result);
 					testContextView.updateTestingContextDisplay();
 
-					if (result == null) return;
-					if (result.equals(NONE)) return;
+					if ((result == null) || NONE.equals(result)) {
+						updateDisplayedActorAndOptionType();
+						return;
+					}
+
 					new GetSiteCommand() {
 						@Override
 						public void onFailure(Throwable throwable) {
@@ -937,7 +945,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		if (parts.length>1) {
 			return parts[parts.length-1];
 		} else {
-			new PopupMessage("Test Id needs be suffixed with '_Xuausername': TestId_Xuausername.");
+			new PopupMessage("Test Id needs be suffixed with '_username' like so: testId_username.");
 			return null;
 		}
 	}
@@ -1023,14 +1031,23 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 		if (orchInit.isSaml()) {
 			if (testIterator == null /* Signifies individual test runner */) {
+				Map<String,String> tkPropMap = ClientUtils.INSTANCE.getTkPropMap();
+				String stsActorName = null;
+				String stsTpName = null;
+				if (tkPropMap!=null) {
+					stsActorName = tkPropMap.get("Sts_ActorName");
+					stsTpName = tkPropMap.get("Sts_TpName");
+				} else {
+					new PopupMessage("Error reading tkPropMap cache.");
+				}
 				// STS SAML assertion
 				// This has to be here because we need to retrieve the assertion just in time before the test executes. Any other way will be confusing to debug and more importantly the assertion will not be fresh.
 				// Interface can be refactored to support mulitple run methods such as runTest[WithSamlOption] and runTest.
-				TestInstance stsTestInstance = new TestInstance("GazelleSts", TestSession.DEFAULT_TEST_SESSION);
+				TestInstance stsTestInstance = new TestInstance(stsTpName, TestSession.DEFAULT_TEST_SESSION);
 				stsTestInstance.setSection("samlassertion-issue");
-				SiteSpec stsSpec =  new SiteSpec("GazelleSts", TestSession.DEFAULT_TEST_SESSION);
+				SiteSpec stsSpec =  new SiteSpec(stsActorName, TestSession.DEFAULT_TEST_SESSION);
 				Map<String, String> params = new HashMap<>();
-				String xuaUsername = "Xuagood";
+				String xuaUsername = "valid";
 				if (orchInit.isXuaOption()) {
 					xuaUsername = getXuaUsernameFromTestplan(testInstance);
 				}

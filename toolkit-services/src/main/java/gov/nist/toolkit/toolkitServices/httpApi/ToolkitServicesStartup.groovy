@@ -36,6 +36,8 @@ class ToolkitServicesStartup extends HttpServlet {
                     logger.info("FHIR Support Server was ${isNot} started")
                 }  catch (Throwable e) {
                     logger.fatal("Failed to launch FHIR Support Server: ${e.getMessage()}")
+                    logger.fatal("${e}")
+                    e.printStackTrace()
                 }
             }
     }

@@ -7,6 +7,7 @@ import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.command.command.GetStsSamlAssertionCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetStsSamlAssertionMapCommand;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetStsSamlAssertionMapRequest;
@@ -43,8 +44,17 @@ class RunTestsClickHandler implements ClickHandler, TestIterator {
         testTarget.getSiteToIssueTestAgainst().setTls(orchInit.isTls());
 
         if (orchInit.isSaml()) {
-            SiteSpec stsSpec = new SiteSpec("GazelleSts", TestSession.DEFAULT_TEST_SESSION);
-            TestInstance testInstance = new TestInstance("GazelleSts", TestSession.DEFAULT_TEST_SESSION);
+            Map<String,String> tkPropMap = ClientUtils.INSTANCE.getTkPropMap();
+            String stsActorName = null;
+            String stsTpName = null;
+            if (tkPropMap!=null) {
+               stsActorName = tkPropMap.get("Sts_ActorName");
+               stsTpName = tkPropMap.get("Sts_TpName");
+            } else {
+                new PopupMessage("Error reading tkPropMap cache.");
+            }
+            SiteSpec stsSpec = new SiteSpec(stsActorName, TestSession.DEFAULT_TEST_SESSION);
+            TestInstance testInstance = new TestInstance(stsTpName, TestSession.DEFAULT_TEST_SESSION);
             testInstance.setSection("samlassertion-issue");
             Map<String, String> params = new HashMap<>();
 

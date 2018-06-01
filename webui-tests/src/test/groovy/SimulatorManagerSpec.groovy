@@ -13,7 +13,7 @@ class SimulatorManagerSpec extends ToolkitWebPage {
         loadPage(String.format("%s/#Tool:Simulators",toolkitBaseUrl))
     }
 
-    def 'No weird popup after initial page load'() {
+    def 'No unexpected popup after initial page load'() {
         when:
         List<HtmlDivision> divList = getDialogBox()
 
@@ -21,7 +21,7 @@ class SimulatorManagerSpec extends ToolkitWebPage {
         divList!=null && divList.size()==0
     }
 
-    def 'Select test session.'() {
+    def 'Use test session.'() {
         when:
         HtmlOption newlySelectedSessionOption = useTestSession(simUser)
 
@@ -30,7 +30,7 @@ class SimulatorManagerSpec extends ToolkitWebPage {
         newlySelectedSessionOption.isSelected()
     }
 
-    def 'No weird popup after selecting session.'() {
+    def 'No unexpected popup after using a session.'() {
         when:
         List<HtmlDivision> divList = getDialogBox()
 
@@ -98,7 +98,7 @@ class SimulatorManagerSpec extends ToolkitWebPage {
 
                     actorInput.setValueAttribute(testSimActorShortName)
                     page = createButton.click()
-                    webClient.waitForBackgroundJavaScript(1500)
+                    webClient.waitForBackgroundJavaScript(2500)
 
                     List<HtmlDivision> divList = getDialogBox()
                     boolean unexpectedDialogBox = divList!=null && divList.size()==1

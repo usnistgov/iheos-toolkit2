@@ -1,6 +1,7 @@
 package gov.nist.toolkit.installation.server;
 
 import gov.nist.toolkit.utilities.io.Io;
+import gov.nist.toolkit.xdsexception.client.TkNotFoundException;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
 
@@ -19,6 +20,12 @@ public class PropertyManager {
 	static private final String EXTERNAL_CACHE      = "External_Cache";
 	static private final String USE_ACTORS_FILE     = "Use_Actors_File";
 	static public  final String ENABLE_SAML			= "Enable_SAML";
+	static public  final String BYPASS_SECURITYHDR_MU_ON_INCOMING_RESPONSE = "Bypass_SecurityHeaderMuOnIncomingResponse";
+	/**
+	 * Same name is used for both the sts actor and its related sts test plan
+	 */
+	static public  final String STS_ACTOR_NAME = "Sts_ActorName";
+	static public  final String STS_TESTPLAN_NAME = "Sts_TpName";
 	static private final String TESTKIT             = "Testkit";
 	static private final String LISTENER_PORT_RANGE = "Listener_Port_Range";
 	static private final String AUTO_INIT_CONFORMANCE_TOOL = "Auto_init_conformance_tool";
@@ -185,13 +192,40 @@ public class PropertyManager {
 		return (String) toolkitProperties.get(GAZELLE_CONFIG_URL);
 	}
 
+	public String getStsActorName() throws TkNotFoundException {
+		loadProperties();
+		String value = (String) toolkitProperties.get(STS_ACTOR_NAME);
+		if (value!=null && !"".equals(value)) {
+			return value;
+		}
+		throw new TkNotFoundException(STS_ACTOR_NAME + " is not configured.", "toolkit.properties");
+	}
+
+	public String getStsTpName() throws TkNotFoundException {
+		loadProperties();
+		String value = (String) toolkitProperties.get(STS_TESTPLAN_NAME);
+		if (value!=null && !"".equals(value)) {
+			return value;
+		}
+		throw new TkNotFoundException(STS_TESTPLAN_NAME + " is not configured.", "toolkit.properties");
+	}
+
+	public boolean isBypassSecurityHeaderMuOnResponse() {
+		loadProperties();
+		String use = (String) toolkitProperties.get(BYPASS_SECURITYHDR_MU_ON_INCOMING_RESPONSE);
+		if (use == null)
+			return false;
+		use = use.trim().toLowerCase();
+		return "true".compareToIgnoreCase(use) == 0;
+	}
+
 	public boolean isEnableSaml() {
 		loadProperties();
 		String use = (String) toolkitProperties.get(ENABLE_SAML);
 		if (use == null)
 			return true;
 		use = use.trim().toLowerCase();
-		return "true".compareTo(use) == 0;
+		return "true".compareToIgnoreCase(use) == 0;
 	}
 
 	public String getExternalCache() {

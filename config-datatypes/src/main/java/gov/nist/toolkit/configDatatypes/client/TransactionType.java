@@ -41,6 +41,11 @@ public enum TransactionType implements Serializable, IsSerializable {
     FIND_DOC_REFS("ITI-67", "Find DocumentReference", "fdr", "fdr", "fdr.as", false, "fhir", "fhir", false, SimulatorProperties.fdrEndpoint, SimulatorProperties.fdrTlsEndpoint, true, FhirVerb.QUERY),
     READ_DOC_REF("ITI-67", "Read DocumentReference", "rdr", "rdr", "rdr.as", false, "fhir", "fhir", false, SimulatorProperties.rdrEndpoint, SimulatorProperties.rdrTlsEndpoint, true, FhirVerb.READ),
     READ_BINARY("ITI-68", "Binary", "br", "br", "br.as", false, "fhir", "fhir", false, SimulatorProperties.rdBinaryEndpoint, SimulatorProperties.rdBinaryTlsEndpoint, true, FhirVerb.READ),
+    /*
+    Reuse ITI-38 and ITI-39 for Sequoia's QD and RD. A new UseSequoiaHeader test plan parameter dynamically adds security related headers.
+	QD("QD", "Sequoia Query Document", "qd", "qd", "qd.as", false, "urn:ihe:iti:2007:CrossGatewayQuery", "urn:ihe:iti:2007:CrossGatewayQueryResponse", false, SimulatorProperties.xcqEndpoint, SimulatorProperties.xcqTlsEndpoint),
+	RD("RD", "Sequoia Retrieve Document", "rd", "rd", "rd.as", false, "urn:ihe:iti:2007:CrossGatewayRetrieve", "urn:ihe:iti:2007:CrossGatewayRetrieveResponse", true, SimulatorProperties.xcrEndpoint, SimulatorProperties.xcrTlsEndpoint),
+	*/
     NONE("NONE", "NONE", "none", "none", "none.as", false, "none", "none", false, null, null, false, FhirVerb.NONE),
     ANY("ANY", "ANY", "any", "any", "any.as", false, "any", "any", false, null, null, false, FhirVerb.NONE);
 

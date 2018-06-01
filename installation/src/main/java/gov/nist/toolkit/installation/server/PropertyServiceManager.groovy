@@ -111,6 +111,14 @@ public class PropertyServiceManager {
 		getPropertyManager().casMode
 	}
 
+	String getStsActorName() {
+		getPropertyManager().stsActorName
+	}
+
+	String getStsTpName() {
+		getPropertyManager().stsTpName
+	}
+
 	int getNonceSize() {
 		getPropertyManager().nonceSize
 	}

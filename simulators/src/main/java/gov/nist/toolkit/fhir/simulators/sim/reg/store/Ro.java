@@ -79,7 +79,7 @@ public class Ro  implements Serializable  {
     }
 
 	public boolean isPathIsRelative() {
-		return pathToMetadata != null && !pathToMetadata.startsWith("/");
+		return pathToMetadata != null && new File(pathToMetadata).toPath().getRoot()==null;
 	}
 
 	public void setPathIsRelative(boolean pathIsRelative) {

@@ -4,6 +4,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.configDatatypes.client.FhirVerb;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.xdsexception.client.TkActorNotFoundException;
+import org.apache.http.annotation.Obsolete;
 
 import java.io.Serializable;
 import java.util.*;
@@ -30,6 +31,22 @@ public enum ActorType implements IsSerializable, Serializable {
             "xdrsrc",
             "gov.nist.toolkit.simcommon.server.factories.XdrDocSrcActorFactory",
             "gov.nist.toolkit.fhir.simulators.sim.src.XdrDocSrcActorSimulator",
+            // why was the actor factory a FixedReplySimulator ???
+            //  and transaction of Arrays.asList(TransactionType.ANY), ???
+            // This combination caused this it-test error:
+            /*
+
+{ code:"400" extendedCode:"0" reason:"BadSimConfig Do not understand transaction xdrpr" reasonPhrase:"Bad Request"
+Stack Trace:
+  Do not understand transaction xdrpr
+  gov.nist.toolkit.actorfactory.client.BadSimConfigException: Do not understand transaction xdrpr
+  at gov.nist.toolkit.toolkitServices.SimulatorsController.xdr(SimulatorsController.java:581)
+
+ }
+	at gov.nist.toolkit.toolkitApi.EngineSpi.sendXdr(EngineSpi.java:162)
+	at gov.nist.toolkit.toolkitApi.XdrDocumentSource.sendProvideAndRegister(XdrDocumentSource.java:23)
+	at gov.nist.toolkit.itTests.xdr.MinimalMetadataSpec.send XDR with minimal metadata(MinimalMetadataSpec.groovy:88)
+             */
             Arrays.asList(TransactionType.XDR_PROVIDE_AND_REGISTER),
             false,
             null,
@@ -37,6 +54,24 @@ public enum ActorType implements IsSerializable, Serializable {
             Constants.USE_SHORTNAME,
             IheItiProfile.XDS,
             Arrays.asList(OptionType.REQUIRED)
+    ),
+    FIXED_REPLY(
+            "Fixed Reply",
+            Arrays.asList(""),
+            "fixed",
+            "gov.nist.toolkit.actorfactory.FixedReplyFactory",
+            "gov.nist.toolkit.simulators.sim.fixed.FixedReplySimulator",
+            Arrays.asList(TransactionType.PROVIDE_AND_REGISTER,
+                    TransactionType.REGISTER,
+                    TransactionType.RETRIEVE,
+                    TransactionType.XC_RETRIEVE,
+                    TransactionType.XC_QUERY),
+            true,
+            null,
+            false,
+            Constants.USE_SHORTNAME,
+            null,
+            null
     ),
     REGISTRY(
             "Document Registry",
@@ -682,7 +717,7 @@ public enum ActorType implements IsSerializable, Serializable {
     }
 
     static public List<String> getActorNames() {
-        List<String> names = new ArrayList<String>();
+        List<String> names = new ArrayList<>();
 
         for (ActorType a : values())
             names.add(a.name);
@@ -706,9 +741,13 @@ public enum ActorType implements IsSerializable, Serializable {
      * names are customized to make this mapping unique.  This goes
      * beyond the definition in the TF.
      *
+     * NOT SAFE - THERE CAN BE MULTIPLE ACTORS DECLARING SINGLE
+     * TRANSACTIONTYPE
+     *
      * @param tt
      * @return
      */
+    @Obsolete
     static public ActorType getActorType(TransactionType tt) {
         if (tt == null)
             return null;
@@ -767,9 +806,12 @@ public enum ActorType implements IsSerializable, Serializable {
             return null;
 
         for (ActorType actor : values()) {
-            if (actor.name.equals(name)) return actor;
-            if (actor.shortName.equals(name)) return actor;
-            if (actor.altNames.contains(name)) return actor;
+            if (actor.name.equals(name))
+                return actor;
+            if (actor.shortName.equals(name))
+                return actor;
+            if (actor.altNames.contains(name))
+                return actor;
         }
         return null;
     }

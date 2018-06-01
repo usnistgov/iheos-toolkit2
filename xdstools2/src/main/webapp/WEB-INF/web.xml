@@ -4,13 +4,9 @@
         "http://java.sun.com/dtd/web-app_2_3.dtd">
 
 <web-app>
-
     <!--
-
         These 3 parameters are no longer used.
     -->
-
-
     <!--  Server settings
         <context-param>
             <param-name>actors-file-location</param-name>
@@ -36,12 +32,9 @@
         </context-param>
 
         -->
-
     <!--
-
       End of configuration parameters.
-
-   -->
+     -->
 
     <filter>
         <filter-name>fhir-request-log</filter-name>
@@ -59,6 +52,16 @@
         <filter-class>gov.nist.toolkit.fhir.simulators.servlet.SimServletFilter</filter-class>
     </filter>
 
+    <filter>
+        <filter-name>http-response-header-log</filter-name>
+        <filter-class>gov.nist.toolkit.fhir.simulators.servlet.HttpSimServletFilter</filter-class>
+    </filter>
+
+    <filter>
+        <filter-name>http-response-header-log2</filter-name>
+        <filter-class>gov.nist.toolkit.fhir.simulators.servlet.HttpSimServletFilter</filter-class>
+    </filter>
+
     <filter-mapping>
         <filter-name>fhir-request-log</filter-name>
         <url-pattern>/fsim/*</url-pattern>
@@ -74,15 +77,6 @@
         <url-pattern>/xdstools2/sim/*</url-pattern>
     </filter-mapping>
 
-    <filter>
-        <filter-name>http-response-header-log</filter-name>
-        <filter-class>gov.nist.toolkit.fhir.simulators.servlet.HttpSimServletFilter</filter-class>
-    </filter>
-
-    <filter>
-        <filter-name>http-response-header-log2</filter-name>
-        <filter-class>gov.nist.toolkit.fhir.simulators.servlet.HttpSimServletFilter</filter-class>
-    </filter>
 
     <filter-mapping>
         <filter-name>http-response-header-log</filter-name>
@@ -308,8 +302,6 @@
         <url-pattern>/xdstools2/rest/*</url-pattern>
     </servlet-mapping>
 
-
-
    <!--
 		session times out in 15 minutes (default is 30 minutes)
 		<session-config> <session-timeout>15</session-timeout>
@@ -321,31 +313,23 @@
         <welcome-file>Xdstools2.html</welcome-file>
     </welcome-file-list>
 
-    <!-- Require HTTPS for everything except /img (favicon) and /css.
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>HTTPSOnly</web-resource-name>
-            <url-pattern>/*</url-pattern>
-        </web-resource-collection>
-        <user-data-constraint>
-            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
-        </user-data-constraint>
-    </security-constraint>
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>HTTPSOrHTTP</web-resource-name>
-            <url-pattern>*.ico</url-pattern>
-            <url-pattern>/img/*</url-pattern>
-            <url-pattern>/css/*</url-pattern>
 
-            <url-pattern>/sim/*</url-pattern>
-            <url-pattern>/fsim/*</url-pattern>
+    <!-- Require HTTPS only for the following url-patterns . -->
+    <!--<security-constraint>-->
+        <!--<web-resource-collection>-->
+            <!--<web-resource-name>HTTPSOnly</web-resource-name>-->
+            <!--<url-pattern>/xdstools2/toolkit</url-pattern>   &lt;!&ndash; The GWT RPC backend &ndash;&gt;-->
+            <!--<url-pattern>/Xdstools2.html</url-pattern>      &lt;!&ndash; The single-page application &ndash;&gt;-->
+            <!--<url-pattern>/Xdstools2.html/*</url-pattern>    &lt;!&ndash; The single-page application wildcard &ndash;&gt;-->
+            <!--<url-pattern>/#</url-pattern>                   &lt;!&ndash; Default page &ndash;&gt;-->
+            <!--<url-pattern>/#*</url-pattern>                  &lt;!&ndash; Tool URL, for example /#ConfActor &ndash;&gt;-->
+            <!--<url-pattern>/Xdstools2.html#*</url-pattern>    &lt;!&ndash; Tool URL wildcard &ndash;&gt;-->
+        <!--</web-resource-collection>-->
+        <!--<user-data-constraint>-->
+            <!--<transport-guarantee>CONFIDENTIAL</transport-guarantee>-->
+        <!--</user-data-constraint>-->
+    <!--</security-constraint>-->
 
-        </web-resource-collection>
-        <user-data-constraint>
-            <transport-guarantee>NONE</transport-guarantee>
-        </user-data-constraint>
-    </security-constraint>
-    -->
+
 
 </web-app>

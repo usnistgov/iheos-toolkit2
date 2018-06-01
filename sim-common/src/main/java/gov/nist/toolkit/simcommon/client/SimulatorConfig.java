@@ -274,6 +274,10 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 //		this.vc = vc;
 //	}
 
+	public TestSession getTestSession() {
+		return id.getTestSession();
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -298,7 +302,5 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 		return result;
 	}
 
-	public TestSession getTestSession() {
-   		return id.getTestSession();
-	}
+
 }

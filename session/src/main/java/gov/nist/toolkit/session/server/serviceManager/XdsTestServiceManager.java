@@ -212,14 +212,16 @@ public class XdsTestServiceManager extends CommonService {
 		Session mySession = new Session(Installation.instance().warHome(), testSession.toString());
 		mySession.setEnvironment(environmentName);
 
-		// This must exist in the EC Dir. ex. GazelleSts
+		// Site must exist
 		SiteSpec stsSpec =  new SiteSpec(siteName, testSession);
 		if (mySession.getTestSession() == null)
 			mySession.setTestSession(testSession);
 		mySession.setSiteSpec(stsSpec);
-		mySession.setTls(true); // Required for Gazelle
+		mySession.setTls(true); // Required for STS
 
-		TestInstance testInstance = new TestInstance("GazelleSts", TestSession.DEFAULT_TEST_SESSION);
+		String stsTpName = Installation.instance().propertyServiceManager().getStsTpName();
+
+		TestInstance testInstance = new TestInstance(stsTpName, TestSession.DEFAULT_TEST_SESSION);
 
 		List<String> sections = new ArrayList<String>();
 		sections.add(query);

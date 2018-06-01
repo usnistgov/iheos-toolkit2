@@ -15,6 +15,7 @@ import gov.nist.toolkit.xdstools2.client.command.command.GetStsSamlAssertionComm
 import gov.nist.toolkit.xdstools2.client.command.command.GetToolkitPropertiesCommand;
 import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.ConformanceTestTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetStsSamlAssertionRequest;
 
 import java.util.HashMap;
@@ -41,11 +42,22 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
     private CheckBox samlCheckBox = new CheckBox("SAML");
     private boolean xuaOption;
     private String samlAssertion;
-    private static final TestInstance stsTestInstance = new TestInstance("GazelleSts");
+    private static final TestInstance stsTestInstance;
+    private static final SiteSpec stsSpec;
     static {
+        Map<String,String> tkPropMap = ClientUtils.INSTANCE.getTkPropMap();
+        String stsActorName = null;
+        String stsTpName = null;
+        if (tkPropMap!=null) {
+            stsActorName = tkPropMap.get("Sts_ActorName");
+            stsTpName = tkPropMap.get("Sts_TpName");
+        } else {
+            new PopupMessage("Error reading tkPropMap cache.");
+        }
+        stsSpec =  new SiteSpec(new TestSession(stsActorName));
+        stsTestInstance = new TestInstance(stsTpName);
         stsTestInstance.setSection("samlassertion-issue");
     }
-    private static final SiteSpec stsSpec =  new SiteSpec(new TestSession("GazelleSts"));
     private static final Map<String, String> samlParams = new HashMap<>();
     static public final String XUA_OPTION = "xua";
 
@@ -111,7 +123,7 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
             samlCheckBox.setValue(true);
             samlCheckBox.setEnabled(false);
         } else {
-            samlCheckBox.setTitle("Uses Gazelle's 'Xuagood' STS Username.");
+            samlCheckBox.setTitle("Uses Gazelle STS Username 'valid'");
         }
         panel.add(samlCheckBox);
         enableSaml();
