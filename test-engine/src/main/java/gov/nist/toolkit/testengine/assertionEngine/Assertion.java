@@ -1,8 +1,12 @@
 package gov.nist.toolkit.testengine.assertionEngine;
 
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.testengine.engine.AbstractValidater;
 import gov.nist.toolkit.testengine.engine.TestConfig;
 import gov.nist.toolkit.testengine.engine.ToolkitEnvironment;
+import gov.nist.toolkit.testengine.engine.fhirValidations.SimReference;
 import gov.nist.toolkit.testkitutilities.TestKit;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import org.apache.axiom.om.OMAttribute;
@@ -18,12 +22,15 @@ import java.util.*;
 public class Assertion {
 
 	// This is used to manage assertion plugins
-	static class Validation {
+	// this is processed by MhdClientTransaction for pluginType FHIR
+	public static class Validations {
 
-		static class ValidaterInstance {
-			String validaterName;
-			AbstractValidater validater;
-			Map<String, String> parameters;
+		TestKit.PluginType pluginType;
+
+		public static class ValidaterInstance {
+			public String validaterName;
+			public AbstractValidater validater;
+			public Map<String, String> parameters;
 
 			ValidaterInstance(String name, AbstractValidater validater, Map<String, String> parameters) {
 				this.validaterName = name;
@@ -32,11 +39,10 @@ public class Assertion {
 			}
 		}
 
-		TestKit.PluginType pluginType;
-		List<ValidaterInstance> validaters = new ArrayList<>();
+		public List<ValidaterInstance> validaters = new ArrayList<>();
 	}
 
-	List<Validation> validations = new ArrayList<>();
+	public Validations validations;
 
 	/**
 	 * {@code <Assert>} element from testplan.xml
@@ -55,8 +61,10 @@ public class Assertion {
 	 */
 	public String xpath;
 
+	private ToolkitEnvironment toolkitEnvironment;
 
 	Assertion(ToolkitEnvironment toolkitEnvironment, OMElement asser, TestConfig testConfig, String date) {
+		this.toolkitEnvironment = toolkitEnvironment;
 		assertElement = asser;
 		id = asser.getAttributeValue(new QName("id"));
 		process = asser.getAttributeValue(new QName("process"));
@@ -66,14 +74,15 @@ public class Assertion {
 					.replaceAll("\\$DATE\\$", date)
 					.replaceAll("SITE", testConfig.siteXPath);
 		}
-		OMElement validations = asser.getFirstChildWithName(new QName("Validations"));
+		OMElement validationsEle = asser.getFirstChildWithName(new QName("Validations"));
 		if (validations != null) {
-			String type = validations.getAttributeValue(new QName("type"));
+			String type = validationsEle.getAttributeValue(new QName("type"));
 			TestKit.PluginType pluginType = TestKit.PluginType.get(type);
 			if (pluginType == null)
 				throw new ToolkitRuntimeException("Parsing TestPlan Assertion - do not understand validation type " + type);
+			validations.pluginType = pluginType;
 
-			for (Iterator it = validations.getChildElements(); it.hasNext() ; ) {
+			for (Iterator it = validationsEle.getChildElements(); it.hasNext() ; ) {
 				Object o = it.next();
 				if (!(o instanceof OMElement)) continue;
 				OMElement valEle = (OMElement) o;
@@ -95,17 +104,26 @@ public class Assertion {
 
 				AbstractValidater validaterInst = context.getValidater(validaterClassName, params);
 
-				Validation validation = new Validation();
-				validation.pluginType = pluginType;
-				validation.validaters.add(new Validation.ValidaterInstance(validaterClassName, validaterInst, params));
-				this.validations.add(validation);
+				validations.validaters.add(new Validations.ValidaterInstance(validaterClassName, validaterInst, params));
 			}
 		}
 	}
 
+	public SimReference getSimReference(OMElement simTransactionElement) {
+		if (simTransactionElement == null)
+			throw new ToolkitRuntimeException(this.toString() + " has no SimReference element");
+		String id = simTransactionElement.getAttributeValue(new QName("id"));
+		String trans = simTransactionElement.getAttributeValue(new QName("transaction"));
+		TransactionType tType = TransactionType.find(trans);
+		if (tType == null) throw new ToolkitRuntimeException(this.toString() + " invalid transaction");
+		SimId simId = SimDb.getFullSimId(new SimId(toolkitEnvironment.getTestSession(), id));
+		return new SimReference(simId, tType);
+	}
+
+
 	public boolean hasValidations() {
-	    return !validations.isEmpty();
-    }
+		return !validations.validaters.isEmpty();
+	}
 
 	@Override
 	public String toString() {

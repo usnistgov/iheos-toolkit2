@@ -8,6 +8,7 @@ import gov.nist.toolkit.testkitutilities.TestKit
 import gov.nist.toolkit.testkitutilities.TestKitSearchPath
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException
 
+// keeping track of assertion plugins
 class AssertionContext {
     static class Context {
         TestKit.PluginType pluginType
