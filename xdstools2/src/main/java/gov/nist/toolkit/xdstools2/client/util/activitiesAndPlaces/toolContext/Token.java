@@ -17,23 +17,23 @@ public enum Token {
      */
     SYSTEM_ID("systemId");
 
-    String propertyName;
+    String name;
 
-    Token(String propertyName) {
-        this.propertyName = propertyName;
+    Token(String name) {
+        this.name = name;
     }
 
 
     static public Token findByPropertyName(String name) throws TkNotFoundException {
         if (name==null) throw new NullPointerException("Name cannot be null.");
         for (Token pn : values()) {
-            if (pn.propertyName.equals(name)) return pn;
+            if (pn.name.equals(name)) return pn;
         }
         throw new TkNotFoundException("Name cannot be found.","Name.");
     }
 
     @Override
     public String toString() {
-        return propertyName;
+        return name;
     }
 }
