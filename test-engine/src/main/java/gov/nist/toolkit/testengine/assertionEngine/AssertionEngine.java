@@ -238,7 +238,7 @@ public class AssertionEngine {
          for (Assertion assertion : assertions) {
 
             // Added to handle assertions based on process attribute value
-            if (StringUtils.isNotBlank(assertion.process)) {
+            if (StringUtils.isNotBlank(assertion.process) || assertion.hasValidations()) {
                caller.processAssertion(this, assertion, assertion_output);
                continue;
             }

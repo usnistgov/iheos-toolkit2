@@ -20,7 +20,7 @@ import org.apache.axiom.om.OMElement
 
 import javax.xml.namespace.QName
 /**
- *
+ * Specializes in running assertions that rely on SimReference and FhirSimulatorTransaction
  */
 class MhdClientTransaction extends BasicTransaction {
 
@@ -42,7 +42,10 @@ class MhdClientTransaction extends BasicTransaction {
                     verifyFindSingleDRSubmit(simReference)
                     break
                 default:
-                    throw new XdsInternalException("MhdClientTransaction: Unknown assertion.process: ${a.process}");
+                    if (a.hasValidations()) {
+                        processValidations()
+                    } else
+                        throw new XdsInternalException("MhdClientTransaction: Unknown assertion.process: ${a.process}");
             }
         } catch (XdsInternalException ie) {
             xdsInternalException = ie;
@@ -54,6 +57,10 @@ class MhdClientTransaction extends BasicTransaction {
             for (String err : errs)
                 s_ctx.fail(err);
         }
+    }
+
+    def processValidations() {
+
     }
 
     def verifyFindSingleDRSubmit(SimReference simReference) {

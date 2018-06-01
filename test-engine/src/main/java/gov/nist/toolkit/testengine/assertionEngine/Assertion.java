@@ -103,6 +103,10 @@ public class Assertion {
 		}
 	}
 
+	public boolean hasValidations() {
+	    return !validations.isEmpty();
+    }
+
 	@Override
 	public String toString() {
 		String prs = "";
