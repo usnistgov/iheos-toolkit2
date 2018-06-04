@@ -53,7 +53,7 @@ public class StsSamlValidator extends AbstractMessageValidator {
                 er.registerValidator(this);
 
                 OMElement securityEl = null;
-                List<OMElement> secEls = XmlUtil.decendentsWithLocalName(header, "Security", 1);
+                List<OMElement> secEls = XmlUtil.decendentsWithLocalName(header, "Security", -1);
                 if (secEls.size() == 1) {
                     er.detail("Found one Security element.");
                     securityEl = secEls.get(0);
