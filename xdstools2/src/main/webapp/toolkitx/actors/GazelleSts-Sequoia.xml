@@ -1,3 +1,0 @@
-<site name="GazelleSts-Sequoia">
-    <transaction name="sts" secure="1">https://validation.sequoiaproject.org/gazelle-sts</transaction>
-</site>
