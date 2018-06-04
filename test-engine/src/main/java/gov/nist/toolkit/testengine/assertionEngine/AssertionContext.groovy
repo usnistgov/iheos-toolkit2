@@ -7,6 +7,8 @@ import gov.nist.toolkit.testengine.engine.fhirValidations.FhirAssertionLoader
 import gov.nist.toolkit.testkitutilities.TestKit
 import gov.nist.toolkit.testkitutilities.TestKitSearchPath
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException
+import gov.nist.toolkit.xdsexception.client.ValidaterNotFoundException
+import org.apache.lucene.util.automaton.TooComplexToDeterminizeException
 
 // keeping track of assertion plugins
 class AssertionContext {
@@ -24,12 +26,17 @@ class AssertionContext {
         }
 
         AbstractValidater getValidater(String validaterClassName, Map<String, String> parameters) {
-            Class validaterClass = 	getPluginClassLoader().loadFile(validaterClassName + ".groovy");
+            Class validaterClass
+            try {
+                validaterClass = getPluginClassLoader().loadFile(validaterClassName + ".groovy");
+            } catch (ClassNotFoundException e) {
+                throw new ValidaterNotFoundException("Unknown validater ${validaterClassName} in " + environment + "/" + testSession)
+            }
             if (validaterClass == null)
-                throw new ToolkitRuntimeException("Validator " + validaterClassName + " not available in " + environment + "/" + testSession)
+                throw new ValidaterNotFoundException("Validator " + validaterClassName + " not available in " + environment + "/" + testSession)
             Object obj = validaterClass.newInstance(parameters)
             if (!(obj instanceof AbstractValidater))
-                throw new ToolkitRuntimeException("Validator " + validaterClassName + " in " + environment + "/" + testSession + " not instance of AbstractValidater")
+                throw new ValidaterNotFoundException("Validator " + validaterClassName + " in " + environment + "/" + testSession + " not instance of AbstractValidater")
             return obj
         }
     }

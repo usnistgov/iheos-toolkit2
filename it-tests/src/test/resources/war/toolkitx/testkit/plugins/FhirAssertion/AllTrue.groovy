@@ -11,7 +11,4 @@ class AllTrue extends AbstractFhirValidater {
         return new ValidaterResult(transaction, this, true)
     }
 
-    AllTrue(SimReference theSimReference, String theFilterDescription) {
-        super(theSimReference, theFilterDescription)
-    }
 }

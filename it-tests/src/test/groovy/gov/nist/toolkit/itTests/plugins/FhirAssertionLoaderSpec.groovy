@@ -42,7 +42,9 @@ class FhirAssertionLoaderSpec extends Specification {
         claz
 
         when:
-        AbstractFhirValidater val = (AbstractFhirValidater) claz.newInstance(simReference, "True Test")
+        AbstractFhirValidater val = (AbstractFhirValidater) claz.newInstance()
+        val.simReference = simReference
+        val.filterDescription = "True Test"
         FhirSimulatorTransaction tr = new FhirSimulatorTransaction(simId, tType)
         ValidaterResult result = val.validate(tr)
 
@@ -58,8 +60,11 @@ class FhirAssertionLoaderSpec extends Specification {
         claz
 
         when:
-        AbstractFhirValidater val = (AbstractFhirValidater) claz.newInstance(simReference, "False Test")
+        AbstractFhirValidater val = (AbstractFhirValidater) claz.newInstance()
+        val.simReference = simReference
+        val.filterDescription = "False Test"
         FhirSimulatorTransaction tr = new FhirSimulatorTransaction(simId, tType)
+
         ValidaterResult result = val.validate(tr)
 
         then:
@@ -74,40 +79,11 @@ class FhirAssertionLoaderSpec extends Specification {
         claz
 
         when:
-        AbstractFhirValidater val = (AbstractFhirValidater) claz.newInstance('300')
-
-        then:
-        val.code == 300
-
-    }
-
-    def 'Loader Test with array parameter'() {
-        when:
-        Class claz = loader.loadFile('StatusValidater.groovy')
-
-        then:
-        claz
-
-        when:
-        val = (AbstractFhirValidater) claz.newInstance(['300'] as Object[])
-
-        then:
-        val.code == 300
-    }
-
-    def 'Loader Test with map parameter'() {
-        when:
-        Class claz = loader.loadFile('StatusValidater.groovy')
-
-        then:
-        claz
-
-        when:
-        def parms = [statusCode: '300']
-        AbstractFhirValidater val = (AbstractFhirValidater) claz.newInstance(parms)
+        AbstractFhirValidater val = (AbstractFhirValidater) claz.newInstance([statusCode: '300'])
 
         then:
         val.statusCode == '300'
 
     }
+
 }

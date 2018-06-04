@@ -12,8 +12,9 @@ import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException
 import gov.nist.toolkit.xdsexception.client.XdsInternalException
 import org.apache.axiom.om.OMElement
 
+
 /**
- * Specializes in running assertions that rely on SimReference and FhirSimulatorTransaction
+ * Runs assertions that rely on SimReference and FhirSimulatorTransaction
  */
 class MhdClientTransaction extends BasicTransaction {
     ILogReporting logReport
@@ -25,6 +26,7 @@ class MhdClientTransaction extends BasicTransaction {
 
     private List <String> errs;
 
+    @Deprecated
     @Override
     void processAssertion(AssertionEngine engine, Assertion a, OMElement assertion_output) throws XdsInternalException {
         errs = new ArrayList <>();
@@ -134,6 +136,7 @@ class MhdClientTransaction extends BasicTransaction {
         return passing
     }
 
+    @Deprecated
     def verifyFindSingleDRSubmit(SimReference simReference) {
         List<AbstractFhirValidater> validaters = [
                 new PostFhirValidater(simReference),

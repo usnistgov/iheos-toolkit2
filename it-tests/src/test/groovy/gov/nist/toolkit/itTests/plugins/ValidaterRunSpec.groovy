@@ -24,6 +24,7 @@ import gov.nist.toolkit.testkitutilities.TestKitSearchPath
 import gov.nist.toolkit.utilities.html.HeaderBlock
 import gov.nist.toolkit.utilities.xml.Util
 import gov.nist.toolkit.xdsexception.client.NoResultsException
+import gov.nist.toolkit.xdsexception.client.ValidaterNotFoundException
 import gov.nist.toolkit.xdsexception.client.XdsInternalException
 import org.apache.axiom.om.OMElement
 import org.apache.axis2.AxisFault
@@ -108,6 +109,52 @@ class ValidaterRunSpec extends Specification {
 
         then:
         passing.size() == 1
+    }
+
+    def 'run validater with className problem'() {
+        setup:
+        def assertionText = '''
+<Assert id='test1'>
+   <SimReference id="mhd_rec" transactiont="pdb"/>
+   <Validations type="FHIR">
+      <XStatusValidater statusCode="300"/>  <!-- statusCode matches instance variable in class StatusValidater -->
+   </Validations>
+</Assert>
+'''
+        when:
+        OMElement assertionEle = Util.parse_xml(assertionText)
+        TestConfig testConfig = new TestConfig()
+        String date = 'Today'
+        Assertion a = new Assertion(toolkitEnvironment, assertionEle, testConfig, date)
+        MhdClientTransaction mct = new MhdClientTransaction(new LogReport(), null, null)
+        TransactionInstanceBuilder transactionInstanceBuilder = new MyTransactionInstanceBuilder()
+        List<FhirSimulatorTransaction> passing = mct.processValidations(transactionInstanceBuilder, simReference, a, null)
+
+        then:
+        thrown ValidaterNotFoundException
+    }
+
+    def 'run validater with parameter problem'() {
+        setup:
+        def assertionText = '''
+<Assert id='test1'>
+   <SimReference id="mhd_rec" transactiont="pdb"/>
+   <Validations type="FHIR">
+      <StatusValidater XstatusCode="300"/>  <!-- statusCode matches instance variable in class StatusValidater -->
+   </Validations>
+</Assert>
+'''
+        when:
+        OMElement assertionEle = Util.parse_xml(assertionText)
+        TestConfig testConfig = new TestConfig()
+        String date = 'Today'
+        Assertion a = new Assertion(toolkitEnvironment, assertionEle, testConfig, date)
+        MhdClientTransaction mct = new MhdClientTransaction(new LogReport(), null, null)
+        TransactionInstanceBuilder transactionInstanceBuilder = new MyTransactionInstanceBuilder()
+        List<FhirSimulatorTransaction> passing = mct.processValidations(transactionInstanceBuilder, simReference, a, null)
+
+        then:
+        thrown MissingPropertyException
     }
 
     class MyMhdClientTransaction extends MhdClientTransaction {
