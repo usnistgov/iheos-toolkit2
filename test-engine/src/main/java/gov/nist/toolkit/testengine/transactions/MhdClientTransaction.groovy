@@ -8,7 +8,6 @@ import gov.nist.toolkit.testengine.engine.*
 import gov.nist.toolkit.testengine.engine.fhirValidations.*
 import gov.nist.toolkit.utilities.xml.XmlUtil
 import gov.nist.toolkit.xdsexception.client.MetadataException
-import gov.nist.toolkit.xdsexception.client.NoResultsException
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException
 import gov.nist.toolkit.xdsexception.client.XdsInternalException
 import org.apache.axiom.om.OMElement
@@ -78,7 +77,7 @@ class MhdClientTransaction extends BasicTransaction {
 
     }
 
-    def processValidations(TransactionInstanceBuilder transactionInstanceBuilder, SimReference simReference, Assertion a, OMElement assertion_output) {
+    List<FhirSimulatorTransaction> processValidations(TransactionInstanceBuilder transactionInstanceBuilder, SimReference simReference, Assertion a, OMElement assertion_output) {
         String trans = simReference.transactionType.code
 
         // the collection of FHIR transactions to search against
@@ -98,7 +97,6 @@ class MhdClientTransaction extends BasicTransaction {
         List<FhirSimulatorTransaction> passing = []
         List<ValidaterResult> failing = []
         transactions.each { FhirSimulatorTransaction transaction ->
-//            TransactionInstance ti = simDb.buildTransactionInstance(transaction.simDbEvent.actor, transaction.simDbEvent.eventId, trans)
             TransactionInstance ti = transactionInstanceBuilder.build(transaction.simDbEvent.actor, transaction.simDbEvent.eventId, trans)
             String label = ti.toString()
             String thisUrl = transaction.url + " (${label})"
@@ -121,7 +119,6 @@ class MhdClientTransaction extends BasicTransaction {
         }
         logReport.addDetailHeader('Validating Messages')
         passing.each { FhirSimulatorTransaction transaction ->
-//            TransactionInstance ti = simDb.buildTransactionInstance(transaction.simDbEvent.actor, transaction.simDbEvent.eventId, trans)
             TransactionInstance ti = transactionInstanceBuilder.build(transaction.simDbEvent.actor, transaction.simDbEvent.eventId, trans)
             String label = ti.toString()
             logReport.addDetailLink(transaction.url, transaction.placeToken, label, '')
@@ -129,15 +126,12 @@ class MhdClientTransaction extends BasicTransaction {
         logReport.addDetailHeader('Non-Validating Messages', 'Failed Validations')
         failing.each { ValidaterResult result ->
             FhirSimulatorTransaction transaction = result.transaction
-//            TransactionInstance ti = simDb.buildTransactionInstance(transaction.simDbEvent.actor, transaction.simDbEvent.eventId, trans)
             TransactionInstance ti = transactionInstanceBuilder.build(transaction.simDbEvent.actor, transaction.simDbEvent.eventId, trans)
             String label = ti.toString()
             logReport.addDetailLink(transaction.url, transaction.placeToken, label, result.filter.filterDescription)
         }
 
-        if (!goodMessageFound)
-            throw new NoResultsException("No acceptable ${simReference.transactionType.name} transactions found in simlog for ${simReference.simId}")
-
+        return passing
     }
 
     def verifyFindSingleDRSubmit(SimReference simReference) {

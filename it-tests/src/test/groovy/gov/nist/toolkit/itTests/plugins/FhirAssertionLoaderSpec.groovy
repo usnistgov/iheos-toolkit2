@@ -65,4 +65,49 @@ class FhirAssertionLoaderSpec extends Specification {
         then:
         !result.match
     }
+
+    def 'Loader Test with direct parameter'() {
+        when:
+        Class claz = loader.loadFile('StatusValidater.groovy')
+
+        then:
+        claz
+
+        when:
+        AbstractFhirValidater val = (AbstractFhirValidater) claz.newInstance('300')
+
+        then:
+        val.code == 300
+
+    }
+
+    def 'Loader Test with array parameter'() {
+        when:
+        Class claz = loader.loadFile('StatusValidater.groovy')
+
+        then:
+        claz
+
+        when:
+        val = (AbstractFhirValidater) claz.newInstance(['300'] as Object[])
+
+        then:
+        val.code == 300
+    }
+
+    def 'Loader Test with map parameter'() {
+        when:
+        Class claz = loader.loadFile('StatusValidater.groovy')
+
+        then:
+        claz
+
+        when:
+        def parms = [statusCode: '300']
+        AbstractFhirValidater val = (AbstractFhirValidater) claz.newInstance(parms)
+
+        then:
+        val.statusCode == '300'
+
+    }
 }

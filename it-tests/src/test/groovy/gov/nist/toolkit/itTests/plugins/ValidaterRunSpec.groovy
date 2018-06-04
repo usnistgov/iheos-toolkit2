@@ -21,11 +21,14 @@ import gov.nist.toolkit.testengine.engine.fhirValidations.SimReference
 import gov.nist.toolkit.testengine.transactions.MhdClientTransaction
 import gov.nist.toolkit.testengine.transactions.TransactionInstanceBuilder
 import gov.nist.toolkit.testkitutilities.TestKitSearchPath
+import gov.nist.toolkit.utilities.html.HeaderBlock
 import gov.nist.toolkit.utilities.xml.Util
 import gov.nist.toolkit.xdsexception.client.NoResultsException
 import gov.nist.toolkit.xdsexception.client.XdsInternalException
 import org.apache.axiom.om.OMElement
 import org.apache.axis2.AxisFault
+import org.apache.http.ProtocolVersion
+import org.apache.http.StatusLine
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -36,7 +39,7 @@ class ValidaterRunSpec extends Specification {
     @Shared SimId simId
     @Shared TransactionType tType
     @Shared SimReference simReference
-    @Shared ToolkitEnvironment
+    @Shared ToolkitEnvironment toolkitEnvironment
     @Shared ActorType actorType
 
     def setupSpec() {
@@ -61,7 +64,7 @@ class ValidaterRunSpec extends Specification {
         }
     }
 
-    def 'run failing validater'() {
+    def 'run no argument validater'() {
         setup:
         def assertionText = '''
 <Assert id='test1'>
@@ -78,10 +81,33 @@ class ValidaterRunSpec extends Specification {
         Assertion a = new Assertion(toolkitEnvironment, assertionEle, testConfig, date)
         MhdClientTransaction mct = new MhdClientTransaction(new LogReport(), null, null)
         TransactionInstanceBuilder transactionInstanceBuilder = new MyTransactionInstanceBuilder()
-        mct.processValidations(transactionInstanceBuilder, simReference, a, null)
+        List<FhirSimulatorTransaction> passing = mct.processValidations(transactionInstanceBuilder, simReference, a, null)
 
         then:
-        thrown NoResultsException
+        passing.size() == 0
+    }
+
+    def 'run single argument validater'() {
+        setup:
+        def assertionText = '''
+<Assert id='test1'>
+   <SimReference id="mhd_rec" transactiont="pdb"/>
+   <Validations type="FHIR">
+      <StatusValidater statusCode="300"/>  <!-- statusCode matches instance variable in class StatusValidater -->
+   </Validations>
+</Assert>
+'''
+        when:
+        OMElement assertionEle = Util.parse_xml(assertionText)
+        TestConfig testConfig = new TestConfig()
+        String date = 'Today'
+        Assertion a = new Assertion(toolkitEnvironment, assertionEle, testConfig, date)
+        MhdClientTransaction mct = new MhdClientTransaction(new LogReport(), null, null)
+        TransactionInstanceBuilder transactionInstanceBuilder = new MyTransactionInstanceBuilder()
+        List<FhirSimulatorTransaction> passing = mct.processValidations(transactionInstanceBuilder, simReference, a, null)
+
+        then:
+        passing.size() == 1
     }
 
     class MyMhdClientTransaction extends MhdClientTransaction {
@@ -114,6 +140,24 @@ class ValidaterRunSpec extends Specification {
         @Override
         List<FhirSimulatorTransaction> getSimulatorTransactions(SimReference simReference) throws XdsInternalException {
             FhirSimulatorTransaction ft = new FhirSimulatorTransaction(simId, tType)
+            HeaderBlock blk = new HeaderBlock()
+            blk.statusLine = new StatusLine() {
+                @Override
+                ProtocolVersion getProtocolVersion() {
+                    return null
+                }
+
+                @Override
+                int getStatusCode() {
+                    return 300
+                }
+
+                @Override
+                String getReasonPhrase() {
+                    return null
+                }
+            }
+            ft.responseHeaders = blk
             SimDbEvent e = new SimDbEvent(simId, actorType.name, tType.name, 'event0')
             ft.simDbEvent = e
             [ft]
