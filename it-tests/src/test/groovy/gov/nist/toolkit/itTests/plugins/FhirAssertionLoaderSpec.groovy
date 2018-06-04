@@ -16,7 +16,7 @@ import gov.nist.toolkit.testkitutilities.TestKitSearchPath
 import spock.lang.Shared
 import spock.lang.Specification
 
-class FhirAssertionLoaderTest extends Specification {
+class FhirAssertionLoaderSpec extends Specification {
     @Shared Session session
     @Shared TestKitSearchPath path
     @Shared FhirAssertionLoader loader

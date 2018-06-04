@@ -42,7 +42,7 @@ public class Assertion {
 		public List<ValidaterInstance> validaters = new ArrayList<>();
 	}
 
-	public Validations validations;
+	public Validations validations = new Validations();
 
 	/**
 	 * {@code <Assert>} element from testplan.xml
@@ -63,7 +63,7 @@ public class Assertion {
 
 	private ToolkitEnvironment toolkitEnvironment;
 
-	Assertion(ToolkitEnvironment toolkitEnvironment, OMElement asser, TestConfig testConfig, String date) {
+	public Assertion(ToolkitEnvironment toolkitEnvironment, OMElement asser, TestConfig testConfig, String date) {
 		this.toolkitEnvironment = toolkitEnvironment;
 		assertElement = asser;
 		id = asser.getAttributeValue(new QName("id"));
@@ -75,7 +75,7 @@ public class Assertion {
 					.replaceAll("SITE", testConfig.siteXPath);
 		}
 		OMElement validationsEle = asser.getFirstChildWithName(new QName("Validations"));
-		if (validations != null) {
+		if (validationsEle != null) {
 			String type = validationsEle.getAttributeValue(new QName("type"));
 			TestKit.PluginType pluginType = TestKit.PluginType.get(type);
 			if (pluginType == null)
@@ -124,6 +124,8 @@ public class Assertion {
 	public boolean hasValidations() {
 		return !validations.validaters.isEmpty();
 	}
+
+	public List<Validations.ValidaterInstance> getAllValidaters() { return validations.validaters; }
 
 	@Override
 	public String toString() {

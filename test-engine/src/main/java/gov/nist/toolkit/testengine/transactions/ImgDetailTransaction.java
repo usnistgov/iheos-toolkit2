@@ -93,7 +93,7 @@ public class ImgDetailTransaction extends BasicTransaction {
    public void runAssertionEngine(OMElement step_output, ErrorReportingInterface eri, OMElement assertion_output)
       throws XdsInternalException {
 
-      AssertionEngine engine = new AssertionEngine();
+      AssertionEngine engine = new AssertionEngine(this);
       engine.setDataRefs(data_refs);
       engine.setCaller(this);
 

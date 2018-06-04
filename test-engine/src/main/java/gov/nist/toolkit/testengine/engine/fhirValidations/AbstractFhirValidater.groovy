@@ -8,9 +8,11 @@ abstract class AbstractFhirValidater extends AbstractValidater {
 
     abstract ValidaterResult validate(FhirSimulatorTransaction transaction)
 
-    AbstractFhirValidater(SimReference theSimReference, String theFilterDescription) {
-        simReference = theSimReference
-        filterDescription = theFilterDescription
+    void setSimReference(SimReference simReference) {
+        this.simReference = simReference
+    }
+
+    AbstractFhirValidater() {
     }
 
 }

@@ -18,4 +18,8 @@ abstract class AbstractValidater {
         log("Error: ${msg}")
         errors = true
     }
+
+    void setFilterDescription(String filterDescription) {
+        this.filterDescription = filterDescription
+    }
 }
