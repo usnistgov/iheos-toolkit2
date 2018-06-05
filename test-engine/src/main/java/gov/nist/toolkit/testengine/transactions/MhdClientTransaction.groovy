@@ -72,6 +72,7 @@ class MhdClientTransaction extends BasicTransaction {
 
     }
 
+    // return list of passing transactions
     List<FhirSimulatorTransaction> processValidations(TransactionInstanceBuilder transactionInstanceBuilder, SimReference simReference, Assertion a, OMElement assertion_output) {
         String trans = simReference.transactionType.code
 
@@ -84,11 +85,11 @@ class MhdClientTransaction extends BasicTransaction {
         logReport.addDetail("#Validations run against all ${simReference.transactionType.name} transactions", '')
 
         a.validations.validaters.each { Assertion.Validations.ValidaterInstance v ->
-            logReport.addDetail(v.validater.filterDescription, '')
+            logReport.addDetail(v.validater.class.simpleName, v.validater.filterDescription)
 
         }
 
-        boolean goodMessageFound = false
+//        boolean goodMessageFound = false
         List<FhirSimulatorTransaction> passing = []
         List<ValidaterResult> failing = []
         transactions.each { FhirSimulatorTransaction transaction ->
@@ -96,6 +97,8 @@ class MhdClientTransaction extends BasicTransaction {
             String label = ti.toString()
             String thisUrl = transaction.url + " (${label})"
             boolean hasError = false
+
+            // Run all validators on this transaction
             a.getAllValidaters().collect { Assertion.Validations.ValidaterInstance validater1 ->
                 if (!(validater1.validater instanceof AbstractFhirValidater))
                     throw new ToolkitRuntimeException("oops")
@@ -107,9 +110,10 @@ class MhdClientTransaction extends BasicTransaction {
                     hasError = true
                 }
             }
+
             if (!hasError) {
                 passing << transaction
-                goodMessageFound = true
+//                goodMessageFound = true
             }
         }
         logReport.addDetailHeader('Validating Messages')

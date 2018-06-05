@@ -29,7 +29,7 @@ class AssertionContext {
             try {
                 validaterClass = getPluginClassLoader().loadFile(validaterClassName + ".groovy");
             } catch (ClassNotFoundException e) {
-                throw new ValidaterNotFoundException("Unknown validater ${validaterClassName} in " + environment + "/" + testSession)
+                throw new ValidaterNotFoundException("Unknown validater ${validaterClassName} in " + environment + "/" + testSession + "\n" + getPluginClassLoader().paths)
             }
             if (validaterClass == null)
                 throw new ValidaterNotFoundException("Validator " + validaterClassName + " not available in " + environment + "/" + testSession)

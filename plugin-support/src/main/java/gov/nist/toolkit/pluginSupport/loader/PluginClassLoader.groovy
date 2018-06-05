@@ -4,7 +4,7 @@ package gov.nist.toolkit.pluginSupport.loader
 
 class PluginClassLoader extends GroovyClassLoader {
     private LinkedList<Loader> loaders = new LinkedList<>()
-//    PluginClassLoader INSTANCE
+    private List<File> paths
 
     // directories in classpath
     PluginClassLoader(String... paths) throws IOException {
@@ -12,19 +12,22 @@ class PluginClassLoader extends GroovyClassLoader {
     }
 
     PluginClassLoader(List<File> paths) throws IOException {
-//        INSTANCE = this
+        this.paths = paths
         setShouldRecompile(true)
         for (File file : paths) {
 
             Loader loader = loader(file)
-            if (loader == null) {
-                throw new RuntimeException("Path not exists " + file)
+            if (loader) {
+                loaders.add(loader)
             }
-            loaders.add(loader)
         }
     }
 
-    // className must be *.groovy
+    List<File> getPaths() {
+        return paths
+    }
+
+// className must be *.groovy
     Class loadFile(String className) {
         for (Loader loader : loaders) {
             Class c = loader.load(className)
