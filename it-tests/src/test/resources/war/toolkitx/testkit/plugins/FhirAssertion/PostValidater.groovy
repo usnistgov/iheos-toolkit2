@@ -2,19 +2,14 @@ package war.toolkitx.testkit.plugins.FhirAssertion
 
 import gov.nist.toolkit.testengine.engine.FhirSimulatorTransaction
 import gov.nist.toolkit.testengine.engine.fhirValidations.AbstractFhirValidater
-import gov.nist.toolkit.testengine.engine.fhirValidations.SimReference
 import gov.nist.toolkit.testengine.engine.fhirValidations.ValidaterResult
 
-class RequiresHttps extends AbstractFhirValidater {
-    String mustBeHttps
+class PostValidater extends AbstractFhirValidater {
 
     @Override
     ValidaterResult validate(FhirSimulatorTransaction transaction) {
-        return null
+        boolean match = transaction.requestHeaders.requestLine.method == 'POST'
+        new ValidaterResult(transaction, this, match)
     }
 
-    RequiresHttps(SimReference theSimReference, String theFilterDescription, String mustBeHttps) {
-        super(theSimReference, theFilterDescription)
-        this.mustBeHttps = mustBeHttps
-    }
 }

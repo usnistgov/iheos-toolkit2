@@ -4,7 +4,7 @@ package gov.nist.toolkit.pluginSupport.loader
 
 class PluginClassLoader extends GroovyClassLoader {
     private LinkedList<Loader> loaders = new LinkedList<>()
-    PluginClassLoader INSTANCE
+//    PluginClassLoader INSTANCE
 
     // directories in classpath
     PluginClassLoader(String... paths) throws IOException {
@@ -12,7 +12,7 @@ class PluginClassLoader extends GroovyClassLoader {
     }
 
     PluginClassLoader(List<File> paths) throws IOException {
-        INSTANCE = this
+//        INSTANCE = this
         setShouldRecompile(true)
         for (File file : paths) {
 
@@ -34,9 +34,6 @@ class PluginClassLoader extends GroovyClassLoader {
         throw new ClassNotFoundException("Cannot find $className")
     }
 
-    interface Loader {
-        Class load(String filePath)
-    }
 
     private Loader loader(File file) throws IOException {
         if (!file.exists()) {
@@ -63,7 +60,7 @@ class PluginClassLoader extends GroovyClassLoader {
             }
             System.out.println("Reading file " + file);
             try {
-                return INSTANCE.parseClass(file);
+                return parseClass(file);
             } catch (IOException e) {
                 return null;
             }

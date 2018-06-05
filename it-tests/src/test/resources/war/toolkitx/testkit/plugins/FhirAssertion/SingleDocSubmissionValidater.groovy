@@ -1,19 +1,22 @@
-package gov.nist.toolkit.testengine.engine.fhirValidations
+package war.toolkitx.testkit.plugins.FhirAssertion
 
 import gov.nist.toolkit.testengine.engine.FhirSimulatorTransaction
+import gov.nist.toolkit.testengine.engine.fhirValidations.AbstractFhirValidater
+import gov.nist.toolkit.testengine.engine.fhirValidations.ValidaterResult
 import org.hl7.fhir.dstu3.model.Bundle
 import org.hl7.fhir.dstu3.model.DocumentManifest
 import org.hl7.fhir.dstu3.model.DocumentReference
 import org.hl7.fhir.dstu3.model.Resource
 
-class SingleDocSubmissionFhirValidater extends AbstractFhirValidater {
+class SingleDocSubmissionValidater extends AbstractFhirValidater {
+
     @Override
     ValidaterResult validate(FhirSimulatorTransaction transaction) {
-            boolean match = transaction.request instanceof Bundle && isSingleDocSubmission(transaction.request) && !isErrors()
-            new ValidaterResult(transaction, this, match)
+        boolean match = transaction.request instanceof Bundle && isSingleDocSubmission(transaction.request) && !isErrors()
+        new ValidaterResult(transaction, this, match)
     }
 
-    boolean isSingleDocSubmission(Bundle bundle) {
+    private boolean isSingleDocSubmission(Bundle bundle) {
         DocumentManifest documentManifest = null
         List<DocumentReference> documentReferences = []
 
@@ -29,9 +32,5 @@ class SingleDocSubmissionFhirValidater extends AbstractFhirValidater {
             }
         }
         documentManifest && documentReferences.size() > 0
-    }
-
-    SingleDocSubmissionFhirValidater(SimReference theSimReference) {
-        super(theSimReference, 'Submission of a Single Document Reference with the Document Manifest')
     }
 }

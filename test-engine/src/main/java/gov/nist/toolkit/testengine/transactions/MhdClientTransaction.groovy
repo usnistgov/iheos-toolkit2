@@ -26,22 +26,15 @@ class MhdClientTransaction extends BasicTransaction {
 
     private List <String> errs;
 
-    @Deprecated
     @Override
     void processAssertion(AssertionEngine engine, Assertion a, OMElement assertion_output) throws XdsInternalException {
         errs = new ArrayList <>();
         try {
             SimReference simReference = getSimReference(a)
-            switch (a.process) {
-                case "FindSingleDRSubmit":
-                    verifyFindSingleDRSubmit(simReference)
-                    break
-                default:
-                    if (a.hasValidations()) {
-                        processValidations(new SimDbTransactionInstanceBuilder(new SimDb(simReference.simId)), simReference, a, assertion_output)
-                    } else
-                        throw new XdsInternalException("MhdClientTransaction: Unknown assertion.process: ${a.process}");
-            }
+            if (a.hasValidations()) {
+                processValidations(new SimDbTransactionInstanceBuilder(new SimDb(simReference.simId)), simReference, a, assertion_output)
+            } else
+                throw new XdsInternalException("MhdClientTransaction: Unknown Assertion clause with not Assert statements");
         } catch (XdsInternalException ie) {
             errs.add(ie.getMessage());
         }
@@ -136,63 +129,63 @@ class MhdClientTransaction extends BasicTransaction {
         return passing
     }
 
-    @Deprecated
-    def verifyFindSingleDRSubmit(SimReference simReference) {
-        List<AbstractFhirValidater> validaters = [
-                new PostFhirValidater(simReference),
-                new StatusFhirValidater(simReference, '200'),
-                new SingleDocSubmissionFhirValidater(simReference)
-        ]
-        SimDb simDb = new SimDb(simReference.simId)
-        String trans = simReference.transactionType.code
-        List<FhirSimulatorTransaction> transactions = getSimulatorTransactions(simReference)
-        if (transactions.size() == 0)
-            throw new XdsInternalException("No ${simReference.transactionType.name} transactions found in simlog for ${simReference.simId}")
-
-        logReport.addDetail("#Validations run against all ${simReference.transactionType.name} transactions", '')
-        validaters.each { AbstractFhirValidater val ->
-            logReport.addDetail(val.filterDescription, '')
-        }
-
-        boolean goodMessageFound = false
-        List<FhirSimulatorTransaction> passing = []
-        List<ValidaterResult> failing = []
-        transactions.each { FhirSimulatorTransaction transaction ->
-            TransactionInstance ti = simDb.buildTransactionInstance(transaction.simDbEvent.actor, transaction.simDbEvent.eventId, trans)
-            String label = ti.toString()
-            String thisUrl = transaction.url + " (${label})"
-            boolean hasError = false
-            validaters.collect { AbstractFhirValidater validater ->
-                validater.validate(transaction)
-            }.each {ValidaterResult result ->
-                if (result.match) {
-                } else {
-                    failing << result
-                    hasError = true
-                }
-            }
-            if (!hasError) {
-                passing << transaction
-                goodMessageFound = true
-            }
-        }
-        logReport.addDetailHeader('Validating Messages')
-        passing.each { FhirSimulatorTransaction transaction ->
-            TransactionInstance ti = simDb.buildTransactionInstance(transaction.simDbEvent.actor, transaction.simDbEvent.eventId, trans)
-            String label = ti.toString()
-            logReport.addDetailLink(transaction.url, transaction.placeToken, label, '')
-        }
-        logReport.addDetailHeader('Non-Validating Messages', 'Failed Validations')
-        failing.each { ValidaterResult result ->
-            FhirSimulatorTransaction transaction = result.transaction
-            TransactionInstance ti = simDb.buildTransactionInstance(transaction.simDbEvent.actor, transaction.simDbEvent.eventId, trans)
-            String label = ti.toString()
-            logReport.addDetailLink(transaction.url, transaction.placeToken, label, result.filter.filterDescription)
-        }
-
-        if (!goodMessageFound)
-            throw new XdsInternalException("No acceptable ${simReference.transactionType.name} transactions found in simlog for ${simReference.simId}")
-    }
+//    @Deprecated
+//    def verifyFindSingleDRSubmit(SimReference simReference) {
+//        List<AbstractFhirValidater> validaters = [
+//                new PostFhirValidater(simReference),
+//                new StatusFhirValidater(simReference, '200'),
+//                new SingleDocSubmissionFhirValidater(simReference)
+//        ]
+//        SimDb simDb = new SimDb(simReference.simId)
+//        String trans = simReference.transactionType.code
+//        List<FhirSimulatorTransaction> transactions = getSimulatorTransactions(simReference)
+//        if (transactions.size() == 0)
+//            throw new XdsInternalException("No ${simReference.transactionType.name} transactions found in simlog for ${simReference.simId}")
+//
+//        logReport.addDetail("#Validations run against all ${simReference.transactionType.name} transactions", '')
+//        validaters.each { AbstractFhirValidater val ->
+//            logReport.addDetail(val.filterDescription, '')
+//        }
+//
+//        boolean goodMessageFound = false
+//        List<FhirSimulatorTransaction> passing = []
+//        List<ValidaterResult> failing = []
+//        transactions.each { FhirSimulatorTransaction transaction ->
+//            TransactionInstance ti = simDb.buildTransactionInstance(transaction.simDbEvent.actor, transaction.simDbEvent.eventId, trans)
+//            String label = ti.toString()
+//            String thisUrl = transaction.url + " (${label})"
+//            boolean hasError = false
+//            validaters.collect { AbstractFhirValidater validater ->
+//                validater.validate(transaction)
+//            }.each {ValidaterResult result ->
+//                if (result.match) {
+//                } else {
+//                    failing << result
+//                    hasError = true
+//                }
+//            }
+//            if (!hasError) {
+//                passing << transaction
+//                goodMessageFound = true
+//            }
+//        }
+//        logReport.addDetailHeader('Validating Messages')
+//        passing.each { FhirSimulatorTransaction transaction ->
+//            TransactionInstance ti = simDb.buildTransactionInstance(transaction.simDbEvent.actor, transaction.simDbEvent.eventId, trans)
+//            String label = ti.toString()
+//            logReport.addDetailLink(transaction.url, transaction.placeToken, label, '')
+//        }
+//        logReport.addDetailHeader('Non-Validating Messages', 'Failed Validations')
+//        failing.each { ValidaterResult result ->
+//            FhirSimulatorTransaction transaction = result.transaction
+//            TransactionInstance ti = simDb.buildTransactionInstance(transaction.simDbEvent.actor, transaction.simDbEvent.eventId, trans)
+//            String label = ti.toString()
+//            logReport.addDetailLink(transaction.url, transaction.placeToken, label, result.filter.filterDescription)
+//        }
+//
+//        if (!goodMessageFound)
+//            throw new XdsInternalException("No acceptable ${simReference.transactionType.name} transactions found in simlog for ${simReference.simId}")
+//    }
 
     SimReference getSimReference(Assertion a) {
         try {

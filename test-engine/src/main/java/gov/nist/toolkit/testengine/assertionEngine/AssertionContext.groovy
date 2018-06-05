@@ -8,7 +8,6 @@ import gov.nist.toolkit.testkitutilities.TestKit
 import gov.nist.toolkit.testkitutilities.TestKitSearchPath
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException
 import gov.nist.toolkit.xdsexception.client.ValidaterNotFoundException
-import org.apache.lucene.util.automaton.TooComplexToDeterminizeException
 
 // keeping track of assertion plugins
 class AssertionContext {

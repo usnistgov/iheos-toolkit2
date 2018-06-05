@@ -1,78 +1,72 @@
 package gov.nist.toolkit.pluginSupport.loader;
 
-import gov.nist.toolkit.utilities.io.Io;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.jar.JarFile;
-import java.util.zip.ZipEntry;
+import java.util.jar.JarFile
+import java.util.zip.ZipEntry
 
 class DynamicClassLoader extends AggressiveClassLoader {
-    private LinkedList<Loader> loaders = new LinkedList<>();
+    private LinkedList<Loader> loaders = new LinkedList<>()
 
     DynamicClassLoader(String... paths) throws IOException {
         for (String path : paths) {
-            File file = new File(path);
+            File file = new File(path)
 
-            Loader loader = loader(file);
+            Loader loader = loader(file)
             if (loader == null) {
-                throw new RuntimeException("Path not exists " + path);
+                throw new RuntimeException("Path not exists " + path)
             }
-            loaders.add(loader);
+            loaders.add(loader)
         }
     }
 
     @SuppressWarnings("UnusedDeclaration")
     DynamicClassLoader(Collection<File> paths) throws IOException {
         for (File file : paths) {
-            Loader loader = loader(file);
+            Loader loader = loader(file)
             if (loader == null) {
-                throw new RuntimeException("Path not exists " + file.getPath());
+                throw new RuntimeException("Path not exists " + file.getPath())
             }
-            loaders.add(loader);
+            loaders.add(loader)
         }
     }
 
 
     private static Loader loader(File file) throws IOException {
         if (!file.exists()) {
-            return null;
+            return null
         } else if (file.isDirectory()) {
-            return new DirLoader(file);
+            return new DirLoader(file)
         } else if (file.getName().endsWith("jar")) {
-            return new JarLoader(new JarFile(file));
+            return new JarLoader(new JarFile(file))
         } else {
-            throw new RuntimeException("Jarloader not supported");
+            throw new RuntimeException("Jarloader not supported")
         }
     }
 
     private static File findFile(String filePath, File classPath) {
-        File file = new File(classPath, filePath);
-        return file.exists() ? file : null;
+        File file = new File(classPath, filePath)
+        return file.exists() ? file : null
     }
 
     interface Loader {
-        byte[] load(String filePath);
+        byte[] load(String filePath)
     }
 
     static class DirLoader implements Loader {
-        File dir;
+        File dir
 
         DirLoader(File dir) {
-            this.dir = dir;
+            this.dir = dir
         }
 
         @Override
         byte[] load(String filePath) {
-            File file = findFile(filePath, dir);
+            File file = findFile(filePath, dir)
             if (file == null) {
-                return null;
+                return null
             }
-            System.out.println("Reading file " + file);
+            System.out.println("Reading file " + file)
             try {
-                return Io.bytesFromFile(file);
+                return Io.bytesFromFile(file)
             } catch (IOException e) {
                 return null;
             }
