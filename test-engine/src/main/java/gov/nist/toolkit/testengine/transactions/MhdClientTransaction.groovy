@@ -32,7 +32,9 @@ class MhdClientTransaction extends BasicTransaction {
         try {
             SimReference simReference = getSimReference(a)
             if (a.hasValidations()) {
-                processValidations(new SimDbTransactionInstanceBuilder(new SimDb(simReference.simId)), simReference, a, assertion_output)
+                List<FhirSimulatorTransaction> passing = processValidations(new SimDbTransactionInstanceBuilder(new SimDb(simReference.simId)), simReference, a, assertion_output)
+                if (passing.isEmpty())
+                    errs.add("No Transactions match requirements")
             } else
                 throw new XdsInternalException("MhdClientTransaction: Unknown Assertion clause with not Assert statements");
         } catch (XdsInternalException ie) {
@@ -113,21 +115,23 @@ class MhdClientTransaction extends BasicTransaction {
 
             if (!hasError) {
                 passing << transaction
-//                goodMessageFound = true
             }
         }
+
         logReport.addDetailHeader('Validating Messages')
         passing.each { FhirSimulatorTransaction transaction ->
             TransactionInstance ti = transactionInstanceBuilder.build(transaction.simDbEvent.actor, transaction.simDbEvent.eventId, trans)
             String label = ti.toString()
             logReport.addDetailLink(transaction.url, transaction.placeToken, label, '')
         }
+
         logReport.addDetailHeader('Non-Validating Messages', 'Failed Validations')
         failing.each { ValidaterResult result ->
             FhirSimulatorTransaction transaction = result.transaction
             TransactionInstance ti = transactionInstanceBuilder.build(transaction.simDbEvent.actor, transaction.simDbEvent.eventId, trans)
             String label = ti.toString()
             logReport.addDetailLink(transaction.url, transaction.placeToken, label, result.filter.filterDescription)
+            logReport.addDetail('', result.filter.log)
         }
 
         return passing

@@ -22,4 +22,8 @@ abstract class AbstractValidater {
     void setFilterDescription(String filterDescription) {
         this.filterDescription = filterDescription
     }
+
+    String getLog() {
+        log.toString()
+    }
 }
