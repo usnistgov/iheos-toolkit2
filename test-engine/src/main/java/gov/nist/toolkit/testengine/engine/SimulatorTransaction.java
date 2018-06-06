@@ -6,6 +6,7 @@ package gov.nist.toolkit.testengine.engine;
 import edu.wustl.mir.erl.ihe.xdsi.util.PfnType;
 import edu.wustl.mir.erl.ihe.xdsi.util.PrsSimLogs;
 import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
+import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.simcommon.client.SimId;
@@ -353,6 +354,51 @@ public class SimulatorTransaction {
       }
    }
 
+
+   /**
+    * Generates instance of this class for specified simulator transaction.
+    * @param simId for the simulator which received the transaction. Must exist.
+    * @param actorType is the type of actor that received the transaction. This is further specification for those simulators that encompass multiple actors.
+    * @param transactionType TransactionType value we are looking for. For
+    * example {@link TransactionType#PROVIDE_AND_REGISTER}.
+    * @param pid <u>Complete</u> patient id if transaction is for a particular
+    * patient. Null or blank string if any patient will do or transaction is
+    * not patient based. For example,
+    * "P20160831112743.2^^^&1.3.6.1.4.1.21367.2005.13.20.1000&ISO".
+    * @param timeStamp of transaction. Earliest transaction not preceding this
+    * time will be returned. If null, most recent transaction will be returned.
+    * @return instance of this class for transaction.
+    * @throws XdsInternalException on error, such as: no such simulator, no
+    * transaction matching parameters, and so on.
+    */
+   public static SimulatorTransaction get(SimId simId, ActorType actorType,
+                                          TransactionType transactionType, String pid, Date timeStamp)
+           throws XdsInternalException {
+      try {
+         // Verify that simId represents an existing file
+         Installation installation = Installation.instance();
+         String cache = installation.externalCache().getAbsolutePath();
+         String name = simId.toString();
+         Path simPath = Paths.get(cache, "simdb", simId.getTestSession().getValue(), name);
+         Utility.isValidPfn("simulator " + name,  simPath, PfnType.DIRECTORY, "r");
+
+         // This is a key statement. The SimId that is supplied to this method might indicate
+         // a composite simulator such as Registry/Repository. When searching for a transaction,
+         // we need to search under the specific actor type. The code that calls this method
+         // supplies the actorType which gives us that exact name.
+         simId.setActorType(actorType.getShortName());
+
+         // Create instance and load transaction
+         SimulatorTransaction trn =
+                 new SimulatorTransaction(simId, transactionType, pid, timeStamp);
+         PrsSimLogs.loadTransaction(trn);
+
+         return trn;
+      } catch (Exception e) {
+         throw new XdsInternalException("SimulatorTransaction.get error: " +
+                 e.getMessage());
+      }
+   }
    
 
 }
