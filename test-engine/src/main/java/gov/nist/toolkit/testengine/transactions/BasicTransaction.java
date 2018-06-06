@@ -71,6 +71,7 @@ public abstract class BasicTransaction  {
 	protected boolean assign_uuids = false;
 	protected boolean assign_uids = true;
 	protected String no_assign_uid_to = null;
+	protected Set<String> excludeUids = null;
 	protected boolean assign_patient_id = true;
 	protected boolean soap_1_2 = true;
 	protected boolean async = false;
@@ -904,7 +905,7 @@ public abstract class BasicTransaction  {
 			}
 
 			if ( assign_uids ) {
-				Map<String, String> uniqueid_map = tm.assignUniqueIds(metadata, no_assign_uid_to);
+				Map<String, String> uniqueid_map = tm.assignUniqueIds(metadata, no_assign_uid_to, excludeUids);
 				testLog.add_name_value(instruction_output, generate_xml("AssignedUids", uniqueid_map));
 				if (reportManager == null)
 					reportManager = new ReportManager(testConfig);
@@ -1038,6 +1039,7 @@ public abstract class BasicTransaction  {
 		}
 		else if (part_name.equals("AssignUuids")) {
 			assign_uuids = true;
+			parseExclusions(part);
 		}
 		else if (part_name.equals("NoAssignUids")) {
 			assign_uids = false;
@@ -1170,6 +1172,18 @@ public abstract class BasicTransaction  {
 		if (reportManager == null)
             reportManager = new ReportManager(testConfig);
 		reportManager.addReport(part);
+	}
+
+	protected void parseExclusions(OMElement part) {
+		excludeUids = new HashSet<String>();
+		Iterator<OMElement> it = part.getChildrenWithLocalName("Exclude");
+		while (it.hasNext()) {
+			OMElement e = it.next();
+			String s = e.getAttributeValue(new QName("value"));
+			if (s != null) {
+				excludeUids.add(s);
+			}
+		}
 	}
 
 	public class DocDetails {

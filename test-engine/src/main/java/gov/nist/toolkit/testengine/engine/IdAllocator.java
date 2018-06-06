@@ -10,6 +10,8 @@ import javax.xml.namespace.QName;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 
 public abstract class IdAllocator {
@@ -35,8 +37,10 @@ public abstract class IdAllocator {
 
 	}
 
-	public String assign(Metadata metadata, String object_type, String external_identifier_uuid, HashMap<String, String> assignments, String no_assign_uid_to)
+	public String assign(Metadata metadata, String object_type, String external_identifier_uuid, HashMap<String, String> assignments, String no_assign_uid_to, Set<String> exclusions)
 	throws XdsInternalException {
+		if (exclusions == null)
+			exclusions = new HashSet<String>();
 
 		List<OMElement> eos;
 
@@ -61,7 +65,17 @@ public abstract class IdAllocator {
 				OMElement ei = (OMElement) eis.get(j);
 				OMAttribute uniqueid_value_att = ei.getAttribute(new QName("value"));
 				String old_value = uniqueid_value_att.getAttributeValue();
-				new_value = allocate();
+
+				// The normal case is that we allocate a new identifier.
+				// Before we allocate a new identifier, look to see if this identifier is on the exclusion list.
+				// If it is to be excluded, we can skip the allocation and just use the existing (old value).
+				OMAttribute identification_scheme_value_att = ei.getAttribute(new QName("identificationScheme"));
+				String identification_schme_value = identification_scheme_value_att.getAttributeValue();
+				if (exclusions.contains(identification_schme_value)) {
+					new_value = old_value;
+				} else {
+					new_value = allocate();
+				}
 				uniqueid_value_att.setAttributeValue(new_value);
 				assignments.put(id, new_value);
 			}

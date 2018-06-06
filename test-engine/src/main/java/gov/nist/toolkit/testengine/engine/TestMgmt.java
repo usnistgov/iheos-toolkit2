@@ -18,19 +18,19 @@ public class TestMgmt extends OMGenerator {
 		testConfig = config;
 	}
 
-	public HashMap<String, String> assignUniqueIds(Metadata metadata, String no_assign_uid_to) throws XdsInternalException {
+	public HashMap<String, String> assignUniqueIds(Metadata metadata, String no_assign_uid_to, Set<String> exclusions) throws XdsInternalException {
 		HashMap<String, String> unique_ids = new HashMap<String, String>();    // model id field => uniqueID assigned
 
 
 			IdAllocator allocator = UniqueIdAllocator.getInstance();
 			// for all ExtrinsicObjects
-			allocator.assign(metadata, "ExtrinsicObject", MetadataSupport.XDSDocumentEntry_uniqueid_uuid, unique_ids, no_assign_uid_to);
+			allocator.assign(metadata, "ExtrinsicObject", MetadataSupport.XDSDocumentEntry_uniqueid_uuid, unique_ids, no_assign_uid_to, exclusions);
 
 			// for all SubmissionSets
-			allocator.assign(metadata, "RegistryPackage", MetadataSupport.XDSSubmissionSet_uniqueid_uuid, unique_ids, no_assign_uid_to);
+			allocator.assign(metadata, "RegistryPackage", MetadataSupport.XDSSubmissionSet_uniqueid_uuid, unique_ids, no_assign_uid_to, exclusions);
 
 			// for all Folders
-			allocator.assign(metadata, "RegistryPackage", MetadataSupport.XDSFolder_uniqueid_uuid, unique_ids, no_assign_uid_to);
+			allocator.assign(metadata, "RegistryPackage", MetadataSupport.XDSFolder_uniqueid_uuid, unique_ids, no_assign_uid_to, exclusions);
 
 
 		return unique_ids;
@@ -41,13 +41,13 @@ public class TestMgmt extends OMGenerator {
 
 		IdAllocator allocator = (forced_patient_id == null) ? new PatientIdAllocator(testConfig) : new PatientIdAllocator(testConfig, forced_patient_id);
 		// for all ExtrinsicObjects
-		allocator.assign(metadata, "ExtrinsicObject", MetadataSupport.XDSDocumentEntry_patientid_uuid, ids, null);
+		allocator.assign(metadata, "ExtrinsicObject", MetadataSupport.XDSDocumentEntry_patientid_uuid, ids, null, null);
 
 		// for all SubmissionSets
-		allocator.assign(metadata, "RegistryPackage", MetadataSupport.XDSSubmissionSet_patientid_uuid, ids, null);
+		allocator.assign(metadata, "RegistryPackage", MetadataSupport.XDSSubmissionSet_patientid_uuid, ids, null, null);
 
 		// for all Folders
-		allocator.assign(metadata, "RegistryPackage", MetadataSupport.XDSFolder_patientid_uuid, ids, null);
+		allocator.assign(metadata, "RegistryPackage", MetadataSupport.XDSFolder_patientid_uuid, ids, null, null);
 
 
 		return ids;
@@ -59,7 +59,7 @@ public class TestMgmt extends OMGenerator {
 		IdAllocator allocator = new SourceIdAllocator(testConfig);
 
 		// for all SubmissionSets
-		allocator.assign(metadata, "RegistryPackage", MetadataSupport.XDSSubmissionSet_sourceid_uuid, ids, null);
+		allocator.assign(metadata, "RegistryPackage", MetadataSupport.XDSSubmissionSet_sourceid_uuid, ids, null, null);
 
 		return ids;
 	}

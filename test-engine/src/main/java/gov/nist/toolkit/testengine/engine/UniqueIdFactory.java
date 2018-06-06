@@ -12,7 +12,7 @@ public class UniqueIdFactory {
         TestConfig testConfig = new TestConfig();
         testConfig.testmgmt_dir = "foofoodir";  // needs to be non-null
         TestMgmt testMgmt = new TestMgmt(testConfig);
-        testMgmt.assignUniqueIds(metadata, null);
+        testMgmt.assignUniqueIds(metadata, null, null);
     }
 
 }
