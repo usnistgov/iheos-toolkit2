@@ -31,8 +31,7 @@ import java.util.Map;
  */
 public class IDSTestTab extends GenericQueryTab implements GatewayTool {
     String selectedActor = ActorType.IMAGING_DOC_SOURCE.getShortName();
-    SimulatorConfig repConfig;
-    SimulatorConfig regConfig;
+    SimulatorConfig rrConfig;
     GenericQueryTab genericQueryTab;
     static final String COLLECTION_NAME =  "idstool";
     final TestSelectionManager testSelectionManager;
@@ -67,7 +66,7 @@ public class IDSTestTab extends GenericQueryTab implements GatewayTool {
     }
 
     TestSession getTestSession() {
-        return repConfig.getId().getTestSession();
+        return rrConfig.getId().getTestSession();
     }
 
     @Override
