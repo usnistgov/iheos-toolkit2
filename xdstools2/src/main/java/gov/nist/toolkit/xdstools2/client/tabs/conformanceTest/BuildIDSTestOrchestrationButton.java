@@ -202,7 +202,7 @@ public class BuildIDSTestOrchestrationButton extends AbstractOrchestrationButton
 
                 int row = 0;
 
-                SimulatorConfig rr = orchResponse.getRepConfig();
+                SimulatorConfig rr = orchResponse.getRRConfig();
 
                 table.setText(row, 0, "Name");
                 table.setText(row++,  1,  rr.getId().toString());

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestPlan>
     <Test>SingleDocument</Test>
-    <RegistryEndpoint>http://localhost:9280/toolkit/sim/default__rep/rep/prb</RegistryEndpoint>
+    <RegistryEndpoint>http://localhost:9280/sim/default__rr/rep/prb</RegistryEndpoint>
     <TestStep id="submit_doc">
         <ExpectedStatus>Success</ExpectedStatus>
         <ProvideAndRegisterTransaction>

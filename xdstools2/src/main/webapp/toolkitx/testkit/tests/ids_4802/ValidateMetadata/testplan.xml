@@ -4,13 +4,14 @@
     <Goal>Validate KOS metadata sent to Repository simulator, Multi-image study</Goal>
     <ExpectedStatus>Success</ExpectedStatus>
     <ImgDetailTransaction>
-         <UseReport section="ValidateKOS" step="ValidateKOS"
+      <UseReport section="ValidateKOS" step="ValidateKOS"
             reportName="SOPInstanceUID" useAs="siuid" />
       <Assertions>
-            <Assert id="Submitted Metadata Validation" process="sameKOSMetadata">
-            <SimReference id="rep" transaction="prb"
+        <Assert id="Submitted Metadata Validation" process="sameKOSMetadata">
+          <SimReference id="rr" actor="rep" transaction="prb"
                pid="IDS-AD002-a^^^&amp;1.3.6.1.4.1.21367.2005.13.20.1000&amp;ISO"/>
-            metadata.xml</Assert>
+            metadata.xml
+        </Assert>
       </Assertions>
     </ImgDetailTransaction>
   </TestStep>
