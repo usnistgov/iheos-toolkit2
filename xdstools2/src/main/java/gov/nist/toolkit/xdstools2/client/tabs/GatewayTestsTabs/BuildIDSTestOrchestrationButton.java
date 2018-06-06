@@ -45,7 +45,7 @@ class BuildIDSTestOrchestrationButton extends AbstractOrchestrationButton {
                 if (handleError(rawResponse, IdsOrchestrationResponse.class)) return;
                 IdsOrchestrationResponse orchResponse = (IdsOrchestrationResponse) rawResponse;
 
-                testTab.rrConfig = orchResponse.getRRConfig();
+                testTab.repConfig = orchResponse.getRepConfig();
 
                 panel().add(new HTML("<h2>Test Environment</h2>"));
                 FlexTable table = new FlexTable();
@@ -58,7 +58,7 @@ class BuildIDSTestOrchestrationButton extends AbstractOrchestrationButton {
 
                 table.setWidget(row, 0, new HTML("<h3>Test data pattern</h3>"));
 
-                SimulatorConfig config = testTab.rrConfig;
+                SimulatorConfig config = testTab.repConfig;
 
                 table.setWidget(row++, 0, new HTML("<h4>Repository UID</h4>"));
 

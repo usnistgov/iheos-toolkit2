@@ -15,7 +15,8 @@ public class IdsOrchestrationResponse extends AbstractOrchestrationResponse {
    
    private List<SimulatorConfig> simulatorConfigs = new ArrayList<>();
    private SimulatorConfig idsSimulatorConfig;
-   private SimulatorConfig rrConfig;
+   private SimulatorConfig repConfig;
+   private SimulatorConfig regConfig;
 
    /**
     * @return the {@link #simulatorConfigs} value.
@@ -46,17 +47,31 @@ public class IdsOrchestrationResponse extends AbstractOrchestrationResponse {
    }
 
    /**
-    * @return the {@link #rrConfig} value.
+    * @return the {@link #repConfig} value.
     */
-   public SimulatorConfig getRRConfig() {
-      return rrConfig;
+   public SimulatorConfig getRepConfig() {
+      return repConfig;
    }
    
    /**
-    * @param rrConfig the {@link #rrConfig} to set
+    * @param repConfig the {@link #repConfig} to set
     */
-   public void setRRConfig(SimulatorConfig rrConfig) {
-      this.rrConfig = rrConfig;
+   public void setRepConfig(SimulatorConfig repConfig) {
+      this.repConfig = repConfig;
+   }
+
+   /**
+    * @return the {@link #regConfig} value.
+    */
+   public SimulatorConfig getRegConfig() {
+      return regConfig;
+   }
+
+   /**
+    * @param regConfig the {@link #regConfig} to set
+    */
+   public void setRegConfig(SimulatorConfig regConfig) {
+      this.regConfig = regConfig;
    }
 
    /* (non-Javadoc)
