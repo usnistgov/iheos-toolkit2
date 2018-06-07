@@ -206,7 +206,7 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 		testConfig.currentStep = step_id;
 
 		setId(step_id);
-		System.out.println("\tStep: " + step_id);
+		logger.info("\tStep: " + step_id);
 
 
 		test_step_output = testLog.add_simple_element_with_id(

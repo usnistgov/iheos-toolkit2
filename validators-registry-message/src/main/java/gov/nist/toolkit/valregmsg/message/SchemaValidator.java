@@ -9,6 +9,7 @@ import gov.nist.toolkit.xdsexception.SchemaValidationException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 
 import org.apache.axiom.om.OMElement;
+import org.apache.log4j.Logger;
 
 /**
  * Run XML Schema validation on the provided XML. 
@@ -17,6 +18,7 @@ import org.apache.axiom.om.OMElement;
  */
 public class SchemaValidator extends AbstractMessageValidator {
 	OMElement xml;
+	private final static Logger logger = Logger.getLogger(SchemaValidator.class);
 
 	public SchemaValidator(ValidationContext vc, OMElement xml) {
 		super(vc);
@@ -51,7 +53,7 @@ public class SchemaValidator extends AbstractMessageValidator {
 			throw new XdsInternalException("Schema Validation threw internal error: " + e.getMessage());
 		}
 		if (schema_messages != null && schema_messages.length() > 0) {
-			System.out.println("SchemaValidationException at SchemaValidator:54");
+			logger.info("SchemaValidationException at SchemaValidator:54");
 			throw new SchemaValidationException("Input did not validate against schema:" + schema_messages);
 		}
 	}

@@ -95,8 +95,8 @@ public class KeyStoreAccessObject {
 			String keystoreURL = keystoreDir + File.separator + props.getProperty("keystore_url");
 			this.keystorePassword = props.getProperty("DSIG_keystore_password");
 			this.alias = props.getProperty("DSIG_keystore_alias");
-			System.out.println("DSIG: keystore is " + keystoreURL);
-			System.out.println("DSIG: alias is " + alias);
+			logger.info("DSIG: keystore is " + keystoreURL);
+			logger.info("DSIG: alias is " + alias);
 			logger.info("HttpClientAdapter.createHttpAdapter Keystore URL: " + keystoreURL);
 
 			this.keystore =  new File (keystoreURL);
@@ -259,7 +259,7 @@ public class KeyStoreAccessObject {
 	}
 
 	private void generateKeys(String type, int bitsize) throws NoSuchAlgorithmException {
-		System.out.println("Generating key pair for " + type);
+		logger.info("Generating key pair for " + type);
 		// Create a KeyPair
 		KeyPairGenerator kpg = KeyPairGenerator.getInstance(type);
 		kpg.initialize(bitsize);
@@ -269,28 +269,28 @@ public class KeyStoreAccessObject {
 	}
 
 	//this won't work with no security params -Antoine
-	public static void main(String[] args){
-		try {
-			SecurityParams NO_SECURITY_PARAMS = null;
-			KeyStoreAccessObject ksl = getInstance(NO_SECURITY_PARAMS);
-			
-			X509Certificate cert = ksl.getX509Certificate();
-			System.out.println("Cert version:: " +  cert.getVersion());
-			System.out.println("Cert version:: " +  cert.getSubjectX500Principal().getName());
-			
-			PublicKey pubk = ksl.getPublicKey();
-			PrivateKey prvk = ksl.getPrivateKey();
-			System.out.println("Public Key:: " + ksl.formatKey(pubk));
-			//
-
-			System.out.println("Private Key:: " + ksl.formatKey(prvk));
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-
-	}
+//	public static void main(String[] args){
+//		try {
+//			SecurityParams NO_SECURITY_PARAMS = null;
+//			KeyStoreAccessObject ksl = getInstance(NO_SECURITY_PARAMS);
+//
+//			X509Certificate cert = ksl.getX509Certificate();
+//			System.out.println("Cert version:: " +  cert.getVersion());
+//			System.out.println("Cert version:: " +  cert.getSubjectX500Principal().getName());
+//
+//			PublicKey pubk = ksl.getPublicKey();
+//			PrivateKey prvk = ksl.getPrivateKey();
+//			System.out.println("Public Key:: " + ksl.formatKey(pubk));
+//			//
+//
+//			System.out.println("Private Key:: " + ksl.formatKey(prvk));
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//
+//
+//	}
 
 	public void setSecurityParams(SecurityParams securityParams) {
 		this.securityParams = securityParams;

@@ -3,12 +3,14 @@ package gov.nist.toolkit.testengine.engine;
 import gov.nist.toolkit.docref.MetadataTables;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
+import gov.nist.toolkit.testengine.transactions.BasicTransaction;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
+import org.apache.log4j.Logger;
 
 import javax.xml.namespace.QName;
 import java.io.File;
@@ -23,6 +25,7 @@ public class Validator {
 	boolean error = false;
 	OMElement test_assertions;
 	ArrayList<OMElement> use_id = new ArrayList<OMElement>();;
+	private final static Logger logger = Logger.getLogger(Validator.class);
 
 	TestConfig testConfig = null;
 	protected OMElement instruction_output;
@@ -1041,7 +1044,7 @@ public class Validator {
 		return !hasError();
 	}
 
-	static void println(String x) { System.out.println(x); }
+	static void println(String x) { logger.info(x); }
 
 	static void usage() {
 		println("metav ");
@@ -1119,7 +1122,7 @@ public class Validator {
 			}
 		}
 		catch (Exception e) {
-			System.out.println(e.getClass().getName() + ": " + e.getMessage());
+			logger.info(e.getClass().getName() + ": " + e.getMessage());
 			System.exit(-1);
 		}
 

@@ -4,6 +4,7 @@ import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.interactionmodel.client.Interaction;
 import gov.nist.toolkit.interactionmodel.client.InteractionIdentifierTerm;
 import gov.nist.toolkit.interactionmodel.client.InteractionLog;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 public class InteractionMapper {
+    private final static Logger logger = Logger.getLogger(InteractionMapper.class);
 
     public InteractingEntity map(InteractingEntity model) throws Exception {
 
@@ -48,7 +50,7 @@ public class InteractionMapper {
                                if (val!=null) {
                                    if (InteractionIdentifierTerm.Operator.EQUALTO.equals(identifierTerm.getOperator())) {
                                        if (val.equals(identifierTerm.getValues()[0])){
-                                           System.out.println("found interaction from: " + interaction.getFrom() + " to: " + interaction.getTo() + " status: " + interaction.getStatus().name() + " using identifier: " + identifierTerm.getPropName() + " op: " + identifierTerm.getOperator().name() + " value[0]: " + identifierTerm.getValues()[0] + " sz:" + identifierTerm.getValues().length);
+                                           logger.info("found interaction from: " + interaction.getFrom() + " to: " + interaction.getTo() + " status: " + interaction.getStatus().name() + " using identifier: " + identifierTerm.getPropName() + " op: " + identifierTerm.getOperator().name() + " value[0]: " + identifierTerm.getValues()[0] + " sz:" + identifierTerm.getValues().length);
                                            child.setStatus(interaction.getStatus()); // The response status
                                            interaction.setClaimed(true);
                                        }

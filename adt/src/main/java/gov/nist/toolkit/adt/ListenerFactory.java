@@ -178,7 +178,7 @@ public class ListenerFactory {
 
         for (ThreadPoolItem tm : threadPool)
             if (tm.isInUse())
-                System.out.println(" in use: " + tm.simId);
+                logger.info(" in use: " + tm.simId);
 
         throw new ThreadPoolExhaustedException("Thread pool exhausted - cannot allocate ADT patientIdentityFeed. pool has " + threadPool.size() + " items. First port is " + firstPort + ", last port is " + lastPort + ". isInitialized? " + isInitialized);
     }

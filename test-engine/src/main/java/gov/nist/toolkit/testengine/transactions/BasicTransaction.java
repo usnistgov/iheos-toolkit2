@@ -622,19 +622,6 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 		return OMAbstractFactory.getOMFactory();
 	}
 
-
-
-
-	void print_step_history(OMElement this_instruction_output) {
-		System.out.println("Step History:");
-		OMElement step_output = (OMElement) this_instruction_output.getParent();
-		while (step_output != null) {
-			String id = step_output.getAttributeValue(new QName("id"));
-			System.out.println("id = " + id);
-			step_output = (OMElement) step_output.getPreviousOMSibling();
-		}
-	}
-
 	void addToLinkage(HashMap<String, String> in) {
 		for (Iterator<String> it=in.keySet().iterator(); it.hasNext(); ) {
 			String key = it.next();
@@ -700,7 +687,7 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 		endpoint = this.s_ctx.getRegistryEndpoint();   // this is busted, always returns null
 		if (endpoint == null || endpoint.equals("") || testConfig.endpointOverride) {			//boolean async = false;
 			if (testConfig.verbose)
-				System.out.println("endpoint coming from actors.xml");
+				logger.info("endpoint coming from actors.xml");
 			if (trans.getCode().endsWith(".as")) {
 				xds_version = xds_b;
 			}
@@ -719,14 +706,14 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 			}
 		} else {
 			if (testConfig.verbose)
-				System.out.println("endpoint coming from testplan.xml");
+				logger.info("endpoint coming from testplan.xml");
 		}
 		logger.info("Transaction = " + trans + " Endpoint = " + endpoint);
 		showEndpoint();
 	}
 
 	void showEndpoint() {
-		System.out.println("        Endpoint = " + endpoint);
+		logger.info("        Endpoint = " + endpoint);
 	}
 
 	protected void parseRepEndpoint(String repositoryUniqueId, boolean isSecure) throws Exception {
@@ -890,11 +877,7 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 
 			TestMgmt tm = new TestMgmt(testConfig);
 			if ( assign_patient_id ) {
-//				System.out.println("============================= assign_patient_id  in BasicTransaction#prepareMetadata()==============================");
-				// getRetrievedDocumentsModel and insert PatientId
 				String forced_patient_id = s_ctx.get("PatientId");
-//                System.out.println("    to " + forced_patient_id)
-//              s_ctx.dumpContextRecursive();
 				if (s_ctx.useAltPatientId()) {
 					forced_patient_id = s_ctx.get("AltPatientId");
 				}
@@ -1141,13 +1124,13 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 				fatal("WaitBefore: zero delay requested");
 			try {
 				long t0, t1, diff;
-				System.out.print("Waiting " + milliseconds + " milliseconds ...");
+				logger.info("Waiting " + milliseconds + " milliseconds ...");
 				t0 = System.currentTimeMillis();
 				do {
 					t1 = System.currentTimeMillis();
 					diff = t1 - t0;
 				} while (diff < milliseconds);
-				System.out.println("Done");
+				logger.info("Done");
 			} catch (Exception e) {
 				fatal("WaitBefore failed: " + e.getMessage());
 			}
@@ -1159,10 +1142,6 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 		} else {
 			throw new XdsInternalException("BasicTransaction: Don't understand instruction " + part_name);
 		}
-
-//		if (testConfig.verbose)
-//			System.out.println("<<<PRE-TRANSACTION>>>\n" + toString() + "<<<///PRE-TRANSACTION>>>\n");
-
 	}
 
 	protected void parseUseReportInstruction(OMElement part) throws XdsInternalException {
@@ -1436,7 +1415,7 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 			RegistryResponseParser registry_response = new RegistryResponseParser(getSoapResult());
 			List<String> errs = registry_response.get_regrep_error_msgs();
 			if (errs.size() > 0) {
-                System.out.println("Received errors in response");
+				logger.info("Received errors in response");
                 for (String err : errs)
 				    s_ctx.set_error(err);
 				failed();
@@ -1458,7 +1437,7 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 			testLog.add_name_value(instruction_output, "InHeader", soap.getInHeader());
 			testLog.add_name_value(instruction_output, "Result", soap.getResult());
 		} catch (Exception e) {
-			System.out.println("Cannot log soap request");
+			logger.error("Cannot log soap request");
 			e.printStackTrace();
 		}
 	}
