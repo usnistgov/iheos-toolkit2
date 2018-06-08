@@ -91,13 +91,12 @@ class MhdClientTransaction extends BasicTransaction {
 
         }
 
-//        boolean goodMessageFound = false
-        List<FhirSimulatorTransaction> passing = []
+
+        List<ValidaterResult> inProgress = []
+        List<ValidaterResult> passing = []
         List<ValidaterResult> failing = []
         transactions.each { FhirSimulatorTransaction transaction ->
-            TransactionInstance ti = transactionInstanceBuilder.build(transaction.simDbEvent.actor, transaction.simDbEvent.eventId, trans)
-            String label = ti.toString()
-            String thisUrl = transaction.url + " (${label})"
+//            TransactionInstance ti = transactionInstanceBuilder.build(transaction.simDbEvent.actor, transaction.simDbEvent.eventId, trans)
             boolean hasError = false
 
             // Run all validators on this transaction
@@ -105,24 +104,34 @@ class MhdClientTransaction extends BasicTransaction {
                 if (!(validater1.validater instanceof AbstractFhirValidater))
                     throw new ToolkitRuntimeException("oops")
                 AbstractFhirValidater validater = (AbstractFhirValidater) validater1.validater
-                validater.validate(transaction)
+                ValidaterResult result = validater.validate(transaction)
+                result
             }.each {ValidaterResult result ->
-                if (!result.match) {
+                if (result.match) {
+                    inProgress << result
+                } else {
                     failing << result
                     hasError = true
                 }
             }
 
-            if (!hasError) {
-                passing << transaction
+            if (!hasError && !inProgress.isEmpty()) {
+                consolidateLogs(inProgress)
+                passing << inProgress[0]
             }
         }
 
         logReport.addDetailHeader('Validating Messages')
-        passing.each { FhirSimulatorTransaction transaction ->
+        passing.each { ValidaterResult result ->
+            FhirSimulatorTransaction transaction = result.transaction
             TransactionInstance ti = transactionInstanceBuilder.build(transaction.simDbEvent.actor, transaction.simDbEvent.eventId, trans)
             String label = ti.toString()
-            logReport.addDetailLink(transaction.url, transaction.placeToken, label, '')
+            logReport.addDetailLink(transaction.url, transaction.placeToken, label, result.filter.filterDescription)
+            String log = result.log
+            if (log)
+                log.eachLine { String line ->
+                    logReport.addDetail('', line)
+                }
         }
 
         logReport.addDetailHeader('Non-Validating Messages', 'Failed Validations')
@@ -131,10 +140,24 @@ class MhdClientTransaction extends BasicTransaction {
             TransactionInstance ti = transactionInstanceBuilder.build(transaction.simDbEvent.actor, transaction.simDbEvent.eventId, trans)
             String label = ti.toString()
             logReport.addDetailLink(transaction.url, transaction.placeToken, label, result.filter.filterDescription)
-            logReport.addDetail('', result.filter.log)
+            result.filter.log.eachLine { String line ->
+                logReport.addDetail('', line)
+            }
         }
 
         return passing
+    }
+
+    def consolidateLogs(List<ValidaterResult> results) {
+        ValidaterResult first = null
+        results.each { ValidaterResult result ->
+            if (first == null) {
+                first = result
+                return
+            }
+            String x = result.filter.getLog()
+            first.log(x)
+        }
     }
 
 //    @Deprecated
