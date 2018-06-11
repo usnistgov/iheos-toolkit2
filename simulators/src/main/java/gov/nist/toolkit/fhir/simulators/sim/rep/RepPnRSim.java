@@ -218,6 +218,9 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 				logger.info("Forwarding Register transaction to " + endpoint);
 
 				Soap soap = new Soap();
+				if (common.vc.requiresStsSaml) {
+					soap.addHeader(SimUtil.getSecurityElement(common.vc, dsSimCommon, this.getClass().getName()));
+				}
 				try {
 					OMElement result = soap.soapCall(m.getV3SubmitObjectsRequest(), endpoint, false, true, true, SoapActionFactory.r_b_action, SoapActionFactory.getResponseAction(SoapActionFactory.r_b_action));
 					ErrorRecorder rrEr = dsSimCommon.registryResponseAsErrorRecorder(result);

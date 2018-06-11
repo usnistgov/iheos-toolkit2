@@ -575,12 +575,9 @@ public class SimServlet  extends HttpServlet {
 			if (stsSce!=null && stsSce.hasBoolean() && stsSce.asBoolean()) {
 				/*
 				NOTE:
-				The validate SAML flag is global to the entire combined simulator but the SAML assertion itself is not available or propagated to all the transactions in sequence.
-				One solution is to validate SAML only for the initial transaction. For example, we only validate SAML on XCQ, but turn off SAML validation context checking for registry actor's stored query transaction.
-				 */
-				// Only enable SAML for transactions where base simConfig ActorType equals the actor requested in the SimServlet URL. This is to exclude propagation issue where simConfig ActorType is RG and SimServlet ActorType is Registry.
-				if (ActorType.findActor(simid.getActorType()).equals(actorType))
-					vc.requiresStsSaml = true;
+				The validate SAML flag is global to the entire combined simulator. SAML needs to be propagated to internally forwarded transactions.
+				*/
+				vc.requiresStsSaml = true;
 			}
 
 			SimulatorConfigElement asce = asc.get(SimulatorProperties.codesEnvironment);
