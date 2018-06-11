@@ -1101,6 +1101,7 @@ public class Soap implements SoapInterface {
 		return async;
 	}
 
+	// TODO: This seems deprecated.
 	/*
 	 * (non-Javadoc)
 	 *
