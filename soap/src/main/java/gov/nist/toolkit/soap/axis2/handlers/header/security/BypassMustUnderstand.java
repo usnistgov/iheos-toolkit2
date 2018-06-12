@@ -17,7 +17,7 @@ public class BypassMustUnderstand extends AbstractHandler {
     public InvocationResponse invoke(MessageContext messageContext) throws AxisFault {
         try{
 
-            logger.info("MustUnderstand: invoke " + messageContext.toString());
+//            logger.info("MustUnderstand: invoke " + messageContext.toString());
 
             SOAPEnvelope env = messageContext.getEnvelope();
             SOAPHeader header = env.getHeader();
@@ -32,7 +32,7 @@ public class BypassMustUnderstand extends AbstractHandler {
 
                         // Mark it as processed
                         headerBlock.setProcessed();
-                        logger.info("MustUnderstand marked as processed: " + headerBlock.getQName());
+//                        logger.info("MustUnderstand marked as processed: " + headerBlock.getQName());
                     }
                 }
             }

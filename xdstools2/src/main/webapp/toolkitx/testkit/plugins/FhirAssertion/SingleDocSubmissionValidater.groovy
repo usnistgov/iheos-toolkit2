@@ -1,19 +1,26 @@
-package gov.nist.toolkit.testengine.engine.fhirValidations
+package war.toolkitx.testkit.plugins.FhirAssertion
 
 import gov.nist.toolkit.testengine.engine.FhirSimulatorTransaction
+import gov.nist.toolkit.testengine.engine.fhirValidations.AbstractFhirValidater
+import gov.nist.toolkit.testengine.engine.fhirValidations.ValidaterResult
 import org.hl7.fhir.dstu3.model.Bundle
 import org.hl7.fhir.dstu3.model.DocumentManifest
 import org.hl7.fhir.dstu3.model.DocumentReference
 import org.hl7.fhir.dstu3.model.Resource
 
-class SingleDocSubmissionValidater extends AbstractValidater {
-    @Override
-    ValidaterResult validate(FhirSimulatorTransaction transaction) {
-            boolean match = transaction.request instanceof Bundle && isSingleDocSubmission(transaction.request) && !isErrors()
-            new ValidaterResult(transaction, this, match)
+class SingleDocSubmissionValidater extends AbstractFhirValidater {
+
+    SingleDocSubmissionValidater() {
+        filterDescription = 'Submission of a Single DocumentReference linked to DocumentManifest'
     }
 
-    boolean isSingleDocSubmission(Bundle bundle) {
+    @Override
+    ValidaterResult validate(FhirSimulatorTransaction transaction) {
+        boolean match = transaction.request instanceof Bundle && isSingleDocSubmission(transaction.request) && !isErrors()
+        new ValidaterResult(transaction, this, match)
+    }
+
+    private boolean isSingleDocSubmission(Bundle bundle) {
         DocumentManifest documentManifest = null
         List<DocumentReference> documentReferences = []
 
@@ -28,10 +35,6 @@ class SingleDocSubmissionValidater extends AbstractValidater {
                 documentReferences.add(resource)
             }
         }
-        documentManifest && documentReferences.size() > 0
-    }
-
-    SingleDocSubmissionValidater(SimReference theSimReference) {
-        super(theSimReference, 'Submission of a Single Document Reference with the Document Manifest')
+        documentManifest && documentReferences.size() == 1
     }
 }

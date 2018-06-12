@@ -355,7 +355,10 @@ public class PropertyManager {
 
     public String getProxyPort() {
 		loadProperties();
-		return (String) toolkitProperties.getProperty("Proxy_Port");
+		String value = (String) toolkitProperties.getProperty("Proxy_Port");
+		if (value == null || value.equals(""))
+			value = "7297";
+		return value;
     }
 
     public boolean isSingleuserMode() {

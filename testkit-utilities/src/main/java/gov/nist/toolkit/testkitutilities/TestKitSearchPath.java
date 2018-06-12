@@ -78,6 +78,16 @@ public class TestKitSearchPath {
 
     }
 
+    public List<File> getPluginDirs(TestKit.PluginType pluginType) {
+        List<File> dirs = new ArrayList<>();
+
+        for (TestKit testKit : getTestkits()) {
+            dirs.add(testKit.getPluginDir(pluginType));
+        }
+
+        return dirs;
+    }
+
     public List<TestKit> getTestkits() {
         return testkits;
     }

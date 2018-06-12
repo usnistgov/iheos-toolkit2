@@ -46,6 +46,10 @@ public class TestOverviewDTO implements BasicTestOverview, Serializable, IsSeria
         this.name = testInstance.getId();
     }
 
+    public boolean isTls() {
+        return logMapDTO != null && logMapDTO.isTls();
+    }
+
     public boolean isPass() {
         return pass;
     }

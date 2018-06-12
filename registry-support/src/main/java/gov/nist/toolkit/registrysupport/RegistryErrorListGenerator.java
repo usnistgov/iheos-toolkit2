@@ -358,12 +358,12 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 
 	public void error(String msg) {
 		if (verbose)
-		System.out.println("ERROR: " + msg);
+			logger.info("ERROR: " + msg);
 	}
 
 	public void warning(String msg) {
 		if (verbose)
-		System.out.println("WARNING: " + msg);
+			logger.info("WARNING: " + msg);
 	}
 
 	public static String exception_details(Exception e) {

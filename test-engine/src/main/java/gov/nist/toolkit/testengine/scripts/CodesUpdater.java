@@ -2,7 +2,7 @@ package gov.nist.toolkit.testengine.scripts;
 
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.installation.shared.TestSession;
-import gov.nist.toolkit.testengine.Sections;
+import gov.nist.toolkit.testkitutilities.Sections;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;

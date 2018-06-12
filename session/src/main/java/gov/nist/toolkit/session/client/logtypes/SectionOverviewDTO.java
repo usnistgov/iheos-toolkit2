@@ -23,8 +23,17 @@ public class SectionOverviewDTO implements BasicSectionOverview, Serializable, I
     private Map<String, StepOverviewDTO> steps = new HashMap<>();
     private boolean sutInitiated = false;
     private List<Gather> gathers = null;
+    private boolean tls = false;
 
     public SectionOverviewDTO() {}
+
+    public boolean isTls() {
+        return tls;
+    }
+
+    public void setTls(boolean tls) {
+        this.tls = tls;
+    }
 
     public String getName() {
         return name;

@@ -3,6 +3,7 @@ package gov.nist.toolkit.errorrecording;
 import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
+import org.apache.log4j.Logger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -11,6 +12,7 @@ import java.util.List;
 
 public class TextErrorRecorder implements ErrorRecorder {
 	List<ErrorRecorder> children = new ArrayList<>();
+	private final static Logger logger = Logger.getLogger(TextErrorRecorder.class);
 
 	public class ErrorInfo {
 		public int indent = 0;
@@ -90,7 +92,7 @@ public class TextErrorRecorder implements ErrorRecorder {
 	}
 	
 	public void showErrorInfo() {
-		System.out.println(toString());
+		logger.info(toString());
 	}
 
 	public String toString() {

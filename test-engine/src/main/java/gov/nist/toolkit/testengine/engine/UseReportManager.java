@@ -83,10 +83,11 @@ public class UseReportManager  {
 			if (section != null && section.equals("THIS"))
 				continue;
 			if (config.verbose)
-				System.out.println("\tLoading logs for test " + testInstance + " section " + section + "...");
+				logger.info("\tLoading logs for test " + testInstance + " section " + section + "...");
 			TestLogDetails tspec = null;
 			tspec = new TestLogDetails(testDefinition, testInstance);
-            System.out.println("TestLogDetails are: " + tspec.toString());
+			if (config.verbose)
+				logger.info("TestLogDetails are: " + tspec.toString());
             List<LogRepository> logRepositories = new ArrayList<>();
             logRepositories.add(config.logRepository);
             logRepositories.addAll(alternateLogRepositories(testInstance));
@@ -95,7 +96,8 @@ public class UseReportManager  {
 				tspec.setLogRepository(lr);
 				testlogFile = tspec.getTestLog(testInstance, section);
 				if (testlogFile != null) {
-					System.out.println("Loading log " + testlogFile);
+					if (config.verbose)
+					logger.info("Loading log " + testlogFile);
 					sectionLogMapDTO.put(section, new LogFileContentBuilder().build(testlogFile));
 					break;
 				}

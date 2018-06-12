@@ -1,10 +1,12 @@
 package gov.nist.toolkit.testengine.engine;
 
+import gov.nist.toolkit.testengine.transactions.BasicTransaction;
 import gov.nist.toolkit.testkitutilities.TestkitWalker;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.xpath.AXIOMXPath;
+import org.apache.log4j.Logger;
 import org.jaxen.JaxenException;
 
 import javax.xml.parsers.FactoryConfigurationError;
@@ -17,17 +19,19 @@ import java.io.File;
  */
 public class ErrorScan extends TestkitWalker {
 	static boolean debug = false;
+	private final static Logger logger = Logger.getLogger(ErrorScan.class);
+
 	void evalTestPlan(File testplan, String expectedTestLabel) throws XdsInternalException, FactoryConfigurationError, JaxenException {
 		testPlanCount++;
 		OMElement tplan = Util.parse_xml(testplan);
 		AXIOMXPath xpathExpression = new AXIOMXPath ("//TestPlan/Test");
 		String test = xpathExpression.stringValueOf(tplan);
 		if (test == null || test.equals("")) {
-			System.out.println(testplan.toString() + ": No Test element");
+			logger.info(testplan.toString() + ": No Test element");
 			errors++;
 		}
 		else if (!test.equals(expectedTestLabel)) {
-			System.out.println(testplan.toString() + ": expected " + expectedTestLabel + " found " + test);
+			logger.info(testplan.toString() + ": expected " + expectedTestLabel + " found " + test);
 			errors++;
 		}
 	}
