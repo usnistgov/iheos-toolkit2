@@ -4,10 +4,7 @@ package gov.nist.toolkit.testenginelogging.client;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class LogMapDTO implements Serializable, IsSerializable {
 	/**
@@ -16,13 +13,20 @@ public class LogMapDTO implements Serializable, IsSerializable {
 	private static final long serialVersionUID = 6977145786942237537L;
 	private List<LogMapItemDTO> items = new ArrayList<LogMapItemDTO>();
 	private transient Map<String, LogFileContentDTO> logFileContent = new HashMap<String, LogFileContentDTO>();
+	private boolean tls = false;
 	
 	public LogMapDTO() {
+	}
+
+	public boolean isTls() {
+		return tls;
 	}
 	
 	public void add(String sectionName, LogFileContentDTO log) {
 		logFileContent.put(sectionName, log);
 		items.add(new LogMapItemDTO(sectionName, log));
+		if (log.isTls())
+			tls = true;
 	}
 	
 	public List<LogMapItemDTO> getItems() { return items; }

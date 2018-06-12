@@ -37,6 +37,7 @@ public class TestStepLogContentDTO implements Serializable, IsSerializable {
 	
 	public TestStepLogContentDTO() {	}
 
+	public boolean isTls() { return (endpoint != null) && endpoint.startsWith("https"); }
 
 	public StepGoalsDTO getStepGoalsDTO() {
 		return stepGoalsDTO;
