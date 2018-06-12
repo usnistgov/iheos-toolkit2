@@ -1,9 +1,9 @@
-package gov.nist.toolkit.pluginSupport
+package gov.nist.toolkit.itTests.plugins
 
 import gov.nist.toolkit.pluginSupport.loader.PluginClassLoader
 import spock.lang.Specification
 
-class GroovyLoaderTest extends Specification {
+class GroovyLoaderSpecDoNotRun extends Specification {
 
     def 'Loader Test'() {
         setup:
