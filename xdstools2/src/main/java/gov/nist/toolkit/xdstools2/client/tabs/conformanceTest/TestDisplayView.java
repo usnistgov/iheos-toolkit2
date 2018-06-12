@@ -27,7 +27,7 @@ class TestDisplayView extends FlowPanel implements TestStatusDisplay {
     private Image inspect = null;
     private Image statusIcon = null;
     private Image testKitSourceIcon = null;
-    private Image tlsIcon = null;
+    private HTML tls = new HTML();
 
     // Parts of the body
     private HTML description = new HTML();
@@ -53,7 +53,7 @@ class TestDisplayView extends FlowPanel implements TestStatusDisplay {
 
         // flush right stuff
         if (testKitSourceIcon!=null) header.add(testKitSourceIcon);
-        if (tlsIcon != null) header.add(tlsIcon);
+        header.add(tls);
         if (delete != null) header.add(delete);
         if (statusIcon != null) header.add(statusIcon);
         if (inspect != null) header.add(inspect);
@@ -161,7 +161,7 @@ class TestDisplayView extends FlowPanel implements TestStatusDisplay {
     }
 
     public void labelTls() {
-        tlsIcon = new Image("icons2/lock-icon.png");
+        tls.setHTML("TLS");
     }
 
     void setTestKitSourceIcon(String testKitSource, String testKitSection) {
