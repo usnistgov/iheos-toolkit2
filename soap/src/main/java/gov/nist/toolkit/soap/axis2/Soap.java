@@ -584,10 +584,11 @@ public class Soap implements SoapInterface {
                 throw new XdsInternalException("SOAP Fault: " + soapFault.getReason(), soapFault);
             }
 			//  - null pointer exception here if port number in configuration is wrong
+			//  - can also get a null pointer exception if the TLS handshake fails.
 			try {
 				inMsgCtx.getEnvelope().build();
 			} catch (NullPointerException e) {
-				throw new XdsInternalException("Service not available on this host:port (" + endpoint + ")");
+				throw new XdsInternalException("Toolkit Exception: TLS handshake failed or service not available on this host:port (" + endpoint + ")");
 			}
 
 			OMElement soapBody = inMsgCtx.getEnvelope().getBody();
