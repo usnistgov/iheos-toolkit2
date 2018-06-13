@@ -206,6 +206,10 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 	private MultiUserTestSessionSelector multiUserTestSessionSelector = null;
 	private TestSessionSelector testSessionSelector = null;
 
+	public boolean isDefaultTestSessionSelectable() {
+		return (!multiUserModeEnabled && !casModeEnabled) || PasswordManagement.isSignedIn;
+	}
+
 	public void enableTestSessionSelection() {
 		if ((!multiUserModeEnabled && !casModeEnabled) || PasswordManagement.isSignedIn)
 			testSessionSelector.setVisibility(true);

@@ -326,7 +326,7 @@ public class SimMsgViewerPresenter extends AbstractPresenter<SimMsgViewerView> {
     }
 
     void testSessionChanged(TestSession testSession) {
-        if (!currentSimId.getTestSession().equals(testSession)) {
+        if (currentSimId == null || !currentSimId.getTestSession().equals(testSession)) {
             currentTransactionInstance = null;
             getView().clearAllTabs();
             getView().eventListBox.clear();

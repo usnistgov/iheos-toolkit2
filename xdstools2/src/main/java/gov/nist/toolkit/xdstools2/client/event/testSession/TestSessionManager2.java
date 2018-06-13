@@ -1,6 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.event.testSession;
 
 import com.google.gwt.user.client.Cookies;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.xdstools2.client.CookieManager;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
@@ -43,8 +44,7 @@ public class TestSessionManager2 {
                         delete(event.getValue());
                         break;
                     case SELECT:
-                        setCurrentTestSession(event.getValue());
-                        toCookie(event.getValue());
+                        updateCurrentTestSession(event.getValue());
                 }
             }
         });
@@ -56,7 +56,20 @@ public class TestSessionManager2 {
         return currentTestSession;
     }
     public void setCurrentTestSession(String testSession) {
-        currentTestSession = testSession;
+        TestSession ts = new TestSession(testSession);
+        boolean selectable  = Xdstools2.getInstance().isDefaultTestSessionSelectable();
+        if (!ts.equals(TestSession.DEFAULT_TEST_SESSION) || selectable) {
+            currentTestSession = testSession;
+        }
+    }
+
+    private void updateCurrentTestSession(String testSession) {
+        TestSession ts = new TestSession(testSession);
+        boolean selectable  = Xdstools2.getInstance().isDefaultTestSessionSelectable();
+        if (!ts.equals(TestSession.DEFAULT_TEST_SESSION) || selectable) {
+            currentTestSession = testSession;
+            toCookie(testSession);
+        }
     }
     public boolean isTestSessionValid() { return !isEmpty(currentTestSession); }
 
@@ -65,7 +78,9 @@ public class TestSessionManager2 {
         if (x == null) return "";
         return x;
     }
-    private void toCookie(String value) { Cookies.setCookie(CookieManager.TESTSESSIONCOOKIENAME, value);}
+    private void toCookie(String value) {
+        Cookies.setCookie(CookieManager.TESTSESSIONCOOKIENAME, value);
+    }
     private void deleteCookie() { Cookies.removeCookie(CookieManager.TESTSESSIONCOOKIENAME);}
 
     // get sessionNames from server and broadcast to all tabs

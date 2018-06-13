@@ -37,7 +37,7 @@ public class SimMsgViewerActivity extends AbstractToolkitActivity implements IsW
 
     public SimMsgViewerActivity(SimMsgViewer place) {
         super();
-        GWT.log("Start activity ");
+        GWT.log("Start SimMsgVieweractivity ");
         if (place != null) {
             this.simName = place.getName();
             GWT.log("simName is " + simName);
@@ -89,22 +89,28 @@ public class SimMsgViewerActivity extends AbstractToolkitActivity implements IsW
 
                     final String currentTestSession = simId.getTestSession().getValue();
 
-                    // let all the other events get handled - then override them with this
-                    // setting the correct testsession is critical
-                    // even a short delay puts us at the end of the queue
-                    Timer timer = new Timer() {
+                    if (Xdstools2.getInstance().isDefaultTestSessionSelectable()) {
 
-                        @Override
-                        public void run() {
-                            ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, currentTestSession));
-                            ClientUtils.INSTANCE.getTestSessionManager().setCurrentTestSession(currentTestSession);
-                            presenter.setCurrentSimId(simId);
-                            presenter.setTitle("Log " + simId.toString());
-                            finish(acceptsOneWidget, eventBus);
-                        }
-                    };
-                    timer.schedule(1);
+                        // let all the other events get handled - then override them with this
+                        // setting the correct testsession is critical
+                        // even a short delay puts us at the end of the queue
+                        Timer timer = new Timer() {
 
+                            @Override
+                            public void run() {
+                                ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, currentTestSession));
+                                ClientUtils.INSTANCE.getTestSessionManager().setCurrentTestSession(currentTestSession);
+                                presenter.setCurrentSimId(simId);
+                                presenter.setTitle("Log " + simId.toString());
+                                finish(acceptsOneWidget, eventBus);
+                            }
+                        };
+                        timer.schedule(1);
+                    } else {
+                        presenter.setCurrentSimId(simId);
+                        presenter.setTitle("Log " + simId.toString());
+                        finish(acceptsOneWidget, eventBus);
+                    }
 
                 }
 
