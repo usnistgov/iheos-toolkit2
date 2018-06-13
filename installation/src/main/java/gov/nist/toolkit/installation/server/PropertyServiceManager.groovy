@@ -37,6 +37,10 @@ public class PropertyServiceManager {
 		return null;
 	}
 
+	boolean getIgnoreInternalTestkit() {
+		return getPropertyManager().ignoreInternalTestkit();
+	}
+
 	public boolean getArchiveLogs() {
 		logger.debug(": getArchiveLogs");
 		return getPropertyManager().archiveLogs();

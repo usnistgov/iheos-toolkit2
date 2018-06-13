@@ -34,6 +34,7 @@ public class PropertyManager {
 	static private final String MSH_5 = "MSH_5";
 	static private final String MSH_6 = "MSH_6";
 	static private final String ARCHIVE_LOGS = "Archive_Logs";
+	static private final String IGNORE_INTERNAL_TESTKIT = "Ignore_internal_testkit";
 	static public final String MULTIUSER_MODE = "Multiuser_mode";
 	static public final String CAS_MODE = "Cas_mode";
 	static private final String NONCE_SIZE = "Nonce_size";
@@ -93,6 +94,13 @@ public class PropertyManager {
 			if (!f.exists())
 				throw new Exception("Cannot create Message_database_directory " + value);
 		}
+	}
+
+	public boolean ignoreInternalTestkit() {
+		loadProperties();
+		String value = (String) toolkitProperties.get(IGNORE_INTERNAL_TESTKIT);
+		if (value == null) return false;
+		return value.toLowerCase().equals("true");
 	}
 
 	public boolean archiveLogs() {

@@ -368,7 +368,8 @@ public class Installation {
             LOGGER.info("Environment name is null");
         }
         // toolkit default testkit
-        testkits.add(internalTestkitFile());
+        if (!propertyServiceMgr.getIgnoreInternalTestkit())
+            testkits.add(internalTestkitFile());
         return testkits;
     }
 
