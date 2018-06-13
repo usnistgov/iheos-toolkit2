@@ -217,6 +217,10 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 			testSessionSelector.setVisibility(false);
 	}
 
+	public boolean arePeerTestSessionsVisible() {
+		return (!multiUserModeEnabled && !casModeEnabled) || PasswordManagement.isSignedIn;
+	}
+
 	static public void addtoMainMenu(Widget w) { ME.mainMenuPanel.add(w); }
 
 	static public void clearMainMenu() { ME.mainMenuPanel.clear(); }
