@@ -95,8 +95,6 @@ public abstract class AbstractActorFactory {
 		return factories().get(at.getName());
 	}
 
-    public static final String                        xcpdEndpoint = "XCPD_endpoint";
-	public static final String                     xcpdTlsEndpoint = "XCPD_TLS_endpoint";
 
 
     static final String name = "Name";
