@@ -43,7 +43,7 @@ public class PropertyManager {
 	static private final String SSL_PORT = "SSL_Port";
 	static private final String DEFAULT_TEST_SESSION = "Default_Test_Session";
 	static private final String DEFAULT_TEST_SESSION_IS_PROTECTED = "Default_Test_Session_is_Protected";
-
+	static private final String CLIENT_CIPHER_SUITES = "Client_Cipher_Suites";
 
 	private String propFile;
 	private Properties toolkitProperties = null;
@@ -412,5 +412,18 @@ public class PropertyManager {
 			return value.trim();
 		}
 		return null;
+	}
+
+	public String[] getClientCipherSuites() {
+		loadProperties();
+		String text = (String) toolkitProperties.get(CLIENT_CIPHER_SUITES);
+		if (text == null  || text.trim().equals("")) return null;
+
+		String[] cipherSuites = text.split(",");
+		for (int i = 0; i < cipherSuites.length; i++)
+		{
+			cipherSuites[i] = cipherSuites[i].trim();
+		}
+		return cipherSuites;
 	}
 }
