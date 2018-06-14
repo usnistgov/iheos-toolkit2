@@ -611,6 +611,21 @@ Stack Trace:
             IheItiProfile.XDS,
             Arrays.asList(OptionType.REQUIRED, OptionType.METADATA_UPDATE, OptionType.MULTI_PATIENT_QUERY, OptionType.XUA, OptionType.CAT_FOLDER, OptionType.CAT_LIFECYCLE,OptionType.ISR,OptionType.ON_DEMAND)
     ),
+    REPOSITORY_ORCH(
+            "Document Repository for Orchestration",
+            Arrays.asList("DOC_REPOSITORY", "repositoryb"),
+            "reporch",
+            "gov.nist.toolkit.simcommon.server.factories.RepositoryActorFactory",
+            "gov.nist.toolkit.fhir.simulators.sim.rep.RepositoryActorSimulator",
+            Arrays.asList(TransactionType.PROVIDE_AND_REGISTER, TransactionType.RETRIEVE),
+            false,
+            "repository",
+            false,
+            Constants.USE_SHORTNAME,
+            IheItiProfile.XDS,
+            Arrays.asList(OptionType.REQUIRED, OptionType.XUA)
+    )
+
     ;
 
     private static final long serialVersionUID = 1L;
