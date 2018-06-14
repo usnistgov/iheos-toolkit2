@@ -8,7 +8,8 @@ public enum  Sections {
     TESTDATA_REG("testdata-registry"),
     TESTDATA_REPO("testdata-repository"),
     TESTS("tests"),
-    PLUGINS("plugins");
+    PLUGINS("plugins"),
+    ORCHESTRATION("orch");
 
     private final String fieldDescription;
 

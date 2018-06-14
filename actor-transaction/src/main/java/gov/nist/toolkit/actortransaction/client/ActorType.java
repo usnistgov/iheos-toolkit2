@@ -596,7 +596,22 @@ Stack Trace:
             Constants.USE_SHORTNAME,
             IheItiProfile.XDS,
             Arrays.asList(OptionType.REQUIRED)
-    );
+    ),
+    REGISTRY_ORCH(
+            "Document Registry for Orchestration",
+            Arrays.asList("DOC_REGISTRY", "registryb", "initialize_for_stored_query"),
+            "regorch",
+            "gov.nist.toolkit.simcommon.server.factories.RegistryActorFactory",
+            "gov.nist.toolkit.fhir.simulators.sim.reg.RegistryActorSimulator",
+            Arrays.asList(TransactionType.REGISTER, TransactionType.REGISTER_ODDE, TransactionType.STORED_QUERY, TransactionType.UPDATE, TransactionType.MPQ),
+            false,
+            null,
+            false,
+            Constants.USE_SHORTNAME,
+            IheItiProfile.XDS,
+            Arrays.asList(OptionType.REQUIRED, OptionType.METADATA_UPDATE, OptionType.MULTI_PATIENT_QUERY, OptionType.XUA, OptionType.CAT_FOLDER, OptionType.CAT_LIFECYCLE,OptionType.ISR,OptionType.ON_DEMAND)
+    ),
+    ;
 
     private static final long serialVersionUID = 1L;
     String name;
