@@ -14,6 +14,10 @@ public class TestKitSearchPath {
     TestSession testSession;
     List<TestKit> testkits = new ArrayList<>();
 
+    public TestKitSearchPath(String environment, String testSession) {
+        this(environment, new TestSession(testSession));
+    }
+
     public TestKitSearchPath(String environment, TestSession testSession) {
         this.environment = environment;
         this.testSession = testSession;
