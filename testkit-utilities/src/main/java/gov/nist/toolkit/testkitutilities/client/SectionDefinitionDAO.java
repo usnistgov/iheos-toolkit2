@@ -10,7 +10,7 @@ import java.util.*;
  */
 public class SectionDefinitionDAO implements Serializable, IsSerializable {
     private Map<String, StepDefinitionDAO> steps = new HashMap<>();
-    private List<String> names = new ArrayList<String>();
+    private List<String> names = new ArrayList<String>();  // this establishes the order
     private Set<String> sectionDependencies = new HashSet<String>();
     private boolean sutInitiated = false;
     private String sectionName;
@@ -18,6 +18,11 @@ public class SectionDefinitionDAO implements Serializable, IsSerializable {
 
     public SectionDefinitionDAO(String sectionName) {
         this.sectionName = sectionName;
+    }
+
+    @Override
+    public String toString() {
+        return sectionName;
     }
 
     public StepDefinitionDAO getStep(String name) {
@@ -55,5 +60,37 @@ public class SectionDefinitionDAO implements Serializable, IsSerializable {
 
     public void setGathers(List<Gather> gathers) {
         this.gathers = gathers;
+    }
+
+    public SDIterator stepIterator() {
+        return new SDIterator(this);
+    }
+
+    private class SDIterator implements Iterator<StepDefinitionDAO> {
+        SectionDefinitionDAO dao;
+        int position = 0;
+
+        SDIterator(SectionDefinitionDAO dao) {
+            this.dao = dao;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return position < dao.names.size();
+        }
+
+        @Override
+        public StepDefinitionDAO next() {
+            if (!hasNext())
+                return null;
+            String nextName = names.get(position++);
+            return steps.get(nextName);
+        }
+
+        @Override
+        public void remove() {
+
+        }
+
     }
 }

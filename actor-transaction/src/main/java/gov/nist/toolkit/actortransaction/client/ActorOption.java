@@ -9,6 +9,13 @@ public class ActorOption implements Serializable, IsSerializable {
     public String optionId;
     public String actorTypeId;
 
+    public String getLabel() {
+        String ret = actorTypeId + "(" + profileId + ")";
+        if (optionId != null && !optionId.equals(""))
+            ret = ret + "_" + optionId;
+        return ret;
+    }
+
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();

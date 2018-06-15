@@ -95,8 +95,10 @@ public class TestKit {
 	public File getPluginDir(PluginType pluginType) {
 		return new File(testKit.toString() + File.separator + "plugins" + File.separator + pluginType.getPathName());
 	}
-	
-	private String[] testkitSections = { "tests", "testdata", "examples", "utilities", "testdata-repository", "testdata-registry", "testdata-xdr" };
+
+	private String orchSection = "orch";
+
+	private String[] testkitSections = { "tests", "testdata", "examples", "utilities", "testdata-repository", "testdata-registry", "testdata-xdr", orchSection };
 	
 	/**
 	 * Get File representing directory containing test definition
@@ -111,8 +113,11 @@ public class TestKit {
 		for (String section : testkitSections) {
 			testdir = new File(testKit.toString() + File.separator + section + File.separator + testname);
 			if (testdir.exists())
-				if (testdir.isDirectory())
+				if (testdir.isDirectory()) {
+					if (section.equals(orchSection))
+						return new OrchestrationDefinition(testdir);
 					return new TestDefinition(testdir);
+				}
 		}
 				
 		throw new Exception("test " + testdir + " does not exist");

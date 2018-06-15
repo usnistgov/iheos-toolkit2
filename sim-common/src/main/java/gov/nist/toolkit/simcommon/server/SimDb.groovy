@@ -543,7 +543,7 @@ public class SimDb {
 		return newExpiration.getTime();
 	}
 
-	public void deleteAllSims(TestSession testSession) throws IOException, NoSimException {
+	static void deleteAllSims(TestSession testSession) throws IOException, NoSimException {
 		List<SimId> allSimIds = getAllSimIds(testSession);
 		for (SimId simId : allSimIds) {
 			SimDb db = new SimDb(simId);

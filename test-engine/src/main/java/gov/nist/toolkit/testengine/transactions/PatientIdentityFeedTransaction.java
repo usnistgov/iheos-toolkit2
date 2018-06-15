@@ -67,6 +67,7 @@ public class PatientIdentityFeedTransaction extends BasicTransaction {
 
 
 	protected void parseInstruction(OMElement part) throws XdsInternalException {
+		noMetadataProcessing = true;
 		String part_name = part.getLocalName();
 		if (part_name.equals("CreateNewPatientId")) {
 			createNewPID = true;
