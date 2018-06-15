@@ -82,7 +82,6 @@ public class RemoteSqSim  extends TransactionSimulator implements MetadataGenera
 			soap.addHeader(SimUtil.getSecurityElement(vc, dsSimCommon, this.getClass().getName()));
 		}
 
-
 		OMElement result = null;
 		try {
 
