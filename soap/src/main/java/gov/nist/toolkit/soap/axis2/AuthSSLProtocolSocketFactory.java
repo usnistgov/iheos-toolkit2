@@ -208,7 +208,7 @@ public class AuthSSLProtocolSocketFactory implements SecureProtocolSocketFactory
         }
     }
 
-    private SSLContext getSSLContext() throws IOException {
+    public SSLContext getSSLContext() throws IOException {
         if (this.sslcontext == null) {
             this.sslcontext = createSSLContext();
         }
