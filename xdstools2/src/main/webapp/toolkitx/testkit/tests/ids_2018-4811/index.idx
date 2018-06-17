@@ -1,0 +1,6 @@
+case-00_Comparison_Transaction
+case-02_Unknown_SOP_Instance_UID
+case-03_SOP_Instance_UID_not_in_requested_series
+case-04_SOP_Instance_UID_not_in_requested_study
+case-08_Empty_Transfer_Syntax_UID
+case-09_Invalid_Transfer_Syntax_UID

@@ -1,0 +1,19 @@
+
+<TestPlan>
+	<Test>ids_4805/validate-R</Test>
+	<TestStep id="ValidateRad55Response">
+		<Goal>Correct Http Response Code</Goal>
+		<Standard>
+			<HttpResponseCodes>
+				<Transactions id="*" code="200"/>
+			</HttpResponseCodes>
+		</Standard>
+		<XmlDetailTransaction>
+			<Assertions>
+				<Assert id="Http Response" process="sameWADOResp">
+					<TestResponse testDir="../Rad55RetrieveRequest" step="Rad55RetrieveRequest" />
+				</Assert>
+			</Assertions>
+		</XmlDetailTransaction>
+	</TestStep>
+</TestPlan>

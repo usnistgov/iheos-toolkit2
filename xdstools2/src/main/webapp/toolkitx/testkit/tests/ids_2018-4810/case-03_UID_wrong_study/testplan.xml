@@ -1,0 +1,12 @@
+<TestPlan>
+  <Test>ids_4809/3</Test>
+  <TestStep id="case-3-retrieve">
+      <Goal>WADO Retrieve Failure, SOP Instance UID not in study</Goal>
+      <ExpectedStatus>Failure</ExpectedStatus>
+      <ExpectedErrorCode>404</ExpectedErrorCode>
+    <WADOTransaction>
+    <Parameters></Parameters>
+    <UIDFile>images.txt</UIDFile>
+    </WADOTransaction>
+  </TestStep>
+</TestPlan>
