@@ -1,0 +1,12 @@
+
+<TestPlan>
+	<Test>iig_5401/retrieve</Test>
+	<TestStep id="retrieve">
+		<Goal>Imaging Document Set Retrieve Two Studies, one Responding
+			Gateway</Goal>
+		<ExpectedStatus>Success</ExpectedStatus>
+		<ImagingDocSetIigRetrieveTransaction>
+			<MetadataFile>RAD-69Request.xml</MetadataFile>
+		</ImagingDocSetIigRetrieveTransaction>
+	</TestStep>
+</TestPlan>
