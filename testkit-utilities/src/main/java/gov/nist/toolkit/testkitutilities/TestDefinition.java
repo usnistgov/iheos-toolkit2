@@ -53,6 +53,10 @@ public class TestDefinition {
 		return Io.stringFromFile(new File(testDir, "readme.txt"));
 	}
 
+	public String getFullTestReadmeHtml() throws IOException {
+		return Io.stringFromFile(new File(testDir, "readme.html"));
+	}
+
 	public String getFullSectionReadme(String section) throws IOException {
 		File f = new File(new File(testDir, section), "readme.txt");
 		return Io.stringFromFile(f);
@@ -216,12 +220,19 @@ public class TestDefinition {
 
 	public ReadMe getTestReadme()  {
 		String contents = null;
+		String htmlContents = null;
+		try {
+			htmlContents = getFullTestReadmeHtml();
+		} catch (IOException e) {
+			htmlContents = "";
+		}
+
 		try {
 			contents = getFullTestReadme();
 		} catch (IOException e) {
 			return null;
 		}
-		return parseReadme(contents);
+		return parseReadme(contents, htmlContents);
 	}
 
 	public String getReadmeFirstLine() throws IOException {
@@ -236,14 +247,14 @@ public class TestDefinition {
 		} catch (IOException e) {
 			return null;
 		}
-		return parseReadme(contents);
+		return parseReadme(contents, "");
 	}
 
-	private ReadMe parseReadme(String readmeContents) {
+	private ReadMe parseReadme(String readmeContents, String readmeHtmlContents) {
 		ReadMe rm = new ReadMe();
 
 		StringBuilder buf = new StringBuilder();
-		Scanner scanner = new Scanner(readmeContents);
+		Scanner scanner = new Scanner((readmeHtmlContents.equals("") ? readmeContents : readmeHtmlContents));
 		int i = 0;
 		while (scanner.hasNextLine()) {
 			String line = scanner.nextLine();
