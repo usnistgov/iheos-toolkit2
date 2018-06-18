@@ -47,7 +47,7 @@ public class Xdstest2 {
 	private SecurityParams tki;
 	public boolean involvesMetadata = false;   // affects logging
 	static Logger logger = Logger.getLogger(Xdstest2.class);
-
+	String sessionId;
 
 	/**
 	 * Connect to toolkit.
@@ -247,6 +247,14 @@ public class Xdstest2 {
 		xt.setWssec(isWssec);
 	}
 
+	public String getSessionId() {
+		return sessionId;
+	}
+
+	public void setSessionId(String sessionId) {
+		this.sessionId = sessionId;
+	}
+
 	/**
 	 * Run previously selected test.
 	 * 
@@ -263,6 +271,7 @@ public class Xdstest2 {
 	public boolean run(Map<String, String> externalLinkage, Map<String, Object> externalLinkage2,  boolean stopOnFirstFailure, TransactionSettings ts) throws Exception {
 		xt.stopOnFirstFailure = stopOnFirstFailure;
 		logger.debug("Running " + testInstance.getId());
+		xt.setSessionId(sessionId);
 		testLogDetails = xt.runAndReturnLogs(externalLinkage, externalLinkage2, ts, ts.writeLogs);
 		if (testLogDetails == null)
 			throw new Exception("Xdstest2#run: runAndReturnLogs return null (testSpecs)");

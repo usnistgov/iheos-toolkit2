@@ -1,8 +1,8 @@
 <TestPlan>
-    <Test>build_registry</Test>
+    <Test>reporch(xds)/build_registry</Test>
     <Rule>Create Registry Sim</Rule>
     <TestStep id="step">
         <ExpectedStatus>Success</ExpectedStatus>
-        <CreateSim type="regorch" id="mine"/>
+        <CreateSimTransaction type="regorch" id="mine"/>
     </TestStep>
 </TestPlan>

@@ -6,6 +6,7 @@ import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.session.server.Session
+import gov.nist.toolkit.sitemanagement.Sites
 import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import gov.nist.toolkit.testkitutilities.OrchestrationDefinition
 import gov.nist.toolkit.testkitutilities.TestDefinition
@@ -37,6 +38,8 @@ class OrchEngine {
     def run(SiteSpec siteSpec) {
         for (SectionDefinitionDAO d : orchestrationDefinition.getSections()) {
             run(d, siteSpec)
+            if (siteSpec.name == Sites.FAKE_SITE_NAME && util.transactionSettings?.siteSpec)
+                siteSpec = util.transactionSettings.siteSpec
         }
     }
 

@@ -19,11 +19,13 @@ public class EnvSetting {
 	static Logger logger = Logger.getLogger(EnvSetting.class);
 
 	static public EnvSetting getEnvSetting(String sessionId) throws EnvironmentNotSelectedException {
+	    if (sessionId == null)
+            throw new EnvironmentNotSelectedException("sessionId is null");
         EnvSetting s = getEnvSettingForSession(sessionId);
         if (s == null) {
             logger.info(String.format("For session %s...", sessionId));
             logger.info(String.format("Session/Env mapping table - %s", settings.toString()));
-            throw new EnvironmentNotSelectedException("");
+            throw new EnvironmentNotSelectedException("sessionId " + sessionId + " has not environment set");
         }
 		return s;
 	}
@@ -46,7 +48,8 @@ public class EnvSetting {
 
     public static void installDefaultEnvironment() {
         File envFile = Installation.instance().internalEnvironmentFile(DEFAULTENVIRONMENTNAME);
-        if (envFile == null || !envFile.exists()) throw new EnvironmentNotSelectedException("Default Environment not configured - file " + envFile + " not found.");
+        if (envFile == null || !envFile.exists())
+            throw new EnvironmentNotSelectedException("Default Environment not configured - file " + envFile + " not found.");
         new EnvSetting(DEFAULTSESSIONID, DEFAULTENVIRONMENTNAME, envFile);
 //        new EnvSetting(Installation.defaultSessionName(), DEFAULTENVIRONMENTNAME, envFile);
 //        new EnvSetting(Installation.defaultServiceSessionName(), DEFAULTENVIRONMENTNAME, envFile);
@@ -54,7 +57,8 @@ public class EnvSetting {
 
     public static void installServiceEnvironment() {
         File envFile = Installation.instance().internalEnvironmentFile(DEFAULTENVIRONMENTNAME);
-        if (envFile == null || !envFile.exists()) throw new EnvironmentNotSelectedException("Default Environment not configured - file " + envFile + " not found.");
+        if (envFile == null || !envFile.exists())
+            throw new EnvironmentNotSelectedException("Default Environment not configured - file " + envFile + " not found.");
         new EnvSetting(Installation.defaultServiceSessionName(), DEFAULTENVIRONMENTNAME, envFile);
     }
 

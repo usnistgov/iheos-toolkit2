@@ -1,12 +1,15 @@
 package gov.nist.toolkit.testengine.transactions;
 
 import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimIdFactory;
 import gov.nist.toolkit.simcommon.client.Simulator;
 import gov.nist.toolkit.simcommon.server.AbstractActorFactory;
 import gov.nist.toolkit.simcommon.server.GenericSimulatorFactory;
 import gov.nist.toolkit.simcommon.server.SimManager;
+import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testengine.engine.StepContext;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
@@ -42,10 +45,17 @@ public class CreateSim extends BasicTransaction {
 
     @Override
     protected void run(OMElement request) throws Exception {
-        SimManager simManager = new SimManager(null);
+        SimManager simManager = new SimManager(testConfig.sessionId);
         SimId simId = SimIdFactory.simIdBuilder(s_ctx.getTestSession(), id);
         Simulator sim = new GenericSimulatorFactory().buildNewSimulator(simManager, type, simId);
-        reportManager.add("simId", simId.toString());
+        ActorType actorType = ActorType.findActor(type);
+        testConfig.site = new GenericSimulatorFactory().getActorFactory(actorType).buildActorSite(sim.getConfig(0), new Site());
+        testConfig.site.setName(id);
+        reportManager.add("$site$", simId.toString());
+
+        // this will be passedon to future steps in this section
+        transactionSettings.siteSpec = new SiteSpec(simId.getId(), simId.getTestSession());
+        new GenericSimulatorFactory(simManager).saveConfiguration(sim.getConfig(0));
     }
 
     @Override

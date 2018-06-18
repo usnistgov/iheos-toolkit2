@@ -28,6 +28,7 @@ public class UtilityRunner {
     private static Logger logger = Logger.getLogger(UtilityRunner.class);
     private AssertionResults assertionResults = new AssertionResults();
     private final TestRunType testRunType;
+    private TransactionSettings transactionSettings = null;
 
     UtilityRunner(XdsTestServiceManager xdsTestServiceManager, TestRunType testRunType) {
         this.xdsTestServiceManager = xdsTestServiceManager;
@@ -57,7 +58,12 @@ public class UtilityRunner {
             // Initialize if necessary.  Used by TestRunner and it may have other settings
             // to enforce
             if (session.transactionSettings == null) {
-                session.transactionSettings = new TransactionSettings();
+                if (transactionSettings != null)
+                    session.transactionSettings = transactionSettings;
+                else {
+                    transactionSettings = new TransactionSettings();
+                    session.transactionSettings = transactionSettings;
+                }
             }
 
             // depending on the configuration, this could be null
@@ -165,6 +171,7 @@ public class UtilityRunner {
             if (session.transactionSettings.testSession==null)
                 session.transactionSettings.testSession=session.getTestSession();
 
+            session.xt.setSessionId(session.getSessionId());
             session.xt.run(params, params2, stopOnFirstFailure, session.transactionSettings);
 
             assertionResults.add(session.transactionSettings.res);
@@ -234,4 +241,11 @@ public class UtilityRunner {
         }
     }
 
+    public TransactionSettings getTransactionSettings() {
+        return transactionSettings;
+    }
+
+    public void setTransactionSettings(TransactionSettings transactionSettings) {
+        this.transactionSettings = transactionSettings;
+    }
 }

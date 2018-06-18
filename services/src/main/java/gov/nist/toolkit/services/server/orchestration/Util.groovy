@@ -6,6 +6,7 @@ import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.sitemanagement.client.SiteSpec
+import gov.nist.toolkit.testengine.engine.TransactionSettings
 import groovy.transform.TypeChecked
 
 /**
@@ -14,6 +15,7 @@ import groovy.transform.TypeChecked
 @TypeChecked
 class Util {
     ToolkitApi api
+    TransactionSettings transactionSettings
 
     public Util(ToolkitApi api) {
         this.api = api
@@ -28,6 +30,7 @@ class Util {
         qparams.put('$testdata_home$', home);
 
         List<Result> results = api.runTest(testSession.value, site, testId, sections, qparams, true)
+        transactionSettings = api.transactionSettings
         if (!results.get(0).passed())
             throw new Exception(results.get(0).toString())
     }
@@ -39,6 +42,7 @@ class Util {
         qparams.put('$patientid$', patientId.asString())
 
         List<Result> results = api.runTest(userName, site, testId, sections, qparams, true)
+        transactionSettings = api.transactionSettings
         if (!results.get(0).passed())
             throw new Exception(results.get(0).toString())
     }
@@ -51,6 +55,7 @@ class Util {
         qparams.put('$testdata_home$', home);
 
         List<Result> results = api.runTest(userName, site, testId, sections, qparams, true)
+        transactionSettings = api.transactionSettings
         if (!results.get(0).passed())
             throw new Exception(results.get(0).toString())
     }
@@ -59,6 +64,15 @@ class Util {
         // load the reg/rep with two documents
         List<String> sections = [ section ]
         List<Result> results = api.runTest(userName, site, testId, sections, parameters, true)
+        transactionSettings = api.transactionSettings
+        if (!results.get(0).passed())
+            throw new Exception(results.get(0).toString())
+    }
+
+    public void submit(String userName, SiteSpec site, TestInstance testId, List<String> sections, Map<String, String> parameters) {
+        // load the reg/rep with two documents
+        List<Result> results = api.runTest(userName, site, testId, sections, parameters, true)
+        transactionSettings = api.transactionSettings
         if (!results.get(0).passed())
             throw new Exception(results.get(0).toString())
     }
@@ -66,6 +80,7 @@ class Util {
     public void submit(String userName, SiteSpec site, TestInstance testId, Map<String, String> parameters) {
         // load the reg/rep with two documents
         List<Result> results = api.runTest(userName, site, testId, null, parameters, true)
+        transactionSettings = api.transactionSettings
         if (!results.get(0).passed())
             throw new Exception(results.get(0).toString())
     }
@@ -73,6 +88,7 @@ class Util {
     public void submit(TestSession testSession, SiteSpec site, TestInstance testId) {
        Map<String, String> parameters = new HashMap<>();
         List<Result> results = api.runTest(testSession.value, site, testId, null, parameters, true)
+        transactionSettings = api.transactionSettings
         if (!results.get(0).passed())
             throw new Exception(results.get(0).toString())
     }

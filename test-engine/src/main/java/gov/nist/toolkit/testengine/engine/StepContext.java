@@ -447,7 +447,7 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 					stsTransaction.setStsQuery(instruction.getAttributeValue(new QName("stsQuery")));
 					transaction = stsTransaction;
 					break;
-				case "CreateSim":
+				case "CreateSimTransaction":
 					CreateSim createSim = new CreateSim(this, instruction, instruction_output);
 					transaction = createSim;
 					break;

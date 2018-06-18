@@ -48,7 +48,7 @@ class OrchEngineSpec extends ToolkitSpecification {
     }
 
     def 'Test Orch Engine'() {
-        when:
+        when:  // sends single PIF to registry
         SiteSpec site = simId.siteSpec
         engine.run(site)
 

@@ -45,6 +45,7 @@ public class XdsTest {
 	private List<String> bargs;
 	private Site site;
 	private Sites sites;
+	private String sessionId;
 	boolean status;
 	TestConfig testConfig;
 	final static Logger logger = Logger.getLogger(XdsTest.class);
@@ -56,7 +57,10 @@ public class XdsTest {
 		"-K", "--toolkit"
 	};
 	private TestSession testSession;
-	
+
+	public void setSessionId(String sessionId) {
+		this.sessionId = sessionId;
+	}
 
 	private static String[] operationOptions = {
 		"-h", "--help",
@@ -148,6 +152,8 @@ public class XdsTest {
 	 List<TestLogDetails> runAndReturnLogs(Map<String, String> externalLinkage, Map<String, Object> externalLinkage2, TransactionSettings globalTransactionSettings, boolean writeLogFiles) throws Exception {
 		initTestConfig();
 
+		testConfig.sessionId = sessionId;
+
         if (testConfig.site == null) {
             String siteName = System.getProperty("site");
             if (siteName != null)
@@ -221,6 +227,7 @@ public class XdsTest {
 				boolean status;
 				try {
 					status = plan.run(testPlanFile, isMultiSectionTest);
+					globalTransactionSettings.siteSpec = ts.siteSpec;
 				} catch (MultiSectionTestRejectException e) {
 					// cannot continue automatically
 					break;

@@ -20,6 +20,7 @@ import gov.nist.toolkit.simcommon.server.SimManager;
 import gov.nist.toolkit.simcommon.server.SiteServiceManager;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.testengine.engine.TransactionSettings;
 import gov.nist.toolkit.xdsexception.client.ThreadPoolExhaustedException;
 import org.apache.log4j.Logger;
 
@@ -43,6 +44,7 @@ public class ToolkitApi {
     private String environmentName;
     boolean internalUse = true;
     private static ToolkitApi api = null;
+    TransactionSettings transactionSettings;
 
     /**
      * Use when running unit tests or used in production
@@ -230,7 +232,9 @@ public class ToolkitApi {
         session.isTls = isTls;
         if (session.getTestSession() == null) session.setTestSession(testSession);
         // TODO create environment name in following call?
-        return xdsTestServiceManager().runMesaTest(environmentName,testSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
+        List<Result> results = xdsTestServiceManager().runMesaTest(environmentName,testSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
+        transactionSettings = xdsTestServiceManager().getTransactionSettings();
+        return results;
     }
 
     public List<Result> runTest(String testSessionName, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws Exception {
@@ -242,6 +246,7 @@ public class ToolkitApi {
         if (session.getTestSession() == null) session.setTestSession(testSession);
         // TODO create environment name in following call?
         List<Result> results = xdsTestServiceManager().runMesaTest(environmentName,testSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
+        transactionSettings = xdsTestServiceManager().getTransactionSettings();
         return results;
     }
 
@@ -296,6 +301,10 @@ public class ToolkitApi {
 
     public Session getSession() {
         return session;
+    }
+
+    public TransactionSettings getTransactionSettings() {
+        return transactionSettings;
     }
 }
 

@@ -29,6 +29,7 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testengine.engine.ResultPersistence;
 import gov.nist.toolkit.testengine.engine.TestLogsBuilder;
+import gov.nist.toolkit.testengine.engine.TransactionSettings;
 import gov.nist.toolkit.testengine.engine.Xdstest2;
 import gov.nist.toolkit.testengine.fhir.FhirSupport;
 import gov.nist.toolkit.testenginelogging.LogFileContentBuilder;
@@ -55,6 +56,7 @@ import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 
+import javax.transaction.Transaction;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
@@ -69,6 +71,7 @@ public class XdsTestServiceManager extends CommonService {
 	public Session session;
 	static Logger logger = Logger.getLogger(XdsTestServiceManager.class);
 	static boolean allCiphersEnabled = false;
+	TransactionSettings transactionSettings = null;
 
 	public XdsTestServiceManager(Session session)  {
 		this.session = session;
@@ -139,7 +142,9 @@ public class XdsTestServiceManager extends CommonService {
 		session.setCurrentEnvName(environmentName);
 		TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, testSession);
 		session.xt = new Xdstest2(Installation.instance().toolkitxFile(), searchPath, session, testInstance.getTestSession());
-		List<Result> results = new TestRunner(this).run(session, testSession, siteSpec, testInstance, sections, params, params2, stopOnFirstFailure);
+		TestRunner testRunner = new TestRunner(this);
+		List<Result> results = testRunner.run(session, testSession, siteSpec, testInstance, sections, params, params2, stopOnFirstFailure);
+		transactionSettings = testRunner.getTransactionSettings();
 		return results;
 	}
 
@@ -151,7 +156,9 @@ public class XdsTestServiceManager extends CommonService {
 		testInstance.setTestSession(mesaTestSession);
 		TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, mesaTestSession);
 		session.xt = new Xdstest2(Installation.instance().toolkitxFile(), searchPath, session, testInstance.getTestSession());
-		new TestRunner(this).run(session, mesaTestSession, siteSpec, testInstance, sections, params, params2, stopOnFirstFailure);
+		TestRunner testRunner = new TestRunner(this);
+		testRunner.run(session, mesaTestSession, siteSpec, testInstance, sections, params, params2, stopOnFirstFailure);
+		transactionSettings = testRunner.getTransactionSettings();
 		return getTestOverview(mesaTestSession, testInstance);
 	}
 
@@ -1323,5 +1330,7 @@ public class XdsTestServiceManager extends CommonService {
 		return null;
 	}
 
-
+	public TransactionSettings getTransactionSettings() {
+		return transactionSettings;
+	}
 }

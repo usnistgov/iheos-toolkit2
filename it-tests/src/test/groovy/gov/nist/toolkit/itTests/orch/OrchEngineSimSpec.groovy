@@ -50,7 +50,8 @@ class OrchEngineSimSpec extends ToolkitSpecification {
 
     def 'create reg sim'() {
         when:
-        SimId id = SimIdFactory.simIdBuilder(testSession, 'mine')
+        String siteName = 'mine'
+        SimId id = SimIdFactory.simIdBuilder(testSession, siteName)
         engine.buildGeneralizedOrchestration(session, environment, testSession, actorOption)
         engine.run(new SiteSpec(Sites.FAKE_SITE_NAME, testSession)) // siteSpec actually never used but needed for interface
 

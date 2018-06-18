@@ -12,6 +12,7 @@ import gov.nist.toolkit.session.server.TestSessionNotSelectedException;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testengine.engine.FhirContentFormat;
 import gov.nist.toolkit.testengine.engine.ResultPersistence;
+import gov.nist.toolkit.testengine.engine.TransactionSettings;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepositoryFactory;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
@@ -24,6 +25,7 @@ import java.util.Map;
 public class TestRunner {
     private final XdsTestServiceManager xdsTestServiceManager;
     static Logger logger = Logger.getLogger(TestRunner.class);
+    private TransactionSettings transactionSettings = null;
 
     public TestRunner(XdsTestServiceManager xdsTestServiceManager) {
         this.xdsTestServiceManager = xdsTestServiceManager;
@@ -87,6 +89,7 @@ public class TestRunner {
 //            Result result = xdsTestServiceManager.xdstest(testId, SECTIONS, params, params2, null, stopOnFirstFailure);
             UtilityRunner utilityRunner = new UtilityRunner(xdsTestServiceManager, TestRunType.TEST);
             Result result = utilityRunner.run(session, params, params2, sections, testInstance, null, stopOnFirstFailure);
+            transactionSettings = session.transactionSettings;
 //			ResultSummary summary = new ResultSummary(result);
 
             // Save results to external_cache.
@@ -105,5 +108,9 @@ public class TestRunner {
         } finally {
             session.clear();
         }
+    }
+
+    public TransactionSettings getTransactionSettings() {
+        return transactionSettings;
     }
 }

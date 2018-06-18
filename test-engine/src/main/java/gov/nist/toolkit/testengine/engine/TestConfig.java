@@ -88,4 +88,6 @@ public class TestConfig {
 		fos.write(pid.substring(pid.lastIndexOf("^")+1).getBytes());
 		fos.close();
 	}
+
+	public String sessionId = null;
 }
