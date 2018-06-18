@@ -354,16 +354,17 @@ public class SimulatorServiceManager extends CommonService {
 	}
 
     public String delete(SimId simId) throws Exception {
+		if (!SimDb.exists(simId)) return "";
         SimulatorConfig config = new SimDb().getSimulator(simId);
         if (config != null)
             return delete(config);
-        if (SimDb.exists(simId)) {
-            try {
-                new SimDb(simId).delete();
-            } catch (Exception e) {
-                // ignore
-            }
-        }
+//        if (SimDb.exists(simId)) {
+//            try {
+//                new SimDb(simId).delete();
+//            } catch (Exception e) {
+//                // ignore
+//            }
+//        }
         return "";
     }
 

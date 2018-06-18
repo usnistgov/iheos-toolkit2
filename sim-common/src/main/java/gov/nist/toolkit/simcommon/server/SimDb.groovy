@@ -165,7 +165,8 @@ public class SimDb {
 			return (isSimDir(f)) // Safety file should not exist when it is deleted minus the simindex folder(s)
 		}
 		// end
-		return f.exists();
+		boolean result = f.exists();
+		return result
 	}
 
 	/**
