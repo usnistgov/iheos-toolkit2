@@ -1,4 +1,3 @@
-
 <TestPlan>
   <Test>iig_5405/retrieve</Test>
   <TestStep id="retrieve">

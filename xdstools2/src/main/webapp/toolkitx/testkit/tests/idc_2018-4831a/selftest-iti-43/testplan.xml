@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>selftest-iti-43</Test>
+    <RegistryEndpoint>http://localhost:9280/xdstools2/sim/test__rr/rep/ret</RegistryEndpoint>
+    <TestStep id="RetrieveKOS">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <RetrieveTransaction>
+        <UseReport test="idc_4831" section="selftest-iti-18" step="Query" reportName="$doc_uid$" useAs="$uid$"/>
+            <XDSb/>
+            <ExpectedMimeType>application/dicom</ExpectedMimeType>
+            <MetadataFile>retrieve.xml</MetadataFile>
+        </RetrieveTransaction>
+    </TestStep>
+</TestPlan>

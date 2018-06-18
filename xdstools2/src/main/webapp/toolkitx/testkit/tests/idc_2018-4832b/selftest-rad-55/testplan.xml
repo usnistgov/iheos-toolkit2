@@ -1,0 +1,12 @@
+<TestPlan>
+	<Test>ids_4836/selftest</Test>
+	<TestStep id="selftest-rad-55">
+		<Goal>WADO Retrieve Multi image</Goal>
+		<ExpectedStatus>Success</ExpectedStatus>
+		<WADOTransaction>
+		   <Target sim="ids"/>
+			<Parameters/>
+         <UIDFile>images.txt</UIDFile>
+		</WADOTransaction>
+	</TestStep>
+</TestPlan>
