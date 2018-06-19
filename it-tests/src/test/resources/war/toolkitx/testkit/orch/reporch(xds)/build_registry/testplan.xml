@@ -3,6 +3,9 @@
     <Rule>Create Registry Sim</Rule>
     <TestStep id="step">
         <ExpectedStatus>Success</ExpectedStatus>
+        <!-- This will create the reg sim with id xxx__mine.
+             Also, this will be the current system selection for the
+             rest of the steps/sections in this "test" (reporch(xds)).-->
         <CreateSimTransaction type="regorch" id="mine"/>
     </TestStep>
 </TestPlan>

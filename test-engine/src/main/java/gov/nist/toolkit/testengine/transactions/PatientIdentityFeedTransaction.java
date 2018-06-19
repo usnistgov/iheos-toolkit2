@@ -37,8 +37,7 @@ public class PatientIdentityFeedTransaction extends BasicTransaction {
 				pidString = pid.asString();
 			} else if (forcePatientId != null) {
 				pidString = forcePatientId;
-			}
-			else {
+			} else {
 				Map<String, String> linkage = getExternalLinkage();
 				pidString = linkage.get("$patientid$");
 			}
@@ -46,7 +45,7 @@ public class PatientIdentityFeedTransaction extends BasicTransaction {
 			testLog.add_name_value(instruction_output, "PatientId", pidString);
 
 			if (testConfig == null) throw new Exception("Internal Error - TestConfig not initialized");
-			if (testConfig.site == null) throw new Exception("Internal Error - TestConfig.site not initialized");
+			if (testConfig.site == null) throw new Exception("Internal Error - TestConfig.site not initialized by a prior step");
 
 			String server = testConfig.site.pifHost;
 			String port = testConfig.site.pifPort;
@@ -58,6 +57,7 @@ public class PatientIdentityFeedTransaction extends BasicTransaction {
 
 			A01Sender.send(server, Integer.parseInt(port), pidString);
 
+			reportManager.add("$patientid$", pidString);
 		}
 		catch (Exception e) {
 			fail(ExceptionUtil.exception_details(e));
