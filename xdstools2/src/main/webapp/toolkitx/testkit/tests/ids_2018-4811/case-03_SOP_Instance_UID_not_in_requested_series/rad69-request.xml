@@ -1,0 +1,14 @@
+<xdsiB:RetrieveImagingDocumentSetRequest
+   xmlns:xdsiB="urn:ihe:rad:xdsi-b:2009">
+   <xdsiB:StudyRequest studyInstanceUID="1.3.6.1.4.1.14519.5.2.1.7085.2626.192997540292073877946622133586">
+      <xdsiB:SeriesRequest seriesInstanceUID="1.3.6.1.4.1.14519.5.2.1.7085.2626.831285735928731782652048570955">
+         <xdsb:DocumentRequest xmlns:xdsb="urn:ihe:iti:xds-b:2007">
+            <xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.80.110</xdsb:RepositoryUniqueId>
+            <xdsb:DocumentUniqueId>1.3.6.1.4.1.14519.5.2.1.7085.2626.917173693042362721495240037775</xdsb:DocumentUniqueId>
+         </xdsb:DocumentRequest>
+      </xdsiB:SeriesRequest>
+   </xdsiB:StudyRequest>
+   <xdsiB:TransferSyntaxUIDList>
+      <xdsiB:TransferSyntaxUID>1.2.840.10008.1.2.1</xdsiB:TransferSyntaxUID>
+   </xdsiB:TransferSyntaxUIDList>
+</xdsiB:RetrieveImagingDocumentSetRequest>

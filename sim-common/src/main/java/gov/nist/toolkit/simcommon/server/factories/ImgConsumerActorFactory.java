@@ -33,12 +33,6 @@ public class ImgConsumerActorFactory  extends AbstractActorFactory implements IA
         else
             sc = new SimulatorConfig();
 
-        // placeholders - must be updated by client
-        addEditableConfig(sc, SimulatorProperties.storedQueryEndpoint, ParamType.ENDPOINT, "http://host:port/service");
-        addEditableConfig(sc, SimulatorProperties.storedQueryTlsEndpoint, ParamType.ENDPOINT, "https://host:port/service");
-        addEditableConfig(sc, SimulatorProperties.retrieveEndpoint, ParamType.ENDPOINT, "http://host:port/service");
-        addEditableConfig(sc, SimulatorProperties.retrieveTlsEndpoint, ParamType.ENDPOINT, "https://host:port/service");
-
         return new Simulator(sc);
     }
 
