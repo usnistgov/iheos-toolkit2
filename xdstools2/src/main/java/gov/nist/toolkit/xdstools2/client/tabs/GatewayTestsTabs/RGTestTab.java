@@ -7,6 +7,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.installation.shared.TestCollectionCode;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
@@ -38,7 +39,7 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
     //    TextBox patientIdBox = new TextBox();
     private String selectedActor = ActorType.RESPONDING_GATEWAY.getShortName();
     private GenericQueryTab genericQueryTab;
-    private static final String COLLECTION_NAME =  "rgtool";
+    private static final TestCollectionCode COLLECTION_NAME =  new TestCollectionCode("rgtool");
     private final TestSelectionManager testSelectionManager;
     private Panel siteSelectionPanel = new VerticalPanel();
 

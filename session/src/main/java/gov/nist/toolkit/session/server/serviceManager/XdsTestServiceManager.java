@@ -3,6 +3,7 @@ package gov.nist.toolkit.session.server.serviceManager;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.installation.server.Installation;
+import gov.nist.toolkit.installation.shared.TestCollectionCode;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
@@ -397,16 +398,16 @@ public class XdsTestServiceManager extends CommonService {
 		return xml;
 	}
 
-	public Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception  {
+	public Map<String, String> getCollection(String collectionSetName, TestCollectionCode testCollectionId) throws Exception  {
 		if (session != null)
-			logger.debug(session.id() + ": " + "getCollection " + collectionSetName + ":" + collectionName);
+			logger.debug(session.id() + ": " + "getCollection " + collectionSetName + ":" + testCollectionId);
 		try {
 			System.out.println("ENVIRONMENT: "+session.getCurrentEnvName()+", SESSION: "+session.getTestSession());
 			Map<String,String> collection=new HashMap<String,String>();
 			for (File testkitFile:Installation.instance().testkitFiles(session.getCurrentEnvName(),session.getTestSession())) {
 				try {
 					TestKit tk = new TestKit(testkitFile);
-					Map<String, String> c = tk.getCollection(collectionSetName, collectionName);
+					Map<String, String> c = tk.getCollection(collectionSetName, testCollectionId);
 					for (String key : c.keySet()) {
 						if (!collection.containsKey(key)) {
 							collection.put(key, c.get(key));
@@ -422,7 +423,7 @@ public class XdsTestServiceManager extends CommonService {
 			throw new Exception(e.getMessage());
 		}
 		// collection was not found -- oops
-		throw new Exception("Collection " + collectionSetName + "/" + collectionName + "  was not found");
+		throw new Exception("Collection " + collectionSetName + "/" + testCollectionId + "  was not found");
 	}
 
 	/**
@@ -430,16 +431,16 @@ public class XdsTestServiceManager extends CommonService {
 	 * TestInstances will be loaded with sutInitiates to indicate whether any sections
 	 * are to be initiated by the SUT
 	 * @param collectionSetName - collections or actorcollections
-	 * @param collectionName - name of specific collection
+	 * @param testCollectionId - name of specific collection
 	 * @return
 	 * @throws Exception
 	 */
-	public List<TestInstance> getCollectionMembers(String collectionSetName, String collectionName) throws Exception {
+	public List<TestInstance> getCollectionMembers(String collectionSetName, TestCollectionCode testCollectionId) throws Exception {
 		try {
 			if (session != null)
-				logger.debug(session.id() + ": " + "getCollectionMembers " + collectionSetName + ":" + collectionName);
+				logger.debug(session.id() + ": " + "getCollectionMembers " + collectionSetName + ":" + testCollectionId);
 			TestKitSearchPath searchPath = session.getTestkitSearchPath();
-			Collection<String> collec =  searchPath.getCollectionMembers(collectionSetName, collectionName);
+			Collection<String> collec =  searchPath.getCollectionMembers(collectionSetName, testCollectionId);
 			if (session != null)
 				logger.debug("Return " + collec.size() + " tests");
 
@@ -509,9 +510,9 @@ public class XdsTestServiceManager extends CommonService {
 		return daos;
 	}
 
-	private boolean hasTestCollection(List<TestCollectionDefinitionDAO> daos, String collectionName) {
+	private boolean hasTestCollection(List<TestCollectionDefinitionDAO> daos, TestCollectionCode tcId) {
 		for (TestCollectionDefinitionDAO dao : daos) {
-			if (dao.getCollectionID().equals(collectionName))
+			if (dao.getCollectionID().equals(tcId))
 				return true;
 		}
 		return false;

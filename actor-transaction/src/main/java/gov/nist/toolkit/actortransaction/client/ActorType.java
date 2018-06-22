@@ -659,7 +659,7 @@ Stack Trace:
    }
 
     public String getActor()  {
-        return new ActorOption(shortName).getActorTypeId();
+        return shortName;
    }
 
    public boolean isProxy() {
@@ -781,7 +781,7 @@ Stack Trace:
        if (actorOption == null)  throw new TkActorNotFoundException("actorOption is null",null);
 
         for (ActorType actor : values()) {
-           if (actorOption.actorTypeId!=null && actorOption.actorTypeId.equals(actor.shortName))  {
+           if (actorOption.actorTypeId!=null && actorOption.actorTypeId.equalsIgnoreCase(actor.shortName))  {
                if (actorOption.profileId!=null) {
                    if (actor.profile.equals(actorOption.profileId)) {
                         if (actorOption.optionId!=null) {
@@ -826,7 +826,7 @@ Stack Trace:
             return null;
 
         for (ActorType actor : values()) {
-            if (actor.getActorCode().equals(tcCode)) return actor;
+            if (actor.getActorCode().equalsIgnoreCase(tcCode)) return actor;
         }
         return null;
     }

@@ -6,6 +6,7 @@ import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.installation.shared.TestCollectionCode;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
@@ -52,7 +53,7 @@ public class IGTestTab extends GenericQueryTab implements GatewayTool {
     String selectedActor = ActorType.INITIATING_GATEWAY.getShortName();
     List<SimulatorConfig> rgConfigs;
     GenericQueryTab genericQueryTab;
-    static final String COLLECTION_NAME =  "igtool1rg";
+    static final TestCollectionCode COLLECTION_NAME =  new TestCollectionCode("igtool1rg");
     final TestSelectionManager testSelectionManager;
 
     public IGTestTab() {

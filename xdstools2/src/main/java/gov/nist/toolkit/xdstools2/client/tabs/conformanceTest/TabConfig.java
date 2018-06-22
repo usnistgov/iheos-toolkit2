@@ -11,18 +11,26 @@ import java.util.List;
  */
 public class TabConfig implements Serializable, IsSerializable {
     private String label;
+    /**
+     * Tab type: samples: actor, profile, option.
+     */
     private String type;
     private String tcCode;
     private Boolean externalStart;
     private String displayColorCode;
+    private boolean isVisible;
 
     private List<TabConfig> childTabConfigs = new ArrayList<TabConfig>();
+
+    public enum TAB_TYPE {Actor, Profile, Option};
 
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();
 
         buf
+                .append("isVisible=")
+                .append(isVisible)
                 .append("label=")
                 .append(label)
                 .append(" type=")
@@ -126,5 +134,32 @@ public class TabConfig implements Serializable, IsSerializable {
         this.displayColorCode = displayColorCode;
     }
 
+    public boolean isVisible() {
+        return isVisible;
+    }
+
+    public void setVisible(boolean visible) {
+        isVisible = visible;
+    }
+
+    public static TabConfig clone(final TabConfig src) {
+       TabConfig dest = new TabConfig();
+
+       dest.label = src.label;
+       dest.type = src.type;
+       dest.tcCode = src.tcCode;
+       dest.externalStart = src.externalStart;
+       dest.displayColorCode = src.displayColorCode;
+       dest.isVisible = src.isVisible;
+
+       if (src.hasChildren()) {
+            List<TabConfig> children = src.getChildTabConfigs();
+            for (TabConfig tc : children) {
+                dest.childTabConfigs.add(clone(tc));
+            }
+       }
+
+       return dest;
+    }
 
 }

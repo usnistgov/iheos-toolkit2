@@ -50,6 +50,9 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
 //            for (String code : displayOrder) {
                 for (TabConfig tc : tabConfig.getChildTabConfigs()) {
 //                    if (code.equals(tc.getTcCode())) {
+                        if (!tc.isVisible())  {
+                            continue;
+                        }
                         if (menuCt % menuCols == 0) {
                             rowAdded = true;
                             destinationPanel.add(rowPanel);
@@ -131,6 +134,7 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
                 treeItem = new TabConfigTreeItem(tabConfig);
                 treeItem.setState(true);
                 treeItem.setText(tabConfig.getLabel());
+                // Actor
                 treeItem.setHTML("<span class='gwt-TabBarItem' style='font-size:16px;background-color:#D0E4F6'><span style='margin:5px'>"+treeItem.getText()+"</span></span>");
                 if (tabConfig.getType()!=null)
                     tcCodeMap.put(tabConfig.getType(), tabConfig.getTcCode());
@@ -139,6 +143,8 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
 
             if (tabConfig.hasChildren()) {
                 int idx = 0;
+
+                // Profile
                 for (TabConfig tc : tabConfig.getChildTabConfigs()) {
                     TabConfigTreeItem ti = new TabConfigTreeItem(tc);
                     ti.setState(true);
@@ -151,6 +157,7 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
                     FlowPanel flowPanel = new FlowPanel();
                     HTML statsBar = new HTML();
                     flowPanel.add(statsBar);
+
                     if (!tc.hasChildren()) {
 
 //                        Window.alert(""+tcCodeMap.get("actor") + tcCodeMap.get("profile") + tcCodeMap.get("option"));
@@ -159,17 +166,13 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
                             ActorOptionConfig actorOption = new ActorOptionConfig(tcCodeMap.get("actor"));
                             if (tcCodeMap.get("profile")!=null) {
                                 actorOption.setProfileId(IheItiProfile.find(tcCodeMap.get("profile")));
-
                                 if (tcCodeMap.get("option")!=null) {
                                     actorOption.setOptionId(tcCodeMap.get("option"));
                                     try {
                                         setTestStatistics(statsBar, actorOption);
                                     } catch (Throwable t) {}
-
                                 }
-
                             }
-
                         }
                     }
 
@@ -178,7 +181,8 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
                         if (tc.hasChildren()) {
                             flattenedTabConfig(tcCodeMap, treeItem, tc);
                         }
-                    } else {
+                    } else if (tc.isVisible()) {
+                        // Option
                         HTML label = new HTML("<span style='font-size:14px;'>" + tc.getLabel() + "</span>");
                         flowPanel.add(label);
                         ti.setWidget(flowPanel);
@@ -194,8 +198,7 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
 
                 }
 
-            } else if (!tabConfig.isHeader() && !tabConfig.hasChildren()){
-
+            } else if (!tabConfig.isHeader() && !tabConfig.hasChildren() && tabConfig.isVisible()){
                 TabConfigTreeItem ti = new TabConfigTreeItem(tabConfig);
                 ti.setState(true);
                 ti.setHTML("<span style='font-size:14px;'>" + tabConfig.getLabel() + "</span>");

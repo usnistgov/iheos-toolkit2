@@ -88,13 +88,9 @@ public class TabConfigLoader {
         return parent;
     }
 
-    public static ConcurrentHashMap<String, TabConfig> getInitMap() {
-        return initMap;
-    }
 
     public static TabConfig getTabConfig(String toolId) {
-
-        return initMap.get(toolId + "Tabs.xml");
+        return TabConfig.clone(initMap.get(toolId + "Tabs.xml"));
     }
 
 }

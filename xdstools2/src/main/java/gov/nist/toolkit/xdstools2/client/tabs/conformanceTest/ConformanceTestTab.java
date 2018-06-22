@@ -17,6 +17,7 @@ import gov.nist.toolkit.actortransaction.client.ActorOption;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.IheItiProfile;
 import gov.nist.toolkit.configDatatypes.client.Pid;
+import gov.nist.toolkit.installation.shared.TestCollectionCode;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.interactiondiagram.client.events.DiagramClickedEvent;
 import gov.nist.toolkit.interactiondiagram.client.events.DiagramPartClickedEventHandler;
@@ -686,25 +687,64 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 				}
 
 
-				if (getInitTestSession()!=null) {
-					getMainView().getTabBarPanel().setVisible(true);
+				// Prune actor type tabs from static display #416
+                final TestCollectionDefinitionDAO lastItem = me.testCollectionDefinitionDAOs.get(me.testCollectionDefinitionDAOs.size()-1);
+				for (final TestCollectionDefinitionDAO tcd : me.testCollectionDefinitionDAOs) {
+					for (TabConfig tabConfig : ConformanceTestTab.super.tabConfig.getChildTabConfigs()) {
+						if (tabConfig.getTcCode().equals(new ActorOption(tcd.getCollectionID()).actorTypeId)) {
+							tabConfig.setVisible(true);
+							// Prune empty options
+							TabConfig profiles = tabConfig.getFirstChildTabConfig();
+							if ("Profiles".equals(profiles.getLabel())) {
+								for (final TabConfig profileTCfg : profiles.getChildTabConfigs()) {
+									TabConfig options = profileTCfg.getFirstChildTabConfig();
+									if ("Options".equals(options.getLabel())) {
+										for (final TabConfig optionTCfg : options.getChildTabConfigs()) {
+											ActorOptionConfig actorOptionConfig =
+													new ActorOptionConfig(tabConfig.getTcCode(), IheItiProfile.find(profileTCfg.getTcCode()), optionTCfg.getTcCode());
+											TestCollectionCode tcCode = actorOptionConfig.getTestCollectionCode();
+											GetCollectionRequest getCollectionRequest = new GetCollectionRequest(getCommandContext(), "collections", tcCode);
+											actorOptionConfig.loadTests(new AsyncCallback<List<TestInstance>>() {
+												@Override
+												public void onFailure(Throwable throwable) {
+												}
+												@Override
+												public void onSuccess(List<TestInstance> testInstances) {
+													if (testInstances!=null && !testInstances.isEmpty()) {
+														profileTCfg.setVisible(true);
+														optionTCfg.setVisible(true);
+													}
+													// Finally display
+													if (lastItem.equals(tcd)) {
+														if (getInitTestSession()!=null) {
+															getMainView().getTabBarPanel().setVisible(true);
+														}
+
+
+														displayActorsTabBar(mainView.getActorTabBar());
+														// 2. Write the site map here
+
+														if (getInitTestSession()==null && mainView.getActorTabBar()!=null && mainView.getActorTabBar().getSelectedTab()==-1) { // Only display the menu when actor is not selected.
+															displayMenu(mainView.getTestsPanel());
+														}
+
+
+														currentActorTypeDescription = getDescriptionForTestCollection(currentActorOption.actorTypeId);
+
+														// This is a little wierd being here. This depends on initTestSession
+														// which is set AFTER onTabLoad is run so run here - later in the initialization
+														// initTestSession is set from ConfActorActivity
+														initializeTestingContext();
+													}
+												}
+											});
+										}
+									}
+								}
+							}
+						}
+					}
 				}
-
-
-				displayActorsTabBar(mainView.getActorTabBar());
-				// 2. Write the site map here
-
-				if (getInitTestSession()==null && mainView.getActorTabBar()!=null && mainView.getActorTabBar().getSelectedTab()==-1) { // Only display the menu when actor is not selected.
-						displayMenu(mainView.getTestsPanel());
-				}
-
-
-				currentActorTypeDescription = getDescriptionForTestCollection(currentActorOption.actorTypeId);
-
-				// This is a little wierd being here. This depends on initTestSession
-				// which is set AFTER onTabLoad is run so run here - later in the initialization
-				// initTestSession is set from ConfActorActivity
-				initializeTestingContext();
 			}
 		}.run(new GetCollectionRequest(getCommandContext(), "actorcollections"));
 	}
@@ -918,6 +958,12 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 	private void displayActorsTabBar(TabBar actorTabBar) {
 		if (actorTabBar.getTabCount() == 0) {
+			for (TabConfig tabConfig : ConformanceTestTab.super.tabConfig.getChildTabConfigs()) {
+				if (tabConfig.isVisible()) {
+
+				}
+			}
+
 			for (TestCollectionDefinitionDAO def : testCollectionDefinitionDAOs) {
 				if (!def.isOption())
 					actorTabBar.addTab(def.getCollectionTitle());

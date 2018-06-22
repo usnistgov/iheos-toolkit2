@@ -2,9 +2,8 @@ package gov.nist.toolkit.testengine.scripts;
 
 import gov.nist.toolkit.actortransaction.client.ActorOption;
 import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.actortransaction.client.OptionType;
-import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.installation.server.Installation;
+import gov.nist.toolkit.installation.shared.TestCollectionCode;
 import gov.nist.toolkit.utilities.io.Io;
 import org.apache.log4j.Logger;
 
@@ -21,7 +20,7 @@ public class BuildCollections extends HttpServlet {
     private File testkitOut;
 
     public static String SECTIONS[] = { "testdata", "tests", "examples", "selftest" };
-    private Map<String, List<String>> collections = new HashMap<>();
+    private Map<TestCollectionCode, List<String>> collections = new HashMap<>();
     private boolean error;
 
     private void reset() {
@@ -55,18 +54,18 @@ public class BuildCollections extends HttpServlet {
       logger.info("Updating Collections...");
       logger.info("Collections found:\n" + collections.keySet());
 
-      for (Iterator <String> it = collections.keySet().iterator(); it.hasNext();) {
-         String collectionName = it.next();
-         ActorType actorType = findActorType(collectionName);
+      for (Iterator <TestCollectionCode> it = collections.keySet().iterator(); it.hasNext();) {
+         TestCollectionCode testCollectionId = it.next();
+         ActorType actorType = findActorType(testCollectionId);
 
-         List <String> contents = collections.get(collectionName);
+         List <String> contents = collections.get(testCollectionId);
          if (actorType != null) {
             if (actorTestMap.get(actorType) == null) {
                actorTestMap.put(actorType, new HashSet <String>());
             }
             actorTestMap.get(actorType).addAll(contents);
          }
-         File collectionFile = new File(collectionsDir + File.separator + collectionName + ".tc");
+         File collectionFile = new File(collectionsDir + File.separator + testCollectionId + ".tc");
          logger.info(String.format("Writing %s", collectionFile));
          Io.stringToFile(collectionFile, listAsFileContents(contents));
       }
@@ -81,13 +80,15 @@ public class BuildCollections extends HttpServlet {
       }
    }
 
-   private ActorType findActorType(String collectionName) {
-         ActorType at;
+   private ActorType findActorType(TestCollectionCode testCollectionId) {
 
-         collectionName = collectionName.toLowerCase();
+        ActorOption actorOption = new ActorOption(testCollectionId);
+        ActorType at = ActorType.findActorByTcCode(actorOption.actorTypeId);
+        return at;
 
-        ActorOption actorOption = new ActorOption(collectionName);
-        at = ActorType.findActorByTcCode(actorOption.actorTypeId);
+        /*
+        This code doesn't seem useful.
+
         // This is to handle a case where an actor only has optional test but no required tests. In this case, the default actorcollections will contain the first option tests.
         if (at!=null) {
            if (at.getOptions().contains(OptionType.REQUIRED)) {
@@ -105,16 +106,16 @@ public class BuildCollections extends HttpServlet {
            }
         }
 
-
         if (OptionType.REQUIRED.equals(actorOption.optionId)) {
             at = ActorType.findActorByTcCode(actorOption.actorTypeId);
             if (at != null) return at;
         }
 
-         TransactionType tt = TransactionType.find(collectionName);
+         TransactionType tt = TransactionType.find(testCollectionId.getId());
          if (tt == null) return null;
          at = ActorType.getActorType(tt);
          return at;
+         */
    }
 
     /**
@@ -123,7 +124,7 @@ public class BuildCollections extends HttpServlet {
      * @param collection name
      * @param testnum name
      */
-    private void add(String collection, String testnum) {
+    private void add(TestCollectionCode collection, String testnum) {
         List<String> c = collections.get(collection);
         if (c == null) {
             c = new ArrayList<String>();
@@ -142,7 +143,7 @@ public class BuildCollections extends HttpServlet {
    private void tokenize(String tokenStr, String testnum) {
       StringTokenizer st = new StringTokenizer(tokenStr);
       while (st.hasMoreElements()) {
-         String tok = st.nextToken();
+         TestCollectionCode tok = new TestCollectionCode(st.nextToken());
          add(tok, testnum);
       }
    }

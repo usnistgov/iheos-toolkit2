@@ -12,6 +12,7 @@ import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.http.client.HtmlMarkup;
+import gov.nist.toolkit.installation.shared.TestCollectionCode;
 import gov.nist.toolkit.results.client.DocumentEntryDetail;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.simcommon.client.SimIdFactory;
@@ -500,7 +501,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
 
         contentBundleLbx.addItem(choose,"");
         contentBundleLbx.setSelectedIndex(0); // Make it default so the user should change it
-        loadTestsFromCollection(contentBundleLbx, "ODContentBundle");
+        loadTestsFromCollection(contentBundleLbx, new TestCollectionCode("ODContentBundle"));
         newRow();
         tbl.setWidget(getRow(),0,new HTML(testplanToRegisterAndSupply.getName()));
         tbl.setWidget(getRow(),1, contentBundleLbx);
@@ -564,7 +565,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
     }
 
 
-    void loadTestsFromCollection(final ListBox lbx, final String testCollectionName) {
+    void loadTestsFromCollection(final ListBox lbx, final TestCollectionCode testCollectionId) {
         new GetCollectionCommand() {
             @Override
             public void onComplete(Map<String, String> result) {
@@ -582,7 +583,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
                     lbx.setSelectedIndex(0);
                 }
             }
-        }.run(new GetCollectionRequest(ClientUtils.INSTANCE.getCommandContext(), "collections", testCollectionName));
+        }.run(new GetCollectionRequest(ClientUtils.INSTANCE.getCommandContext(), "collections", testCollectionId));
     }
 
     private void registerODDE() {

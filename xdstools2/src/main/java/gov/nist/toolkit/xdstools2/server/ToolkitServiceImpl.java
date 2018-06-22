@@ -17,6 +17,7 @@ import gov.nist.toolkit.fhir.simulators.support.od.TransactionUtil;
 import gov.nist.toolkit.installation.server.ExternalCacheManager;
 import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.installation.server.PropertyServiceManager;
+import gov.nist.toolkit.installation.shared.TestCollectionCode;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.interactionmapper.InteractionMapper;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
@@ -57,7 +58,6 @@ import gov.nist.toolkit.simcommon.server.SiteServiceManager;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
-import gov.nist.toolkit.testkitutilities.Sections;
 import gov.nist.toolkit.testengine.engine.RegistryUtility;
 import gov.nist.toolkit.testengine.scripts.BuildCollections;
 import gov.nist.toolkit.testengine.scripts.CodesUpdater;
@@ -761,7 +761,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<TestInstance> getCollectionMembers(GetCollectionRequest request) throws Exception {
         installCommandContext(request);
-        return session().xdsTestServiceManager().getCollectionMembers(request.getCollectionSetName(), request.getCollectionName());
+        return session().xdsTestServiceManager().getCollectionMembers(request.getCollectionSetName(), request.getTcId());
     }
     @Override
     public List<TestOverviewDTO> getTestsOverview(GetTestsOverviewRequest request) throws Exception {
@@ -790,7 +790,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public Map<String, String> getCollection(GetCollectionRequest request) throws Exception {
         installCommandContext(request);
-        return session().xdsTestServiceManager().getCollection(request.getCollectionSetName(), request.getCollectionName());
+        return session().xdsTestServiceManager().getCollection(request.getCollectionSetName(), request.getTcId());
     }
 
     @Override
@@ -886,7 +886,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
      * @return testname ==> description mapping
      * @throws Exception if something goes wrong
      */
-    public Map<String, String> getCollection(String testsessionName,String collectionSetName, String collectionName) throws Exception {
+    public Map<String, String> getCollection(String testsessionName,String collectionSetName, TestCollectionCode collectionName) throws Exception {
         session().setTestSession(new TestSession(testsessionName));
         return session().xdsTestServiceManager().getCollection(collectionSetName, collectionName);
     }
@@ -1804,7 +1804,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     public TabConfig getToolTabConfig(GetTabConfigRequest request) throws Exception {
         String toolId = request.getToolId();
         TabConfigLoader.init(Installation.instance().getToolTabConfigFile(toolId));
-       return TabConfigLoader.getTabConfig(toolId);
+        // TODO: need to make this immutable.
+        TabConfig tabConfigRoot = TabConfigLoader.getTabConfig(toolId);
+       return tabConfigRoot;
     }
 
     @Override
