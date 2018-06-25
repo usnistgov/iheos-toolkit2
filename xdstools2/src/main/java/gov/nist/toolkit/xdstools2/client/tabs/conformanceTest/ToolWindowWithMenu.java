@@ -36,7 +36,8 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
             destinationPanel .clear();
             destinationPanel.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
 
-            destinationPanel.add(new HTML("Tests are organized as: Actor Profile Option. Select the option you are interested in. "));
+            HTML testNavigationTip = new HTML("Tests are organized as: Actor Profile Option. Select the option you are interested in. ");
+            destinationPanel.add(testNavigationTip);
 
             int colWidth = 100 / menuCols;
             int menuCt = 0;
@@ -94,15 +95,21 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
                 destinationPanel.add(rowPanel);
             }
 
-            // Add legend row
-            FlowPanel legendRowPanel = new FlowPanel();
+            if (menuCt!=0) {
+
+                // Add legend row
+                FlowPanel legendRowPanel = new FlowPanel();
                 legendRowPanel.add(new HTML("<div>Legend:</div>"
                         + "<div style='margin:3px'><div style=\"width:10px;height:13px;border:1px solid white;float:left;margin-right:2px;background-color:white;\"></div>Not Run</div>"
                         + "<div style='margin:3px'><div style=\"width:10px;height:13px;border:1px solid;float:left;margin-right:2px;background-color:cyan;\"></div><span>Successes</span></div>\n"
                         + "<div style='margin:3px'><div style=\"width:10px;height:13px;border:1px solid;float:left;margin-right:2px;background-color:coral;\"></div><span>Failures</span></div>\n"
                 ));
-            legendRowPanel.getElement().addClassName("tabConfigRow");
-            destinationPanel.add(legendRowPanel);
+                legendRowPanel.getElement().addClassName("tabConfigRow");
+                destinationPanel.add(legendRowPanel);
+            } else {
+                    testNavigationTip.setHTML("No tests found for the given combination of Ignore_internal_testkit Toolkit Property, Environment, and/or Test Session.");
+            }
+
 
             return true;
         }

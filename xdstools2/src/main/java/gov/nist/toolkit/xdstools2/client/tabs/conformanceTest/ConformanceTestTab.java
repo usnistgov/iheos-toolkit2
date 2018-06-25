@@ -692,7 +692,6 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 				for (final TestCollectionDefinitionDAO tcd : me.testCollectionDefinitionDAOs) {
 					for (TabConfig tabConfig : ConformanceTestTab.super.tabConfig.getChildTabConfigs()) {
 						if (tabConfig.getTcCode().equals(new ActorOption(tcd.getCollectionID()).actorTypeId)) {
-							tabConfig.setVisible(true);
 							// Prune empty options
 							TabConfig profiles = tabConfig.getFirstChildTabConfig();
 							if ("Profiles".equals(profiles.getLabel())) {
@@ -702,15 +701,15 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 										for (final TabConfig optionTCfg : options.getChildTabConfigs()) {
 											ActorOptionConfig actorOptionConfig =
 													new ActorOptionConfig(tabConfig.getTcCode(), IheItiProfile.find(profileTCfg.getTcCode()), optionTCfg.getTcCode());
-											TestCollectionCode tcCode = actorOptionConfig.getTestCollectionCode();
-											GetCollectionRequest getCollectionRequest = new GetCollectionRequest(getCommandContext(), "collections", tcCode);
 											actorOptionConfig.loadTests(new AsyncCallback<List<TestInstance>>() {
 												@Override
 												public void onFailure(Throwable throwable) {
+													new PopupMessage(throwable.toString());
 												}
 												@Override
 												public void onSuccess(List<TestInstance> testInstances) {
 													if (testInstances!=null && !testInstances.isEmpty()) {
+													   	tabConfig.setVisible(true);
 														profileTCfg.setVisible(true);
 														optionTCfg.setVisible(true);
 													}

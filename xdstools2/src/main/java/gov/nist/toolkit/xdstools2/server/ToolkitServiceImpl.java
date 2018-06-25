@@ -1804,7 +1804,6 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     public TabConfig getToolTabConfig(GetTabConfigRequest request) throws Exception {
         String toolId = request.getToolId();
         TabConfigLoader.init(Installation.instance().getToolTabConfigFile(toolId));
-        // TODO: need to make this immutable.
         TabConfig tabConfigRoot = TabConfigLoader.getTabConfig(toolId);
        return tabConfigRoot;
     }
