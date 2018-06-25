@@ -55,11 +55,15 @@ public class TestSectionView implements IsWidget {
         HTML time = new HTML();
         Image play = null;
         Image done = null;
+        HTML tls = new HTML();
 
         void setSectionTitle(String text, String title) {
             this.title.setText(text);
             this.title.addStyleName("section-title");
             this.title.setTitle(title);
+        }
+        void setTls() {
+            tls = new HTML("TLS");
         }
         void setTime(String text) {
             time.setText(text);
@@ -93,12 +97,15 @@ public class TestSectionView implements IsWidget {
         public void labelNotRun() {
             super.labelNotRun();
         }
+
+
         void build() {
             clear();
             add(title);
             add(time);
             if (play != null) add(play);
             if (done != null) add(done);
+            add(tls);
 
             // flush right stuff
             if (statusIcon != null) add(statusIcon);
@@ -113,6 +120,7 @@ public class TestSectionView implements IsWidget {
     void labelSuccess() { header.labelSuccess(); }
     void labelFailure() { header.labelFailure(); }
     void labelNotRun() { header.labelNotRun(); }
+    void labelTls() { header.setTls(); }
 
     private class SectionResultsPanel extends FlowPanel  {
         private FlowPanel testPlanDisplay = new FlowPanel();

@@ -53,6 +53,10 @@ public class TestDefinition {
 		return Io.stringFromFile(new File(testDir, "readme.txt"));
 	}
 
+	public String getFullTestReadmeHtml() throws IOException {
+		return Io.stringFromFile(new File(testDir, "readme.xhtml"));
+	}
+
 	public String getFullSectionReadme(String section) throws IOException {
 		File f = new File(new File(testDir, section), "readme.txt");
 		return Io.stringFromFile(f);
@@ -216,12 +220,19 @@ public class TestDefinition {
 
 	public ReadMe getTestReadme()  {
 		String contents = null;
+		String htmlContents = null;
+		try {
+			htmlContents = getFullTestReadmeHtml();
+		} catch (IOException e) {
+			htmlContents = "";
+		}
+
 		try {
 			contents = getFullTestReadme();
 		} catch (IOException e) {
-			return null;
+			contents = "";
 		}
-		return parseReadme(contents);
+		return parseReadme(contents, htmlContents);
 	}
 
 	public String getReadmeFirstLine() throws IOException {
@@ -236,10 +247,13 @@ public class TestDefinition {
 		} catch (IOException e) {
 			return null;
 		}
-		return parseReadme(contents);
+		return parseReadme(contents, "");
 	}
 
-	private ReadMe parseReadme(String readmeContents) {
+	private ReadMe parseReadme(String readmeContents, String readmeHtmlContents) {
+		if (!readmeHtmlContents.equals("")) {
+			return parseReadmeHTML(readmeHtmlContents);
+		}
 		ReadMe rm = new ReadMe();
 
 		StringBuilder buf = new StringBuilder();
@@ -256,6 +270,26 @@ public class TestDefinition {
 		}
 		scanner.close();
 		rm.rest = buf.toString();
+		return rm;
+	}
+
+	private ReadMe parseReadmeHTML(String readmeHtmlContents) {
+		ReadMe rm = new ReadMe();
+		try {
+			OMElement html = Util.parse_xml(readmeHtmlContents);
+			OMElement title = XmlUtil.firstDecendentWithLocalName(html, "title");
+			if (title == null) title = XmlUtil.firstDecendentWithLocalName(html, "TITLE");
+
+			if (title == null) {
+				rm.line1 = "No title element found in readme.html";
+			} else {
+				rm.line1 = title.getText();
+			}
+			rm.rest = readmeHtmlContents;
+		} catch (Exception e) {
+			rm.line1 = "Unable to parse readme HTML contents. XML parsing failed";
+			rm.rest  =  readmeHtmlContents;
+		}
 		return rm;
 	}
 

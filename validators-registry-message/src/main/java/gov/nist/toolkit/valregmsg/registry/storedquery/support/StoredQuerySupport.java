@@ -6,6 +6,7 @@ import gov.nist.toolkit.registrysupport.logging.LogMessage;
 import gov.nist.toolkit.valregmsg.registry.SQCodeAnd;
 import gov.nist.toolkit.valregmsg.registry.SQCodedTerm;
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.QueryReturnType;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 
@@ -20,7 +21,7 @@ public class StoredQuerySupport {
 	public boolean has_alternate_validation_errors = false;
 	public boolean is_secure;
 	public boolean runEndProcessing = true;
-	
+	private final static Logger logger = Logger.getLogger(StoredQuerySupport.class);
 	public void noEndProcessing() {
 		runEndProcessing = false;
 	}
@@ -128,7 +129,7 @@ public class StoredQuerySupport {
 		}
 
 		if (value == null && alternatives != null) {
-			System.out.println("looking for alternatives");
+			logger.info("looking for alternatives");
 			if (! isAlternativePresent(alternatives)) {
 				if ( ! has_alternate_validation_errors) {
 					er.err(XdsErrorCode.Code.XDSRegistryError, "One of these parameters must be present in the query: " + valuesAsString(name, alternatives), "StoredQuery.java", "ITI TF-2a: 3.18.4.1.2.3.7", log_message);
@@ -204,7 +205,7 @@ public class StoredQuerySupport {
 	public void validate_parm(String name, boolean required, boolean multiple, boolean is_string, String same_size_as, String... alternatives) {
 		Object value = params.getParm(name);
 
-		System.out.println("validate_parm: name=" + name + " value=" + value + " required=" + required + " multiple=" + multiple + " is_string=" + is_string + " same_size_as=" + same_size_as + " alternatives=" + valuesAsString(null, alternatives));
+		logger.info("validate_parm: name=" + name + " value=" + value + " required=" + required + " multiple=" + multiple + " is_string=" + is_string + " same_size_as=" + same_size_as + " alternatives=" + valuesAsString(null, alternatives));
 
 		if (value == null && alternatives == null) {
 			if (required ) {

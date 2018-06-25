@@ -57,13 +57,14 @@ import gov.nist.toolkit.simcommon.server.SiteServiceManager;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
-import gov.nist.toolkit.testengine.Sections;
+import gov.nist.toolkit.testkitutilities.Sections;
 import gov.nist.toolkit.testengine.engine.RegistryUtility;
 import gov.nist.toolkit.testengine.scripts.BuildCollections;
 import gov.nist.toolkit.testengine.scripts.CodesUpdater;
 import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
 import gov.nist.toolkit.testenginelogging.client.ReportDTO;
 import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
+import gov.nist.toolkit.testkitutilities.TestKit;
 import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.tk.TkLoader;
@@ -942,13 +943,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public boolean doesTestkitExist(CommandContext context) throws Exception {
         installCommandContext(context);
-        File environmentFile = Installation.instance().environmentFile(context.getEnvironmentName());
-        return doesTestkitExist(environmentFile);
-    }
-
-    private boolean doesTestkitExist(File environmentFile){
-        File testkit=new File(environmentFile,"testkits");
-        return testkit.exists();
+        return TestKit.exists(context.getEnvironmentName(), context.getTestSession());
+//        File environmentFile = Installation.instance().environmentFile(context.getEnvironmentName());
+//        return doesTestkitExist(environmentFile);
     }
 
     /**
@@ -957,20 +954,20 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
      */
     @Override
     public void generateTestkitStructure(CommandContext request) /*throws Exception*/{
-//        installCommandContext(request);
-        File environmentFile = Installation.instance().environmentFile();
-        for (File environment : environmentFile.listFiles()) {
-            File testkitsFile = new File(environment, "testkits");
-            if (!testkitsFile.exists()) {
-                new File(testkitsFile, "default").mkdirs();
-            }
-            for (Sections section : Sections.values()) {
-                File sectionFile = new File(new File(testkitsFile,"default"), section.getSection());
-                if (!sectionFile.exists()){
-                    sectionFile.mkdir();
-                }
-            }
-        }
+        TestKit.generateStructure(request.getEnvironmentName(), request.getTestSession());
+//        File environmentFile = Installation.instance().environmentFile();
+//        for (File environment : environmentFile.listFiles()) {
+//            File testkitsFile = new File(environment, "testkits");
+//            if (!testkitsFile.exists()) {
+//                new File(testkitsFile, "default").mkdirs();
+//            }
+//            for (Sections section : Sections.values()) {
+//                File sectionFile = new File(new File(testkitsFile,"default"), section.getSection());
+//                if (!sectionFile.exists()){
+//                    sectionFile.mkdir();
+//                }
+//            }
+//        }
     }
 
     //------------------------------------------------------------------------

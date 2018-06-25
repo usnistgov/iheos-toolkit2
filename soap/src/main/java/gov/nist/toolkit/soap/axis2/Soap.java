@@ -16,6 +16,7 @@ import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMException;
 import org.apache.axiom.soap.SOAP11Constants;
 import org.apache.axiom.soap.SOAP12Constants;
 import org.apache.axiom.soap.SOAPEnvelope;
@@ -551,6 +552,7 @@ public class Soap implements SoapInterface {
 
 		log.info(String.format("******************************** BEFORE SOAP SEND to %s ****************************", endpoint));
         AxisFault soapFault = null;
+		OMException networkFault = null;
         long start = 0;
 		try {
 		   start = System.nanoTime();
@@ -563,6 +565,15 @@ public class Soap implements SoapInterface {
             OMElement soapBody = inMsgCtx.getEnvelope().getBody();
             result = soapBody.getFirstElement();
             logger.info(new OMFormatter(result).toString());
+        } catch (OMException e) {
+			logger.debug("org.apache.axiom.om.OMException fault: " + e.toString());
+			networkFault = e;
+			SOAPEnvelope myEnvelope = getInputMessageContext().getEnvelope();
+			OMElement soapBody = myEnvelope.getBody();
+			// The code in the catch block above wants to pull soapBoady.getFirstElement();
+			// Unfortunately, when we are here, the inMsgCtx.getEnvelope() method returns null;
+			//			result = soapBody.getFirstElement();
+			//			logger.info(new OMFormatter(result).toString());
         }
         finally {
 			log.info(String.format("******************************** AFTER SOAP SEND to %s ****************************", endpoint));
@@ -583,11 +594,15 @@ public class Soap implements SoapInterface {
             if (soapFault != null) {
                 throw new XdsInternalException("SOAP Fault: " + soapFault.getReason(), soapFault);
             }
+            if (networkFault != null) {
+            	throw new XdsInternalException("Network connection fault: " + networkFault.toString(), networkFault);
+			}
 			//  - null pointer exception here if port number in configuration is wrong
+			//  - can also get a null pointer exception if the TLS handshake fails.
 			try {
 				inMsgCtx.getEnvelope().build();
 			} catch (NullPointerException e) {
-				throw new XdsInternalException("Service not available on this host:port (" + endpoint + ")");
+				throw new XdsInternalException("Toolkit Exception: TLS handshake failed or service not available on this host:port (" + endpoint + ")");
 			}
 
 			OMElement soapBody = inMsgCtx.getEnvelope().getBody();

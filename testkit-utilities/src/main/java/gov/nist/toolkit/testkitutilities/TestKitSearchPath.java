@@ -14,6 +14,10 @@ public class TestKitSearchPath {
     TestSession testSession;
     List<TestKit> testkits = new ArrayList<>();
 
+    public TestKitSearchPath(String environment, String testSession) {
+        this(environment, new TestSession(testSession));
+    }
+
     public TestKitSearchPath(String environment, TestSession testSession) {
         this.environment = environment;
         this.testSession = testSession;
@@ -76,6 +80,16 @@ public class TestKitSearchPath {
         }
         return null;
 
+    }
+
+    public List<File> getPluginDirs(TestKit.PluginType pluginType) {
+        List<File> dirs = new ArrayList<>();
+
+        for (TestKit testKit : getTestkits()) {
+            dirs.add(testKit.getPluginDir(pluginType));
+        }
+
+        return dirs;
     }
 
     public List<TestKit> getTestkits() {

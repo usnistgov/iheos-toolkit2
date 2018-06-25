@@ -51,13 +51,6 @@ public class TestCollection {
 		
 		return list;
 	}
-	
-	public static void listTestKitCollections(File testkit) throws Exception {
-		List<String> names = TestCollection.getAllCollectionNames(testkit);
-		for (String name : names) {
-			System.out.println(name);
-		}
-	}
 
     public List<String> getTestIds() throws Exception {
         List<String> ids = new ArrayList<>();

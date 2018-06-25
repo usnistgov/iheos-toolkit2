@@ -34,11 +34,11 @@ public class TestDisplay  implements IsWidget {
         this.controller = controller;
     }
 
-    public void allowDelete(boolean allowDelete) {
+    void allowDelete(boolean allowDelete) {
         this.allowDelete = allowDelete;
     }
 
-    public void allowRun(boolean allowRun) {
+    void allowRun(boolean allowRun) {
         this.allowRun = allowRun;
     }
 
@@ -55,6 +55,9 @@ public class TestDisplay  implements IsWidget {
         } else view.labelNotRun();
 
        view.setTestKitSourceIcon(testOverview.getTestKitSource(), testOverview.getTestKitSection());
+
+       if (testOverview.isTls())
+           view.labelTls();
 
         view.setTestTitle("Test: " + testOverview.getName() + " - " +testOverview.getTitle());
         view.setTime(testOverview.getLatestSectionTime());

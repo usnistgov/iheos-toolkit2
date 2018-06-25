@@ -343,6 +343,10 @@ public class Installation {
      */
     public List<File> testkitFiles(String environmentName,TestSession testSession) {
         List<File> testkits=new ArrayList<File>();
+
+        if (externalCache == null)
+            throw new ToolkitRuntimeException("External Cache not configured");
+
         if (environmentName!=null) {
             // paths to the testkit repository in the environment directory
             File environmentTestkitsFile = new File(environmentFile(environmentName), "testkits");
@@ -364,7 +368,8 @@ public class Installation {
             LOGGER.info("Environment name is null");
         }
         // toolkit default testkit
-        testkits.add(internalTestkitFile());
+        if (!propertyServiceMgr.getIgnoreInternalTestkit())
+            testkits.add(internalTestkitFile());
         return testkits;
     }
 

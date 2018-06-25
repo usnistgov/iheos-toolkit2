@@ -1,0 +1,11 @@
+<TestPlan>
+  <Test>iig_5406/retrieve</Test>
+  <TestStep id="retrieve">
+  <Goal>Unknown Responding Gateway</Goal>
+  <ExpectedStatus>Failure</ExpectedStatus>
+  <ImagingDocSetIigRetrieveTransaction>
+    <MetadataFile>RAD-69Request.xml</MetadataFile>
+  </ImagingDocSetIigRetrieveTransaction>
+</TestStep>
+
+</TestPlan>

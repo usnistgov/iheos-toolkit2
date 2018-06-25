@@ -110,7 +110,7 @@ abstract public class StoredQuery extends BasicQuery  {
 				return new Metadata().addToMetadata(metadata.getV3(), true);
 			}
 			else {
-				System.out.println("StoredQuery#run refs = " + metadata.getMajorObjects());
+				logger.info("StoredQuery#run refs = " + metadata.getMajorObjects());
 				return new Metadata().
 				addToMetadata(metadata.getObjectRefs(metadata.getMajorObjects(), false /* v3 */),
 						true  /* discard_duplicates */);

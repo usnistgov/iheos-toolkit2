@@ -24,9 +24,9 @@
 	<profiles>
 		<profile>
 			<id>Bill</id>
-			<!--<activation>-->
-				<!--<activeByDefault>true</activeByDefault>-->
-			<!--</activation>-->
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
 			<properties>
 				<build.profile.id>Bill</build.profile.id>
 			</properties>

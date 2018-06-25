@@ -17,6 +17,7 @@ import java.util.Set;
 import javax.mail.internet.MimeBodyPart;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
 import org.apache.soap.util.mime.ByteArrayDataSource;
 
 
@@ -27,6 +28,7 @@ import org.apache.soap.util.mime.ByteArrayDataSource;
 public class MultipartMap {
     javax.mail.internet.MimeMultipart mp;
     HashMap map, typemap;
+    private final static Logger logger = Logger.getLogger(MultipartMap.class);
     
     String stripQuotes(String s) {
         if (s == null) return s;
@@ -50,7 +52,7 @@ public class MultipartMap {
         } catch (javax.mail.MessagingException me) {
             throw new Exception("messaging exception in parsing for MultipartMap");
         }
-        System.out.println("Done");
+        logger.info("Done");
     }
     
     public MultipartMap(InputStream is, String contentType)
@@ -118,7 +120,7 @@ public class MultipartMap {
                 } else {
                     map.put(name, bp.getInputStream());         //getDataHandler());
                 }
-                System.out.println("name = " + name);
+                logger.info("name = " + name);
             }
         } else {
             throw new javax.mail.MessagingException("MultipartMap requires Multipart/Form format as input");

@@ -749,6 +749,16 @@
 				<version>6.4.0-SNAPSHOT</version>
             </dependency>
             <dependency>
+                <groupId>gov.nist.toolkit</groupId>
+                <artifactId>plugin-support</artifactId>
+                <version>6.4.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>gov.nist.toolkit</groupId>
+                <artifactId>plugins</artifactId>
+                <version>6.4.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
                 <groupId>org.vectomatic</groupId>
                 <artifactId>lib-gwt-svg</artifactId>
                 <version>0.5.11</version>
