@@ -13,11 +13,10 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TabBar;
-import gov.nist.toolkit.actortransaction.client.ActorOption;
-import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.actortransaction.client.IheItiProfile;
+import gov.nist.toolkit.actortransaction.shared.ActorOption;
+import gov.nist.toolkit.actortransaction.shared.ActorType;
+import gov.nist.toolkit.actortransaction.shared.IheItiProfile;
 import gov.nist.toolkit.configDatatypes.client.Pid;
-import gov.nist.toolkit.installation.shared.TestCollectionCode;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.interactiondiagram.client.events.DiagramClickedEvent;
 import gov.nist.toolkit.interactiondiagram.client.events.DiagramPartClickedEventHandler;
@@ -144,10 +143,8 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 			@Override
 			public void onTestSessionChanged(TestSessionChangedEvent event) {
 				if (event.getChangeType() == TestSessionChangedEvent.ChangeType.SELECT) {
-				    if (mainView.getActorTabBar().getSelectedTab()>-1) {
 						loadTestCollections();
 						updateDisplayedActorAndOptionType();
-					}
 				}
 			}
 		});
@@ -670,20 +667,16 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 	// load tab bar with actor types
 	private void loadTestCollections() {
-		if (ConformanceTestTab.super.tabConfig==null) {
 			new GetPrunedTabConfigCommand() {
 				@Override
 				public void onComplete(UserTestCollection userTestCollection) {
 					me.testCollectionDefinitionDAOs = userTestCollection.getTestCollectionDefinitionDAOs();
-					ConformanceTestTab.super.tabConfig = tabConfig;
+					ConformanceTestTab.super.tabConfig = userTestCollection.getTabConfig();
 					// Initial load of tests in a test session
                     displayTests();
 
 				}
 			}.run(new GetTabConfigRequest("ConfTests"));
-		} else {
-			displayTests();
-		}
 	}
 
 	private void displayTests() {
@@ -697,7 +690,8 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		// 2. Write the site map here
 
 		if (getInitTestSession() == null && mainView.getActorTabBar() != null && mainView.getActorTabBar().getSelectedTab() == -1) { // Only display the menu when actor is not selected.
-			displayMenu(mainView.getTestsPanel());
+			boolean result = displayMenu(mainView.getTestsPanel());
+			mainView.getActorpanel().setVisible(result);
 		}
 
 
