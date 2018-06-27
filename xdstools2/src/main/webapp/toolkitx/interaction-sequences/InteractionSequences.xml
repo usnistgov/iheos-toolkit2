@@ -72,6 +72,11 @@ Limited by the TestOverviewBuilder class, this makes an assumption that only one
 		</Actor>
 	</InteractionSequence>
 
+	<!--
+	TODO:
+	At the moment, the XCQTransaction transaction name is used by both the RG test plans and IG test plans.
+	We need to make them separate because the sequence is different for both actors.
+	-->
 	<InteractionSequence id="XCQTransaction">
 		<Actor role="Initiating Gateway" provider="Simulator">
 			<Transaction type="xcq">

@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>gov.nist.toolkit</groupId>
 		<artifactId>tk-deps</artifactId>
-		<version>6.4.0-SNAPSHOT</version>
+		<version>6.5.0-SNAPSHOT</version>
 		<relativePath>../tk-deps/pom.xml</relativePath>
 	</parent>
 
@@ -206,7 +206,6 @@
 		<dependency>
 			<groupId>net.ihe.gazelle</groupId>
 			<artifactId>sequoia-security-adaptor-jar</artifactId>
-			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
 

@@ -54,7 +54,7 @@ public class TestDefinition {
 	}
 
 	public String getFullTestReadmeHtml() throws IOException {
-		return Io.stringFromFile(new File(testDir, "readme.html"));
+		return Io.stringFromFile(new File(testDir, "readme.xhtml"));
 	}
 
 	public String getFullSectionReadme(String section) throws IOException {
@@ -230,7 +230,7 @@ public class TestDefinition {
 		try {
 			contents = getFullTestReadme();
 		} catch (IOException e) {
-			return null;
+			contents = "";
 		}
 		return parseReadme(contents, htmlContents);
 	}
@@ -251,10 +251,13 @@ public class TestDefinition {
 	}
 
 	private ReadMe parseReadme(String readmeContents, String readmeHtmlContents) {
+		if (!readmeHtmlContents.equals("")) {
+			return parseReadmeHTML(readmeHtmlContents);
+		}
 		ReadMe rm = new ReadMe();
 
 		StringBuilder buf = new StringBuilder();
-		Scanner scanner = new Scanner((readmeHtmlContents.equals("") ? readmeContents : readmeHtmlContents));
+		Scanner scanner = new Scanner(readmeContents);
 		int i = 0;
 		while (scanner.hasNextLine()) {
 			String line = scanner.nextLine();
@@ -267,6 +270,26 @@ public class TestDefinition {
 		}
 		scanner.close();
 		rm.rest = buf.toString();
+		return rm;
+	}
+
+	private ReadMe parseReadmeHTML(String readmeHtmlContents) {
+		ReadMe rm = new ReadMe();
+		try {
+			OMElement html = Util.parse_xml(readmeHtmlContents);
+			OMElement title = XmlUtil.firstDecendentWithLocalName(html, "title");
+			if (title == null) title = XmlUtil.firstDecendentWithLocalName(html, "TITLE");
+
+			if (title == null) {
+				rm.line1 = "No title element found in readme.html";
+			} else {
+				rm.line1 = title.getText();
+			}
+			rm.rest = readmeHtmlContents;
+		} catch (Exception e) {
+			rm.line1 = "Unable to parse readme HTML contents. XML parsing failed";
+			rm.rest  =  readmeHtmlContents;
+		}
 		return rm;
 	}
 

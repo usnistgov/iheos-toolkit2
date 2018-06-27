@@ -858,7 +858,7 @@ public class Soap implements SoapInterface {
 			throw new XdsInternalException(
 					"No action returned in SOAPHeader: expected action = "
 							+ expected_return_action);
-		String action_value = action.getText();
+		String action_value = action.getText().trim();
 		if (alternate_return_action == null) {
 			if (action_value == null
 					|| !action_value.equals(expected_return_action))
@@ -1116,6 +1116,7 @@ public class Soap implements SoapInterface {
 		return async;
 	}
 
+	// TODO: This seems deprecated.
 	/*
 	 * (non-Javadoc)
 	 *

@@ -303,6 +303,11 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
    // uid -> retrieved model
    private Map<String, RetrievedDocumentModel> singleRetrieve(String endpoint, RetrieveItemRequestModel requestModel) {
       Soap soap = new Soap();
+
+      if (common.vc.requiresStsSaml) {
+         soap.addHeader(SimUtil.getSecurityElement(common.vc, dsSimCommon, this.getClass().getName()));
+      }
+
       OMElement request = new RetrieveRequestGenerator(requestModel).get();
       OMElement result = null;
 

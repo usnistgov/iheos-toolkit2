@@ -572,8 +572,13 @@ public class SimServlet  extends HttpServlet {
 			vc.forceMtom = transactionType.isRequiresMtom();
 
 			SimulatorConfigElement stsSce = asc.get(SimulatorProperties.requiresStsSaml);
-			if (stsSce!=null && stsSce.hasBoolean() && stsSce.asBoolean())
+			if (stsSce!=null && stsSce.hasBoolean() && stsSce.asBoolean()) {
+				/*
+				NOTE:
+				The validate SAML flag is global to the entire combined simulator. SAML needs to be propagated to internally forwarded transactions.
+				*/
 				vc.requiresStsSaml = true;
+			}
 
 			SimulatorConfigElement asce = asc.get(SimulatorProperties.codesEnvironment);
 			if (asce != null)

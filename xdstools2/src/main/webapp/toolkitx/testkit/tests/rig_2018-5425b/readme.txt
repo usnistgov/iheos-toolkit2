@@ -1,0 +1,70 @@
+Partial Success, Multiple Imaging Document Source Actors (E, F)
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html;
+      charset=windows-1252">
+    <title>Responding Imaging Gateway: Partial Success, Multiple Imaging
+      Document Source Actors (E, F)</title>
+  </head>
+  <body>
+    <h2>Partial Success, Multiple Imaging Document Source Actors (E, F)</h2>
+    <p>Tests the ability of the Responding Imaging Gateway actor (SUT)
+      to respond correctly to a Cross Gateway Retrieve Imaging Document
+      Set (RAD-75) transaction from an Initiating Imaging Gateway actor
+      (Simulator) for DICOM image files from two Imaging Document Source
+      actor (Simulators), in the case where one of the files requested
+      is unknown. </p>
+    <p>One study is located in Imaging Document Source E. The second
+      study is requested as if it exists in Imaging Document Source F,
+      but the study does not in fact exist. This is simulating an error
+      condition where the Responding Imaging Gateway will have to
+      consolidate the results and provide a PartialSuccess status. </p>
+    <h3>Retrieve Parameters</h3>
+    <table border="1">
+      <tbody>
+        <tr>
+          <td>RIG Home Community ID</td>
+          <td>urn:oid:1.3.6.1.4.1.21367.13.70.201</td>
+        </tr>
+        <tr>
+          <td>IDS Repository Unique ID (E)</td>
+          <td>1.3.6.1.4.1.21367.13.71.201.1</td>
+        </tr>
+        <tr>
+          <td>IDS Repository Unique ID (F)</td>
+          <td>1.3.6.1.4.1.21367.13.71.201.2</td>
+        </tr>
+        <tr>
+          <td>Transfer Syntax UID</td>
+          <td>1.2.840.10008.1.2.1</td>
+        </tr>
+      </tbody>
+    </table>
+    <h3>Test Execution</h3>
+    <p>The test consists of four steps: </p>
+    <ol>
+      <li>Test software sends RAD-75 request to System Under test and
+        records response. The request contains requests for images in
+        two separate DICOM studies on separate Imaging Document Source
+        actors.<br>
+      </li>
+      <ul>
+        <li>System Under Test sends <b>RAD-69 requests to Imaging
+            Document Sources</b> which store the request.</li>
+        <li>Imaging Document Sources provide RAD-69 <b>responses</b> to
+          System Under Test.</li>
+        <li>System Under Test provides RAD-75 response to test software.<br>
+        </li>
+      </ul>
+      <li>Test software validates the RAD-69 request that is sent by the
+        System Under Test.</li>
+      <li>Test software validates the RAD-75 response sent by the System
+        Under Test.</li>
+      <li>Test software validates the image returned in the RAD-75
+        response to make sure the System Under Test did not alter the
+        image.<br>
+      </li>
+    </ol>
+  </body>
+</html>

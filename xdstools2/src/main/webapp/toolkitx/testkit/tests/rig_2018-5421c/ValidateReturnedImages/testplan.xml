@@ -1,0 +1,25 @@
+<TestPlan>
+   <Test>iig_5428/validate-Imgs</Test>
+   <TestStep id="validate-images">
+      <Goal>Correct RetrieveDocumentSetResponse images</Goal>
+      <XmlDetailTransaction>
+         <Assertions>
+            <Assert id="Returned img(s)" process="sameDcmImgs">
+               <TestResponse testDir="../Rad75RetrieveRequest" step="retrieve" />
+               <TagList>
+                  <SOPClassUID />
+                  <SOPInstanceUID />
+                  <PatientID />
+                  <PatientBirthDate />
+                  <PatientSex />
+                  <StudyInstanceUID />
+                  <SeriesInstanceUID />
+               </TagList>
+               <DirList>
+                  <StdDir>2018/rig_2018-5421c</StdDir>
+               </DirList>
+            </Assert>
+         </Assertions>
+      </XmlDetailTransaction>
+   </TestStep>
+</TestPlan>

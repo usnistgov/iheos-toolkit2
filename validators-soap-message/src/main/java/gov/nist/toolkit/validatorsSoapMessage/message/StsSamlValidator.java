@@ -31,6 +31,7 @@ import java.util.Map;
  */
 public class StsSamlValidator extends AbstractMessageValidator {
     OMElement header;
+    OMElement securityElement;
     ErrorRecorderBuilder erBuilder;
     MessageValidatorEngine mvc;
     RegistryValidationInterface rvi;
@@ -52,30 +53,29 @@ public class StsSamlValidator extends AbstractMessageValidator {
                 this.er = er;
                 er.registerValidator(this);
 
-                OMElement securityEl = null;
                 List<OMElement> secEls = XmlUtil.decendentsWithLocalName(header, "Security", -1);
                 if (secEls.size() == 1) {
                     er.detail("Found one Security element.");
-                    securityEl = secEls.get(0);
-                    validateNs(er, securityEl, "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd");
+                    securityElement = secEls.get(0);
+                    validateNs(er, securityElement, "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd");
                 } else {
                     er.err(XdsErrorCode.Code.SoapFault, new Exception("Security element (SAML) was expected. Security element count is "+secEls.size()+", should be one."));
                 }
-                if (securityEl != null) {
-                    List<OMElement> assertionEls = XmlUtil.decendentsWithLocalName(securityEl, "Assertion", 1);
+                if (securityElement != null) {
+                    List<OMElement> assertionEls = XmlUtil.decendentsWithLocalName(securityElement, "Assertion", 1);
                     if (assertionEls!=null) {
                         if (assertionEls.size()!=1) {
                             er.err(XdsErrorCode.Code.SoapFault, new Exception("SAML assertion was expected. Assertion element count is "+assertionEls.size()+", should be one."));
                         }
                         er.detail("Found one Assertion element.");
-                        OMElement assertionEl = assertionEls.get(0);
-                        validateNs(er, assertionEl, "urn:oasis:names:tc:SAML:2.0:assertion");
+                        OMElement samlAssertion = assertionEls.get(0);
+                        validateNs(er, samlAssertion, "urn:oasis:names:tc:SAML:2.0:assertion");
 
-                        String samlAssertion = assertionEl.toString().replaceAll("[\t\r\n\f\n]",""); // Strip whitespace/newlines as per Gazelle Picketlink STS requirement. Whitespace should be already taken care of by OMElement.toString.
-                        samlAssertion = samlAssertion.replaceAll(">\\s*<", "><");
+                        String samlAssertionStr = samlAssertion.toString().replaceAll("[\t\r\n\f\n]",""); // Strip whitespace/newlines as per Gazelle Picketlink STS requirement. Whitespace should be already taken care of by OMElement.toString.
+                        samlAssertionStr = samlAssertionStr.replaceAll(">\\s*<", "><");
 
                         Map<String, String> params = new HashMap<>();
-                        params.put("$saml-assertion$", samlAssertion.replace("&amp;","&")); // Params replacement will take care of this by restoring it to proper format
+                        params.put("$saml-assertion$", samlAssertionStr.replace("&amp;","&")); // Params replacement will take care of this by restoring it to proper format
 
                         String query = "samlassertion-validate";
 
@@ -114,6 +114,10 @@ public class StsSamlValidator extends AbstractMessageValidator {
         if (!ns.equals(nsuri)) {
             er.err(XdsErrorCode.Code.SoapFault, new Exception(el.getLocalName() + " Element namespace was not recognized. Was expecting: " + ns));
         }
+    }
+
+    public OMElement getSecurityElement() {
+        return securityElement;
     }
 
 }

@@ -1,8 +1,11 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import gov.nist.toolkit.actortransaction.shared.ActorType;
+import com.google.gwt.user.client.ui.SimplePanel;
 import gov.nist.toolkit.interactiondiagram.client.widgets.InteractionDiagram;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
@@ -19,6 +22,11 @@ import java.util.List;
  *
  */
 public class InteractionDiagramDisplay extends FlowPanel {
+    final private static String viewDiagramLabel = "&boxplus;View Interaction Sequence";
+    final private static String hideDiagramLabel = "&boxminus;Hide Interaction Sequence";
+
+    private HTML diagramCtl = new HTML(viewDiagramLabel);
+    private SimplePanel contentPanel = new SimplePanel();
 
     TestOverviewDTO testOverviewDTO;
 
@@ -31,6 +39,11 @@ public class InteractionDiagramDisplay extends FlowPanel {
 
     public InteractionDiagramDisplay(TestOverviewDTO testResultDTO, String sessionName, SiteSpec testTarget, String sutSystemName, ActorOptionConfig actorOption, String pid) {
 
+        diagramCtl.addStyleName("iconStyle");
+        diagramCtl.addStyleName("inlineLink");
+        diagramCtl.addClickHandler(new ViewDiagramClickHandler());
+        contentPanel.setVisible(false); // Hidden by default
+
         setTestOverviewDTO(testResultDTO);
         setSessionName(sessionName);
         setTestTarget(testTarget);
@@ -38,6 +51,18 @@ public class InteractionDiagramDisplay extends FlowPanel {
         setActorOption(actorOption);
         setPid(pid);
 
+    }
+
+    private class ViewDiagramClickHandler implements ClickHandler {
+        @Override
+        public void onClick(ClickEvent clickEvent) {
+            contentPanel.setVisible(!contentPanel.isVisible());
+            if (contentPanel.isVisible()) {
+                diagramCtl.setHTML(hideDiagramLabel);
+            } else {
+                diagramCtl.setHTML(viewDiagramLabel);
+            }
+        }
     }
 
     public InteractionDiagramDisplay render() {
@@ -64,22 +89,20 @@ public class InteractionDiagramDisplay extends FlowPanel {
                                     diagram.setEntityList(result);
                                     diagram.draw();
                                     if ((diagram!=null && diagram.hasMeaningfulDiagram())) {
-                                        add(new HTML("<p><b>Interaction Sequence:</b></p>"));
-                                        add(diagram);
-                                        add(new HTML("<br/>"));
+                                        add(diagramCtl);
+                                        add(contentPanel);
+                                        contentPanel.add(diagram);
                                     }
                                 }
                             }.run(new SetSutInitiatedTransactionInstanceRequest(ClientUtils.INSTANCE.getCommandContext(), diagram.getEntityList(), SimIdFactory.simIdBuilder(getTestTarget().getName()), getPid()));
                         } else {
                             diagram.draw();
                             if ((diagram!=null && diagram.hasMeaningfulDiagram())) {
-                                add(new HTML("<p><b>Interaction Sequence:</b></p>"));
-                                add(diagram);
-                                add(new HTML("<br/>"));
+                                add(diagramCtl);
+                                add(contentPanel);
+                                contentPanel.add(diagram);
                             }
                         }
-
-
                     }
 
 

@@ -1,0 +1,128 @@
+Responding Imaging Gateway (2018): Read This First
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html;
+      charset=windows-1252">
+    <title>Responding Imaging Gateway (2018): Read This First</title>
+  </head>
+  <body>
+    <h2>Responding Imaging Gateway (2018): Read This First</h2>
+    <p>The System Under Test (SUT) is a Responding Imaging Gateway </p>
+    <h3>Testing Overview</h3>
+    <p>The tests for the Initiating Imaging Gateway fall into several
+      broad categories and are numbered accordingly. The numbering
+      scheme and categories are listed in the following table.<br>
+      <br>
+      <table border="1">
+        <tbody>
+          <tr>
+            <th>Test Number Base</th>
+            <th>Test Category</th>
+          </tr>
+          <tr>
+            <td>rig_2018-5421x<br>
+            </td>
+            <td>
+              <ul>
+                <li>Testing with a single Imaging Document Source<br>
+                </li>
+                <li>These are cases where success responses are intended<br>
+                </li>
+              </ul>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top">rig_2018-5422x<br>
+            </td>
+            <td valign="top">Success cases covering different DICOM
+              transfer syntaxes<br>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top">rig_2018-5423x<br>
+            </td>
+            <td valign="top">Success cases involving multiple Imaging
+              Document Source actors<br>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top">rig_2018-5424x<br>
+            </td>
+            <td valign="top">Failure cases<br>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top">rig_2018-5425x<br>
+            </td>
+            <td valign="top">Partial success cases with single and
+              multiple Imaging Document Source actors<br>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </p>
+    <h3> Configuration</h3>
+    <p>The tables immediately below describe the environment at a high
+      level with values for homeCommunityID's and repositoryUniqueID's.
+      We use fixed values for homeCommunityIDs. </p>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>Community / System</th>
+          <th>homeCommunityID</th>
+        </tr>
+        <tr bgcolor="#FFA500">
+          <td>Under Test: Responding Imaging Gateway</td>
+          <td>urn:oid:1.3.6.1.4.1.21367.13.70.201</td>
+        </tr>
+        <tr bgcolor="#FFFFFF">
+          <td>Initiating Imaging Gateway (Simulator)</td>
+          <td>urn:oid:1.3.6.1.4.1.21367.13.70.202</td>
+        </tr>
+      </tbody>
+    </table>
+    <br>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>Imaging Document Source (Simulator)</th>
+          <th>Repository Unique ID</th>
+        </tr>
+        <tr>
+          <td>E</td>
+          <td>1.3.6.1.4.1.21367.13.71.201.1</td>
+        </tr>
+        <tr>
+          <td>F</td>
+          <td>1.3.6.1.4.1.21367.13.71.201.2</td>
+        </tr>
+        <tr>
+          <td>G</td>
+          <td>1.3.6.1.4.1.21367.13.71.201.3</td>
+        </tr>
+        <tr>
+          <td>Unknown (do not configure in your Responding Imaging
+            Gateway; <br>
+            used to test error conditions)</td>
+          <td>1.3.6.1.4.1.21367.13.71.201.2.999</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>After you have initialized the test environment, you should see
+      the full set of configuration parameters needed to configure and
+      test your system. </p>
+    <p>Tests are run using three DICOM transfer syntaxes. The UIDs for
+      these are: </p>
+    <ul>
+      <li>1.2.840.10008.1.2.1</li>
+      <li>1.2.840.10008.1.2.4.50</li>
+      <li>1.2.840.10008.1.2.4.70</li>
+    </ul>
+    <p>In some cases, the Imaging Document Source simulator will respond
+      to RAD-69 retrieve requests with images that are encoded with a
+      requested transfer syntax. In other cases, the Imaging Document
+      Source simulator will have the image but will not be able to
+      supply it in the requested transfer syntax. </p>
+  </body>
+</html>

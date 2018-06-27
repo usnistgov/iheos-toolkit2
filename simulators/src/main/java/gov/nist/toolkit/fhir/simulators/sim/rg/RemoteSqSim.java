@@ -77,12 +77,16 @@ public class RemoteSqSim  extends TransactionSimulator implements MetadataGenera
 
 		// issue soap call to registry
 		Soap soap = new Soap();
+
+		if (vc.requiresStsSaml) {
+			soap.addHeader(SimUtil.getSecurityElement(vc, dsSimCommon, this.getClass().getName()));
+		}
+
 		OMElement result = null;
 		try {
 
 			er.challenge("Forwarding on as SQ from RG to local Registry " + endpoint);
 			er.detail(new OMFormatter(query).toString());
-
 
 			result = soap.soapCall(query, endpoint, false, true, true, MetadataSupport.SQ_action, SoapActionFactory.getResponseAction(MetadataSupport.SQ_action));
 

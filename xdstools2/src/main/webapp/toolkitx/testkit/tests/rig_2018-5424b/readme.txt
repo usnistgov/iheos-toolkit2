@@ -1,0 +1,58 @@
+Unknown DICOM UIDs, Single IDS
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html;
+      charset=windows-1252">
+    <title>Responding Imaging Gateway: Unknown DICOM UIDs, Single IDS</title>
+  </head>
+  <body>
+    <h2>Unknown DICOM UIDs, Single IDS</h2>
+    <p>Tests the ability of the Responding Imaging Gateway actor (SUT)
+      to respond correctly to a Cross Gateway Retrieve Imaging Document
+      Set (RAD-75) transaction from an Initiating Imaging Gateway actor
+      (Simulator), for a single DICOM image file, in the case where the
+      Image Document Source has no image with matching DICOM UID values.
+    </p>
+    <p>The DICOM UIDs in the RAD-69 request do not refer to an image
+      that is known to the Imaging Document Source, and an error code
+      will be returned by the Imaging Document Source to the Responding
+      Imaging Gateway. </p>
+    <h3>Retrieve Parameters</h3>
+    <table border="1">
+      <tbody>
+        <tr>
+          <td>RIG Home Community ID</td>
+          <td>urn:oid:1.3.6.1.4.1.21367.13.70.201</td>
+        </tr>
+        <tr>
+          <td>IDS Repository Unique ID (E)</td>
+          <td>1.3.6.1.4.1.21367.13.71.201.1</td>
+        </tr>
+        <tr>
+          <td>Transfer Syntax UID</td>
+          <td>1.2.840.10008.1.2.1</td>
+        </tr>
+      </tbody>
+    </table>
+    <h3>Test Execution</h3>
+    <p>The test consists of three steps: </p>
+    <ol>
+      <li>Test software sends RAD-75 request to System Under test and
+        records response.<br>
+      </li>
+      <ul>
+        <li>System Under Test sends a RAD-69 request to Imaging Document
+          Source which stores the request.</li>
+        <li>Imaging Document Source provides RAD-69 response to System
+          Under Test.</li>
+        <li>System Under Test provides RAD-75 response to test software.<br>
+        </li>
+      </ul>
+      <li>Test software validates the RAD-69 request that is sent by the
+        System Under Test.</li>
+      <li>Test software validates the RAD-75 response sent by the System
+        Under Test.</li>
+    </ol>
+  </body>
+</html>

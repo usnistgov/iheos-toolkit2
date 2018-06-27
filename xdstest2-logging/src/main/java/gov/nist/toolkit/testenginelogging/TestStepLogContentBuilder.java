@@ -125,6 +125,7 @@ public class TestStepLogContentBuilder {
     }
 
     private void parseReports() {
+        // See Issue #418 Duplicate UseReports/Reports in Conformance tool Section/Step UI (Test log.xml file contains singular values though).
         // without use of the map we get duplicates because of the Assertions
         // section of the log.xml file format
 //        Map<String, String> map = new HashMap<>();

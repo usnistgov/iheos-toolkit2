@@ -1,0 +1,17 @@
+<TestPlan>
+  <Test>ids_2018-4801a/ValidateKOS</Test>
+  <TestStep id="ValidateKOS">
+    <Goal>Locate KOS in Repository simulator with Patient ID: IDS_2018-4801a^^^&amp;1.3.6.1.4.1.21367.2005.13.20.1000&amp;ISO</Goal>
+    <Goal>Validate KOS sent to Repository simulator</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <ImgDetailTransaction>
+      <Assertions>
+        <Assert id="Submitted KOS Validation" process="sameKOSDcm">
+          <SimReference id="rr" actor="rep" transaction="prb"
+            pid="IDS_2018-4801a^^^&amp;1.3.6.1.4.1.21367.2005.13.20.1000&amp;ISO" />
+          kos-evaluate.dcm
+        </Assert>
+      </Assertions>
+    </ImgDetailTransaction>
+  </TestStep>
+</TestPlan>

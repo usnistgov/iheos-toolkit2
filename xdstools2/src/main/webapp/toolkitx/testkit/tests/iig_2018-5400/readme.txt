@@ -1,0 +1,134 @@
+Initiating Imaging Gateway (2018): Read This First
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html;
+      charset=windows-1252">
+    <title>Initiating Imaging Gateway (2018): Read This First</title>
+  </head>
+  <body>
+    <h2>Initiating Imaging Gateway (2018): Read This First</h2>
+    <p>The System Under Test (SUT) is an Initiating Imaging Gateway.<br>
+    </p>
+    <h3>Testing Overview</h3>
+    <p>The tests for the Initiating Imaging Gateway fall into several
+      broad categories and are numbered accordingly. The numbering
+      scheme and categories are listed in the following table.<br>
+      <br>
+      <table border="1">
+        <tbody>
+          <tr>
+            <th>Test Number Base</th>
+            <th>Test Category</th>
+          </tr>
+          <tr>
+            <td>iig_2018-5401x<br>
+            </td>
+            <td>
+              <ul>
+                <li>Testing with a single Respnding Imaging Gateway</li>
+                <li>These are cases where success responses are intended<br>
+                </li>
+              </ul>
+            </td>
+          </tr>
+          <tr>
+            <td>iig_2018-5402x</td>
+            <td>Success cases involving different DICOM transfer
+              syntaxes<br>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top">iig_2018-5403x</td>
+            <td valign="top">Success cases involving multiple Responding
+              Imaging Gateways<br>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top">iig_2018-5404x</td>
+            <td valign="top">Failure cases<br>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top">iig_2018-5405x</td>
+            <td valign="top">Partial success cases with single and
+              multiple Responding Imaging Gateways<br>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </p>
+    <h3>Configuration<br>
+    </h3>
+    <p>You need to configure your Initiating Imaging Gateway to
+      communicate with simulators listed in the conformance testing
+      tool. If you are reading this document as a standalone document,
+      that configuration is not available to you. If you are reading
+      this document in the context of the XDS Toolkit, it is better to
+      close this test and read the introductory material in the toolkit
+      for testing the Imaging Document Source. That introductory text
+      includes configuration parameters and diagrams. </p>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>homeCommunityID</th>
+          <th>Imaging Doc Source Repository Unique ID</th>
+        </tr>
+        <tr bgcolor="#FFA500">
+          <td colspan="2">
+            <center>Under Test:Initiating Imaging Gateway</center>
+          </td>
+        </tr>
+        <tr bgcolor="#FFA500">
+          <td>urn:oid:1.3.6.1.4.1.21367.13.70.1</td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr bgcolor="#FFFFFF">
+          <td colspan="2">
+            <center>Community A: Responding Imaging Gateway</center>
+          </td>
+        </tr>
+        <tr bgcolor="#FFFFFF">
+          <td>urn:oid:1.3.6.1.4.1.21367.13.70.101</td>
+          <td>1.3.6.1.4.1.21367.13.71.101 <br>
+            1.3.6.1.4.1.21367.13.71.101.1</td>
+        </tr>
+        <tr bgcolor="#A0A0A0">
+          <td colspan="2">
+            <center>Community B: Responding Imaging Gateway</center>
+          </td>
+        </tr>
+        <tr bgcolor="#A0A0A0">
+          <td>urn:oid:1.3.6.1.4.1.21367.13.70.102</td>
+          <td>1.3.6.1.4.1.21367.13.71.102</td>
+        </tr>
+        <tr bgcolor="#FFFFFF">
+          <td colspan="2">
+            <center>Community C: Responding Imaging Gateway</center>
+          </td>
+        </tr>
+        <tr bgcolor="#FFFFFF">
+          <td>urn:oid:1.3.6.1.4.1.21367.13.70.103</td>
+          <td>1.3.6.1.4.1.21367.13.71.103</td>
+        </tr>
+        <tr bgcolor="#A0A0A0">
+          <td colspan="2">
+            <center>Unregistered Community Represents Error Conditions<br>
+              Do not configure these in your Initiating Imaging Gateway</center>
+            "</td>
+        </tr>
+        <tr bgcolor="#A0A0A0">
+          <td>urn:oid:1.3.6.1.4.1.21367.13.70.102.999</td>
+          <td>1.3.6.1.4.1.21367.13.71.102.999</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>After you have initialized the test environment, you should see
+      the full set of configuration parameters needed to configure and
+      test your system. </p>
+    <p>Note that your Initiating Imaging Gateway only communicates with
+      the Responding Imaging Gateway simulators. Your system will not
+      connect directly to any of the Imaging Document Source simulators.
+    </p>
+  </body>
+</html>

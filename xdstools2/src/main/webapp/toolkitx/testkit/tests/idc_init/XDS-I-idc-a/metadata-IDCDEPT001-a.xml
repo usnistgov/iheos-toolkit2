@@ -114,7 +114,7 @@
          </Classification>
          <!--  Class Code -->
          <Classification classificationScheme="urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a"
-               classifiedObject="Document01" nodeRepresentation="IMAGESx">
+               classifiedObject="Document01" nodeRepresentation="IMAGES">
             <Name>
                <LocalizedString value="Images"/>
             </Name>
@@ -125,7 +125,7 @@
             </Slot>
          </Classification>
          
-         <!--  Confieudentiality Code -->
+         <!--  Confidentiality Code -->
          <Classification classificationScheme="urn:uuid:f4f85eac-e6cb-4883-b524-f2705394840f"
                classifiedObject="Document01" nodeRepresentation="R">
             <Name>
