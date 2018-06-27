@@ -171,19 +171,6 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 
 		loadTestCollections();
-		/*
-		// 1. Get the tabConfig here {
-		new GetTabConfigCommand() {
-			@Override
-			public void onComplete(TabConfig tabConfig) {
-				ConformanceTestTab.super.tabConfig = tabConfig;
-				// Retrofit tab config into actoroptionmanager
-				// Initial load of tests in a test session
-				loadTestCollections();
-			}
-		}.run(new GetTabConfigRequest("ConfTests"));
-		// }
-		*/
 
 		// Register the Diagram RequestConnector clicked event handler
 		ClientUtils.INSTANCE.getEventBus().addHandler(DiagramClickedEvent.TYPE, new DiagramPartClickedEventHandler() {
