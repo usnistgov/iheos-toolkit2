@@ -4,9 +4,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.installation.shared.TestSession;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
@@ -27,30 +26,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 /**
- * toolkit tab class for RSNA Imaging Source SUT testing
- * 
- * @author Matt Kelsey / MIR WUSTL IHE Development Project <a
- * href="mailto:kelseym@wustl.edu">kelseym@wustl.edu</a>
- *
+ * toolkit tab for Edge Server conformance testing
  */
-public class RSNAEdgeTestTab extends GenericQueryTab implements GatewayTool {
-//    final protected ToolkitServiceAsync toolkitService = GWT
-//            .create(ToolkitService.class);
+public class ESTestTab extends GenericQueryTab implements GatewayTool {
     String selectedActor = ActorType.EDGE_SERVER.getShortName();
-    SimulatorConfig config;
+    List<SimulatorConfig> rgConfigs;
     GenericQueryTab genericQueryTab;
-    static final String COLLECTION_NAME =  "rsnaedgetool";
+    static final String COLLECTION_NAME =  "es";
     final TestSelectionManager testSelectionManager;
 
-    public RSNAEdgeTestTab() {
-        super(new GetImagingDocumentsSiteActorManager()); //TODO: Update to correct ActorManager
+    public ESTestTab() {
+        super(new GetImagingDocumentsSiteActorManager());
         testSelectionManager = new TestSelectionManager(this);
     }
-
-//    @Override
-//    public ToolkitServiceAsync getToolkitService() { return toolkitService; }
 
     @Override
     public TabContainer getToolContainer() { return getTabContainer(); }
@@ -86,23 +75,19 @@ public class RSNAEdgeTestTab extends GenericQueryTab implements GatewayTool {
         autoAddRunnerButtons = false;  // want them in a different place
         genericQueryTitle = "Select System Under Test";
         genericQueryInstructions = new HTML(
-           
-           "<p><strike>When the test is run a Retrieve Imaging Document Set (RAD-69) " +
-           "transaction will be sent to the Initiating Imaging Gateway " +
-           "selected below. This will start the test. Before running a test, " +
-           "make sure your Initiating Imaging Gateway is configured to send " +
-           "to the Responding Imaging Gateways above. </stike></p>" +
-                        
-           "<p> This tool uses only non-TLS endpoints. TLS selection is disabled.</p>" +
 
-           "<p>It may ne necessary to refresh the selection list at times.  " +
-           "The Reload button at the top of the screen performs this refresh.</p>"
+                "<p>Test instructions</p>" +
+
+                "<p> This tool uses only non-TLS endpoints. TLS selection is disabled.</p>" +
+
+                "<p>It may ne necessary to refresh the selection list at times.  " +
+                "The Reload button at the top of the screen performs this refresh.</p>"
 
         );
         addResultsPanel = false;  // manually done below
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        tabTopPanel.add(new HTML("<h1>RSNA Edge Device Test Tool</h1>"));
+        tabTopPanel.add(new HTML("<h1>Edge Server Test Tool</h1>"));
 
         Image initiatingGatewayDiagram=new Image();
         initiatingGatewayDiagram.setUrl("diagrams/RSNAEdgeDiagram.png");
@@ -110,46 +95,32 @@ public class RSNAEdgeTestTab extends GenericQueryTab implements GatewayTool {
         tabTopPanel.add(initiatingGatewayDiagram);
 
         tabTopPanel.add(new HTML(
-           
-           "<p>This tool tests an RSNA Edge Device.  <strike>The tests are " +
-           "driven by an Imaging Document Consumer simulator. The Initiating " +
-           "Imaging Gateway System Under Test (SUT) will be configured to " +
-           "relay requests to three Responding Imaging Gateways. This tool " +
-           "supplies the Imaging Document Consumer and Responding Imaging " +
-           "Gateways as Toolkit supported simulators. Each of the Responding " +
-           "Imaging Gateways is backed by one or more Imaging Document " +
-           "Source actors loaded with supporting test data.</strike> </p>" +
 
-           "<h2>Create supporting test session</h2>" +
-                
-           "<p>These simulators and their logs will be maintained in a test " +
-           "session you create for this test. At the top of the window, " +
-           "create a new test session and select it. </p>"
+                "<p>This tool tests an Edge Server.  </p>" +
+
+                "<h2>Create supporting test session</h2>" +
+
+                "<p>These simulators and their logs will be maintained in a test " +
+                "session you create for this test. At the top of the window, " +
+                "create a new test session and select it. </p>"
         ));
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
         tabTopPanel.add(new HTML(
-                
-           "<hr />" +
-           
-           "<h2>Build Test Environment</h2>" +
-           
-           "<p><The Build Test Environment button will create the necessary " +
-           "simulators to test your RSNA Edge Device:  <strike>an Imaging " +
-           "Document Consumer to drive the test, three Responding Imaging " +
-           "Gateways, along with necessary Imaging Document Sources to " + 
-           "service requests from your Initiating Imaging Gateway. The " +
-           "generated test configuration will be displayed below. Once the " +
-           "test environment is built, configure your Initiating Imaging " +
-           "Gateway to forward requests to the three generated Responding " +
-           "Imaging Gateways.</strike></p>"
+
+                "<hr />" +
+
+                        "<h2>Build Test Environment</h2>" +
+
+                        "<p><The Build Test Environment button will create the necessary " +
+                        "simulators to test your Edge Server:  </p>"
 
         ));
 
         HorizontalPanel testEnvironmentsPanel = new HorizontalPanel();
         tabTopPanel.add(testEnvironmentsPanel);
 
-        new BuildRSNAEdgeTestOrchestrationButton(this, testEnvironmentsPanel, "Build Test Environment", false);
+        new BuildESTestOrchestrationButton(this, testEnvironmentsPanel, "Build Test Environment");
 
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -179,14 +150,12 @@ public class RSNAEdgeTestTab extends GenericQueryTab implements GatewayTool {
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
         tabTopPanel.add(new HTML(
-                
-           "<hr />" +
-                        
-           "<h2>Run Test</h2>" +
-           
-           "<p>Initiate the test from the Toolkit Image Document Consumer. " +
-           "After the test is run the Image Document Consumer's logs can be " +
-           "displayed with Inspect Results.</p>"
+
+                "<hr />" +
+
+                        "<h2>Run Test</h2>" +
+
+                        "<p>...</p>"
         ));
 
         addRunnerButtons(tabTopPanel);
@@ -199,19 +168,18 @@ public class RSNAEdgeTestTab extends GenericQueryTab implements GatewayTool {
         public void onClick(ClickEvent event) {
             resultPanel.clear();
 
-			if (getCurrentTestSession().isEmpty()) {
-				new PopupMessage("Test Session must be selected");
-				return;
-			}
+            if (getCurrentTestSession().isEmpty()) {
+                new PopupMessage("Test Session must be selected");
+                return;
+            }
 
             if (!verifySiteProvided()) return;
 
-			addStatusBox();
-			getGoButton().setEnabled(false);
-			getInspectButton().setEnabled(false);
+            addStatusBox();
+            getGoButton().setEnabled(false);
+            getInspectButton().setEnabled(false);
 
             Map<String, String> parms = new HashMap<>();
-            parms.put("$testdata_home$", config.get(SimulatorProperties.homeCommunityId).asString());
 
             Panel logLaunchButtonPanel = rigForRunning();
             logLaunchButtonPanel.clear();
@@ -223,7 +191,7 @@ public class RSNAEdgeTestTab extends GenericQueryTab implements GatewayTool {
             }
 
             TestInstance testInstance = new TestInstance(testToRun);
-            testInstance.setTestSession(new TestSession(getCurrentTestSession()));
+            testInstance.setUser(getCurrentTestSession());
             new RunMesaTestCommand(){
                 @Override
                 public void onComplete(List<Result> result) {
@@ -252,7 +220,7 @@ public class RSNAEdgeTestTab extends GenericQueryTab implements GatewayTool {
                             new PopupMessage("Results not available");
                             return;
                         }
-                        SiteSpec siteSpec = new SiteSpec(siteName, ActorType.RESPONDING_GATEWAY, null, new TestSession(getCurrentTestSession()));
+                        SiteSpec siteSpec = new SiteSpec(siteName, ActorType.RESPONDING_GATEWAY, null);
 
                         MetadataInspectorTab itab = new MetadataInspectorTab();
                         List<Result> results = new ArrayList<Result>();
@@ -268,7 +236,8 @@ public class RSNAEdgeTestTab extends GenericQueryTab implements GatewayTool {
     }
 
     public String getWindowShortName() {
-        return "igtests";
+        return "estests";
     }
 
 }
+

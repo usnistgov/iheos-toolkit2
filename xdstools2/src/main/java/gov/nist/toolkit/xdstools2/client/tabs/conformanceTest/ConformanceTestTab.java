@@ -499,6 +499,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 	// . Show profiles
 	// actor type selection changes
+	// By clicking on actor in "Actor to test" tab bar.
 	private class ActorSelectionHandler implements SelectionHandler<Integer> {
 
 		@Override
@@ -850,6 +851,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 	}
 
 	private void displayOrchestrationHeader(Panel initializationPanel) {
+		new PopupMessage("ConformanceTestTab#displayOrchestrationHeader " + currentActorOption.toString());
 		String label = "Initialize Test Environment";
 		ActorOptionConfig currentActorOption = this.currentActorOption;
 		if (currentActorOption.isRep()) {
@@ -897,8 +899,11 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
 			initializationPanel.add(orchInit.panel());
 		}
-		else if (currentActorOption.isEdgeServerSut()) {
-			// TODO not implemented yet.
+		else if (currentActorOption.isEs()) {
+			new PopupMessage("ConformanceTestTab:818");
+			orchInit = new BuildEsTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label);
+			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
+			initializationPanel.add(orchInit.panel());
 		}
 		else if (currentActorOption.isSrc() && currentActorOption.isMhd()) {
 			orchInit = new BuildSrcTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label, currentActorOption);

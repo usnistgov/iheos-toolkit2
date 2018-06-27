@@ -451,6 +451,9 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 					GatherTransaction gatherTransaction = new GatherTransaction(this, instruction, instruction_output);
 					transaction = gatherTransaction;
 					break;
+				case "EdgeServerTransaction":
+					EdgeServerTransaction edgeServerTransaction = new EdgeServerTransaction(this, step, instruction, instruction_output);
+					transaction = edgeServerTransaction;
                default:
                   dumpContextIntoOutput(test_step_output);
                   throw new XdsInternalException(

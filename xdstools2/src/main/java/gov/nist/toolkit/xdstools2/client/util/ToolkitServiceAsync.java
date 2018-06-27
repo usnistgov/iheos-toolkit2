@@ -13,6 +13,9 @@ import gov.nist.toolkit.results.client.Test;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest;
+import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.results.shared.Test;
+import gov.nist.toolkit.services.client.EsOrchestrationRequest;
 import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
@@ -246,6 +249,7 @@ public interface ToolkitServiceAsync {
 	void buildRecTestOrchestration(BuildRecTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 	void buildRSNAEdgeTestOrchestration(BuildRSNAEdgeTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
     void buildIdcTestOrchestration(IdcOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+    void buildEsTestOrchestration(BuildEsTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 	void getSiteNamesWithRIG(CommandContext context, AsyncCallback<List<String>> callback);
 	void getSiteNamesWithIDS(CommandContext context, AsyncCallback<List<String>> callback);
     void getSiteNamesWithRepository(CommandContext context, AsyncCallback<List<String>> callback);

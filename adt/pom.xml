@@ -47,6 +47,18 @@
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/ca.uhn.hapi/hapi-base -->
+        <dependency>
+            <groupId>ca.uhn.hapi</groupId>
+            <artifactId>hapi-base</artifactId>
+            <version>2.3</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.dcm4che/dcm4che-hl7 -->
+        <dependency>
+            <groupId>org.dcm4che</groupId>
+            <artifactId>dcm4che-hl7</artifactId>
+            <version>3.3.7</version>
+        </dependency>
     </dependencies>
 
 
