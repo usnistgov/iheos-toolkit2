@@ -144,10 +144,9 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 				envPanel.add(anchor);
 				menuPanel.add(envPanel);
 
-				testSessionSelector = new TestSessionSelector(getTestSessionManager().getTestSessions(), getTestSessionManager().getCurrentTestSession());
+				testSessionSelector = new TestSessionSelector(getTestSessionManager().getTestSessions(), getTestSessionManager().getCurrentTestSession(), Xdstools2.this);
 				testSessionSelector.setVisibility(false);
 				menuPanel.add(testSessionSelector.asWidget());
-
 				// Only single user mode has a selectable test session drop down
 				if (!multiUserModeEnabled && !casModeEnabled) {
 					getTestSessionManager().setCurrentTestSession("default");
