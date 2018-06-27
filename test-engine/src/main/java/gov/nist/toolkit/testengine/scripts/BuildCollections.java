@@ -1,7 +1,7 @@
 package gov.nist.toolkit.testengine.scripts;
 
-import gov.nist.toolkit.actortransaction.client.ActorOption;
-import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.shared.ActorOption;
+import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.installation.shared.TestCollectionCode;
 import gov.nist.toolkit.utilities.io.Io;

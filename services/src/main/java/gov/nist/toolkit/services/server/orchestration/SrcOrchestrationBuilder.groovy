@@ -1,7 +1,7 @@
 package gov.nist.toolkit.services.server.orchestration
 
-import gov.nist.toolkit.actortransaction.client.ActorOption
-import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.actortransaction.shared.ActorOption
+import gov.nist.toolkit.actortransaction.shared.ActorType
 import gov.nist.toolkit.services.client.RawResponse
 import gov.nist.toolkit.services.client.SrcOrchestrationRequest
 import gov.nist.toolkit.services.client.SrcOrchestrationResponse

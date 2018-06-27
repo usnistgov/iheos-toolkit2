@@ -1,6 +1,8 @@
-package gov.nist.toolkit.actortransaction.client;
+package gov.nist.toolkit.actortransaction.shared;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.actortransaction.client.ProxyTransformConfig;
+import gov.nist.toolkit.actortransaction.client.TransactionDirection;
 import gov.nist.toolkit.configDatatypes.client.FhirVerb;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.xdsexception.client.TkActorNotFoundException;

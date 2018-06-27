@@ -9,7 +9,7 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
-import gov.nist.toolkit.actortransaction.client.IheItiProfile;
+import gov.nist.toolkit.actortransaction.shared.IheItiProfile;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 
 import java.util.HashMap;
@@ -32,12 +32,12 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
     public abstract void setTestStatistics(HTML statsBar, ActorOptionConfig actorOption);
 
     public boolean displayMenu(Panel destinationPanel) {
-        if (tabConfig!=null) {
-            destinationPanel .clear();
-            destinationPanel.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+        destinationPanel.clear();
+        destinationPanel.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+        HTML testNavigationTip = new HTML("Tests are organized as: Actor Profile Option. Select the option you are interested in. ");
+        destinationPanel.add(testNavigationTip);
 
-            HTML testNavigationTip = new HTML("Tests are organized as: Actor Profile Option. Select the option you are interested in. ");
-            destinationPanel.add(testNavigationTip);
+        if (tabConfig!=null) {
 
             int colWidth = 100 / menuCols;
             int menuCt = 0;
@@ -108,12 +108,13 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
                 destinationPanel.add(legendRowPanel);
             } else {
                     testNavigationTip.setHTML("No tests found for the given combination of Ignore_internal_testkit Toolkit Property, Environment, and/or Test Session.");
+                    return false;
             }
-
-
             return true;
+        } else {
+            testNavigationTip.setHTML("Unexpected Null TabConfig.");
+            return false;
         }
-        return false;
     }
 
     static void setParentTcCodePath(Map<String,TabConfig> rs, TabConfigTreeItem treeItem) {

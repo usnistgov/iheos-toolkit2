@@ -1,6 +1,6 @@
 package gov.nist.toolkit.fhir.simulators.sim.ig;
 
-import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;

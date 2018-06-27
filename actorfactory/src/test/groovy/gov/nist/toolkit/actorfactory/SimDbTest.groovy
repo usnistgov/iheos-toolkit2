@@ -1,7 +1,7 @@
 package gov.nist.toolkit.actorfactory
 
 import gov.nist.toolkit.simcommon.server.InitEC
-import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.actortransaction.shared.ActorType
 import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.simcommon.client.SimId

@@ -1,6 +1,6 @@
 package gov.nist.toolkit.services.server
 
-import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.actortransaction.shared.ActorType
 import gov.nist.toolkit.installation.server.ExternalCacheManager
 import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.session.server.Session

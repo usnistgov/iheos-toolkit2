@@ -1,5 +1,5 @@
 package gov.nist.toolkit.xdstools2.server.api
-import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.actortransaction.shared.ActorType
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.results.client.Result

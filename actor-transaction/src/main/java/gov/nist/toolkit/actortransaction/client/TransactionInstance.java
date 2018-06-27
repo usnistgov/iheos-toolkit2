@@ -1,6 +1,7 @@
 package gov.nist.toolkit.actortransaction.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 
 import java.io.Serializable;

@@ -1,10 +1,10 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.actortransaction.client.IheItiProfile;
+import gov.nist.toolkit.actortransaction.shared.ActorType;
+import gov.nist.toolkit.actortransaction.shared.IheItiProfile;
 import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.actortransaction.client.ActorOption;
+import gov.nist.toolkit.actortransaction.shared.ActorOption;
 import gov.nist.toolkit.xdstools2.client.command.command.GetCollectionMembersCommand;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.BuildRGTestOrchestrationButton;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
