@@ -173,20 +173,20 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		});
 
 
+		loadTestCollections();
+		/*
 		// 1. Get the tabConfig here {
 		new GetTabConfigCommand() {
 			@Override
 			public void onComplete(TabConfig tabConfig) {
 				ConformanceTestTab.super.tabConfig = tabConfig;
 				// Retrofit tab config into actoroptionmanager
-
-
-
 				// Initial load of tests in a test session
 				loadTestCollections();
 			}
 		}.run(new GetTabConfigRequest("ConfTests"));
 		// }
+		*/
 
 		// Register the Diagram RequestConnector clicked event handler
 		ClientUtils.INSTANCE.getEventBus().addHandler(DiagramClickedEvent.TYPE, new DiagramPartClickedEventHandler() {
@@ -670,82 +670,43 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 	// load tab bar with actor types
 	private void loadTestCollections() {
-		// TabBar listing actor types
-		new GetTestCollectionsCommand() {
-			@Override
-			public void onComplete(List<TestCollectionDefinitionDAO> testCollectionDefinitionDAOs) {
+		if (ConformanceTestTab.super.tabConfig==null) {
+			new GetPrunedTabConfigCommand() {
+				@Override
+				public void onComplete(UserTestCollection userTestCollection) {
+					me.testCollectionDefinitionDAOs = userTestCollection.getTestCollectionDefinitionDAOs();
+					ConformanceTestTab.super.tabConfig = tabConfig;
+					// Initial load of tests in a test session
+                    displayTests();
 
-			    // Sort according to the user defined tab config
-				me.testCollectionDefinitionDAOs =  new ArrayList<>();
-				for (TabConfig tabConfig : ConformanceTestTab.super.tabConfig.getChildTabConfigs()) {
-					for (TestCollectionDefinitionDAO tcd : testCollectionDefinitionDAOs) {
-					    if (tabConfig.getTcCode().equals(new ActorOption(tcd.getCollectionID()).actorTypeId)) {
-					    	me.testCollectionDefinitionDAOs.add(tcd);
-					    	break;
-						}
-					}
 				}
+			}.run(new GetTabConfigRequest("ConfTests"));
+		} else {
+			displayTests();
+		}
+	}
+
+	private void displayTests() {
+		// Finally display
+		if (getInitTestSession() != null) {
+			getMainView().getTabBarPanel().setVisible(true);
+		}
 
 
-				// Prune actor type tabs from static display #416
-                final TestCollectionDefinitionDAO lastItem = me.testCollectionDefinitionDAOs.get(me.testCollectionDefinitionDAOs.size()-1);
-				for (final TestCollectionDefinitionDAO tcd : me.testCollectionDefinitionDAOs) {
-					for (TabConfig tabConfig : ConformanceTestTab.super.tabConfig.getChildTabConfigs()) {
-						if (tabConfig.getTcCode().equals(new ActorOption(tcd.getCollectionID()).actorTypeId)) {
-							// Prune empty options
-							TabConfig profiles = tabConfig.getFirstChildTabConfig();
-							if ("Profiles".equals(profiles.getLabel())) {
-								for (final TabConfig profileTCfg : profiles.getChildTabConfigs()) {
-									TabConfig options = profileTCfg.getFirstChildTabConfig();
-									if ("Options".equals(options.getLabel())) {
-										for (final TabConfig optionTCfg : options.getChildTabConfigs()) {
-											ActorOptionConfig actorOptionConfig =
-													new ActorOptionConfig(tabConfig.getTcCode(), IheItiProfile.find(profileTCfg.getTcCode()), optionTCfg.getTcCode());
-											actorOptionConfig.loadTests(new AsyncCallback<List<TestInstance>>() {
-												@Override
-												public void onFailure(Throwable throwable) {
-													new PopupMessage(throwable.toString());
-												}
-												@Override
-												public void onSuccess(List<TestInstance> testInstances) {
-													if (testInstances!=null && !testInstances.isEmpty()) {
-													   	tabConfig.setVisible(true);
-														profileTCfg.setVisible(true);
-														optionTCfg.setVisible(true);
-													}
-													// Finally display
-													if (lastItem.equals(tcd)) {
-														if (getInitTestSession()!=null) {
-															getMainView().getTabBarPanel().setVisible(true);
-														}
+		displayActorsTabBar(mainView.getActorTabBar());
+		// 2. Write the site map here
+
+		if (getInitTestSession() == null && mainView.getActorTabBar() != null && mainView.getActorTabBar().getSelectedTab() == -1) { // Only display the menu when actor is not selected.
+			displayMenu(mainView.getTestsPanel());
+		}
 
 
-														displayActorsTabBar(mainView.getActorTabBar());
-														// 2. Write the site map here
+		currentActorTypeDescription = getDescriptionForTestCollection(currentActorOption.actorTypeId);
 
-														if (getInitTestSession()==null && mainView.getActorTabBar()!=null && mainView.getActorTabBar().getSelectedTab()==-1) { // Only display the menu when actor is not selected.
-															displayMenu(mainView.getTestsPanel());
-														}
-
-
-														currentActorTypeDescription = getDescriptionForTestCollection(currentActorOption.actorTypeId);
-
-														// This is a little wierd being here. This depends on initTestSession
-														// which is set AFTER onTabLoad is run so run here - later in the initialization
-														// initTestSession is set from ConfActorActivity
-														initializeTestingContext();
-													}
-												}
-											});
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}.run(new GetCollectionRequest(getCommandContext(), "actorcollections"));
+		// This is a little wierd being here. This depends on initTestSession
+		// which is set AFTER onTabLoad is run so run here - later in the initialization
+		// initTestSession is set from ConfActorActivity
+		initializeTestingContext();
 	}
 
 	@Override
@@ -956,16 +917,11 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 	}
 
 	private void displayActorsTabBar(TabBar actorTabBar) {
-		if (actorTabBar.getTabCount() == 0) {
+		if (actorTabBar.getTabCount() == 0 && ConformanceTestTab.super.tabConfig!=null) {
 			for (TabConfig tabConfig : ConformanceTestTab.super.tabConfig.getChildTabConfigs()) {
 				if (tabConfig.isVisible()) {
-
+					actorTabBar.addTab(tabConfig.getLabel());
 				}
-			}
-
-			for (TestCollectionDefinitionDAO def : testCollectionDefinitionDAOs) {
-				if (!def.isOption())
-					actorTabBar.addTab(def.getCollectionTitle());
 			}
 		}
 	}
