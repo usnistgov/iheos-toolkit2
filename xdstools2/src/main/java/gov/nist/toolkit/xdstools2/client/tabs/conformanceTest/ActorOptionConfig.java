@@ -119,7 +119,7 @@ public class ActorOptionConfig extends ActorOption {
     }
 
     public boolean isEs() {
-        return actorTypeId != null && ActorType.EDGE_SERVER.getShortName().equals(actorTypeId);
+        return actorTypeId != null && ActorType.RSNA_EDGE_DEVICE.getShortName().equals(actorTypeId);
     }
 
     public boolean isOnDemand() {

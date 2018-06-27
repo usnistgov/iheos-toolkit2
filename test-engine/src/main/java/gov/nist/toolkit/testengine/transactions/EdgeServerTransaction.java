@@ -1,7 +1,7 @@
 package gov.nist.toolkit.testengine.transactions;
 
-import gov.nist.toolkit.installation.Installation;
-import gov.nist.toolkit.installation.PropertyManager;
+import gov.nist.toolkit.installation.server.Installation;
+import gov.nist.toolkit.installation.server.PropertyManager;
 import gov.nist.toolkit.testengine.assertionEngine.Assertion;
 import gov.nist.toolkit.testengine.assertionEngine.AssertionEngine;
 import gov.nist.toolkit.testengine.engine.ILogger;

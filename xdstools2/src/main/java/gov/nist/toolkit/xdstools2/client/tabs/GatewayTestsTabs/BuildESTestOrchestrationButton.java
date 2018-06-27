@@ -4,6 +4,7 @@ import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.services.client.EsOrchestrationRequest;
 import gov.nist.toolkit.services.client.EsOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
@@ -32,7 +33,7 @@ public class BuildESTestOrchestrationButton extends AbstractOrchestrationButton 
         }
 
         EsOrchestrationRequest request = new EsOrchestrationRequest();
-        request.setUserName(testTab.getCurrentTestSession());
+        request.setTestSession(new TestSession(testTab.getCurrentTestSession()));
 
         new BuildEsTestOrchestrationCommand(){
             @Override

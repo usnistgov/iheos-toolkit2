@@ -5,7 +5,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
@@ -30,7 +30,7 @@ import java.util.Map;
  * toolkit tab for Edge Server conformance testing
  */
 public class ESTestTab extends GenericQueryTab implements GatewayTool {
-    String selectedActor = ActorType.EDGE_SERVER.getShortName();
+    String selectedActor = ActorType.RSNA_EDGE_DEVICE.getShortName();
     List<SimulatorConfig> rgConfigs;
     GenericQueryTab genericQueryTab;
     static final String COLLECTION_NAME =  "es";
@@ -191,7 +191,7 @@ public class ESTestTab extends GenericQueryTab implements GatewayTool {
             }
 
             TestInstance testInstance = new TestInstance(testToRun);
-            testInstance.setUser(getCurrentTestSession());
+            testInstance.setTestSession(new TestSession(getCurrentTestSession()));
             new RunMesaTestCommand(){
                 @Override
                 public void onComplete(List<Result> result) {
@@ -220,7 +220,7 @@ public class ESTestTab extends GenericQueryTab implements GatewayTool {
                             new PopupMessage("Results not available");
                             return;
                         }
-                        SiteSpec siteSpec = new SiteSpec(siteName, ActorType.RESPONDING_GATEWAY, null);
+                        SiteSpec siteSpec = new SiteSpec(siteName, ActorType.RESPONDING_GATEWAY, null, new TestSession(getCurrentTestSession()));
 
                         MetadataInspectorTab itab = new MetadataInspectorTab();
                         List<Result> results = new ArrayList<Result>();
