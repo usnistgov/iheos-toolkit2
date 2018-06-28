@@ -34,6 +34,7 @@ import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TabConfig;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.UserTestCollection;
 import gov.nist.toolkit.xdstools2.shared.NoServletSessionException;
 import gov.nist.toolkit.xdstools2.shared.RegistryStatus;
 import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
@@ -303,6 +304,7 @@ public interface ToolkitService extends RemoteService  {
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	TabConfig getToolTabConfig(GetTabConfigRequest request) throws Exception;
+	UserTestCollection getPrunedToolTabConfig(GetTabConfigRequest request) throws Exception;
 
 	String clearTestSession(CommandContext context) throws Exception;
 

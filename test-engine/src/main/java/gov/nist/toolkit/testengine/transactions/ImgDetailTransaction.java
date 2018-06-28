@@ -6,12 +6,13 @@ package gov.nist.toolkit.testengine.transactions;
 import edu.wustl.mir.erl.ihe.xdsi.util.PfnType;
 import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
 import edu.wustl.mir.erl.ihe.xdsi.validation.*;
-import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.installation.server.PropertyManager;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.testengine.assertionEngine.Assertion;
 import gov.nist.toolkit.testengine.assertionEngine.AssertionEngine;
 import gov.nist.toolkit.testengine.engine.*;
@@ -92,7 +93,7 @@ public class ImgDetailTransaction extends BasicTransaction {
    public void runAssertionEngine(OMElement step_output, ErrorReportingInterface eri, OMElement assertion_output)
       throws XdsInternalException {
 
-      AssertionEngine engine = new AssertionEngine();
+      AssertionEngine engine = new AssertionEngine(this);
       engine.setDataRefs(data_refs);
       engine.setCaller(this);
 
@@ -1016,9 +1017,8 @@ public class ImgDetailTransaction extends BasicTransaction {
          String pid = simTransactionElement.getAttributeValue(new QName("pid"));
          TransactionType tType = TransactionType.find(trans);
          if (tType == null) throw new XdsInternalException(a.toString() + " invalid transaction");
-         ActorType aType = ActorType.getActorType(tType);
          TestInstance ti = testConfig.testInstance;
-         SimId simId = new SimId(ti.getTestSession(), id, aType.getShortName());
+         SimId simId = SimDb.getFullSimId(new SimId(ti.getTestSession(), id));
          SimulatorTransaction simulatorTransaction = SimulatorTransaction.get(simId, tType, pid, null);
          try {
             switch (piece.toUpperCase()) {
@@ -1041,15 +1041,18 @@ public class ImgDetailTransaction extends BasicTransaction {
       OMElement simTransactionElement = XmlUtil.firstChildWithLocalName(a.assertElement, "SimReference");
       if (simTransactionElement == null)
          throw new XdsInternalException(a.toString() + " has no SimReference element");
-      String id = simTransactionElement.getAttributeValue(new QName("id"));
+
+      String actor = simTransactionElement.getAttributeValue(new QName("actor"));
+      String id    = simTransactionElement.getAttributeValue(new QName("id"));
       String trans = simTransactionElement.getAttributeValue(new QName("transaction"));
-      String pid = simTransactionElement.getAttributeValue(new QName("pid"));
+      String pid   = simTransactionElement.getAttributeValue(new QName("pid"));
+
       TransactionType tType = TransactionType.find(trans);
       if (tType == null) throw new XdsInternalException(a.toString() + " invalid transaction");
-      ActorType aType = ActorType.getActorType(tType);
+      ActorType aType = ActorType.findActor(actor);
       TestInstance ti = testConfig.testInstance;
-      SimId simId = new SimId(ti.getTestSession(), id, aType.getShortName());
-      return SimulatorTransaction.get(simId, tType, pid, null);
+      SimId simId = SimDb.getFullSimId(new SimId(ti.getTestSession(), id));
+      return SimulatorTransaction.get(simId, aType, tType, pid, null);
       } catch (XdsInternalException ie) {
          errs.add("Error loading simulator transaction" + ie.getMessage());
          throw ie;

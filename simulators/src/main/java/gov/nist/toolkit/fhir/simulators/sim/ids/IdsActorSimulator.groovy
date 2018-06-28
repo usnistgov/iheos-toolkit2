@@ -166,14 +166,14 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
 
 
             RetrieveImagingDocSetResponseSim dms = null;
-            String repositoryUniqueId="";
+            //String repositoryUniqueId="";
             dms = new RetrieveImagingDocSetResponseSim(
                   common.vc,
                   imagingUids,
                   transferSyntaxUids,
                   common,
                   dsSimCommon,
-                  repositoryUniqueId);
+                  repUid);
 
             mvc.addMessageValidator("Generate DocumentResponse", dms, gerb.buildNewErrorRecorder());
 

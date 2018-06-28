@@ -11,6 +11,7 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.StringSort;
 import gov.nist.toolkit.xdstools2.client.ErrorHandler;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
+import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
@@ -305,6 +306,19 @@ class TestContextDialog extends DialogBox {
 
             @Override
             public void onComplete(List<String> var1) {
+                String testSessionName = toolWindow.getCurrentTestSession();
+                if (!Xdstools2.getInstance().arePeerTestSessionsVisible()) {
+                    List<String> removables = new ArrayList<>();
+                    for (String ts : var1) {
+                        if (ts.equals(testSessionName))
+                            continue;
+                        if (ts.equals(TestSession.DEFAULT_TEST_SESSION.getValue()))
+                            continue;
+                        removables.add(ts);
+                    }
+                    var1.removeAll(removables);
+                }
+
                 var1 = StringSort.sort(var1);
                 testSessionListBox.clear();
                 for (String ts : var1) {

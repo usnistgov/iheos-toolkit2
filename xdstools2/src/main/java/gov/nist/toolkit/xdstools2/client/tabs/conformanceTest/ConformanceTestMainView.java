@@ -27,6 +27,7 @@ public class ConformanceTestMainView {
     private HTML testSessionDescription = new HTML();
     private FlowPanel testSessionDescriptionPanel = new FlowPanel();
     private HTML loadingMessage = new HTML();
+    HorizontalFlowPanel actorpanel = new HorizontalFlowPanel();
 
     ConformanceTestMainView(ToolWindow toolWindow) {
         toolPanel.getElement().getStyle().setMargin(4, Style.Unit.PX);
@@ -36,7 +37,6 @@ public class ConformanceTestMainView {
         FlowPanel sitesPanel = new FlowPanel();
         toolPanel.add(sitesPanel);
 
-        HorizontalFlowPanel actorpanel = new HorizontalFlowPanel();
         indexAnchor.getElement().getStyle().setMarginLeft(0, Style.Unit.PX);
         actorpanel.add(new InformationLink("Help with Conformance Test tool", "Conformance-Test-Tool").asWidget());
         toolPanel.add(indexAnchor);
@@ -111,5 +111,9 @@ public class ConformanceTestMainView {
 
     public Anchor getIndexAnchor() {
         return indexAnchor;
+    }
+
+    public HorizontalFlowPanel getActorpanel() {
+        return actorpanel;
     }
 }

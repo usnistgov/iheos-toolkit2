@@ -1,6 +1,7 @@
 package gov.nist.toolkit.testkitutilities.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.installation.shared.TestCollectionCode;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -10,21 +11,21 @@ import java.util.List;
  *
  */
 public class TestCollectionDefinitionDAO implements Serializable, IsSerializable {
-    private String collectionID;
+    private TestCollectionCode collectionID;
     private String collectionTitle;
 
     public TestCollectionDefinitionDAO() {}
 
-    public TestCollectionDefinitionDAO(String collectionID, String collectionTitle) {
+    public TestCollectionDefinitionDAO(TestCollectionCode collectionID, String collectionTitle) {
         this.collectionID = collectionID;
         this.collectionTitle = collectionTitle;
     }
 
-    public String getCollectionID() {
+    public TestCollectionCode getCollectionID() {
         return collectionID;
     }
 
-    public void setCollectionID(String collectionID) {
+    public void setCollectionID(TestCollectionCode collectionID) {
         this.collectionID = collectionID;
     }
 
@@ -36,7 +37,7 @@ public class TestCollectionDefinitionDAO implements Serializable, IsSerializable
         this.collectionTitle = collectionTitle;
     }
 
-    public boolean isOption() { return collectionID.contains("_"); }
+    public boolean isOption() { return collectionID.toString().contains("_"); }
 
     static public List<TestCollectionDefinitionDAO> getNonOption(List<TestCollectionDefinitionDAO> all) {
         List<TestCollectionDefinitionDAO> out = new ArrayList<>();

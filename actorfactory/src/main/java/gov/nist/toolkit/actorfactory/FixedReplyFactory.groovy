@@ -1,6 +1,6 @@
 package gov.nist.toolkit.actorfactory
 
-import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.actortransaction.shared.ActorType
 import gov.nist.toolkit.actortransaction.client.ParamType
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
@@ -44,6 +44,9 @@ class FixedReplyFactory extends AbstractActorFactory {
 
         addFixedEndpoint(sc, SimulatorProperties.xcrEndpoint,       actorType, TransactionType.XC_RETRIEVE,     false);
         addFixedEndpoint(sc, SimulatorProperties.xcrTlsEndpoint,       actorType, TransactionType.XC_RETRIEVE,     true);
+
+        addFixedEndpoint(sc, SimulatorProperties.xcpdEndpoint,       actorType, TransactionType.XCPD,     false);
+        addFixedEndpoint(sc, SimulatorProperties.xcpdTlsEndpoint,       actorType, TransactionType.XCPD,     true);
 
         addEditableConfig(sc, SimulatorProperties.replyFile, ParamType.TEXT, "");
         addEditableConfig(sc, SimulatorProperties.mimeType, ParamType.TEXT, "text/plain");
@@ -126,8 +129,20 @@ class FixedReplyFactory extends AbstractActorFactory {
                 TransactionBean.RepositoryType.NONE,
                 asc.get(SimulatorProperties.xcrTlsEndpoint).asString(),
                 true,
-                false)
-        )
+                false))
+        site.addTransaction(new TransactionBean(
+                TransactionType.XCPD.getCode(),
+                TransactionBean.RepositoryType.NONE,
+                asc.get(SimulatorProperties.xcpdEndpoint).asString(),
+                false,
+                false))
+        site.addTransaction(new TransactionBean(
+                TransactionType.XCPD.getCode(),
+                TransactionBean.RepositoryType.NONE,
+                asc.get(SimulatorProperties.xcpdTlsEndpoint).asString(),
+                true,
+                false))
+
 
         return site;
     }

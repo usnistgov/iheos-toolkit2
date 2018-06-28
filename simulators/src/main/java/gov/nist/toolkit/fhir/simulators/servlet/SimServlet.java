@@ -2,7 +2,7 @@ package gov.nist.toolkit.fhir.simulators.servlet;
 
 import gov.nist.toolkit.actorfactory.PatientIdentityFeedServlet;
 import gov.nist.toolkit.actortransaction.client.ATFactory;
-import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
@@ -572,8 +572,13 @@ public class SimServlet  extends HttpServlet {
 			vc.forceMtom = transactionType.isRequiresMtom();
 
 			SimulatorConfigElement stsSce = asc.get(SimulatorProperties.requiresStsSaml);
-			if (stsSce!=null && stsSce.hasBoolean() && stsSce.asBoolean())
+			if (stsSce!=null && stsSce.hasBoolean() && stsSce.asBoolean()) {
+				/*
+				NOTE:
+				The validate SAML flag is global to the entire combined simulator. SAML needs to be propagated to internally forwarded transactions.
+				*/
 				vc.requiresStsSaml = true;
+			}
 
 			SimulatorConfigElement asce = asc.get(SimulatorProperties.codesEnvironment);
 			if (asce != null)

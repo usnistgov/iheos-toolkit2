@@ -1,9 +1,9 @@
 package gov.nist.toolkit.services.server.orchestration
 
-import gov.nist.toolkit.actortransaction.client.ActorOption
-import gov.nist.toolkit.actortransaction.client.ActorType
-import gov.nist.toolkit.actortransaction.client.IheItiProfile
-import gov.nist.toolkit.actortransaction.client.OptionType
+import gov.nist.toolkit.actortransaction.shared.ActorOption
+import gov.nist.toolkit.actortransaction.shared.ActorType
+import gov.nist.toolkit.actortransaction.shared.IheItiProfile
+import gov.nist.toolkit.actortransaction.shared.OptionType
 import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.configDatatypes.client.PidBuilder
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties

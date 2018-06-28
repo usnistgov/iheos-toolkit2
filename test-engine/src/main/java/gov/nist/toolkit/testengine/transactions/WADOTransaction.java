@@ -3,33 +3,45 @@
  */
 package gov.nist.toolkit.testengine.transactions;
 
+import gov.nist.toolkit.installation.server.Installation;
+import gov.nist.toolkit.installation.server.PropertyManager;
 import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.installation.shared.TestSession;
+import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.testengine.engine.StepContext;
 import gov.nist.toolkit.testengine.engine.TransactionStatus;
+import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
+import gov.nist.toolkit.soap.axis2.AuthSSLProtocolSocketFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
+import javax.net.ssl.SSLContext;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContexts;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 import javax.xml.namespace.QName;
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.Socket;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -105,6 +117,13 @@ public class WADOTransaction extends BasicTransaction {
    private Map<String, String> parameters;
    private File uidFile;
    private CloseableHttpClient httpClient;
+   // Contextual security info used by SAML/TLS to access the keystore
+   private SecurityParams securityParams;
+
+   public void setSecurityParams(SecurityParams securityParams) {
+      this.securityParams = securityParams;
+   }
+
    
    @SuppressWarnings("javadoc")
    public WADOTransaction(StepContext s_ctx, OMElement instruction, OMElement instruction_output) {
@@ -178,7 +197,8 @@ public class WADOTransaction extends BasicTransaction {
    
    private void prsRequest() throws Exception {
       if (httpClient == null) {
-         httpClient = HttpClients.createDefault();
+         httpClient = createHttpClient();
+         //httpClient = HttpClients.createDefault();
          transCount = 0;
          rsltElement = resultElement = testLog.add_simple_element(instruction_output, "Result");
          resultElement = testLog.add_simple_element(resultElement, "Transactions");
@@ -371,7 +391,66 @@ public class WADOTransaction extends BasicTransaction {
       }
    }
 
-   
+   private CloseableHttpClient createHttpClient () throws Exception {
+      CloseableHttpClient httpClient = null;
+
+      if (isTLS()) {
+         setSecurityParams(getStepContext().getTransactionSettings().securityParams);
+         if (securityParams == null)
+            throw new EnvironmentNotSelectedException("Trying to initiate a TLS connection - securityParams are null");
+         if (securityParams.getKeystore() == null || securityParams.getKeystore().equals(""))
+            throw new EnvironmentNotSelectedException("Trying to initialize a TLS connection - keystore location not recorded in securityParams");
+
+         String keyStoreFile = securityParams.getKeystore().toString();
+         String keyStorePass = securityParams.getKeystorePassword();
+         String trustStoreFile = keyStoreFile;
+         String trustStorePass = keyStorePass;
+
+         AuthSSLProtocolSocketFactory protocolFactory = new AuthSSLProtocolSocketFactory(
+                 new URL("file://" + keyStoreFile), keyStorePass,
+                 new URL("file://" + trustStoreFile), trustStorePass);
+         SSLContext sslContext = protocolFactory.getSSLContext();
+         PropertyManager propertyManager = Installation.instance().propertyServiceManager().getPropertyManager();
+         String[] cipherSuites = propertyManager.getClientCipherSuites();
+
+         // Allow TLSv1 protocol only
+         SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
+                 sslContext,
+                 new String[] { "TLSv1" },
+                 cipherSuites,
+                 new DumbHostNameVerifier());
+
+         httpClient = HttpClients.custom()
+                 .setSSLSocketFactory(sslsf)
+                 .build();
+      } else {
+         httpClient = HttpClients.createDefault();
+      }
+      return httpClient;
+   }
+
+   private int tlsPortFromEndpoint() throws MalformedURLException {
+      if (endpoint == null)
+         throw new MalformedURLException("Endpoint not set in Soap.java");
+      String[] parts = endpoint.split("/");
+      String hostandport = parts[2];
+      if (hostandport == null || hostandport.equals(""))
+         throw new MalformedURLException(
+                 "Invalid endpoint set in Soap.java: " + endpoint);
+      String[] cparts = hostandport.split(":");
+      if (cparts.length != 2)
+         return 443;
+      String port = cparts[1];
+      return Integer.parseInt(port);
+   }
+
+
+   private boolean isTLS() {
+      if (endpoint == null)
+         return false;
+      return endpoint.startsWith("https");
+   }
+
    @Override
    protected String getRequestAction() {
       return null;

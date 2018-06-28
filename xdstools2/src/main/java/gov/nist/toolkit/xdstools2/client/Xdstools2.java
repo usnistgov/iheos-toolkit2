@@ -144,10 +144,9 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 				envPanel.add(anchor);
 				menuPanel.add(envPanel);
 
-				testSessionSelector = new TestSessionSelector(getTestSessionManager().getTestSessions(), getTestSessionManager().getCurrentTestSession());
+				testSessionSelector = new TestSessionSelector(getTestSessionManager().getTestSessions(), getTestSessionManager().getCurrentTestSession(), Xdstools2.this);
 				testSessionSelector.setVisibility(false);
 				menuPanel.add(testSessionSelector.asWidget());
-
 				// Only single user mode has a selectable test session drop down
 				if (!multiUserModeEnabled && !casModeEnabled) {
 					getTestSessionManager().setCurrentTestSession("default");
@@ -206,11 +205,19 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 	private MultiUserTestSessionSelector multiUserTestSessionSelector = null;
 	private TestSessionSelector testSessionSelector = null;
 
+	public boolean isDefaultTestSessionSelectable() {
+		return (!multiUserModeEnabled && !casModeEnabled) || PasswordManagement.isSignedIn;
+	}
+
 	public void enableTestSessionSelection() {
 		if ((!multiUserModeEnabled && !casModeEnabled) || PasswordManagement.isSignedIn)
 			testSessionSelector.setVisibility(true);
 		else
 			testSessionSelector.setVisibility(false);
+	}
+
+	public boolean arePeerTestSessionsVisible() {
+		return (!multiUserModeEnabled && !casModeEnabled) || PasswordManagement.isSignedIn;
 	}
 
 	static public void addtoMainMenu(Widget w) { ME.mainMenuPanel.add(w); }

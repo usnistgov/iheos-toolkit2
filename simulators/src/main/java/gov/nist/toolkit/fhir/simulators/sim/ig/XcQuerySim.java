@@ -1,6 +1,6 @@
 package gov.nist.toolkit.fhir.simulators.sim.ig;
 
-import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
@@ -8,6 +8,7 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
+import gov.nist.toolkit.fhir.simulators.support.SimUtil;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrymsg.registry.AdhocQueryRequest;
@@ -275,6 +276,11 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 
 	gov.nist.toolkit.registrymsg.registry.AdhocQueryResponse sqCall(OMElement request, String endpoint) throws Exception {
 		Soap soap = new Soap();
+
+		if (common.vc.requiresStsSaml) {
+			soap.addHeader(SimUtil.getSecurityElement(common.vc, dsSimCommon, this.getClass().getName()));
+		}
+
 		soap.setAsync(false);
 		soap.setUseSaml(false);
 

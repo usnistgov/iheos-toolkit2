@@ -1,6 +1,6 @@
 package gov.nist.toolkit.results.client;
 
-import gov.nist.toolkit.actortransaction.client.*;
+import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.simcommon.client.*;
 import gov.nist.toolkit.sitemanagement.client.*;
 

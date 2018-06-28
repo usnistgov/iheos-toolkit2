@@ -34,6 +34,7 @@ public class PropertyManager {
 	static private final String MSH_5 = "MSH_5";
 	static private final String MSH_6 = "MSH_6";
 	static private final String ARCHIVE_LOGS = "Archive_Logs";
+	static private final String IGNORE_INTERNAL_TESTKIT = "Ignore_internal_testkit";
 	static public final String MULTIUSER_MODE = "Multiuser_mode";
 	static public final String CAS_MODE = "Cas_mode";
 	static private final String NONCE_SIZE = "Nonce_size";
@@ -42,7 +43,7 @@ public class PropertyManager {
 	static private final String SSL_PORT = "SSL_Port";
 	static private final String DEFAULT_TEST_SESSION = "Default_Test_Session";
 	static private final String DEFAULT_TEST_SESSION_IS_PROTECTED = "Default_Test_Session_is_Protected";
-
+	static private final String CLIENT_CIPHER_SUITES = "Client_Cipher_Suites";
 
 	private String propFile;
 	private Properties toolkitProperties = null;
@@ -93,6 +94,13 @@ public class PropertyManager {
 			if (!f.exists())
 				throw new Exception("Cannot create Message_database_directory " + value);
 		}
+	}
+
+	public boolean ignoreInternalTestkit() {
+		loadProperties();
+		String value = (String) toolkitProperties.get(IGNORE_INTERNAL_TESTKIT);
+		if (value == null) return false;
+		return value.toLowerCase().equals("true");
 	}
 
 	public boolean archiveLogs() {
@@ -355,7 +363,10 @@ public class PropertyManager {
 
     public String getProxyPort() {
 		loadProperties();
-		return (String) toolkitProperties.getProperty("Proxy_Port");
+		String value = (String) toolkitProperties.getProperty("Proxy_Port");
+		if (value == null || value.equals(""))
+			value = "7297";
+		return value;
     }
 
     public boolean isSingleuserMode() {
@@ -401,5 +412,18 @@ public class PropertyManager {
 			return value.trim();
 		}
 		return null;
+	}
+
+	public String[] getClientCipherSuites() {
+		loadProperties();
+		String text = (String) toolkitProperties.get(CLIENT_CIPHER_SUITES);
+		if (text == null  || text.trim().equals("")) return null;
+
+		String[] cipherSuites = text.split(",");
+		for (int i = 0; i < cipherSuites.length; i++)
+		{
+			cipherSuites[i] = cipherSuites[i].trim();
+		}
+		return cipherSuites;
 	}
 }

@@ -40,21 +40,21 @@ public class MultipartMap {
     /**
      * Used for testing and demonstration purposes.
      */
-    static public void main(String args[]) throws Exception, java.io.IOException {
-        try {
-            //String xx = "------=_Part_2_9110923.1073664290010\r\nContent-Type: text/plain\r\nContent-ID: urn:uuid:d4bfb124-7922-45bc-a03d-823351eed716\r\n\r\nhttp://ratbert.ncsl.nist.gov:8081/hl7services/transform.html\r\n------=_Part_2_9110923.1073664290010\r\nContent-Type: text/plain\r\nContent-ID: urn:uuid:45b90888-49c1-4b64-a8eb-e94f541368f0\r\n\r\nhttp://ratbert.ncsl.nist.gov:8081/hl7services/rawSQL.html\r\n------=_Part_2_9110923.1073664290010--\r\n";
-            String xx = "------_Part_\r\nContent-Type: text/plain\r\nContent-ID: urn:uuid:d4bfb124-7922-45bc-a03d-823351eed716\r\n\r\nhttp://ratbert.ncsl.nist.gov:8081/hl7services/transform.html\r\n------_Part_\r\nContent-Type: text/plain\r\nContent-ID: urn:uuid:45b90888-49c1-4b64-a8eb-e94f541368f0\r\n\r\nhttp://ratbert.ncsl.nist.gov:8081/hl7services/rawSQL.html\r\n------_Part_--\r\n";
-            StringBufferInputStream is = new StringBufferInputStream(xx);
-            String contentType = "multipart/related; boundary=----_Part_";
-            ByteArrayDataSource ds = new ByteArrayDataSource(is,  contentType);
-            //ByteArrayDataSource ds = new ByteArrayDataSource();
-            javax.mail.internet.MimeMultipart mp = new javax.mail.internet.MimeMultipart(ds);
-            int i = mp.getCount();
-        } catch (javax.mail.MessagingException me) {
-            throw new Exception("messaging exception in parsing for MultipartMap");
-        }
-        System.out.println("Done");
-    }
+//    static public void main(String args[]) throws Exception, java.io.IOException {
+//        try {
+//            //String xx = "------=_Part_2_9110923.1073664290010\r\nContent-Type: text/plain\r\nContent-ID: urn:uuid:d4bfb124-7922-45bc-a03d-823351eed716\r\n\r\nhttp://ratbert.ncsl.nist.gov:8081/hl7services/transform.html\r\n------=_Part_2_9110923.1073664290010\r\nContent-Type: text/plain\r\nContent-ID: urn:uuid:45b90888-49c1-4b64-a8eb-e94f541368f0\r\n\r\nhttp://ratbert.ncsl.nist.gov:8081/hl7services/rawSQL.html\r\n------=_Part_2_9110923.1073664290010--\r\n";
+//            String xx = "------_Part_\r\nContent-Type: text/plain\r\nContent-ID: urn:uuid:d4bfb124-7922-45bc-a03d-823351eed716\r\n\r\nhttp://ratbert.ncsl.nist.gov:8081/hl7services/transform.html\r\n------_Part_\r\nContent-Type: text/plain\r\nContent-ID: urn:uuid:45b90888-49c1-4b64-a8eb-e94f541368f0\r\n\r\nhttp://ratbert.ncsl.nist.gov:8081/hl7services/rawSQL.html\r\n------_Part_--\r\n";
+//            StringBufferInputStream is = new StringBufferInputStream(xx);
+//            String contentType = "multipart/related; boundary=----_Part_";
+//            ByteArrayDataSource ds = new ByteArrayDataSource(is,  contentType);
+//            //ByteArrayDataSource ds = new ByteArrayDataSource();
+//            javax.mail.internet.MimeMultipart mp = new javax.mail.internet.MimeMultipart(ds);
+//            int i = mp.getCount();
+//        } catch (javax.mail.MessagingException me) {
+//            throw new Exception("messaging exception in parsing for MultipartMap");
+//        }
+//        System.out.println("Done");
+//    }
     
     /**
      * Constructor.

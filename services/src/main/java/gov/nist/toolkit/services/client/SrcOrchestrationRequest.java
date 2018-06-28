@@ -1,6 +1,6 @@
 package gov.nist.toolkit.services.client;
 
-import gov.nist.toolkit.actortransaction.client.ActorOption;
+import gov.nist.toolkit.actortransaction.shared.ActorOption;
 
 /**
  *

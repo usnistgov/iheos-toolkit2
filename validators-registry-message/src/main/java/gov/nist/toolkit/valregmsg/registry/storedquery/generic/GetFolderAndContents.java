@@ -44,8 +44,8 @@ abstract public class GetFolderAndContents extends StoredQuery {
 		sqs.validate_parm("$XDSFolderUniqueId",                          true,      false,     true,         false,     false,       "$XDSFolderEntryUUID");
 		sqs.validate_parm("$XDSDocumentEntryFormatCode",                 false,     true,      true,         true,      false,      (String[])null);
 		sqs.validate_parm("$XDSDocumentEntryConfidentialityCode",        false,     true,      true,         true,      true,      (String[])null);
-		
-		System.out.println("GFAC: validating parms response: " + sqs.er);
+
+		logger.info("GFAC: validating parms response: " + sqs.er);
 
 		if (sqs.has_validation_errors) 
 			throw new MetadataValidationException(QueryParmsErrorPresentErrMsg, SqDocRef.Individual_query_parms);

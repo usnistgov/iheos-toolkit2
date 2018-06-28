@@ -7,6 +7,7 @@ import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.fhir.simulators.support.SimUtil;
 import gov.nist.toolkit.registrymsg.repository.*;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.server.SimManager;
@@ -174,8 +175,11 @@ class XcRetrieveImgSim extends AbstractMessageValidator {
    private RetrievedDocumentsModel retrieveCall(RetrieveImageRequestModel reqModel, String endpoint) throws Exception {
       OMElement request = new RetrieveImageRequestGenerator(reqModel).get();
       Soap soap = new Soap();
+
+      if (vc.requiresStsSaml) {
+         soap.addHeader(SimUtil.getSecurityElement(vc, dsSimCommon, this.getClass().getName()));
+      }
       soap.setAsync(false);
-      soap.setUseSaml(false);
 
       try {
          soap.soapCall(request,

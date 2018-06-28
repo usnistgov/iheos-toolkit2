@@ -1,6 +1,7 @@
 package gov.nist.toolkit.testkitutilities;
 
 import gov.nist.toolkit.installation.server.Installation;
+import gov.nist.toolkit.installation.shared.TestCollectionCode;
 import gov.nist.toolkit.installation.shared.TestSession;
 
 import java.io.File;
@@ -13,6 +14,10 @@ public class TestKitSearchPath {
     String environment;
     TestSession testSession;
     List<TestKit> testkits = new ArrayList<>();
+
+    public TestKitSearchPath(String environment, String testSession) {
+        this(environment, new TestSession(testSession));
+    }
 
     public TestKitSearchPath(String environment, TestSession testSession) {
         this.environment = environment;
@@ -27,14 +32,14 @@ public class TestKitSearchPath {
      * Get test ids.  collestionSetName is either collections or actorcollections and the collectionName
      * references a .tc file contained in there
      * @param collectionSetName
-     * @param collectionName
+     * @param testCollectionId
      * @return
      * @throws Exception
      */
-    public Collection<String> getCollectionMembers(String collectionSetName, String collectionName) throws Exception {
+    public Collection<String> getCollectionMembers(String collectionSetName, TestCollectionCode testCollectionId) throws Exception {
         Set<String> tests = new HashSet<>();
         for (TestKit testkit : testkits) {
-            List<String> testsForTestkit = testkit.getCollectionMembers(collectionSetName, collectionName);
+            List<String> testsForTestkit = testkit.getCollectionMembers(collectionSetName, testCollectionId);
             tests.addAll(testsForTestkit);
         }
         return tests;
@@ -76,6 +81,16 @@ public class TestKitSearchPath {
         }
         return null;
 
+    }
+
+    public List<File> getPluginDirs(TestKit.PluginType pluginType) {
+        List<File> dirs = new ArrayList<>();
+
+        for (TestKit testKit : getTestkits()) {
+            dirs.add(testKit.getPluginDir(pluginType));
+        }
+
+        return dirs;
     }
 
     public List<TestKit> getTestkits() {

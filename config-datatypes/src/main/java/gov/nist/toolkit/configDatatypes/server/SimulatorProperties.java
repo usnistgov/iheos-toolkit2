@@ -200,6 +200,10 @@ public class SimulatorProperties {
      */
     public static final String                         igrTlsEndpoint = "IGR_TLS_endpoint";
 
+    public static final String                        xcpdEndpoint = "XCPD_endpoint";
+
+    public static final String                        xcpdTlsEndpoint = "XCPD_TLS_endpoint";
+
     /**
      * String property defining the name of the Environment holding the configuration
      * defining the valid Affinity Domain codes.  Also defines the TLS certificate for

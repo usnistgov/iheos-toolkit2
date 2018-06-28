@@ -1,10 +1,10 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.actortransaction.client.IheItiProfile;
+import gov.nist.toolkit.actortransaction.shared.ActorType;
+import gov.nist.toolkit.actortransaction.shared.IheItiProfile;
 import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.actortransaction.client.ActorOption;
+import gov.nist.toolkit.actortransaction.shared.ActorOption;
 import gov.nist.toolkit.xdstools2.client.command.command.GetCollectionMembersCommand;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.BuildRGTestOrchestrationButton;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
@@ -57,16 +57,9 @@ public class ActorOptionConfig extends ActorOption {
      */
     void loadTests(final AsyncCallback<List<TestInstance>> callback) {
         GetCollectionRequest request;
-        String optionCode = (optionId!=null && !"".equals(optionId))?"_"+optionId:"";
-        if ((profileId==null || "".equals(profileId) || "xds".equals(profileId.toString()))) {
-                if (optionId == null || "".equals(optionId))   {
-                    request = new GetCollectionRequest(ClientUtils.INSTANCE.getCommandContext(), "collections", actorTypeId);
-                } else {
-                    request = new GetCollectionRequest(ClientUtils.INSTANCE.getCommandContext(), "collections", actorTypeId + optionCode);
-                }
-        } else { // actor(profile)_option
-            request = new GetCollectionRequest(ClientUtils.INSTANCE.getCommandContext(), "collections", actorTypeId + "(" + profileId + ")" + optionCode);
-        }
+
+        request = new GetCollectionRequest(ClientUtils.INSTANCE.getCommandContext(), "collections", getTestCollectionCode());
+
         new GetCollectionMembersCommand() {
             @Override
             public void onComplete(List<TestInstance> result) {

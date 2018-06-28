@@ -1,0 +1,58 @@
+<xdsiB:RetrieveImagingDocumentSetRequest
+  xmlns:xdsiB="urn:ihe:rad:xdsi-b:2009">
+    <xdsiB:StudyRequest studyInstanceUID="1.3.6.1.4.1.14519.5.2.1.3023.4017.246199836259881483055596634768">
+      <xdsiB:SeriesRequest seriesInstanceUID="1.3.6.1.4.1.14519.5.2.1.3023.4017.101062900156808513233428214720">
+         <xdsb:DocumentRequest xmlns:xdsb="urn:ihe:iti:xds-b:2007">
+            <xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.80.110</xdsb:RepositoryUniqueId>
+            <xdsb:DocumentUniqueId>1.3.6.1.4.1.14519.5.2.1.3023.4017.264182263062930512190712764093</xdsb:DocumentUniqueId>
+         </xdsb:DocumentRequest>
+         <xdsb:DocumentRequest xmlns:xdsb="urn:ihe:iti:xds-b:2007">
+            <xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.80.110</xdsb:RepositoryUniqueId>
+            <xdsb:DocumentUniqueId>1.3.6.1.4.1.14519.5.2.1.3023.4017.335251174043400650861888918521</xdsb:DocumentUniqueId>
+         </xdsb:DocumentRequest>
+         <xdsb:DocumentRequest xmlns:xdsb="urn:ihe:iti:xds-b:2007">
+            <xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.80.110</xdsb:RepositoryUniqueId>
+            <xdsb:DocumentUniqueId>1.3.6.1.4.1.14519.5.2.1.3023.4017.260939066507668813638080004257</xdsb:DocumentUniqueId>
+         </xdsb:DocumentRequest>
+         <xdsb:DocumentRequest xmlns:xdsb="urn:ihe:iti:xds-b:2007">
+            <xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.80.110</xdsb:RepositoryUniqueId>
+            <xdsb:DocumentUniqueId>1.3.6.1.4.1.14519.5.2.1.3023.4017.649153066258520360958330163120</xdsb:DocumentUniqueId>
+         </xdsb:DocumentRequest>
+         <xdsb:DocumentRequest xmlns:xdsb="urn:ihe:iti:xds-b:2007">
+            <xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.80.110</xdsb:RepositoryUniqueId>
+            <xdsb:DocumentUniqueId>1.3.6.1.4.1.14519.5.2.1.3023.4017.146366877811836789535656349132</xdsb:DocumentUniqueId>
+         </xdsb:DocumentRequest>
+      </xdsiB:SeriesRequest>
+      <xdsiB:SeriesRequest seriesInstanceUID="1.3.6.1.4.1.14519.5.2.1.3023.4017.720525569168415113913096578859">
+         <xdsb:DocumentRequest xmlns:xdsb="urn:ihe:iti:xds-b:2007">
+            <xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.80.110</xdsb:RepositoryUniqueId>
+            <xdsb:DocumentUniqueId>1.3.6.1.4.1.14519.5.2.1.3023.4017.231322363895128945026084682388</xdsb:DocumentUniqueId>
+         </xdsb:DocumentRequest>
+         <xdsb:DocumentRequest xmlns:xdsb="urn:ihe:iti:xds-b:2007">
+            <xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.80.110</xdsb:RepositoryUniqueId>
+            <xdsb:DocumentUniqueId>1.3.6.1.4.1.14519.5.2.1.3023.4017.190751073931432884782218376481</xdsb:DocumentUniqueId>
+         </xdsb:DocumentRequest>
+         <xdsb:DocumentRequest xmlns:xdsb="urn:ihe:iti:xds-b:2007">
+            <xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.80.110</xdsb:RepositoryUniqueId>
+            <xdsb:DocumentUniqueId>1.3.6.1.4.1.14519.5.2.1.3023.4017.169359094484670501503705681340</xdsb:DocumentUniqueId>
+         </xdsb:DocumentRequest>
+         <xdsb:DocumentRequest xmlns:xdsb="urn:ihe:iti:xds-b:2007">
+            <xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.80.110</xdsb:RepositoryUniqueId>
+            <xdsb:DocumentUniqueId>1.3.6.1.4.1.14519.5.2.1.3023.4017.189039900884967447533862295050</xdsb:DocumentUniqueId>
+         </xdsb:DocumentRequest>
+         <xdsb:DocumentRequest xmlns:xdsb="urn:ihe:iti:xds-b:2007">
+            <xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.80.110</xdsb:RepositoryUniqueId>
+            <xdsb:DocumentUniqueId>1.3.6.1.4.1.14519.5.2.1.3023.4017.273924524554282693820311392442</xdsb:DocumentUniqueId>
+         </xdsb:DocumentRequest>
+      </xdsiB:SeriesRequest>
+      <xdsiB:SeriesRequest seriesInstanceUID="1.3.6.1.4.1.14519.5.2.1.3023.4017.307917739728461993052196639610">
+         <xdsb:DocumentRequest xmlns:xdsb="urn:ihe:iti:xds-b:2007">
+            <xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.80.110</xdsb:RepositoryUniqueId>
+            <xdsb:DocumentUniqueId>1.3.6.1.4.1.14519.5.2.1.3023.4017.314375186917814049221126572944</xdsb:DocumentUniqueId>
+         </xdsb:DocumentRequest>
+      </xdsiB:SeriesRequest>
+    </xdsiB:StudyRequest>
+    <xdsiB:TransferSyntaxUIDList>
+      <xdsiB:TransferSyntaxUID>1.2.840.10008.1.2.1</xdsiB:TransferSyntaxUID>
+    </xdsiB:TransferSyntaxUIDList>
+</xdsiB:RetrieveImagingDocumentSetRequest>

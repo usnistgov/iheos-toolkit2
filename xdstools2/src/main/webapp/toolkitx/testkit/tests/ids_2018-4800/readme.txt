@@ -1,0 +1,410 @@
+Imaging Document Source (2018): Read This First
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html;
+      charset=windows-1252">
+    <title>Imaging Document Source: ids_2018-4800</title>
+  </head>
+  <body>
+    <h2>Imaging Document Source (2018): Read This First</h2>
+    <p>The System Under Test (SUT) is an Imaging Document Source.</p>
+    <p>The tests assume a standard testing procedure: </p>
+    <ol>
+      <li>The Imaging Document Source imports the test images and does
+        not change patient identifiers, accession numbers or unique
+        identifiers. The tests will fail if the Imaging Document Source
+        modifies those elements within the images.</li>
+      <li>The Imaging Document Source maps the departmental identifiers
+        to the identifiers identified by the Affinity Domain (see
+        individual tests for values). The test tools do not provide a
+        mapping service.</li>
+      <li>The Imaging Document Source generates a KOS object for each
+        imaging study and submits that KOS object via a Provide and
+        Register Imaging Document Set (RAD-69) transaction to a
+        Repository/Registry simulator that is dedicated to the Imaging
+        Document Source. </li>
+      <li>The test software retrieves each imaging study using these
+        mechanisms defined by the XDS-I profile:
+        <ul>
+          <li>RAD-69 Retrieve Imaging Document Set</li>
+          <li>RAD-55 DICOM WADO Retrieve</li>
+        </ul>
+      </li>
+      <li>The DICOM C-Move retrieve mechanism is not tested.<br>
+      </li>
+    </ol>
+    <p>You need to configure your Imaging Document Source to communicate
+      with the simulators listed in the conformance testing tool. If you
+      are reading this document as a standalone document, that
+      configuration is not available to you. </p>
+    <p>The tests for an Imaging Document Source use a fixed set of
+      images as input data. Each imaging study is identified by a
+      department identifier (DICOM Patient ID (0010,0020)) and possibly
+      by an Accession Number (0008, 0050). It is the responsibility of
+      the Imaging Document Source to map the departmental identifier to
+      the Affinity Domain identifier specified in the test cases. </p>
+    <p> You will find the image data set here:<br>
+    </p>
+    <ul>
+      <li>ftp://ftp.ihe.net/Connectathon/data_sets/xds-i_2018/ids_2018.zip</li>
+    </ul>
+    <p> Do not use your own images. The tests are designed to use
+      specific images and values from the image headers. </p>
+    <p> The XDS-I.b profile makes no comment on changing the headers on
+      the original image sets. This test software assumes an environment
+      where the customer requires that the Imaging Document Source does
+      not change the values for Patient Identifier, Patient's Birth
+      Date, Patient Sex and Accession Number. <br>
+    </p>
+    <h3>Configuration Requirements</h3>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>Key<br>
+          </th>
+          <th>Comment<br>
+          </th>
+        </tr>
+        <tr>
+          <td>Repository Unique ID<br>
+          </td>
+          <td>Test software requires that you configure to use this
+            value:<br>
+            <blockquote>1.3.6.1.4.1.21367.13.80.110<br>
+            </blockquote>
+            See below for implications on KOS object.<br>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3>DICOM Fields of Interest in KOS Object<br>
+    </h3>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>Attribute Name</th>
+          <th>Tag</th>
+          <th>Comment</th>
+        </tr>
+        <tr>
+          <td>Patient Name</td>
+          <td>0010,0010</td>
+          <td>Should not change, but would not be surprised by format
+            differences (e.g., extra ^ symbols)</td>
+        </tr>
+        <tr>
+          <td>Patient ID</td>
+          <td>0010,0020</td>
+          <td>Shall not change.<br>
+          </td>
+        </tr>
+        <tr>
+          <td>Patient's Birth Date</td>
+          <td>0010,0030</td>
+          <td>Shall not change.</td>
+        </tr>
+        <tr>
+          <td>Patient's Sex</td>
+          <td>0010,0040</td>
+          <td>Shall not change.</td>
+        </tr>
+        <tr>
+          <td>Accession Number</td>
+          <td>0008,0050</td>
+          <td>Shall not change.</td>
+        </tr>
+        <tr>
+          <td>Study Instance UID</td>
+          <td>0020,000D</td>
+          <td>Shall not change.</td>
+        </tr>
+        <tr>
+          <td>Series Instance UID</td>
+          <td>0020,000E</td>
+          <td>Shall not change in images.<br>
+            KOS object shall be in a new series with a new Series
+            Instance UID.<br>
+          </td>
+        </tr>
+        <tr>
+          <td>Retrieve AE Title</td>
+          <td>0008,0054</td>
+          <td>Shall be present in KOS Referenced Series Sequence.<br>
+            No specified value required.</td>
+        </tr>
+        <tr>
+          <td>Retrieve Location UID</td>
+          <td>0040,E011</td>
+          <td>Shall be present in KOS Referenced Series Sequence.<br>
+            Test configuration specifies this value:
+            1.3.6.1.4.1.21367.13.80.110</td>
+        </tr>
+      </tbody>
+    </table>
+    <h3>XDS Metadata Values</h3>
+    <p> The tables below list metadata values evaluated by the testing
+      procedure. Some metadata values are defined by the Affinity
+      Domain. In these tests, we have defined what we think are
+      reasonable values and ask you to use those values. We will point
+      out the metadata values that are defined by the XDS-I.b profile
+      and those that are specific to the test environment. Metadata
+      values required by XDS-I or XDS that are not listed in the table
+      below shall be present and encoded properly. If they are not
+      explicitly listed, you are at liberty to use your own values. </p>
+    <h4>Document Entry Metadata Requirements</h4>
+    <p>The table below contains Document Entry requirements based on RAD
+      TF 3:4.68.1.2.3.2. </p>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>Attribute</th>
+          <th>Requirement</th>
+          <th>Reference</th>
+        </tr>
+        <tr>
+          <td>creationTime</td>
+          <td>Not tested</td>
+          <td><br>
+          </td>
+        </tr>
+        <tr>
+          <td>eventCodeList</td>
+          <td>
+            <ul>
+              <li>System under test includes all eventCode items
+                required by RAD-68 transaction. See Acquisition Modality
+                and Anatomic Region.</li>
+              <li>System under test does not include other eventCode
+                items not found in the image set.</li>
+            </ul>
+          </td>
+          <td>RAD TF 3:4.68.1.2.3.2</td>
+        </tr>
+        <tr>
+          <td>formatCode</td>
+          <td>code: 1.2.840.10008.5.1.4.1.1.88.59<br>
+            codingScheme: 1.2.840.10008.2.6.1<br>
+            string: Key Object Selection Document </td>
+          <td>RAD TF 3:4.68.1.2.3.2</td>
+        </tr>
+        <tr>
+          <td>mimeType</td>
+          <td>application/dicom</td>
+          <td>RAD TF 3:4.68.1.2.3.2</td>
+        </tr>
+        <tr>
+          <td>referenceIdList</td>
+          <td>
+            <ul>
+              <li>Contains at least one value with DICOM Accession
+                Number (0008, 0050).</li>
+              <li>Format of the value is defined in RAD-68 transaction
+                (see Reference).</li>
+              <li>Test configuration specifies this OID for Assigning
+                Authority: 1.3.6.1.4.1.21367.13.202.2000</li>
+              <li>Other referenceIdList values are ignored.</li>
+            </ul>
+          </td>
+          <td>RAD TF 3:4.68.1.2.3.2</td>
+        </tr>
+        <tr>
+          <td>serviceStartTime</td>
+          <td>
+            <ul>
+              <li>Value for serviceStartTime is tested but only reported
+                as a warning.</li>
+              <li>RAD-68 transaction provides a suggested method, but
+                this is not a requirement.</li>
+              <li>If the value supplied by system under test does not
+                use this value, we will report a warning</li>
+              <li>Software has one test for date (YYYYMMDD) and a
+                separate test for date/time (YYYYMMDDhhmm)</li>
+              <li>Any precision beyond minutes is ignored</li>
+            </ul>
+          </td>
+          <td>RAD TF 3:4.68.1.2.3.2</td>
+        </tr>
+        <tr>
+          <td>sourcePatientInfo</td>
+          <td>Not tested</td>
+          <td><br>
+          </td>
+        </tr>
+        <tr>
+          <td>typeCode</td>
+          <td>Specific to the test case. See notes below on typeCode.</td>
+          <td>Selected by test authors from a set of LOINC codes</td>
+        </tr>
+        <tr>
+          <td>uniqueId</td>
+          <td>Shall equal KOS SOP Instance UID</td>
+          <td>RAD TF 3:4.68.1.2.3.2</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>The table below contains Document Entry requirements based on ITI
+      TF 3:4.3.1 </p>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>Attribute</th>
+          <th>Requirement</th>
+          <th>Reference</th>
+        </tr>
+        <tr>
+          <td>classCode</td>
+          <td>code: IMAGES<br>
+            codingScheme: 1.3.6.1.4.1.19376.1.2.6.1<br>
+            string: Images </td>
+          <td>Selected by test authors.<br>
+          </td>
+        </tr>
+        <tr>
+          <td>confidentialityCode</td>
+          <td>code: R<br>
+            codingScheme: 2.16.840.1.113883.5.25<br>
+            string: restricted </td>
+          <td>Selected by test authors from HL7 value set.</td>
+        </tr>
+        <tr>
+          <td>creationTime</td>
+          <td>No specific value</td>
+          <td><br>
+          </td>
+        </tr>
+        <tr>
+          <td>entryUUID</td>
+          <td>No specific value</td>
+          <td><br>
+          </td>
+        </tr>
+        <tr>
+          <td>formatCode</td>
+          <td>See RAD-68 requirements</td>
+          <td><br>
+          </td>
+        </tr>
+        <tr>
+          <td>healthcareFacilityTypeCode</td>
+          <td>code: 35971002<br>
+            codingScheme: 2.16.840.1.113883.6.96<br>
+            string: Ambulatory care site </td>
+          <td>Selected by test authors.<br>
+          </td>
+        </tr>
+        <tr>
+          <td>languageCode</td>
+          <td>No specific value</td>
+          <td><br>
+          </td>
+        </tr>
+        <tr>
+          <td>mimeType</td>
+          <td>See RAD-68 requirements</td>
+          <td><br>
+          </td>
+        </tr>
+        <tr>
+          <td>objectType</td>
+          <td>
+            <ul>
+              <li>objectType shall be Stable</li>
+              <li>UUID for objectType shall be
+                urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1</li>
+            </ul>
+          </td>
+          <td><br>
+          </td>
+        </tr>
+        <tr>
+          <td>patientId</td>
+          <td>Specific to the test case. See notes below on format.</td>
+          <td>Selected by test authors.</td>
+        </tr>
+        <tr>
+          <td>practiceSettingCode</td>
+          <td>code: Practice-A<br>
+            codingScheme: 1.3.6.1.4.1.21367.2017.3<br>
+            string: Radiology </td>
+          <td>Selected by test authors from a value set defined by test
+            authors</td>
+        </tr>
+        <tr>
+          <td>sourcePatientInfo</td>
+          <td>See RAD-68 requirements</td>
+          <td><br>
+          </td>
+        </tr>
+        <tr>
+          <td>typeCode</td>
+          <td>See RAD-68 requirements</td>
+          <td><br>
+          </td>
+        </tr>
+        <tr>
+          <td>uniqueId</td>
+          <td>See RAD-68 requirements</td>
+          <td><br>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h4>Notes on Document Entry Metadata </h4>
+    <p><em>DocumentEntry.PatientId</em><br>
+      Use the following value for the Assigning Authority for the
+      patient identifiers in the XDS Affinity Domain: <br>
+    </p>
+    <blockquote>1.3.6.1.4.1.21367.2005.13.20.1000</blockquote>
+    Patient identifiers will be of the following form (ignoring escaping
+    for XML)
+    <blockquote>ABCXYZ^^^&amp;1.3.6.1.4.1.21367.2005.13.20.1000&amp;ISO</blockquote>
+    Please follow test instructions to use the proper patient identifier
+    as well as format.
+    <p><em>DocumentEntry.typeCode</em><br>
+      This quote is taken from Rad TF 3:68.4.1.2.3.2<br>
+    </p>
+    <blockquote> This attribute shall be populated by the XDS-I Imaging
+      Document Source from a code in the Procedure Code Sequence
+      (0008,1032) of the performed procedure with which the document is
+      associated. In certain special cases previously defined in other
+      IHE Profiles some sort of user intervention will be necessary to
+      select the single Procedure Code used to populate this attribute.
+      For example, handling the Group Case as defined in Scheduled
+      Workflow will require the user to select a single, pre-coordinated
+      procedure code that represents the multiple Requested Procedures
+      that were acquired as a single study. </blockquote>
+    <p> If you parse the paragraph above very closely, you could
+      interpret the intent as the Imaging Document Source will map codes
+      from Procedure Code Sequence (0008,1032) to a value that is placed
+      in DocumentEntry.typeCode. These tests make a simplifying
+      assumption that you can copy the (single) Procedure Code to the
+      DocumentEntry.typeCode. Future test versions may require you to
+      actually perform such mapping. We need to consult with the IHE
+      Radiology Technical Committee. </p>
+    <h4>Configure Your System to Use These OIDs<br>
+    </h4>
+    <p>These are described above and are repeated for completeness. </p>
+    <table border="1">
+      <tbody>
+        <tr>
+          <th>Usage</th>
+          <th>Value</th>
+        </tr>
+        <tr>
+          <td>Assigning authority for Accession Number</td>
+          <td>1.3.6.1.4.1.21367.13.202.2000</td>
+        </tr>
+        <tr>
+          <td>Assigning authority for Patient Id </td>
+          <td>1.3.6.1.4.1.21367.2005.13.20.1000</td>
+        </tr>
+        <tr>
+          <td valign="top">Repository Unique ID<br>
+          </td>
+          <td valign="top">1.3.6.1.4.1.21367.13.80.110</td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>

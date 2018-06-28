@@ -175,7 +175,7 @@ public class HttpParser {
 			for (Enumeration<String> en=message.getHeaderNames(); en.hasMoreElements(); ) {
 				String hdr = en.nextElement();
 				String hdrVal = message.getHeader(hdr);
-				System.out.println(hdrVal);
+				logger.info(hdrVal);
 			}
 		} else {
 			if (er != null)
@@ -183,7 +183,7 @@ public class HttpParser {
 			for (Enumeration<String> en=message.getHeaderNames(); en.hasMoreElements(); ) {
 				String hdr = en.nextElement();
 				String hdrVal = message.getHeader(hdr);
-				System.out.println(hdrVal);
+				logger.info(hdrVal);
 			}
 		}
 	}
@@ -195,18 +195,18 @@ public class HttpParser {
 			logger.debug("HttpParser(" + this.toString() + ") - isMultipart=" + isMultipart() );
 		} catch (ParseException e) {
 			// not a multipart
-			System.out.println(ExceptionUtil.exception_details(e));
+			logger.info(ExceptionUtil.exception_details(e));
 			message.multipart = null;
 		} catch (HttpHeaderParseException e) {
 			// not a multipart
-			System.out.println(ExceptionUtil.exception_details(e));
+			logger.info(ExceptionUtil.exception_details(e));
 			message.multipart = null;
 		} catch (HttpParseException e) {
 			// not a multipart
-			System.out.println(ExceptionUtil.exception_details(e));
+			logger.info(ExceptionUtil.exception_details(e));
 			message.multipart = null;
 		} catch (Throwable e) {
-			System.out.println(ExceptionUtil.exception_details(e));
+			logger.info(ExceptionUtil.exception_details(e));
 			message.multipart = null;
 		}
 	}
@@ -305,7 +305,7 @@ public class HttpParser {
 			while (true)
 				nextHeader();
 		} catch (EoIException e) {
-			System.out.println(ExceptionUtil.exception_details(e));
+			logger.info(ExceptionUtil.exception_details(e));
 			// end of input - no body
 			message.setBody("");
 		} catch (LastHeaderException e) {

@@ -207,7 +207,7 @@ public class SimMsgViewerView extends AbstractView<SimMsgViewerPresenter> {
 
         transactionDisplayPanel.add(download);
 
-        return tabTopPanel;
+        return new ScrollPanel(tabTopPanel);
     }
 
     @Override
@@ -311,6 +311,7 @@ public class SimMsgViewerView extends AbstractView<SimMsgViewerPresenter> {
 
         //tab.menuPanel.add(messageDisplay.getMenuPanel());
         tab.newMenu().add(messageDisplay.getMenuPanel());
+        tab.getContentPanel().clear();
         tab.getContentPanel().add(messageDisplay.getContentPanel());
     }
 

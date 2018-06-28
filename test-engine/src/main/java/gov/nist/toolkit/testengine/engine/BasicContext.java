@@ -63,16 +63,16 @@ public class BasicContext  {
 	}
 
 	public void dumpContext() {
-		System.out.println("Context for " + getClass().getName());
+		logger.info("Context for " + getClass().getName());
 		if (atts == null)
 			return;
 		Set keys = atts.keySet();
 		for (Iterator it=keys.iterator(); it.hasNext(); ) {
 			String key = (String) it.next();
 			Object value = atts.get(key);
-			System.out.println("    " + key + " : " + value.toString() );
+			logger.info("    " + key + " : " + value.toString() );
 		}
-        System.out.println("End Context");
+        logger.info("End Context");
 	}
 
 	public void dumpContextRecursive() {
@@ -114,7 +114,7 @@ public class BasicContext  {
 
 	String error(String msg) {
 		String out = "Error: stepId=" + get("step_id") + " : " + msg;
-		System.out.println(out);
+		logger.info(out);
 		return out;
 	}
 

@@ -1,6 +1,7 @@
 package gov.nist.toolkit.testkitutilities
 
 import gov.nist.toolkit.installation.server.Installation
+import gov.nist.toolkit.installation.shared.TestSession
 import org.apache.log4j.BasicConfigurator
 import org.apache.log4j.Logger
 
@@ -52,7 +53,7 @@ class TestkitServlet extends HttpServlet {
 //            logger.fatal(ExceptionUtil.exception_details(e, 'Initialization failed'))
 //        }
 
-        searchPath = new TestKitSearchPath(environment, testSession)
+        searchPath = new TestKitSearchPath(environment, new TestSession(testSession))
     }
 
     // URI is  appname/testdoc/environment/testsession/testid

@@ -2,7 +2,7 @@ package gov.nist.toolkit.simcommon.server;
 
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.PidBuilder;
-import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.utilities.io.Io;
 import org.apache.log4j.Logger;
 

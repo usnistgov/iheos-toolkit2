@@ -1,0 +1,10 @@
+<TestPlan>
+    <Test>ids_4810c/retrieve</Test>
+    <TestStep id="retrieve">
+        <Goal>Imaging Document Set Retrieve of a single image</Goal>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <ImagingDocSetRetrieveTransaction>
+            <MetadataFile>rad69-request.xml</MetadataFile>
+        </ImagingDocSetRetrieveTransaction>
+    </TestStep>
+</TestPlan>

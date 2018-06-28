@@ -2,6 +2,7 @@ package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.testengine.transactions.*;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMAttribute;
@@ -15,7 +16,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-public class StepContext extends BasicContext implements ErrorReportingInterface {
+public class StepContext extends BasicContext implements ErrorReportingInterface, ILogReporting {
 	OMElement output = null;
 	OMElement test_step_output = null;
 //	boolean expectedstatus = true;
@@ -35,6 +36,10 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 	public TransactionSettings getTransactionSettings() {
 		return transactionSettings;
 	}
+
+	public String getEnvironment() { return transactionSettings.environmentName; }
+
+	public TestSession getTestSession() { return transactionSettings.testSession; }
 
 	public void setTestConfig(TestConfig config) {
 		testConfig = config;
@@ -114,43 +119,52 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 		return status;
 	}
 
+	@Override
     public void addDetail(String name, String value) {
         addDetail(test_step_output, name, value);
     }
 
+	@Override
     public void addDetailHeader(String headerText) {
 		addDetail("#" + headerText, "");
 	}
 
+	@Override
 	public void addDetailHeader(String headerText, String value) {
 		addDetail("#" + headerText, value);
 	}
 
+	@Override
 	public void addDetailLink(String externalLink, String internalPlaceToken, String linkText, String content) {
 		addDetail(externalLink + " [" + internalPlaceToken + "] (" + linkText + ")", content);
 	}
 
+	@Override
 	public  void set_error(String msg) throws XdsInternalException {
 		setStatus(false);
 		error(test_step_output, msg);
 	}
 
+	@Override
 	public void fail(OMElement ele) throws XdsInternalException {
 		setStatus(false);
 		error(test_step_output, ele);
 	}
 
+	@Override
 	public  void set_error(List<String> msgs) throws XdsInternalException {
 		setStatus(false);
 		for (String msg : msgs)
 			error(test_step_output, msg);
 	}
 
+	@Override
 	public void set_fault(String code, String msg) throws XdsInternalException {
 		setStatus(false);
 		fault(test_step_output, code, msg);
 	}
 
+	@Override
 	public void set_fault(AxisFault e) throws XdsInternalException {
 //		String code = "";
 		String detail = "";
@@ -165,6 +179,7 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 		fault(test_step_output, detail, detail);
 	}
 
+	@Override
 	public void fail(String message) throws XdsInternalException {
 		set_error(message);
 	}
@@ -191,7 +206,7 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 		testConfig.currentStep = step_id;
 
 		setId(step_id);
-		System.out.println("\tStep: " + step_id);
+		logger.info("\tStep: " + step_id);
 
 
 		test_step_output = testLog.add_simple_element_with_id(

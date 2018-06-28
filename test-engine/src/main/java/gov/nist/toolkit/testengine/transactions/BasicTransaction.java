@@ -4,6 +4,7 @@ import gov.nist.toolkit.common.datatypes.Hl7Date;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.installation.server.Installation;
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.registrymetadata.IdParser;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
@@ -39,7 +40,7 @@ import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
 import java.util.*;
 
-public abstract class BasicTransaction  {
+public abstract class BasicTransaction  implements ToolkitEnvironment {
 	protected OMElement instruction;
 	protected OMElement instruction_output;
 	PlanContext planContext = null;
@@ -71,6 +72,7 @@ public abstract class BasicTransaction  {
 	protected boolean assign_uuids = false;
 	protected boolean assign_uids = true;
 	protected String no_assign_uid_to = null;
+	protected Set<String> excludeUids = null;
 	protected boolean assign_patient_id = true;
 	protected boolean soap_1_2 = true;
 	protected boolean async = false;
@@ -116,6 +118,10 @@ public abstract class BasicTransaction  {
 	public StepContext getStepContext() {
 		return s_ctx;
 	}
+
+	public String getEnvironment() { return getStepContext().getEnvironment(); }
+
+	public TestSession getTestSession() { return getStepContext().getTestSession(); }
 
 	public UseReportManager getUseReportManager() { return useReportManager; }
 
@@ -617,19 +623,6 @@ public abstract class BasicTransaction  {
 		return OMAbstractFactory.getOMFactory();
 	}
 
-
-
-
-	void print_step_history(OMElement this_instruction_output) {
-		System.out.println("Step History:");
-		OMElement step_output = (OMElement) this_instruction_output.getParent();
-		while (step_output != null) {
-			String id = step_output.getAttributeValue(new QName("id"));
-			System.out.println("id = " + id);
-			step_output = (OMElement) step_output.getPreviousOMSibling();
-		}
-	}
-
 	void addToLinkage(HashMap<String, String> in) {
 		for (Iterator<String> it=in.keySet().iterator(); it.hasNext(); ) {
 			String key = it.next();
@@ -695,7 +688,7 @@ public abstract class BasicTransaction  {
 		endpoint = this.s_ctx.getRegistryEndpoint();   // this is busted, always returns null
 		if (endpoint == null || endpoint.equals("") || testConfig.endpointOverride) {			//boolean async = false;
 			if (testConfig.verbose)
-				System.out.println("endpoint coming from actors.xml");
+				logger.info("endpoint coming from actors.xml");
 			if (trans.getCode().endsWith(".as")) {
 				xds_version = xds_b;
 			}
@@ -714,14 +707,14 @@ public abstract class BasicTransaction  {
 			}
 		} else {
 			if (testConfig.verbose)
-				System.out.println("endpoint coming from testplan.xml");
+				logger.info("endpoint coming from testplan.xml");
 		}
 		logger.info("Transaction = " + trans + " Endpoint = " + endpoint);
 		showEndpoint();
 	}
 
 	void showEndpoint() {
-		System.out.println("        Endpoint = " + endpoint);
+		logger.info("        Endpoint = " + endpoint);
 	}
 
 	protected void parseRepEndpoint(String repositoryUniqueId, boolean isSecure) throws Exception {
@@ -885,11 +878,7 @@ public abstract class BasicTransaction  {
 
 			TestMgmt tm = new TestMgmt(testConfig);
 			if ( assign_patient_id ) {
-//				System.out.println("============================= assign_patient_id  in BasicTransaction#prepareMetadata()==============================");
-				// getRetrievedDocumentsModel and insert PatientId
 				String forced_patient_id = s_ctx.get("PatientId");
-//                System.out.println("    to " + forced_patient_id)
-//              s_ctx.dumpContextRecursive();
 				if (s_ctx.useAltPatientId()) {
 					forced_patient_id = s_ctx.get("AltPatientId");
 				}
@@ -904,7 +893,7 @@ public abstract class BasicTransaction  {
 			}
 
 			if ( assign_uids ) {
-				Map<String, String> uniqueid_map = tm.assignUniqueIds(metadata, no_assign_uid_to);
+				Map<String, String> uniqueid_map = tm.assignUniqueIds(metadata, no_assign_uid_to, excludeUids);
 				testLog.add_name_value(instruction_output, generate_xml("AssignedUids", uniqueid_map));
 				if (reportManager == null)
 					reportManager = new ReportManager(testConfig);
@@ -1038,6 +1027,7 @@ public abstract class BasicTransaction  {
 		}
 		else if (part_name.equals("AssignUuids")) {
 			assign_uuids = true;
+			parseExclusions(part);
 		}
 		else if (part_name.equals("NoAssignUids")) {
 			assign_uids = false;
@@ -1136,13 +1126,13 @@ public abstract class BasicTransaction  {
 				fatal("WaitBefore: zero delay requested");
 			try {
 				long t0, t1, diff;
-				System.out.print("Waiting " + milliseconds + " milliseconds ...");
+				logger.info("Waiting " + milliseconds + " milliseconds ...");
 				t0 = System.currentTimeMillis();
 				do {
 					t1 = System.currentTimeMillis();
 					diff = t1 - t0;
 				} while (diff < milliseconds);
-				System.out.println("Done");
+				logger.info("Done");
 			} catch (Exception e) {
 				fatal("WaitBefore failed: " + e.getMessage());
 			}
@@ -1154,10 +1144,6 @@ public abstract class BasicTransaction  {
 		} else {
 			throw new XdsInternalException("BasicTransaction: Don't understand instruction " + part_name);
 		}
-
-//		if (testConfig.verbose)
-//			System.out.println("<<<PRE-TRANSACTION>>>\n" + toString() + "<<<///PRE-TRANSACTION>>>\n");
-
 	}
 
 	protected void parseUseReportInstruction(OMElement part) throws XdsInternalException {
@@ -1170,6 +1156,18 @@ public abstract class BasicTransaction  {
 		if (reportManager == null)
             reportManager = new ReportManager(testConfig);
 		reportManager.addReport(part);
+	}
+
+	protected void parseExclusions(OMElement part) {
+		excludeUids = new HashSet<String>();
+		Iterator<OMElement> it = part.getChildrenWithLocalName("Exclude");
+		while (it.hasNext()) {
+			OMElement e = it.next();
+			String s = e.getAttributeValue(new QName("value"));
+			if (s != null) {
+				excludeUids.add(s);
+			}
+		}
 	}
 
 	public class DocDetails {
@@ -1227,7 +1225,7 @@ public abstract class BasicTransaction  {
 
 	public void runAssertionEngine(OMElement step_output, ErrorReportingInterface eri, OMElement assertion_output) throws XdsInternalException {
 
-      AssertionEngine engine = new AssertionEngine();
+      AssertionEngine engine = new AssertionEngine(this);
       engine.setDataRefs(data_refs);
       engine.setCaller(this);
 
@@ -1431,7 +1429,7 @@ public abstract class BasicTransaction  {
 			RegistryResponseParser registry_response = new RegistryResponseParser(getSoapResult());
 			List<String> errs = registry_response.get_regrep_error_msgs();
 			if (errs.size() > 0) {
-                System.out.println("Received errors in response");
+				logger.info("Received errors in response");
                 for (String err : errs)
 				    s_ctx.set_error(err);
 				failed();
@@ -1453,7 +1451,7 @@ public abstract class BasicTransaction  {
 			testLog.add_name_value(instruction_output, "InHeader", soap.getInHeader());
 			testLog.add_name_value(instruction_output, "Result", soap.getResult());
 		} catch (Exception e) {
-			System.out.println("Cannot log soap request");
+			logger.error("Cannot log soap request");
 			e.printStackTrace();
 		}
 	}

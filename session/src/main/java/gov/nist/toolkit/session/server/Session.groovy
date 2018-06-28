@@ -567,7 +567,7 @@ public class Session implements SecurityParams {
 	}
 
 	public TestKitSearchPath getTestkitSearchPath() {
-		return new TestKitSearchPath(getCurrentEnvironment(), getTestSession());
+		return new TestKitSearchPath(getCurrentEnvironment(), (TestSession) getTestSession());
 	}
 
 }

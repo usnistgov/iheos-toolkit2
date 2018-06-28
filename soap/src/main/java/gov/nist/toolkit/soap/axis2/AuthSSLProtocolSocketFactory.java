@@ -30,6 +30,9 @@
 
 package gov.nist.toolkit.soap.axis2;
 
+import gov.nist.toolkit.installation.server.Installation;
+import gov.nist.toolkit.installation.server.PropertyManager;
+
 import org.apache.commons.httpclient.ConnectTimeoutException;
 import org.apache.commons.httpclient.params.HttpConnectionParams;
 import org.apache.commons.httpclient.protocol.SecureProtocolSocketFactory;
@@ -205,7 +208,7 @@ public class AuthSSLProtocolSocketFactory implements SecureProtocolSocketFactory
         }
     }
 
-    private SSLContext getSSLContext() throws IOException {
+    public SSLContext getSSLContext() throws IOException {
         if (this.sslcontext == null) {
             this.sslcontext = createSSLContext();
         }
@@ -244,15 +247,18 @@ public class AuthSSLProtocolSocketFactory implements SecureProtocolSocketFactory
         int timeout = params.getConnectionTimeout();
         
         timeout = 0;   // wjm
-        
-        SocketFactory socketfactory = getSSLContext().getSocketFactory();
+
+        SSLSocketFactory socketfactory = getSSLContext().getSocketFactory();
         if (timeout == 0) {
-            return socketfactory.createSocket(host, port, localAddress, localPort);
+            SSLSocket mySocket = (SSLSocket)socketfactory.createSocket(host, port, localAddress, localPort);
+            mySocket = setEnabledCipherSuites(mySocket);
+            return mySocket;
         } else {
-            Socket socket = socketfactory.createSocket();
+            SSLSocket socket = (SSLSocket)socketfactory.createSocket();
             SocketAddress localaddr = new InetSocketAddress(localAddress, localPort);
             SocketAddress remoteaddr = new InetSocketAddress(host, port);
             socket.bind(localaddr);
+            socket = setEnabledCipherSuites(socket);
             socket.connect(remoteaddr, timeout);
             return socket;
         }
@@ -268,12 +274,14 @@ public class AuthSSLProtocolSocketFactory implements SecureProtocolSocketFactory
         int clientPort)
         throws IOException, UnknownHostException
    {
-       return getSSLContext().getSocketFactory().createSocket(
+       SSLSocket socket = (SSLSocket)getSSLContext().getSocketFactory().createSocket(
             host,
             port,
             clientHost,
             clientPort
         );
+       socket = setEnabledCipherSuites(socket);
+       return socket;
     }
 
     /**
@@ -282,10 +290,12 @@ public class AuthSSLProtocolSocketFactory implements SecureProtocolSocketFactory
     public Socket createSocket(String host, int port)
         throws IOException, UnknownHostException
     {
-        return getSSLContext().getSocketFactory().createSocket(
+        SSLSocket socket = (SSLSocket)getSSLContext().getSocketFactory().createSocket(
             host,
             port
         );
+        socket = setEnabledCipherSuites(socket);
+        return socket;
     }
 
     /**
@@ -298,11 +308,33 @@ public class AuthSSLProtocolSocketFactory implements SecureProtocolSocketFactory
         boolean autoClose)
         throws IOException, UnknownHostException
     {
-        return getSSLContext().getSocketFactory().createSocket(
-            socket,
-            host,
-            port,
-            autoClose
+        SSLSocket mySocket = (SSLSocket) getSSLContext().getSocketFactory().createSocket(
+                socket,
+                host,
+                port,
+                autoClose
         );
+        mySocket = setEnabledCipherSuites(mySocket);
+        return mySocket;
+    }
+
+    private SSLSocket setEnabledCipherSuites(SSLSocket socket)
+    {
+      PropertyManager propertyManager = Installation.instance().propertyServiceManager().getPropertyManager();
+      String[] cipherSuites = propertyManager.getClientCipherSuites();
+      if (cipherSuites == null)
+      {
+         LOG.debug("No (Client Cipher Suites retrieved from runtime properties file; SSL Socket is unchanged");
+         return socket;
+      }
+      StringBuilder builder = new StringBuilder();
+
+      for (String c:cipherSuites) {
+        builder.append(c).append(',');
+      }
+      LOG.debug("Enabled Client Cipher Suites: " + builder.toString());
+
+      socket.setEnabledCipherSuites(cipherSuites);
+      return socket;
     }
 }

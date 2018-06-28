@@ -9,7 +9,7 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
-import gov.nist.toolkit.actortransaction.client.IheItiProfile;
+import gov.nist.toolkit.actortransaction.shared.IheItiProfile;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 
 import java.util.HashMap;
@@ -32,11 +32,12 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
     public abstract void setTestStatistics(HTML statsBar, ActorOptionConfig actorOption);
 
     public boolean displayMenu(Panel destinationPanel) {
-        if (tabConfig!=null) {
-            destinationPanel .clear();
-            destinationPanel.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+        destinationPanel.clear();
+        destinationPanel.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+        HTML testNavigationTip = new HTML("Tests are organized as: Actor Profile Option. Select the option you are interested in. ");
+        destinationPanel.add(testNavigationTip);
 
-            destinationPanel.add(new HTML("Tests are organized as: Actor Profile Option. Select the option you are interested in. "));
+        if (tabConfig!=null) {
 
             int colWidth = 100 / menuCols;
             int menuCt = 0;
@@ -50,6 +51,9 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
 //            for (String code : displayOrder) {
                 for (TabConfig tc : tabConfig.getChildTabConfigs()) {
 //                    if (code.equals(tc.getTcCode())) {
+                        if (!tc.isVisible())  {
+                            continue;
+                        }
                         if (menuCt % menuCols == 0) {
                             rowAdded = true;
                             destinationPanel.add(rowPanel);
@@ -91,19 +95,26 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
                 destinationPanel.add(rowPanel);
             }
 
-            // Add legend row
-            FlowPanel legendRowPanel = new FlowPanel();
+            if (menuCt!=0) {
+
+                // Add legend row
+                FlowPanel legendRowPanel = new FlowPanel();
                 legendRowPanel.add(new HTML("<div>Legend:</div>"
                         + "<div style='margin:3px'><div style=\"width:10px;height:13px;border:1px solid white;float:left;margin-right:2px;background-color:white;\"></div>Not Run</div>"
                         + "<div style='margin:3px'><div style=\"width:10px;height:13px;border:1px solid;float:left;margin-right:2px;background-color:cyan;\"></div><span>Successes</span></div>\n"
                         + "<div style='margin:3px'><div style=\"width:10px;height:13px;border:1px solid;float:left;margin-right:2px;background-color:coral;\"></div><span>Failures</span></div>\n"
                 ));
-            legendRowPanel.getElement().addClassName("tabConfigRow");
-            destinationPanel.add(legendRowPanel);
-
+                legendRowPanel.getElement().addClassName("tabConfigRow");
+                destinationPanel.add(legendRowPanel);
+            } else {
+                    testNavigationTip.setHTML("No tests found for the given combination of Ignore_internal_testkit Toolkit Property, Environment, and/or Test Session.");
+                    return false;
+            }
             return true;
+        } else {
+            testNavigationTip.setHTML("Unexpected Null TabConfig.");
+            return false;
         }
-        return false;
     }
 
     static void setParentTcCodePath(Map<String,TabConfig> rs, TabConfigTreeItem treeItem) {
@@ -131,6 +142,7 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
                 treeItem = new TabConfigTreeItem(tabConfig);
                 treeItem.setState(true);
                 treeItem.setText(tabConfig.getLabel());
+                // Actor
                 treeItem.setHTML("<span class='gwt-TabBarItem' style='font-size:16px;background-color:#D0E4F6'><span style='margin:5px'>"+treeItem.getText()+"</span></span>");
                 if (tabConfig.getType()!=null)
                     tcCodeMap.put(tabConfig.getType(), tabConfig.getTcCode());
@@ -139,6 +151,8 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
 
             if (tabConfig.hasChildren()) {
                 int idx = 0;
+
+                // Profile
                 for (TabConfig tc : tabConfig.getChildTabConfigs()) {
                     TabConfigTreeItem ti = new TabConfigTreeItem(tc);
                     ti.setState(true);
@@ -151,6 +165,7 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
                     FlowPanel flowPanel = new FlowPanel();
                     HTML statsBar = new HTML();
                     flowPanel.add(statsBar);
+
                     if (!tc.hasChildren()) {
 
 //                        Window.alert(""+tcCodeMap.get("actor") + tcCodeMap.get("profile") + tcCodeMap.get("option"));
@@ -159,17 +174,13 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
                             ActorOptionConfig actorOption = new ActorOptionConfig(tcCodeMap.get("actor"));
                             if (tcCodeMap.get("profile")!=null) {
                                 actorOption.setProfileId(IheItiProfile.find(tcCodeMap.get("profile")));
-
                                 if (tcCodeMap.get("option")!=null) {
                                     actorOption.setOptionId(tcCodeMap.get("option"));
                                     try {
                                         setTestStatistics(statsBar, actorOption);
                                     } catch (Throwable t) {}
-
                                 }
-
                             }
-
                         }
                     }
 
@@ -178,7 +189,8 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
                         if (tc.hasChildren()) {
                             flattenedTabConfig(tcCodeMap, treeItem, tc);
                         }
-                    } else {
+                    } else if (tc.isVisible()) {
+                        // Option
                         HTML label = new HTML("<span style='font-size:14px;'>" + tc.getLabel() + "</span>");
                         flowPanel.add(label);
                         ti.setWidget(flowPanel);
@@ -194,8 +206,7 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
 
                 }
 
-            } else if (!tabConfig.isHeader() && !tabConfig.hasChildren()){
-
+            } else if (!tabConfig.isHeader() && !tabConfig.hasChildren() && tabConfig.isVisible()){
                 TabConfigTreeItem ti = new TabConfigTreeItem(tabConfig);
                 ti.setState(true);
                 ti.setHTML("<span style='font-size:14px;'>" + tabConfig.getLabel() + "</span>");

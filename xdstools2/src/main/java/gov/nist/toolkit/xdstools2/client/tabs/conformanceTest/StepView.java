@@ -277,10 +277,13 @@ public class StepView implements IsWidget {
                 String content = dtls.get(row);
                 lastLink = formatDetailRow(content, lastLink, errTbl, row);
             }
+
             HTML title = new HTML("Detail:");
-            title.addStyleName("detail-section-header");
+//            title.addStyleName("detail-section-header");
             stepBody.add(title);
-            stepBody.add(errTbl);
+//            stepBody.add(errTbl);
+
+            stepBody.add(new DetailDisplay(errTbl));
         }
 
         // ******************************************************

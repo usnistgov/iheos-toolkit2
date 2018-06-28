@@ -1,6 +1,6 @@
 package gov.nist.toolkit.simcommon.server.factories;
 
-import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
@@ -32,12 +32,6 @@ public class ImgConsumerActorFactory  extends AbstractActorFactory implements IA
             sc = configureBaseElements(actorType, simId, simId.getTestSession());
         else
             sc = new SimulatorConfig();
-
-        // placeholders - must be updated by client
-        addEditableConfig(sc, SimulatorProperties.storedQueryEndpoint, ParamType.ENDPOINT, "http://host:port/service");
-        addEditableConfig(sc, SimulatorProperties.storedQueryTlsEndpoint, ParamType.ENDPOINT, "https://host:port/service");
-        addEditableConfig(sc, SimulatorProperties.retrieveEndpoint, ParamType.ENDPOINT, "http://host:port/service");
-        addEditableConfig(sc, SimulatorProperties.retrieveTlsEndpoint, ParamType.ENDPOINT, "https://host:port/service");
 
         return new Simulator(sc);
     }

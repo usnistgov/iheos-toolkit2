@@ -168,6 +168,7 @@ public class TestOverviewBuilder {
             testOverview.addSection(sectionOverview);
             return sectionOverview;
         }
+        sectionOverview.setTls(logFileContentDTO.isTls());
         sectionOverview.setPass(logFileContentDTO.isSuccess());
         sectionOverview.setHl7Time(logFileContentDTO.getHl7Time());
         sectionOverview.setSite(logFileContentDTO.getSiteName());

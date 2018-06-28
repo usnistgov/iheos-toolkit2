@@ -36,8 +36,8 @@ public class HeaderTokenizer {
 	public Token getNextToken(boolean debug) throws ParseException {
 		Token t = getNextToken();
 		if (debug) {
-			if (t.isToken()) System.out.println("T(" + t.getValue() + ")");
-			else System.out.println("S(" + t.getValue() + ")");
+			if (t.isToken()) logger.info("T(" + t.getValue() + ")");
+			else logger.info("S(" + t.getValue() + ")");
 		}
 		return t;
 	}
@@ -124,11 +124,11 @@ public class HeaderTokenizer {
 	void addToken(Token token) {
 		if (token.isString()) {
 			logger.debug("Add S(" + token + ") ");
-			if (debug) System.out.println("Add S(" + token + ") ");
+			if (debug) logger.info("Add S(" + token + ") ");
 		}
 		else {
 			logger.debug("Add T(" + token + ") ");
-			if (debug) System.out.println("Add T(" + token + ") ");
+			if (debug) logger.info("Add T(" + token + ") ");
 		}
 		tokens.add(token);
 	}
@@ -136,12 +136,12 @@ public class HeaderTokenizer {
 	void addToken(String string) {
 		if(HeaderToken.isSpecial(string)) {
 			Token token = new Token(HeaderToken.toToken(string)); 
-			if (debug) System.out.println("Add T(" + token + ") ");
+			if (debug) logger.info("Add T(" + token + ") ");
 			tokens.add(token);
 		}
 		else {
 			Token token = new Token(string); 
-			if (debug) System.out.println("Add S(" + token + ") ");
+			if (debug) logger.info("Add S(" + token + ") ");
 			tokens.add(token);
 		}
 	}

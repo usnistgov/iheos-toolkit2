@@ -38,6 +38,13 @@ public class LogFileContentDTO implements Serializable, IsSerializable {
 		return stepMap;
 	}
 
+	public boolean isTls() {
+		for (TestStepLogContentDTO steplog : steps) {
+			if (steplog.isTls()) return true;
+		}
+		return false;
+	}
+
 	public String toString() {
 		return test + "/" + section;
 	}

@@ -1,6 +1,6 @@
 package gov.nist.toolkit.simcommon.server
 
-import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.actortransaction.shared.ActorType
 import org.apache.log4j.BasicConfigurator
 import spock.lang.Specification
 /**

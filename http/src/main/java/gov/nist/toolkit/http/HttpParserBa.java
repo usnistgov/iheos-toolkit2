@@ -7,6 +7,7 @@ import gov.nist.toolkit.utilities.io.Io;
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.gwt.validation.client.impl.Validation;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.util.Enumeration;
@@ -25,7 +26,7 @@ public class HttpParserBa {
 	MultipartParserBa multiparser;
 	boolean appendixV = true;
 	String [] httpMethods = {"POST"};
-	
+	private final static Logger logger = Logger.getLogger(HttpParserBa.class);
 	public MultipartParserBa getMultipartParser() {
 		return multiparser;
 	}
@@ -238,7 +239,7 @@ public class HttpParserBa {
 		} catch (EoIException e) {
 //			System.out.println(ExceptionUtil.exception_details(e));
 			// end of input - no body
-			System.out.println("Parsing HTTP - End of input - no body found");
+			logger.info("Parsing HTTP - End of input - no body found");
 			message.setBody(new byte[0]);
 		} catch (LastHeaderException e) {
 			message.body = subarray(input, to); //input.substring(to);

@@ -1,6 +1,6 @@
 package gov.nist.toolkit.itTests.xc
 
-import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.actortransaction.shared.ActorType
 import gov.nist.toolkit.commondatatypes.MetadataSupport
 import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itSupport.xc.GatewayBuilder

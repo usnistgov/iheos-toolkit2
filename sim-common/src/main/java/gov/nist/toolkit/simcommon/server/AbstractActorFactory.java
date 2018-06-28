@@ -1,6 +1,6 @@
 package gov.nist.toolkit.simcommon.server;
 
-import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.FhirVerb;
@@ -95,8 +95,6 @@ public abstract class AbstractActorFactory {
 		return factories().get(at.getName());
 	}
 
-    public static final String                        xcpdEndpoint = "XCPD_endpoint";
-	public static final String                     xcpdTlsEndpoint = "XCPD_TLS_endpoint";
 
 
     static final String name = "Name";

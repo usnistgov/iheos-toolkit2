@@ -4,6 +4,7 @@ import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.errorrecording.ErrorRecorder
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode
+import gov.nist.toolkit.fhir.simulators.support.SimUtil
 import gov.nist.toolkit.registrymsg.repository.*
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
 import gov.nist.toolkit.simcommon.server.SimManager
@@ -127,6 +128,11 @@ public class XcRetrieveSim extends AbstractMessageValidator {
     RetrievedDocumentsModel retrieveCall(List<RetrieveItemRequestModel> items, String endpoint) throws Exception {
         OMElement request = new RetrieveRequestGenerator(items).get();
         Soap soap = new Soap();
+
+        if (common.vc.requiresStsSaml) {
+            soap.addHeader(SimUtil.getSecurityElement(common.vc, dsSimCommon, this.getClass().getName()));
+        }
+
         soap.setAsync(false);
         soap.setUseSaml(false);
 
