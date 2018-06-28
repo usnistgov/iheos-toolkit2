@@ -126,7 +126,7 @@ public class TestLogDetails {
 	}
 
 	/**
-	 * Remove from the path of a test, the testkit prefix. Useful for creating same
+	 * REMOVE from the path of a test, the testkit prefix. Useful for creating same
 	 * directory structure in different place for output files.
 	 * @param testPath
 	 * @param testkit

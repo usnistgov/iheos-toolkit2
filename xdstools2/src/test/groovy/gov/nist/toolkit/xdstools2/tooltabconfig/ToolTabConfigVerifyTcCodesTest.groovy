@@ -33,7 +33,7 @@ class ToolTabConfigVerifyTcCodesTest extends Specification {
 
         then:
         for (TabConfig actorTabConfig : confTestsTabConfig.getChildTabConfigs()) {
-            print "Checking actor " + actorTabConfig.getLabel() + "... "
+            print "\nChecking actor " + actorTabConfig.getLabel() + "... "
 
             // Both the collections.txt and the actorCode must be lower-cased
             String actorTypeCode = actorTabConfig.getTcCode()
@@ -67,11 +67,16 @@ class ToolTabConfigVerifyTcCodesTest extends Specification {
                        }
                    }
 
-                   if (!foundMatch)
-                       print "ActorTypeCode: " + actorTypeCode  + "/" + actorType1.shortName \
-                             + " Profile: " + profileTypeCode + "/" + itiProfile.toString() \
-                            + " Option: " + option.tcCode + "/" + optionType1.toString() \
-                             +  " not found!"
+                   if (!foundMatch) {
+//                       println "ActorTypeCode: " + actorTypeCode + "/" + actorType1.shortName + " Profile: " + profileTypeCode + "/" + itiProfile.toString() \
+//                            + " Option: " + option.tcCode + "/" + optionType1.toString() \
+//                             +  " not found!"
+                       println "When scanning ConfTestsTabs.xml..."
+                       println "Profile Type Code ${profileTypeCode} " + ((itiProfile) ? "found" : "NOT found") + " in IheItiProfile.java"
+                       println "Option Type Code ${option.tcCode} " + ((optionType1) ? "found" : "NOT found") + " in OptionType.java"
+                       println "Looking in ActorType.java..."
+                       println "   no entry found for actorTypeCode = ${actorTypeCode}, with profile = ${itiProfile} and option = ${optionType1}"
+                   }
                    assert foundMatch
                    optionCt++
                }

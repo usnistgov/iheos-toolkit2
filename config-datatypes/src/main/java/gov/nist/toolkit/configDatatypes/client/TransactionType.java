@@ -5,7 +5,6 @@ import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -35,10 +34,10 @@ public enum TransactionType implements Serializable, IsSerializable {
     RET_IMG_DOC_SET_GW("RAD-69", "Retrieve Img Doc Set Gateway", "ret.iig", "ret.iig.b", "ret.iig.as", true, "urn:ihe:rad:2009:RetrieveImagingDocumentSet", "urn:ihe:iti:2007:RetrieveDocumentSetResponse", true, SimulatorProperties.idsrIigEndpoint, SimulatorProperties.idsrIigTlsEndpoint),
     XC_RET_IMG_DOC_SET("RAD-75", "Cross-Community Ret Img Doc Set", "xcr.ids", "xcr.ids.b", "xcr.ids.as", true, "urn:ihe:rad:2011:CrossGatewayRetrieveImagingDocumentSet", "urn:ihe:rad:2011:CrossGatewayRetrieveImagingDocumentSetResponse", true, SimulatorProperties.xcirEndpoint, SimulatorProperties.xcirTlsEndpoint),
     STS("STS", "Secure Token Service", "sts", "sts", "sts.as", true, "sts", "sts", true, null, null),
-    FHIR("FHIR", "FHIR", "fhir", "fhir", "fhir.as", true, "fhir", "fhir", true, SimulatorProperties.fhirEndpoint, SimulatorProperties.fhirTlsEndpoint, true),
+//    FHIR("FHIR", "FHIR", "fhir", "fhir", "fhir.as", true, "fhir", "fhir", true, SimulatorProperties.fhirEndpoint, SimulatorProperties.fhirTlsEndpoint, true),
     XAD_PID("ITI-43", "XAD-PID", "xadpid", "xadpid", "xadpid", false, "", "", false, null, null),
-    REMOVE_METADATA("ITI-62", "Remove Metadata", "rm", "rm.b", "rm.b.as", false, "urn:ihe:iti:2010:DeleteDocumentSet", "urn:ihe:iti:2010:DeleteDocumentSetResponse", false, SimulatorProperties.registerEndpoint, SimulatorProperties.registerTlsEndpoint);
-	//    ANY("ANY", "ANY", "any", "any", "any.as", false, "any", "any", false, null, null, false);
+    REMOVE_METADATA("ITI-62", "Remove Metadata", "rm", "rm.b", "rm.b.as", false, "urn:ihe:iti:2010:DeleteDocumentSet", "urn:ihe:iti:2010:DeleteDocumentSetResponse", false, SimulatorProperties.registerEndpoint, SimulatorProperties.registerTlsEndpoint),
+	//    ANY("ANY", "ANY", "any", "any", "any.as", false, "any", "any", false, null, null, false),
     FHIR("FHIR", "FHIR", "fhir", "fhir", "fhir.as", true, "fhir", "fhir", true, SimulatorProperties.fhirEndpoint, SimulatorProperties.fhirTlsEndpoint, true, FhirVerb.NONE),
     PROV_DOC_BUNDLE("ITI-65", "Provide Document Bundle", "pdb", "pdb", "pdb.as", false, "fhir", "fhir", false, SimulatorProperties.pdbEndpoint, SimulatorProperties.pdbTlsEndpoint, true, FhirVerb.TRANSACTION),
     // for these FHIR types, the name field here matches the resource type

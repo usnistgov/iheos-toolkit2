@@ -1,6 +1,6 @@
 package gov.nist.toolkit.adt;
 
-import gov.nist.toolkit.installation.PropertyServiceManager;
+import gov.nist.toolkit.installation.server.PropertyServiceManager;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;

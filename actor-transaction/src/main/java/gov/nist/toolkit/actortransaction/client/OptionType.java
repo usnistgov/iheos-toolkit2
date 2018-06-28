@@ -20,7 +20,10 @@ public enum OptionType {
     XDS_ON_FHIR("xdsonfhir", "XDS on FHIR"),
     DocumentReplace("docreplace", "Document Replace"),
     LifeCycle("lifecycle", "Life Cycle"),
-    Folder("folder", "Folder");
+    Folder("folder", "Folder"),
+    REMOVE("rm", "REMOVE"),
+    REMOVE_DOCUMENT("rd", "Remove Document"),
+    XAD_PID("xadpid", "XAD_PID");
 
 
 
