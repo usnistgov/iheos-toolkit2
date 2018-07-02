@@ -1140,7 +1140,11 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public Map<String, String> getToolkitProperties(CommandContext context)  throws Exception {
 //        installCommandContext(context);
-        return Installation.instance().propertyServiceManager().getToolkitProperties();
+        try {
+            return Installation.instance().propertyServiceManager().getToolkitProperties();
+        } catch (Throwable t) {
+            throw new Exception(t.getMessage());
+        }
     }
     @Override
     public boolean isGazelleConfigFeedEnabled(CommandContext context) throws Exception {
