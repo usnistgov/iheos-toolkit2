@@ -68,6 +68,11 @@ public class SubSetCollection extends RegObCollection implements Serializable {
 		return (parentStats + subSets.size()) + " SubmissionSets";
 	}
 
+	public boolean isSubSet(String id) {
+		SubSet ss = getById(id);
+		return ss != null;
+	}
+
 	public boolean hasObject(String id) {
 		if (id == null)
 			return false;
