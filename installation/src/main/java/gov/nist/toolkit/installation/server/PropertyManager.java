@@ -316,18 +316,26 @@ public class PropertyManager {
 		if (toolkitProperties != null)
 			return;
 		toolkitProperties = new Properties();
+		logger.info("Loading toolkit properties from " + propFile);
 		try {
-			logger.info("Loading toolkit properties from " + propFile);
 			toolkitProperties.load(new FileInputStream(propFile));
-
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			throw new ToolkitRuntimeException("Error loading toolkit.properties", e);
 		}
+
+		validateProperties();
+	}
+
+	private void validateProperties() {
+		boolean multiUserMode = toolkitProperties.getProperty(MULTIUSER_MODE, "false").equalsIgnoreCase("true");
+		boolean hasDefaultTestSession = !toolkitProperties.getProperty(DEFAULT_TEST_SESSION, "").equals("");
+
+		if (multiUserMode && !hasDefaultTestSession)
+			throw new ToolkitRuntimeException("In toolkit.properties: Multiuser_mode is true therefore Default_Test_Session must be set.");
 	}
 
 	public void saveProperties() {
+		validateProperties();
 		try {
 			FileOutputStream fos = new FileOutputStream(propFile);
 			toolkitProperties.store(fos, "");
@@ -342,6 +350,7 @@ public class PropertyManager {
 
 	public Map<String, String> getPropertyMap() {
 		loadProperties();
+		validateProperties();
 		Map<String, String> props = new HashMap<String, String>();
 		for (Object keyObj : toolkitProperties.keySet()) {
 			String key = (String) keyObj;
