@@ -1,12 +1,13 @@
-package gov.nist.toolkit.fhir.simulators.sim.reg.models
+package gov.nist.toolkit.itTests.xdsModel
 
-import gov.nist.toolkit.metadataModel.Assoc
-import gov.nist.toolkit.metadataModel.DocEntry
-import gov.nist.toolkit.metadataModel.RegIndex
-import gov.nist.toolkit.metadataModel.SubSet
-import spock.lang.Specification
+import gov.nist.toolkit.installation.shared.TestSession
+import gov.nist.toolkit.itTests.support.ToolkitSpecification
+import gov.nist.toolkit.metadataModel.*
+import gov.nist.toolkit.testengine.assertionEngine.XdsModel
 
-class XdsModelTest extends Specification {
+class XdsModelTest extends ToolkitSpecification {
+    String env = 'default'
+    TestSession testSession = new TestSession('model')
 
     def 'Run Rule Test' () {
         setup:
@@ -21,14 +22,14 @@ class XdsModelTest extends Specification {
 
         when:
         model.store.mc.clear().addAll([de1, ss1, a1])
-        model.run()
+        println model.run(env, testSession, [:])
 
         then:
         !model.hasError
 
         when:
         model.store.mc.clear().addAll([de1, ss1, a1, de2])
-        model.run()
+        println model.run(env, testSession, [:])
 
         then:
         model.hasError

@@ -1,4 +1,4 @@
-package gov.nist.toolkit.fhir.simulators.sim.reg.models
+package gov.nist.toolkit.metadataModel
 
 import gov.nist.toolkit.metadataModel.MetadataCollection
 import gov.nist.toolkit.metadataModel.RegistryFactory

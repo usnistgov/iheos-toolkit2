@@ -1,9 +1,9 @@
-package gov.nist.toolkit.fhir.simulators.sim.reg.models
+package gov.nist.toolkit.testengine.assertionEngine
 
-import gov.nist.toolkit.metadataModel.Assoc
-import gov.nist.toolkit.metadataModel.DocEntry
-import gov.nist.toolkit.metadataModel.RegIndex
-import gov.nist.toolkit.metadataModel.SubSet
+import gov.nist.toolkit.installation.shared.TestSession
+import gov.nist.toolkit.metadataModel.*
+import gov.nist.toolkit.testengine.engine.AbstractValidater
+import gov.nist.toolkit.testkitutilities.TestKit
 import groovy.transform.TypeChecked
 
 @TypeChecked
@@ -68,34 +68,24 @@ class XdsModel {
         store.mc.docEntryCollection.getEntries()
     }
 
-    // DE is linked to a SS
-    def rule_DEhasSS() {
-        allDE().each { DocEntry de ->
-            println "rule_DEhasSS: Processing ${de.objectDescription}"
-            List<SSandAssoc> ssa = ss(de)
-            if (ssa.empty) {
-                error("${de.getObjectDescription()} not linked to a SubmissionSet")
-                return
-            }
-            if (ssa.size() > 1)
-                error("${de.getObjectDescription()} is linked to multiple SubmissionSets ${ssa}")
-            SubSet ss = ssa[0].subSet
-            Assoc a = ssa[0].assoc
-            if (a.assocType != RegIndex.AssocType.HASMEMBER)
-                error("${de.getObjectDescription()} is linked to ${a.getObjectDescription()} through a ${a.assocType} Association instead of a HASMEMBER")
-            if (a.from != ss.id)
-                error("SS-DE HasMember must reference SS with sourceObject not targetObject - SS is ${ss.getObjectDescription()}  DE is ${de.getObjectDescription()}")
-        }
-    }
+    XdsModelValidationResults run(String env, TestSession testSession, Map<String, String> parameters) {
+        AssertionContext.Context context = AssertionContext.get(TestKit.PluginType.XDSMODEL_ASSERTION, env, testSession)
+        List<AbstractValidater> validaters = context.getAllValidaters(parameters)
 
-    def run() {
-        rule_DEhasSS()
+        List<XdsModelValidationResult> results = validaters.collect { AbstractValidater aval ->
+            if (!(aval instanceof AbstractXdsModelValidater))
+                return new XdsModelValidationResult()
+            AbstractXdsModelValidater validater = (AbstractXdsModelValidater)aval
+            XdsModelValidationResult result = new XdsModelValidationResult()
+            result.assertionName = validater.getClass().getSimpleName()
+            validater.validate(this, result)
+            if (result.hasErrors())
+                hasError = true
+            result
+        }
+        new XdsModelValidationResults(results)
+
     }
 
     boolean hasError = false
-
-    def error(String msg) {
-        println msg
-        hasError = true
-    }
 }
