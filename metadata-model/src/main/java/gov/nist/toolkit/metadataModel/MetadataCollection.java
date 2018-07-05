@@ -1,9 +1,9 @@
-package gov.nist.toolkit.fhir.simulators.sim.reg.store;
+package gov.nist.toolkit.metadataModel;
 
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegIndex.AssocType;
+import gov.nist.toolkit.metadataModel.RegIndex.AssocType;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.utilities.id.UuidAllocator;

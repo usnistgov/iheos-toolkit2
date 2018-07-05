@@ -2,10 +2,10 @@ package gov.nist.toolkit.fhir.simulators.sim.reg.sq;
 
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrysupport.logging.LoggerException;
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.Fol;
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.MetadataCollection;
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegIndex;
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.StatusValue;
+import gov.nist.toolkit.metadataModel.Fol;
+import gov.nist.toolkit.metadataModel.MetadataCollection;
+import gov.nist.toolkit.metadataModel.RegIndex;
+import gov.nist.toolkit.metadataModel.StatusValue;
 import gov.nist.toolkit.valregmsg.registry.SQCodeAnd;
 import gov.nist.toolkit.valregmsg.registry.SQCodeOr;
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.FindFolders;

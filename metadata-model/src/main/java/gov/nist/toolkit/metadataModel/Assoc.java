@@ -1,6 +1,6 @@
-package gov.nist.toolkit.fhir.simulators.sim.reg.store;
+package gov.nist.toolkit.metadataModel;
 
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegIndex.AssocType;
+import gov.nist.toolkit.metadataModel.RegIndex.AssocType;
 
 import java.io.Serializable;
 

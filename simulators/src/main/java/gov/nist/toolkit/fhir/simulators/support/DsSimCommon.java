@@ -12,7 +12,7 @@ import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.fhir.simulators.sim.reg.AdhocQueryResponseGenerator;
 import gov.nist.toolkit.fhir.simulators.sim.reg.RegistryResponseSendingSim;
 import gov.nist.toolkit.fhir.simulators.sim.reg.SoapWrapperRegistryResponseSim;
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegIndex;
+import gov.nist.toolkit.metadataModel.RegIndex;
 import gov.nist.toolkit.fhir.simulators.sim.rep.RepIndex;
 import gov.nist.toolkit.http.HttpParserBa;
 import gov.nist.toolkit.installation.server.Installation;

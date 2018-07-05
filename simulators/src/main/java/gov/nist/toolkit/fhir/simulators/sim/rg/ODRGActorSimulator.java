@@ -7,7 +7,7 @@ import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.SimulatorStats;
 import gov.nist.toolkit.fhir.simulators.servlet.SimServlet;
 import gov.nist.toolkit.fhir.simulators.sim.reg.RegistryActorSimulator;
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegIndex;
+import gov.nist.toolkit.metadataModel.RegIndex;
 import gov.nist.toolkit.fhir.simulators.sim.rep.od.OddsActorSimulator;
 import gov.nist.toolkit.fhir.simulators.support.BaseDsActorSimulator;
 import gov.nist.toolkit.fhir.simulators.support.DsSimCommon;

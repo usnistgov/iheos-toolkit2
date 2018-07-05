@@ -2,7 +2,7 @@ package gov.nist.toolkit.fhir.simulators.sim.reg
 import gov.nist.toolkit.errorrecording.TextErrorRecorder
 import gov.nist.toolkit.registrymetadata.Metadata
 import gov.nist.toolkit.fhir.simulators.sim.reg.sq.GetAllSim
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegIndex
+import gov.nist.toolkit.metadataModel.RegIndex
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.QueryReturnType
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.SqParams
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.StoredQuerySupport

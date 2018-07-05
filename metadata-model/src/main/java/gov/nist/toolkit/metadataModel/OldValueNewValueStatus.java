@@ -1,4 +1,4 @@
-package gov.nist.toolkit.fhir.simulators.sim.reg.store;
+package gov.nist.toolkit.metadataModel;
 
 /**
  * Created by bill on 2/23/17.

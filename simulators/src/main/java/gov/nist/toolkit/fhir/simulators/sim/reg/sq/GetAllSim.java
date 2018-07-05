@@ -1,10 +1,8 @@
 package gov.nist.toolkit.fhir.simulators.sim.reg.sq;
 
 import gov.nist.toolkit.docref.EbRim;
+import gov.nist.toolkit.metadataModel.*;
 import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.*;
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegIndex;
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.StatusValue;
 import gov.nist.toolkit.valregmsg.registry.SQCodeAnd;
 import gov.nist.toolkit.valregmsg.registry.SQCodeOr;
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.GetAll;

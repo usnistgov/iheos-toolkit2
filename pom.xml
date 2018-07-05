@@ -91,6 +91,7 @@
         <module>it-tests</module>
         <module>plugin-support</module>
         <module>plugins</module>
+        <module>metadata-model</module>
         <!--<module>it-tests/pomForIsolatedTests.xml</module>-->
         <!--<module>it-tests-maven-plugin</module>-->
     </modules>

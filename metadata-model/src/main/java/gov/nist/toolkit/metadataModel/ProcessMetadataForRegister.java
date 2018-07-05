@@ -1,4 +1,4 @@
-package gov.nist.toolkit.fhir.simulators.sim.reg.store;
+package gov.nist.toolkit.metadataModel;
 
 import gov.nist.toolkit.common.datatypes.Hl7Date;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
@@ -6,7 +6,7 @@ import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegIndex.AssocType;
+import gov.nist.toolkit.metadataModel.RegIndex.AssocType;
 import gov.nist.toolkit.valregmetadata.top.SubmissionStructure;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import org.apache.axiom.om.OMElement;

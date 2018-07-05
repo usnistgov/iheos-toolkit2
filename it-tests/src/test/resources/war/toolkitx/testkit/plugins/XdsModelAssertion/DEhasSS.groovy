@@ -1,10 +1,10 @@
 package war.toolkitx.testkit.plugins.XdsModelAssertion
 
 import gov.nist.toolkit.fhir.simulators.sim.reg.models.XdsModel
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.Assoc
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.DocEntry
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegIndex
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.SubSet
+import gov.nist.toolkit.metadataModel.Assoc
+import gov.nist.toolkit.metadataModel.DocEntry
+import gov.nist.toolkit.metadataModel.RegIndex
+import gov.nist.toolkit.metadataModel.SubSet
 
 class DEhasSS {
     XdsModel model

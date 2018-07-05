@@ -2,9 +2,9 @@ package gov.nist.toolkit.fhir.simulators.sim.reg
 
 import gov.nist.toolkit.registrymetadata.Metadata
 import gov.nist.toolkit.registrymetadata.MetadataParser
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.MetadataCollection
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegIndex
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegistryFactory
+import gov.nist.toolkit.metadataModel.MetadataCollection
+import gov.nist.toolkit.metadataModel.RegIndex
+import gov.nist.toolkit.metadataModel.RegistryFactory
 import spock.lang.Specification
 /**
  * Created by bill on 8/24/15.

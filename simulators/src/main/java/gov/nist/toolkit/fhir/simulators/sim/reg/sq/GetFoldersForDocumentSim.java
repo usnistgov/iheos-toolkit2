@@ -2,11 +2,11 @@ package gov.nist.toolkit.fhir.simulators.sim.reg.sq;
 
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrysupport.logging.LoggerException;
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.Assoc;
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.DocEntry;
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.Fol;
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.MetadataCollection;
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegIndex;
+import gov.nist.toolkit.metadataModel.Assoc;
+import gov.nist.toolkit.metadataModel.DocEntry;
+import gov.nist.toolkit.metadataModel.Fol;
+import gov.nist.toolkit.metadataModel.MetadataCollection;
+import gov.nist.toolkit.metadataModel.RegIndex;
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.GetFoldersForDocument;
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.QueryReturnType;
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.StoredQuerySupport;
