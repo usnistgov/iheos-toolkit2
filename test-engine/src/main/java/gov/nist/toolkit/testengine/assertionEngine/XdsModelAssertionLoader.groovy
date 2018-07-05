@@ -1,0 +1,16 @@
+package gov.nist.toolkit.testengine.assertionEngine
+
+import gov.nist.toolkit.pluginSupport.loader.PluginClassLoader
+import gov.nist.toolkit.testkitutilities.TestKit
+import gov.nist.toolkit.testkitutilities.TestKitSearchPath
+
+class XdsModelAssertionLoader extends PluginClassLoader {
+    XdsModelAssertionLoader(String... paths) throws IOException {
+        super(paths)
+    }
+
+    XdsModelAssertionLoader(TestKitSearchPath testKitSearchPath) {
+        super(testKitSearchPath.getPluginDirs(TestKit.PluginType.XDSMODEL_ASSERTION));
+    }
+
+}

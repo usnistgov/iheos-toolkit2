@@ -11,6 +11,7 @@ public class AssocCollection extends RegObCollection implements Serializable {
 	
 	transient public AssocCollection parent = null;
 
+	public void clear() { assocs.clear(); }
 	
 	public String toString() {
 		return assocs.size() + " Associations";

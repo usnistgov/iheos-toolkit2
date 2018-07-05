@@ -30,6 +30,11 @@ public class Ro  implements Serializable  {
 	public StatusValue getAvailabilityStatus() {
 		return availabilityStatus;
 	}
+
+	public Ro withStatus(StatusValue status) {
+		availabilityStatus = status;
+		return this;
+	}
 		
 	public String getType() {
 		return "RegistryObject";
@@ -60,6 +65,11 @@ public class Ro  implements Serializable  {
 	
 	public String getId() {
 		return id;
+	}
+
+	public Ro withId(String id) {
+		this.id = id;
+		return this;
 	}
 	
 	public String getObjectDescription() {

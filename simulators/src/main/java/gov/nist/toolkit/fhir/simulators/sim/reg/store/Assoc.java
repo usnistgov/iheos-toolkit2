@@ -33,4 +33,29 @@ public class Assoc extends Ro implements Serializable {
 		return type.toString() + " source=" + from + " target=" + to;
 	}
 
+	public Assoc withFrom(String id) {
+		from = id;
+		return this;
+	}
+
+	public Assoc withFrom(Ro ro) {
+		from = ro.id;
+		return this;
+	}
+
+	public Assoc withTo(String id) {
+		to = id;
+		return this;
+	}
+
+	public Assoc withTo(Ro ro) {
+		to = ro.id;
+		return this;
+	}
+
+	public Assoc withType(AssocType theType) {
+		type = theType;
+		return this;
+	}
+
 }

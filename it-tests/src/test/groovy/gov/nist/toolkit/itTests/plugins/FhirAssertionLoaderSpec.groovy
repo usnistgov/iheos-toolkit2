@@ -9,7 +9,7 @@ import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.client.SimIdFactory
 import gov.nist.toolkit.testengine.engine.FhirSimulatorTransaction
 import gov.nist.toolkit.testengine.engine.fhirValidations.AbstractFhirValidater
-import gov.nist.toolkit.testengine.engine.fhirValidations.FhirAssertionLoader
+import gov.nist.toolkit.testengine.assertionEngine.FhirAssertionLoader
 import gov.nist.toolkit.testengine.engine.fhirValidations.SimReference
 import gov.nist.toolkit.testengine.engine.fhirValidations.ValidaterResult
 import gov.nist.toolkit.testkitutilities.TestKitSearchPath

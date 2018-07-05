@@ -14,6 +14,7 @@ public class FolCollection extends RegObCollection implements Serializable {
 	
 	transient public FolCollection parent = null;
 
+	public void clear() { fols.clear(); }
 	
 	public String toString() {
 		return fols.size() + " Folders";

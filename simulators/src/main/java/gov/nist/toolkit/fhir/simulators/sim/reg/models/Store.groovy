@@ -14,4 +14,8 @@ class Store {
         RegistryFactory.buildMetadataIndex(metadata, mc)
     }
 
+    Store() {
+
+    }
+
 }

@@ -65,15 +65,18 @@ class XdsModel {
     }
 
     List<DocEntry> allDE() {
-
+        store.mc.docEntryCollection.getEntries()
     }
 
     // DE is linked to a SS
     def rule_DEhasSS() {
         allDE().each { DocEntry de ->
+            println "rule_DEhasSS: Processing ${de.objectDescription}"
             List<SSandAssoc> ssa = ss(de)
-            if (ssa.empty)
+            if (ssa.empty) {
                 error("${de.getObjectDescription()} not linked to a SubmissionSet")
+                return
+            }
             if (ssa.size() > 1)
                 error("${de.getObjectDescription()} is linked to multiple SubmissionSets ${ssa}")
             SubSet ss = ssa[0].subSet
@@ -85,7 +88,14 @@ class XdsModel {
         }
     }
 
-    static error(String msg) {
+    def run() {
+        rule_DEhasSS()
+    }
+
+    boolean hasError = false
+
+    def error(String msg) {
         println msg
+        hasError = true
     }
 }

@@ -37,6 +37,19 @@ class PluginClassLoader extends GroovyClassLoader {
         throw new ClassNotFoundException("Cannot find $className")
     }
 
+    List<String> getAllPluginClassNames() {
+        List<String> items = []
+
+        paths.each { File path ->
+            path.listFiles().each { File file ->
+                if (file.name.endsWith('.groovy'))
+                    items << file.name
+            }
+        }
+
+        return items
+    }
+
 
     private Loader loader(File file) throws IOException {
         if (!file.exists()) {

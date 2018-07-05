@@ -20,7 +20,6 @@ import org.apache.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -48,6 +47,15 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 	public MetadataCollection() {
 		init();
 		buildAllCollections();
+	}
+
+	public MetadataCollection clear() {
+		docEntryCollection.clear();
+		assocCollection.clear();
+		subSetCollection.clear();
+		folCollection.clear();
+		allCollections.clear();
+		return this;
 	}
 
 	private Logger logger() { return Logger.getLogger(MetadataCollection.class); }
@@ -580,4 +588,16 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 
 	void clearAllCollections() { allCollections = null; }
 
+	public void addAll(Collection<Ro> objs) throws MetadataException {
+		for (Ro ro : objs) {
+			if (ro instanceof SubSet)
+				add((SubSet) ro);
+			if (ro instanceof DocEntry)
+				add((DocEntry) ro);
+			if (ro instanceof Assoc)
+				add((Assoc) ro);
+			if (ro instanceof Fol)
+				add((Fol) ro);
+		}
+	}
 }

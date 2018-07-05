@@ -14,7 +14,10 @@ public class DocEntryCollection extends RegObCollection implements Serializable 
 	List<DocEntry> entries;
 	
 	transient public DocEntryCollection parent = null;
-	
+
+	public void clear() { entries.clear(); }
+
+	public List<DocEntry> getEntries() { return entries; }
 	
 	public String toString() {
 		return entries.size() + " DocumentEntries";

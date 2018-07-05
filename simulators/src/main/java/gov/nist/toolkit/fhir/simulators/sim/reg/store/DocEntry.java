@@ -29,7 +29,6 @@ public class DocEntry extends PatientObject implements Serializable {
 	public String getType() {
 		return "DocumentEntry";
 	}
-	
 
 }
 

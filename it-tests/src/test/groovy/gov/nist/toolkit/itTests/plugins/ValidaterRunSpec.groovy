@@ -15,7 +15,7 @@ import gov.nist.toolkit.testengine.engine.FhirSimulatorTransaction
 import gov.nist.toolkit.testengine.engine.ILogReporting
 import gov.nist.toolkit.testengine.engine.TestConfig
 import gov.nist.toolkit.testengine.engine.ToolkitEnvironment
-import gov.nist.toolkit.testengine.engine.fhirValidations.FhirAssertionLoader
+import gov.nist.toolkit.testengine.assertionEngine.FhirAssertionLoader
 import gov.nist.toolkit.testengine.engine.fhirValidations.SimReference
 import gov.nist.toolkit.testengine.transactions.MhdClientTransaction
 import gov.nist.toolkit.testengine.transactions.TransactionInstanceBuilder

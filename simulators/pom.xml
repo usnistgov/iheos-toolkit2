@@ -13,6 +13,14 @@
     <dependencies>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
+            <artifactId>test-engine</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>plugin-support</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
             <artifactId>sim-support</artifactId>
         </dependency>
         <dependency>

@@ -3,7 +3,6 @@ package gov.nist.toolkit.testengine.assertionEngine
 import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.pluginSupport.loader.PluginClassLoader
 import gov.nist.toolkit.testengine.engine.AbstractValidater
-import gov.nist.toolkit.testengine.engine.fhirValidations.FhirAssertionLoader
 import gov.nist.toolkit.testkitutilities.TestKit
 import gov.nist.toolkit.testkitutilities.TestKitSearchPath
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException
@@ -27,7 +26,7 @@ class AssertionContext {
         AbstractValidater getValidater(String validaterClassName, Map<String, String> parameters) {
             Class validaterClass
             try {
-                validaterClass = getPluginClassLoader().loadFile(validaterClassName + ".groovy");
+                validaterClass = getPluginClassLoader().loadFile(validaterClassName.endsWith('.groovy') ? validaterClassName : validaterClass + ".groovy");
             } catch (ClassNotFoundException e) {
                 throw new ValidaterNotFoundException("Unknown validater ${validaterClassName} in " + environment + "/" + testSession + "\n" + getPluginClassLoader().paths)
             }
@@ -37,6 +36,11 @@ class AssertionContext {
             if (!(obj instanceof AbstractValidater))
                 throw new ValidaterNotFoundException("Validator " + validaterClassName + " in " + environment + "/" + testSession + " not instance of AbstractValidater")
             return obj
+        }
+
+        List<AbstractValidater> getAllValidaters(Map<String, String> parameters) {
+            List<String> pluginClassNames = pluginClassLoader.getAllPluginClassNames()
+            pluginClassNames.collect { String className -> getValidater(className, parameters) }
         }
     }
 
@@ -49,6 +53,8 @@ class AssertionContext {
             PluginClassLoader loader
             if (pluginType == TestKit.PluginType.FHIR_ASSERTION)
                 loader = new FhirAssertionLoader(new TestKitSearchPath(environment, testSession))
+            else if (pluginType == TestKit.PluginType.XDSMODEL_ASSERTION)
+                loader = new XdsModelAssertionLoader(new TestKitSearchPath(environment, testSession))
             else
                 throw new ToolkitRuntimeException("No classloader for Plugin type $pluginType")
             context = new Context(pluginType, environment, testSession, loader)
