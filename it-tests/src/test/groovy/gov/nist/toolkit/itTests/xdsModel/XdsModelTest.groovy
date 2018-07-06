@@ -4,34 +4,80 @@ import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.metadataModel.*
 import gov.nist.toolkit.testengine.assertionEngine.XdsModel
+import gov.nist.toolkit.testengine.assertionEngine.XdsModelValidationResult
+import gov.nist.toolkit.testengine.assertionEngine.XdsModelValidationResults
+import gov.nist.toolkit.testengine.assertionEngine.XdsModelValidationSummary
+import spock.lang.Shared
 
 class XdsModelTest extends ToolkitSpecification {
-    String env = 'default'
-    TestSession testSession = new TestSession('model')
+    @Shared Store store = new Store()
+    @Shared XdsModel model = new XdsModel(store)
+    @Shared String env = 'default'
+    @Shared TestSession testSession = new TestSession('model')
+    @Shared singleDocSubmit = [
+            new DocEntry().withId('de1'),
+            new SubSet().withId('ss1'),
+            new Assoc().withFrom('ss1').withTo('de1').withType(RegIndex.AssocType.HASMEMBER).withId('a1')
+    ]
 
-    def 'Run Rule Test' () {
-        setup:
-        Store store = new Store()
-        XdsModel model = new XdsModel(store)
+    ///////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
 
-        DocEntry de1 = new DocEntry().withId('de1')
-        SubSet ss1 = new SubSet().withId('ss1')
-        Assoc a1 = new Assoc().withFrom(ss1).withTo(de1).withType(RegIndex.AssocType.HASMEMBER).withId('a1')
-
-        DocEntry de2 = new DocEntry().withId('de2')
-
+    def 'Single Doc Submit' () {
         when:
-        model.store.mc.clear().addAll([de1, ss1, a1])
-        println model.run(env, testSession, [:])
+        XdsModelValidationResults results = run(singleDocSubmit)
 
         then:
-        !model.hasError
+        results.failingValidaters.empty
+    }
 
+    def 'DE no SS' () {
         when:
-        model.store.mc.clear().addAll([de1, ss1, a1, de2])
-        println model.run(env, testSession, [:])
+        XdsModelValidationResults results = run([
+                new DocEntry().withId('de2')
+        ])
 
         then:
-        model.hasError
+        results.getFailingValidaterNames() == ['DEhasSS'] as Set
+    }
+
+    def 'SS without content'() {
+        when:
+        XdsModelValidationResults results = run([
+                new SubSet().withId('SS1')
+        ])
+
+        then:
+        results.getFailingValidaterNames() == ['SShasContent'] as Set
+    }
+
+    def 'SS referenced by Assoc.targetObject' () {
+        when:
+        XdsModelValidationResults results = run([
+                new DocEntry().withId('de1'),
+                new SubSet().withId('ss1'),
+                new Assoc().withFrom('de1').withTo('ss1').withType(RegIndex.AssocType.HASMEMBER).withId('a1')
+        ])
+
+        then:
+        results.getFailingValidaterNames() == ['DEhasSS', 'SSassoc_direction'] as Set
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
+
+    XdsModelValidationResults run(objects) {
+        model.store.mc.clear().addAll(objects)
+        XdsModelValidationResults results = model.run(env, testSession, [:])
+        report(results)
+        results
+    }
+
+    def report(results) {
+        println '***********************************************'
+        println results.toString(XdsModelValidationResult.Level.INFO)
+        println '++++++++++++++++++++++'
+        println new XdsModelValidationSummary(results, model.objectCount()).toString()
+        println '***********************************************'
     }
 }

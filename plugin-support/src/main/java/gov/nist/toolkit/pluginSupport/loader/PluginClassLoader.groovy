@@ -74,7 +74,7 @@ class PluginClassLoader extends GroovyClassLoader {
             if (file == null) {
                 return null;
             }
-            System.out.println("Reading file " + file);
+            System.out.println("Loading " + file);
             try {
                 return parseClass(file);
             } catch (IOException e) {

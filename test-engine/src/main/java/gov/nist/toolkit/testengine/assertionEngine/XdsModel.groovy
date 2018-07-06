@@ -61,11 +61,22 @@ class XdsModel {
 
     // Assocs linking to this ss
     List<Assoc> subSetAssoc(SubSet ss) {
-
+        store.mc.assocCollection.getBySourceOrDest(ss.id, ss.id)
     }
 
     List<DocEntry> allDE() {
         store.mc.docEntryCollection.getEntries()
+    }
+
+    List<SubSet> allSS() {
+        store.mc.subSetCollection.getEntries()
+    }
+
+    int objectCount() {
+        store.mc.docEntryCollection.getEntries().size() +
+                store.mc.subSetCollection.getEntries().size() +
+                store.mc.folCollection.getEntries().size() +
+                store.mc.assocCollection.getEntries().size()
     }
 
     XdsModelValidationResults run(String env, TestSession testSession, Map<String, String> parameters) {
@@ -74,9 +85,9 @@ class XdsModel {
 
         List<XdsModelValidationResult> results = validaters.collect { AbstractValidater aval ->
             if (!(aval instanceof AbstractXdsModelValidater))
-                return new XdsModelValidationResult()
+                return new XdsModelValidationResult(null)
             AbstractXdsModelValidater validater = (AbstractXdsModelValidater)aval
-            XdsModelValidationResult result = new XdsModelValidationResult()
+            XdsModelValidationResult result = new XdsModelValidationResult(validater)
             result.assertionName = validater.getClass().getSimpleName()
             validater.validate(this, result)
             if (result.hasErrors())

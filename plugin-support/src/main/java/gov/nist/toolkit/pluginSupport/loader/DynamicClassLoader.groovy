@@ -1,4 +1,6 @@
-package gov.nist.toolkit.pluginSupport.loader;
+package gov.nist.toolkit.pluginSupport.loader
+
+import gov.nist.toolkit.utilities.io.Io;
 
 import java.util.jar.JarFile
 import java.util.zip.ZipEntry
@@ -64,7 +66,7 @@ class DynamicClassLoader extends AggressiveClassLoader {
             if (file == null) {
                 return null
             }
-            System.out.println("Reading file " + file)
+            System.out.println("Loading " + file)
             try {
                 return Io.bytesFromFile(file)
             } catch (IOException e) {

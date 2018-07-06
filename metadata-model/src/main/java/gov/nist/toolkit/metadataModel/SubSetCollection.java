@@ -13,6 +13,8 @@ public class SubSetCollection extends RegObCollection implements Serializable {
 	
 	transient public SubSetCollection parent = null;
 
+	public List<SubSet> getEntries() { return subSets; }
+
 	public void clear() { subSets.clear(); }
 
 	public String toString() {

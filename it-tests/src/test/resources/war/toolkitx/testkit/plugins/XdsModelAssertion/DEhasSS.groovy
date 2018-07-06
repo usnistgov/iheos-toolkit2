@@ -9,14 +9,17 @@ import gov.nist.toolkit.metadataModel.SubSet
 import gov.nist.toolkit.testengine.assertionEngine.XdsModelValidationResult
 
 class DEhasSS extends AbstractXdsModelValidater {
+    int processed = 0
 
 
+    String description = 'DocumentEntries are properly linked to SubmissionSets via a HasMember Association'
 
+    @Override
     void validate(XdsModel model, XdsModelValidationResult result) {
 
         model.allDE().each { DocEntry de ->
-//            result.assertionName = this.getClass().getName()
-            result.info("rule_DEhasSS: Processing ${de.objectDescription}")
+            processed++
+            result.trace("${this.getClass().simpleName}: Processing ${de.objectDescription}")
             List<XdsModel.SSandAssoc> ssa = model.ss(de)
             if (ssa.empty) {
                 result.error("${de.getObjectDescription()} not linked to a SubmissionSet")
@@ -31,5 +34,10 @@ class DEhasSS extends AbstractXdsModelValidater {
             if (a.from != ss.id)
                 result.error("SS-DE HasMember must reference SS with sourceObject not targetObject - SS is ${ss.getObjectDescription()}  DE is ${de.getObjectDescription()}")
         }
+    }
+
+    @Override
+    int getNumberObjectsProcessed() {
+        return processed
     }
 }
