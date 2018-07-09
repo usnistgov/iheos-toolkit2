@@ -58,6 +58,7 @@ public class Xdstools2ActivityMapper implements ActivityMapper {
         if (place instanceof ConfActor) {
             ConfActor confActor = (ConfActor) place;
             ConfActorActivity confActorActivity = clientFactory.getConfActorActivity();
+            confActorActivity.setState(confActor.getState());
             confActorActivity.setConfActor(confActor);
             pushHomeTabToBackground();
             return confActorActivity;

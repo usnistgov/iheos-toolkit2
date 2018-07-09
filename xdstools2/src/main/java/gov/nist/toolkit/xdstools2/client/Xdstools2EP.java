@@ -4,9 +4,13 @@ import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.web.bindery.event.shared.HandlerRegistration;
+import gov.nist.toolkit.xdstools2.client.event.ToolkitInitializationCompleteEvent;
+import gov.nist.toolkit.xdstools2.client.event.ToolkitInitializationCompleteEventHandler;
 import gov.nist.toolkit.xdstools2.client.util.ClientFactory;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.TestInstance;
@@ -22,14 +26,15 @@ public class Xdstools2EP implements EntryPoint{
     private  ClientFactory CLIENT_FACTORY= GWT.create(ClientFactory.class);
     //    private static final EventBus EVENT_BUS= .getEventBus();
     private TestInstanceActivity testInstanceActivity =CLIENT_FACTORY.getTestInstanceActivity();
+    private HandlerRegistration activityHandler;
 
     @Override
     public void onModuleLoad() {
-        // start the application
+
+        // Start the application
         testInstanceActivity.getView().run();
 
         PlaceController placeController = CLIENT_FACTORY.getPlaceController();
-
 
         // Start ActivityManager for the main widget with our ActivityMapper
         ActivityMapper activityMapper = new Xdstools2ActivityMapper(CLIENT_FACTORY);
@@ -43,10 +48,13 @@ public class Xdstools2EP implements EntryPoint{
 
         historyHandler.register(placeController, CLIENT_FACTORY.getEventBus(), new TestInstance("HOME"));
 
+        ClientUtils.INSTANCE.getEventBus().addHandler(ToolkitInitializationCompleteEvent.TYPE, new ToolkitInitializationCompleteEventHandler() {
+                    @Override
+                    public void onInitialized(ToolkitInitializationCompleteEvent event) {
+                        // Goes to place represented on URL or default place
+                        historyHandler.handleCurrentHistory();
+                    }
+        });
         RootLayoutPanel.get().add(testInstanceActivity.getView());
-
-        // Goes to place represented on URL or default place
-        historyHandler.handleCurrentHistory();
     }
-
 }

@@ -190,6 +190,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         response.setToolkitBaseUrl(Installation.instance().getToolkitBaseUrl());
         logger.info("Toolkit Base URL is " + response.getToolkitBaseUrl());
         response.setWikiBaseUrl(Installation.instance().wikiBaseAddress());
+        response.setTkPropMap(props.getToolkitProperties());
         return response;
     }
 

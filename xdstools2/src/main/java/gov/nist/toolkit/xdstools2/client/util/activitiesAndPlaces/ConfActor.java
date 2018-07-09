@@ -66,4 +66,8 @@ public class ConfActor extends Place {
             return ca.state.tokenize();
         }
     }
+
+    public State getState() {
+        return state;
+    }
 }

@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
-import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
@@ -37,8 +37,6 @@ public class SimConfigEditorTabLoader {
         List<SimId> ids = new ArrayList<>();
         SimId si = new SimId(new TestSession(state.getValue(Token.TEST_SESSION)), state.getValue(Token.SYSTEM_ID));
         ids.add(si);
-
-        // TODO: Set environment?
 
         new GetSimConfigsCommand() {
             @Override
