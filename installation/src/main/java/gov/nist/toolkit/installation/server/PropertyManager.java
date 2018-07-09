@@ -59,8 +59,8 @@ public class PropertyManager {
 			String value = props.get(key);
 			validateProperty(key, value);
 			toolkitProperties.put(key, value);
-			save(props);
 		}
+		save(props);
 	}
 
 	private void validateProperty(String name, String value) throws Exception {
