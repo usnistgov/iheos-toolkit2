@@ -498,7 +498,10 @@
         </rim:ValueList>
       </rim:Slot>
     </rim:Association>
-    <rim:Association sourceObject="Folder" targetObject="Document01" associationType="urn:oasis:names:tc:ebxml-regrep:AssociationType:HasMember"/>    
-	<rim:Association sourceObject="Folder" targetObject="Document02" associationType="urn:oasis:names:tc:ebxml-regrep:AssociationType:HasMember"/>        	
-  </rim:RegistryObjectList>
+    <rim:Association id="FD_DE01_HM" sourceObject="Folder" targetObject="Document01" associationType="urn:oasis:names:tc:ebxml-regrep:AssociationType:HasMember"/>    
+	<rim:Association id="FD_DE02_HM" sourceObject="Folder" targetObject="Document02" associationType="urn:oasis:names:tc:ebxml-regrep:AssociationType:HasMember"/>        	
+    <rim:Association id="SS_FD_DE01_HM" sourceObject="SubmissionSet01" targetObject="FD_DE01_HM" associationType="urn:oasis:names:tc:ebxml-regrep:AssociationType:HasMember"/>    
+	<rim:Association id="SS_FD_DE02_HM" sourceObject="SubmissionSet01" targetObject="FD_DE02_HM" associationType="urn:oasis:names:tc:ebxml-regrep:AssociationType:HasMember"/>
+	<rim:Association id="SS_FD_HM" sourceObject="SubmissionSet01" targetObject="Folder" associationType="urn:oasis:names:tc:ebxml-regrep:AssociationType:HasMember"/>        			      	
+   </rim:RegistryObjectList>
 </rs:SubmitObjectsRequest>

@@ -271,20 +271,14 @@
         </rim:Name>
       </rim:ExternalIdentifier>
     </rim:RegistryPackage>
-    <rim:Association targetObject="Document01" sourceObject="SubmissionSet01" associationType="HasMember">
+    <rim:Association sourceObject="SubmissionSet01" targetObject="Document01" associationType="HasMember">
       <rim:Slot name="SubmissionSetStatus">
         <rim:ValueList>
           <rim:Value>Original</rim:Value>
         </rim:ValueList>
       </rim:Slot>
     </rim:Association>
-    <rim:Association targetObject="Folder" sourceObject="SubmissionSet01" associationType="HasMember">
-	<rim:Slot name="SubmissionSetStatus">
-        <rim:ValueList>
-          <rim:Value>Original</rim:Value>
-        </rim:ValueList>
-      </rim:Slot>
-    </rim:Association>
+    <rim:Association sourceObject="SubmissionSet01" targetObject="Folder" associationType="HasMember"/>
 	<rim:Association sourceObject="SubmissionSet01" targetObject="FolderDocument01Assoc" associationType="HasMember"/>
     <rim:Association id="FolderDocument01Assoc" sourceObject="Folder" targetObject="Document01" associationType="HasMember"/>
     <rim:Classification classifiedObject="SubmissionSet01" classificationNode="urn:uuid:a54d6aa5-d40d-43f9-88c5-b4633d873bdd"/>

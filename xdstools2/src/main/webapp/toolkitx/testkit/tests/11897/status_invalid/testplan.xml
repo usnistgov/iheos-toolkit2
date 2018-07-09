@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>11897/status_invalid</Test>
+  <Rule>Test FindDocuments Stored Query over SOAP12</Rule>
+  <TestStep id="leafclass">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>FindDocuments</SQ>
+      <Assertion>Same as Step: "approved", but now pass invalid status.</Assertion>
+    </Rule>
+    <ExpectedStatus>Failure</ExpectedStatus>
+	<ExpectedErrorCode>XDSStoredQueryMissingParam</ExpectedErrorCode>    
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+      <UseId testdir="../../12346/single_doc" id="SubmissionSet01" symbol="$patient_id$" 
+        step="submit_doc" section="AssignedPatientId"/>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

@@ -1,2 +1,2 @@
 TestData
-reg
+reg_mpq
