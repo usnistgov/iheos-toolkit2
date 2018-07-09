@@ -287,6 +287,10 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 		return null;
 	}
 
+	public boolean exists(String id) {
+		return getObjectById(id) != null;
+	}
+
 	public void addDocEntryToFolAssoc(DocEntry de, Fol f) throws MetadataException, XdsInternalException, IOException {
 		addAssoc(f.getId(), de.getId(), AssocType.HASMEMBER);
 	}

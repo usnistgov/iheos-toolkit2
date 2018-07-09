@@ -20,6 +20,28 @@ class XdsModelTest extends ToolkitSpecification {
             new Assoc().withFrom('ss1').withTo('de1').withType(RegIndex.AssocType.HASMEMBER).withId('a1')
     ]
 
+    def mkSingleDocSubmit(ssID, deID, assocID) {
+        [
+                new DocEntry().withId(deID),
+                new SubSet().withId(ssID),
+                new Assoc().withFrom(ssID).withTo(deID).withType(RegIndex.AssocType.HASMEMBER).withId(assocID)
+        ]
+    }
+
+    List<DocEntry> filterDEs(List<Ro> objects) {
+        objects.findAll { Ro ro -> ro instanceof DocEntry} as List<DocEntry>
+    }
+
+    List<Ro> deprecateDEs(List<Ro> objects) {
+        List<Ro> a =
+        objects.collect { Ro ro ->
+            if (ro instanceof DocEntry)
+                ro.deprecate()
+            ro
+        } as List<Ro>
+        return a
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////
 
@@ -61,6 +83,39 @@ class XdsModelTest extends ToolkitSpecification {
 
         then:
         results.getFailingValidaterNames() == ['DEhasSS', 'SSassoc_direction'] as Set
+    }
+
+    def 'Replaced DEs are deprecated'() {
+        when:  // good
+        XdsModelValidationResults results = run(
+                deprecateDEs(mkSingleDocSubmit('ss1', 'de1', 'hm1')) +
+                        mkSingleDocSubmit('ss2', 'de2', 'hm2')
+                        + [new Assoc().withFrom('de2').withTo('de1').withType(RegIndex.AssocType.RPLC).withId('rplc1')]
+        )
+
+        then:
+        results.failingValidaters.empty
+
+        when:  // not deprecated
+        XdsModelValidationResults results2 = run(
+                mkSingleDocSubmit('ss1', 'de1', 'hm1') +
+                        mkSingleDocSubmit('ss2', 'de2', 'hm2')
+                        + [new Assoc().withFrom('de2').withTo('de1').withType(RegIndex.AssocType.RPLC).withId('rplc1')]
+        )
+
+        then:
+        results2.getFailingValidaterNames() == ['ReplacedDEDeprecated'] as Set
+    }
+
+    def 'Check assoc references valid'() {
+        when:
+        XdsModelValidationResults results = run(
+                mkSingleDocSubmit('ss2', 'de2', 'hm2') +
+                        [new Assoc().withFrom('de2').withTo('de1').withType(RegIndex.AssocType.APND).withId('rplc1')]
+        )
+
+        then:
+        results.getFailingValidaterNames() == ['AssocReferencesValid'] as Set
     }
 
     ///////////////////////////////////////////////////////////////////////////

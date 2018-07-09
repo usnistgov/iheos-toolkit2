@@ -26,6 +26,10 @@ public class Ro  implements Serializable  {
 	public void setAvailabilityStatus(StatusValue status) {
 		availabilityStatus = status;
 	}
+
+	public void deprecate() {
+		setAvailabilityStatus(StatusValue.DEPRECATED);
+	}
 	
 	public StatusValue getAvailabilityStatus() {
 		return availabilityStatus;

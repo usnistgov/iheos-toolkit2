@@ -117,7 +117,7 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 		return values;
 	}
 
-	public enum AssocType { UNKNOWN, HASMEMBER, RPLC, RPLC_XFRM, XFRM, APND };
+	public enum AssocType { UNKNOWN, HASMEMBER, RPLC, RPLC_XFRM, XFRM, APND, ISSNAPSHOTOF, SIGNS };
 
 	static public AssocType getAssocType(Metadata m, OMElement ele) {
 		String typ = Metadata.getAssocType(ele);
