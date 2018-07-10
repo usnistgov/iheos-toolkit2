@@ -158,12 +158,25 @@ public class ToolLauncher implements ClickHandler {
 		if (def == null) return null;
 
 		final Map<String,String> tkPropMap = ClientUtils.INSTANCE.getTkPropMap();
-		final String requestedTestSession = state.getValue(Token.TEST_SESSION);
 		boolean multiUserModeEnabled = Boolean.parseBoolean(tkPropMap.get("Multiuser_mode"));
 		boolean casModeEnabled = Boolean.parseBoolean(tkPropMap.get("Cas_mode"));
 		ToolkitUserMode userMode = (multiUserModeEnabled) ? (casModeEnabled ? ToolkitUserMode.CAS_USER : ToolkitUserMode.MULTI_USER) : ToolkitUserMode.SINGLE_USER;
 		String currentEnvironment = tkPropMap.get("Default_Environment");
-		String requestedEnvironment = state.getValue(Token.ENVIRONMENT);
+		final String requestedTestSession;
+		final String requestedEnvironment;
+		if (state !=null) {
+			requestedEnvironment = state.getValue(Token.ENVIRONMENT);
+			requestedTestSession = state.getValue(Token.TEST_SESSION);
+			// Test Session
+			if (requestedTestSession==null || "".equals(requestedTestSession)) {
+				throw new ToolkitRuntimeException("testSession parameter is required.");
+			} else {
+				setupTestSession(userMode, requestedTestSession, null);
+			}
+		} else {
+			requestedEnvironment = null;
+			requestedTestSession = null;
+		}
 		String menuName = def.getMenuName();
 
 		if (menuName.equals(mpqFindDocumentsTabLabel))
@@ -209,12 +222,7 @@ public class ToolLauncher implements ClickHandler {
 					setupEnvironment(state, userMode, requestedEnvironment, currentEnvironment);
 				}
 
-				// Test Session
-				if (requestedTestSession==null || "".equals(requestedTestSession)) {
-					throw new ToolkitRuntimeException("testSession parameter is required.");
-				} else {
-					setupTestSession(userMode, requestedTestSession, null);
-				}
+
 				// systemId
 				String systemId = state.getValue(Token.SYSTEM_ID);
 				if (systemId==null || "".equals(systemId)) {

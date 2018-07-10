@@ -30,7 +30,7 @@ public class State {
 
     public void restore() {
         // New delimiter
-        if (paramString.indexOf(";")>-1) {
+        if (paramString.indexOf("=")>-1) {
            parseNewFormatString();
         }
         // Old delimiter

@@ -44,7 +44,7 @@ public class Xdstools2EP implements EntryPoint{
 
         // Start PlaceHistoryHandler with our PlaceHistoryMapper
         Xdstools2PlaceHistoryMapper historyMapper = GWT.create(Xdstools2PlaceHistoryMapper.class);
-        PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(historyMapper);
+        final PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(historyMapper);
 
         historyHandler.register(placeController, CLIENT_FACTORY.getEventBus(), new TestInstance("HOME"));
 
