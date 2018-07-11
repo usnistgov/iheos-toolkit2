@@ -167,12 +167,6 @@ public class ToolLauncher implements ClickHandler {
 		if (state !=null) {
 			requestedEnvironment = state.getValue(Token.ENVIRONMENT);
 			requestedTestSession = state.getValue(Token.TEST_SESSION);
-			// Test Session
-			if (requestedTestSession==null || "".equals(requestedTestSession)) {
-				throw new ToolkitRuntimeException("testSession parameter is required.");
-			} else {
-				setupTestSession(userMode, requestedTestSession, null);
-			}
 		} else {
 			requestedEnvironment = null;
 			requestedTestSession = null;
@@ -213,7 +207,9 @@ public class ToolLauncher implements ClickHandler {
 		if (menuName.equals(newSimulatorMessageViewTabLabel)) return new NewToolLauncher().launch(new SimMsgViewer());
 		if (menuName.equals(simulatorControlTabLabel)) return new SimulatorControlTab();
 		if (menuName.equals(simulatorConfigEditTabLabel)) {
-
+			/*
+			This specific tool requires explicit parameters
+			 */
 			if (state!=null) {
 				// Environment
 				if (requestedEnvironment==null || "".equals(requestedEnvironment)) {
@@ -222,6 +218,12 @@ public class ToolLauncher implements ClickHandler {
 					setupEnvironment(state, userMode, requestedEnvironment, currentEnvironment);
 				}
 
+				// Test session
+				if (requestedTestSession==null || "".equals(requestedTestSession)) {
+					throw new ToolkitRuntimeException("testSession parameter is required.");
+				} else {
+					setupTestSession(userMode, requestedTestSession, null);
+				}
 
 				// systemId
 				String systemId = state.getValue(Token.SYSTEM_ID);

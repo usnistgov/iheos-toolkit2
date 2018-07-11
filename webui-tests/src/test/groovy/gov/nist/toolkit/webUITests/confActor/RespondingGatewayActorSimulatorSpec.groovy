@@ -13,7 +13,7 @@ import spock.lang.Timeout
  * Created by skb1 on 6/28/2017.
  */
 @Stepwise
-@Timeout(360)
+@Timeout(90)
 class RespondingGatewayActorSimulatorSpec extends ConformanceActor {
 
     static final String simName = "rg" /* Sim names should be lowered cased */
@@ -45,7 +45,7 @@ class RespondingGatewayActorSimulatorSpec extends ConformanceActor {
 
     def 'Get rg actor page.'() {
         when:
-        loadPage(String.format("%s/#ConfActor:default/%s/rg", toolkitBaseUrl, simUser))
+        loadPage(String.format("%s/#ConfActor:env=default;testSession=%s;actor=rg;", toolkitBaseUrl, simUser))
 
         then:
         page != null

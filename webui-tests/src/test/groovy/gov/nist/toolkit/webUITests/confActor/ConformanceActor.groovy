@@ -7,7 +7,7 @@ import spock.lang.Timeout
  * Created by skb1 on 6/5/2017.
  */
 @Stepwise
-@Timeout(120)
+@Timeout(90)
 abstract class ConformanceActor extends ToolkitWebPage {
 
     abstract void setupSim()
@@ -25,7 +25,7 @@ abstract class ConformanceActor extends ToolkitWebPage {
 
     def 'Select session.'() {
         when:
-        loadPage(String.format("%s/#Tool:Simulators",toolkitBaseUrl))
+        loadPage(String.format("%s/#Tool:toolId=Simulators",toolkitBaseUrl))
         HtmlOption newlySelectedSessionOption = useTestSession(simUser)
 
         then:
@@ -177,11 +177,21 @@ abstract class ConformanceActor extends ToolkitWebPage {
 
         when:
         page = assignBtn.click()
+        webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
 
-        then:
-        page.asText().contains("SUT: " + getSimId())
     }
 
+    def 'Get again (x2) repository conformance actor page.'() {
+        when:
+        loadPage(actorPage)
 
+        then:
+        page != null
+    }
+
+    def 'Check SUT'() {
+        expect:
+        page.asText().contains("SUT: " + getSimId())
+    }
 
 }

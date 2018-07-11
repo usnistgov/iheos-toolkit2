@@ -58,7 +58,7 @@
                     <includes>
                         <include>**/SimulatorManagerSpec.java</include>
                         <include>**/RegistryActorSimulatorSpec.java</include>
-                        <!--<include>**/RepositoryActorSimulatorSpec.java</include>-->
+                        <include>**/RepositoryActorSimulatorSpec.java</include>
                         <!--<include>**/RecipientActorSimulatorSpec.java</include>-->
                         <!--<include>**/RespondingGatewayActorSimulatorSpec.java</include>-->
                     </includes>

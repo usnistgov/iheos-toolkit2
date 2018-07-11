@@ -11,11 +11,11 @@ import spock.lang.Timeout
  * Created by skb1 on 6/5/2017.
  */
 @Stepwise
-@Timeout(360)
+@Timeout(90)
 class RepositoryActorSimulatorSpec extends ConformanceActor {
 
     static final String simName = "rep" /* Sim names should be lowered cased */
-    final String actorPage = String.format("%s/#ConfActor:default/%s/rep", toolkitBaseUrl, simUser)
+    final String actorPage = String.format("%s/#ConfActor:env=default;testSession=%s;actor=rep", toolkitBaseUrl, simUser)
 
     @Shared DocumentRepository repSim
 
@@ -176,7 +176,7 @@ class RepositoryActorSimulatorSpec extends ConformanceActor {
         return getSpi().update(simConfig)
     }
 
-    def 'Get (again) repository conformance actor page.'() {
+    def 'Get again (x1) repository conformance actor page.'() {
         when:
         loadPage(actorPage)
 
@@ -226,15 +226,12 @@ class RepositoryActorSimulatorSpec extends ConformanceActor {
         page = initializeBtn.click(false, false, false)
         webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
 
-        while (!page.asText().contains("Initialization Complete")) {
-            webClient.waitForBackgroundJavaScript(500)
-        }
-
         then:
         page.asText().contains("Initialization Complete")
 
         // There are no tests for repository orchestration tests to look for.
     }
+
 
     def 'Find and Click the RunAll Test Registry Conformance Actor image button.'() {
 

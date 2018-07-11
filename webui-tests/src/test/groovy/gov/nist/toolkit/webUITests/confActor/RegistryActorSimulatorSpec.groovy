@@ -14,7 +14,7 @@ import spock.lang.Timeout
  * Created by skb1 on 6/5/2017.
  */
 @Stepwise
-@Timeout(360)
+@Timeout(90)
 class RegistryActorSimulatorSpec extends ConformanceActor {
 
     static final String simName = "reg" /* Sim names should be lowered cased */
@@ -46,7 +46,9 @@ class RegistryActorSimulatorSpec extends ConformanceActor {
     // Registry actor specific
     def 'Get registry conformance actor page.'() {
         when:
-        loadPage(String.format("%s/#ConfActor:default/%s/reg",toolkitBaseUrl,simUser))
+        // http://127.0.0.1:8888/Xdstools2.html#ConfActor:default/dev/reg/xds/xua/reg1
+        // http://127.0.0.1:8888/Xdstools2.html#ConfActor:env=default;testSession=dev;actor=reg;profile=xds;option=xua;systemId=reg1;
+        loadPage(String.format("%s/#ConfActor:env=default;testSession=%s;actor=reg;",toolkitBaseUrl,simUser))
 
         then:
         page != null
@@ -148,7 +150,7 @@ class RegistryActorSimulatorSpec extends ConformanceActor {
         elementList = page.getByXPath("//div[contains(@class, 'orchestrationTestMc') and contains(@class, 'testOverviewHeaderSuccess')]")
 
         then:
-        elementList!=null && elementList.size()==7
+        elementList!=null && elementList.size()==8 // Orchestration tests
     }
 
     def 'Find and Click the RunAll Test Registry Conformance Actor image button.'() {

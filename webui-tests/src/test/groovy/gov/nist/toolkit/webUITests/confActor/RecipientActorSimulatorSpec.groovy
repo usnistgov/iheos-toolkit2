@@ -14,7 +14,7 @@ import spock.lang.Timeout
  * Created by skb1 on 6/22/2017.
  */
 @Stepwise
-@Timeout(360)
+@Timeout(90)
 class RecipientActorSimulatorSpec extends ConformanceActor {
 
     static final String simName = "recip" /* Sim names should be lowered cased */
@@ -46,7 +46,7 @@ class RecipientActorSimulatorSpec extends ConformanceActor {
 
     def 'Get recipient actor page.'() {
         when:
-        loadPage(String.format("%s/#ConfActor:default/%s/rec", toolkitBaseUrl, simUser))
+        loadPage(String.format("%s/#ConfActor:env=default;testSession=%s;actor=rec", toolkitBaseUrl, simUser))
 
         then:
         page != null
