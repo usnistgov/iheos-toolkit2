@@ -15,12 +15,12 @@ import spock.lang.Timeout
 class RepositoryActorSimulatorSpec extends ConformanceActor {
 
     static final String simName = "rep" /* Sim names should be lowered cased */
-    final String actorPage = String.format("%s/#ConfActor:env=default;testSession=%s;actor=rep", toolkitBaseUrl, simUser)
 
     @Shared DocumentRepository repSim
 
     @Override
     void setupSim() {
+        setActorPage(String.format("%s/#ConfActor:env=default;testSession=%s;actor=rep", toolkitBaseUrl, simUser))
         deleteOldRepSim()
         sleep(5000) // Why we need this -- Problem here is that the Delete request via REST could be still running before we execute the next Create REST command. The PIF Port release timing will be off causing a connection refused error in the Jetty log.
         repSim = createNewRepSim()
@@ -40,16 +40,8 @@ class RepositoryActorSimulatorSpec extends ConformanceActor {
         return getSpi().createDocumentRepository(simName, simUser, "default")
     }
 
-
-
     // Repository actor specific
-    def 'Get repository conformance actor page.'() {
-        when:
-        loadPage(actorPage)
 
-        then:
-        page != null
-    }
 
     // Was there a previous SUT selected but doesn't exist now?
     def 'No unexpected popup or error message presented in a dialog box.'() {

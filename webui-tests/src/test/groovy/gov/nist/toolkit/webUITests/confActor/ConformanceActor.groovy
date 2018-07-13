@@ -1,6 +1,7 @@
 package gov.nist.toolkit.webUITests.confActor
 
 import com.gargoylesoftware.htmlunit.html.*
+import spock.lang.Shared
 import spock.lang.Stepwise
 import spock.lang.Timeout
 /**
@@ -10,11 +11,14 @@ import spock.lang.Timeout
 @Timeout(90)
 abstract class ConformanceActor extends ToolkitWebPage {
 
+    @Shared String actorPage
     abstract void setupSim()
     abstract String getSimId()
 
     def setupSpec() {
         setupSim()
+        if (actorPage==null)
+            throw new Exception("ActorPage needs to be initialized")
     }
     def cleanupSpec() {
     }
@@ -177,20 +181,18 @@ abstract class ConformanceActor extends ToolkitWebPage {
 
         when:
         page = assignBtn.click()
-        webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
+
+        then:
+        page != null
 
     }
 
-    def 'Get again (x2) repository conformance actor page.'() {
+    def 'Verify SUT selection'() {
         when:
         loadPage(actorPage)
 
         then:
         page != null
-    }
-
-    def 'Check SUT'() {
-        expect:
         page.asText().contains("SUT: " + getSimId())
     }
 

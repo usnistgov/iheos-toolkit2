@@ -26,7 +26,7 @@ abstract class ToolkitWebPage extends Specification  {
     static final String simUser = "webuitest"
 
 
-    static final int maxWaitTimeInMills = 60000* 2 // 2 minute (s)
+    static final int maxWaitTimeInMills = 60000* 5 // Keep this to accommodate slow computers. 5 minute (s).
 
     void composeToolkitBaseUrl() {
         this.toolkitBaseUrl = String.format("%s:%s", toolkitHostName, toolkitPort)
