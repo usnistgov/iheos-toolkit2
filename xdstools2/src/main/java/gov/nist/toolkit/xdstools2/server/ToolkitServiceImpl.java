@@ -768,12 +768,21 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         installCommandContext(request);
         return session().xdsTestServiceManager().getCollectionMembers(request.getCollectionSetName(), request.getTcId());
     }
+
     @Override
     public List<TestOverviewDTO> getTestsOverview(GetTestsOverviewRequest request) throws Exception {
         installCommandContext(request);
         List<TestOverviewDTO> o = session().xdsTestServiceManager().getTestsOverview(request.getTestSession(), request.getTestInstances());
         return o;
     }
+
+    @Override
+    public List<TestOverviewDTO> getTestsResultEnvelope(GetTestsOverviewRequest request) throws Exception {
+        installCommandContext(request);
+        List<TestOverviewDTO> o = session().xdsTestServiceManager().getTestsResultEnvelope(request.getTestSession(), request.getTestInstances());
+        return o;
+    }
+
     public List<SectionDefinitionDAO> getTestSectionsDAOs(GetTestSectionsDAOsRequest request) throws Exception {
         installCommandContext(request);
         Session session = session().xdsTestServiceManager().session;

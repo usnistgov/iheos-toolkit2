@@ -32,6 +32,10 @@ public class TestOverviewDTO implements BasicTestOverview, Serializable, IsSeria
 
     public TestInstance getTestInstance() { return testInstance; }
 
+    public TestOverviewDTO(TestInstance testInstance) {
+        setTestInstance(testInstance);
+    }
+
     public String getName() {
         return name;
     }

@@ -337,7 +337,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 			public void onSuccess(List<TestInstance> testInstances) {
 				myTestsPerActorOption.put(actorOption, testInstances);
 
-				new GetTestsOverviewCommand() {
+				new GetTestsResultEnvelopeCommand() {
 					@Override
 					public void onComplete(List<TestOverviewDTO> testOverviews) {
 						for (TestOverviewDTO testOverview : testOverviews) {
