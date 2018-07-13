@@ -53,8 +53,9 @@
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>2.19.1</version>
                 <configuration>
-                    <!-- Note: Tests only support Multiuser_mode=false and Cas_mode=false. May be this can be checked at runtime and throw a graceful error message. -->
+                    <!-- Note: These tests were only tested in Single user mode: Multiuser_mode=false and Cas_mode=false. -->
                     <!-- Uncomment below to debug individual tests -->
+                    <!-- While running these tests, keep an eye on projectdir/webui-tests/target/2018_07_13.stderrout.log to view server for output,errors, or javascript wait timeout issues. -->
                     <includes>
                         <include>**/SimulatorManagerSpec.java</include>
                         <include>**/RegistryActorSimulatorSpec.java</include>
