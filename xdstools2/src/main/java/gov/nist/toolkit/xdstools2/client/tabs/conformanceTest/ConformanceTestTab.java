@@ -658,7 +658,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 			new GetPrunedTabConfigCommand() {
 				@Override
 				public void onComplete(UserTestCollection userTestCollection) {
-					GWT.log("In loadTestCollections.");
+//					GWT.log("In loadTestCollections.");
 					me.testCollectionDefinitionDAOs = userTestCollection.getTestCollectionDefinitionDAOs();
 					ConformanceTestTab.super.tabConfig = userTestCollection.getTabConfig();
 					// Initial load of tests in a test session
@@ -768,9 +768,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 			@Override
 			public void onSuccess(List<TestInstance> testInstances) {
-				mainView.showLoadingMessage("Loading...");
 				displayTests(testsPanel, testInstances, allowRun());
-				mainView.clearLoadingMessage();
 			}
 		});
 	}
@@ -785,41 +783,44 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 		GetTestsOverviewRequest tor = new GetTestsOverviewRequest(getCommandContext(), testInstances);
 
-		new GetTestsOverviewCommand() {
-			@Override
-			public void onComplete(List<TestOverviewDTO> testOverviews) {
-				// sort tests by dependencies and alphabetically
-				// save in testsPerActorOption so they run in this order as well
-				List<TestInstance> testInstances1 = new ArrayList<>();
-				testOverviews = new TestSorter().sort(testOverviews);
-				for (TestOverviewDTO dto : testOverviews) {
-					testInstances1.add(dto.getTestInstance());
-				}
-				testsPerActorOption.put(currentActorOption, testInstances1);
+		try {
+			mainView.showLoadingMessage("Loading...");
+			new GetTestsOverviewCommand() {
+				@Override
+				public void onComplete(List<TestOverviewDTO> testOverviews) {
+					// sort tests by dependencies and alphabetically
+					// save in testsPerActorOption so they run in this order as well
+					List<TestInstance> testInstances1 = new ArrayList<>();
+					testOverviews = new TestSorter().sort(testOverviews);
+					for (TestOverviewDTO dto : testOverviews) {
+						testInstances1.add(dto.getTestInstance());
+					}
+					testsPerActorOption.put(currentActorOption, testInstances1);
 
-				testsPanel.clear();
-				testsHeaderView.allowRun(allowRun());
-				testsPanel.add(testsHeaderView.asWidget());
+					testsPanel.clear();
+					testsHeaderView.allowRun(allowRun());
+					testsPanel.add(testsHeaderView.asWidget());
 //                testStatistics.clear();
 //                testStatistics.setTestCount(testOverviews.size());
-				for (TestOverviewDTO testOverview : testOverviews) {
-					updateTestOverview(testOverview);
-					InteractionDiagramDisplay diagramDisplay = new InteractionDiagramDisplay(
-							testOverview,
-							testContext.getTestSession(),
-							getSiteToIssueTestAgainst(),
-							((testContext.getSiteUnderTestAsSiteSpec() != null) ? testContext.getSiteUnderTestAsSiteSpec().getName() : ""),
-							currentActorOption,
-							getTestInstancePatientId(testOverview.getTestInstance(), parms));
-					TestDisplay testDisplay = testDisplayGroup.display(testOverview, diagramDisplay);
-					testsPanel.add(testDisplay.asWidget());
+					for (TestOverviewDTO testOverview : testOverviews) {
+						updateTestOverview(testOverview);
+						InteractionDiagramDisplay diagramDisplay = new InteractionDiagramDisplay(
+								testOverview,
+								testContext.getTestSession(),
+								getSiteToIssueTestAgainst(),
+								((testContext.getSiteUnderTestAsSiteSpec() != null) ? testContext.getSiteUnderTestAsSiteSpec().getName() : ""),
+								currentActorOption,
+								getTestInstancePatientId(testOverview.getTestInstance(), parms));
+						TestDisplay testDisplay = testDisplayGroup.display(testOverview, diagramDisplay);
+						testsPanel.add(testDisplay.asWidget());
+					}
+					updateTestsOverviewHeader(testsPerActorOption, testOverviewDTOs, testStatistics, currentActorOption);
+					mainView.clearLoadingMessage();
 				}
-				updateTestsOverviewHeader(testsPerActorOption, testOverviewDTOs, testStatistics, currentActorOption);
-
-				mainView.clearLoadingMessage();
-
-			}
-		}.run(tor);
+			}.run(tor);
+		} catch (Throwable t) {
+			mainView.clearLoadingMessage();
+		}
 	}
 
 	private static String getPatientIdStr(Map<String, String> parms) {
