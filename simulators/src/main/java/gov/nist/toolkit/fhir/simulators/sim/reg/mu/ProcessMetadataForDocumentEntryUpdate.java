@@ -29,16 +29,20 @@ public class ProcessMetadataForDocumentEntryUpdate implements ProcessMetadataInt
 	}
 
 	// this check is part of the update process and follows different rules
+	// this is important for submission but does not apply to MU
+	@Override
 	public void checkUidUniqueness(Metadata m) {
 		
 	}
 	
 	// does not apply
+	@Override
 	public void setLidToId(Metadata m) {
 		
 	}
 	
 	// only initialize version on elements that we don't version
+	@Override
 	public void setInitialVersion(Metadata m) {
 		try {
 			m.setDefaultVersionOfUnversionedElements();
@@ -46,10 +50,12 @@ public class ProcessMetadataForDocumentEntryUpdate implements ProcessMetadataInt
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, e);
 		}
 	}
-	
+
+	@Override
 	public void setNewFolderTimes(Metadata m) {
 	}
 
+	@Override
 	public void updateExistingFolderTimes(Metadata m) {
 		for (OMElement eo : m.getExtrinsicObjects()) {
 			String eoLid = m.getLid(eo);
@@ -64,7 +70,8 @@ public class ProcessMetadataForDocumentEntryUpdate implements ProcessMetadataInt
 			}
 		}
 	}
-	
+
+	@Override
 	public  void doRPLCDeprecations(Metadata m) {
 		for (OMElement a : m.getAssociations()) {
 			try {
@@ -82,6 +89,7 @@ public class ProcessMetadataForDocumentEntryUpdate implements ProcessMetadataInt
 		}
 	}
 
+	@Override
 	public void updateExistingFoldersWithReplacedDocs(Metadata m) {
 		for (OMElement a : m.getAssociations()) {
 			try {
@@ -99,6 +107,7 @@ public class ProcessMetadataForDocumentEntryUpdate implements ProcessMetadataInt
 			for (Fol f : origDEFols) {
 				try {
 					delta.addDocEntryToFolAssoc(de, f);
+					f.setLastUpdateTime(now);
 				} catch (Exception e) {
 					er.err(Code.XDSMetadataUpdateError, e);
 				}
@@ -144,7 +153,13 @@ public class ProcessMetadataForDocumentEntryUpdate implements ProcessMetadataInt
 		}
 	}
 
+	@Override
+	public void addDocsToUpdatedFolders(Metadata m) {
+
+	}
+
 	// use the default implementation
+	@Override
 	public void verifyAssocReferences(Metadata m) {
 		new ProcessMetadataForRegister(er, mc, delta).verifyAssocReferences(m);
 	}

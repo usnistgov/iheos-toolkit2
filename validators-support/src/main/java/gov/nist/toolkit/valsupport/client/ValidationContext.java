@@ -122,7 +122,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	public byte[] privKey = null;
 	public String privKeyPassword = "";
 
-	public enum MetadataPattern { UpdateDocumentEntry, UpdateDocumentEntryStatus };
+	public enum MetadataPattern { UpdateDocumentEntry, UpdateDocumentEntryStatus, UpdateFolder };
 
 	public List<MetadataPattern> metadataPatterns = new ArrayList<MetadataPattern>();
     public String wsAction;

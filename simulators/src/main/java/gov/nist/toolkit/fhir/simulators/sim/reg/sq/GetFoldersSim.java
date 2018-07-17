@@ -43,9 +43,8 @@ public class GetFoldersSim extends GetFolders {
 		} else if (fol_uid != null) {
 			List<Fol> des = new ArrayList<Fol>();
 			for (String uid : fol_uid) {
-				Fol f = mc.folCollection.getByUid(uid);
-				if (f != null)
-					des.add(f);
+				List<Fol> fs = mc.folCollection.getByUid(uid);
+				des.addAll(fs);
 			}
 			
 			List<String> uuidList = new ArrayList<String>();

@@ -36,75 +36,76 @@ public class GetFolderAndContentsSim extends GetFolderAndContents {
 		MetadataCollection mc = ri.getMetadataCollection();
 		List<Ro> results = new ArrayList<Ro>();
 		
-		Fol fol = null;
+		List<Fol> fols = new ArrayList<>();
 		if (fol_uuid != null) {
-			fol = mc.folCollection.getById(fol_uuid);
+			fols.add(mc.folCollection.getById(fol_uuid));
 		}
 		else if (fol_uid != null) {
-			fol = mc.folCollection.getByUid(fol_uid);
+			fols = mc.folCollection.getByUid(fol_uid);
 		} else {
 			getStoredQuerySupport().er.err(Code.XDSRegistryError, "Internal error: uid and uuid both null", this, null);
 		}
 		
-		if (fol == null) {
+		if (fols.isEmpty()) {
 			return new Metadata();
 		} else {
-			results.add(fol);
+			results.addAll(fols);
 		}
 
-		String folid = fol.getId();
-		
-		List<Assoc> folAssocs = mc.assocCollection.getBySourceDestAndType(folid, null, RegIndex.AssocType.HASMEMBER);
-		List<DocEntry> docEntries = new ArrayList<DocEntry>();
+		Metadata allM = new Metadata();
 
-//		results.addAll(folAssocs);
-		
-		for (Assoc a : folAssocs) {
-			String toId = a.getTo();
-			
-			DocEntry de = mc.docEntryCollection.getById(toId);
-			if (de != null) {
-				docEntries.add(de);
-				continue;
+		for (Fol fol : fols) {
+			String folid = fol.getId();
+
+			List<Assoc> folAssocs = mc.assocCollection.getBySourceDestAndType(folid, null, RegIndex.AssocType.HASMEMBER);
+			List<DocEntry> docEntries = new ArrayList<DocEntry>();
+
+			for (Assoc a : folAssocs) {
+				String toId = a.getTo();
+
+				DocEntry de = mc.docEntryCollection.getById(toId);
+				if (de != null) {
+					docEntries.add(de);
+				}
 			}
-			
+
+			// next remove docs that don't meet validate requirements based on formatCode and confidentialityCode
+			try {
+				if (format_code != null)
+					docEntries = mc.docEntryCollection.filterByFormatCode(format_code, docEntries);
+				if (conf_code != null)
+					docEntries = mc.docEntryCollection.filterByConfCode(conf_code, docEntries);
+			} catch (Exception e) {
+				getStoredQuerySupport().er.err(Code.XDSRegistryError, "Error filtering DocumentEntries by formatCode or confidentialityCode: " + e.getMessage(), this, null);
+				return new Metadata();
+			}
+
+			List<Ro> ros = new ArrayList<>();
+			ros.add(fol);
+			ros.addAll(docEntries);
+
+			// add in assocs where source and target are in response
+			// the source attributes all ref the folder
+			for (Assoc a : folAssocs) {
+				String target = a.getTo();
+
+				if (mc.docEntryCollection.hasObject(target, docEntries))
+					ros.add(a);
+			}
+
+			List<String> uuids = mc.getIdsForObjects(ros);
+
+			Metadata m = new Metadata();
+			m.setVersion3();
+			if (sqs.returnType == QueryReturnType.LEAFCLASS || sqs.returnType == QueryReturnType.LEAFCLASSWITHDOCUMENT) {
+				m = mc.loadRo(uuids);
+			} else {
+				m.mkObjectRefs(uuids);
+			}
+			allM.addMetadata(m, true);
 		}
 		
-		// next remove docs that don't meet validate requirements based on formatCode and confidentialityCode
-		try {
-			if (format_code != null)
-				docEntries = mc.docEntryCollection.filterByFormatCode(format_code, docEntries);
-			if (conf_code != null)
-				docEntries = mc.docEntryCollection.filterByConfCode(conf_code, docEntries);
-		} catch (Exception e) {
-			getStoredQuerySupport().er.err(Code.XDSRegistryError, "Error filtering DocumentEntries by formatCode or confidentialityCode: " + e.getMessage(), this, null);
-			return new Metadata();
-		}
-
-		List<Ro> ros = new ArrayList<Ro>();
-		ros.add(fol);
-		ros.addAll(docEntries);
-
-		// add in assocs where source and target are in response
-		// the source attributes all ref the folder
-		for (Assoc a : folAssocs) {
-			String target = a.getTo();
-			
-			if (mc.docEntryCollection.hasObject(target, docEntries))
-				ros.add(a);
-		}
-		
-		List<String> uuids = mc.getIdsForObjects(ros);
-
-		Metadata m = new Metadata();
-		m.setVersion3();
-		if (sqs.returnType == QueryReturnType.LEAFCLASS || sqs.returnType == QueryReturnType.LEAFCLASSWITHDOCUMENT) {
-			m = mc.loadRo(uuids);
-		} else {
-			m.mkObjectRefs(uuids);
-		}
-		
-		return m;
+		return allM;
 
 	}
 

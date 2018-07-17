@@ -92,16 +92,17 @@ public class FolCollection extends RegObCollection implements Serializable {
 		return parent.getById(id);
 	}
 	
-	public Fol getByUid(String uid) {
+	public List<Fol> getByUid(String uid) {
+		List<Fol> des = new ArrayList<>();
 		if (uid == null)
-			return null;
+			return des;
 		for (Fol f : fols) {
 			if (uid.equals(f.uid))
-				return f;
+				des.add(f);
 		}
-		if (parent == null)
-			return null;
-		return parent.getByUid(uid);
+		if (parent != null)
+			des.addAll(parent.getByUid(uid));
+		return des;
 	}
 	
 

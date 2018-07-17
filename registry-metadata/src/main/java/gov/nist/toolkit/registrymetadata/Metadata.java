@@ -328,6 +328,14 @@ public class Metadata {
 
 	}
 
+	public String getLastUpdateTime(OMElement folEle) {
+		return getSlotValue(folEle,"lastUpdateTime", 0);
+	}
+
+	public void setLastUpdateTime(OMElement folEle, String time) {
+		setSlotValue(folEle, "lastUpdateTime", 0, time);
+	}
+
 	/**
 	 * Move top-level classifications under the objects they classification.
 	 * Classification model can be top-level objects or nested inside the

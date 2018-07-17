@@ -288,6 +288,11 @@ public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 		}
 	}
 
+	@Override
+	public void addDocsToUpdatedFolders(Metadata m) {
+
+	}
+
 
 	// check for RPLC and RPLC_XFRM and do the deprecation
 	public  void doRPLCDeprecations(Metadata m) {

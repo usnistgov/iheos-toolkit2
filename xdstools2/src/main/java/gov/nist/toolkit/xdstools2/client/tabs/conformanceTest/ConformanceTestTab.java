@@ -851,7 +851,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 	}
 
 	private void displayOrchestrationHeader(Panel initializationPanel) {
-		new PopupMessage("ConformanceTestTab#displayOrchestrationHeader " + currentActorOption.toString());
+		//new PopupMessage("ConformanceTestTab#displayOrchestrationHeader " + currentActorOption.toString());
 		String label = "Initialize Test Environment";
 		ActorOptionConfig currentActorOption = this.currentActorOption;
 		if (currentActorOption.isRep()) {

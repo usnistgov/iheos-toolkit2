@@ -138,14 +138,10 @@ public class RegRSim extends TransactionSimulator   {
 		// Are all UUIDs, submitted and generated, valid?
 		validateUUIDs();
 
-		// MU will change
 		pmi.checkUidUniqueness(m);
 
-		// set logicalId to id
 		pmi.setLidToId(m);
 
-		// install version attribute in SubmissionSet, DocumentEntry and Folder objects
-		// install default version in Association, Classification, ExternalIdentifier
 		pmi.setInitialVersion(m);
 
 		// build update to metadata index with new objects
@@ -153,29 +149,20 @@ public class RegRSim extends TransactionSimulator   {
 		// This is done now because the operations below need this index
 		buildMetadataIndex(m);
 
-		// verify model/patient id linking rules are observed
-		pmi.associationPatientIdRules();
-
-		// set folder lastUpdateTime on folders in the submission
-		// must be done after metadata index built
 		pmi.setNewFolderTimes(m);
 
-		// set folder lastUpdateTime on folders already in the registry
-		// that this submission adds documents to
-		// must be done after metadata index built
 		pmi.updateExistingFolderTimes(m);
 
-		// verify that no associations are being added that:
-		//     reference a non-existant model in submission or registry
-		//     reference a Deprecated model in registry
 		pmi.verifyAssocReferences(m);
 
-		// check for RPLC and RPLC_XFRM and do the deprecation
 		pmi.doRPLCDeprecations(m);
 
-		// if a replaced doc is in a Folder, then new doc is placed in folder
-		// and folder lastUpateTime is updated
 		pmi.updateExistingFoldersWithReplacedDocs(m);
+
+		pmi.addDocsToUpdatedFolders(m);
+
+		// moved to end of list since above changes should be checked as well
+		pmi.associationPatientIdRules();
 	}
 
 	void rmHome() {
@@ -310,11 +297,11 @@ public class RegRSim extends TransactionSimulator   {
 			if (m.getSubmissionSet() != null)
 				log.debug("Save SubmissionSet(" + m.getSubmissionSetId() + ")");
 			for (OMElement ele : m.getExtrinsicObjects())
-				log.debug("Save DocEntry(" + m.getId(ele) + ")");
+				log.debug("Save DocEntry(" + Metadata.getId(ele) + ")");
 			for (OMElement ele : m.getFolders())
-				log.debug("Save Folder(" + m.getId(ele) + ")");
+				log.debug("Save Folder(" + Metadata.getId(ele) + ")");
 			for (OMElement ele : m.getAssociations())
-				log.debug("Save Assoc(" + m.getId(ele) + ")("+ m.getAssocSource(ele) + ", " + m.getAssocTarget(ele) + ", " + m.getSimpleAssocType(ele) + ")");
+				log.debug("Save Assoc(" + Metadata.getId(ele) + ")("+ Metadata.getAssocSource(ele) + ", " + Metadata.getAssocTarget(ele) + ", " + m.getSimpleAssocType(ele) + ")");
 		} catch (Exception e) {}
 
 		if (buildIndex) {

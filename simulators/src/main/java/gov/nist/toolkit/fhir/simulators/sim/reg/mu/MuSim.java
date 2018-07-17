@@ -107,6 +107,8 @@ public class MuSim extends RegRSim {
 
 		docEntryUpdateStatusTrigger(clone);
 
+		folderUpdateTrigger(clone);
+
 
 	}
 
@@ -188,6 +190,60 @@ public class MuSim extends RegRSim {
 		}
 	}
 
+	void folderUpdateTrigger(Metadata m) {
+		while (m.getFolders().size() > 0) {
+			OMElement folEle = m.getFolder(0);
+
+			String id = m.getId(folEle);
+			String lid = m.getLid(folEle);
+
+			OMElement ssAssoc = m.getAssociation(ssId, id, "HasMember");
+			String prevVer = null;
+			if (ssAssoc != null)
+				prevVer = m.getSlotValue(ssAssoc, "PreviousVersion", 0);
+
+			String prefix = "Update (trigger=" + UUIDToSymbolic.get(id) +") - cannot process - ";
+			String updateDocEntryRef = "ITI TF-2b:3.57.4.1.3.3.3";
+
+			boolean process = true;
+
+			if (ssAssoc == null) {
+				er.err(Code.XDSMetadataUpdateError, prefix + "no SubmissionSet HasMember Association found", this, updateDocEntryRef);
+				process = false;
+			}
+
+
+			if (lid == null) {
+				er.err(Code.XDSMetadataUpdateError, prefix + "logicalId not found, this cannot be an update (id=" + id + " lid=" + lid + ")", this, updateDocEntryRef);
+				process = false;
+			}
+
+			if (id.equals(lid)) {
+				er.err(Code.XDSMetadataUpdateError, prefix + "logicalId is same as id, this cannot be an update (id=" + id + " lid=" + lid + ")", this, updateDocEntryRef);
+				process = false;
+			}
+
+			if (lid != null && !m.isUuid(lid)) {
+				er.err(Code.XDSMetadataUpdateError, prefix + "logicalId is symbolic (not a UUID)  (id=" + id + " lid=" + lid + ")", this, updateDocEntryRef);
+				process = false;
+			}
+
+			if (prevVer == null) {
+				er.err(Code.XDSMetadataUpdateError, prefix + "PreviousVersion Slot not found on SubmissionSet to DocumentEntry HasMember Association", this, updateDocEntryRef);
+				process = false;
+			}
+
+			if (process)
+				new FolderUpdate().run(this, m, folEle, ssAssoc, prevVer);
+
+
+			// so we don't process these again
+			m.rmObject(folEle);
+			if (ssAssoc != null)
+				m.rmObject(ssAssoc);
+		}
+	}
+
 
 	void documentEntryUpdateTrigger(Metadata m) {
 		while (m.getExtrinsicObjects().size() > 0) {
@@ -235,7 +291,7 @@ public class MuSim extends RegRSim {
 
 
 			if (process) 
-				new DocumentEntryUpdate(common, er).run(this, m, docEle, ssAssoc, prevVer);
+				new DocumentEntryUpdate().run(this, m, docEle, ssAssoc, prevVer);
 
 			// so we don't process these again
 			m.rmObject(docEle);

@@ -3,23 +3,16 @@ package gov.nist.toolkit.fhir.simulators.sim.reg.mu;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
-import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.fhir.simulators.sim.reg.store.DocEntry;
 import gov.nist.toolkit.fhir.simulators.sim.reg.store.StatusValue;
-import gov.nist.toolkit.simcommon.server.SimCommon;
+import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.valsupport.client.ValidationContext.MetadataPattern;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
-
 import org.apache.axiom.om.OMElement;
 
 public class DocumentEntryUpdate  {
 	ErrorRecorder er;
 	
-	public DocumentEntryUpdate(SimCommon common, ErrorRecorder er) {
-//		super(common);
-//		this.er = er;
-	}
-
 	public void run(MuSim muSim, Metadata m, OMElement docEle, OMElement ssAssoc, String prevVer) {
 		er = muSim.er;
 		String lid = m.getLid(docEle);
