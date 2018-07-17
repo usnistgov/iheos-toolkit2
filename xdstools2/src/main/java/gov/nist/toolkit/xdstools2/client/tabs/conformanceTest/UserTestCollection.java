@@ -17,7 +17,6 @@ import java.util.Map;
 public class UserTestCollection implements Serializable, IsSerializable {
 
     private final List<TestCollectionDefinitionDAO> testCollectionDefinitionDAOs = new ArrayList<>();
-    private final Map<TestCollectionCode, List<TestInstance>> tcCode2TestInstancesMap = new HashMap<>();
     private TabConfig tabConfig;
 
     public UserTestCollection() {
@@ -35,7 +34,4 @@ public class UserTestCollection implements Serializable, IsSerializable {
         this.tabConfig = tabConfig;
     }
 
-    public Map<TestCollectionCode, List<TestInstance>> getTcCode2TestInstancesMap() {
-        return tcCode2TestInstancesMap;
-    }
 }

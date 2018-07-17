@@ -602,7 +602,6 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 //					GWT.log("In loadTestCollections.");
 					testCollectionDefinitionDAOs = userTestCollection.getTestCollectionDefinitionDAOs();
 					conformanceToolMenu.setTabConfig(userTestCollection.getTabConfig());
-					conformanceToolMenu.setTcCode2TestInstancesMap(userTestCollection.getTcCode2TestInstancesMap());
 					// Initial load of tests in a test session
 					displayActors();
 

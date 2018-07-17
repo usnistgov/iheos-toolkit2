@@ -26,8 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class ConformanceToolMenu {
-
-    private Map<TestCollectionCode, List<TestInstance>> tcCode2TestInstancesMap;
     private TabConfig tabConfig;
     static final int menuCols = 3;
 
@@ -48,27 +46,22 @@ public abstract class ConformanceToolMenu {
 
         statsBar.setHTML(loadImgHtmlStr);
 
-        if (getTcCode2TestInstancesMap().containsKey(actorOptionConfig.getTestCollectionCode())) {
-            List<TestInstance> testInstances = getTcCode2TestInstancesMap().get(actorOptionConfig.getTestCollectionCode());
-            myTestsPerActorOption.put(actorOptionConfig, testInstances);
-            getTestLogEnvelope(myTestOverviewDTOs, myTestsPerActorOption, testStatistics, actorOptionConfig, statsBar, testInstances);
-        } else {
-            actorOptionConfig.loadTests(new AsyncCallback<List<TestInstance>>() {
-                @Override
-                public void onFailure(Throwable throwable) {
-                    new PopupMessage("actorOptionConfig.loadTests: " + throwable.toString());
-                }
+        actorOptionConfig.loadTests(new AsyncCallback<List<TestInstance>>() {
+            @Override
+            public void onFailure(Throwable throwable) {
+                statsBar.setVisible(false);
+                new PopupMessage("getTestStatistics: " + throwable.getMessage());
+            }
 
-                @Override
-                public void onSuccess(List<TestInstance> testInstances) {
-                    myTestsPerActorOption.put(actorOptionConfig, testInstances);
-                    getTestLogEnvelope(myTestOverviewDTOs, myTestsPerActorOption, testStatistics, actorOptionConfig, statsBar, testInstances);
-                }
-            });
-        }
+            @Override
+            public void onSuccess(List<TestInstance> testInstances) {
+                myTestsPerActorOption.put(actorOptionConfig, testInstances);
+                getTestLogEnvelope(myTestOverviewDTOs, myTestsPerActorOption, testStatistics, actorOptionConfig, statsBar, testInstances);
+            }
+        });
     }
 
-    private void getTestLogEnvelope(final Map<TestInstance, TestOverviewDTO> myTestOverviewDTOs, final Map<ActorOptionConfig, List<TestInstance>> myTestsPerActorOption, final TestStatistics testStatistics, final ActorOptionConfig actorOptionConfig, final HTML statsBar, final List<TestInstance> testInstances) {
+    private void getTestLogEnvelope(final Map<TestInstance, TestOverviewDTO> myTestOverviewDTOs, final Map<ActorOptionConfig, List<TestInstance>> myTestsPerActorOption, final TestStatistics testStatistics, ActorOptionConfig actorOptionConfig, final HTML statsBar, final List<TestInstance> testInstances) {
 
         new GetTestsResultEnvelopeCommand() {
             @Override
@@ -352,11 +345,4 @@ public abstract class ConformanceToolMenu {
         this.tabConfig = tabConfig;
     }
 
-    public Map<TestCollectionCode, List<TestInstance>> getTcCode2TestInstancesMap() {
-        return tcCode2TestInstancesMap;
-    }
-
-    public void setTcCode2TestInstancesMap(Map<TestCollectionCode, List<TestInstance>> tcCode2TestInstancesMap) {
-        this.tcCode2TestInstancesMap = tcCode2TestInstancesMap;
-    }
 }
