@@ -835,7 +835,8 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 
         for (final TestCollectionDefinitionDAO tcd : userTestCollection.getTestCollectionDefinitionDAOs()) {
             for (TabConfig tabConfig : tabConfigRoot.getChildTabConfigs()) {
-                if (tabConfig.getTcCode().equals(new ActorOption(tcd.getCollectionID()).actorTypeId)) {
+                ActorOption actorOption = new ActorOption(tcd.getCollectionID());
+                if (tabConfig.getTcCode().equals(actorOption.actorTypeId)) {
                     tabConfig.setLabel(tcd.getCollectionTitle());
                     // Prune empty options
                     TabConfig profiles = tabConfig.getFirstChildTabConfig();
@@ -851,6 +852,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
                                     List<TestInstance> testInstances = getCollectionMembers(actorCollectionsRequest);
 
                                     if (testInstances != null && !testInstances.isEmpty()) {
+                                        userTestCollection.getTcCode2TestInstancesMap().put(actorOption.getTestCollectionCode(),testInstances);
                                         tabConfig.setVisible(true);
                                         profileTCfg.setVisible(true);
                                         optionTCfg.setVisible(true);

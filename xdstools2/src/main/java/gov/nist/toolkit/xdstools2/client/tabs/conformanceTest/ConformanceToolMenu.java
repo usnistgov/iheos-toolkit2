@@ -10,7 +10,9 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
+import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.actortransaction.shared.IheItiProfile;
+import gov.nist.toolkit.installation.shared.TestCollectionCode;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
@@ -25,6 +27,7 @@ import java.util.Map;
 
 public abstract class ConformanceToolMenu {
 
+    private Map<TestCollectionCode, List<TestInstance>> tcCode2TestInstancesMap;
     private TabConfig tabConfig;
     static final int menuCols = 3;
 
@@ -32,12 +35,12 @@ public abstract class ConformanceToolMenu {
     abstract CommandContext getCommandContext();
     abstract void updateTestStatistics(Map<ActorOptionConfig, List<TestInstance>> testsPerActorOption, Map<TestInstance, TestOverviewDTO> testOverviewDTOs, TestStatistics testStatistics, ActorOptionConfig actorOption);
 
-    public void setTestStatistics(final HTML statsBar,  final ActorOptionConfig actorOption) {
+    private void setTestStatistics(final HTML statsBar,  final ActorOptionConfig actorOptionConfig) {
         if (getCommandContext().getTestSessionName()==null || "".equals(getCommandContext().getTestSessionName()))
             return;
 
-        final TestStatistics testStatistics = new TestStatistics();
 
+        final TestStatistics testStatistics = new TestStatistics();
         final Map<TestInstance, TestOverviewDTO> myTestOverviewDTOs = new HashMap<>();
         final Map<ActorOptionConfig, List<TestInstance>> myTestsPerActorOption = new HashMap<>();
 
@@ -45,86 +48,93 @@ public abstract class ConformanceToolMenu {
 
         statsBar.setHTML(loadImgHtmlStr);
 
-        actorOption.loadTests(new AsyncCallback<List<TestInstance>>() {
-            @Override
-            public void onFailure(Throwable throwable) {
-                statsBar.setVisible(false);
-                new PopupMessage("getTestStatistics: " + throwable.getMessage());
-            }
+        if (getTcCode2TestInstancesMap().containsKey(actorOptionConfig.getTestCollectionCode())) {
+            List<TestInstance> testInstances = getTcCode2TestInstancesMap().get(actorOptionConfig.getTestCollectionCode());
+            myTestsPerActorOption.put(actorOptionConfig, testInstances);
+            getTestLogEnvelope(myTestOverviewDTOs, myTestsPerActorOption, testStatistics, actorOptionConfig, statsBar, testInstances);
+        } else {
+            actorOptionConfig.loadTests(new AsyncCallback<List<TestInstance>>() {
+                @Override
+                public void onFailure(Throwable throwable) {
+                    new PopupMessage("actorOptionConfig.loadTests: " + throwable.toString());
+                }
 
-            @Override
-            public void onSuccess(List<TestInstance> testInstances) {
-                myTestsPerActorOption.put(actorOption, testInstances);
+                @Override
+                public void onSuccess(List<TestInstance> testInstances) {
+                    myTestsPerActorOption.put(actorOptionConfig, testInstances);
+                    getTestLogEnvelope(myTestOverviewDTOs, myTestsPerActorOption, testStatistics, actorOptionConfig, statsBar, testInstances);
+                }
+            });
+        }
+    }
 
-                new GetTestsResultEnvelopeCommand() {
-                    @Override
-                    public void onComplete(List<TestOverviewDTO> testOverviews) {
-                        for (TestOverviewDTO testOverview : testOverviews) {
-                            myTestOverviewDTOs.put(testOverview.getTestInstance(), testOverview);
+    private void getTestLogEnvelope(final Map<TestInstance, TestOverviewDTO> myTestOverviewDTOs, final Map<ActorOptionConfig, List<TestInstance>> myTestsPerActorOption, final TestStatistics testStatistics, final ActorOptionConfig actorOptionConfig, final HTML statsBar, final List<TestInstance> testInstances) {
+
+        new GetTestsResultEnvelopeCommand() {
+            @Override
+            public void onComplete(List<TestOverviewDTO> testOverviews) {
+                for (TestOverviewDTO testOverview : testOverviews) {
+                    myTestOverviewDTOs.put(testOverview.getTestInstance(), testOverview);
+                }
+
+                updateTestStatistics(myTestsPerActorOption, myTestOverviewDTOs, testStatistics, actorOptionConfig);
+                String htmlStr = "<div style=\"width:10px;height:13px;border:1px solid;float:left;margin-right:2px;";
+                if (testStatistics.getTestCount()>0 && testStatistics.getNotRun() != testStatistics.getTestCount()) { // Don't show anything if not run is 100%
+                    htmlStr += "border-color:black;\">\n";
+                    if (testStatistics.getSuccesses()==testStatistics.getTestCount()) {
+                        htmlStr += "<div style=\"background-color:cyan;height:100%\"></div>\n";
+                    } else if (testStatistics.getFailures()==testStatistics.getTestCount()) {
+                        htmlStr += "<div style=\"background-color:coral;height:100%\"></div>\n";
+                    } else {
+                        float ts[] = new float[3];
+                        ts[0] = (float)testStatistics.getNotRun() / (float)testStatistics.getTestCount();
+                        ts[1] = (float)testStatistics.getSuccesses() / (float)testStatistics.getTestCount();
+                        ts[2] = (float)testStatistics.getFailures() / (float)testStatistics.getTestCount();
+
+                        // Boost small values below $boostVal to make more visible
+                        float adjustedVal = 0.0F;
+                        float boostVal = .25F;
+                        for (int idx=0; idx < ts.length; idx++) {
+                            if (ts[idx]>0 && ts[idx]<boostVal) {
+                                adjustedVal  += (boostVal-ts[idx]);
+                                ts[idx] = boostVal;
+                            }
                         }
-
-                        updateTestStatistics(myTestsPerActorOption, myTestOverviewDTOs, testStatistics, actorOption);
-                        String htmlStr = "<div style=\"width:10px;height:13px;border:1px solid;float:left;margin-right:2px;";
-                        if (testStatistics.getTestCount()>0 && testStatistics.getNotRun() != testStatistics.getTestCount()) { // Don't show anything if not run is 100%
-                            htmlStr += "border-color:black;\">\n";
-                            if (testStatistics.getSuccesses()==testStatistics.getTestCount()) {
-                                htmlStr += "<div style=\"background-color:cyan;height:100%\"></div>\n";
-                            } else if (testStatistics.getFailures()==testStatistics.getTestCount()) {
-                                htmlStr += "<div style=\"background-color:coral;height:100%\"></div>\n";
-                            } else {
-                                float ts[] = new float[3];
-                                ts[0] = (float)testStatistics.getNotRun() / (float)testStatistics.getTestCount();
-                                ts[1] = (float)testStatistics.getSuccesses() / (float)testStatistics.getTestCount();
-                                ts[2] = (float)testStatistics.getFailures() / (float)testStatistics.getTestCount();
-
-                                // Boost small values below $boostVal to make more visible
-                                float adjustedVal = 0.0F;
-                                float boostVal = .25F;
-                                for (int idx=0; idx < ts.length; idx++) {
-                                    if (ts[idx]>0 && ts[idx]<boostVal) {
-                                        adjustedVal  += (boostVal-ts[idx]);
-                                        ts[idx] = boostVal;
-                                    }
-                                }
-                                // Compensate for boosting from the majority index
-                                if (adjustedVal >0.0F) {
-                                    int majorityIdx = -1;
-                                    for (int idx = 0; idx < ts.length; idx++) {
-                                        if (ts[idx] >= .33F) {
-                                            if (majorityIdx==-1)  {
-                                                majorityIdx = idx;
-                                            } else {
-                                                if (ts[idx]>ts[majorityIdx]) {
-                                                    majorityIdx=idx;
-                                                }
-                                            }
+                        // Compensate for boosting from the majority index
+                        if (adjustedVal >0.0F) {
+                            int majorityIdx = -1;
+                            for (int idx = 0; idx < ts.length; idx++) {
+                                if (ts[idx] >= .33F) {
+                                    if (majorityIdx==-1)  {
+                                        majorityIdx = idx;
+                                    } else {
+                                        if (ts[idx]>ts[majorityIdx]) {
+                                            majorityIdx=idx;
                                         }
                                     }
-                                    if (majorityIdx>-1)
-                                        ts[majorityIdx] -= adjustedVal ;
                                 }
-
-
-                                htmlStr +=
-                                        ((testStatistics.getNotRun() > 0) ?
-                                                "<div style=\"background-color:white;height:" + ts[0]*100F + "%;\"></div>\n" : "") +
-                                                (testStatistics.getSuccesses()>0?
-                                                        "<div style=\"background-color:cyan;height:" + ts[1]*100F  + "%;\"></div>\n"	:"") +
-                                                (testStatistics.getFailures()>0?
-                                                        "<div style=\"background-color:coral;height:" + ts[2]*100F + "%;\"></div>\n" :"");
                             }
-                            htmlStr += "</div>\n";
-                            statsBar.setHTML(htmlStr);
-                        } else {
-                            htmlStr += "border-color:white;\">\n";
-                            htmlStr += "<div style=\"background-color:white;height:100%\"></div>\n";
-                            statsBar.setHTML(htmlStr);
+                            if (majorityIdx>-1)
+                                ts[majorityIdx] -= adjustedVal ;
                         }
-                    }
-                }.run(new GetTestsOverviewRequest(getCommandContext(), testInstances));
 
+                        htmlStr +=
+                                ((testStatistics.getNotRun() > 0) ?
+                                        "<div style=\"background-color:white;height:" + ts[0]*100F + "%;\"></div>\n" : "") +
+                                        (testStatistics.getSuccesses()>0?
+                                                "<div style=\"background-color:cyan;height:" + ts[1]*100F  + "%;\"></div>\n"	:"") +
+                                        (testStatistics.getFailures()>0?
+                                                "<div style=\"background-color:coral;height:" + ts[2]*100F + "%;\"></div>\n" :"");
+                    }
+                    htmlStr += "</div>\n";
+                    statsBar.setHTML(htmlStr);
+                } else {
+                    htmlStr += "border-color:white;\">\n";
+                    htmlStr += "<div style=\"background-color:white;height:100%\"></div>\n";
+                    statsBar.setHTML(htmlStr);
+                }
             }
-        });
+        }.run(new GetTestsOverviewRequest(getCommandContext(), testInstances));
     }
 
     public boolean displayMenu(Panel destinationPanel) {
@@ -340,5 +350,13 @@ public abstract class ConformanceToolMenu {
 
     public void setTabConfig(TabConfig tabConfig) {
         this.tabConfig = tabConfig;
+    }
+
+    public Map<TestCollectionCode, List<TestInstance>> getTcCode2TestInstancesMap() {
+        return tcCode2TestInstancesMap;
+    }
+
+    public void setTcCode2TestInstancesMap(Map<TestCollectionCode, List<TestInstance>> tcCode2TestInstancesMap) {
+        this.tcCode2TestInstancesMap = tcCode2TestInstancesMap;
     }
 }
