@@ -61,7 +61,7 @@ public abstract class ConformanceToolMenu {
         });
     }
 
-    private void getTestLogEnvelope(final Map<TestInstance, TestOverviewDTO> myTestOverviewDTOs, final Map<ActorOptionConfig, List<TestInstance>> myTestsPerActorOption, final TestStatistics testStatistics, ActorOptionConfig actorOptionConfig, final HTML statsBar, final List<TestInstance> testInstances) {
+    private void getTestLogEnvelope(final Map<TestInstance, TestOverviewDTO> myTestOverviewDTOs, final Map<ActorOptionConfig, List<TestInstance>> myTestsPerActorOption, final TestStatistics testStatistics, final ActorOptionConfig actorOptionConfig, final HTML statsBar, final List<TestInstance> testInstances) {
 
         new GetTestsResultEnvelopeCommand() {
             @Override

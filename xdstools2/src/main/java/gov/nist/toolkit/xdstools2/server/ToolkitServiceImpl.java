@@ -852,7 +852,6 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
                                     List<TestInstance> testInstances = getCollectionMembers(actorCollectionsRequest);
 
                                     if (testInstances != null && !testInstances.isEmpty()) {
-                                        userTestCollection.getTcCode2TestInstancesMap().put(actorOption.getTestCollectionCode(),testInstances);
                                         tabConfig.setVisible(true);
                                         profileTCfg.setVisible(true);
                                         optionTCfg.setVisible(true);
