@@ -131,6 +131,12 @@
                     <war>../xdstools2/target/xdstools2-${project.version}.war</war>
                     <stopKey>alpha</stopKey>
                     <stopPort>9099</stopPort>
+                    <systemProperties>
+                        <systemProperty>
+                            <name>jetty.logs</name>
+                            <value>${basedir}/target</value>
+                        </systemProperty>
+                    </systemProperties>
                 </configuration>
                 <executions>
                     <execution>
