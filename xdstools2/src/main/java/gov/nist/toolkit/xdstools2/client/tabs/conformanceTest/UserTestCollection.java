@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public class UserTestCollection implements Serializable, IsSerializable {
 
-    private final List<TestCollectionDefinitionDAO> testCollectionDefinitionDAOs = new ArrayList<>();
+    private List<TestCollectionDefinitionDAO> testCollectionDefinitionDAOs = new ArrayList<>();
     private TabConfig tabConfig;
 
     public UserTestCollection() {
@@ -24,6 +24,10 @@ public class UserTestCollection implements Serializable, IsSerializable {
 
     public List<TestCollectionDefinitionDAO> getTestCollectionDefinitionDAOs() {
         return testCollectionDefinitionDAOs;
+    }
+
+    public void setTestCollectionDefinitionDAOs(List<TestCollectionDefinitionDAO> testCollectionDefinitionDAOs) {
+        this.testCollectionDefinitionDAOs = testCollectionDefinitionDAOs;
     }
 
     public TabConfig getTabConfig() {
