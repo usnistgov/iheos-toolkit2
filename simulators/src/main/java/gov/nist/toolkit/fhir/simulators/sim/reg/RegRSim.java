@@ -48,7 +48,7 @@ public class RegRSim extends TransactionSimulator   {
 	Map<String, String> symbolicToUUID = null;
 	List<String> submittedUUIDs;
 
-	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
+	public void run(ErrorRecorder er, MessageValidatorEngine mvc)  {
 		this.er = er;
 		this.mvc = mvc;
 

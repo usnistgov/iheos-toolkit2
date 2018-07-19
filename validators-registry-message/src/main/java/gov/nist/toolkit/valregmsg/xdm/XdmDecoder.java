@@ -83,7 +83,7 @@ public class XdmDecoder extends AbstractMessageValidator {
 		logger.info("Message looks like a XDM");
 	}
 
-	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
+	public void run(ErrorRecorder er, MessageValidatorEngine mvc)  {
 		er.registerValidator(this);
 
 		logger.debug("running");

@@ -13,6 +13,7 @@ import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
@@ -20,7 +21,6 @@ import org.apache.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -265,6 +265,17 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 		return fols;
 	}
 
+	public List<DocEntry> getDocEntriesInFolder(Fol fol) {
+		List<DocEntry> des = new ArrayList<>();
+
+		List<Assoc> hasmembers = assocCollection.getBySourceDestAndType(fol.id, null, AssocType.HASMEMBER);
+		for (Assoc a : hasmembers) {
+			des.add(docEntryCollection.getById(a.to));
+		}
+
+		return des;
+	}
+
 	public List<Fol> getFoldersContaining(DocEntry de) {
 		return getFoldersContaining(de.getId());
 	}
@@ -276,6 +287,8 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 			if (ro != null)
 				return ro;
 		}
+		if (parent != null)
+			return parent.getObjectById(id);
 		return null;
 	}
 
@@ -318,11 +331,14 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 		Ro ro = getRo(id);
 		if (ro == null)
 			return null;
-		File f = null;
+		File f;
 		if (ro.isPathIsRelative()) {
 		 	f = regIndex.getAbsolutePathForObject(ro).toFile(); //ro.getFile();
 		} else {
-			f = new File(ro.getPathToMetadata());
+			String path = ro.getPathToMetadata();
+			if (path == null)
+				throw new ToolkitRuntimeException("Object " + id + " does not have a path to metadata stored in the index");
+			f = new File(path);
 		}
 		Metadata m = MetadataParser.parseNonSubmission(f);
 		attachAvailabilityStatus(m);
@@ -527,7 +543,7 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 		return subSetCollection.hasObject(uuid);
 	}
 
-	void addAssoc(String source, String target, AssocType type) throws MetadataException, XdsInternalException, IOException {
+	public void addAssoc(String source, String target, AssocType type) throws MetadataException, XdsInternalException, IOException {
 		Assoc a = new Assoc();
 		a.from = source;
 		a.to = target;

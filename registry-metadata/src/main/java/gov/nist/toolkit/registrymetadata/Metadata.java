@@ -242,14 +242,16 @@ public class Metadata {
 		rmDuplicates(objectRefs);
 		rmDuplicates(classifications);
 
-		rmFromObjectRefs(extrinsicObjects);
-		rmFromObjectRefs(registryPackages);
-		rmFromObjectRefs(associations);
-		rmFromObjectRefs(classifications);
+//		rmFromObjectRefs(extrinsicObjects);
+//		rmFromObjectRefs(registryPackages);
+//		rmFromObjectRefs(associations);
+//		rmFromObjectRefs(classifications);
 
-		allObjects = new ArrayList<OMElement>();
+		allObjects = new ArrayList<>();
 		allObjects.addAll(extrinsicObjects);
 		allObjects.addAll(registryPackages);
+		allObjects.addAll(folders);
+		allObjects.addAll(submissionSets);
 		allObjects.addAll(associations);
 		allObjects.addAll(classifications);
 		allObjects.addAll(objectRefs);
@@ -679,11 +681,21 @@ public class Metadata {
 		allObjects.addAll(fols);
 	}
 
+	// add all objects checking for duplicates
 	public void addAllObjects(Metadata m) {
 		addExtrinsicObjects(m.extrinsicObjects);
+		rmDuplicates(m.extrinsicObjects);
+
 		addSubmissionSets(m.submissionSets);
+		rmDuplicates(m.submissionSets);
+
 		addAssociations(m.associations);
+		rmDuplicates(m.associations);
+
 		addFolders(m.folders);
+		rmDuplicates(m.folders);
+
+		rmDuplicates();
 	}
 
 	public OMElement mkExtrinsicObject(String id, String mimeType) {

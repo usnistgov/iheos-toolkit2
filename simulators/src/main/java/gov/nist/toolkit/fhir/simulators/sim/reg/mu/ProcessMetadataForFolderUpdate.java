@@ -5,9 +5,12 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.fhir.simulators.sim.reg.store.*;
 import gov.nist.toolkit.registrymetadata.Metadata;
+import gov.nist.toolkit.xdsexception.client.MetadataException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
+import java.io.IOException;
 import java.util.List;
 
 public class ProcessMetadataForFolderUpdate implements ProcessMetadataInterface {
@@ -98,9 +101,21 @@ public class ProcessMetadataForFolderUpdate implements ProcessMetadataInterface 
 	@Override
 	public void addDocsToUpdatedFolders(Metadata m) {
 		for (OMElement folEle : m.getFolders()) {
-			Fol fol = mc.folCollection.getLatestVersion(Metadata.getLid(folEle));
-			if (fol != null) {
-
+			Fol folLatest = mc.folCollection.getLatestVersion(Metadata.getLid(folEle));
+			Fol folUpdate = delta.folCollection.getById(Metadata.getId(folEle));
+			if (folLatest != null) {
+				List<DocEntry> des = mc.getDocEntriesInFolder(folLatest);
+				for (DocEntry de : des) {
+					try {
+						delta.addAssoc(folUpdate.id, de.id, RegIndex.AssocType.HASMEMBER);
+					} catch (MetadataException e) {
+						er.err(Code.XDSMetadataUpdateError, e);
+					} catch (XdsInternalException e) {
+						er.err(Code.XDSMetadataUpdateError, e);
+					} catch (IOException e) {
+						er.err(Code.XDSMetadataUpdateError, e);
+					}
+				}
 			}
 		}
 	}

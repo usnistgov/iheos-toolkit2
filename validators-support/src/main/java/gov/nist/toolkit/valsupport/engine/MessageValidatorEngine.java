@@ -3,6 +3,7 @@ package gov.nist.toolkit.valsupport.engine;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.valsupport.message.ServiceRequestContainer;
+import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
 
@@ -151,7 +152,7 @@ public class MessageValidatorEngine {
 	 */
 	protected ValidationStep currentStep = null;
 
-	public void run() {
+	public void run()  {
 		// this iteration is tricky since a step can add
 		// new steps. This causes ConcurrentModificationException
 		// if typical iterator is used.

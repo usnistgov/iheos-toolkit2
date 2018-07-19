@@ -1,5 +1,7 @@
 package gov.nist.toolkit.fhir.simulators.sim.reg.store;
 
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,9 +38,12 @@ public class AssocCollection extends RegObCollection implements Serializable {
 	public int size() { return assocs.size(); }
 	
 	public Ro getRo(String id) {
-		for (Assoc de : assocs) {
-			if (de.id.equals(id))
-				return de;
+		for (Assoc a : assocs) {
+			String aid = a.id;
+			if (aid == null)
+				throw new ToolkitRuntimeException("bad association");
+			if (aid.equals(id))
+				return a;
 		}
 		if (parent == null)
 			return null;
