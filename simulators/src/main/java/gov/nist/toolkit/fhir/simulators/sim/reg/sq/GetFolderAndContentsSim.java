@@ -54,6 +54,7 @@ public class GetFolderAndContentsSim extends GetFolderAndContents {
 
 		Metadata allM = new Metadata();
 
+		// this can be multiple because of MU
 		for (Fol fol : fols) {
 			String folid = fol.getId();
 
@@ -102,7 +103,7 @@ public class GetFolderAndContentsSim extends GetFolderAndContents {
 			} else {
 				m.mkObjectRefs(uuids);
 			}
-			allM.addMetadata(m, true);
+			allM.addAllObjects(m);
 		}
 		
 		return allM;

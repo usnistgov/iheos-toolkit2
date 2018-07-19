@@ -664,6 +664,28 @@ public class Metadata {
 		allObjects.addAll(eos);
 	}
 
+	public void addSubmissionSets(List<OMElement> sss) {
+		submissionSets.addAll(sss);
+		allObjects.addAll(sss);
+	}
+
+	public void addAssociations(List<OMElement> as) {
+		associations.addAll(as);
+		allObjects.addAll(as);
+	}
+
+	public void addFolders(List<OMElement> fols) {
+		folders.addAll(fols);
+		allObjects.addAll(fols);
+	}
+
+	public void addAllObjects(Metadata m) {
+		addExtrinsicObjects(m.extrinsicObjects);
+		addSubmissionSets(m.submissionSets);
+		addAssociations(m.associations);
+		addFolders(m.folders);
+	}
+
 	public OMElement mkExtrinsicObject(String id, String mimeType) {
 		OMElement eo = MetadataSupport.om_factory.createOMElement(MetadataSupport.extrinsicobject_qnamens);
 		eo.addAttribute("id", id, null);

@@ -94,9 +94,15 @@ public class ProcessMetadataForFolderUpdate implements ProcessMetadataInterface 
 		new ProcessMetadataForDocumentEntryUpdate(er, mc, delta).associationPatientIdRules();
 	}
 
+	// when folder is updated, all the contents are linked to new version of folder
 	@Override
 	public void addDocsToUpdatedFolders(Metadata m) {
+		for (OMElement folEle : m.getFolders()) {
+			Fol fol = mc.folCollection.getLatestVersion(Metadata.getLid(folEle));
+			if (fol != null) {
 
+			}
+		}
 	}
 
 	// use the default implementation
