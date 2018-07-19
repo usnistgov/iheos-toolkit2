@@ -17,28 +17,12 @@ public class PopupMessage  extends DialogBox {
 	public PopupMessage(String caption) {
 		// Set the dialog box's caption.
 		setText(caption);
-
 		frameMessage(null);
 	}
-
-	ClickHandler removeParentClickHandler = new ClickHandler() {
-		@Override
-		public void onClick(ClickEvent clickEvent) {
-				removeFromParent();
-		}
-	};
-	private Widget getOkBtn(String buttonText) {
-		Button ok = new Button(buttonText);
-		ok.addClickHandler(removeParentClickHandler);
-		ok.setFocus(true);
-		return ok;
-	}
-
 	public PopupMessage(SafeHtml caption, Widget content) {
 		setHTML(caption);
 		frameMessage(content);
 	}
-
 	public PopupMessage(SafeHtml caption, Widget body, Button actionButton) {
 		HorizontalPanel buttonBar = new HorizontalPanel();
 		setHTML(caption);
@@ -55,6 +39,46 @@ public class PopupMessage  extends DialogBox {
 		actionButton.setFocus(true);
 		showFrame();
 	}
+	public PopupMessage(AssertionResults result) {
+		VerticalPanel panel = new VerticalPanel();
+		setWidget(panel);
+		for (AssertionResult ar : result.assertions) {
+			if (ar.status) {
+				panel.add(addHTML(ar.assertion));
+			} else {
+				panel.add(addHTML("<font color=\"#FF0000\">" + ar.assertion + "</font>"));
+			}
+		}
+		// DialogBox is a SimplePanel, so you have to set its widget property to
+		// whatever you want its contents to be.
+		Button ok = new Button("OK");
+		ok.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				removeFromParent();
+			}
+		});
+		panel.add(ok);
+		center();
+		setModal(true);
+		ok.setFocus(true);
+		showFrame();
+
+	}
+
+	ClickHandler removeParentClickHandler = new ClickHandler() {
+		@Override
+		public void onClick(ClickEvent clickEvent) {
+				removeFromParent();
+		}
+	};
+	private Widget getOkBtn(String buttonText) {
+		Button ok = new Button(buttonText);
+		ok.addClickHandler(removeParentClickHandler);
+		ok.setFocus(true);
+		return ok;
+	}
+
+
 
 	@Override
 	protected void onPreviewNativeEvent(Event.NativePreviewEvent event) {
@@ -95,32 +119,6 @@ public class PopupMessage  extends DialogBox {
 		setModal(true);
 
 		showFrame();
-	}
-
-	public PopupMessage(AssertionResults result) {
-		VerticalPanel panel = new VerticalPanel();
-		setWidget(panel);
-		for (AssertionResult ar : result.assertions) {
-			if (ar.status) {
-				panel.add(addHTML(ar.assertion));
-			} else {
-				panel.add(addHTML("<font color=\"#FF0000\">" + ar.assertion + "</font>"));
-			}
-		}
-		// DialogBox is a SimplePanel, so you have to set its widget property to
-		// whatever you want its contents to be.
-		Button ok = new Button("OK");
-		ok.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				removeFromParent();
-			}
-		});
-		panel.add(ok);
-		center();
-		setModal(true);
-		ok.setFocus(true);
-		showFrame();
-
 	}
 
 

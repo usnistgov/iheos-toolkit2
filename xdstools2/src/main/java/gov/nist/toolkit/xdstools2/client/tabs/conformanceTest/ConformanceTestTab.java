@@ -370,7 +370,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 			new GetSiteCommand() {
 				@Override
 				public void onFailure(Throwable throwable) {
-					new PopupMessage("System " + siteToIssueTestAgainst + " does not exist.");
+                    showPopupMessage("System " + siteToIssueTestAgainst + " does not exist.");
 					testContext.setCurrentSiteSpec(null);
 					testContext.setSiteUnderTest(null);
 					testContextView.updateTestingContextDisplay();
@@ -388,7 +388,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 			new GetAssignedSiteForTestSessionCommand() {
 				@Override
 				public void onFailure(Throwable throwable) {
-					new PopupMessage("GetAssignedSiteForTestSessionCommand failed: Unable to determine if SUT has been assigned in Test Context.");
+					showPopupMessage("GetAssignedSiteForTestSessionCommand failed: Unable to determine if SUT has been assigned in Test Context.");
 				}
 
 				@Override
@@ -404,7 +404,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 					new GetSiteCommand() {
 						@Override
 						public void onFailure(Throwable throwable) {
-							new PopupMessage("System " + result + " does not exist.");
+                            showPopupMessage("System " + result + " does not exist.");
 							testContext.setCurrentSiteSpec(null);
 							testContext.setSiteUnderTest(null);
 							testContextView.updateTestingContextDisplay();
@@ -683,7 +683,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 		currentActorOption.loadTests(new AsyncCallback<List<TestInstance>>() {
 			@Override
 			public void onFailure(Throwable throwable) {
-				new PopupMessage("getTestlogListing: " + throwable.getMessage());
+				showPopupMessage("getTestlogListing: " + throwable.getMessage());
 			}
 
 			@Override
@@ -844,7 +844,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 		if (parts.length>1) {
 			return parts[parts.length-1];
 		} else {
-			new PopupMessage("Test Id needs be suffixed with '_username' like so: testId_username.");
+			showPopupMessage("Test Id needs be suffixed with '_username' like so: testId_username.");
 			return null;
 		}
 	}
@@ -886,7 +886,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 	}
 
 	ClickHandler getInspectClickHandler(TestInstance testInstance) {
-		new PopupMessage("ti=" + testInstance.toString() + " ts=" + getCurrentTestSession() + " sn=" + testContext.getSiteName());
+		showPopupMessage("ti=" + testInstance.toString() + " ts=" + getCurrentTestSession() + " sn=" + testContext.getSiteName());
 		return new LaunchInspectorClickHandler(testInstance, getCurrentTestSession(), new SiteSpec(testContext.getSiteName(), getTestSession()));
 	}
 
@@ -917,7 +917,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 				}
 			}.run(new RunTestRequest(getCommandContext(),getSiteToIssueTestAgainst(),sectionInstance,parms,true));
 		} catch (Exception e) {
-			new PopupMessage(e.getMessage());
+			showPopupMessage(e.getMessage());
 		}
 	}
 
@@ -937,7 +937,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 					stsActorName = tkPropMap.get("Sts_ActorName");
 					stsTpName = tkPropMap.get("Sts_TpName");
 				} else {
-					new PopupMessage("Error reading tkPropMap cache.");
+					showPopupMessage("Error reading tkPropMap cache.");
 				}
 				// STS SAML assertion
 				// This has to be here because we need to retrieve the assertion just in time before the test executes. Any other way will be confusing to debug and more importantly the assertion will not be fresh.
@@ -962,7 +962,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 						}
 					}.run(new GetStsSamlAssertionRequest(getCommandContext(),xuaUsername,stsTestInstance,stsSpec,params));
 				} catch (Exception ex) {
-					new PopupMessage("runTestInstance: Client call failed: getStsSamlAssertion: " + ex.toString());
+					showPopupMessage("runTestInstance: Client call failed: getStsSamlAssertion: " + ex.toString());
 				}
 			} else {
 				// Reuse SAML when running the entire Actor test collection OR as set by the Xua option
@@ -1003,7 +1003,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 				}
 			}.run(new RunTestRequest(getCommandContext(),getSiteToIssueTestAgainst(),testInstance, parms,true));
 		} catch (Exception e) {
-			new PopupMessage(e.getMessage());
+			showPopupMessage(e.getMessage());
 		}
 
 	}
@@ -1031,7 +1031,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 		ActorOptionConfig currentActorOption = this.currentActorOption;
 
 		if (orchestrationResponse == null) {
-			new PopupMessage("Initialize Test Environment before running tests.");
+			showPopupMessage("Initialize Test Environment before running tests.");
 			return null;
 		}
 
@@ -1055,7 +1055,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 		}
 
 		if (getSiteToIssueTestAgainst() == null && !getOptionTabConfig(currentActorOption).isExternalStart()) {
-			new PopupMessage("Test Setup must be initialized  [site=" + getSiteToIssueTestAgainst() +
+			showPopupMessage("Test Setup must be initialized  [site=" + getSiteToIssueTestAgainst() +
 			" actorOptionConfig=[" + currentActorOption + "]]");
 			return parms;
 		}
@@ -1133,7 +1133,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 				@Override
 				public void onComplete(Site site) {
 					if (!site.hasActor(actorType))
-						new PopupMessage("System under test does not implement a " + actorType.getName());
+						showPopupMessage("System under test does not implement a " + actorType.getName());
 				}
 			};
 		}

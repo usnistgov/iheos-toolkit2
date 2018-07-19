@@ -14,7 +14,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.tk.client.TkProps;
-import gov.nist.toolkit.xdstools2.client.command.command.GetToolkitPropertiesCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionOfferingsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.InitializationCommand;
 import gov.nist.toolkit.xdstools2.client.event.ToolkitInitializationCompleteEvent;
@@ -108,10 +107,10 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 		assert(tabContainer != null);
 		ClientUtils.INSTANCE.setEnvironmentManager(new EnvironmentManager(tabContainer));
 
-		Widget decoratedTray = makeMenuCollapsible();
+		Widget menuTray = addCollapsibleButton(mainMenuPanel, mainSplitPanel);
 
-		mainSplitPanel.addWest(decoratedTray, TRAY_SIZE);
-		mainSplitPanel.setWidgetToggleDisplayAllowed(decoratedTray,true);
+		mainSplitPanel.addWest(menuTray, TRAY_SIZE);
+		mainSplitPanel.setWidgetToggleDisplayAllowed(menuTray,true);
 
 
 		TabContainer.setWidth("100%");
@@ -219,7 +218,7 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 
 	static public void clearMainMenu() { ME.mainMenuPanel.clear(); }
 
-	private Widget makeMenuCollapsible() {
+	private Widget addCollapsibleButton(final FlowPanel mainMenuPanel, final SplitLayoutPanel mainSplitPanel) {
 		final FlowPanel vpCollapsible =  new FlowPanel();
 
 		// Set margins
