@@ -6,12 +6,10 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import gov.nist.toolkit.actortransaction.shared.IheItiProfile;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.installation.shared.ToolkitUserMode;
-import gov.nist.toolkit.registrymetadata.client.RegistryObject;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
-import gov.nist.toolkit.xdstools2.client.command.command.GetToolkitPropertiesCommand;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.tabs.*;
 import gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab.SubmitResource;
@@ -37,7 +35,6 @@ import java.util.Map;
 public class ToolLauncher implements ClickHandler {
 	private State state;
 	private String tabType;
-	private RegistryObject ro = null;
 
 	final static public String findDocumentsTabLabel = "FindDocuments";
 	final static public String findDocumentsByRefIdTabLabel = "FindDocumentsByRefId";
