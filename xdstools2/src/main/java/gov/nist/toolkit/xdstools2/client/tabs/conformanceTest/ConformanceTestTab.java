@@ -27,6 +27,7 @@ import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.sort.TestSorter;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.testenginelogging.client.QuickScanAttribute;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.xdstools2.client.NotifyOnDelete;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
@@ -38,7 +39,6 @@ import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEve
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.BuildIGTestOrchestrationButton;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.LaunchInspectorClickHandler;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 import gov.nist.toolkit.xdstools2.shared.command.request.*;
@@ -701,15 +701,20 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 		testDisplayGroup.allowRun(allowRun);
 		testDisplayGroup.allowValidate(allowValidate());
 
-		GetTestsOverviewRequest tor = new GetTestsOverviewRequest(getCommandContext(), testInstances);
+		GetTestsOverviewRequest tor = new GetTestsOverviewRequest(getCommandContext(), testInstances, new QuickScanAttribute[]{QuickScanAttribute.STATUS,QuickScanAttribute.HL7TIME, QuickScanAttribute.IS_TLS, QuickScanAttribute.SITE});
+		mainView.showLoadingMessage("Loading...");
+        new GetActorTestProgressCommand() {
+			@Override
+			public void onFailure(Throwable throwable) {
+				mainView.clearLoadingMessage();
+				super.onFailure(throwable);
+			}
 
-		try {
-			mainView.showLoadingMessage("Loading...");
-			new GetTestsOverviewCommand() {
-				@Override
-				public void onComplete(List<TestOverviewDTO> testOverviews) {
-					// sort tests by dependencies and alphabetically
-					// save in testsPerActorOption so they run in this order as well
+			@Override
+			public void onComplete(List<TestOverviewDTO> testOverviews) {
+				// sort tests by dependencies and alphabetically
+				// save in testsPerActorOption so they run in this order as well
+                try {
 					List<TestInstance> testInstances1 = new ArrayList<>();
 					testOverviews = new TestSorter().sort(testOverviews);
 					for (TestOverviewDTO dto : testOverviews) {
@@ -724,6 +729,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 //                testStatistics.setTestCount(testOverviews.size());
 					for (TestOverviewDTO testOverview : testOverviews) {
 						updateTestOverview(testOverview);
+						/*
 						InteractionDiagramDisplay diagramDisplay = new InteractionDiagramDisplay(
 								testOverview,
 								testContext.getTestSession(),
@@ -731,16 +737,16 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 								((testContext.getSiteUnderTestAsSiteSpec() != null) ? testContext.getSiteUnderTestAsSiteSpec().getName() : ""),
 								currentActorOption,
 								getTestInstancePatientId(testOverview.getTestInstance(), parms));
-						TestDisplay testDisplay = testDisplayGroup.display(testOverview, diagramDisplay);
+						*/
+						TestDisplay testDisplay = testDisplayGroup.display(testOverview, null);
 						testsPanel.add(testDisplay.asWidget());
 					}
 					updateTestsOverviewHeader(testsPerActorOption, testOverviewDTOs, testStatistics, currentActorOption);
+				} finally {
 					mainView.clearLoadingMessage();
 				}
-			}.run(tor);
-		} catch (Throwable t) {
-			mainView.clearLoadingMessage();
-		}
+			}
+		}.run(tor);
 	}
 
 	private static String getPatientIdStr(Map<String, String> parms) {

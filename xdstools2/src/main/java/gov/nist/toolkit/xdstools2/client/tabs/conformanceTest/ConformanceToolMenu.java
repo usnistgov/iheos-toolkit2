@@ -13,7 +13,8 @@ import com.google.gwt.user.client.ui.TreeItem;
 import gov.nist.toolkit.actortransaction.shared.IheItiProfile;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
-import gov.nist.toolkit.xdstools2.client.command.command.ActorTestProgressCommand;
+import gov.nist.toolkit.testenginelogging.client.QuickScanAttribute;
+import gov.nist.toolkit.xdstools2.client.command.command.GetActorTestProgressCommand;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTestsOverviewRequest;
@@ -60,7 +61,7 @@ public abstract class ConformanceToolMenu {
 
     private void displayActorTestProgress(final Map<TestInstance, TestOverviewDTO> myTestOverviewDTOs, final Map<ActorOptionConfig, List<TestInstance>> myTestsPerActorOption, final TestStatistics testStatistics, final ActorOptionConfig actorOptionConfig, final HTML statsBar, final List<TestInstance> testInstances) {
 
-        new ActorTestProgressCommand() {
+        new GetActorTestProgressCommand() {
             @Override
             public void onComplete(List<TestOverviewDTO> testOverviews) {
                 for (TestOverviewDTO testOverview : testOverviews) {
@@ -124,7 +125,7 @@ public abstract class ConformanceToolMenu {
                     statsBar.setHTML(htmlStr);
                 }
             }
-        }.run(new GetTestsOverviewRequest(getCommandContext(), testInstances));
+        }.run(new GetTestsOverviewRequest(getCommandContext(), testInstances, new QuickScanAttribute[]{QuickScanAttribute.STATUS}));
     }
 
     public boolean displayMenu(Panel destinationPanel) {

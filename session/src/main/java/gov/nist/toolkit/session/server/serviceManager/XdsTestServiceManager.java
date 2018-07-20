@@ -17,6 +17,7 @@ import gov.nist.toolkit.results.ResourceToMetadataCollectionParser;
 import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
+import gov.nist.toolkit.session.client.logtypes.SectionOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
 import gov.nist.toolkit.session.server.CodesConfigurationBuilder;
@@ -37,6 +38,7 @@ import gov.nist.toolkit.testenginelogging.LogFileContentBuilder;
 import gov.nist.toolkit.testenginelogging.TestLogDetails;
 import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
 import gov.nist.toolkit.testenginelogging.client.LogMapDTO;
+import gov.nist.toolkit.testenginelogging.client.QuickScanAttribute;
 import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
 import gov.nist.toolkit.testkitutilities.ReadMe;
@@ -830,12 +832,12 @@ public class XdsTestServiceManager extends CommonService {
 		return lm;
 	}
 	/* begin lightweight log reader methods */
-	public List<TestOverviewDTO> quickScanLogs(TestSession testSession, List<TestInstance> testInstances) throws Exception {
+	public List<TestOverviewDTO> quickScanLogs(TestSession testSession, List<TestInstance> testInstances, QuickScanAttribute[] quickScanAttributes) throws Exception {
 		List<TestOverviewDTO> results = new ArrayList<>();
 		try {
 			for (TestInstance testInstance : testInstances) {
 				try {
-					results.add(quickScanLog(testSession, testInstance));
+					results.add(quickScanLog(testSession, testInstance, quickScanAttributes));
 				} catch (Exception e) {
 					logger.error("Test " + testInstance + " does not exist");
 				}
@@ -854,7 +856,7 @@ public class XdsTestServiceManager extends CommonService {
 	 * @return
 	 * @throws Exception
 	 */
-	public TestOverviewDTO quickScanLog(TestSession testSession, TestInstance testInstance) throws Exception {
+	public TestOverviewDTO quickScanLog(TestSession testSession, TestInstance testInstance, QuickScanAttribute[] quickScanAttributes) throws Exception {
 		testInstance.setTestSession(testSession);
 		File testDir = getTestLogCache().getTestDir(testSession, testInstance);
 		List<String> testPlanSections = getTestSections(testInstance.getId());
@@ -872,10 +874,11 @@ public class XdsTestServiceManager extends CommonService {
 			int passCt = 0;
 			for (String sectionName : testPlanSections) {
 				logFile = new File(new File(testDir, sectionName), "log.xml");
-				// TODO: load sections
-				// TODO: load steps
 				try {
-					boolean passed = getLogStatus(logFile);
+					SectionOverviewDTO sectionOverviewDTO = quickScanSectionLog(logFile,quickScanAttributes);
+					testOverviewDTO.addSection(sectionOverviewDTO);
+					// TODO: load steps
+					boolean passed = sectionOverviewDTO.isPass();
 					if (passed) {
 					    passCt++;
 					} else {
@@ -909,38 +912,123 @@ public class XdsTestServiceManager extends CommonService {
 			testOverview.setTitle(stripHeaderMarkup(readme.line1));
 			testOverview.setDescription(Markdown.toHtml(readme.rest));
 		}
-		testOverview.setDependencies(null); // Not needed at the moment
+		testOverview.setDependencies(null); // TODO: Need this for Part 2
+		/* Part 2:
+		Create QuickScanLog class
+		Make testDefinition member
+		for each section add:
+		                        SectionDefinitionDAO sectionDef = testDefinition.getSection(section);
+                        sectionOverview.setSutInitiated(sectionDef.isSutInitiated());
+                        testDependencies.addAll(sectionDef.getSectionDependencies());
+
+         In Conformance Test Tab:
+         	Refresh test display with a call to GetTestOverview with only that TestInstance as the request parameter
+         	- 			TestDisplay testDisplay = testDisplayGroup.display(testOverview, null);
+						testsPanel.add(testDisplay.asWidget());
+		 */
+		
 	}
 
+	/**
+	 * Not tested.
+	 * This is used for non-sectional test plan. Ie., Test plan at the root level of the test folder.
+	 * @param testOverviewDTO
+	 * @param logFile
+	 * @throws Exception
+	 */
 	private void setDTOStatus(TestOverviewDTO testOverviewDTO, File logFile) throws Exception {
 		try {
-			boolean passed = getLogStatus(logFile);
-			testOverviewDTO.setRun(true);
-			testOverviewDTO.setPass(passed);
+			SectionOverviewDTO temp = quickScanSectionLog(logFile, new QuickScanAttribute[]{QuickScanAttribute.STATUS});
+			testOverviewDTO.setRun(temp.isRun());
+			testOverviewDTO.setPass(temp.isPass());
 		} catch (TkNotFoundException tknfe) {
 			testOverviewDTO.setRun(false);
 		}
 	}
 
-	private boolean getLogStatus(File logFile) throws Exception {
+	private SectionOverviewDTO quickScanSectionLog(File logFile, QuickScanAttribute[] attributes) throws Exception {
 		if (!logFile.exists()) {
-			throw new TkNotFoundException("Requested log does not exist.","getSectionStatus");
+			throw new TkNotFoundException("Requested log does not exist.","quickScanSectionLog");
 		} else {
+			SectionOverviewDTO sectionOverviewDTO = new SectionOverviewDTO();
 			FileInputStream fis = new FileInputStream(logFile);
 			try {
 				if (fis != null) {
 					OMElement logEl = Util.parse_xml(fis);
-					AXIOMXPath xpathEx = new AXIOMXPath("//TestResults");
-					OMElement rootNode = (OMElement) xpathEx.selectSingleNode(logEl);
-					String statusValue = rootNode.getAttributeValue(MetadataSupport.status_qname);
-					return "Pass".equals(statusValue);
+					for (QuickScanAttribute qsa : attributes) {
+					    if (QuickScanAttribute.STATUS.equals(qsa)) {
+							// TestResults is the root node in log.xml
+							boolean status = logStatus(logEl);
+							sectionOverviewDTO.setRun(true);
+							sectionOverviewDTO.setPass(status);
+						} else if (QuickScanAttribute.IS_TLS.equals(qsa)) {
+							// Set TLS true if any one step uses https endpoint
+							boolean isTls = isTls(logEl);
+							sectionOverviewDTO.setTls(isTls);
+						} else if (QuickScanAttribute.HL7TIME.equals(qsa)) {
+							// Set Time
+							String hl7time = hl7Time(logEl);
+							sectionOverviewDTO.setHl7Time(hl7time);
+						} else if (QuickScanAttribute.SITE.equals(qsa)) {
+							// Set Site
+							String site = site(logEl);
+							sectionOverviewDTO.setSite(site);
+						}
+					}
+
 				}
 			} finally {
 				fis.close();
 			}
-			return false;
+			return sectionOverviewDTO;
 		}
 	}
+
+
+
+	/**
+	 * Reference: TestStepLogContentDTO#isTls
+	 * @param rootEL
+	 * @return
+	 */
+	private boolean isTls(OMElement rootEL) {
+	    boolean atLeastOneHttpsEndpoint = false;
+		List<OMElement> tranEls = new ArrayList<OMElement>();
+
+		List<OMElement> testStepsEle = XmlUtil.childrenWithLocalName(rootEL, "TestStep");
+		for (OMElement stepEl : testStepsEle) {
+			XmlUtil.descendantsWithLocalNameEndsWith(tranEls, stepEl, "Transaction",1);
+			if (!tranEls.isEmpty()) {
+			    OMElement endpontEl = XmlUtil.firstDecendentWithLocalName(tranEls.get(0), "Endpoint");
+				atLeastOneHttpsEndpoint = endpontEl.getText().startsWith("https");
+				if (atLeastOneHttpsEndpoint) {
+					break;
+				}
+			}
+		}
+		return atLeastOneHttpsEndpoint;
+	}
+
+	private boolean logStatus(OMElement rootEl) throws Exception {
+		AXIOMXPath xpathEx = new AXIOMXPath("//TestResults");
+		OMElement selectEl = (OMElement) xpathEx.selectSingleNode(rootEl);
+		String statusValue = selectEl.getAttributeValue(MetadataSupport.status_qname);
+		return "Pass".equals(statusValue);
+	}
+
+	private String hl7Time(OMElement rootEl) throws Exception {
+		AXIOMXPath xpathEx = new AXIOMXPath("//TestResults//Time");
+		OMElement selectEl = (OMElement) xpathEx.selectSingleNode(rootEl);
+		return selectEl.getText();
+	}
+
+	private String site(OMElement rootEl) throws Exception {
+		AXIOMXPath xpathEx = new AXIOMXPath("//TestResults//Site");
+		OMElement selectEl = (OMElement) xpathEx.selectSingleNode(rootEl);
+		return selectEl.getText();
+	}
+
+
 	/* end lightweight log reader methods */
 
 	private List<File> testLogDirsInTestSession(TestSession testSession) throws IOException {

@@ -779,7 +779,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<TestOverviewDTO> getActorTestProgress(GetTestsOverviewRequest request) throws Exception {
         installCommandContext(request);
-        List<TestOverviewDTO> o = session().xdsTestServiceManager().quickScanLogs(request.getTestSession(), request.getTestInstances());
+        List<TestOverviewDTO> o = session().xdsTestServiceManager().quickScanLogs(request.getTestSession(), request.getTestInstances(), request.getQuickScanAttributes());
         return o;
     }
 
