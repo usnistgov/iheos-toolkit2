@@ -198,7 +198,7 @@ public interface ToolkitService extends RemoteService  {
 	List<String> getUpdateNames() throws NoServletSessionException;
 	List<TestInstance> getTestlogListing(String sessionName) throws Exception;
 	List<TestOverviewDTO> getTestsOverview(GetTestsOverviewRequest request) throws Exception;
-	List<TestOverviewDTO> getTestsResultEnvelope(GetTestsOverviewRequest request) throws Exception;
+	List<TestOverviewDTO> getActorTestProgress(GetTestsOverviewRequest request) throws Exception;
 	List<SectionDefinitionDAO> getTestSectionsDAOs(GetTestSectionsDAOsRequest request) throws Exception;
 	List<RegistryStatus> getDashboardRegistryData(CommandContext context) throws Exception;
 	List<RepositoryStatus> getDashboardRepositoryData(CommandContext context) throws Exception;

@@ -830,12 +830,12 @@ public class XdsTestServiceManager extends CommonService {
 		return lm;
 	}
 	/* begin lightweight log reader methods */
-	public List<TestOverviewDTO> getTestsResultEnvelope(TestSession testSession, List<TestInstance> testInstances) throws Exception {
+	public List<TestOverviewDTO> quickScanLogs(TestSession testSession, List<TestInstance> testInstances) throws Exception {
 		List<TestOverviewDTO> results = new ArrayList<>();
 		try {
 			for (TestInstance testInstance : testInstances) {
 				try {
-					results.add(getTestResultEnvelope(testSession, testInstance));
+					results.add(quickScanLog(testSession, testInstance));
 				} catch (Exception e) {
 					logger.error("Test " + testInstance + " does not exist");
 				}
@@ -848,13 +848,13 @@ public class XdsTestServiceManager extends CommonService {
 
 
 	/**
-	 * Return test status
+	 * Quickly scan logs and return test status/other top-level test log attributes
 	 * @param testSession
 	 * @param testInstance
 	 * @return
 	 * @throws Exception
 	 */
-	public TestOverviewDTO getTestResultEnvelope(TestSession testSession, TestInstance testInstance) throws Exception {
+	public TestOverviewDTO quickScanLog(TestSession testSession, TestInstance testInstance) throws Exception {
 		testInstance.setTestSession(testSession);
 		File testDir = getTestLogCache().getTestDir(testSession, testInstance);
 		List<String> testPlanSections = getTestSections(testInstance.getId());
