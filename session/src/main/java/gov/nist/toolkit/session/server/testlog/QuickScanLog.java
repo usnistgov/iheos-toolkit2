@@ -82,6 +82,7 @@ public class QuickScanLog {
             logFile = new File(testDir, "log.xml");
             setTestOverviewDTOStatus(testOverviewDTO, logFile);
         } else {
+            boolean scanTestDependencies = Arrays.asList(quickScanAttributes).contains(QuickScanLogAttribute.TEST_DEPENDENCIES);
             boolean atLeastOneFailed = false;
             boolean atLeastOneNotRun = false;
             int passCt = 0;
@@ -89,7 +90,7 @@ public class QuickScanLog {
                 SectionOverviewDTO sectionOverviewDTO = new SectionOverviewDTO();
                 logFile = new File(new File(testDir, sectionName), "log.xml");
                 try {
-                    if ( Arrays.asList(quickScanAttributes).contains(QuickScanLogAttribute.TEST_DEPENDENCIES)) {
+                    if (scanTestDependencies) {
                         // Section details
                         sectionOverviewDTO.setName(sectionName);
                         SectionDefinitionDAO sectionDef = testDefinition.getSection(sectionName);
@@ -115,13 +116,22 @@ public class QuickScanLog {
                         testDependencies.addAll(sectionDef.getSectionDependencies());
 
          In Conformance Test Tab:
+            Fix diagram
+                ConformanceTestTab Line 733
+
          	Refresh test display with a call to GetTestOverview with only that TestInstance as the request parameter
          	- 			TestDisplay testDisplay = testDisplayGroup.display(testOverview, null);
 						testsPanel.add(testDisplay.asWidget());
 
-						 panel.addOpenHandler
+        TestSectionComponent
+                Line 80
+                Line 82
+
+        TestDisplayView
+			panel.addOpenHandler
 						 TestDisplayView Line 67
 		 */
+
                     boolean passed = sectionOverviewDTO.isPass();
                     if (passed) {
                         passCt++;
