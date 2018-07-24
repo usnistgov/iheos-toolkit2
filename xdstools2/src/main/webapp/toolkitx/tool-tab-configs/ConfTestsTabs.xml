@@ -167,15 +167,15 @@ See collections.txt file for indexing.
 	</tab>
 
 
-	<tab label="Responding Imaging Gateway" type="actor" tcCode="rig" displayColorCode="#f8eefd">
-		<tabs label="Profiles">
-			<tab label="XCA-I" type="profile" tcCode="xca-i">
-				<tabs label="Options">
-					<tab label="Required" type="option" tcCode="" externalStart="false"/>
-				</tabs>
-			</tab>
-		</tabs>
-	</tab>
+	<!--<tab label="Responding Imaging Gateway" type="actor" tcCode="rig" displayColorCode="#f8eefd">-->
+		<!--<tabs label="Profiles">-->
+			<!--<tab label="XCA-I" type="profile" tcCode="xca-i">-->
+				<!--<tabs label="Options">-->
+					<!--<tab label="Required" type="option" tcCode="" externalStart="false"/>-->
+				<!--</tabs>-->
+			<!--</tab>-->
+		<!--</tabs>-->
+	<!--</tab>-->
 
 	<tab label="RSNA ISN Edge Server 5.0" type="actor" tcCode="ris" displayColorCode="#a6ffd0">
 		<tabs label="Profiles">
