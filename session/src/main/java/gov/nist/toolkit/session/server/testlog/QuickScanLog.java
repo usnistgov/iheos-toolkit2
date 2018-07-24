@@ -8,15 +8,14 @@ import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.markdown.Markdown;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
-import gov.nist.toolkit.testenginelogging.client.QuickScanAttribute;
+import gov.nist.toolkit.testenginelogging.client.QuickScanLogAttribute;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 import gov.nist.toolkit.testkitutilities.ReadMe;
 import gov.nist.toolkit.testkitutilities.TestDefinition;
@@ -39,7 +38,7 @@ public class QuickScanLog {
         this.session = session;
     }
 
-    public List<TestOverviewDTO> quickScanLogs(TestSession testSession, List<TestInstance> testInstances, QuickScanAttribute[] quickScanAttributes) throws Exception {
+    public List<TestOverviewDTO> quickScanLogs(TestSession testSession, List<TestInstance> testInstances, QuickScanLogAttribute[] quickScanAttributes) throws Exception {
         List<TestOverviewDTO> results = new ArrayList<>();
         try {
             for (TestInstance testInstance : testInstances) {
@@ -56,13 +55,13 @@ public class QuickScanLog {
     }
 
     /**
-     * Quickly scan logs and return test status/other top-level test log attributes
+     * Quickly scan test log (essentially comprises every section log under the test folder) and return test status/other top-level test log attributes
      * @param testSession
      * @param testInstance
      * @return
      * @throws Exception
      */
-    public TestOverviewDTO quickScanLog(TestSession testSession, TestInstance testInstance, QuickScanAttribute[] quickScanAttributes) throws Exception {
+    public TestOverviewDTO quickScanLog(TestSession testSession, TestInstance testInstance, QuickScanLogAttribute[] quickScanAttributes) throws Exception {
         TestDefinition testDefinition = session.getTestkitSearchPath().getTestDefinition(testInstance.getId());
         XdsTestServiceManager xdsTestServiceManager = new XdsTestServiceManager(session);
         testInstance.setTestSession(testSession);
@@ -75,8 +74,13 @@ public class QuickScanLog {
         setDTOAttributes(testOverviewDTO, testDefinition);
 
         if (testPlanSections == null || testPlanSections.isEmpty()) {
+            /*
+ 	        * This is used for non-sectional test plan. Ie., Test plan at the root level of the test folder.
+            Not tested.
+            TODO: Test this path.
+             */
             logFile = new File(testDir, "log.xml");
-            setDTOStatus(testOverviewDTO, logFile);
+            setTestOverviewDTOStatus(testOverviewDTO, logFile);
         } else {
             boolean atLeastOneFailed = false;
             boolean atLeastOneNotRun = false;
@@ -85,18 +89,21 @@ public class QuickScanLog {
                 SectionOverviewDTO sectionOverviewDTO = new SectionOverviewDTO();
                 logFile = new File(new File(testDir, sectionName), "log.xml");
                 try {
-                    // Section details
-                    sectionOverviewDTO.setName(sectionName);
-                    SectionDefinitionDAO sectionDef = testDefinition.getSection(sectionName);
-                    sectionOverviewDTO.setSutInitiated(sectionDef.isSutInitiated());
-                    testOverviewDTO.getDependencies().addAll(sectionDef.getSectionDependencies());
-                    testOverviewDTO.addSection(sectionOverviewDTO);
+                    if ( Arrays.asList(quickScanAttributes).contains(QuickScanLogAttribute.TEST_DEPENDENCIES)) {
+                        // Section details
+                        sectionOverviewDTO.setName(sectionName);
+                        SectionDefinitionDAO sectionDef = testDefinition.getSection(sectionName);
+                        sectionOverviewDTO.setSutInitiated(sectionDef.isSutInitiated());
+                        testOverviewDTO.getDependencies().addAll(sectionDef.getSectionDependencies());
+                        testOverviewDTO.addSection(sectionOverviewDTO);
+                    }
 
                     // Log details
-                    Map<QuickScanAttribute,Object> valueMap = quickScanSectionLog(logFile,quickScanAttributes);
-                    copyValues(valueMap, sectionOverviewDTO);
+                    SectionOverviewDTO resultDTO = quickScanSectionLog(logFile,quickScanAttributes);
+                    copyAttributes(quickScanAttributes, resultDTO, sectionOverviewDTO);
 
-                    // TODO: load steps
+                    // NOTE: Step details should not be needed at the main Conformance Actor/Option page.
+
                     //        testOverview.setDependencies(null); // TODO: Need this for Part 2
 
 		/* Part 2:
@@ -152,10 +159,26 @@ public class QuickScanLog {
 
     }
 
-    void copyValues(Map<QuickScanAttribute,Object> valueMap, SectionOverviewDTO sectionOverviewDTO) {
-       if (valueMap.get(QuickScanAttribute.IS_RUN)!=null) {
-           sectionOverviewDTO.setPass(((Boolean)valueMap.get(QuickScanAttribute.IS_RUN)).booleanValue());
-       }
+    private void copyAttributes(QuickScanLogAttribute[] attributes, SectionOverviewDTO src, SectionOverviewDTO dst) {
+        for (QuickScanLogAttribute qsa : attributes) {
+            switch (qsa) {
+                case SITE:
+                    dst.setSite(src.getSite());
+                    break;
+                case IS_TLS:
+                    dst.setTls(src.isTls());
+                    break;
+                case HL7TIME:
+                    dst.setHl7Time(src.getHl7Time());
+                    break;
+                case IS_RUN:
+                    dst.setRun(src.isRun());
+                    break;
+                case IS_PASS:
+                    dst.setPass(src.isPass());
+                    break;
+            }
+        }
     }
 
     /**
@@ -165,9 +188,9 @@ public class QuickScanLog {
      * @param logFile
      * @throws Exception
      */
-    private void setDTOStatus(TestOverviewDTO testOverviewDTO, File logFile) throws Exception {
+    private void setTestOverviewDTOStatus(TestOverviewDTO testOverviewDTO, File logFile) throws Exception {
         try {
-            SectionOverviewDTO temp = quickScanSectionLog(logFile, new QuickScanAttribute[]{QuickScanAttribute.STATUS});
+            SectionOverviewDTO temp = quickScanSectionLog(logFile, new QuickScanLogAttribute[]{QuickScanLogAttribute.IS_RUN,QuickScanLogAttribute.IS_PASS});
             testOverviewDTO.setRun(temp.isRun());
             testOverviewDTO.setPass(temp.isPass());
         } catch (TkNotFoundException tknfe) {
@@ -175,8 +198,8 @@ public class QuickScanLog {
         }
     }
 
-    private Map<QuickScanAttribute, Object> quickScanSectionLog(File logFile, QuickScanAttribute[] attributes) throws Exception {
-        Map<QuickScanAttribute, Object> valueMap = new HashMap<>();
+    private SectionOverviewDTO quickScanSectionLog(File logFile, QuickScanLogAttribute[] attributes) throws Exception {
+        SectionOverviewDTO sectionOverviewDTO = new SectionOverviewDTO();
         if (!logFile.exists()) {
             throw new TkNotFoundException("Requested log does not exist.","quickScanSectionLog");
         } else {
@@ -184,24 +207,30 @@ public class QuickScanLog {
             try {
                 if (fis != null) {
                     OMElement logEl = Util.parse_xml(fis);
-                    for (QuickScanAttribute qsa : attributes) {
-                        if (QuickScanAttribute.STATUS.equals(qsa)) {
-                            // TestResults is the root node in log.xml
-                            boolean status = logStatus(logEl);
-                            valueMap.put(QuickScanAttribute.IS_RUN, new Boolean(true));
-                            valueMap.put(QuickScanAttribute.IS_PASS, new Boolean(status));
-                        } else if (QuickScanAttribute.IS_TLS.equals(qsa)) {
-                            // Set TLS true if any one step uses https endpoint
-                            boolean isTls = isTls(logEl);
-                            valueMap.put(QuickScanAttribute.IS_TLS, new Boolean(isTls));
-                        } else if (QuickScanAttribute.HL7TIME.equals(qsa)) {
-                            // Set Time
-                            String hl7time = hl7Time(logEl);
-                            valueMap.put(QuickScanAttribute.HL7TIME, hl7time);
-                        } else if (QuickScanAttribute.SITE.equals(qsa)) {
-                            // Set Site
-                            String site = site(logEl);
-                            valueMap.put(QuickScanAttribute.SITE, site);
+                    for (QuickScanLogAttribute qsa : attributes) {
+                        switch (qsa) {
+                            case HL7TIME:
+                                // Set Time
+                                String hl7time = hl7Time(logEl);
+                                sectionOverviewDTO.setHl7Time(hl7time);
+                                break;
+                            case IS_TLS:
+                                // Set TLS true if any one step uses https endpoint
+                                boolean isTls = isTls(logEl);
+                                sectionOverviewDTO.setTls(isTls);
+                                break;
+                            case SITE:
+                                // Set Site
+                                String site = site(logEl);
+                                sectionOverviewDTO.setSite(site);
+                                break;
+                            case IS_PASS:
+                            case IS_RUN:
+                                // TestResults is the root node in log.xml
+                                boolean status = logStatus(logEl);
+                                sectionOverviewDTO.setRun(true);
+                                sectionOverviewDTO.setPass(status);
+                                break;
                         }
                     }
 
@@ -209,7 +238,7 @@ public class QuickScanLog {
             } finally {
                 fis.close();
             }
-            return valueMap;
+            return sectionOverviewDTO;
         }
     }
 

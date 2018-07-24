@@ -13,7 +13,7 @@ import com.google.gwt.user.client.ui.TreeItem;
 import gov.nist.toolkit.actortransaction.shared.IheItiProfile;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
-import gov.nist.toolkit.testenginelogging.client.QuickScanAttribute;
+import gov.nist.toolkit.testenginelogging.client.QuickScanLogAttribute;
 import gov.nist.toolkit.xdstools2.client.command.command.GetActorTestProgressCommand;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
@@ -125,7 +125,7 @@ public abstract class ConformanceToolMenu {
                     statsBar.setHTML(htmlStr);
                 }
             }
-        }.run(new GetTestsOverviewRequest(getCommandContext(), testInstances, new QuickScanAttribute[]{QuickScanAttribute.STATUS}));
+        }.run(new GetTestsOverviewRequest(getCommandContext(), testInstances, new QuickScanLogAttribute[]{QuickScanLogAttribute.IS_RUN,QuickScanLogAttribute.IS_PASS}));
     }
 
     public boolean displayMenu(Panel destinationPanel) {

@@ -3,7 +3,7 @@ package gov.nist.toolkit.xdstools2.shared.command.request;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
-import gov.nist.toolkit.testenginelogging.client.QuickScanAttribute;
+import gov.nist.toolkit.testenginelogging.client.QuickScanLogAttribute;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
 import java.util.List;
@@ -15,7 +15,7 @@ public class GetTestsOverviewRequest extends CommandContext{
     private List<TestInstance> testInstances;
     private SiteSpec currentSiteSpec;
     private Site siteUnderTest = null;
-    private QuickScanAttribute[] quickScanAttributes;
+    private QuickScanLogAttribute[] quickScanAttributes;
 
     public GetTestsOverviewRequest(){}
 
@@ -28,7 +28,7 @@ public class GetTestsOverviewRequest extends CommandContext{
         this.currentSiteSpec = currentSiteSpec;
         this.siteUnderTest = siteUnderTest;
     }
-    public GetTestsOverviewRequest(CommandContext commandContext, List<TestInstance> testInstances, QuickScanAttribute[] quickScanAttributes) {
+    public GetTestsOverviewRequest(CommandContext commandContext, List<TestInstance> testInstances, QuickScanLogAttribute[] quickScanAttributes) {
         this(commandContext, testInstances);
         this.quickScanAttributes = quickScanAttributes;
     }
@@ -57,11 +57,11 @@ public class GetTestsOverviewRequest extends CommandContext{
         this.siteUnderTest = siteUnderTest;
     }
 
-    public QuickScanAttribute[] getQuickScanAttributes() {
+    public QuickScanLogAttribute[] getQuickScanAttributes() {
         return quickScanAttributes;
     }
 
-    public void setQuickScanAttributes(QuickScanAttribute[] quickScanAttributes) {
+    public void setQuickScanAttributes(QuickScanLogAttribute[] quickScanAttributes) {
         this.quickScanAttributes = quickScanAttributes;
     }
 }

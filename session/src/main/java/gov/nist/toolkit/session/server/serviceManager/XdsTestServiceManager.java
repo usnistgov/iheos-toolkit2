@@ -17,14 +17,12 @@ import gov.nist.toolkit.results.ResourceToMetadataCollectionParser;
 import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
-import gov.nist.toolkit.session.client.logtypes.SectionOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
 import gov.nist.toolkit.session.server.CodesConfigurationBuilder;
 import gov.nist.toolkit.session.server.FhirMessageBuilder;
 import gov.nist.toolkit.session.server.MessageBuilder;
 import gov.nist.toolkit.session.server.Session;
-import gov.nist.toolkit.session.server.markdown.Markdown;
 import gov.nist.toolkit.session.server.services.TestLogCache;
 import gov.nist.toolkit.session.server.testlog.TestOverviewBuilder;
 import gov.nist.toolkit.session.shared.Message;
@@ -38,10 +36,8 @@ import gov.nist.toolkit.testenginelogging.LogFileContentBuilder;
 import gov.nist.toolkit.testenginelogging.TestLogDetails;
 import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
 import gov.nist.toolkit.testenginelogging.client.LogMapDTO;
-import gov.nist.toolkit.testenginelogging.client.QuickScanAttribute;
 import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
-import gov.nist.toolkit.testkitutilities.ReadMe;
 import gov.nist.toolkit.testkitutilities.TestDefinition;
 import gov.nist.toolkit.testkitutilities.TestKit;
 import gov.nist.toolkit.testkitutilities.TestKitSearchPath;
@@ -53,12 +49,10 @@ import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.*;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
-import gov.nist.toolkit.xdsexception.client.TkNotFoundException;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import jdk.internal.org.xml.sax.SAXException;
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.apache.log4j.Logger;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 
@@ -66,12 +60,9 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
-
-import static gov.nist.toolkit.session.server.testlog.TestOverviewBuilder.stripHeaderMarkup;
 
 
 public class XdsTestServiceManager extends CommonService {
