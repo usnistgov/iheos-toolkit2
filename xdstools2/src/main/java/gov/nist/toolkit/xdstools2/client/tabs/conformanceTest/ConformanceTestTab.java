@@ -465,6 +465,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 		GWT.log("actor was refreshed.");
 	}
 
+	// TODO: make this like ActorSelectionHandler, where all sub-options get cleared. Do this for Option handler as well. Move method, and call it from the updateDisplayedActorAndOptionType
 	private class ProfileSelectionHandler implements SelectionHandler<Integer> {
 		@Override
 		public void onSelection(SelectionEvent<Integer> selectionEvent) {
@@ -582,6 +583,9 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 		for (idx = 0; idx < tabConfigs.size(); idx++) {
             if (tcCode.equals( tabConfigs.get(idx).getTcCode())) {
                 tabBar.selectTab(idx);
+                /* When the profile is selected with FireEvents,
+                we cannot differentiate between a/p/o select from OverviewMenu
+                or when User selects the profile tab (which should clear the option flag here). */
             }
         }
 	}
