@@ -3,8 +3,6 @@ package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.OpenEvent;
-import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -12,7 +10,6 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TabBar;
@@ -41,6 +38,7 @@ import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEve
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.BuildIGTestOrchestrationButton;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.util.SimpleCallbackT;
 import gov.nist.toolkit.xdstools2.client.widgets.LaunchInspectorClickHandler;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
@@ -731,11 +729,19 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 					for (final TestOverviewDTO testOverview : testOverviews) {
 						updateTestOverview(testOverview);
 
-						final TestDisplay testDisplay = testDisplayGroup.display(testOverview, null);
+						final TestDisplay testDisplay = testDisplayGroup.display(testOverview, null); // Null diagram: No diagram will be available for Not-run test status.
 						testsPanel.add(testDisplay.asWidget());
-
-						// Lazy loading of TestOverviewDTO until it is opened.
-						HandlerRegistration openTestBarHReg = testDisplay.getView().addOpenHandler(new TestBarOpenHandler(testDisplay, testOverview, parms));
+						InteractionDiagramDisplay diagramDisplay = new InteractionDiagramDisplay(
+								null,
+								testContext.getTestSession(),
+								getSiteToIssueTestAgainst(),
+								((testContext.getSiteUnderTestAsSiteSpec() != null) ? testContext.getSiteUnderTestAsSiteSpec().getName() : ""),
+								currentActorOption,
+								getTestInstancePatientId(testOverview.getTestInstance(), parms));
+								// Lazy loading of TestOverviewDTO until it is opened.
+								HandlerRegistration openTestBarHReg = testDisplay.getView().addOpenHandler(new TestBarOpenHandler(testDisplay, testOverview, getCommandContext(), diagramDisplay
+								, new SimpleCallbackT<TestOverviewDTO>(){public void run(TestOverviewDTO t){}} // a -> updateTestOverview(a).
+								));
 						testDisplay.getView().setOpenTestBarHReg(openTestBarHReg);
 					}
 					updateTestsOverviewHeader(testsPerActorOption, testOverviewDTOs, testStatistics, currentActorOption);
@@ -746,55 +752,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 		}.run(tor);
 	}
 
-	class TestBarOpenHandler implements OpenHandler<DisclosurePanel> {
-		TestDisplay testDisplay;
-		TestOverviewDTO testOverview;
-		Map<String, String> parms;
 
-		public TestBarOpenHandler(TestDisplay testDisplay, TestOverviewDTO testOverview, Map<String, String> parms) {
-			this.testDisplay = testDisplay;
-			this.testOverview = testOverview;
-			this.parms = parms;
-		}
-
-		@Override
-		public void onOpen(OpenEvent<DisclosurePanel> openEvent) {
-			// TODO: part2 make this work for Not run status tests
-			try {
-				List<TestInstance> ti = new ArrayList<>();
-				ti.add(testOverview.getTestInstance()); // Only one TI
-				GetTestsOverviewRequest gtor = new GetTestsOverviewRequest(getCommandContext(), ti);
-				new GetTestsOverviewCommand() {
-					@Override
-					public void onComplete(List<TestOverviewDTO> result) {
-						TestOverviewDTO toDTO = result.get(0); // Expect only one since only one test instance was requested
-						updateTestOverview(toDTO);
-						InteractionDiagramDisplay diagramDisplay = new InteractionDiagramDisplay(
-								toDTO,
-								testContext.getTestSession(),
-								getSiteToIssueTestAgainst(),
-								((testContext.getSiteUnderTestAsSiteSpec() != null) ? testContext.getSiteUnderTestAsSiteSpec().getName() : ""),
-								currentActorOption,
-								getTestInstancePatientId(toDTO.getTestInstance(), parms));
-						testDisplay.setDiagramDisplay(diagramDisplay);
-						testDisplay.display(toDTO);
-						testDisplay.getView().autoOpenIfOnlyOneSection();
-					}
-
-					@Override
-					public void onFailure(Throwable throwable) {
-						super.onFailure(throwable);
-					}
-				}.run(gtor);
-				// This is a one-time handler
-				if (testDisplay.getView().getOpenTestBarHReg() != null) {
-				    testDisplay.getView().getOpenTestBarHReg().removeHandler();
-				}
-			} catch (Exception ex) {
-				GWT.log(ex.toString());
-			}
-		}
-	}
 
 	private static String getPatientIdStr(Map<String, String> parms) {
 		return (parms!=null)?parms.get("$patientid$"):null;

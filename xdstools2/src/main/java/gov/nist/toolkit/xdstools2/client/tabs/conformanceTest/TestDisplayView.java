@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * View for TestDisplay
  */
-class TestDisplayView extends FlowPanel implements TestStatusDisplay {
+public class TestDisplayView extends FlowPanel implements TestStatusDisplay {
     private TestOverviewDisplayPanel header = new TestOverviewDisplayPanel();
     private FlowPanel body = new FlowPanel();
     private DisclosurePanel panel = new DisclosurePanel(header);

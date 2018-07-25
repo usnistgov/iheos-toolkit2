@@ -263,7 +263,6 @@ public class TestStepLogContentBuilder {
 
     private OMElement parseEndpoint() {
         OMElement endpointEl = null;
-        // TODO: part2, make search start from test step/ transaction instead of root, and get only first decendent
         List<OMElement> endpoints = XmlUtil.decendentsWithLocalName(root, "Endpoint");
         if (!endpoints.isEmpty()) {
             endpointEl = endpoints.get(0);

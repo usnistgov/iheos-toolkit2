@@ -105,7 +105,8 @@ public class QuickScanLog {
 
                     // NOTE: Step details should not be needed at the main Conformance Actor/Option page.
 
-                    //        testOverview.setDependencies(null); // TODO: Need this for Part 2
+                    // testOverview.setDependencies(null);
+                    // Need this for Part 2
 
 		/* Part 2:
 		Create QuickScanLog class
