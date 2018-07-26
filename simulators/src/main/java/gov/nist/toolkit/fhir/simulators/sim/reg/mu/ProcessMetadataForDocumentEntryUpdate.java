@@ -4,10 +4,10 @@ import gov.nist.toolkit.common.datatypes.Hl7Date;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
-import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.fhir.simulators.sim.reg.store.*;
 import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegIndex.AssocType;
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.StatusValue;
+import gov.nist.toolkit.registrymetadata.Metadata;
+import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
@@ -20,6 +20,8 @@ public class ProcessMetadataForDocumentEntryUpdate implements ProcessMetadataInt
 	MetadataCollection mc;
 	MetadataCollection delta;
 	String now;
+	private boolean associationPropogationEnabled = true;
+
 
 	public ProcessMetadataForDocumentEntryUpdate(ErrorRecorder er, MetadataCollection mc, MetadataCollection delta) {
 		this.er = er;
@@ -89,11 +91,30 @@ public class ProcessMetadataForDocumentEntryUpdate implements ProcessMetadataInt
 		}
 	}
 
+	// this implements 3.57.4.1.3.3.1.5 Association Propagation para 3
+	// replicate relationship associations
 	@Override
 	public void updateExistingFoldersWithReplacedDocs(Metadata m) {
+		for (OMElement updatedDocEntryEle : m.getExtrinsicObjects()) {
+			String docEntryLid = Metadata.getLid(updatedDocEntryEle);
+			boolean associationPropagation = MuCommon.associationPropagation(m, updatedDocEntryEle, er);
+			if (!associationPropagation)
+				continue;
+			DocEntry lastestDocEntry  = delta.docEntryCollection.getLatestVersion(docEntryLid);
+			// repeat for latestDocEntry as sourceObject
+			List<Assoc> assocs = delta.assocCollection.getBySourceDestAndType(null, lastestDocEntry.id, null);
+			for (Assoc assoc : assocs) {
+				if (assoc.getAvailabilityStatus() != StatusValue.APPROVED)
+					continue;
+				delta.addAssoc(assoc.from, Metadata.getId(updatedDocEntryEle), assoc.type);
+			}
+		}
+
+
+
 		for (OMElement a : m.getAssociations()) {
 			try {
-				if (!"RPLC".equals(m.getSimpleAssocType(a)))
+				if (!RegIndex.isRelationshipAssoc(m.getSimpleAssocType(a)))
 					continue;
 			} catch (Exception e) {
 				continue;
@@ -102,7 +123,7 @@ public class ProcessMetadataForDocumentEntryUpdate implements ProcessMetadataInt
 			String origDocId = m.getAssocTarget(a);
 			DocEntry de = delta.docEntryCollection.getById(docId);
 			DocEntry origDE = delta.docEntryCollection.getById(origDocId);
-			
+
 			List<Fol> origDEFols = mc.getFoldersContaining(origDE);
 			for (Fol f : origDEFols) {
 				try {
@@ -112,7 +133,7 @@ public class ProcessMetadataForDocumentEntryUpdate implements ProcessMetadataInt
 					er.err(Code.XDSMetadataUpdateError, e);
 				}
 			}
-			
+
 		}
 	}
 
@@ -153,8 +174,29 @@ public class ProcessMetadataForDocumentEntryUpdate implements ProcessMetadataInt
 		}
 	}
 
+	// this implements 3.57.4.1.3.3.1.5 Association Propagation para 2
+	// link update DEs to a Folder if previous version was so linked
 	@Override
 	public void addDocsToUpdatedFolders(Metadata m) {
+		for (OMElement updatedDocEntryEle : m.getExtrinsicObjects()) {
+			String docEntryLid = Metadata.getLid(updatedDocEntryEle);
+			boolean associationPropagation = MuCommon.associationPropagation(m, updatedDocEntryEle, er);
+			if (!associationPropagation)
+				continue;
+			DocEntry lastestDocEntry  = delta.docEntryCollection.getLatestVersion(docEntryLid);
+			List<Assoc> assocs = delta.assocCollection.getBySourceDestAndType(null, lastestDocEntry.id, AssocType.HASMEMBER);
+			for (Assoc assoc : assocs) {
+				if (assoc.getAvailabilityStatus() != StatusValue.APPROVED)
+					continue;
+				String folId = assoc.from;
+				try {
+					delta.addDocEntryToFolAssoc(Metadata.getId(updatedDocEntryEle), folId);
+				} catch (Exception e) {
+					er.err(Code.XDSMetadataUpdateError, "Error with Association Propagation on DocumentEntry (lid) " + docEntryLid + " -\n" + ExceptionUtil.exception_details(e), "", "");
+					continue;
+				}
+			}
+		}
 
 	}
 

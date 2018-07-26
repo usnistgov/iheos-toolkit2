@@ -4,6 +4,7 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.fhir.simulators.sim.reg.store.DocEntry;
+import gov.nist.toolkit.fhir.simulators.sim.reg.store.ProcessMetadataInterface;
 import gov.nist.toolkit.fhir.simulators.sim.reg.store.StatusValue;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.valsupport.client.ValidationContext.MetadataPattern;
@@ -92,7 +93,8 @@ public class DocumentEntryUpdate  {
 		// worker methods that can be overridden by this class to
 		// control the processing. (That's why this class inherits
 		// from RegRSim).
-		muSim.processMetadata(operation, new ProcessMetadataForDocumentEntryUpdate(er, muSim.mc, muSim.delta));
+		ProcessMetadataInterface pmi = new ProcessMetadataForDocumentEntryUpdate(er, muSim.mc, muSim.delta);
+		muSim.processMetadata(operation, pmi);
 
 		if (!muSim.hasErrors()) {
 			muSim.save(operation, false);

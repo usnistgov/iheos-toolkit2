@@ -3,6 +3,7 @@ package gov.nist.toolkit.fhir.simulators.sim.reg.mu;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.fhir.simulators.sim.reg.store.Fol;
+import gov.nist.toolkit.fhir.simulators.sim.reg.store.ProcessMetadataInterface;
 import gov.nist.toolkit.fhir.simulators.sim.reg.store.StatusValue;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -69,12 +70,17 @@ public class FolderUpdate {
         operation.addFolder(folEle);
         operation.add_association(ssAssoc);
 
+        boolean associationPropagation = true;
+
+
         // run normal processing for a Register
         // Note that this method farms out all the work to other
         // worker methods that can be overridden by this class to
         // control the processing. (That's why this class inherits
         // from RegRSim).
-        muSim.processMetadata(operation, new ProcessMetadataForFolderUpdate(er, muSim.mc, muSim.delta));
+        ProcessMetadataInterface pmi = new ProcessMetadataForFolderUpdate(er, muSim.mc, muSim.delta);
+        pmi.setAssociationPropagation(associationPropagation);
+        muSim.processMetadata(operation, pmi);
 
         if (!muSim.hasErrors()) {
             muSim.save(operation, false);

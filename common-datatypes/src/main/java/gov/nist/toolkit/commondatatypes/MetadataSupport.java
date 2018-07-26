@@ -16,7 +16,8 @@ import java.util.List;
  */
 
 public class MetadataSupport {
-	static public OMFactory om_factory = OMAbstractFactory.getOMFactory();
+    public static final String AssociationPropagation = "AssociationPropagation";
+    static public OMFactory om_factory = OMAbstractFactory.getOMFactory();
 
 	static public String ebRSns2_uri = "urn:oasis:names:tc:ebxml-regrep:registry:xsd:2.1";
 	static public OMNamespace ebRSns2 =  om_factory.createOMNamespace(ebRSns2_uri, "rs");

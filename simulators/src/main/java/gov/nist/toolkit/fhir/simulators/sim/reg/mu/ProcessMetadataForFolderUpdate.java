@@ -5,12 +5,11 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.fhir.simulators.sim.reg.store.*;
 import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.xdsexception.client.MetadataException;
-import gov.nist.toolkit.xdsexception.client.XdsInternalException;
+import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProcessMetadataForFolderUpdate implements ProcessMetadataInterface {
@@ -19,6 +18,7 @@ public class ProcessMetadataForFolderUpdate implements ProcessMetadataInterface 
 	MetadataCollection mc;
 	MetadataCollection delta;
 	String now;
+	private boolean associationPropogationEnabled = true;
 
 	public ProcessMetadataForFolderUpdate(ErrorRecorder er, MetadataCollection mc, MetadataCollection delta) {
 		this.er = er;
@@ -67,27 +67,28 @@ public class ProcessMetadataForFolderUpdate implements ProcessMetadataInterface 
 
 	@Override
 	public void updateExistingFoldersWithReplacedDocs(Metadata m) {
-		for (OMElement a : m.getAssociations()) {
-			try {
-				if (!"RPLC".equals(m.getSimpleAssocType(a)))
-					continue;
-			} catch (Exception e) {
+	}
+
+	// The DocEntry and Association must have status = Approved
+	private List<DocEntry> docEntriesLinkedToFolderWithApprovedStatus(Fol fol) {
+		List<DocEntry> docEntries = new ArrayList<>();
+
+		for (Assoc assoc : delta.assocCollection.assocs) {
+			if (assoc.type != RegIndex.AssocType.HASMEMBER)
 				continue;
-			}
-			String docId = Metadata.getAssocSource(a);
-			String origDocId = Metadata.getAssocTarget(a);
-			DocEntry de = delta.docEntryCollection.getById(docId);
-			DocEntry origDE = delta.docEntryCollection.getById(origDocId);
-			
-			List<Fol> origDEFols = mc.getFoldersContaining(origDE);
-			for (Fol f : origDEFols) {
-				try {
-					delta.addDocEntryToFolAssoc(de, f);
-				} catch (Exception e) {
-					er.err(Code.XDSMetadataUpdateError, e);
-				}
-			}
+			if (!assoc.from.equals(fol.id))
+				continue;
+			if (assoc.getAvailabilityStatus() != StatusValue.APPROVED)
+				continue;
+			DocEntry docEntry = delta.docEntryCollection.getById(assoc.to);
+			if (docEntry == null)
+				continue;  // should never happen
+			if (docEntry.getAvailabilityStatus() != StatusValue.APPROVED)
+				continue;
+			docEntries.add(docEntry);
 		}
+
+		return docEntries;
 	}
 
 	// verify that no associations are being added that:
@@ -97,23 +98,27 @@ public class ProcessMetadataForFolderUpdate implements ProcessMetadataInterface 
 		new ProcessMetadataForDocumentEntryUpdate(er, mc, delta).associationPatientIdRules();
 	}
 
+	// this implements 3.57.4.1.3.3.3.5 Association Propagation
 	// when folder is updated, all the contents are linked to new version of folder
 	@Override
 	public void addDocsToUpdatedFolders(Metadata m) {
-		for (OMElement folEle : m.getFolders()) {
-			Fol folLatest = mc.folCollection.getLatestVersion(Metadata.getLid(folEle));
-			Fol folUpdate = delta.folCollection.getById(Metadata.getId(folEle));
-			if (folLatest != null) {
-				List<DocEntry> des = mc.getDocEntriesInFolder(folLatest);
-				for (DocEntry de : des) {
+		for (OMElement updateFolEle : m.getFolders()) {
+			String folLid = Metadata.getLid(updateFolEle);
+			boolean associationPropagation = MuCommon.associationPropagation(m, updateFolEle, er);
+			if (associationPropagation) {
+				Fol latestFol = delta.folCollection.getLatestVersion(folLid);
+				if (latestFol.getAvailabilityStatus() != StatusValue.APPROVED) {
+					er.err(Code.XDSMetadataUpdateError, "Folder being updated does not have Approved status " + latestFol.id, "", "");
+					continue;
+				}
+
+				List<DocEntry> existingLinkedDocEntries = docEntriesLinkedToFolderWithApprovedStatus(latestFol);
+				for (DocEntry docEntry : existingLinkedDocEntries) {
 					try {
-						delta.addAssoc(folUpdate.id, de.id, RegIndex.AssocType.HASMEMBER);
-					} catch (MetadataException e) {
-						er.err(Code.XDSMetadataUpdateError, e);
-					} catch (XdsInternalException e) {
-						er.err(Code.XDSMetadataUpdateError, e);
-					} catch (IOException e) {
-						er.err(Code.XDSMetadataUpdateError, e);
+						delta.addDocEntryToFolAssoc(docEntry.id, Metadata.getId(updateFolEle));
+					} catch (Exception e) {
+						er.err(Code.XDSMetadataUpdateError, "Error with Association Propagation on Folder (lid) " + folLid + " -\n" + ExceptionUtil.exception_details(e), "", "");
+						continue;
 					}
 				}
 			}

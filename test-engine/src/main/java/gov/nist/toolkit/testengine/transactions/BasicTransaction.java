@@ -1099,7 +1099,7 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 		}
 		else if (part_name.equals("AssignNewUuid")) {
 			String symbol = part.getAttributeValue(new QName("symbol"));
-			testLog.add_name_value(instruction_output, "UseId", );
+//			testLog.add_name_value(instruction_output, "UseId", );
 			try {
 				addToLinkage(symbol, UUIDGenerator.getUUID());
 			} catch (MetadataException e) {

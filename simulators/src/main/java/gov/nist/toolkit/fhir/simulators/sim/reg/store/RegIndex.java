@@ -117,7 +117,18 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 		return values;
 	}
 
-	public enum AssocType { UNKNOWN, HASMEMBER, RPLC, RPLC_XFRM, XFRM, APND };
+	public enum AssocType { UNKNOWN, HASMEMBER, RPLC, RPLC_XFRM, XFRM, APND, SIGNS };
+
+	public enum RelationshipAssocType { RPLC, RPLC_XFRM, XFRM, APND, SIGNS}
+
+	public static boolean isRelationshipAssoc(String value) {
+		try {
+			RelationshipAssocType.valueOf(value);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
 
 	static public AssocType getAssocType(Metadata m, OMElement ele) {
 		String typ = Metadata.getAssocType(ele);
@@ -137,6 +148,8 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 			return AssocType.XFRM;
 		if (typ.endsWith("APND"))
 			return AssocType.APND;
+		if (typ.endsWith("SIGNS"))
+			return AssocType.SIGNS;
 		return AssocType.UNKNOWN;
 	}
 	

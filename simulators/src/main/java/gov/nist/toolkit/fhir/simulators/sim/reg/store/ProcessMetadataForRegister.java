@@ -20,6 +20,7 @@ public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 	ErrorRecorder er;
 	MetadataCollection mc;
 	MetadataCollection delta;
+	private boolean associationPropogationEnabled = true;
 
 	public ProcessMetadataForRegister(ErrorRecorder er, MetadataCollection mc, MetadataCollection delta) {
 		this.er = er;
@@ -349,6 +350,10 @@ public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 		}
 	}
 
+	@Override
+	public void setAssociationPropagation(boolean value) {
+		associationPropogationEnabled = value;
+	}
 
 
 
