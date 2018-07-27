@@ -2,7 +2,6 @@ package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.HandlerRegistration;
 import gov.nist.toolkit.interactiondiagram.client.widgets.InteractionDiagram;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.client.logtypes.SectionOverviewDTO;
@@ -78,6 +77,7 @@ public class TestDisplay  implements IsWidget {
         if (getDiagramDisplay()!=null) {
             firstTransactionRepeatingTooManyTimes = InteractionDiagram.isFirstTransactionRepeatingTooManyTimes(testOverview);
             if (getDiagramDisplay() != null && !firstTransactionRepeatingTooManyTimes) {
+                // Display all sections in the diagram at once
                 view.setInteractionDiagram(getDiagramDisplay().render());
             }
         }
@@ -86,15 +86,15 @@ public class TestDisplay  implements IsWidget {
         view.clearSections();
         for (String sectionName : testOverview.getSectionNames()) {
             SectionOverviewDTO sectionOverview = testOverview.getSectionOverview(sectionName);
-            // Section level diagram
             if (getDiagramDisplay()!=null && firstTransactionRepeatingTooManyTimes) {
                InteractionDiagramDisplay sectionDiagramDisplay = getDiagramDisplay().copy();
                sectionDiagramDisplay.getTestOverviewDTO().getSectionNames().add(sectionName);
                sectionDiagramDisplay.getTestOverviewDTO().getSections().put(sectionName,sectionOverview);
-
+                // Display individual section level diagram instead of one big diagram
                 TestSectionDisplay sectionComponent = new TestSectionDisplay(testContext.getTestSession(), testOverview.getTestInstance(), sectionOverview, testRunner, allowRun, sectionDiagramDisplay);
                 view.addSection(sectionComponent);
             } else {
+                // Cumulative diagram already displayed at the Test level assuming if firstTransactionRepeatingTooManyTimes is false
                 TestSectionDisplay sectionComponent = new TestSectionDisplay(testContext.getTestSession(), testOverview.getTestInstance(), sectionOverview, testRunner, allowRun, null);
                 view.addSection(sectionComponent);
             }

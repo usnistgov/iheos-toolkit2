@@ -42,7 +42,7 @@ public class InteractionDiagram extends Composite {
     public static final String RGB_RED = "rgb(255,0,0)";
     public static final String RGB_BLUE = "rgb(0,0,255)";
     public static final String RGB_ORANGE = "rgb(255,165,0)";
-    public static final int MAX_FIRST_TRAN_REPEAT = 3;
+    public static final int MAX_FIRST_TRAN_REPEAT = 10;
 
     static final int HALF_CROSS_HEIGHT = 5;
     static final int LINE_HEIGHT = 13;
