@@ -92,6 +92,7 @@ public class QuickScanLog {
                 try {
                     if (scanTestDependencies) {
                         // Section details
+                        sectionOverviewDTO.setRun(false); // Need to set False because default is True!
                         sectionOverviewDTO.setName(sectionName);
                         SectionDefinitionDAO sectionDef = testDefinition.getSection(sectionName);
                         sectionOverviewDTO.setSutInitiated(sectionDef.isSutInitiated());
