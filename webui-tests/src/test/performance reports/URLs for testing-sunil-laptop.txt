@@ -21,3 +21,5 @@ http://127.0.0.1:8888/Xdstools2.html#ConfActor:alternate/dev/reg/xds/catfolder/r
 
 
 http://127.0.0.1:8888/Xdstools2.html#ConfActor:env=default;testSession=default;actor=reg;profile=xds;option=catfolder;systemId=reg;
+
+http://127.0.0.1:8888/Xdstools2.html#ConfActor:env=default;testSession=default;actor=rec;profile=mhd;option=docreciprespndr;systemId=reg;
