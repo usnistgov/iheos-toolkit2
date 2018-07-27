@@ -221,9 +221,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 							  && !"TestContextDialog".equals(event.getEventSource()) // TestContext fires both TestSessionChanged and TestContextChanged
 								) {
 								GWT.log("Test session changed: " + event.getValue());
-								// TODO: rebuild xdstools2
-								// FIXME: when test session is changed, the site needs to be reloaded. Otherwise the Test Context box popsup saying SUT does not exist (well, the test session changed and the sim may not be accessible).
-//								initializeTestingContext();
+								// When test session is changed, the site needs to be reloaded. Otherwise the Test Context box pops up saying SUT does not exist (well, the test session changed and the sim in the previous test session may not be accessible in the current test session).
+								siteToIssueTestAgainst = null;
 								loadTestCollections();
 							} else {
 								GWT.log("Ignored " + event.getEventSource());
@@ -244,29 +243,17 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 			}
 		});
 
-		// FIXME:
-		// This is needed to only refresh the status index page
-//		if (false) {
-			ClientUtils.INSTANCE.getEventBus().addHandler(TestContextChangedEvent.TYPE, new TestContextChangedEventHandler() {
-				@Override
-				public void onTestContextChanged(TestContextChangedEvent event) {
-					testContextView.updateTestingContextDisplay();
-					if (currentActorOption.getActorTypeId()==null) { // Menu mode has no actor
-						loadTestCollections();
-					} else {
-						updateDisplayedActorAndOptionType();
-					}
-//					testContextView.updateTestingContextDisplay();
-//				    loadTestCollections();
-//					if (getInitTestSession()==null) {
-//						displayMenu(mainView.getTestsPanel());
-//						if (updateDisplayedActorAndOptionType()) { // . Check if currentactoroptin is properly set (ok if profile & option is null)
-//							initializeTestDisplay(mainView.getTestsPanel());
-//						}
-//					}
+		ClientUtils.INSTANCE.getEventBus().addHandler(TestContextChangedEvent.TYPE, new TestContextChangedEventHandler() {
+			@Override
+			public void onTestContextChanged(TestContextChangedEvent event) {
+				testContextView.updateTestingContextDisplay();
+				if (currentActorOption.getActorTypeId()==null) { // Menu mode has no actor
+					loadTestCollections();
+				} else {
+					updateDisplayedActorAndOptionType();
 				}
-			});
-//		}
+			}
+		});
 
 	}
 
@@ -365,12 +352,6 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 	 *
 	 */
 	private void initializeTestingContext() {
-
-//		if (getCurrentTestSession() == null || getCurrentTestSession().equals("")) {
-//			testContextView.updateTestingContextDisplay();
-//			return;
-//		}
-
 		if (siteToIssueTestAgainst != null && !(siteToIssueTestAgainst.getName()=="" || siteToIssueTestAgainst.getName()==null)) {
 			new GetSiteCommand() {
 				@Override
@@ -419,6 +400,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 						@Override
 						public void onComplete(Site result) {
 							testContext.setSiteUnderTest(result);
+							setSiteToIssueTestAgainst(testContext.getSiteUnderTestAsSiteSpec());
 							updateDisplayedActorAndOptionType();
 						}
 					}.run(new GetSiteRequest(ClientUtils.INSTANCE.getCommandContext(), result));
