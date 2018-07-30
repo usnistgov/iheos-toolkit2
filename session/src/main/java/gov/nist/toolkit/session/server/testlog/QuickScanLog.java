@@ -270,9 +270,11 @@ public class QuickScanLog {
             XmlUtil.descendantsWithLocalNameEndsWith(tranEls, stepEl, "Transaction",1);
             if (!tranEls.isEmpty()) {
                 OMElement endpontEl = XmlUtil.firstDecendentWithLocalName(tranEls.get(0), "Endpoint");
-                atLeastOneHttpsEndpoint = endpontEl.getText().startsWith("https");
-                if (atLeastOneHttpsEndpoint) {
-                    break;
+                if (endpontEl != null && endpontEl.getText() != null) {
+                    atLeastOneHttpsEndpoint = endpontEl.getText().startsWith("https");
+                    if (atLeastOneHttpsEndpoint) {
+                        break;
+                    }
                 }
             }
         }
