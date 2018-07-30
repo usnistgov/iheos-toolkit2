@@ -224,6 +224,18 @@ class RepositoryActorSimulatorSpec extends ConformanceActor {
         // There are no tests for repository orchestration tests to look for.
     }
 
+    def 'Count tests to verify later'() { // A complete run Jetty Log should have about 46K lines.
+        when:
+        List<HtmlDivision> nodeList = page.getByXPath("//div[@class='testCount']")
+        testCount = -1
+
+        if (nodeList!=null && nodeList.size()==1) {
+            testCount = Integer.parseInt(nodeList.get(0).getTextContent())
+        }
+
+        then:
+        testCount > -1
+    }
 
     def 'Find and Click the RunAll Test Registry Conformance Actor image button.'() {
 
@@ -295,4 +307,27 @@ class RepositoryActorSimulatorSpec extends ConformanceActor {
         then:
         testFail == 0
     }
+
+    def 'Reload page'() {
+        when:
+        loadPage(actorPage)
+
+        then:
+        page != null
+    }
+
+    def 'Count tests to make sure all tests are still present'() { // A complete run Jetty Log should have about 46K lines.
+        when:
+        List<HtmlDivision> nodeList = page.getByXPath("//div[@class='testCount']")
+        int testCountToVerify = -1
+
+        if (nodeList!=null && nodeList.size()==1) {
+            testCountToVerify = Integer.parseInt(nodeList.get(0).getTextContent())
+        }
+
+        then:
+        testCountToVerify == testCount
+        println ("Total tests: " + testCount)
+    }
+
 }

@@ -12,6 +12,7 @@ import spock.lang.Timeout
 abstract class ConformanceActor extends ToolkitWebPage {
 
     @Shared String actorPage
+    @Shared int testCount
     abstract void setupSim()
     abstract String getSimId()
 

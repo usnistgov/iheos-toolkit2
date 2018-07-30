@@ -14,13 +14,12 @@ import spock.lang.Timeout
  * Created by skb1 on 6/5/2017.
  */
 @Stepwise
-@Timeout(400) // Keep this to accommodate slow computers
+@Timeout(400) // Keep this to accommodate slow computers (Sunil's Windows 10 laptop).
 class RegistryActorSimulatorSpec extends ConformanceActor {
 
     static final String simName = "reg" /* Sim names should be lowered cased */
 
     @Shared DocumentRegRep regRepSim
-
 
     @Override
     void setupSim() {
@@ -145,6 +144,19 @@ class RegistryActorSimulatorSpec extends ConformanceActor {
         elementList!=null && elementList.size()==8 // Orchestration tests
     }
 
+    def 'Count tests to verify later'() { // A complete run Jetty Log should have about 46K lines.
+        when:
+        List<HtmlDivision> nodeList = page.getByXPath("//div[@class='testCount']")
+        testCount = -1
+
+        if (nodeList!=null && nodeList.size()==1) {
+            testCount = Integer.parseInt(nodeList.get(0).getTextContent())
+        }
+
+        then:
+        testCount > -1
+    }
+
     def 'Find and Click the RunAll Test Registry Conformance Actor image button.'() {
 
         when:
@@ -202,7 +214,6 @@ class RegistryActorSimulatorSpec extends ConformanceActor {
         runAllButtonWasFound
         runAllButtonWasClicked
         page != null
-
     }
 
     def 'Number of failed tests count should be zero.'() { // A complete run Jetty Log should have about 46K lines.
@@ -217,4 +228,28 @@ class RegistryActorSimulatorSpec extends ConformanceActor {
         then:
         testFail == 0
     }
+
+    def 'Reload page'() {
+        when:
+        loadPage(actorPage)
+
+        then:
+        page != null
+    }
+
+    def 'Count tests to make sure all tests are still present'() { // A complete run Jetty Log should have about 46K lines.
+        when:
+        List<HtmlDivision> nodeList = page.getByXPath("//div[@class='testCount']")
+        int testCountToVerify = -1
+
+        if (nodeList!=null && nodeList.size()==1) {
+            testCountToVerify = Integer.parseInt(nodeList.get(0).getTextContent())
+        }
+
+        then:
+        testCountToVerify == testCount
+        println ("Total tests: " + testCount)
+    }
+
+
 }
