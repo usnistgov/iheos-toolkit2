@@ -2293,6 +2293,10 @@ public class Metadata {
 		return submissionSet;
 	}
 
+	public void clearSubmissionSet() {
+		submissionSet = null;
+	}
+
 	public String getSubmissionSetId() {
 		OMElement ss = getSubmissionSet();
 		if (ss == null)

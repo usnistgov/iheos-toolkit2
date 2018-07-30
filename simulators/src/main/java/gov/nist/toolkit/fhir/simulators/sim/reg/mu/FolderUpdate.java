@@ -69,6 +69,7 @@ public class FolderUpdate {
 
         operation.addFolder(folEle);
         operation.add_association(ssAssoc);
+        operation.addSubmissionSet(m.getSubmissionSet());
 
         boolean associationPropagation = true;
 
@@ -79,7 +80,6 @@ public class FolderUpdate {
         // control the processing. (That's why this class inherits
         // from RegRSim).
         ProcessMetadataInterface pmi = new ProcessMetadataForFolderUpdate(er, muSim.mc, muSim.delta);
-        pmi.setAssociationPropagation(associationPropagation);
         muSim.processMetadata(operation, pmi);
 
         if (!muSim.hasErrors()) {

@@ -34,7 +34,7 @@ public class GetFolderAndContentsSim extends GetFolderAndContents {
 			XdsException, LoggerException {
 		
 		MetadataCollection mc = ri.getMetadataCollection();
-		List<Ro> results = new ArrayList<Ro>();
+		List<Ro> results = new ArrayList<>();
 		
 		List<Fol> fols = new ArrayList<>();
 		if (fol_uuid != null) {
@@ -58,7 +58,7 @@ public class GetFolderAndContentsSim extends GetFolderAndContents {
 		for (Fol fol : fols) {
 			String folid = fol.getId();
 
-			List<Assoc> folAssocs = mc.assocCollection.getBySourceDestAndType(folid, null, RegIndex.AssocType.HASMEMBER);
+			List<Assoc> folAssocs = mc.assocCollection.getBySourceDestAndType(folid, null, RegIndex.AssocType.HasMember);
 			List<DocEntry> docEntries = new ArrayList<DocEntry>();
 
 			for (Assoc a : folAssocs) {

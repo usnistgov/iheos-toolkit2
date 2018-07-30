@@ -340,7 +340,7 @@ public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 				// add source doc to these folders
 				for (Fol f : foldersHoldingTarget) {
 					try {
-						delta.addAssoc(f.getId(), sourceId, AssocType.HASMEMBER);
+						delta.addAssoc(f.getId(), sourceId, AssocType.HasMember);
 						delta.labelFolderUpdated(f, new Hl7Date().now());
 					} catch (Exception e) {
 						er.err(Code.XDSRegistryError, e.getMessage(), this, null);
@@ -349,12 +349,6 @@ public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 			}
 		}
 	}
-
-	@Override
-	public void setAssociationPropagation(boolean value) {
-		associationPropogationEnabled = value;
-	}
-
 
 
 }

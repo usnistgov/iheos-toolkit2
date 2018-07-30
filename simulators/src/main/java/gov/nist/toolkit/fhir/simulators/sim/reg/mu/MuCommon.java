@@ -13,10 +13,14 @@ class MuCommon {
     // is Association Propagation requested for this object?
     static boolean associationPropagation(Metadata m, OMElement focusObject, ErrorRecorder er) {
         OMElement ssEle = m.getSubmissionSet();
-        OMElement hasMemberEle = m.getAssociation(Metadata.getId(ssEle), Metadata.getId(focusObject), RegIndex.AssocType.HASMEMBER.name());
+        if (ssEle == null) {
+            er.err(XdsErrorCode.Code.XDSMetadataUpdateError, "No SubmissionSet object found in request", null, null);
+            return false;
+        }
+        OMElement hasMemberEle = m.getAssociation(Metadata.getId(ssEle), Metadata.getId(focusObject), RegIndex.AssocType.HasMember.name());
         if (hasMemberEle == null) {
             er.err(XdsErrorCode.Code.XDSMetadataUpdateError, "No HasMember Association found linking Folder " + Metadata.getId(focusObject) + " to SubmissionSet", "", "");
-            throw new ToolkitRuntimeException("No HasMember Association found linking Folder " + Metadata.getId(focusObject) + " to SubmissionSet");
+            return false;
         }
         String aprop = m.getSlotValue(hasMemberEle, MetadataSupport.AssociationPropagation, 0);
         return aprop == null || aprop.equals("yes");

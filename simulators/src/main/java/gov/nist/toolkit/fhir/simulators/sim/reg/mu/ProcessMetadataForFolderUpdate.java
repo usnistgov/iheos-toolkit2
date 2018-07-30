@@ -74,7 +74,7 @@ public class ProcessMetadataForFolderUpdate implements ProcessMetadataInterface 
 		List<DocEntry> docEntries = new ArrayList<>();
 
 		for (Assoc assoc : delta.assocCollection.assocs) {
-			if (assoc.type != RegIndex.AssocType.HASMEMBER)
+			if (assoc.type != RegIndex.AssocType.HasMember)
 				continue;
 			if (!assoc.from.equals(fol.id))
 				continue;

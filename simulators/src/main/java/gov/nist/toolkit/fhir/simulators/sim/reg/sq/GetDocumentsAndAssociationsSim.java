@@ -55,7 +55,7 @@ public class GetDocumentsAndAssociationsSim extends GetDocumentsAndAssociations 
 		List<Assoc> assocs = new ArrayList<Assoc>();
 		
 		for (String id : returnIds) {
-			List<Assoc> as = mc.assocCollection.getBySourceOrDest(id, id);
+			List<Assoc> as = mc.assocCollection.getBySourceOrDestAndType(id, id, null);
 			assocs.addAll(as);
 		}
 		

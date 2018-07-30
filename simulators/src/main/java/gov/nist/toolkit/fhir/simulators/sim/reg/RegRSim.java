@@ -315,7 +315,7 @@ public class RegRSim extends TransactionSimulator   {
 
 		// save metadata objects XML
 		try {
-			delta.storeMetadata(m);
+			delta.storeMetadata(m, true);  // overwrite is experimental for ME
 		} catch (Exception e1) {
 			er.err(XdsErrorCode.Code.XDSRegistryError, e1);
 		}

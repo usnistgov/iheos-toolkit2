@@ -124,10 +124,12 @@ public class AssocCollection extends RegObCollection implements Serializable {
 		return myassocs;
 	}
 
-	public List<Assoc> getBySourceOrDest(String sourceId, String targetId) {
+	public List<Assoc> getBySourceOrDestAndType(String sourceId, String targetId, RegIndex.AssocType type) {
 		List<Assoc> myassocs = new ArrayList<Assoc>();
 		
 		for (Assoc a : assocs) {
+			if ( type != null && a.type != type)
+				continue;
 			if ( a.from.equals(sourceId)) {
 				myassocs.add(a);
 				continue;
@@ -139,7 +141,7 @@ public class AssocCollection extends RegObCollection implements Serializable {
 		}
 		
 		if (parent != null)
-			myassocs.addAll(parent.getBySourceOrDest(sourceId, targetId));
+			myassocs.addAll(parent.getBySourceOrDestAndType(sourceId, targetId, type));
 		
 		return myassocs;
 	}

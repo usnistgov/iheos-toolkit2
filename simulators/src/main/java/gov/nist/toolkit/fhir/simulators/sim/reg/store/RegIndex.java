@@ -117,7 +117,7 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 		return values;
 	}
 
-	public enum AssocType { UNKNOWN, HASMEMBER, RPLC, RPLC_XFRM, XFRM, APND, SIGNS };
+	public enum AssocType { UNKNOWN, HasMember, RPLC, RPLC_XFRM, XFRM, APND, SIGNS };
 
 	public enum RelationshipAssocType { RPLC, RPLC_XFRM, XFRM, APND, SIGNS}
 
@@ -139,7 +139,7 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 		if (typ == null)
 			return AssocType.UNKNOWN;
 		if (typ.endsWith("HasMember"))
-			return AssocType.HASMEMBER;
+			return AssocType.HasMember;
 		if (typ.endsWith("RPLC"))
 			return AssocType.RPLC;
 		if (typ.endsWith("RPLC_XFRM"))
@@ -155,7 +155,7 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 	
 	 public static String getAssocString(AssocType type) {
 		switch (type) {
-		case HASMEMBER: return "HasMember";
+		case HasMember: return "HasMember";
 		default: return type.toString();
 		}
 	}

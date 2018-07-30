@@ -20,7 +20,6 @@ public class ProcessMetadataForDocumentEntryUpdate implements ProcessMetadataInt
 	MetadataCollection mc;
 	MetadataCollection delta;
 	String now;
-	private boolean associationPropogationEnabled = true;
 
 
 	public ProcessMetadataForDocumentEntryUpdate(ErrorRecorder er, MetadataCollection mc, MetadataCollection delta) {
@@ -62,7 +61,7 @@ public class ProcessMetadataForDocumentEntryUpdate implements ProcessMetadataInt
 		for (OMElement eo : m.getExtrinsicObjects()) {
 			String eoLid = m.getLid(eo);
 			DocEntry de = delta.docEntryCollection.getLatestVersion(eoLid);
-			List<Assoc> assocs = delta.assocCollection.getBySourceDestAndType(null, de.getId(), AssocType.HASMEMBER);
+			List<Assoc> assocs = delta.assocCollection.getBySourceDestAndType(null, de.getId(), AssocType.HasMember);
 			for (Assoc a : assocs) {
 				String fid = a.getFrom();
 				Fol fol = delta.folCollection.getById(fid);
@@ -101,39 +100,16 @@ public class ProcessMetadataForDocumentEntryUpdate implements ProcessMetadataInt
 			if (!associationPropagation)
 				continue;
 			DocEntry lastestDocEntry  = delta.docEntryCollection.getLatestVersion(docEntryLid);
-			// repeat for latestDocEntry as sourceObject
-			List<Assoc> assocs = delta.assocCollection.getBySourceDestAndType(null, lastestDocEntry.id, null);
+			List<Assoc> assocs = delta.assocCollection.getBySourceOrDestAndType(lastestDocEntry.id, lastestDocEntry.id, null);
 			for (Assoc assoc : assocs) {
 				if (assoc.getAvailabilityStatus() != StatusValue.APPROVED)
 					continue;
-				delta.addAssoc(assoc.from, Metadata.getId(updatedDocEntryEle), assoc.type);
-			}
-		}
-
-
-
-		for (OMElement a : m.getAssociations()) {
-			try {
-				if (!RegIndex.isRelationshipAssoc(m.getSimpleAssocType(a)))
-					continue;
-			} catch (Exception e) {
-				continue;
-			}
-			String docId = m.getAssocSource(a);
-			String origDocId = m.getAssocTarget(a);
-			DocEntry de = delta.docEntryCollection.getById(docId);
-			DocEntry origDE = delta.docEntryCollection.getById(origDocId);
-
-			List<Fol> origDEFols = mc.getFoldersContaining(origDE);
-			for (Fol f : origDEFols) {
 				try {
-					delta.addDocEntryToFolAssoc(de, f);
-					f.setLastUpdateTime(now);
+					delta.addAssoc(assoc.from, Metadata.getId(updatedDocEntryEle), assoc.type);
 				} catch (Exception e) {
 					er.err(Code.XDSMetadataUpdateError, e);
 				}
 			}
-
 		}
 	}
 
@@ -184,7 +160,7 @@ public class ProcessMetadataForDocumentEntryUpdate implements ProcessMetadataInt
 			if (!associationPropagation)
 				continue;
 			DocEntry lastestDocEntry  = delta.docEntryCollection.getLatestVersion(docEntryLid);
-			List<Assoc> assocs = delta.assocCollection.getBySourceDestAndType(null, lastestDocEntry.id, AssocType.HASMEMBER);
+			List<Assoc> assocs = delta.assocCollection.getBySourceDestAndType(null, lastestDocEntry.id, AssocType.HasMember);
 			for (Assoc assoc : assocs) {
 				if (assoc.getAvailabilityStatus() != StatusValue.APPROVED)
 					continue;

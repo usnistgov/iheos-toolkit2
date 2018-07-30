@@ -61,7 +61,7 @@ public class GetRelatedDocumentsSim extends GetRelatedDocuments {
 		uuids.addAll(docEntryIds);
 		
 		for (String id : docEntryIds) {
-			List<Assoc> as = mc.assocCollection.getBySourceOrDest(id, id);
+			List<Assoc> as = mc.assocCollection.getBySourceOrDestAndType(id, id, null);
 			for (Assoc a : as) {
 				if (!assocTypes.contains(a.getAssocType()))
 					continue;

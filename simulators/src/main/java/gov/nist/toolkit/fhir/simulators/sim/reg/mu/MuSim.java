@@ -150,10 +150,10 @@ public class MuSim extends RegRSim {
 		
 		// process updateDocStatus associations
 		for (OMElement assoc : updateDocStatusAssocs) {
-			String sourceId = m.getAssocSource(assoc);
-			String targetId = m.getAssocTarget(assoc);
+			String sourceId = Metadata.getAssocSource(assoc);
+			String targetId = Metadata.getAssocTarget(assoc);
 
-			String id = m.getId(assoc);
+			String id = Metadata.getId(assoc);
 			String prefix = "Update (trigger=Assoc(" + UUIDToSymbolic.get(id) +")) - cannot process - ";
 			String updateDocEntryAvailStatusRef = "ITI TF-2b:3.57.4.1.3.3.2.2";
 
@@ -187,6 +187,12 @@ public class MuSim extends RegRSim {
 			
 			new DocumentEntryStatusUpdate(common, dsSimCommon, er, simulatorConfig).run(this, operation, assoc, delta.docEntryCollection.getById(targetId), originalStatus, newStatus);
 
+			m.rmObject(assoc);
+		}
+
+		if (m.getAllObjects().size() == 1 && m.getSubmissionSet() != null) {
+			m.rmObject(m.getSubmissionSet());
+			m.clearSubmissionSet();
 		}
 	}
 
@@ -242,6 +248,9 @@ public class MuSim extends RegRSim {
 			if (ssAssoc != null)
 				m.rmObject(ssAssoc);
 		}
+
+		if (m.getAllObjects().size() == 1 && m.getSubmissionSet() != null)
+			m.rmObject(m.getSubmissionSet());
 	}
 
 
@@ -298,6 +307,10 @@ public class MuSim extends RegRSim {
 			if (ssAssoc != null)
 				m.rmObject(ssAssoc);
 
+			// if SS is all there is left then delete it
+			if (m.getAllObjects().size() == 1 && m.getSubmissionSet() != null)
+				m.rmObject(m.getSubmissionSet());
+				m.clearSubmissionSet();
 		}
 	}
 

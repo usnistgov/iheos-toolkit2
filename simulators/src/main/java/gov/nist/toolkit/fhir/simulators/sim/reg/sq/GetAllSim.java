@@ -123,7 +123,7 @@ public class GetAllSim extends GetAll {
         List<Assoc> assocs = new ArrayList<Assoc>();
 
         for (String id : uuids)
-            assocs.addAll(mc.assocCollection.getBySourceOrDest(id, id));
+            assocs.addAll(mc.assocCollection.getBySourceOrDestAndType(id, id, null));
 
         for (Assoc a : assocs)
            uuids.add(a.getId());

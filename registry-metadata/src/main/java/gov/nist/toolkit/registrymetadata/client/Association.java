@@ -45,7 +45,7 @@ public class Association extends MetadataObject  implements IsSerializable, Seri
 	public List<String> assocDocDoc;
 
 	public String displayName() {
-		return type;
+		return type + " (" + source + " -> " + target + ")";
 	}
 
 }

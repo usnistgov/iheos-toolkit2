@@ -87,6 +87,7 @@ public class DocumentEntryUpdate  {
 		
 		operation.addExtrinsicObject(docEle);
 		operation.add_association(ssAssoc);
+		operation.addSubmissionSet(m.getSubmissionSet());
 
 		// run normal processing for a Register
 		// Note that this method farms out all the work to other

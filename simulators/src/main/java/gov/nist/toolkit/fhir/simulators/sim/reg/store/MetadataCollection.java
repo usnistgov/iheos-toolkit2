@@ -255,7 +255,7 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 	List<Fol> getFoldersContaining(String id) {
 		List<Fol> fols = new ArrayList<Fol>();
 
-		List<Assoc> hasmembers = assocCollection.getBySourceDestAndType(null, id, AssocType.HASMEMBER);
+		List<Assoc> hasmembers = assocCollection.getBySourceDestAndType(null, id, AssocType.HasMember);
 
 		for (Assoc a : hasmembers) {
 			if (isFolder(a.from))
@@ -268,7 +268,7 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 	public List<DocEntry> getDocEntriesInFolder(Fol fol) {
 		List<DocEntry> des = new ArrayList<>();
 
-		List<Assoc> hasmembers = assocCollection.getBySourceDestAndType(fol.id, null, AssocType.HASMEMBER);
+		List<Assoc> hasmembers = assocCollection.getBySourceDestAndType(fol.id, null, AssocType.HasMember);
 		for (Assoc a : hasmembers) {
 			des.add(docEntryCollection.getById(a.to));
 		}
@@ -293,11 +293,11 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 	}
 
 	public void addDocEntryToFolAssoc(DocEntry de, Fol f) throws MetadataException, XdsInternalException, IOException {
-		addAssoc(f.getId(), de.getId(), AssocType.HASMEMBER);
+		addAssoc(f.getId(), de.getId(), AssocType.HasMember);
 	}
 
 	public void addDocEntryToFolAssoc(String deId, String fId) throws MetadataException, XdsInternalException, IOException {
-		addAssoc(fId, deId, AssocType.HASMEMBER);
+		addAssoc(fId, deId, AssocType.HasMember);
 	}
 
 
@@ -442,8 +442,8 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 	}
 
 	private void idPresentCheck(Ro obj) throws MetadataException {
-		if (hasObject(obj.id))
-			throw new MetadataException("id " + obj.id + " already present in registry",null);
+		if (parent != null && parent.hasObject(obj.id))
+			throw new MetadataException("id " + obj.id + " (" + obj.getType() + ") already present in registry",null);
 	}
 
 	public List<String> getIdsForObjects(List objects) {
@@ -507,7 +507,7 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 		File rof = regIndex.installInternalPath(ro);
 
 		if (!overwriteOk && rof.exists())
-			throw new MetadataException("Object with id " + id + " already exists in Registry", null);
+			throw new MetadataException("Object with id " + id + " already exists in Registry and has type " + ro.getType(), null);
 
 		OMElement wrapper = MetadataSupport.createElement("LeafRegistryObjectList", MetadataSupport.ebRIMns3);
 		wrapper.addChild(ele);
@@ -515,7 +515,7 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 		Io.stringToFile(rof, new OMFormatter(wrapper).toString());
 	}
 
-	private void storeMetadata(Metadata m, boolean overwriteOk) throws MetadataException, IOException, XdsInternalException {
+	public void storeMetadata(Metadata m, boolean overwriteOk) throws MetadataException, IOException, XdsInternalException {
 //		logger().debug("storeMetadata:\n" + m.getSummary() + "\ngiven existing index:\n" + getStats("    "));
 		for (OMElement ele : m.getExtrinsicObjects())
 			storeMetadata(ele, overwriteOk);
