@@ -74,13 +74,23 @@ public class QuickScanLog {
         setDTOAttributes(testOverviewDTO, testDefinition);
 
         if (testPlanSections == null || testPlanSections.isEmpty()) {
-            /*
- 	        * This is used for non-sectional test plan. Ie., Test plan at the root level of the test folder.
-            Not tested.
-            TODO: Test this path.
-             */
+            // See XdsTestServiceManager Line 743 if (testDir == null) dto.setRun(false)
+            // See TestOverviewBuilder Line 48  testOverview.setPass(true);   will be updated by addSections()
+            testOverviewDTO.setPass(true);
+            if (testDir == null) {
+                testOverviewDTO.setRun(false);
+                testOverviewDTO.setPass(false);
+            }
+
             logFile = new File(testDir, "log.xml");
-            setTestOverviewDTOStatus(testOverviewDTO, logFile);
+            if (logFile.exists()) {
+                /*
+                 * This is used for non-sectional test plan. Ie., Test plan at the root level of the test folder.
+                 */
+                // TODO: test this path.
+                setTestOverviewDTOStatus(testOverviewDTO, logFile);
+            }
+            return testOverviewDTO;
         } else {
             boolean scanTestDependencies = Arrays.asList(quickScanAttributes).contains(QuickScanLogAttribute.TEST_DEPENDENCIES);
             boolean atLeastOneFailed = false;
@@ -104,36 +114,6 @@ public class QuickScanLog {
                     SectionOverviewDTO resultDTO = quickScanSectionLog(logFile,quickScanAttributes);
                     copyAttributes(quickScanAttributes, resultDTO, sectionOverviewDTO);
 
-                    // NOTE: Step details should not be needed at the main Conformance Actor/Option page.
-
-                    // testOverview.setDependencies(null);
-                    // Need this for Part 2
-
-		/* Part 2:
-		Create QuickScanLog class
-		Make testDefinition member? Not sure why we need it.
-		for each section add:
-		                        SectionDefinitionDAO sectionDef = testDefinition.getSection(section);
-                        sectionOverview.setSutInitiated(sectionDef.isSutInitiated());
-                        testDependencies.addAll(sectionDef.getSectionDependencies());
-
-         In Conformance Test Tab:
-            Fix diagram
-                ConformanceTestTab Line 733
-
-         	Refresh test display with a call to GetTestOverview with only that TestInstance as the request parameter
-         	- 			TestDisplay testDisplay = testDisplayGroup.display(testOverview, null);
-						testsPanel.add(testDisplay.asWidget());
-
-        TestSectionComponent
-                Line 80
-                Line 82
-
-        TestDisplayView
-			panel.addOpenHandler
-						 TestDisplayView Line 67
-		 */
-
                     boolean passed = sectionOverviewDTO.isPass();
                     if (passed) {
                         passCt++;
@@ -153,8 +133,8 @@ public class QuickScanLog {
                 testOverviewDTO.setRun(true);
                 testOverviewDTO.setPass(true);
             }
+            return testOverviewDTO;
         }
-        return testOverviewDTO;
     }
 
     private void setDTOAttributes(TestOverviewDTO testOverview, TestDefinition testDefinition){
