@@ -56,9 +56,7 @@ public class TestDisplay  implements IsWidget {
 
        view.setTestKitSourceIcon(testOverview.getTestKitSource(), testOverview.getTestKitSection());
 
-       if (testOverview.isTls())
-           view.labelTls();
-
+        view.labelTls(testOverview.isTls());
         view.setTestTitle("Test: " + testOverview.getName() + " - " +testOverview.getTitle());
         view.setTime(testOverview.getLatestSectionTime());
 

@@ -62,8 +62,11 @@ public class TestSectionView implements IsWidget {
             this.title.addStyleName("section-title");
             this.title.setTitle(title);
         }
-        void setTls() {
-            tls = new HTML("TLS");
+        void setTls(boolean isTls) {
+            if (isTls)
+                tls = new HTML("TLS");
+            else
+                tls = new HTML("");
         }
         void setTime(String text) {
             time.setText(text);
@@ -120,7 +123,7 @@ public class TestSectionView implements IsWidget {
     void labelSuccess() { header.labelSuccess(); }
     void labelFailure() { header.labelFailure(); }
     void labelNotRun() { header.labelNotRun(); }
-    void labelTls() { header.setTls(); }
+    void labelTls(boolean isTls) { header.setTls(isTls); }
 
     private class SectionResultsPanel extends FlowPanel  {
         private FlowPanel testPlanDisplay = new FlowPanel();

@@ -174,8 +174,11 @@ public class TestDisplayView extends FlowPanel implements TestStatusDisplay {
         header.removeExtraStyle(name);
     }
 
-    public void labelTls() {
-        tls.setHTML("TLS");
+    public void labelTls(boolean isTls) {
+        if (isTls)
+            tls.setHTML("TLS");
+        else
+            tls.setHTML("");
     }
 
     void setTestKitSourceIcon(String testKitSource, String testKitSection) {
