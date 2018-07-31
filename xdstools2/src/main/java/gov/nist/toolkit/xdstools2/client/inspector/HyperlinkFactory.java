@@ -2,8 +2,7 @@ package gov.nist.toolkit.xdstools2.client.inspector;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Hyperlink;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.registrymetadata.client.*;
 import gov.nist.toolkit.results.client.AssertionResults;
 import gov.nist.toolkit.results.client.StepResult;
@@ -11,6 +10,7 @@ import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.TestDocumentation;
 import gov.nist.toolkit.xdstools2.client.tabs.GetRelatedTab;
+import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 public class HyperlinkFactory {
@@ -64,14 +64,67 @@ public class HyperlinkFactory {
 		return h;
 	}
 
-	static Hyperlink link(MetadataInspectorTab it, MetadataObject mo) {
+	static Widget link(MetadataInspectorTab it, Association mo, MetadataCollection mc) {
+		FlowPanel panel = new FlowPanel();
+
+		Hyperlink h;
+
+		h = new Hyperlink();
+		h.setText(prefix(mo.displayName(), 40));
+		h.addClickHandler(new HistorySelector(it, mo));
+		panel.add(h);
+
+		String sourceId = mo.source;
+		MetadataObject sourceObj = mc.findObject(sourceId);
+		if (sourceObj == null) {
+			HorizontalFlowPanel hfp = new HorizontalFlowPanel();
+			hfp.add(new HTML("Source: "));
+			h = new Hyperlink();
+			h.setText(sourceId);
+			h.addClickHandler(new GetObjects(it, new ObjectRef(sourceId)));
+			hfp.add(h);
+			panel.add(hfp);
+		} else {
+			HorizontalFlowPanel hfp = new HorizontalFlowPanel();
+			hfp.add(new HTML("Source: "));
+			h = new Hyperlink();
+			h.setText(sourceObj.displayName());
+			h.addClickHandler(new HistorySelector(it, sourceObj));
+			hfp.add(h);
+			panel.add(hfp);
+		}
+
+		String targetId = mo.target;
+		MetadataObject targetObj = mc.findObject(targetId);
+		if (targetObj == null) {
+			HorizontalFlowPanel hfp = new HorizontalFlowPanel();
+			hfp.add(new HTML("Target: "));
+			h = new Hyperlink();
+			h.setText(targetId);
+			h.addClickHandler(new GetObjects(it, new ObjectRef(targetId)));
+			hfp.add(h);
+			panel.add(hfp);
+		} else {
+			HorizontalFlowPanel hfp = new HorizontalFlowPanel();
+			hfp.add(new HTML("Target: "));
+			h = new Hyperlink();
+			h.setText(targetObj.displayName());
+			h.addClickHandler(new HistorySelector(it, targetObj));
+			hfp.add(h);
+			panel.add(hfp);
+		}
+
+		return panel;
+	}
+
+	static Widget link(MetadataInspectorTab it, MetadataObject mo) {
 		Hyperlink h = new Hyperlink();
 		h.setText(prefix(mo.displayName(), 40));
 		h.addClickHandler(new HistorySelector(it, mo));
 		return h;
 	}
 
-	static Hyperlink link(MetadataInspectorTab it, ResourceItem ri) {
+	static Widget link(MetadataInspectorTab it, ResourceItem ri) {
 		Hyperlink h = new Hyperlink();
 		h.setText(prefix(ri.displayName(), 40));
 		h.addClickHandler(new HistorySelector(it, ri));
@@ -85,14 +138,14 @@ public class HyperlinkFactory {
 		return h;
 	}
 
-	static Hyperlink link(MetadataInspectorTab it, MetadataObject mo, String text) {
+	static Widget link(MetadataInspectorTab it, MetadataObject mo, String text) {
 		Hyperlink h = new Hyperlink();
 		h.setText(text);
 		h.addClickHandler(new HistorySelector(it, mo));
 		return h;
 	}
 
-	static Hyperlink link(MetadataInspectorTab it, MetadataCollection metadataCollection, ObjectRef or) {
+	static Widget link(MetadataInspectorTab it, MetadataCollection metadataCollection, ObjectRef or) {
 		MetadataObject mo = metadataCollection.findObject(or.id);
 		if (mo == null) {
 			Hyperlink h = new Hyperlink();
@@ -103,7 +156,7 @@ public class HyperlinkFactory {
 		return link(it, mo);
 	}
 
-	static Hyperlink link(MetadataInspectorTab it, MetadataCollection metadataCollection, String id, String text) {
+	static Widget link(MetadataInspectorTab it, MetadataCollection metadataCollection, String id, String text) {
 		MetadataObject mo = metadataCollection.findObject(id);
 		if (mo == null) {
 			Hyperlink h = new Hyperlink();
