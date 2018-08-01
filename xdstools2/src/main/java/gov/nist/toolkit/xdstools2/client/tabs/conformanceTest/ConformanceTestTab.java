@@ -10,7 +10,6 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TabBar;
 import gov.nist.toolkit.actortransaction.shared.ActorOption;
@@ -687,7 +686,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 		testDisplayGroup.allowRun(allowRun);
 		testDisplayGroup.allowValidate(allowValidate());
 
-		GetTestsOverviewRequest tor = new GetTestsOverviewRequest(getCommandContext(), testInstances, new QuickScanLogAttribute[]{QuickScanLogAttribute.IS_RUN,QuickScanLogAttribute.IS_PASS,QuickScanLogAttribute.HL7TIME, QuickScanLogAttribute.IS_TLS, QuickScanLogAttribute.SITE, QuickScanLogAttribute.TEST_DEPENDENCIES});
+		final GetTestsOverviewRequest tor = new GetTestsOverviewRequest(getCommandContext(), testInstances, new QuickScanLogAttribute[]{QuickScanLogAttribute.IS_RUN,QuickScanLogAttribute.IS_PASS,QuickScanLogAttribute.HL7TIME, QuickScanLogAttribute.IS_TLS, QuickScanLogAttribute.SITE, QuickScanLogAttribute.TEST_DEPENDENCIES});
 		mainView.showLoadingMessage("Loading...");
         new GetActorTestProgressCommand() {
 			@Override
@@ -698,6 +697,15 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 
 			@Override
 			public void onComplete(List<TestOverviewDTO> testOverviews) {
+				// Test count safety check
+				if (tor!=null && tor.getTestInstances()!=null && testOverviews!=null) {
+					int expectedTestCount = tor.getTestInstances().size();
+					int testCount = testOverviews.size();
+					if (tor.getTestInstances().size() != testOverviews.size()) {
+					    showPopupMessage("Error: Number of test count: " + testCount + " does not equal expected test count: " + expectedTestCount);
+					}
+				}
+
 				// sort tests by dependencies and alphabetically
 				// save in testsPerActorOption so they run in this order as well
                 try {
