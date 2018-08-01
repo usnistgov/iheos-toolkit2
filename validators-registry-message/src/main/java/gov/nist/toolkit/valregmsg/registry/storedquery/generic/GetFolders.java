@@ -52,7 +52,8 @@ abstract public class GetFolders extends StoredQuery {
 	protected List<String> fol_uuid;
 	protected List<String> fol_uid;
 
-	void parseParameters() throws XdsInternalException, XdsException, LoggerException {
+	protected void parseParameters() throws XdsInternalException, XdsException, LoggerException {
+		super.parseParameters();
 		fol_uuid = sqs.params.getListParm("$XDSFolderEntryUUID");
 		fol_uid = sqs.params.getListParm("$XDSFolderUniqueId");
 	}

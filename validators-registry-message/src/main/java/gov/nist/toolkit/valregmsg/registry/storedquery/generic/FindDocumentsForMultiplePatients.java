@@ -126,7 +126,8 @@ abstract public class FindDocumentsForMultiplePatients extends FindDocuments {
 	protected List<String> status;
 	protected List<String> author_person;
 
-	void parseParameters() throws XdsInternalException, XdsException, LoggerException {
+	protected void parseParameters() throws XdsInternalException, XdsException, LoggerException {
+		super.parseParameters();
 
 		patient_id                        = sqs.params.getListParm   ("$XDSDocumentEntryPatientId");
 

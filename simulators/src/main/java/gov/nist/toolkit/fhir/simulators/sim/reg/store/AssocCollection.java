@@ -21,6 +21,19 @@ public class AssocCollection extends RegObCollection implements Serializable {
 	public void init() {
 		assocs = new ArrayList<Assoc>();
 	}
+
+	public List<Assoc> getAll() {
+		List<Assoc> all = new ArrayList<>();
+
+		all.addAll(assocs);
+		AssocCollection theParent = parent;
+		while (theParent != null) {
+			all.addAll(theParent.assocs);
+			theParent = theParent.parent;
+		}
+
+		return all;
+	}
 	
 	// caller handles synchronization
 	public void delete(String id) {

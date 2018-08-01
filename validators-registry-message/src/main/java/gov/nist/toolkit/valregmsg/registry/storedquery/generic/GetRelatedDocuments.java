@@ -53,7 +53,8 @@ abstract public class GetRelatedDocuments extends StoredQuery {
 	protected String uuid;
 	protected List<String> assoc_types;
 
-	void parseParameters() throws XdsInternalException, XdsException, LoggerException {
+	protected void parseParameters() throws XdsInternalException, XdsException, LoggerException {
+		super.parseParameters();
 		uid 			= sqs.params.getStringParm("$XDSDocumentEntryUniqueId");
 		uuid 		    = sqs.params.getStringParm("$XDSDocumentEntryEntryUUID");
 		assoc_types 	= sqs.params.getListParm("$AssociationTypes");

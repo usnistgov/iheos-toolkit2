@@ -1,14 +1,9 @@
 package gov.nist.toolkit.fhir.simulators.sim.reg.sq;
 
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
+import gov.nist.toolkit.fhir.simulators.sim.reg.store.*;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrysupport.logging.LoggerException;
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.Assoc;
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.DocEntry;
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.Fol;
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.MetadataCollection;
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegIndex;
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.Ro;
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.GetFolderAndContents;
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.QueryReturnType;
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.StoredQuerySupport;
@@ -41,7 +36,15 @@ public class GetFolderAndContentsSim extends GetFolderAndContents {
 			fols.add(mc.folCollection.getById(fol_uuid));
 		}
 		else if (fol_uid != null) {
+		    List<Fol> exclude = new ArrayList<>();
 			fols = mc.folCollection.getByUid(fol_uid);
+			if (!metadataLevel2) {
+			    for (Fol fol : fols) {
+			        if (fol.getAvailabilityStatus() != StatusValue.APPROVED)
+			            exclude.add(fol);
+                }
+                fols.removeAll(exclude);
+            }
 		} else {
 			getStoredQuerySupport().er.err(Code.XDSRegistryError, "Internal error: uid and uuid both null", this, null);
 		}
@@ -52,6 +55,8 @@ public class GetFolderAndContentsSim extends GetFolderAndContents {
 			results.addAll(fols);
 		}
 
+
+
 		Metadata allM = new Metadata();
 
 		// this can be multiple because of MU
@@ -59,14 +64,16 @@ public class GetFolderAndContentsSim extends GetFolderAndContents {
 			String folid = fol.getId();
 
 			List<Assoc> folAssocs = mc.assocCollection.getBySourceDestAndType(folid, null, RegIndex.AssocType.HasMember);
-			List<DocEntry> docEntries = new ArrayList<DocEntry>();
+			folAssocs = mc.filterAssocsByStatus(folAssocs, status);
+
+			List<DocEntry> docEntries = new ArrayList<>();
 
 			for (Assoc a : folAssocs) {
 				String toId = a.getTo();
 
 				DocEntry de = mc.docEntryCollection.getById(toId);
 				if (de != null) {
-					docEntries.add(de);
+				    docEntries.add(de);
 				}
 			}
 

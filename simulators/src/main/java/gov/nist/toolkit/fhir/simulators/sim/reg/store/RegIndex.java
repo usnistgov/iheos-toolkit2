@@ -117,7 +117,7 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 		return values;
 	}
 
-	public enum AssocType { UNKNOWN, HasMember, RPLC, RPLC_XFRM, XFRM, APND, SIGNS };
+	public enum AssocType { UNKNOWN, HasMember, RPLC, RPLC_XFRM, XFRM, APND, SIGNS, SubmitAssociation };
 
 	public enum RelationshipAssocType { RPLC, RPLC_XFRM, XFRM, APND, SIGNS}
 
@@ -150,6 +150,9 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 			return AssocType.APND;
 		if (typ.endsWith("SIGNS"))
 			return AssocType.SIGNS;
+		if (typ.endsWith("SubmitAssociation"))
+			return AssocType.SubmitAssociation;
+
 		return AssocType.UNKNOWN;
 	}
 	

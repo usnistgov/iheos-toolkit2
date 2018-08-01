@@ -4,6 +4,7 @@ import gov.nist.toolkit.docref.SqDocRef;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrysupport.logging.LoggerException;
 import gov.nist.toolkit.valregmsg.registry.SQCodedTerm;
+import gov.nist.toolkit.valregmsg.registry.SQStatusTerm;
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.StoredQuerySupport;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
@@ -44,6 +45,7 @@ abstract public class GetFolderAndContents extends StoredQuery {
 		sqs.validate_parm("$XDSFolderUniqueId",                          true,      false,     true,         false,     false,       "$XDSFolderEntryUUID");
 		sqs.validate_parm("$XDSDocumentEntryFormatCode",                 false,     true,      true,         true,      false,      (String[])null);
 		sqs.validate_parm("$XDSDocumentEntryConfidentialityCode",        false,     true,      true,         true,      true,      (String[])null);
+		sqs.validate_parm("$XDSAssociationStatus",                       false,     true,      true,         false,      false,      (String[])null);
 
 		logger.info("GFAC: validating parms response: " + sqs.er);
 
@@ -55,12 +57,15 @@ abstract public class GetFolderAndContents extends StoredQuery {
 	protected String fol_uid;
 	protected SQCodedTerm format_code;
 	protected SQCodedTerm conf_code;
+	protected SQStatusTerm status = new SQStatusTerm();
 
-	void parseParameters() throws XdsInternalException, XdsException, LoggerException {
+	protected void parseParameters() throws XdsInternalException, XdsException, LoggerException {
+		super.parseParameters();
 		fol_uuid = sqs.params.getStringParm("$XDSFolderEntryUUID");
 		fol_uid = sqs.params.getStringParm("$XDSFolderUniqueId");
 		format_code = sqs.params.getCodedParm("$XDSDocumentEntryFormatCode");
 		conf_code = sqs.params.getCodedParm("$XDSDocumentEntryConfidentialityCode");
+		status = sqs.params.getStatusParm("$XDSAssociationStatus");
 	}
 
 	/**

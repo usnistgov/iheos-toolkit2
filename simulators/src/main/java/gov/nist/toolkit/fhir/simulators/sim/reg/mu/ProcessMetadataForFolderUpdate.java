@@ -73,10 +73,10 @@ public class ProcessMetadataForFolderUpdate implements ProcessMetadataInterface 
 	private List<DocEntry> docEntriesLinkedToFolderWithApprovedStatus(Fol fol) {
 		List<DocEntry> docEntries = new ArrayList<>();
 
-		for (Assoc assoc : delta.assocCollection.assocs) {
-			if (assoc.type != RegIndex.AssocType.HasMember)
-				continue;
+		for (Assoc assoc : delta.assocCollection.getAll()) {
 			if (!assoc.from.equals(fol.id))
+				continue;
+			if (assoc.type != RegIndex.AssocType.HasMember)
 				continue;
 			if (assoc.getAvailabilityStatus() != StatusValue.APPROVED)
 				continue;
@@ -100,22 +100,35 @@ public class ProcessMetadataForFolderUpdate implements ProcessMetadataInterface 
 
 	// this implements 3.57.4.1.3.3.3.5 Association Propagation
 	// when folder is updated, all the contents are linked to new version of folder
+	//
+	// When this runs the new objects will already have been added to delta
 	@Override
 	public void addDocsToUpdatedFolders(Metadata m) {
 		for (OMElement updateFolEle : m.getFolders()) {
 			String folLid = Metadata.getLid(updateFolEle);
 			boolean associationPropagation = MuCommon.associationPropagation(m, updateFolEle, er);
 			if (associationPropagation) {
+				// latestFol is update, previousFol is the previous one (that is being replaced)
 				Fol latestFol = delta.folCollection.getLatestVersion(folLid);
-				if (latestFol.getAvailabilityStatus() != StatusValue.APPROVED) {
+				// verify this and updateFolEle are the same
+				if (!Metadata.getId(updateFolEle).equals(latestFol.id)) {
+					er.err(Code.XDSMetadataUpdateError, "Unknown internal error #1 processing updates to Folder " + latestFol.id, "", "");
+					return;
+				}
+				Fol previousFol = delta.folCollection.getPreviousVersion(latestFol);
+				if (previousFol == null) {
+					er.err(Code.XDSMetadataUpdateError, "Unknown internal error #2 processing updates to Folder " + latestFol.id, "", "");
+					return;
+				}
+				if (previousFol.getAvailabilityStatus() != StatusValue.APPROVED) {
 					er.err(Code.XDSMetadataUpdateError, "Folder being updated does not have Approved status " + latestFol.id, "", "");
 					continue;
 				}
 
-				List<DocEntry> existingLinkedDocEntries = docEntriesLinkedToFolderWithApprovedStatus(latestFol);
+				List<DocEntry> existingLinkedDocEntries = docEntriesLinkedToFolderWithApprovedStatus(previousFol);
 				for (DocEntry docEntry : existingLinkedDocEntries) {
 					try {
-						delta.addDocEntryToFolAssoc(docEntry.id, Metadata.getId(updateFolEle));
+						delta.addDocEntryToFolAssoc(docEntry.id, latestFol.id);
 					} catch (Exception e) {
 						er.err(Code.XDSMetadataUpdateError, "Error with Association Propagation on Folder (lid) " + folLid + " -\n" + ExceptionUtil.exception_details(e), "", "");
 						continue;

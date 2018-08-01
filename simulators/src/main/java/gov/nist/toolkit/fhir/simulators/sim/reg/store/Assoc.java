@@ -2,6 +2,7 @@ package gov.nist.toolkit.fhir.simulators.sim.reg.store;
 
 import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegIndex.AssocType;
 import gov.nist.toolkit.utilities.id.UuidAllocator;
+import gov.nist.toolkit.valregmsg.registry.SQStatusTerm;
 
 import java.io.Serializable;
 
@@ -13,15 +14,17 @@ public class Assoc extends Ro implements Serializable {
 	public AssocType type;
 	public boolean isOriginal;  // these two only apply to SubmissionSet to DocEntry HasMember
 	public boolean isReference;
+	public boolean isDeprecated = false;
 
 	public Assoc() {}
 
-	public Assoc(Ro from, Ro to, AssocType type) {
-		this.from = from.id;
-		this.to = to.id;
-		this.type = type;
-		this.id = UuidAllocator.allocate();
-	}
+//	public Assoc(Ro from, Ro to, AssocType type) {
+//		this.from = from.id;
+//		this.to = to.id;
+//		this.type = type;
+//		this.id = UuidAllocator.allocate();
+//		this.isDeprecated = false;
+//	}
 	
 	public String getType() {
 		return "Association(" + type + ")";

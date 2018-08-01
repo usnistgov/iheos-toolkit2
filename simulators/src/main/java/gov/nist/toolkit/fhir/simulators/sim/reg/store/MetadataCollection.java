@@ -9,6 +9,7 @@ import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.utilities.id.UuidAllocator;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
+import gov.nist.toolkit.valregmsg.registry.SQStatusTerm;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
@@ -586,6 +587,22 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 
 		return out;
 	}
+
+	public List<Assoc> filterAssocsByStatus(List<Assoc> assocs, SQStatusTerm status) {
+	    List<Assoc> rets = new ArrayList<>();
+
+	    if (status == null)
+	        return rets;
+
+	    for (Assoc a : assocs) {
+	        if (a.isDeprecated && status.isDeprecatedAceptable())
+	            rets.add(a);
+	        if (!a.isDeprecated && status.isApprovedAceptable())
+	            rets.add(a);
+        }
+
+	    return rets;
+    }
 
 	private boolean hasRo(List<Ro> ros, String id) {
 		for (Ro ro : ros) {

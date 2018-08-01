@@ -411,6 +411,17 @@ public class SubmissionStructure {
 		if (!isDocumentEntry(source) && !vc.isMU)
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, objectDescription(assoc) + ": with type " + simpleAssocType(type) + " must reference a DocumentEntry in submission with its sourceObject attribute, it references " + objectDescription(source), this, "ITI TF-3: 4.1.6.1");
 
+		if (type.equals("urn:ihe:iti:2010:AssociationType:SubmitAssociation")) {
+			if (!vc.isMU)
+				er.err(XdsErrorCode.Code.XDSMetadataUpdateError, "Metadata Update feature disabled", null, null);
+			if (!source.equals(m.getSubmissionSetId()))
+				er.err(XdsErrorCode.Code.XDSMetadataUpdateError, "SubmitAssociation Association Type must reference the SubmissionSet with its sourceObject attribute", null, null);
+			if (!m.isAssociation(target))
+				er.err(XdsErrorCode.Code.XDSMetadataUpdateError, "SubmitAssociation Association Type must reference an Association in the submission with its targetObject attribute", null, null);
+			return;
+		}
+
+
 		if (containsObject(target)) { // This only checks for a circular reference but not the registry collection
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, objectDescription(assoc) + ": with type " + simpleAssocType(type) + " must reference a DocumentEntry in the registry with its targetObject attribute, it references " + objectDescription(target) + " which is in the submission", this, "ITI TF-3: 4.1.6.1");
 		}

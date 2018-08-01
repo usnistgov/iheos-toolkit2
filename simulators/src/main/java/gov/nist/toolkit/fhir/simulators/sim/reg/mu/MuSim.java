@@ -107,6 +107,8 @@ public class MuSim extends RegRSim {
 
 		docEntryUpdateStatusTrigger(clone);
 
+		submittedAssociations(clone);
+
 		folderUpdateTrigger(clone);
 
 

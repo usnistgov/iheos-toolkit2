@@ -69,6 +69,19 @@ public class FolCollection extends RegObCollection implements Serializable {
 		return latest;
 	}
 
+	public Fol getPreviousVersion(Fol fol) {
+		int thisVersion = fol.version;
+		if (thisVersion == 1)
+			return null;
+		int targetVersion = thisVersion - 1;
+		List<Fol> allVersions = getByLid(fol.lid);
+		for (Fol f : allVersions) {
+			if (f.version == targetVersion)
+				return f;
+		}
+		return null;
+	}
+
 	
 	public Ro getRo(String id) {
 		for (Fol de : fols) {
