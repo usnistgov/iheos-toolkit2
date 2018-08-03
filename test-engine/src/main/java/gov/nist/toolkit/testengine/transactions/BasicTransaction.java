@@ -28,6 +28,7 @@ import gov.nist.toolkit.xdsexception.NoMetadataException;
 import gov.nist.toolkit.xdsexception.SchemaValidationException;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
@@ -1541,5 +1542,15 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 
 	public void setNoMetadataProcessing(boolean noMetadataProcessing) {
 		this.noMetadataProcessing = noMetadataProcessing;
+	}
+
+	public SimReference getSimReference(List<String> errs, Assertion a) {
+		try {
+			OMElement simTransactionElement = XmlUtil.firstChildWithLocalName(a.assertElement, "SimReference");
+			return a.getSimReference(simTransactionElement);
+		} catch (ToolkitRuntimeException ie) {
+			errs.add("Error decoding reference to simulator transaction from testplan assertion: " + ie.getMessage());
+			throw ie;
+		}
 	}
 }

@@ -2,7 +2,6 @@ package war.toolkitx.testkit.plugins.FhirAssertion
 
 import gov.nist.toolkit.testengine.engine.FhirSimulatorTransaction
 import gov.nist.toolkit.testengine.engine.fhirValidations.AbstractFhirValidater
-import gov.nist.toolkit.testengine.engine.fhirValidations.SimReference
 import gov.nist.toolkit.testengine.engine.fhirValidations.ValidaterResult
 
 class AllTrue extends AbstractFhirValidater {

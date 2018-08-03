@@ -1,4 +1,4 @@
-package gov.nist.toolkit.testengine.engine.fhirValidations
+package gov.nist.toolkit.testengine.engine
 
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.simcommon.client.SimId

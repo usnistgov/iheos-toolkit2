@@ -218,15 +218,7 @@ class MhdClientTransaction extends BasicTransaction {
 //            throw new XdsInternalException("No acceptable ${simReference.transactionType.name} transactions found in simlog for ${simReference.simId}")
 //    }
 
-    SimReference getSimReference(Assertion a) {
-        try {
-            OMElement simTransactionElement = XmlUtil.firstChildWithLocalName(a.assertElement, "SimReference");
-            return a.getSimReference(simTransactionElement)
-        } catch (ToolkitRuntimeException ie) {
-            errs.add("Error decoding reference to simulator transaction from testplan assertion: " + ie.getMessage());
-            throw ie;
-        }
-    }
+
 
 
     @Override

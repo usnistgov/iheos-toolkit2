@@ -1,7 +1,14 @@
 package gov.nist.toolkit.testengine.transactions;
 
 import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
+import gov.nist.toolkit.simcommon.server.SimDb;
+import gov.nist.toolkit.testengine.assertionEngine.Assertion;
+import gov.nist.toolkit.testengine.assertionEngine.AssertionEngine;
+import gov.nist.toolkit.testengine.engine.ILogger;
+import gov.nist.toolkit.testengine.engine.SimReference;
+import gov.nist.toolkit.testengine.engine.SimulatorTransaction;
 import gov.nist.toolkit.testengine.engine.StepContext;
+import gov.nist.toolkit.testengine.engine.TestLogFactory;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.XdsException;
@@ -13,7 +20,9 @@ import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.jaxen.JaxenException;
 
 import javax.xml.parsers.FactoryConfigurationError;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 
 public class StoredQueryTransaction extends QueryTransaction {
@@ -191,4 +200,26 @@ public class StoredQueryTransaction extends QueryTransaction {
 
 	}
 
+	@Override
+	public void processAssertion(AssertionEngine engine, Assertion a, OMElement assertion_output) throws XdsInternalException {
+	    // TODO: test validation plugin
+		List<String> errs = new ArrayList<>();
+		try {
+			SimReference simReference = getSimReference(errs, a);
+			if (a.hasValidations()) {
+				List<SimulatorTransaction> passing = processValidations(new SimDbTransactionInstanceBuilder(new SimDb(simReference.simId)), simReference, a, assertion_output)
+				if (passing.isEmpty())
+					errs.add("No Transactions match requirements")
+			} else
+				throw new XdsInternalException("MhdClientTransaction: Unknown Assertion clause with not Assert statements");
+		} catch (XdsInternalException ie) {
+			errs.add(ie.getMessage());
+		}
+		if (!errs.isEmpty()) {
+			ILogger testLogger = new TestLogFactory().getLogger();
+			testLogger.add_name_value_with_id(assertion_output, "AssertionStatus", a.id, "fail");
+			for (String err : errs)
+				this.fail(err);
+		}
+	}
 }

@@ -6,7 +6,7 @@ import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.testengine.engine.AbstractValidater;
 import gov.nist.toolkit.testengine.engine.TestConfig;
 import gov.nist.toolkit.testengine.engine.ToolkitEnvironment;
-import gov.nist.toolkit.testengine.engine.fhirValidations.SimReference;
+import gov.nist.toolkit.testengine.engine.SimReference;
 import gov.nist.toolkit.testkitutilities.TestKit;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import org.apache.axiom.om.OMAttribute;
