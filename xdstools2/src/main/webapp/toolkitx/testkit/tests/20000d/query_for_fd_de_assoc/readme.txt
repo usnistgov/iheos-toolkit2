@@ -1,4 +1,4 @@
-This uses a GetFolderAndContents query setting the parameters, $XDSFolderEntryUUID, using the XDSFolder.entryUUID returned in the previous step and $MetadataLevel equals two (1).
+This uses a GetFolderAndContents query setting the parameters, $XDSFolderEntryUUID, using the XDSFolder.entryUUID returned in the previous step and $MetadataLevel equals one (1).
   
 The goal is to cross-reference that the Document Registry generate two FD-DE HM Associations for the new version of the Folder and these referenced the Document Entry objects originally created.
 

@@ -18,7 +18,7 @@
 		</tag0:Slot>		
 		<tag0:Slot name="$MetadataLevel">
 			<tag0:ValueList>
-				<tag0:Value>'2'</tag0:Value>
+				<tag0:Value>2</tag0:Value>
 			</tag0:ValueList>
 		</tag0:Slot>	
     </tag0:AdhocQuery>

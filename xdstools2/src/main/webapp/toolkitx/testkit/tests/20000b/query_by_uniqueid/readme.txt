@@ -1,4 +1,4 @@
-This uses a GetFolders query to confirm only one Folder is returned and the availability status remains Approved. 
+This uses a GetFolders query to confirm only one Folder is returned and the availability status remains Approved. The failed update attempt did not update the Registry.
  
 The following validations are run on the query results:
  

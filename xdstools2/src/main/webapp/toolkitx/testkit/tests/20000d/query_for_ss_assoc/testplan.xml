@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TestPlan>
 	<Test>20000d/query_for_ss_assoc</Test>
 	<Rule>GetFoldersForDocumentsAndAssociations Stored Query</Rule>
 	<TestStep id="query">
@@ -13,14 +15,16 @@
 			<UseId testdir="../update" step="update" section="AssignedUuids" id="SubmissionSet01" symbol="$uuid$"/>
 			<!--[Testing for Approved - Level 1 regardless? May not know about deprecated? FolApp?]-->
 			<ExpectedContents>
-				<Associations count="3"/>
+				<Associations count="1"/>
 			</ExpectedContents>
 			<Report name="targetObject01" section="Result">
-				//*[local-name()='Association'][not(descendant::*[local-name()='Slot'][@name='PreviousVersion']/*[local-name()='ValueList']/*[local-name()='Value'] = '1')][1]/@targetObject
+				//*[local-name()='Association']/@targetObject 
 			</Report>
+			<!--
 			<Report name="targetObject02" section="Result">
 				//*[local-name()='Association'][not(descendant::*[local-name()='Slot'][@name='PreviousVersion']/*[local-name()='ValueList']/*[local-name()='Value'] = '1')][2]/@targetObject
-			</Report>		
+			</Report>
+			-->
 		</StoredQueryTransaction>
 	</TestStep>
 	<TestStep id="validate">
@@ -29,17 +33,26 @@
 			<UseReport section="update" step="update" reportName="SubmissionSet01_uuid" useAs="ss_uuid"/>
 			<Assertions>
 				<DataRef file="THIS" as="output"/>
+				 <!--
+				 	The returned count from this assertion will be updated to 3 when the requirements from 3.64.4.1.3.1.6
+				 	are brought into ITI-57.  For now they only apply to XPID ITI-64.
+				-->
 				<Assert id="same_sourceObject">
-					count(//*[local-name()='Association'][@sourceObject = "ss_uuid"]) = 3
+					count(//*[local-name()='Association'][@sourceObject = "ss_uuid"]) = 1
 				</Assert>
+				<!-- Same update later here -->
 				<Assert id="approved_status">
-					count(//*[local-name()='Association'][@status = 'urn:oasis:names:tc:ebxml-regrep:StatusType:Approved']) = 3
+					count(//*[local-name()='Association'][@status = 'urn:oasis:names:tc:ebxml-regrep:StatusType:Approved']) = 1
 				</Assert>
-				<Assert id="prev_is_version_1"> 		    //*[local-name()='Association']/*[local-name()='Slot'][@name='PreviousVersion']/*[local-name()='ValueList']/*[local-name()='Value'] = '1'
+				<Assert id="prev_is_version_1"> 		    
+					//*[local-name()='Association']/*[local-name()='Slot'][@name='PreviousVersion']/*[local-name()='ValueList']/*[local-name()='Value'] = '1'
 				</Assert>
+				<!--
+					This assertion will become relevant when the above mentioned update to ITI-57 is made.
 				<Assert id="other_no_previousversion"> 			   
 					count(//*[local-name()='Association'][not(descendant::*[local-name()='Slot'][@name='PreviousVersion']/*[local-name()='ValueList']/*[local-name()='Value'] = '1')]) = 2
 				</Assert>
+				-->
 			</Assertions> 
 		</NullTransaction>
 	</TestStep>

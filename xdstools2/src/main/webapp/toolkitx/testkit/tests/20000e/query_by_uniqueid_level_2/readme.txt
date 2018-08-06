@@ -1,5 +1,5 @@
 This uses a GetFolderAndContents query setting the parameters, $XDSFolderEntryUUID, using the same XDSFolder.entryUUID used in the step, update_no_ap.  The parameter, $MetadataLevel, equals two (2) allowing both versions of the Folder object to be returned.  
-Also, this allows for confirming the Document Entry objects remained associated to the original version of the Folder object.
+Also, this allows for confirming the Document Entry objects remained associated to the original version of the Folder object (did not get moved to new version of Folder).
 
 The following validations are run on the query results:
  
