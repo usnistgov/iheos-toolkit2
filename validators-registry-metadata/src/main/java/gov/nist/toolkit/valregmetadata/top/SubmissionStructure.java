@@ -400,6 +400,9 @@ public class SubmissionStructure {
 		}
 	}
 
+	List<String> muAssocTypes =  Arrays.asList("urn:ihe:iti:2010:AssociationType:SubmitAssociation", "urn:ihe:iti:2010:AssociationType:UpdateAvailabilityStatus");
+
+
 	void evalRelationship(ErrorRecorder er, OMElement assoc, ValidationContext vc) {
 		String source = m.getAssocSource(assoc);
 		String target = m.getAssocTarget(assoc);
@@ -423,7 +426,10 @@ public class SubmissionStructure {
 
 
 		if (containsObject(target)) { // This only checks for a circular reference but not the registry collection
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, objectDescription(assoc) + ": with type " + simpleAssocType(type) + " must reference a DocumentEntry in the registry with its targetObject attribute, it references " + objectDescription(target) + " which is in the submission", this, "ITI TF-3: 4.1.6.1");
+			XdsErrorCode.Code err = XdsErrorCode.Code.XDSRegistryMetadataError;
+			if (muAssocTypes.contains(type))
+				err = XdsErrorCode.Code.XDSMetadataUpdateError;
+			er.err(err, objectDescription(assoc) + ": with type " + simpleAssocType(type) + " must reference a DocumentEntry in the registry with its targetObject attribute, it references " + objectDescription(target) + " which is in the submission", this, "ITI TF-3: 4.1.6.1");
 		}
 
 		if (!isUUID(target)) {

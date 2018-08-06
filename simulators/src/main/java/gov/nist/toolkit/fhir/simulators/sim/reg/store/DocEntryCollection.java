@@ -49,6 +49,18 @@ public class DocEntryCollection extends RegObCollection implements Serializable 
 			entries.remove(toDelete);
 	}
 
+		@Override
+		public List<?> getNonDeprecated() {
+			List<DocEntry> nonDep = new ArrayList<>();
+			for (DocEntry a : entries) {
+				if (!a.isDeprecated())
+					nonDep.add(a);
+			}
+			if (parent != null)
+				return parent.getNonDeprecated();
+			return nonDep;
+		}
+
 	public int size() { return entries.size(); }
 
 	public String statsToString() {

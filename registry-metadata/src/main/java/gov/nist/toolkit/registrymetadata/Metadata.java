@@ -12,6 +12,7 @@ import gov.nist.toolkit.xdsexception.NoMetadataException;
 import gov.nist.toolkit.xdsexception.NoSubmissionSetException;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.*;
 
@@ -637,6 +638,9 @@ public class Metadata {
 	 */
 
 	public OMElement addSubmissionSet(OMElement ss) {
+		if (ss == null) {
+			throw new ToolkitRuntimeException("Null SS");
+		}
 		submissionSet = ss;
 		submissionSets.add(ss);
 		allObjects.add(ss);
@@ -2327,6 +2331,23 @@ public class Metadata {
 			return aEle;
 		}
 		return null;
+	}
+
+	public List<OMElement> getAssociations(String source, String target, String type) {
+		List<OMElement> assocs = new ArrayList<>();
+		for (OMElement aEle : getAssociations()) {
+			if (source != null && !source.equals(getAssocSource(aEle))) {
+				continue;
+			}
+			if (target != null && !target.equals(getAssocTarget(aEle))) {
+				continue;
+			}
+			if (type != null && !getAssocType(aEle).endsWith(type)) {
+				continue;
+			}
+			assocs.add(aEle);
+		}
+		return assocs;
 	}
 
 	public List<String> getSubmissionSetIds() {

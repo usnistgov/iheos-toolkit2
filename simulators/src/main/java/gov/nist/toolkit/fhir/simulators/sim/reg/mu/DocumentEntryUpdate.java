@@ -87,6 +87,10 @@ public class DocumentEntryUpdate  {
 		
 		operation.addExtrinsicObject(docEle);
 		operation.add_association(ssAssoc);
+		if (m.getSubmissionSet() == null) {
+			er.err(Code.XDSMetadataUpdateError, "Update contains no SubmissionSet object", null,null);
+			return;
+		}
 		operation.addSubmissionSet(m.getSubmissionSet());
 
 		// run normal processing for a Register

@@ -48,6 +48,18 @@ public class AssocCollection extends RegObCollection implements Serializable {
 			assocs.remove(toDelete);
 	}
 
+	@Override
+	public List<?> getNonDeprecated() {
+		List<Assoc> nonDep = new ArrayList<>();
+		for (Assoc a : assocs) {
+			if (!a.isDeprecated())
+				nonDep.add(a);
+		}
+		if (parent != null)
+			return parent.getNonDeprecated();
+		return nonDep;
+	}
+
 	public int size() { return assocs.size(); }
 	
 	public Ro getRo(String id) {

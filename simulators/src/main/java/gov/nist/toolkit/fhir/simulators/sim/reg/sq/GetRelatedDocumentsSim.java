@@ -65,6 +65,8 @@ public class GetRelatedDocumentsSim extends GetRelatedDocuments {
 			for (Assoc a : as) {
 				if (!assocTypes.contains(a.getAssocType()))
 					continue;
+				if (!metadataLevel2 && a.isDeprecated())
+					continue;
 				
 				String sourceId = a.getFrom();
 				String targetId = a.getTo();

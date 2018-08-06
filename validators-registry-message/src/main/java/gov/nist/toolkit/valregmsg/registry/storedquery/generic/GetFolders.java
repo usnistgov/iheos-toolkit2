@@ -42,8 +42,9 @@ abstract public class GetFolders extends StoredQuery {
 
 	public void validateParameters() throws MetadataValidationException {
 		//                         param name,                             required?, multiple?, is string?,   same size as,    alternative
-		sqs.validate_parm("$XDSFolderEntryUUID",                         true,      true,     true,         null,            "$XDSFolderUniqueId");
-		sqs.validate_parm("$XDSFolderUniqueId",                          true,      true,     true,         null,            "$XDSFolderEntryUUID");
+		sqs.validate_parm("$XDSFolderEntryUUID",                         true,      true,     true,         null,            "$XDSFolderUniqueId", "$XDSFolderLogicalID");
+		sqs.validate_parm("$XDSFolderUniqueId",                          true,      true,     true,         null,            "$XDSFolderEntryUUID", "$XDSFolderLogicalID");
+		sqs.validate_parm("$XDSFolderLogicalID",                          true,      true,     true,         null,            "$XDSFolderEntryUUID", "$XDSFolderUniqueId");
 
 		if (sqs.has_validation_errors) 
 			throw new MetadataValidationException(QueryParmsErrorPresentErrMsg, SqDocRef.Individual_query_parms);
@@ -51,11 +52,13 @@ abstract public class GetFolders extends StoredQuery {
 
 	protected List<String> fol_uuid;
 	protected List<String> fol_uid;
+	protected List<String> fol_lid;
 
 	protected void parseParameters() throws XdsInternalException, XdsException, LoggerException {
 		super.parseParameters();
 		fol_uuid = sqs.params.getListParm("$XDSFolderEntryUUID");
 		fol_uid = sqs.params.getListParm("$XDSFolderUniqueId");
+		fol_lid = sqs.params.getListParm("$XDSFolderLogicalID");
 	}
 
 	/**
@@ -68,7 +71,7 @@ abstract public class GetFolders extends StoredQuery {
 		validateParameters();
 		parseParameters();
 
-		if (fol_uuid == null && fol_uid == null) 
+		if (fol_uuid == null && fol_uid == null && fol_lid == null)
 			throw new XdsInternalException("GetFolders Stored Query");
 		return runImplementation();
 	}

@@ -5,10 +5,14 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import org.apache.axiom.om.OMElement;
 
+import java.util.List;
+
 class MuCommon {
+
+    static List<String> apValues =
+            java.util.Arrays.asList("yes", "no");
 
     // is Association Propagation requested for this object?
     static boolean associationPropagation(Metadata m, OMElement focusObject, ErrorRecorder er) {
@@ -23,6 +27,12 @@ class MuCommon {
             return false;
         }
         String aprop = m.getSlotValue(hasMemberEle, MetadataSupport.AssociationPropagation, 0);
+        if (aprop == null)
+            return true;
+        if (!apValues.contains(aprop)) {
+            er.err(XdsErrorCode.Code.XDSMetadataUpdateError, "Invalid value for AssociationPropagation Slot - " + aprop, null, null);
+            return false;
+        }
         return aprop == null || aprop.equals("yes");
     }
 }

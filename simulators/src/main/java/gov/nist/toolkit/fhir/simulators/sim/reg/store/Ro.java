@@ -30,6 +30,10 @@ public class Ro  implements Serializable  {
 	public StatusValue getAvailabilityStatus() {
 		return availabilityStatus;
 	}
+
+	public boolean isDeprecated() {
+		return availabilityStatus == StatusValue.DEPRECATED;
+	}
 		
 	public String getType() {
 		return "RegistryObject";

@@ -231,5 +231,17 @@ public class FolCollection extends RegObCollection implements Serializable {
 		return ids;
 	}
 
+	@Override
+	public List<?> getNonDeprecated() {
+		List<Fol> nonDep = new ArrayList<>();
+		for (Fol a : fols) {
+			if (!a.isDeprecated())
+				nonDep.add(a);
+		}
+		if (parent != null)
+			return parent.getNonDeprecated();
+		return nonDep;
+	}
+
 
 }

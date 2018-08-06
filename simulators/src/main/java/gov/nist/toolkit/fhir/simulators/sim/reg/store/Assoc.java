@@ -14,9 +14,10 @@ public class Assoc extends Ro implements Serializable {
 	public AssocType type;
 	public boolean isOriginal;  // these two only apply to SubmissionSet to DocEntry HasMember
 	public boolean isReference;
-	public boolean isDeprecated = false;
 
-	public Assoc() {}
+	public Assoc() {
+
+	}
 
 //	public Assoc(Ro from, Ro to, AssocType type) {
 //		this.from = from.id;
@@ -25,7 +26,7 @@ public class Assoc extends Ro implements Serializable {
 //		this.id = UuidAllocator.allocate();
 //		this.isDeprecated = false;
 //	}
-	
+
 	public String getType() {
 		return "Association(" + type + ")";
 	}

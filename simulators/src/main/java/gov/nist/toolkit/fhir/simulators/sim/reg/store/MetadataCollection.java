@@ -595,9 +595,9 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 	        return rets;
 
 	    for (Assoc a : assocs) {
-	        if (a.isDeprecated && status.isDeprecatedAceptable())
+	        if (a.isDeprecated() && status.isDeprecatedAceptable())
 	            rets.add(a);
-	        if (!a.isDeprecated && status.isApprovedAceptable())
+	        if (!a.isDeprecated() && status.isApprovedAceptable())
 	            rets.add(a);
         }
 

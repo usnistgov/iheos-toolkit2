@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import java.io.*;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -95,6 +96,10 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 		return StatusValue.UNKNOWN;
 	}
 
+	public static List<String> statusValues =
+			Arrays.asList("urn:oasis:names:tc:ebxml-regrep:StatusType:Approved",
+					"urn:oasis:names:tc:ebxml-regrep:StatusType:Deprecated");
+
 	public static  String getStatusString(StatusValue status) {
 		switch(status) {
 		case APPROVED: 
@@ -108,6 +113,10 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 		}
 	}
 
+	public static String getStatusString(boolean isDeprecated) {
+		return getStatusString(StatusValue.DEPRECATED);
+	}
+
 	public List<StatusValue> translateStatusValues(List<String> strings) {
 		List<StatusValue> values = new ArrayList<StatusValue>();
 
@@ -117,9 +126,11 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 		return values;
 	}
 
-	public enum AssocType { UNKNOWN, HasMember, RPLC, RPLC_XFRM, XFRM, APND, SIGNS, SubmitAssociation };
+	public enum AssocType { UNKNOWN, HasMember, RPLC, RPLC_XFRM, XFRM, APND, SIGNS, SubmitAssociation, UpdateAvailabilityStatus };
 
 	public enum RelationshipAssocType { RPLC, RPLC_XFRM, XFRM, APND, SIGNS}
+
+	public enum MuAssocType {SubmitAssociation, UpdateAvailabilityStatus};
 
 	public static boolean isRelationshipAssoc(String value) {
 		try {
@@ -152,6 +163,8 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 			return AssocType.SIGNS;
 		if (typ.endsWith("SubmitAssociation"))
 			return AssocType.SubmitAssociation;
+		if (typ.endsWith("UpdateAvailabilityStatus"))
+			return AssocType.UpdateAvailabilityStatus;
 
 		return AssocType.UNKNOWN;
 	}
