@@ -48,32 +48,6 @@ class MhdClientTransaction extends BasicTransaction {
         }
     }
 
-    // Ties collecting of TransactionInstance to SimDb
-    // Test harness for IT testing offers alternate
-    class SimDbTransactionInstanceBuilder implements TransactionInstanceBuilder {
-        SimDb simDb
-
-        SimDbTransactionInstanceBuilder(SimDb simDb) {
-            this.simDb = simDb
-        }
-
-        @Override
-        TransactionInstance build(String actor, String eventId, String trans) {
-            return simDb.buildTransactionInstance(actor, eventId, trans)
-        }
-
-        @Override
-        List<FhirSimulatorTransaction> getSimulatorTransactions(SimReference simReference) throws XdsInternalException {
-            try {
-                return FhirSimulatorTransaction.getAll(simReference.simId, simReference.transactionType)
-            } catch (XdsInternalException ie) {
-                errs.add("Error loading reference to simulator transaction from logs for ${simReference.toString()}\n" + ie.getMessage());
-                throw ie;
-            }
-        }
-
-    }
-
     // return list of passing transactions
     List<FhirSimulatorTransaction> processValidations(TransactionInstanceBuilder transactionInstanceBuilder, SimReference simReference, Assertion a, OMElement assertion_output) {
         String trans = simReference.transactionType.code

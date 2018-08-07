@@ -202,7 +202,7 @@ public class StoredQueryTransaction extends QueryTransaction {
 
 	@Override
 	public void processAssertion(AssertionEngine engine, Assertion a, OMElement assertion_output) throws XdsInternalException {
-	    // TODO: test validation plugin
+	    // skb TODO: test validation plugin
 		List<String> errs = new ArrayList<>();
 		try {
 			SimReference simReference = getSimReference(errs, a);
