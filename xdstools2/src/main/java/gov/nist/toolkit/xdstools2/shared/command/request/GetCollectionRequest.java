@@ -1,12 +1,13 @@
 package gov.nist.toolkit.xdstools2.shared.command.request;
 
+import gov.nist.toolkit.installation.shared.TestCollectionCode;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
 /**
  * Created by onh2 on 11/7/16.
  */
 public class GetCollectionRequest extends CommandContext {
-    private String collectionName;
+    private TestCollectionCode tcId;
     private String collectionSetName;
 
     public GetCollectionRequest() {
@@ -17,17 +18,17 @@ public class GetCollectionRequest extends CommandContext {
         this.collectionSetName = collectionSetName;
     }
 
-    public GetCollectionRequest(CommandContext context, String collectionSetName, String collectionName) {
+    public GetCollectionRequest(CommandContext context, String collectionSetName, TestCollectionCode tcId) {
         this(context, collectionSetName);
-        this.collectionName = collectionName;
+        this.tcId = tcId;
     }
 
-    public String getCollectionName() {
-        return collectionName;
+    public TestCollectionCode getTcId() {
+        return tcId;
     }
 
-    public void setCollectionName(String collectionName) {
-        this.collectionName = collectionName;
+    public void setTcId(TestCollectionCode tcId) {
+        this.tcId = tcId;
     }
 
     public String getCollectionSetName() {

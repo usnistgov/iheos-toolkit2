@@ -32,6 +32,7 @@ import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TabConfig;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.UserTestCollection;
 import gov.nist.toolkit.xdstools2.shared.RegistryStatus;
 import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
@@ -276,6 +277,7 @@ public interface ToolkitServiceAsync {
 
     // Tab configuration
     void getToolTabConfig(GetTabConfigRequest request, AsyncCallback<TabConfig> callback);
+    void getPrunedToolTabConfig(GetTabConfigRequest request, AsyncCallback<UserTestCollection> callback);
 
     void getDatasetContent(GetDatasetElementContentRequest var1, AsyncCallback<String> callback);
 

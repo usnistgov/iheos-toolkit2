@@ -2,11 +2,13 @@ package gov.nist.toolkit.xdstools2.client.util;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
+import gov.nist.toolkit.installation.shared.TestCollectionCode;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.tabs.EnvironmentState;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -56,4 +58,5 @@ public class ClientUtils {
     public void setTkPropMap(Map<String, String> tkPropMap) {
         this.tkPropMap = tkPropMap;
     }
+
 }

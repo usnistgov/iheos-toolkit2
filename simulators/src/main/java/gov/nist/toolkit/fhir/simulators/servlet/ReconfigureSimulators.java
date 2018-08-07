@@ -1,6 +1,6 @@
 package gov.nist.toolkit.fhir.simulators.servlet;
 
-import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.actortransaction.server.EndpointParser;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.installation.server.Installation;

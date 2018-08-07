@@ -5,6 +5,7 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
+import gov.nist.toolkit.installation.shared.TestCollectionCode;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
@@ -49,7 +50,7 @@ class TestSelectionManager {
         selectSectionList.addChangeHandler(new SectionSelectionChangeHandler());
     }
 
-    void loadTestsFromCollection(final String testCollectionName) {
+    void loadTestsFromCollection(final TestCollectionCode testCollectionId) {
         new GetCollectionCommand() {
             @Override
             public void onComplete(Map<String, String> result) {
@@ -70,7 +71,7 @@ class TestSelectionManager {
                     new TestSelectionChangeHandler(me).onChange(null);
                 }
             }
-        }.run(new GetCollectionRequest(ClientUtils.INSTANCE.getCommandContext(), "collections", testCollectionName));
+        }.run(new GetCollectionRequest(ClientUtils.INSTANCE.getCommandContext(), "collections", testCollectionId));
     }
 
     Widget buildSectionSelector() {

@@ -21,7 +21,7 @@ import gov.nist.toolkit.xdstools2.shared.command.request.BuildTestSessionCommand
 /**
  *
  */
-public class MultiUserTestSessionSelector {
+public class MultiUserTestSessionSelector extends ConfirmTestSessionChange {
     private HTML currentTestSession = new HTML("");
     private TextBox textBox = new TextBox();
     private HorizontalPanel panel;
@@ -33,7 +33,6 @@ public class MultiUserTestSessionSelector {
     private Button changeTestSessionButton = new Button("Change");
     private Button delTestSessionButton = new Button("Delete");
     private Button exitTestSessionButton = new Button("Exit");
-    TabWatcher tabWatcher;
 
     public MultiUserTestSessionSelector(TabWatcher tabWatcher) {
         this(true,true,true,"Multiuser");
@@ -43,6 +42,7 @@ public class MultiUserTestSessionSelector {
     }
 
     public MultiUserTestSessionSelector(boolean canChangeTs, boolean canCreateNewTs, boolean canDeleteTs, String userMode) {
+        super(null);
         this.canChangeTs = canChangeTs;
         this.canCreateNewTs = canCreateNewTs;
         this.canDeleteTs = canDeleteTs;
@@ -310,30 +310,7 @@ public class MultiUserTestSessionSelector {
                     if (result) {
                         // Alert only when switching from one test session to another but not when going from no-test-session to a test session (initial state).
                         if (!"".equals(currentTestSession.getText()) && !"None.".equals(currentTestSession.getText()) && !PasswordManagement.isSignedIn) {
-                            VerticalPanel body = new VerticalPanel();
-                            String alertMessage = "";
-                            if ((tabWatcher!=null && tabWatcher.getTabCount()>0)) {
-                                if (!PasswordManagement.isSignedIn)
-                                    alertMessage = "<b>Note</b>: This action will close " + tabWatcher.getTabCount() + " tab(s).";
-                            }
-                            body.add(new HTML("<p>Change test session?<br/>"
-                                    + alertMessage
-                                    + "</p>"));
-
-                            SafeHtmlBuilder safeHtmlBuilder = new SafeHtmlBuilder();
-                            if (!"".equals(alertMessage)) {
-                                safeHtmlBuilder.appendHtmlConstant("<img src=\"icons2/ic_announcement_black_36dp_1x.png\" title=\"Alert\" height=\"16\" width=\"16\"/>&nbsp;");
-                            }
-                            safeHtmlBuilder.appendHtmlConstant("Confirm Change Test Session to " + testSession);
-
-                            Button actionBtn =  new Button("Ok");
-                            actionBtn.addClickHandler(new ClickHandler() {
-                                @Override
-                                public void onClick(ClickEvent clickEvent) {
-                                    doChange(testSession);
-                                }
-                            });
-                            new PopupMessage(safeHtmlBuilder.toSafeHtml() , body, actionBtn);
+                           confirm(testSession);
                         } else {
                             doChange(testSession);
                         }

@@ -1,7 +1,7 @@
 package gov.nist.toolkit.simcommon.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.shared.ActorType;
 
 import java.io.Serializable;
 import java.util.ArrayList;

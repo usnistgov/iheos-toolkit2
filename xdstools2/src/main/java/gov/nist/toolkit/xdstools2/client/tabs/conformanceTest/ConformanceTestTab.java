@@ -13,9 +13,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TabBar;
-import gov.nist.toolkit.actortransaction.client.ActorOption;
-import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.actortransaction.client.IheItiProfile;
+import gov.nist.toolkit.actortransaction.shared.ActorOption;
+import gov.nist.toolkit.actortransaction.shared.ActorType;
+import gov.nist.toolkit.actortransaction.shared.IheItiProfile;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.interactiondiagram.client.events.DiagramClickedEvent;
@@ -143,10 +143,8 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 			@Override
 			public void onTestSessionChanged(TestSessionChangedEvent event) {
 				if (event.getChangeType() == TestSessionChangedEvent.ChangeType.SELECT) {
-				    if (mainView.getActorTabBar().getSelectedTab()>-1) {
 						loadTestCollections();
 						updateDisplayedActorAndOptionType();
-					}
 				}
 			}
 		});
@@ -172,20 +170,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		});
 
 
-		// 1. Get the tabConfig here {
-		new GetTabConfigCommand() {
-			@Override
-			public void onComplete(TabConfig tabConfig) {
-				ConformanceTestTab.super.tabConfig = tabConfig;
-				// Retrofit tab config into actoroptionmanager
-
-
-
-				// Initial load of tests in a test session
-				loadTestCollections();
-			}
-		}.run(new GetTabConfigRequest("ConfTests"));
-		// }
+		loadTestCollections();
 
 		// Register the Diagram RequestConnector clicked event handler
 		ClientUtils.INSTANCE.getEventBus().addHandler(DiagramClickedEvent.TYPE, new DiagramPartClickedEventHandler() {
@@ -670,44 +655,40 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 	// load tab bar with actor types
 	private void loadTestCollections() {
-		// TabBar listing actor types
-		new GetTestCollectionsCommand() {
-			@Override
-			public void onComplete(List<TestCollectionDefinitionDAO> testCollectionDefinitionDAOs) {
+			new GetPrunedTabConfigCommand() {
+				@Override
+				public void onComplete(UserTestCollection userTestCollection) {
+					me.testCollectionDefinitionDAOs = userTestCollection.getTestCollectionDefinitionDAOs();
+					ConformanceTestTab.super.tabConfig = userTestCollection.getTabConfig();
+					// Initial load of tests in a test session
+                    displayTests();
 
-			    // Sort according to the user defined tab config
-				me.testCollectionDefinitionDAOs =  new ArrayList<>();
-				for (TabConfig tabConfig : ConformanceTestTab.super.tabConfig.getChildTabConfigs()) {
-					for (TestCollectionDefinitionDAO tcd : testCollectionDefinitionDAOs) {
-					    if (tabConfig.getTcCode().equals(new ActorOption(tcd.getCollectionID()).actorTypeId)) {
-					    	me.testCollectionDefinitionDAOs.add(tcd);
-					    	break;
-						}
-					}
 				}
+			}.run(new GetTabConfigRequest("ConfTests"));
+	}
+
+	private void displayTests() {
+		// Finally display
+		if (getInitTestSession() != null) {
+			getMainView().getTabBarPanel().setVisible(true);
+		}
 
 
-				if (getInitTestSession()!=null) {
-					getMainView().getTabBarPanel().setVisible(true);
-				}
+		displayActorsTabBar(mainView.getActorTabBar());
+		// 2. Write the site map here
+
+		if (getInitTestSession() == null && mainView.getActorTabBar() != null && mainView.getActorTabBar().getSelectedTab() == -1) { // Only display the menu when actor is not selected.
+			boolean result = displayMenu(mainView.getTestsPanel());
+			mainView.getActorpanel().setVisible(result);
+		}
 
 
-				displayActorsTabBar(mainView.getActorTabBar());
-				// 2. Write the site map here
+		currentActorTypeDescription = getDescriptionForTestCollection(currentActorOption.actorTypeId);
 
-				if (getInitTestSession()==null && mainView.getActorTabBar()!=null && mainView.getActorTabBar().getSelectedTab()==-1) { // Only display the menu when actor is not selected.
-						displayMenu(mainView.getTestsPanel());
-				}
-
-
-				currentActorTypeDescription = getDescriptionForTestCollection(currentActorOption.actorTypeId);
-
-				// This is a little wierd being here. This depends on initTestSession
-				// which is set AFTER onTabLoad is run so run here - later in the initialization
-				// initTestSession is set from ConfActorActivity
-				initializeTestingContext();
-			}
-		}.run(new GetCollectionRequest(getCommandContext(), "actorcollections"));
+		// This is a little wierd being here. This depends on initTestSession
+		// which is set AFTER onTabLoad is run so run here - later in the initialization
+		// initTestSession is set from ConfActorActivity
+		initializeTestingContext();
 	}
 
 	@Override
@@ -922,10 +903,11 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 	}
 
 	private void displayActorsTabBar(TabBar actorTabBar) {
-		if (actorTabBar.getTabCount() == 0) {
-			for (TestCollectionDefinitionDAO def : testCollectionDefinitionDAOs) {
-				if (!def.isOption())
-					actorTabBar.addTab(def.getCollectionTitle());
+		if (actorTabBar.getTabCount() == 0 && ConformanceTestTab.super.tabConfig!=null) {
+			for (TabConfig tabConfig : ConformanceTestTab.super.tabConfig.getChildTabConfigs()) {
+				if (tabConfig.isVisible()) {
+					actorTabBar.addTab(tabConfig.getLabel());
+				}
 			}
 		}
 	}

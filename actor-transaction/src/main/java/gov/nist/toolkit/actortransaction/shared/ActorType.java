@@ -1,6 +1,8 @@
-package gov.nist.toolkit.actortransaction.client;
+package gov.nist.toolkit.actortransaction.shared;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.actortransaction.client.ProxyTransformConfig;
+import gov.nist.toolkit.actortransaction.client.TransactionDirection;
 import gov.nist.toolkit.configDatatypes.client.FhirVerb;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.xdsexception.client.TkActorNotFoundException;
@@ -672,7 +674,7 @@ public enum ActorType implements IsSerializable, Serializable {
    }
 
     public String getActor()  {
-        return new ActorOption(shortName).getActorTypeId();
+        return shortName;
    }
 
    public boolean isProxy() {
@@ -794,7 +796,7 @@ public enum ActorType implements IsSerializable, Serializable {
        if (actorOption == null)  throw new TkActorNotFoundException("actorOption is null",null);
 
         for (ActorType actor : values()) {
-           if (actorOption.actorTypeId!=null && actorOption.actorTypeId.equals(actor.shortName))  {
+           if (actorOption.actorTypeId!=null && actorOption.actorTypeId.equalsIgnoreCase(actor.shortName))  {
                if (actorOption.profileId!=null) {
                    if (actor.profile.equals(actorOption.profileId)) {
                         if (actorOption.optionId!=null) {
@@ -839,7 +841,7 @@ public enum ActorType implements IsSerializable, Serializable {
             return null;
 
         for (ActorType actor : values()) {
-            if (actor.getActorCode().equals(tcCode)) return actor;
+            if (actor.getActorCode().equalsIgnoreCase(tcCode)) return actor;
         }
         return null;
     }

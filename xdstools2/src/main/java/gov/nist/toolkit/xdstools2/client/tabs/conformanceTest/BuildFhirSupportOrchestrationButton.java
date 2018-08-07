@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
 import com.google.gwt.user.client.ui.*;
-import gov.nist.toolkit.actortransaction.client.ActorOption;
+import gov.nist.toolkit.actortransaction.shared.ActorOption;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest;
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationResponse;

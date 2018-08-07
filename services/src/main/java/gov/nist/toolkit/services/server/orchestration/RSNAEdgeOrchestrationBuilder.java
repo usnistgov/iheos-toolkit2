@@ -3,7 +3,7 @@
  */
 package gov.nist.toolkit.services.server.orchestration;
 
-import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.services.client.RSNAEdgeOrchestrationRequest;

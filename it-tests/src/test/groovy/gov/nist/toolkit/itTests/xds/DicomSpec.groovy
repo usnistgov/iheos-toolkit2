@@ -1,6 +1,5 @@
 package gov.nist.toolkit.itTests.xds
 
-import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.itTests.support.ToolkitSpecification

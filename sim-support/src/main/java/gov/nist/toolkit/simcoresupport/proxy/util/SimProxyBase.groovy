@@ -1,6 +1,6 @@
 package gov.nist.toolkit.simcoresupport.proxy.util
 
-import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.actortransaction.shared.ActorType
 import gov.nist.toolkit.actortransaction.client.ProxyTransformConfig
 import gov.nist.toolkit.actortransaction.client.TransactionDirection
 import gov.nist.toolkit.actortransaction.server.EndpointParser

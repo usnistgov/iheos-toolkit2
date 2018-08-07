@@ -2,13 +2,16 @@ package gov.nist.toolkit.xdstools2.client.selectors;
 
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.ui.*;
+import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionsUpdatedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionsUpdatedEventHandler;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.util.TabWatcher;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -20,10 +23,15 @@ public class TestSessionSelector {
     HorizontalPanel panel;
     static final String NONSELECTION = "--Select--";
 
-    public TestSessionSelector(List<String> initialContents, String initialSelection) {
+    public TestSessionSelector(List<String> initialContents, String initialSelection, TabWatcher tabWatcher) {
 //        Xdstools2.DEBUG("initialize TestSessionSelector with " + initialContents + " ==>" + initialSelection);
         build(initialContents, initialSelection);
         link();
+    }
+
+    public TestSessionSelector(List<String> initialContents, String initialSelection) {
+//        Xdstools2.DEBUG("initialize TestSessionSelector with " + initialContents + " ==>" + initialSelection);
+        this(initialContents, initialSelection, null);
     }
 
     // Listen on the EventBus in the future
@@ -80,8 +88,7 @@ public class TestSessionSelector {
             public void onChange(ChangeEvent changeEvent) {
                 String newValue = listBox.getValue(listBox.getSelectedIndex());
                 if (NONSELECTION.equals(newValue)) return;
-                ClientUtils.INSTANCE.getTestSessionManager().setCurrentTestSession(newValue);
-                ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, newValue));
+                doChange(newValue);
             }
         });
 
@@ -126,6 +133,11 @@ public class TestSessionSelector {
                 ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.DELETE, value));
             }
         });
+    }
+
+    void doChange(String newValue) {
+        ClientUtils.INSTANCE.getTestSessionManager().setCurrentTestSession(newValue);
+        ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, newValue));
     }
 
     void add() {

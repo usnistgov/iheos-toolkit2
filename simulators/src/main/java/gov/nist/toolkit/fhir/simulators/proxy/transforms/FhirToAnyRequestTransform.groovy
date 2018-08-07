@@ -1,6 +1,6 @@
 package gov.nist.toolkit.fhir.simulators.proxy.transforms
 
-import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.actortransaction.shared.ActorType
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.fhir.simulators.mhd.SQParamTranslator
 import gov.nist.toolkit.fhir.simulators.proxy.util.ContentRequestTransform
