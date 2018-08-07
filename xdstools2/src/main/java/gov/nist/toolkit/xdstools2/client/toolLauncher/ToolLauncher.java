@@ -1,12 +1,16 @@
 package gov.nist.toolkit.xdstools2.client.toolLauncher;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import gov.nist.toolkit.actortransaction.shared.IheItiProfile;
 import gov.nist.toolkit.installation.shared.TestSession;
-import gov.nist.toolkit.registrymetadata.client.RegistryObject;
+import gov.nist.toolkit.installation.shared.ToolkitUserMode;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
+import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.tabs.*;
 import gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab.SubmitResource;
 import gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab.ActorConfigTab;
@@ -16,18 +20,21 @@ import gov.nist.toolkit.xdstools2.client.tabs.findDocuments2Tab.FindDocuments2Ta
 import gov.nist.toolkit.xdstools2.client.tabs.getAllTab.GetAllTab;
 import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorTab;
 import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewer;
+import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.SimConfigEditorTabLoader;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.SimulatorControlTab;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.TestsOverviewTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.toolContext.State;
+import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.toolContext.Token;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ToolLauncher implements ClickHandler {
+	private State state;
 	private String tabType;
-	private SiteSpec siteSpec = null;
-	private RegistryObject ro = null;
 
 	final static public String findDocumentsTabLabel = "FindDocuments";
 	final static public String findDocumentsByRefIdTabLabel = "FindDocumentsByRefId";
@@ -48,6 +55,7 @@ public class ToolLauncher implements ClickHandler {
 	final static public String simulatorMessageViewTabLabel = "Simulator Logs";
 	final static public String newSimulatorMessageViewTabLabel = "New Simulator Logs";
 	final static public String simulatorControlTabLabel = "Simulators";
+	final static public String simulatorConfigEditTabLabel = "SimConfig";
 	final static public String srcStoresDocValTabLabel = "XDS.b_Doc_Source_Stores_Document";
 	final static public String documentRetrieveTabLabel = "RetrieveDocuments";
 	final static public String allocatePatientIdTabLabel = "Allocate Patient ID for the Public Registry";
@@ -75,8 +83,6 @@ public class ToolLauncher implements ClickHandler {
 	final static public String SysConfigTabLabel = "SUT Configuration";
 	final static public String submitResourceTabLabel = "Submit Resource";
 
-
-
 	final static public String conformanceTestsLabel = "Conformance Tests";
 	final static public String toolConfigTabLabel = "Toolkit configuration";
 
@@ -103,6 +109,7 @@ public class ToolLauncher implements ClickHandler {
 		tools.add(new ToolDef(simulatorMessageViewTabLabel, "SimMsgs", "SimMsgs"));
 		tools.add(new ToolDef(newSimulatorMessageViewTabLabel, "New SimMsgs", "New SimMsgs"));
 		tools.add(new ToolDef(simulatorControlTabLabel, "SimCntl", "SimCntl"));
+		tools.add(new ToolDef(simulatorConfigEditTabLabel, "SimConfig", "SimConfig"));
 		tools.add(new ToolDef(srcStoresDocValTabLabel, "SrcStores", "SrcStores"));
 		tools.add(new ToolDef(documentRetrieveTabLabel, "DocRet", "DocRet"));
 //		tools.addTest(new ToolDef(allocatePatientIdTabLabel, "FindDocs", "FindDocs"));
@@ -146,6 +153,21 @@ public class ToolLauncher implements ClickHandler {
 
 	private ToolWindow getTool(ToolDef def) {
 		if (def == null) return null;
+
+		final Map<String,String> tkPropMap = ClientUtils.INSTANCE.getTkPropMap();
+		boolean multiUserModeEnabled = Boolean.parseBoolean(tkPropMap.get("Multiuser_mode"));
+		boolean casModeEnabled = Boolean.parseBoolean(tkPropMap.get("Cas_mode"));
+		ToolkitUserMode userMode = (multiUserModeEnabled) ? (casModeEnabled ? ToolkitUserMode.CAS_USER : ToolkitUserMode.MULTI_USER) : ToolkitUserMode.SINGLE_USER;
+		String currentEnvironment = tkPropMap.get("Default_Environment");
+		final String requestedTestSession;
+		final String requestedEnvironment;
+		if (state !=null) {
+			requestedEnvironment = state.getValue(Token.ENVIRONMENT);
+			requestedTestSession = state.getValue(Token.TEST_SESSION);
+		} else {
+			requestedEnvironment = null;
+			requestedTestSession = null;
+		}
 		String menuName = def.getMenuName();
 
 		if (menuName.equals(mpqFindDocumentsTabLabel))
@@ -181,9 +203,71 @@ public class ToolLauncher implements ClickHandler {
 		if (menuName.equals(simulatorMessageViewTabLabel)) return new SimulatorMessageViewTab();
 		if (menuName.equals(newSimulatorMessageViewTabLabel)) return new NewToolLauncher().launch(new SimMsgViewer());
 		if (menuName.equals(simulatorControlTabLabel)) return new SimulatorControlTab();
+		if (menuName.equals(simulatorConfigEditTabLabel)) {
+			/*
+			This specific tool requires explicit parameters
+			 */
+			if (state!=null) {
+				// Environment
+				if (requestedEnvironment==null || "".equals(requestedEnvironment)) {
+					throw new ToolkitRuntimeException("env parameter is required.");
+				} else {
+					setupEnvironment(state, userMode, requestedEnvironment, currentEnvironment);
+				}
+
+				// Test session
+				if (requestedTestSession==null || "".equals(requestedTestSession)) {
+					throw new ToolkitRuntimeException("testSession parameter is required.");
+				} else {
+					setupTestSession(userMode, requestedTestSession, null);
+				}
+
+				// systemId
+				String systemId = state.getValue(Token.SYSTEM_ID);
+				if (systemId==null || "".equals(systemId)) {
+					throw new ToolkitRuntimeException("systemId parameter is required.");
+
+				}
+				SimConfigEditorTabLoader tool = new SimConfigEditorTabLoader();
+				tool.load(state);
+				return tool.getTab();
+			}
+
+
+		}
 		if (menuName.equals(toolConfigTabLabel)) return new ToolConfigTab();
 		if (menuName.equals(mesaTabLabel)) return new MesaTestTab();
-		if (menuName.equals(conformanceTestsLabel)) return new ConformanceTestTab();
+		if (menuName.equals(conformanceTestsLabel)) {
+			ConformanceTestTab conformanceTestTab = new ConformanceTestTab();
+
+			if (state == null) {
+				// No state, so just present bare tool with an overview to manually select actor/profile/option
+				return conformanceTestTab;
+			}
+
+
+
+			setupEnvironment(state, userMode, requestedEnvironment, currentEnvironment);
+			setupTestSession(userMode, requestedTestSession, conformanceTestTab);
+
+
+			conformanceTestTab.getCurrentActorOption().setActorTypeId(state.getValue(Token.ACTOR));
+			conformanceTestTab.getCurrentActorOption().setProfileId(IheItiProfile.find(state.getValue(Token.PROFILE)));
+			conformanceTestTab.getCurrentActorOption().setOptionId(state.getValue(Token.OPTION));
+			SiteSpec site = new SiteSpec(state.getValue(Token.SYSTEM_ID), new TestSession(requestedTestSession));
+			conformanceTestTab.setCommonSiteSpec(site);
+			conformanceTestTab.setSiteToIssueTestAgainst(site);
+
+			GWT.log("Launch ConformanceTool for " +
+					"/testsession=" + requestedTestSession +
+					"/actor=" + conformanceTestTab.getCurrentActorOption().getActorTypeId() +
+					"/profile=" + conformanceTestTab.getCurrentActorOption().getProfileId() +
+					"/option=" + conformanceTestTab.getCurrentActorOption().getOptionId() +
+					"/site=" + site
+			);
+
+			return conformanceTestTab;
+		}
 		if (menuName.equals(dashboardTabLabel)) return new DashboardTab();
 		if (menuName.equals(repositoryTabLabel)) return new RepositoryListingTab();
 		if (menuName.equals(pidFavoritesLabel)) return new PidFavoritesTab(def.getTabName());
@@ -196,6 +280,37 @@ public class ToolLauncher implements ClickHandler {
 		if (menuName.equals(submitResourceTabLabel)) return new NewToolLauncher().launch(new SubmitResource());
 		if (menuName.equals(fhirSearchTabLabel)) return new NewToolLauncher().launch(new FhirSearch());
 		return null;
+	}
+
+	private void setupEnvironment(State state, ToolkitUserMode userMode, String requestedEnvironment, String currentEnvironment) {
+		if (!ToolkitUserMode.CAS_USER.equals(userMode)
+				&& requestedEnvironment!=null && !"".equals(requestedEnvironment)
+				&& !requestedEnvironment.equalsIgnoreCase(currentEnvironment)) {
+			// Override start-up initialization of environment
+			ClientUtils.INSTANCE.getEnvironmentState().initEnvironmentName(requestedEnvironment);
+			if (ClientUtils.INSTANCE.getEnvironmentState().isFirstManager()) {
+				ClientUtils.INSTANCE.getEnvironmentManager().change(requestedEnvironment);
+			}
+		}
+	}
+	private void setupTestSession(ToolkitUserMode userMode, String testSession, ConformanceTestTab conformanceTestTab) {
+		if ("default".equalsIgnoreCase(testSession)) {
+			if (ToolkitUserMode.SINGLE_USER.equals(userMode)) {
+				ClientUtils.INSTANCE.getTestSessionManager().setCurrentTestSession(testSession); // This is needed so that Sign-In selector doesn't overwrite the requested test session with default-test-session
+                if (conformanceTestTab!=null) {
+					conformanceTestTab.setCurrentTestSession(testSession);
+				}
+				ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, testSession, "ToolLauncher"));
+			} else {
+				new PopupMessage("Test session "+ testSession +" cannot be selected in " + userMode +".");
+			}
+		} else {
+			ClientUtils.INSTANCE.getTestSessionManager().setCurrentTestSession(testSession);
+			if (conformanceTestTab!=null) {
+				conformanceTestTab.setCurrentTestSession(testSession);
+			}
+			ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, testSession, "ToolLauncher"));
+		}
 	}
 
 	private ToolWindow launch(String requestedName) {
@@ -228,11 +343,8 @@ public class ToolLauncher implements ClickHandler {
 		this.tabType = tabType;
 	}
 
-	public ToolLauncher(String tabType, SiteSpec siteSpec, RegistryObject ro) {
-		this.tabType = tabType;
-		this.siteSpec = siteSpec;
-		this.ro = ro;
+
+	public void setState(State state) {
+		this.state = state;
 	}
-
-
 }

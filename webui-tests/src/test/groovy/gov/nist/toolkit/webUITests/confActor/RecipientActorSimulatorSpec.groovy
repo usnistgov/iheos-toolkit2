@@ -14,7 +14,7 @@ import spock.lang.Timeout
  * Created by skb1 on 6/22/2017.
  */
 @Stepwise
-@Timeout(360)
+@Timeout(90)
 class RecipientActorSimulatorSpec extends ConformanceActor {
 
     static final String simName = "recip" /* Sim names should be lowered cased */
@@ -23,6 +23,7 @@ class RecipientActorSimulatorSpec extends ConformanceActor {
 
     @Override
     void setupSim() {
+        setActorPage(String.format("%s/#ConfActor:env=default;testSession=%s;actor=rec", toolkitBaseUrl, simUser))
         deleteOldRecipSim()
         sleep(5000) // Why we need this -- Problem here is that the Delete request via REST could be still running before we execute the next Create REST command. The PIF Port release timing will be off causing a connection refused error in the Jetty log.
         recipSim = createNewRecipSim()
@@ -44,13 +45,6 @@ class RecipientActorSimulatorSpec extends ConformanceActor {
 
     // Recipient actor specific
 
-    def 'Get recipient actor page.'() {
-        when:
-        loadPage(String.format("%s/#ConfActor:default/%s/rec", toolkitBaseUrl, simUser))
-
-        then:
-        page != null
-    }
 
     def 'No unexpected popup or error message presented in a dialog box.'() {
         when:

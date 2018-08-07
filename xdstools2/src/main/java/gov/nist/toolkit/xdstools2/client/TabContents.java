@@ -7,11 +7,14 @@ class TabContents {
     DockLayoutPanel panel;
     AbstractPresenter presenter;
     NotifyOnDelete notifyOnDelete = null;
+    String tabName;
 
     TabContents(DockLayoutPanel panel,
-            AbstractPresenter presenter) {
+            AbstractPresenter presenter,
+                String tabName) {
         this.panel = panel;
         this.presenter = presenter;
+        this.tabName = tabName;
     }
 
     public NotifyOnDelete getNotifyOnDelete() {
@@ -21,4 +24,6 @@ class TabContents {
     public void setNotifyOnDelete(NotifyOnDelete notifyOnDelete) {
         this.notifyOnDelete = notifyOnDelete;
     }
+
+
 }

@@ -335,7 +335,7 @@ public abstract class GenericQueryTab  extends ToolWindow implements StatusDispl
         new GetToolkitPropertiesCommand(){
             @Override
             public void onFailure(Throwable throwable) {
-                new PopupMessage("Error getting properties for SAML selector display: " + throwable.toString());
+                showPopupMessage("Error getting properties for SAML selector display: " + throwable.toString());
                 fp.setVisible(false);
                 samlLabel.setVisible(false);
             }
@@ -713,7 +713,7 @@ public abstract class GenericQueryTab  extends ToolWindow implements StatusDispl
                                 stsActorName = tkPropMap.get("Sts_ActorName");
                                 stsTpName = tkPropMap.get("Sts_TpName");
                             } else {
-                                new PopupMessage("Error reading tkPropMap cache.");
+                                showPopupMessage("Error reading tkPropMap cache.");
                             }
                             TestInstance testInstance = new TestInstance(stsTpName);
                             testInstance.setSection("samlassertion-issue");
@@ -811,7 +811,7 @@ public abstract class GenericQueryTab  extends ToolWindow implements StatusDispl
 
     protected boolean verifyPidProvided() {
         if (pidTextBox.getValue() == null || pidTextBox.getValue().equals("")) {
-            new PopupMessage("You must enter a Patient ID first");
+            showPopupMessage("You must enter a Patient ID first");
             return false;
         }
         return true;
@@ -820,7 +820,7 @@ public abstract class GenericQueryTab  extends ToolWindow implements StatusDispl
     public boolean verifySiteProvided() {
         SiteSpec siteSpec = getSiteSelection();
         if (siteSpec == null) {
-            new PopupMessage("You must select a site first");
+            showPopupMessage("You must select a site first");
             return false;
         }
         return true;

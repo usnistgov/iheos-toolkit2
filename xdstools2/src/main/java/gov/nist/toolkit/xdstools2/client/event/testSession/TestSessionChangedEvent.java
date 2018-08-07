@@ -19,15 +19,21 @@ public class TestSessionChangedEvent extends GwtEvent<TestSessionChangedEventHan
 
     private ChangeType changeType;
     private String value;
+    private String eventSource;
 
     /**
-     * SimResource constructor.
+     * constructor.
      * @param changeType type of change made to the test session.
      * @param value name of the test session affected by the change.
      */
     public TestSessionChangedEvent(ChangeType changeType, String value) {
         this.changeType = changeType;
         this.value = value;
+    }
+
+    public TestSessionChangedEvent(ChangeType changeType, String value, String eventSource) {
+        this(changeType, value);
+        this.eventSource = eventSource;
     }
 
     @Override
@@ -52,4 +58,8 @@ public class TestSessionChangedEvent extends GwtEvent<TestSessionChangedEventHan
      * Enumerated class that list the different type of changes that can be made to a test session.
      */
     public enum ChangeType {ADD, DELETE, SELECT}
+
+    public String getEventSource() {
+        return eventSource;
+    }
 }

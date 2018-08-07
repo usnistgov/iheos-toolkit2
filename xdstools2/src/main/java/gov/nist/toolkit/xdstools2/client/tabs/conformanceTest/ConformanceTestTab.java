@@ -29,6 +29,7 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.xdstools2.client.NotifyOnDelete;
+import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.event.testContext.TestContextChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testContext.TestContextChangedEventHandler;
@@ -39,6 +40,7 @@ import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.LaunchInspectorClickHandler;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
+import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 import gov.nist.toolkit.xdstools2.shared.command.request.*;
 
 import java.util.*;
@@ -48,9 +50,7 @@ import static gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TestContext
 /**
  * All Conformance tests will be run out of here
  */
-public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner, TestTarget, Controller, NotifyOnDelete {
-
-	private final ConformanceTestTab me;
+public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTarget, Controller, NotifyOnDelete {
 
 	private TestsHeaderView testsHeaderView = new TestsHeaderView(this);
 	private TestContextView testContextView;
@@ -67,12 +67,9 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 	private final TestStatistics testStatistics = new TestStatistics();
 
-	private final ActorOptionConfig currentActorOption = new ActorOptionConfig("none");
+	private final ActorOptionConfig currentActorOption = new ActorOptionConfig();
 	private String currentActorTypeDescription;
 	private SiteSpec siteToIssueTestAgainst = null;
-
-	// stuff that needs delayed setting when launched via activity
-	private String initTestSession = null;
 
 	// Descriptions of current test list
 	private List<TestCollectionDefinitionDAO> testCollectionDefinitionDAOs;
@@ -88,9 +85,57 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 	private ConformanceTestMainView mainView;
 	private AbstractOrchestrationButton orchInit = null;
 
+	private ConformanceToolMenu conformanceToolMenu = new ConformanceToolMenu() {
+		@Override
+		public void onMenuSelect(TabConfig actor, Map<String,TabConfig> target) {
+			mainView.getTabBarPanel().setVisible(true);
+
+			currentActorOption.setLaunchedFromMenu(true);
+
+			currentActorOption.setTabConfig(actor);
+			currentActorOption.setActorTypeId(null);
+			currentActorOption.setProfileId(null);
+			currentActorOption.setOptionId(null);
+
+			if (target.get("actor")!=null)
+				currentActorOption.setActorTypeId(target.get("actor").getTcCode());
+			if (target.get("profile")!=null)
+				currentActorOption.setProfileId(IheItiProfile.find(target.get("profile").getTcCode()));
+			if (target.get("option")!=null)
+				currentActorOption.setOptionId(target.get("option").getTcCode());
+
+			GWT.log(currentActorOption.getActorTypeId() + " " + currentActorOption.getProfileId() + " " + currentActorOption.getOptionId());
+
+			updateDisplayedActorAndOptionType();
+		}
+		@Override
+		CommandContext getCommandContext() {
+			return ConformanceTestTab.this.getCommandContext();
+		}
+
+		@Override
+		void updateTestStatistics(Map<ActorOptionConfig, List<TestInstance>> testsPerActorOption, Map<TestInstance, TestOverviewDTO> testOverviewDTOs, TestStatistics testStatistics, ActorOptionConfig actorOption) {
+			Collection<TestOverviewDTO> items = testOverviews(testsPerActorOption, testOverviewDTOs, actorOption);
+			resetStatistics(testStatistics,items.size());
+			for (TestOverviewDTO testOverview : items) {
+				if (testOverview.isRun()) {
+					if (testOverview.isPass()) {
+						testStatistics.addSuccessful();
+					} else {
+						testStatistics.addWithError();
+					}
+				}
+			}
+		}
+	};
+
+
+	public ConformanceTestTab(double east, double west) {
+		super(east, west);
+	}
+
 	public ConformanceTestTab() {
 		super(10.0, 0.0);
-		me = this;
 		if (ClientUtils.INSTANCE.getCurrentTestSession().equals(TestSession.CAT_TEST_SESSION)) {
 			notLoadedReason = "Conformance Tool cannot be run in " + TestSession.CAT_TEST_SESSION.getValue() + " Test Session";
 			return;
@@ -138,17 +183,6 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 		tabTopPanel.add(mainView.getToolPanel());
 
-		// Reload if the test session changes
-		testSessionChangedHandler = ClientUtils.INSTANCE.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
-			@Override
-			public void onTestSessionChanged(TestSessionChangedEvent event) {
-				if (event.getChangeType() == TestSessionChangedEvent.ChangeType.SELECT) {
-						loadTestCollections();
-						updateDisplayedActorAndOptionType();
-				}
-			}
-		});
-
 		mainView.getActorTabBar().addSelectionHandler(new ActorSelectionHandler());
 		mainView.getProfileTabBar().addSelectionHandler(new ProfileSelectionHandler());
 		mainView.getOptionsTabBar().addSelectionHandler(new OptionSelectionHandler());
@@ -159,18 +193,41 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 			@Override
 			public void onClick(ClickEvent clickEvent) {
 				mainView.getTabBarPanel().setVisible(false);
-				getMainView().getInitializationPanel().clear();
-				getMainView().getTestsPanel().clear();
+				mainView.getInitializationPanel().clear();
+				mainView.getTestsPanel().clear();
 				mainView.getActorTabBar().selectTab(-1);
 				mainView.getProfileTabBar().clear();
 				mainView.getOptionsTabBar().clear();
+				currentActorOption.setActorTypeId(null);
+				currentActorOption.setProfileId(null);
+				currentActorOption.setOptionId(null);
 
-				displayMenu(mainView.getTestsPanel());
+				conformanceToolMenu.displayMenu(mainView.getTestsPanel());
 			}
 		});
 
-
 		loadTestCollections();
+
+		if (testSessionChangedHandler == null) {
+			// Reload if the test session changes
+			testSessionChangedHandler = ClientUtils.INSTANCE.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
+				@Override
+				public void onTestSessionChanged(final TestSessionChangedEvent event) {
+						if (event.getChangeType() == TestSessionChangedEvent.ChangeType.SELECT) {
+							testContextView.updateTestingContextDisplay();
+							// Filter out extraneous events which cause confusing duplicate loads
+							if (!"SignInSelector".equals(event.getEventSource())
+							  && !"TestContextDialog".equals(event.getEventSource()) // TestContext fires both TestSessionChanged and TestContextChanged
+								) {
+								GWT.log("Test session changed: " + event.getValue());
+								loadTestCollections();
+							} else {
+								GWT.log("Ignored " + event.getEventSource());
+							}
+						}
+				}
+			});
+		}
 
 		// Register the Diagram RequestConnector clicked event handler
 		ClientUtils.INSTANCE.getEventBus().addHandler(DiagramClickedEvent.TYPE, new DiagramPartClickedEventHandler() {
@@ -188,12 +245,20 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 			ClientUtils.INSTANCE.getEventBus().addHandler(TestContextChangedEvent.TYPE, new TestContextChangedEventHandler() {
 				@Override
 				public void onTestContextChanged(TestContextChangedEvent event) {
-					if (getInitTestSession()==null) {
+					testContextView.updateTestingContextDisplay();
+					if (currentActorOption.getActorTypeId()==null) { // Menu mode has no actor
+						loadTestCollections();
+					} else {
+						updateDisplayedActorAndOptionType();
+					}
+//					testContextView.updateTestingContextDisplay();
+//				    loadTestCollections();
+//					if (getInitTestSession()==null) {
 //						displayMenu(mainView.getTestsPanel());
 //						if (updateDisplayedActorAndOptionType()) { // . Check if currentactoroptin is properly set (ok if profile & option is null)
 //							initializeTestDisplay(mainView.getTestsPanel());
 //						}
-					}
+//					}
 				}
 			});
 //		}
@@ -274,123 +339,15 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 	 * This must be called after testCollectionDefinitionDAOs is initialized.
 	 */
 	private void updateTestsOverviewHeader(Map<ActorOptionConfig, List<TestInstance>> testsPerActorOption, Map<TestInstance, TestOverviewDTO> testOverviewDTOs, TestStatistics testStatistics, ActorOptionConfig actorOption) {
-		updateTestStatistics(testsPerActorOption, testOverviewDTOs, testStatistics, actorOption);
+		conformanceToolMenu.updateTestStatistics(testsPerActorOption, testOverviewDTOs, testStatistics, actorOption);
 
 		// Display testStatus with statistics
 		testsHeaderView.allowRun(allowRun());
 		testsHeaderView.update(testStatistics, currentActorTypeDescription + " - " + getCurrentOptionTitle());
 	}
 
-	private void updateTestStatistics(Map<ActorOptionConfig, List<TestInstance>> testsPerActorOption, Map<TestInstance, TestOverviewDTO> testOverviewDTOs, TestStatistics testStatistics, ActorOptionConfig actorOption) {
-		Collection<TestOverviewDTO> items = testOverviews(testsPerActorOption, testOverviewDTOs, actorOption);
-		resetStatistics(testStatistics,items.size());
-		for (TestOverviewDTO testOverview : items) {
-			if (testOverview.isRun()) {
-				if (testOverview.isPass()) {
-					testStatistics.addSuccessful();
-				} else {
-					testStatistics.addWithError();
-				}
-			}
-		}
-	}
-
-	public void setTestStatistics(final HTML statsBar,  final ActorOptionConfig actorOption) {
-	    if (getCommandContext().getTestSessionName()==null || "".equals(getCommandContext().getTestSessionName()))
-	    	return;
-
-		final TestStatistics testStatistics = new TestStatistics();
-
-	    final Map<TestInstance, TestOverviewDTO> myTestOverviewDTOs = new HashMap<>();
-		final Map<ActorOptionConfig, List<TestInstance>> myTestsPerActorOption = new HashMap<>();
-
-		String loadImgHtmlStr = "<img style=\"width:10px;height:14px;border:1px solid white;float:left;margin-right:2px;\" src=\"icons2/ajax-loader.gif\"/>";
-
-		statsBar.setHTML(loadImgHtmlStr);
-
-		actorOption.loadTests(new AsyncCallback<List<TestInstance>>() {
-			@Override
-			public void onFailure(Throwable throwable) {
-				statsBar.setVisible(false);
-				new PopupMessage("getTestStatistics: " + throwable.getMessage());
-			}
-
-			@Override
-			public void onSuccess(List<TestInstance> testInstances) {
-				myTestsPerActorOption.put(actorOption, testInstances);
-
-				new GetTestsOverviewCommand() {
-					@Override
-					public void onComplete(List<TestOverviewDTO> testOverviews) {
-						for (TestOverviewDTO testOverview : testOverviews) {
-							myTestOverviewDTOs.put(testOverview.getTestInstance(), testOverview);
-						}
-
-						updateTestStatistics(myTestsPerActorOption, myTestOverviewDTOs, testStatistics, actorOption);
-						String htmlStr = "<div style=\"width:10px;height:13px;border:1px solid;float:left;margin-right:2px;";
-						if (testStatistics.getTestCount()>0 && testStatistics.getNotRun() != testStatistics.getTestCount()) { // Don't show anything if not run is 100%
-							htmlStr += "border-color:black;\">\n";
-							if (testStatistics.getSuccesses()==testStatistics.getTestCount()) {
-								htmlStr += "<div style=\"background-color:cyan;height:100%\"></div>\n";
-							} else if (testStatistics.getFailures()==testStatistics.getTestCount()) {
-								htmlStr += "<div style=\"background-color:coral;height:100%\"></div>\n";
-							} else {
-								float ts[] = new float[3];
-								ts[0] = (float)testStatistics.getNotRun() / (float)testStatistics.getTestCount();
-								ts[1] = (float)testStatistics.getSuccesses() / (float)testStatistics.getTestCount();
-								ts[2] = (float)testStatistics.getFailures() / (float)testStatistics.getTestCount();
-
-								// Boost small values below $boostVal to make more visible
-								float adjustedVal = 0.0F;
-								float boostVal = .25F;
-								for (int idx=0; idx < ts.length; idx++) {
-									if (ts[idx]>0 && ts[idx]<boostVal) {
-										adjustedVal  += (boostVal-ts[idx]);
-										ts[idx] = boostVal;
-									}
-								}
-								// Compensate for boosting from the majority index
-								if (adjustedVal >0.0F) {
-									int majorityIdx = -1;
-									for (int idx = 0; idx < ts.length; idx++) {
-										if (ts[idx] >= .33F) {
-											if (majorityIdx==-1)  {
-												majorityIdx = idx;
-											} else {
-												if (ts[idx]>ts[majorityIdx]) {
-													majorityIdx=idx;
-												}
-											}
-										}
-									}
-									if (majorityIdx>-1)
-										ts[majorityIdx] -= adjustedVal ;
-								}
 
 
-								htmlStr +=
-										((testStatistics.getNotRun() > 0) ?
-												"<div style=\"background-color:white;height:" + ts[0]*100F + "%;\"></div>\n" : "") +
-										(testStatistics.getSuccesses()>0?
-												"<div style=\"background-color:cyan;height:" + ts[1]*100F  + "%;\"></div>\n"	:"") +
-										(testStatistics.getFailures()>0?
-												"<div style=\"background-color:coral;height:" + ts[2]*100F + "%;\"></div>\n" :"");
-							}
-							htmlStr += "</div>\n";
-							statsBar.setHTML(htmlStr);
-						} else {
-							htmlStr += "border-color:white;\">\n";
-							htmlStr += "<div style=\"background-color:white;height:100%\"></div>\n";
-							statsBar.setHTML(htmlStr);
-						}
-					}
-				}.run(new GetTestsOverviewRequest(getCommandContext(), testInstances));
-
-			}
-		});
-
-
-	}
 
 	private String getCurrentOptionTitle() {
 		return getOptionTabConfig(currentActorOption).getLabel();
@@ -403,44 +360,35 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 	 *
 	 */
 	private void initializeTestingContext() {
-		if (initTestSession != null) {
-			setCurrentTestSession(initTestSession);
-		}
-		if (getCurrentTestSession() == null || getCurrentTestSession().equals("")) {
-			testContextView.updateTestingContextDisplay();
-			return;
-		}
+
+//		if (getCurrentTestSession() == null || getCurrentTestSession().equals("")) {
+//			testContextView.updateTestingContextDisplay();
+//			return;
+//		}
 
 		if (siteToIssueTestAgainst != null && !(siteToIssueTestAgainst.getName()=="" || siteToIssueTestAgainst.getName()==null)) {
 			new GetSiteCommand() {
 				@Override
 				public void onFailure(Throwable throwable) {
-					new PopupMessage("System " + siteToIssueTestAgainst + " does not exist.");
+                    showPopupMessage("System " + siteToIssueTestAgainst + " does not exist.");
 					testContext.setCurrentSiteSpec(null);
 					testContext.setSiteUnderTest(null);
 					testContextView.updateTestingContextDisplay();
+					updateDisplayedActorAndOptionType();
 				}
-
 				@Override
 				public void onComplete(Site result) {
 					testContext.setSiteUnderTest(result);
 					testContext.setCurrentSiteSpec(result.getName());
-
-					// Tool was launched via Activity URL
-					if (getInitTestSession() != null) {
-						updateDisplayedActorAndOptionType();
-						setInitTestSession(result.getTestSession().getValue());
-					}
 					testContextView.updateTestingContextDisplay();
+					updateDisplayedActorAndOptionType();
 				}
 			}.run(new GetSiteRequest(ClientUtils.INSTANCE.getCommandContext(), siteToIssueTestAgainst.name));
-
 		} else {
-
 			new GetAssignedSiteForTestSessionCommand() {
 				@Override
 				public void onFailure(Throwable throwable) {
-					new PopupMessage("GetAssignedSiteForTestSessionCommand failed: Unable to determine if SUT has been assigned in Test Context.");
+					showPopupMessage("GetAssignedSiteForTestSessionCommand failed: Unable to determine if SUT has been assigned in Test Context.");
 				}
 
 				@Override
@@ -456,20 +404,17 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 					new GetSiteCommand() {
 						@Override
 						public void onFailure(Throwable throwable) {
-							new PopupMessage("System " + result + " does not exist.");
+                            showPopupMessage("System " + result + " does not exist.");
 							testContext.setCurrentSiteSpec(null);
 							testContext.setSiteUnderTest(null);
 							testContextView.updateTestingContextDisplay();
+							updateDisplayedActorAndOptionType();
 						}
 
 						@Override
 						public void onComplete(Site result) {
 							testContext.setSiteUnderTest(result);
-							// Tool was launched via Activity URL
-							if (getInitTestSession() != null) {
-								updateDisplayedActorAndOptionType();
-								setInitTestSession(null);
-							}
+							updateDisplayedActorAndOptionType();
 						}
 					}.run(new GetSiteRequest(ClientUtils.INSTANCE.getCommandContext(), result));
 				}
@@ -494,18 +439,16 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 			String newActorTypeId = new ActorOption(TestCollectionDefinitionDAO.getNonOption(testCollectionDefinitionDAOs).get(i).getCollectionID()).actorTypeId;
 				orchestrationResponse = null;  // so we know orchestration not set up
 				currentActorOption.setActorTypeId(newActorTypeId);
-				if (getInitTestSession()==null) {
-					currentActorOption.setProfileId(null);
-					currentActorOption.setOptionId("");
-				}
 
 				setCurrentActorTabConfig(newActorTypeId);
+				currentActorOption.setProfileId(null);
+				currentActorOption.setOptionId("");
 				refreshActorView(newActorTypeId);
 		}
 	}
 
 	protected void setCurrentActorTabConfig(String newActorTypeId) {
-		for (TabConfig tabConfig : ConformanceTestTab.super.tabConfig.getChildTabConfigs()) {
+		for (TabConfig tabConfig : conformanceToolMenu.getTabConfig().getChildTabConfigs()) {
             if (tabConfig.getTcCode().equals(newActorTypeId)) {
                 currentActorOption.setTabConfig(tabConfig);
             }
@@ -517,9 +460,9 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		getMainView().getTestsPanel().clear();
 		mainView.getProfileTabBar().clear();
 		mainView.getOptionsTabBar().clear();
-		mainView.getProfileTabBar().display(ConformanceTestTab.super.tabConfig, "Profiles", newActorTypeId);
+		mainView.getProfileTabBar().display(conformanceToolMenu.getTabConfig(), "Profiles", newActorTypeId);
 		selectProfileTab();
-		GWT.log("actor was refreshed. init session: " + (getInitTestSession()==null));
+		GWT.log("actor was refreshed.");
 	}
 
 	private class ProfileSelectionHandler implements SelectionHandler<Integer> {
@@ -527,7 +470,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		public void onSelection(SelectionEvent<Integer> selectionEvent) {
 			int i = selectionEvent.getSelectedItem();
 
-			GWT.log("profile was selected. Was launched from internal menu: " + (getInitTestSession()==null) + ". Profile tab index is: " + i);
+			GWT.log("profile was selected. Profile tab index is: " + i);
 
 			TabConfig profiles = currentActorOption.getTabConfig().getFirstChildTabConfig();
 			if ("Profiles".equals(profiles.getLabel())) {
@@ -537,9 +480,6 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 				getMainView().getTestsPanel().clear();
 				mainView.getOptionsTabBar().clear();
 				mainView.getOptionsTabBar().display(currentActorOption.getTabConfig(), "Options", profile.getTcCode());
-				if (!currentActorOption.isLaunchedFromMenu() && getInitTestSession()==null) {
-					currentActorOption.setOptionId(null);
-				}
 				selectOptionTab();
 			}
 		}
@@ -552,7 +492,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 			getMainView().getTestsPanel().clear();
 			int i = selectionEvent.getSelectedItem();
 
-			GWT.log("option was selected. Was launched from activity URL: " + (getInitTestSession()!=null));
+			GWT.log("option was selected.");
 
 			TabConfig profiles = currentActorOption.getTabConfig().getFirstChildTabConfig();
 			if ("Profiles".equals(profiles.getLabel())) {
@@ -578,29 +518,31 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 	// for use by ConfActorActivity
 	private boolean updateDisplayedActorAndOptionType() {
-		currentActorTypeDescription = getDescriptionForTestCollection(currentActorOption.actorTypeId);
+	    if (currentActorOption!=null && currentActorOption.getActorTypeId()!=null && !"".equals(currentActorOption.getActorTypeId())) {
+			currentActorTypeDescription = getDescriptionForTestCollection(currentActorOption.actorTypeId);
 
-		int idx=0;
-		boolean foundSelectedActorTab = false;
-		for (TestCollectionDefinitionDAO tcd : TestCollectionDefinitionDAO.getNonOption(testCollectionDefinitionDAOs)) {
-			if (currentActorOption.getActorTypeId().equals(new ActorOption(tcd.getCollectionID()).actorTypeId)) {
-				foundSelectedActorTab = true;
-				break;
+			int idx = 0;
+			boolean foundSelectedActorTab = false;
+			for (TestCollectionDefinitionDAO tcd : TestCollectionDefinitionDAO.getNonOption(testCollectionDefinitionDAOs)) {
+				if (currentActorOption.getActorTypeId().equals(new ActorOption(tcd.getCollectionID()).actorTypeId)) {
+					foundSelectedActorTab = true;
+					break;
+				}
+				idx++;
 			}
-			idx++;
+
+			if (foundSelectedActorTab) {
+				getMainView().getActorTabBar().selectTab(idx, false);
+
+				if (currentActorOption.getTabConfig() == null)
+					setCurrentActorTabConfig(currentActorOption.getActorTypeId());
+
+				refreshActorView(currentActorOption.getActorTypeId());
+			}
+
+			return foundSelectedActorTab;
 		}
-
-		if (foundSelectedActorTab) {
-			getMainView().getActorTabBar().selectTab(idx, false);
-
-			if (currentActorOption.getTabConfig()==null)
-				setCurrentActorTabConfig(currentActorOption.getActorTypeId());
-
-		    refreshActorView(currentActorOption.getActorTypeId());
-		}
-
-		return foundSelectedActorTab;
-
+		return false;
 	}
 
 	private void selectProfileTab() {
@@ -658,61 +600,35 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 			new GetPrunedTabConfigCommand() {
 				@Override
 				public void onComplete(UserTestCollection userTestCollection) {
-					me.testCollectionDefinitionDAOs = userTestCollection.getTestCollectionDefinitionDAOs();
-					ConformanceTestTab.super.tabConfig = userTestCollection.getTabConfig();
+//					GWT.log("In loadTestCollections.");
+					testCollectionDefinitionDAOs = userTestCollection.getTestCollectionDefinitionDAOs();
+					conformanceToolMenu.setTabConfig(userTestCollection.getTabConfig());
 					// Initial load of tests in a test session
-                    displayTests();
+					displayActors();
 
 				}
-			}.run(new GetTabConfigRequest("ConfTests"));
+			}.run(new GetTabConfigRequest(ClientUtils.INSTANCE.getCommandContext(),"ConfTests"));
 	}
 
-	private void displayTests() {
+	private void displayActors() {
 		// Finally display
-		if (getInitTestSession() != null) {
-			getMainView().getTabBarPanel().setVisible(true);
-		}
-
+		boolean actorIsSelected = currentActorOption!=null && currentActorOption.getActorTypeId()!=null && !"".equals(currentActorOption.getActorTypeId());
+		getMainView().getTabBarPanel().setVisible(actorIsSelected);
 
 		displayActorsTabBar(mainView.getActorTabBar());
-		// 2. Write the site map here
 
-		if (getInitTestSession() == null && mainView.getActorTabBar() != null && mainView.getActorTabBar().getSelectedTab() == -1) { // Only display the menu when actor is not selected.
-			boolean result = displayMenu(mainView.getTestsPanel());
+		// 2. Write the site map here
+		if (currentActorOption==null || currentActorOption.getActorTypeId()==null) { // Only display the menu when actor is not selected.
+			boolean result = conformanceToolMenu.displayMenu(mainView.getTestsPanel());
 			mainView.getActorpanel().setVisible(result);
 		}
 
-
 		currentActorTypeDescription = getDescriptionForTestCollection(currentActorOption.actorTypeId);
 
-		// This is a little wierd being here. This depends on initTestSession
-		// which is set AFTER onTabLoad is run so run here - later in the initialization
-		// initTestSession is set from ConfActorActivity
 		initializeTestingContext();
 	}
 
-	@Override
-	public void onMenuSelect(TabConfig actor, Map<String,TabConfig> target) {
-		mainView.getTabBarPanel().setVisible(true);
 
-		currentActorOption.setLaunchedFromMenu(true);
-
-		currentActorOption.setTabConfig(actor);
-		currentActorOption.setActorTypeId(null);
-		currentActorOption.setProfileId(null);
-		currentActorOption.setOptionId(null);
-
-		if (target.get("actor")!=null)
-			currentActorOption.setActorTypeId(target.get("actor").getTcCode());
-		if (target.get("profile")!=null)
-			currentActorOption.setProfileId(IheItiProfile.find(target.get("profile").getTcCode()));
-		if (target.get("option")!=null)
-			currentActorOption.setOptionId(target.get("option").getTcCode());
-
-		GWT.log(currentActorOption.getActorTypeId() + " " + currentActorOption.getProfileId() + " " + currentActorOption.getOptionId());
-
-		updateDisplayedActorAndOptionType();
-	}
 
 	private HTML loadingMessage;
 
@@ -749,9 +665,9 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 			public void onComplete(Boolean result) {
 				if (result)
 					orchInit.handleClick(null);   // auto init orchestration
-				else {
-					displayTestCollection(getMainView().getTestsPanel());
-				}
+//				else {
+//					displayTestCollection(getMainView().getTestsPanel());
+//				}
 			}
 
 			@Override
@@ -768,14 +684,12 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		currentActorOption.loadTests(new AsyncCallback<List<TestInstance>>() {
 			@Override
 			public void onFailure(Throwable throwable) {
-				new PopupMessage("getTestlogListing: " + throwable.getMessage());
+				showPopupMessage("getTestlogListing: " + throwable.getMessage());
 			}
 
 			@Override
 			public void onSuccess(List<TestInstance> testInstances) {
-				mainView.showLoadingMessage("Loading...");
 				displayTests(testsPanel, testInstances, allowRun());
-				mainView.clearLoadingMessage();
 			}
 		});
 	}
@@ -790,41 +704,44 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 
 		GetTestsOverviewRequest tor = new GetTestsOverviewRequest(getCommandContext(), testInstances);
 
-		new GetTestsOverviewCommand() {
-			@Override
-			public void onComplete(List<TestOverviewDTO> testOverviews) {
-				// sort tests by dependencies and alphabetically
-				// save in testsPerActorOption so they run in this order as well
-				List<TestInstance> testInstances1 = new ArrayList<>();
-				testOverviews = new TestSorter().sort(testOverviews);
-				for (TestOverviewDTO dto : testOverviews) {
-					testInstances1.add(dto.getTestInstance());
-				}
-				testsPerActorOption.put(currentActorOption, testInstances1);
+		try {
+			mainView.showLoadingMessage("Loading...");
+			new GetTestsOverviewCommand() {
+				@Override
+				public void onComplete(List<TestOverviewDTO> testOverviews) {
+					// sort tests by dependencies and alphabetically
+					// save in testsPerActorOption so they run in this order as well
+					List<TestInstance> testInstances1 = new ArrayList<>();
+					testOverviews = new TestSorter().sort(testOverviews);
+					for (TestOverviewDTO dto : testOverviews) {
+						testInstances1.add(dto.getTestInstance());
+					}
+					testsPerActorOption.put(currentActorOption, testInstances1);
 
-				testsPanel.clear();
-				testsHeaderView.allowRun(allowRun());
-				testsPanel.add(testsHeaderView.asWidget());
+					testsPanel.clear();
+					testsHeaderView.allowRun(allowRun());
+					testsPanel.add(testsHeaderView.asWidget());
 //                testStatistics.clear();
 //                testStatistics.setTestCount(testOverviews.size());
-				for (TestOverviewDTO testOverview : testOverviews) {
-					updateTestOverview(testOverview);
-					InteractionDiagramDisplay diagramDisplay = new InteractionDiagramDisplay(
-							testOverview,
-							testContext.getTestSession(),
-							getSiteToIssueTestAgainst(),
-							((testContext.getSiteUnderTestAsSiteSpec() != null) ? testContext.getSiteUnderTestAsSiteSpec().getName() : ""),
-							currentActorOption,
-							getTestInstancePatientId(testOverview.getTestInstance(), parms));
-					TestDisplay testDisplay = testDisplayGroup.display(testOverview, diagramDisplay);
-					testsPanel.add(testDisplay.asWidget());
+					for (TestOverviewDTO testOverview : testOverviews) {
+						updateTestOverview(testOverview);
+						InteractionDiagramDisplay diagramDisplay = new InteractionDiagramDisplay(
+								testOverview,
+								testContext.getTestSession(),
+								getSiteToIssueTestAgainst(),
+								((testContext.getSiteUnderTestAsSiteSpec() != null) ? testContext.getSiteUnderTestAsSiteSpec().getName() : ""),
+								currentActorOption,
+								getTestInstancePatientId(testOverview.getTestInstance(), parms));
+						TestDisplay testDisplay = testDisplayGroup.display(testOverview, diagramDisplay);
+						testsPanel.add(testDisplay.asWidget());
+					}
+					updateTestsOverviewHeader(testsPerActorOption, testOverviewDTOs, testStatistics, currentActorOption);
+					mainView.clearLoadingMessage();
 				}
-				updateTestsOverviewHeader(testsPerActorOption, testOverviewDTOs, testStatistics, currentActorOption);
-
-				mainView.clearLoadingMessage();
-
-			}
-		}.run(tor);
+			}.run(tor);
+		} catch (Throwable t) {
+			mainView.clearLoadingMessage();
+		}
 	}
 
 	private static String getPatientIdStr(Map<String, String> parms) {
@@ -903,8 +820,8 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 	}
 
 	private void displayActorsTabBar(TabBar actorTabBar) {
-		if (actorTabBar.getTabCount() == 0 && ConformanceTestTab.super.tabConfig!=null) {
-			for (TabConfig tabConfig : ConformanceTestTab.super.tabConfig.getChildTabConfigs()) {
+		if (actorTabBar.getTabCount() == 0 && conformanceToolMenu.getTabConfig()!=null) {
+			for (TabConfig tabConfig : conformanceToolMenu.getTabConfig().getChildTabConfigs()) {
 				if (tabConfig.isVisible()) {
 					actorTabBar.addTab(tabConfig.getLabel());
 				}
@@ -932,7 +849,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		if (parts.length>1) {
 			return parts[parts.length-1];
 		} else {
-			new PopupMessage("Test Id needs be suffixed with '_username' like so: testId_username.");
+			showPopupMessage("Test Id needs be suffixed with '_username' like so: testId_username.");
 			return null;
 		}
 	}
@@ -974,7 +891,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 	}
 
 	ClickHandler getInspectClickHandler(TestInstance testInstance) {
-		new PopupMessage("ti=" + testInstance.toString() + " ts=" + getCurrentTestSession() + " sn=" + testContext.getSiteName());
+		showPopupMessage("ti=" + testInstance.toString() + " ts=" + getCurrentTestSession() + " sn=" + testContext.getSiteName());
 		return new LaunchInspectorClickHandler(testInstance, getCurrentTestSession(), new SiteSpec(testContext.getSiteName(), getTestSession()));
 	}
 
@@ -1005,7 +922,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 				}
 			}.run(new RunTestRequest(getCommandContext(),getSiteToIssueTestAgainst(),sectionInstance,parms,true));
 		} catch (Exception e) {
-			new PopupMessage(e.getMessage());
+			showPopupMessage(e.getMessage());
 		}
 	}
 
@@ -1025,7 +942,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 					stsActorName = tkPropMap.get("Sts_ActorName");
 					stsTpName = tkPropMap.get("Sts_TpName");
 				} else {
-					new PopupMessage("Error reading tkPropMap cache.");
+					showPopupMessage("Error reading tkPropMap cache.");
 				}
 				// STS SAML assertion
 				// This has to be here because we need to retrieve the assertion just in time before the test executes. Any other way will be confusing to debug and more importantly the assertion will not be fresh.
@@ -1050,7 +967,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 						}
 					}.run(new GetStsSamlAssertionRequest(getCommandContext(),xuaUsername,stsTestInstance,stsSpec,params));
 				} catch (Exception ex) {
-					new PopupMessage("runTestInstance: Client call failed: getStsSamlAssertion: " + ex.toString());
+					showPopupMessage("runTestInstance: Client call failed: getStsSamlAssertion: " + ex.toString());
 				}
 			} else {
 				// Reuse SAML when running the entire Actor test collection OR as set by the Xua option
@@ -1091,7 +1008,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 				}
 			}.run(new RunTestRequest(getCommandContext(),getSiteToIssueTestAgainst(),testInstance, parms,true));
 		} catch (Exception e) {
-			new PopupMessage(e.getMessage());
+			showPopupMessage(e.getMessage());
 		}
 
 	}
@@ -1119,7 +1036,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		ActorOptionConfig currentActorOption = this.currentActorOption;
 
 		if (orchestrationResponse == null) {
-			new PopupMessage("Initialize Test Environment before running tests.");
+			showPopupMessage("Initialize Test Environment before running tests.");
 			return null;
 		}
 
@@ -1143,7 +1060,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		}
 
 		if (getSiteToIssueTestAgainst() == null && !getOptionTabConfig(currentActorOption).isExternalStart()) {
-			new PopupMessage("Test Setup must be initialized  [site=" + getSiteToIssueTestAgainst() +
+			showPopupMessage("Test Setup must be initialized  [site=" + getSiteToIssueTestAgainst() +
 			" actorOptionConfig=[" + currentActorOption + "]]");
 			return parms;
 		}
@@ -1202,14 +1119,6 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 		this.siteToIssueTestAgainst = siteToIssueTestAgainst;
 	}
 
-	public void setInitTestSession(String initTestSession) {
-		this.initTestSession = initTestSession;
-	}
-
-	public String getInitTestSession() {
-		return initTestSession;
-	}
-
 	public TestContext getTestContext() {
 		return testContext;
 	}
@@ -1229,7 +1138,7 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 				@Override
 				public void onComplete(Site site) {
 					if (!site.hasActor(actorType))
-						new PopupMessage("System under test does not implement a " + actorType.getName());
+						showPopupMessage("System under test does not implement a " + actorType.getName());
 				}
 			};
 		}
@@ -1245,5 +1154,4 @@ public class ConformanceTestTab extends ToolWindowWithMenu implements TestRunner
 	public TestSession getTestSession() {
 		return new TestSession(getCurrentTestSession());
 	}
-
 }

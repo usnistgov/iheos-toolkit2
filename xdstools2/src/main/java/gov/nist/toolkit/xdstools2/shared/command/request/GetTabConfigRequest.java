@@ -10,7 +10,8 @@ public class GetTabConfigRequest extends CommandContext{
 
     public GetTabConfigRequest(){}
 
-    public GetTabConfigRequest(String toolId){
+    public GetTabConfigRequest(CommandContext commandContext, String toolId){
+        copyFrom(commandContext);
         this.toolId = toolId;
     }
 

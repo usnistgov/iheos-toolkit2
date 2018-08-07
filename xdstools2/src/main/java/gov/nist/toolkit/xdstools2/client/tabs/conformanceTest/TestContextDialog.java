@@ -197,7 +197,12 @@ class TestContextDialog extends DialogBox {
             siteManager.setSiteName(selectedSite);
             toolWindow.setCurrentTestSession(getSelectedTestSession());
             siteManager.update();
-            new SetAssignedSiteForTestSessionCommand().run(new SetAssignedSiteForTestSessionRequest(ClientUtils.INSTANCE.getCommandContext(),getSelectedTestSession(),selectedSite));
+            new SetAssignedSiteForTestSessionCommand(){
+                @Override
+                public void onComplete(Void result) {
+                    removeFromParent();
+                }
+            }.run(new SetAssignedSiteForTestSessionRequest(ClientUtils.INSTANCE.getCommandContext(),getSelectedTestSession(),selectedSite));
         }
     }
 
@@ -223,7 +228,7 @@ class TestContextDialog extends DialogBox {
 
             loadSites();
 
-            ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, newTestSession));
+            ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, newTestSession, "TestContextDialog"));
         }
     }
 

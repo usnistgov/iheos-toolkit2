@@ -59,7 +59,7 @@ public class TestOverviewBuilder {
     }
 
     // Strip off markdown format header markings (#, ##, ###)
-    private String stripHeaderMarkup(String in) {
+    public static String stripHeaderMarkup(String in) {
         in = in.trim();
         if (in.charAt(0) != '#') return in;
         while (in.length() > 0 && in.charAt(0) == '#')

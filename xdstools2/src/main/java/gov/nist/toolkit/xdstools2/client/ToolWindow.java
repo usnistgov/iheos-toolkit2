@@ -2,6 +2,8 @@ package gov.nist.toolkit.xdstools2.client;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.tk.client.TkProps;
@@ -9,6 +11,7 @@ import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.injector.Injector;
 import gov.nist.toolkit.xdstools2.client.selectors.EnvironmentManager;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
 import java.util.logging.Logger;
@@ -65,7 +68,8 @@ public abstract class ToolWindow {
 		tabTopRawPanel.add(innerPanel);
 		innerPanel.setWidget(tabTopPanel);
 	}
-
+	public ToolWindow(boolean isWidget) {
+	}
 	public ToolWindow(double east, double west) {
 		tabContainer = Injector.INSTANCE.getTabContainer();
 		String title = getTitle();
@@ -78,8 +82,6 @@ public abstract class ToolWindow {
 		innerPanel.setWidget(tabTopPanel);
 	}
 
-	public ToolWindow(boolean isWidget) {
-	}
 
 	protected void addEast(Widget w) { eastPanel.add(w); }
 
@@ -245,6 +247,33 @@ public abstract class ToolWindow {
 		HTML msgBox = new HTML();
 		msgBox.setHTML("<b>" + message + "</b>");
 		tabTopPanel.add(msgBox);
+	}
+
+	private SafeHtml getToolTabTitle(SafeHtml suffixHtml) {
+		int tabIndex = TabContainer.getTabIndex(getRawPanel());
+		String title = TabContainer.getTabTitle(tabIndex);
+		SafeHtmlBuilder caption = new SafeHtmlBuilder();
+		if (TabContainer.hasMultipleTabsOfSameTitle(title) || tabIndex!=TabContainer.getSelectedTab()) {
+			caption.appendHtmlConstant("Message from Inactive Tab [" + (tabIndex+1) + "] ");
+		}
+		caption.appendHtmlConstant(title);
+		if (suffixHtml!=null) {
+			caption.appendHtmlConstant(" - ");
+			caption.append(suffixHtml);
+		}
+		return caption.toSafeHtml();
+	}
+	protected void showPopupMessage(String text) {
+		SafeHtml title = getToolTabTitle(null);
+		new PopupMessage(title, new HTML(text));
+	}
+	protected void showPopupMessage(SafeHtml caption, Widget content) {
+		SafeHtml title = getToolTabTitle(caption);
+		new PopupMessage(title, content);
+	}
+	protected void showPopupMessage(SafeHtml caption, Widget body, Button actionButton) {
+		SafeHtml title = getToolTabTitle(caption);
+		new PopupMessage(title, body, actionButton);
 	}
 
 	public FlowPanel getTabTopPanel() {

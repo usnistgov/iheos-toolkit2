@@ -14,7 +14,7 @@ import spock.lang.Timeout
  * Created by skb1 on 6/5/2017.
  */
 @Stepwise
-@Timeout(360)
+@Timeout(400) // Keep this to accommodate slow computers
 class RegistryActorSimulatorSpec extends ConformanceActor {
 
     static final String simName = "reg" /* Sim names should be lowered cased */
@@ -24,6 +24,7 @@ class RegistryActorSimulatorSpec extends ConformanceActor {
 
     @Override
     void setupSim() {
+        setActorPage(String.format("%s/#ConfActor:env=default;testSession=%s;actor=reg;",toolkitBaseUrl,simUser))
         deleteOldRegSim()
         sleep(5000) // Why we need this -- Problem here is that the Delete request via REST could be still running before we execute the next Create REST command. The PIF Port release timing will be off causing a connection refused error.
         regRepSim = createNewRegSim()
@@ -44,13 +45,6 @@ class RegistryActorSimulatorSpec extends ConformanceActor {
 
 
     // Registry actor specific
-    def 'Get registry conformance actor page.'() {
-        when:
-        loadPage(String.format("%s/#ConfActor:default/%s/reg",toolkitBaseUrl,simUser))
-
-        then:
-        page != null
-    }
 
     // Was there a previous SUT selected but doesn't exist now?
     def 'No unexpected popup or error message presented in a dialog box.'() {
@@ -148,7 +142,7 @@ class RegistryActorSimulatorSpec extends ConformanceActor {
         elementList = page.getByXPath("//div[contains(@class, 'orchestrationTestMc') and contains(@class, 'testOverviewHeaderSuccess')]")
 
         then:
-        elementList!=null && elementList.size()==7
+        elementList!=null && elementList.size()==8 // Orchestration tests
     }
 
     def 'Find and Click the RunAll Test Registry Conformance Actor image button.'() {

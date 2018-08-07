@@ -22,10 +22,11 @@ abstract class ToolkitWebPage extends Specification  {
     @Shared String toolkitHostName = "http://localhost"
     @Shared String toolkitBaseUrl
     @Shared SimulatorBuilder spi
+
     static final String simUser = "webuitest"
 
 
-    static final int maxWaitTimeInMills = 60000*5 // 5 minutes
+    static final int maxWaitTimeInMills = 60000* 5 // Keep this to accommodate slow computers. 5 minute (s).
 
     void composeToolkitBaseUrl() {
         this.toolkitBaseUrl = String.format("%s:%s", toolkitHostName, toolkitPort)
@@ -123,4 +124,5 @@ abstract class ToolkitWebPage extends Specification  {
             selectOptionByValue(sessionSelector, sessionName)
         }
     }
+
 }

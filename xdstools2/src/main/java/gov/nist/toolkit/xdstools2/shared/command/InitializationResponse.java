@@ -4,6 +4,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -15,6 +16,7 @@ public class InitializationResponse implements Serializable, IsSerializable {
     private String servletContextName;
     private String toolkitBaseUrl;
     private String wikiBaseUrl;
+    private Map<String, String> tkPropMap;
 
     public String getWikiBaseUrl() {
         return wikiBaseUrl;
@@ -66,5 +68,13 @@ public class InitializationResponse implements Serializable, IsSerializable {
 
     public void setToolkitBaseUrl(String toolkitBaseUrl) {
         this.toolkitBaseUrl = toolkitBaseUrl;
+    }
+
+    public Map<String, String> getTkPropMap() {
+        return tkPropMap;
+    }
+
+    public void setTkPropMap(Map<String, String> tkPropMap) {
+        this.tkPropMap = tkPropMap;
     }
 }

@@ -28,13 +28,10 @@ public class ActorOptionConfig extends ActorOption {
     }
 
     public ActorOptionConfig() {
-
     }
 
     public ActorOptionConfig(String actorTypeId) {
         this.actorTypeId = actorTypeId;
-        profileId = IheItiProfile.XDS;
-        optionId = "";
     }
 
     public ActorOptionConfig(String actorTypeId, String optionId) {

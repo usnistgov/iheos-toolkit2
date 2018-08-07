@@ -179,6 +179,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         response.setToolkitBaseUrl(Installation.instance().getToolkitBaseUrl());
         logger.info("Toolkit Base URL is " + response.getToolkitBaseUrl());
         response.setWikiBaseUrl(Installation.instance().wikiBaseAddress());
+        response.setTkPropMap(props.getToolkitProperties());
         return response;
     }
 
@@ -762,12 +763,21 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         installCommandContext(request);
         return session().xdsTestServiceManager().getCollectionMembers(request.getCollectionSetName(), request.getTcId());
     }
+
     @Override
     public List<TestOverviewDTO> getTestsOverview(GetTestsOverviewRequest request) throws Exception {
         installCommandContext(request);
         List<TestOverviewDTO> o = session().xdsTestServiceManager().getTestsOverview(request.getTestSession(), request.getTestInstances());
         return o;
     }
+
+    @Override
+    public List<TestOverviewDTO> getTestsResultEnvelope(GetTestsOverviewRequest request) throws Exception {
+        installCommandContext(request);
+        List<TestOverviewDTO> o = session().xdsTestServiceManager().getTestsResultEnvelope(request.getTestSession(), request.getTestInstances());
+        return o;
+    }
+
     public List<SectionDefinitionDAO> getTestSectionsDAOs(GetTestSectionsDAOsRequest request) throws Exception {
         installCommandContext(request);
         Session session = session().xdsTestServiceManager().session;
@@ -820,7 +830,8 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 
         for (final TestCollectionDefinitionDAO tcd : userTestCollection.getTestCollectionDefinitionDAOs()) {
             for (TabConfig tabConfig : tabConfigRoot.getChildTabConfigs()) {
-                if (tabConfig.getTcCode().equals(new ActorOption(tcd.getCollectionID()).actorTypeId)) {
+                ActorOption actorOption = new ActorOption(tcd.getCollectionID());
+                if (tabConfig.getTcCode().equals(actorOption.actorTypeId)) {
                     tabConfig.setLabel(tcd.getCollectionTitle());
                     // Prune empty options
                     TabConfig profiles = tabConfig.getFirstChildTabConfig();

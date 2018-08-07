@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.selectors;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
@@ -69,7 +70,7 @@ public class SignInSelector implements IsWidget {
 
     private void switchTestSession(String testSession) {
         ClientUtils.INSTANCE.getTestSessionManager().setCurrentTestSession(testSession);
-        ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, testSession));
+        ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, testSession, "SignInSelector"));
     }
 
     @Override

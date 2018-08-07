@@ -184,8 +184,11 @@ public class TestKit {
 		List<TestCollectionDefinitionDAO> defs = new ArrayList<>();
 
 		File collectionDir = new File(testKit, collectionSetName);
-		if (!collectionDir.exists() || !collectionDir.isDirectory())
-			throw new Exception("Test collection set name " + collectionSetName + " does not exist");
+		if (!collectionDir.exists() || !collectionDir.isDirectory()) {
+			String msg = "Test collection set name " + collectionSetName + " does not exist";
+			logger.warn(msg + " in " + collectionDir);
+			throw new Exception(msg); // protect directory from user
+		}
 		for (File collectionFile : collectionDir.listFiles()) {
 			if (collectionFile.isDirectory()) continue;
 			if (!collectionFile.getName().endsWith(".txt")) continue;

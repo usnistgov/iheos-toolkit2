@@ -67,12 +67,19 @@ public class Util {
 	}
 
 	public static OMElement parse_xml(String input) throws FactoryConfigurationError, XdsInternalException {
+	    return parse_xml(input, null);
+	}
 
+	public static OMElement parse_xml(String input, Boolean supportDtd) throws FactoryConfigurationError, XdsInternalException {
 		//		create the parser
 		XMLStreamReader parser=null;
 
 		try {
-			parser = XMLInputFactory.newInstance().createXMLStreamReader(new ByteArrayInputStream(input.getBytes()));
+		    XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
+		    if (supportDtd!=null && xmlInputFactory.isPropertySupported(XMLInputFactory.SUPPORT_DTD)) {
+		    	xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, supportDtd);
+			}
+			parser = xmlInputFactory.createXMLStreamReader(new ByteArrayInputStream(input.getBytes()));
 		} catch (Exception e) {
 			throw new XdsInternalException("Could not create XMLStreamReader from string: " + input.substring(0, 100) + "...");
 		}
@@ -96,7 +103,7 @@ public class Util {
 //					input.substring(0, (input.length() < 100) ? input.length() : 100) +
 					input.replaceAll("<", "&lt;")
 //			"..."
-					);
+			);
 		}
 		return documentElement;
 	}

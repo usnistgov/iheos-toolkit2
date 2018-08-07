@@ -1,0 +1,25 @@
+1.
+[INFO] --- maven-install-plugin:2.5.2:install (default-install) @ webui-tests ---
+[INFO] Installing C:\tk\webui-tests\target\webui-tests-6.5.0-SNAPSHOT.jar to C:\Users\skb1\.m2\repository\gov\nist\toolkit\webui-tests\6.5.0-SNAPSHOT\webui-tests-6.5.0-SNAPSHOT.jar
+[INFO] Installing C:\tk\webui-tests\pom.xml to C:\Users\skb1\.m2\repository\gov\nist\toolkit\webui-tests\6.5.0-SNAPSHOT\webui-tests-6.5.0-SNAPSHOT.pom
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 20:58 min
+[INFO] Finished at: 2018-07-12T20:24:04-04:00
+[INFO] Final Memory: 81M/1473M
+[INFO] ------------------------------------------------------------------------
+
+Process finished with exit code 0
+
+---------
+2.
+start webuitests 1:33 PM 7/16/2018
+end 2:02 PM 7/16/2018
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 24:24 min
+[INFO] Finished at: 2018-07-16T13:57:18-04:00
+[INFO] Final Memory: 72M/352M
+[INFO] ------------------------------------------------------------------------

@@ -72,6 +72,7 @@ public interface ToolkitServiceAsync {
     void getDashboardRepositoryData(CommandContext context, AsyncCallback<List<RepositoryStatus>> callback);
 
     void getTestsOverview(GetTestsOverviewRequest request, AsyncCallback<List<TestOverviewDTO>> callback);
+    void getTestsResultEnvelope(GetTestsOverviewRequest request, AsyncCallback<List<TestOverviewDTO>> callback);
     void getTestSectionsDAOs(GetTestSectionsDAOsRequest request, AsyncCallback<List<SectionDefinitionDAO>> callback);
     void getUpdateNames(AsyncCallback<List<String>> callback);
 

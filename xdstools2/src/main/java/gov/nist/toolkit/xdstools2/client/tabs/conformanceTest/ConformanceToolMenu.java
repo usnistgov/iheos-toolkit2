@@ -3,33 +3,132 @@ package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
+import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.actortransaction.shared.IheItiProfile;
+import gov.nist.toolkit.installation.shared.TestCollectionCode;
+import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
+import gov.nist.toolkit.xdstools2.client.command.command.GetTestsResultEnvelopeCommand;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestsOverviewRequest;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public abstract class ToolWindowWithMenu extends ToolWindow {
-
-    // Tab config
-    protected TabConfig tabConfig;
-    protected int menuCols = 3;
-
-    public ToolWindowWithMenu() {
-    }
-
-    public ToolWindowWithMenu(double east, double west) {
-        super(east, west);
-    }
+public abstract class ConformanceToolMenu {
+    private TabConfig tabConfig;
+    static final int menuCols = 3;
 
     public abstract void onMenuSelect(TabConfig actor, Map<String,TabConfig> target);
-    public abstract void setTestStatistics(HTML statsBar, ActorOptionConfig actorOption);
+    abstract CommandContext getCommandContext();
+    abstract void updateTestStatistics(Map<ActorOptionConfig, List<TestInstance>> testsPerActorOption, Map<TestInstance, TestOverviewDTO> testOverviewDTOs, TestStatistics testStatistics, ActorOptionConfig actorOption);
+
+    private void setTestStatistics(final HTML statsBar,  final ActorOptionConfig actorOptionConfig) {
+        if (getCommandContext().getTestSessionName()==null || "".equals(getCommandContext().getTestSessionName()))
+            return;
+
+
+        final TestStatistics testStatistics = new TestStatistics();
+        final Map<TestInstance, TestOverviewDTO> myTestOverviewDTOs = new HashMap<>();
+        final Map<ActorOptionConfig, List<TestInstance>> myTestsPerActorOption = new HashMap<>();
+
+        String loadImgHtmlStr = "<img style=\"width:10px;height:14px;border:1px solid white;float:left;margin-right:2px;\" src=\"icons2/ajax-loader.gif\"/>";
+
+        statsBar.setHTML(loadImgHtmlStr);
+
+        actorOptionConfig.loadTests(new AsyncCallback<List<TestInstance>>() {
+            @Override
+            public void onFailure(Throwable throwable) {
+                statsBar.setVisible(false);
+                new PopupMessage("getTestStatistics: " + throwable.getMessage());
+            }
+
+            @Override
+            public void onSuccess(List<TestInstance> testInstances) {
+                myTestsPerActorOption.put(actorOptionConfig, testInstances);
+                getTestLogEnvelope(myTestOverviewDTOs, myTestsPerActorOption, testStatistics, actorOptionConfig, statsBar, testInstances);
+            }
+        });
+    }
+
+    private void getTestLogEnvelope(final Map<TestInstance, TestOverviewDTO> myTestOverviewDTOs, final Map<ActorOptionConfig, List<TestInstance>> myTestsPerActorOption, final TestStatistics testStatistics, final ActorOptionConfig actorOptionConfig, final HTML statsBar, final List<TestInstance> testInstances) {
+
+        new GetTestsResultEnvelopeCommand() {
+            @Override
+            public void onComplete(List<TestOverviewDTO> testOverviews) {
+                for (TestOverviewDTO testOverview : testOverviews) {
+                    myTestOverviewDTOs.put(testOverview.getTestInstance(), testOverview);
+                }
+
+                updateTestStatistics(myTestsPerActorOption, myTestOverviewDTOs, testStatistics, actorOptionConfig);
+                String htmlStr = "<div style=\"width:10px;height:13px;border:1px solid;float:left;margin-right:2px;";
+                if (testStatistics.getTestCount()>0 && testStatistics.getNotRun() != testStatistics.getTestCount()) { // Don't show anything if not run is 100%
+                    htmlStr += "border-color:black;\">\n";
+                    if (testStatistics.getSuccesses()==testStatistics.getTestCount()) {
+                        htmlStr += "<div style=\"background-color:cyan;height:100%\"></div>\n";
+                    } else if (testStatistics.getFailures()==testStatistics.getTestCount()) {
+                        htmlStr += "<div style=\"background-color:coral;height:100%\"></div>\n";
+                    } else {
+                        float ts[] = new float[3];
+                        ts[0] = (float)testStatistics.getNotRun() / (float)testStatistics.getTestCount();
+                        ts[1] = (float)testStatistics.getSuccesses() / (float)testStatistics.getTestCount();
+                        ts[2] = (float)testStatistics.getFailures() / (float)testStatistics.getTestCount();
+
+                        // Boost small values below $boostVal to make more visible
+                        float adjustedVal = 0.0F;
+                        float boostVal = .25F;
+                        for (int idx=0; idx < ts.length; idx++) {
+                            if (ts[idx]>0 && ts[idx]<boostVal) {
+                                adjustedVal  += (boostVal-ts[idx]);
+                                ts[idx] = boostVal;
+                            }
+                        }
+                        // Compensate for boosting from the majority index
+                        if (adjustedVal >0.0F) {
+                            int majorityIdx = -1;
+                            for (int idx = 0; idx < ts.length; idx++) {
+                                if (ts[idx] >= .33F) {
+                                    if (majorityIdx==-1)  {
+                                        majorityIdx = idx;
+                                    } else {
+                                        if (ts[idx]>ts[majorityIdx]) {
+                                            majorityIdx=idx;
+                                        }
+                                    }
+                                }
+                            }
+                            if (majorityIdx>-1)
+                                ts[majorityIdx] -= adjustedVal ;
+                        }
+
+                        htmlStr +=
+                                ((testStatistics.getNotRun() > 0) ?
+                                        "<div style=\"background-color:white;height:" + ts[0]*100F + "%;\"></div>\n" : "") +
+                                        (testStatistics.getSuccesses()>0?
+                                                "<div style=\"background-color:cyan;height:" + ts[1]*100F  + "%;\"></div>\n"	:"") +
+                                        (testStatistics.getFailures()>0?
+                                                "<div style=\"background-color:coral;height:" + ts[2]*100F + "%;\"></div>\n" :"");
+                    }
+                    htmlStr += "</div>\n";
+                    statsBar.setHTML(htmlStr);
+                } else {
+                    htmlStr += "border-color:white;\">\n";
+                    htmlStr += "<div style=\"background-color:white;height:100%\"></div>\n";
+                    statsBar.setHTML(htmlStr);
+                }
+            }
+        }.run(new GetTestsOverviewRequest(getCommandContext(), testInstances));
+    }
 
     public boolean displayMenu(Panel destinationPanel) {
         destinationPanel.clear();
@@ -238,5 +337,12 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
         }
     }
 
+    public TabConfig getTabConfig() {
+        return tabConfig;
+    }
+
+    public void setTabConfig(TabConfig tabConfig) {
+        this.tabConfig = tabConfig;
+    }
 
 }

@@ -22,6 +22,7 @@ import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewer;
         SubmitResource.Tokenizer.class,
         FhirSearch.Tokenizer.class,
         ResultInspector.Tokenizer.class
+
 })
 public interface Xdstools2PlaceHistoryMapper extends PlaceHistoryMapper{
 }

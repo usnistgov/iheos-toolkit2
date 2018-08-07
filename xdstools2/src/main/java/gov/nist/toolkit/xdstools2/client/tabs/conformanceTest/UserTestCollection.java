@@ -1,11 +1,15 @@
 package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.installation.shared.TestCollectionCode;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class holds user test collections as configured in Toolkit.properties and Testkit in External Cache.
@@ -33,4 +37,5 @@ public class UserTestCollection implements Serializable, IsSerializable {
     public void setTabConfig(TabConfig tabConfig) {
         this.tabConfig = tabConfig;
     }
+
 }
