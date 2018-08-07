@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.widgets;
 
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import gov.nist.toolkit.services.client.AbstractOrchestrationResponse;
@@ -16,7 +17,6 @@ import java.util.List;
  */
 public class OrchestrationSupportTestsDisplay extends FlowPanel {
 
-    //    public OrchestrationSupportTestsDisplay(final AbstractOrchestrationResponse orchResponse, final String testSession, final SiteSpec siteSpec) {
     public OrchestrationSupportTestsDisplay(final AbstractOrchestrationResponse orchResponse, final TestContext testContext, final TestContextView testContextView, final TestRunner testRunner, final Controller controller) {
         new GetTestsOverviewCommand(){
             @Override
@@ -28,8 +28,14 @@ public class OrchestrationSupportTestsDisplay extends FlowPanel {
                 boolean hasTests = false;
                 for (TestOverviewDTO testOverview : testOverviews) {
                     if (testOverview.getName() != null && !testOverview.getName().equals("")) {
-                        TestDisplay testDisplay = orchGroup.display(testOverview, null);
+                        final TestDisplay testDisplay = orchGroup.display(testOverview, null);
                         testDisplay.addExtraStyle("orchestrationTestMc");
+                        // Lazy loading of TestOverviewDTO until it is opened.
+                        HandlerRegistration openTestBarHReg = testDisplay.getView().addOpenHandler(new TestBarOpenHandler(testDisplay, testOverview, ClientUtils.INSTANCE.getCommandContext(), null
+                                ,
+                                null
+                        ));
+                        testDisplay.getView().setOpenTestBarHReg(openTestBarHReg);
                         add(testDisplay.asWidget());
                         hasTests = true;
                     }

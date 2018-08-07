@@ -6,9 +6,9 @@ import gov.nist.toolkit.xdstools2.shared.command.request.GetTestsOverviewRequest
 
 import java.util.List;
 
-public abstract class GetTestsResultEnvelopeCommand extends GenericCommand<GetTestsOverviewRequest,List<TestOverviewDTO>> {
+public abstract class GetActorTestProgressCommand extends GenericCommand<GetTestsOverviewRequest,List<TestOverviewDTO>> {
     @Override
     public void run(GetTestsOverviewRequest request) {
-        ClientUtils.INSTANCE.getToolkitServices().getTestsResultEnvelope(request,this);
+        ClientUtils.INSTANCE.getToolkitServices().getActorTestProgress(request,this);
     }
 }

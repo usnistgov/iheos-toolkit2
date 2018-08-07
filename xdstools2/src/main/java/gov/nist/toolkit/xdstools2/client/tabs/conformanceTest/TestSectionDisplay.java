@@ -59,7 +59,7 @@ class TestSectionDisplay implements IsWidget {
             if (sectionOverview.isPass()) view.labelSuccess();
             else view.labelFailure();
         } else view.labelNotRun();
-        if (sectionOverview.isTls()) view.labelTls();
+        view.labelTls(sectionOverview.isTls());
 
         view.setSectionTitle("Section: " + sectionOverview.getName(), "A section can be run independently although frequently a test section depends on the output of a previous section in the test.");
         view.setTime(sectionOverview.getDisplayableTime());

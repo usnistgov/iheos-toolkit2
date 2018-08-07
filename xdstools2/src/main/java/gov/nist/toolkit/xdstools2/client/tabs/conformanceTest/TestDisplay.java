@@ -56,9 +56,7 @@ public class TestDisplay  implements IsWidget {
 
        view.setTestKitSourceIcon(testOverview.getTestKitSource(), testOverview.getTestKitSection());
 
-       if (testOverview.isTls())
-           view.labelTls();
-
+        view.labelTls(testOverview.isTls());
         view.setTestTitle("Test: " + testOverview.getName() + " - " +testOverview.getTitle());
         view.setTime(testOverview.getLatestSectionTime());
 
@@ -73,24 +71,28 @@ public class TestDisplay  implements IsWidget {
         view.setDescription(testOverview.getDescription());
 
         // Test level diagram -- normally comes from the TestDisplayView InteractionDiagram member
-        boolean firstTransactionRepeatingTooManyTimes = InteractionDiagram.isFirstTransactionRepeatingTooManyTimes(testOverview);
-        if (getDiagramDisplay()!=null && !firstTransactionRepeatingTooManyTimes) {
-            view.setInteractionDiagram(getDiagramDisplay().render());
+        boolean firstTransactionRepeatingTooManyTimes = false;
+        if (getDiagramDisplay()!=null) {
+            firstTransactionRepeatingTooManyTimes = InteractionDiagram.isFirstTransactionRepeatingTooManyTimes(testOverview);
+            if (getDiagramDisplay() != null && !firstTransactionRepeatingTooManyTimes) {
+                // Display all sections in the diagram at once
+                view.setInteractionDiagram(getDiagramDisplay().render());
+            }
         }
 
         // build sections within test
         view.clearSections();
         for (String sectionName : testOverview.getSectionNames()) {
             SectionOverviewDTO sectionOverview = testOverview.getSectionOverview(sectionName);
-            // Section level diagram
             if (getDiagramDisplay()!=null && firstTransactionRepeatingTooManyTimes) {
-               InteractionDiagramDisplay diagramDisplay = getDiagramDisplay().copy();
-               diagramDisplay.getTestOverviewDTO().getSectionNames().add(sectionName);
-               diagramDisplay.getTestOverviewDTO().getSections().put(sectionName,sectionOverview);
-
-                TestSectionDisplay sectionComponent = new TestSectionDisplay(testContext.getTestSession(), testOverview.getTestInstance(), sectionOverview, testRunner, allowRun, diagramDisplay);
+               InteractionDiagramDisplay sectionDiagramDisplay = getDiagramDisplay().copy();
+               sectionDiagramDisplay.getTestOverviewDTO().getSectionNames().add(sectionName);
+               sectionDiagramDisplay.getTestOverviewDTO().getSections().put(sectionName,sectionOverview);
+                // Display individual section level diagram instead of one big diagram
+                TestSectionDisplay sectionComponent = new TestSectionDisplay(testContext.getTestSession(), testOverview.getTestInstance(), sectionOverview, testRunner, allowRun, sectionDiagramDisplay);
                 view.addSection(sectionComponent);
             } else {
+                // Cumulative diagram already displayed at the Test level assuming if firstTransactionRepeatingTooManyTimes is false
                 TestSectionDisplay sectionComponent = new TestSectionDisplay(testContext.getTestSession(), testOverview.getTestInstance(), sectionOverview, testRunner, allowRun, null);
                 view.addSection(sectionComponent);
             }

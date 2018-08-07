@@ -23,7 +23,6 @@ import gov.nist.toolkit.session.server.CodesConfigurationBuilder;
 import gov.nist.toolkit.session.server.FhirMessageBuilder;
 import gov.nist.toolkit.session.server.MessageBuilder;
 import gov.nist.toolkit.session.server.Session;
-import gov.nist.toolkit.session.server.markdown.Markdown;
 import gov.nist.toolkit.session.server.services.TestLogCache;
 import gov.nist.toolkit.session.server.testlog.TestOverviewBuilder;
 import gov.nist.toolkit.session.shared.Message;
@@ -39,7 +38,6 @@ import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
 import gov.nist.toolkit.testenginelogging.client.LogMapDTO;
 import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
-import gov.nist.toolkit.testkitutilities.ReadMe;
 import gov.nist.toolkit.testkitutilities.TestDefinition;
 import gov.nist.toolkit.testkitutilities.TestKit;
 import gov.nist.toolkit.testkitutilities.TestKitSearchPath;
@@ -51,12 +49,10 @@ import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.*;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
-import gov.nist.toolkit.xdsexception.client.TkNotFoundException;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import jdk.internal.org.xml.sax.SAXException;
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.apache.log4j.Logger;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 
@@ -64,12 +60,9 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
-
-import static gov.nist.toolkit.session.server.testlog.TestOverviewBuilder.stripHeaderMarkup;
 
 
 public class XdsTestServiceManager extends CommonService {
@@ -90,7 +83,7 @@ public class XdsTestServiceManager extends CommonService {
 
 
 
-	TestLogCache getTestLogCache() throws IOException {
+	public static TestLogCache getTestLogCache() throws IOException {
 		return new TestLogCache(Installation.instance().propertyServiceManager().getTestLogCache());
 	}
 
@@ -829,119 +822,7 @@ public class XdsTestServiceManager extends CommonService {
 
 		return lm;
 	}
-	/* begin lightweight log reader methods */
-	public List<TestOverviewDTO> getTestsResultEnvelope(TestSession testSession, List<TestInstance> testInstances) throws Exception {
-		List<TestOverviewDTO> results = new ArrayList<>();
-		try {
-			for (TestInstance testInstance : testInstances) {
-				try {
-					results.add(getTestResultEnvelope(testSession, testInstance));
-				} catch (Exception e) {
-					logger.error("Test " + testInstance + " does not exist");
-				}
-			}
-		} catch (Exception e) {
-			throw e;
-		}
-		return results;
-	}
 
-
-	/**
-	 * Return test status
-	 * @param testSession
-	 * @param testInstance
-	 * @return
-	 * @throws Exception
-	 */
-	public TestOverviewDTO getTestResultEnvelope(TestSession testSession, TestInstance testInstance) throws Exception {
-		testInstance.setTestSession(testSession);
-		File testDir = getTestLogCache().getTestDir(testSession, testInstance);
-		List<String> testPlanSections = getTestSections(testInstance.getId());
-		TestOverviewDTO testOverviewDTO = new TestOverviewDTO(testInstance);
-		File logFile;
-
-		setDTOAttributes(testOverviewDTO);
-
-		if (testPlanSections == null || testPlanSections.isEmpty()) {
-			logFile = new File(testDir, "log.xml");
-			setDTOStatus(testOverviewDTO, logFile);
-		} else {
-			boolean atLeastOneFailed = false;
-			boolean atLeastOneNotRun = false;
-			int passCt = 0;
-			for (String sectionName : testPlanSections) {
-				logFile = new File(new File(testDir, sectionName), "log.xml");
-				// TODO: load sections
-				// TODO: load steps
-				try {
-					boolean passed = getLogStatus(logFile);
-					if (passed) {
-					    passCt++;
-					} else {
-						atLeastOneFailed = true;
-					}
-				} catch (TkNotFoundException tknfe) {
-					atLeastOneNotRun = true;
-				}
-			}
-			if (atLeastOneFailed) {
-				testOverviewDTO.setRun(true);
-				testOverviewDTO.setPass(false);
-			} else if (atLeastOneNotRun) {
-				testOverviewDTO.setRun(false);
-			} else if (passCt == testPlanSections.size()) {
-				testOverviewDTO.setRun(true);
-				testOverviewDTO.setPass(true);
-			}
-		}
-		return testOverviewDTO;
-	}
-
-	private void setDTOAttributes(TestOverviewDTO testOverview){
-		String testId = testOverview.getTestInstance().getId();
-		TestDefinition testDefinition = session.getTestkitSearchPath().getTestDefinition(testId);
-		testOverview.setTestKitSource(testDefinition.detectSource().toString());
-		testOverview.setTestKitSection(testDefinition.getTestKitSection());
-		testOverview.setName(testId);
-		ReadMe readme = testDefinition.getTestReadme();
-		if (readme != null) {
-			testOverview.setTitle(stripHeaderMarkup(readme.line1));
-			testOverview.setDescription(Markdown.toHtml(readme.rest));
-		}
-		testOverview.setDependencies(null); // Not needed at the moment
-	}
-
-	private void setDTOStatus(TestOverviewDTO testOverviewDTO, File logFile) throws Exception {
-		try {
-			boolean passed = getLogStatus(logFile);
-			testOverviewDTO.setRun(true);
-			testOverviewDTO.setPass(passed);
-		} catch (TkNotFoundException tknfe) {
-			testOverviewDTO.setRun(false);
-		}
-	}
-
-	private boolean getLogStatus(File logFile) throws Exception {
-		if (!logFile.exists()) {
-			throw new TkNotFoundException("Requested log does not exist.","getSectionStatus");
-		} else {
-			FileInputStream fis = new FileInputStream(logFile);
-			try {
-				if (fis != null) {
-					OMElement logEl = Util.parse_xml(fis);
-					AXIOMXPath xpathEx = new AXIOMXPath("//TestResults");
-					OMElement rootNode = (OMElement) xpathEx.selectSingleNode(logEl);
-					String statusValue = rootNode.getAttributeValue(MetadataSupport.status_qname);
-					return "Pass".equals(statusValue);
-				}
-			} finally {
-				fis.close();
-			}
-			return false;
-		}
-	}
-	/* end lightweight log reader methods */
 
 	private List<File> testLogDirsInTestSession(TestSession testSession) throws IOException {
 		List<File> testLogDirs = new ArrayList<>();

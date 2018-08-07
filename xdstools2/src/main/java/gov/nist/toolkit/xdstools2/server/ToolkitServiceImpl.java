@@ -44,6 +44,7 @@ import gov.nist.toolkit.session.server.serviceManager.FhirServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.TestSessionServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
+import gov.nist.toolkit.session.server.testlog.QuickScanLog;
 import gov.nist.toolkit.session.shared.Message;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.Simulator;
@@ -772,9 +773,11 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
 
     @Override
-    public List<TestOverviewDTO> getTestsResultEnvelope(GetTestsOverviewRequest request) throws Exception {
+    public List<TestOverviewDTO> getActorTestProgress(GetTestsOverviewRequest request) throws Exception {
         installCommandContext(request);
-        List<TestOverviewDTO> o = session().xdsTestServiceManager().getTestsResultEnvelope(request.getTestSession(), request.getTestInstances());
+        QuickScanLog quickScanLog = new QuickScanLog(session());
+
+        List<TestOverviewDTO> o = quickScanLog.quickScanLogs(request.getTestSession(), request.getTestInstances(), request.getQuickScanAttributes());
         return o;
     }
 
