@@ -64,7 +64,8 @@ public class GetFolderAndContentsSim extends GetFolderAndContents {
 			String folid = fol.getId();
 
 			List<Assoc> folAssocs = mc.assocCollection.getBySourceDestAndType(folid, null, RegIndex.AssocType.HasMember);
-			folAssocs = mc.filterAssocsByStatus(folAssocs, status);
+			if (metadataLevel2)
+				folAssocs = mc.filterAssocsByStatus(folAssocs, status);
 
 			List<DocEntry> docEntries = new ArrayList<>();
 
