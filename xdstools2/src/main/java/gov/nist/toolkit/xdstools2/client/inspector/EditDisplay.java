@@ -37,7 +37,6 @@ public class EditDisplay extends CommonDisplay {
     private Button validateMuBtn = new Button("Validate");
     private Button updateBtn = new Button("Update");
     private DocumentEntry de;
-    private TestInstance logId;
     private QueryOrigin queryOrigin;
     Map<String, List<String>> codeSpecMap = new HashMap<String, List<String>>();
 
@@ -286,7 +285,7 @@ public class EditDisplay extends CommonDisplay {
                                     public void onComplete(Result result) {
                                        doPostUpdate(result);
                                     }
-                                }.run(new UpdateDocumentEntryRequest(ClientUtils.INSTANCE.getCommandContext(), it.data.siteSpec, it.data.combinedMetadata, de, logId, true, queryOrigin));
+                                }.run(new UpdateDocumentEntryRequest(ClientUtils.INSTANCE.getCommandContext(), it.data.siteSpec, it.data.combinedMetadata, de, queryOrigin.getTestInstance(), true, queryOrigin));
                             }
                         });
                         new PopupMessage(safeHtmlBuilder.toSafeHtml() , body, actionBtn);
@@ -300,7 +299,7 @@ public class EditDisplay extends CommonDisplay {
                     doPostUpdate(result);
 
                 }
-            }.run(new UpdateDocumentEntryRequest(ClientUtils.INSTANCE.getCommandContext(), it.data.siteSpec, it.data.combinedMetadata, de, logId, false, queryOrigin));
+            }.run(new UpdateDocumentEntryRequest(ClientUtils.INSTANCE.getCommandContext(), it.data.siteSpec, it.data.combinedMetadata, de, queryOrigin.getTestInstance(), false, queryOrigin));
         }
 
         public void doPostUpdate(Result result) {
@@ -308,7 +307,9 @@ public class EditDisplay extends CommonDisplay {
                 if (result.passed()) {
                     if (result.assertions!=null)
                         displayResult(result);
-                    new PopupMessage("Update was successful.");
+                    SafeHtmlBuilder caption = new SafeHtmlBuilder();
+                    caption.appendHtmlConstant("Update successful");
+                    new PopupMessage(caption.toSafeHtml(), new HTML("<p>Please check for the latest version.</p>"));
                     it.addToHistory(result);
                 } else {
                     if (result.assertions!=null) {
@@ -320,7 +321,7 @@ public class EditDisplay extends CommonDisplay {
                         }
                     }
                     else {
-                        new PopupMessage("Update failed. (No assertions found to report.)");
+                        new PopupMessage("Update failed. (No assertions found.)");
                     }
                     it.addToHistory(result);
                 }
@@ -354,11 +355,10 @@ public class EditDisplay extends CommonDisplay {
     }
 
 
-    public EditDisplay(MetadataInspectorTab it, final DocumentEntry de, final TestInstance logId, QueryOrigin queryOrigin) {
+    public EditDisplay(MetadataInspectorTab it, final DocumentEntry de, final QueryOrigin queryOrigin) {
         this.detailPanel = it.detailPanel;
         this.metadataCollection = it.data.combinedMetadata;
         this.it = it;
-        this.logId = logId;
         this.de = DocumentEntry.clone(de);
         this.queryOrigin = queryOrigin;
         validateMuBtn.addClickHandler(new ValidateClickHandler());
