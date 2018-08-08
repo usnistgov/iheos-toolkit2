@@ -90,7 +90,7 @@ public class MetadataUpdate {
         try {
 
             for (String key : logMapDTO.getKeys()) {
-                if (key.equals(request.getQueryOrigin().getTestName() + "/" +request.getQueryOrigin().getSectionName())) {
+                if (key.equals(request.getQueryOrigin().getTestInstance().getId() + "/" +request.getQueryOrigin().getSectionName())) {
                     int idx = logMapDTO.getKeys().indexOf(key);
                     TestStepLogContentDTO step = logMapDTO.getItems().get(idx).getLog().getStep(request.getQueryOrigin().getStepName());
                     m = MetadataParser.parseNonSubmission(step.getRootString());
@@ -98,7 +98,7 @@ public class MetadataUpdate {
                 }
             }
             if (m==null) {
-                throw new ToolkitRuntimeException("Was expecting " + request.getQueryOrigin().getTestName() + ". Unsupported query: " + logMapDTO.getItems().get(0).getTestName() + ". Log fetch failed for QueryOrigin: " + request.getQueryOrigin().toString());
+                throw new ToolkitRuntimeException("Was expecting " + request.getQueryOrigin().getTestInstance().getId() + ". Unsupported query: " + logMapDTO.getItems().get(0).getTestName() + ". Log fetch failed for QueryOrigin: " + request.getQueryOrigin().toString());
             }
         }
         catch (Exception e) {
