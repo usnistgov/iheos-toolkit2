@@ -223,34 +223,33 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 //		selectDiff.setValue(false);
 
 		if (data.combinedMetadata != null) {
-
 			Tree contentTree = new Tree();
 			treeList.add(contentTree);
 			if (dataNotification!=null) {
 				addTreeSelectionHandler(contentTree);
 			}
-			ListingDisplay.QueryOriginFinder qoFinder = new ListingDisplay.QueryOriginFinder() {
-				@Override
-				public QueryOrigin get(String id) {
-					// Lookup QueryOrigin if no queryOrigin was provided.
-					for (Result result : data.results) {
-						for (StepResult stepResult : result.stepResults) {
-							MetadataObject mo = stepResult.getMetadata().findObject(id);
-							if (mo instanceof DocumentEntry) {
-								return new QueryOrigin(result.logId, stepResult.section, stepResult.stepName);
-							}
-						}
-					}
-					return null;
-				}
-			};
-
 			new ListingDisplay(this, data, new TreeThing(contentTree), null)
 					.setQoFinder(qoFinder)
 					.listing();
 			historyPanel.add(contentTree);
 		}
 	}
+
+	ListingDisplay.QueryOriginFinder qoFinder = new ListingDisplay.QueryOriginFinder() {
+		@Override
+		public QueryOrigin get(String id) {
+			// Lookup QueryOrigin if no queryOrigin was provided.
+			for (Result result : data.results) {
+				for (StepResult stepResult : result.stepResults) {
+					MetadataObject mo = stepResult.getMetadata().findObject(id);
+					if (mo instanceof DocumentEntry) {
+						return new QueryOrigin(result.logId, stepResult.section, stepResult.stepName);
+					}
+				}
+			}
+			return null;
+		}
+	};
 
 	boolean isHistory() {
 		if (selectContents == null)
