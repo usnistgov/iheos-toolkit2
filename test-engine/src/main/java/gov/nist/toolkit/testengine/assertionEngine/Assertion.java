@@ -22,7 +22,7 @@ import java.util.*;
 public class Assertion {
 
 	// This is used to manage assertion plugins
-	// this is processed by MhdClientTransaction for pluginType FHIR
+	// this is processed by MhdClientTransaction for pluginType FHIR (and Xds)
 	public static class Validations {
 
 		TestKit.PluginType pluginType;
@@ -40,6 +40,10 @@ public class Assertion {
 		}
 
 		public List<ValidaterInstance> validaters = new ArrayList<>();
+
+		public TestKit.PluginType getPluginType() {
+			return pluginType;
+		}
 	}
 
 	public Validations validations = new Validations();

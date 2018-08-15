@@ -9,15 +9,18 @@ import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.client.SimIdFactory
+import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.simcommon.server.SimDbEvent
 import gov.nist.toolkit.testengine.assertionEngine.Assertion
 import gov.nist.toolkit.testengine.engine.FhirSimulatorTransaction
 import gov.nist.toolkit.testengine.engine.ILogReporting
 import gov.nist.toolkit.testengine.engine.TestConfig
 import gov.nist.toolkit.testengine.engine.ToolkitEnvironment
-import gov.nist.toolkit.testengine.engine.fhirValidations.FhirAssertionLoader
+import gov.nist.toolkit.testengine.engine.validations.ProcessValidations
+import gov.nist.toolkit.testengine.engine.validations.fhir.FhirAssertionLoader
 import gov.nist.toolkit.testengine.engine.SimReference
 import gov.nist.toolkit.testengine.transactions.MhdClientTransaction
+import gov.nist.toolkit.testengine.transactions.SimDbTransactionInstanceBuilder
 import gov.nist.toolkit.testengine.transactions.TransactionInstanceBuilder
 import gov.nist.toolkit.testkitutilities.TestKitSearchPath
 import gov.nist.toolkit.utilities.html.HeaderBlock
@@ -80,7 +83,8 @@ class ValidaterRunSpec extends Specification {
         Assertion a = new Assertion(toolkitEnvironment, assertionEle, testConfig, date)
         MhdClientTransaction mct = new MhdClientTransaction(new LogReport(), null, null)
         TransactionInstanceBuilder transactionInstanceBuilder = new MyTransactionInstanceBuilder()
-        List<FhirSimulatorTransaction> passing = mct.processValidations(transactionInstanceBuilder, simReference, a, null)
+        List<FhirSimulatorTransaction> transactions = transactionInstanceBuilder.getSimulatorTransactions(simReference)
+        List<FhirSimulatorTransaction> passing = new ProcessValidations<FhirSimulatorTransaction>(mct.logReport).run(transactionInstanceBuilder, simReference, a, null, transactions)
 
         then:
         passing.size() == 0
@@ -103,7 +107,8 @@ class ValidaterRunSpec extends Specification {
         Assertion a = new Assertion(toolkitEnvironment, assertionEle, testConfig, date)
         MhdClientTransaction mct = new MhdClientTransaction(new LogReport(), null, null)
         TransactionInstanceBuilder transactionInstanceBuilder = new MyTransactionInstanceBuilder()
-        List<FhirSimulatorTransaction> passing = mct.processValidations(transactionInstanceBuilder, simReference, a, null)
+        List<FhirSimulatorTransaction> transactions = transactionInstanceBuilder.getSimulatorTransactions(simReference)
+        List<FhirSimulatorTransaction> passing = new ProcessValidations<FhirSimulatorTransaction>(mct.logReport).run(transactionInstanceBuilder, simReference, a, null, transactions)
 
         then:
         passing.size() == 1
@@ -126,7 +131,9 @@ class ValidaterRunSpec extends Specification {
         Assertion a = new Assertion(toolkitEnvironment, assertionEle, testConfig, date)
         MhdClientTransaction mct = new MhdClientTransaction(new LogReport(), null, null)
         TransactionInstanceBuilder transactionInstanceBuilder = new MyTransactionInstanceBuilder()
-        List<FhirSimulatorTransaction> passing = mct.processValidations(transactionInstanceBuilder, simReference, a, null)
+//        List<FhirSimulatorTransaction> passing = mct.processValidations(transactionInstanceBuilder, simReference, a, null)
+        List<FhirSimulatorTransaction> transactions = new FhirSimulatorTransaction(simReference.simId,simReference.transactionType).getAll()
+        List<FhirSimulatorTransaction> passing = new ProcessValidations(mct.logReport).run(new SimDbTransactionInstanceBuilder<FhirSimulatorTransaction>(new SimDb(simReference.simId)), simReference, a, null, transactions)
 
         then:
         thrown ValidaterNotFoundException
@@ -182,7 +189,6 @@ class ValidaterRunSpec extends Specification {
             return ti
         }
 
-        @Override
         List<FhirSimulatorTransaction> getSimulatorTransactions(SimReference simReference) throws XdsInternalException {
             FhirSimulatorTransaction ft = new FhirSimulatorTransaction(simId, tType)
             HeaderBlock blk = new HeaderBlock()

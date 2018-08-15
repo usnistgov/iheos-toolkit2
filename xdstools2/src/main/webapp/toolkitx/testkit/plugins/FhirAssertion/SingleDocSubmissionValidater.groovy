@@ -1,8 +1,8 @@
 package war.toolkitx.testkit.plugins.FhirAssertion
 
 import gov.nist.toolkit.testengine.engine.FhirSimulatorTransaction
-import gov.nist.toolkit.testengine.engine.fhirValidations.AbstractFhirValidater
-import gov.nist.toolkit.testengine.engine.fhirValidations.ValidaterResult
+import gov.nist.toolkit.testengine.engine.validations.fhir.AbstractFhirValidater
+import gov.nist.toolkit.testengine.engine.validations.ValidaterResult
 import org.hl7.fhir.dstu3.model.Bundle
 import org.hl7.fhir.dstu3.model.DocumentManifest
 import org.hl7.fhir.dstu3.model.DocumentReference

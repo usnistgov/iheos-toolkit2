@@ -200,26 +200,4 @@ public class StoredQueryTransaction extends QueryTransaction {
 
 	}
 
-	@Override
-	public void processAssertion(AssertionEngine engine, Assertion a, OMElement assertion_output) throws XdsInternalException {
-	    // skb TODO: test validation plugin
-		List<String> errs = new ArrayList<>();
-		try {
-			SimReference simReference = getSimReference(errs, a);
-			if (a.hasValidations()) {
-				List<SimulatorTransaction> passing = processValidations(new SimDbTransactionInstanceBuilder(new SimDb(simReference.simId)), simReference, a, assertion_output)
-				if (passing.isEmpty())
-					errs.add("No Transactions match requirements")
-			} else
-				throw new XdsInternalException("MhdClientTransaction: Unknown Assertion clause with not Assert statements");
-		} catch (XdsInternalException ie) {
-			errs.add(ie.getMessage());
-		}
-		if (!errs.isEmpty()) {
-			ILogger testLogger = new TestLogFactory().getLogger();
-			testLogger.add_name_value_with_id(assertion_output, "AssertionStatus", a.id, "fail");
-			for (String err : errs)
-				this.fail(err);
-		}
-	}
 }

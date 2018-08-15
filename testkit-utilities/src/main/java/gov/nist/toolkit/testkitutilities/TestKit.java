@@ -69,7 +69,8 @@ public class TestKit {
 	}
 
 	public enum PluginType  {
-		FHIR_ASSERTION("FhirAssertion", "FHIR");
+		FHIR_ASSERTION("FhirAssertion", "FHIR"),
+		XDS_ASSERTION("XdsAssertion", "XDS");
 
 		private String pathName;
 		private String assertionName;

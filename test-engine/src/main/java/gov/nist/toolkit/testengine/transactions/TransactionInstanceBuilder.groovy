@@ -9,5 +9,7 @@ import gov.nist.toolkit.xdsexception.client.XdsInternalException
 interface TransactionInstanceBuilder {
 
     TransactionInstance build(String actor, String eventId, String trans)
-    List<FhirSimulatorTransaction> getSimulatorTransactions(SimReference simReference) throws XdsInternalException
+    /*
+    List<T> getSimulatorTransactions(SimReference simReference) throws XdsInternalException
+    */
 }

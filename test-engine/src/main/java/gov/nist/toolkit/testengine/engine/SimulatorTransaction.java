@@ -4,18 +4,22 @@
 package gov.nist.toolkit.testengine.engine;
 
 import edu.wustl.mir.erl.ihe.xdsi.util.PfnType;
+import edu.wustl.mir.erl.ihe.xdsi.util.PidDateFilenameFilter;
 import edu.wustl.mir.erl.ihe.xdsi.util.PrsSimLogs;
 import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
 import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.simcommon.server.SimDb;
+import gov.nist.toolkit.simcommon.server.SimDbEvent;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,7 +31,7 @@ import java.util.List;
  * href="mailto:moultonr@mir.wustl.edu">moultonr@mir.wustl.edu</a>
  *
  */
-public class SimulatorTransaction {
+public class SimulatorTransaction implements TransactionRecordGetter<SimulatorTransaction> {
       
    private SimId simId;
    private TransactionType transactionType;
@@ -44,16 +48,17 @@ public class SimulatorTransaction {
    private List<String> pfns = new ArrayList<>();
    private String stdPfn;
    private String url;
+   private SimDbEvent simDbEvent;
    
    private UseReportManager useReportManager = null;
-   
-   private SimulatorTransaction(SimId simId, TransactionType transactionType, String pid, Date timeStamp) {
+
+   public SimulatorTransaction(SimId simId, TransactionType transactionType, String pid, Date timeStamp) {
       this.simId = simId;
       this.transactionType = transactionType;
       this.pid = pid;
       this.timeStamp = timeStamp;
    }
-   
+
    /**
     * @return the {@link #simId} value.
     */
@@ -293,6 +298,40 @@ public class SimulatorTransaction {
    }
 
    /**
+    * Returns all simulator transactions, of the given type, since last marker.
+    * @param simId
+    * @param transactionType
+    * @return
+    * @throws XdsInternalException
+    */
+   public List<SimulatorTransaction> getAll() throws XdsInternalException {
+      SimDb simDb = null;
+      List<SimulatorTransaction> transactions = new ArrayList<>();
+      try {
+         simDb = new SimDb(simId);
+         List<SimDbEvent> events = simDb.getEventsSinceMarker();
+
+         for (SimDbEvent event : events) {
+             try {
+                SimulatorTransaction st = get(simId, transactionType, null,
+                        new SimpleDateFormat(PidDateFilenameFilter.DATE_DIR_FORMAT).parse(event.getEventId()));
+                if (st != null) {
+                    st.simDbEvent = event;
+                   transactions.add(st);
+                }
+             } catch (XdsInternalException xie) {
+             }
+         }
+
+      } catch (Exception ex) {
+        throw new XdsInternalException(ex.toString());
+      }
+
+      return transactions;
+   }
+
+
+   /**
     * Generates instance of this class for specified simulator transaction.
     * @param simId for the simulator which received the transaction. Must exist.
     * @param transactionType TransactionType value we are looking for. For 
@@ -399,6 +438,14 @@ public class SimulatorTransaction {
                  e.getMessage());
       }
    }
-   
 
+   @Override
+   public SimDbEvent getSimDbEvent() {
+      return simDbEvent;
+   }
+
+   @Override
+   public String getPlaceToken() {
+      return ""; // skb TODO
+   }
 }

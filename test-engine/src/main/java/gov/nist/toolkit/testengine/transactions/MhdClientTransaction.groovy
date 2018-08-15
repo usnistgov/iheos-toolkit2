@@ -5,8 +5,9 @@ import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.testengine.assertionEngine.Assertion
 import gov.nist.toolkit.testengine.assertionEngine.AssertionEngine
 import gov.nist.toolkit.testengine.engine.*
-import gov.nist.toolkit.testengine.engine.fhirValidations.*
-import gov.nist.toolkit.utilities.xml.XmlUtil
+import gov.nist.toolkit.testengine.engine.validations.ProcessValidations
+import gov.nist.toolkit.testengine.engine.validations.ValidaterResult
+import gov.nist.toolkit.testengine.engine.validations.fhir.*
 import gov.nist.toolkit.xdsexception.client.MetadataException
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException
 import gov.nist.toolkit.xdsexception.client.XdsInternalException
@@ -18,13 +19,30 @@ import org.apache.axiom.om.OMElement
  */
 class MhdClientTransaction extends BasicTransaction {
     ILogReporting logReport
+    private List <String> errs;
 
+    MhdClientTransaction(StepContext s_ctx, OMElement instruction, OMElement instruction_output) {
+        super(s_ctx, instruction, instruction_output)
+        logReport = s_ctx
+        defaultEndpointProcessing = false
+        parse_metadata = false
+        noMetadataProcessing = true
+    }
+
+    // for IT testing only
+    // where ILogReporting is adequate
+    MhdClientTransaction(ILogReporting logReport, OMElement instruction, OMElement instruction_output) {
+        super(null, instruction, instruction_output)
+        this.logReport = logReport
+        defaultEndpointProcessing = false
+        parse_metadata = false
+        noMetadataProcessing = true
+    }
 
     @Override
     protected void run(OMElement request) throws Exception {
     }
 
-    private List <String> errs;
 
     @Override
     void processAssertion(AssertionEngine engine, Assertion a, OMElement assertion_output) throws XdsInternalException {
@@ -32,7 +50,9 @@ class MhdClientTransaction extends BasicTransaction {
         try {
             SimReference simReference = getSimReference(a)
             if (a.hasValidations()) {
-                List<FhirSimulatorTransaction> passing = processValidations(new SimDbTransactionInstanceBuilder(new SimDb(simReference.simId)), simReference, a, assertion_output)
+                // the collection of FHIR transactions to search against
+                List<FhirSimulatorTransaction> transactions = new FhirSimulatorTransaction(simReference.simId,simReference.transactionType).getAll()
+                List<FhirSimulatorTransaction> passing = new ProcessValidations(logReport).run(new SimDbTransactionInstanceBuilder<FhirSimulatorTransaction>(new SimDb(simReference.simId)), simReference, a, assertion_output, transactions)
                 if (passing.isEmpty())
                     errs.add("No Transactions match requirements")
             } else
@@ -48,91 +68,8 @@ class MhdClientTransaction extends BasicTransaction {
         }
     }
 
-    // return list of passing transactions
-    List<FhirSimulatorTransaction> processValidations(TransactionInstanceBuilder transactionInstanceBuilder, SimReference simReference, Assertion a, OMElement assertion_output) {
-        String trans = simReference.transactionType.code
-
-        // the collection of FHIR transactions to search against
-        List<FhirSimulatorTransaction> transactions = transactionInstanceBuilder.getSimulatorTransactions(simReference)
-
-        if (transactions.size() == 0)
-            throw new XdsInternalException("No ${simReference.transactionType.name} transactions found in simlog for ${simReference.simId}")
-
-        logReport.addDetail("#Validations run against all ${simReference.transactionType.name} transactions", '')
-
-        a.validations.validaters.each { Assertion.Validations.ValidaterInstance v ->
-            logReport.addDetail(v.validater.class.simpleName, v.validater.filterDescription)
-
-        }
 
 
-        List<ValidaterResult> inProgress = []
-        List<ValidaterResult> passing = []
-        List<ValidaterResult> failing = []
-        transactions.each { FhirSimulatorTransaction transaction ->
-//            TransactionInstance ti = transactionInstanceBuilder.build(transaction.simDbEvent.actor, transaction.simDbEvent.eventId, trans)
-            boolean hasError = false
-
-            // Run all validators on this transaction
-            a.getAllValidaters().collect { Assertion.Validations.ValidaterInstance validater1 ->
-                if (!(validater1.validater instanceof AbstractFhirValidater))
-                    throw new ToolkitRuntimeException("oops")
-                AbstractFhirValidater validater = (AbstractFhirValidater) validater1.validater
-                ValidaterResult result = validater.validate(transaction)
-                result
-            }.each {ValidaterResult result ->
-                if (result.match) {
-                    inProgress << result
-                } else {
-                    failing << result
-                    hasError = true
-                }
-            }
-
-            if (!hasError && !inProgress.isEmpty()) {
-                consolidateLogs(inProgress)
-                passing << inProgress[0]
-            }
-        }
-
-        logReport.addDetailHeader('Validating Messages')
-        passing.each { ValidaterResult result ->
-            FhirSimulatorTransaction transaction = result.transaction
-            TransactionInstance ti = transactionInstanceBuilder.build(transaction.simDbEvent.actor, transaction.simDbEvent.eventId, trans)
-            String label = ti.toString()
-            logReport.addDetailLink(transaction.url, transaction.placeToken, label, result.filter.filterDescription)
-            String log = result.log
-            if (log)
-                log.eachLine { String line ->
-                    logReport.addDetail('', line)
-                }
-        }
-
-        logReport.addDetailHeader('Non-Validating Messages', 'Failed Validations')
-        failing.each { ValidaterResult result ->
-            FhirSimulatorTransaction transaction = result.transaction
-            TransactionInstance ti = transactionInstanceBuilder.build(transaction.simDbEvent.actor, transaction.simDbEvent.eventId, trans)
-            String label = ti.toString()
-            logReport.addDetailLink(transaction.url, transaction.placeToken, label, result.filter.filterDescription)
-            result.filter.log.eachLine { String line ->
-                logReport.addDetail('', line)
-            }
-        }
-
-        return passing
-    }
-
-    def consolidateLogs(List<ValidaterResult> results) {
-        ValidaterResult first = null
-        results.each { ValidaterResult result ->
-            if (first == null) {
-                first = result
-                return
-            }
-            String x = result.filter.getLog()
-            first.log(x)
-        }
-    }
 
 //    @Deprecated
 //    def verifyFindSingleDRSubmit(SimReference simReference) {
@@ -211,21 +148,4 @@ class MhdClientTransaction extends BasicTransaction {
     }
 
 
-    MhdClientTransaction(StepContext s_ctx, OMElement instruction, OMElement instruction_output) {
-        super(s_ctx, instruction, instruction_output)
-        logReport = s_ctx
-        defaultEndpointProcessing = false
-        parse_metadata = false
-        noMetadataProcessing = true
-    }
-
-    // for IT testing only
-    // where ILogReporting is adequate
-    MhdClientTransaction(ILogReporting logReport, OMElement instruction, OMElement instruction_output) {
-        super(null, instruction, instruction_output)
-        this.logReport = logReport
-        defaultEndpointProcessing = false
-        parse_metadata = false
-        noMetadataProcessing = true
-    }
 }

@@ -1,9 +1,13 @@
 package gov.nist.toolkit.testengine.engine
 
-abstract class AbstractValidater {
+import gov.nist.toolkit.testengine.engine.validations.ValidaterResult
+
+abstract class AbstractValidater<T> {
     String filterDescription
     StringBuilder log = new StringBuilder()
     boolean errors = false
+
+    abstract ValidaterResult validate(T transaction)
 
     void reset() {
         log = new StringBuilder()

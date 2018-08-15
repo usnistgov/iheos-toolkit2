@@ -1,16 +1,21 @@
-package gov.nist.toolkit.testengine.engine.fhirValidations
+package gov.nist.toolkit.testengine.engine.validations
 
-import gov.nist.toolkit.testengine.engine.FhirSimulatorTransaction
 import groovy.transform.ToString
 
 @ToString
 class ValidaterResult {
-    FhirSimulatorTransaction transaction
-    AbstractFhirValidater filter
+    /**
+     * FhirSimulatorTransaction or (Xds)SimulatorTransaction
+     */
+    def transaction
+    /**
+     * AbstractFhirValidater  or AbstractXdsValidator
+     */
+    def filter
     boolean match
     private StringBuilder log = new StringBuilder()
 
-    ValidaterResult(FhirSimulatorTransaction transaction, AbstractFhirValidater filter, boolean match) {
+    ValidaterResult(def transaction, def filter, boolean match) {
         this.transaction = transaction
         this.filter = filter
         this.match = match
