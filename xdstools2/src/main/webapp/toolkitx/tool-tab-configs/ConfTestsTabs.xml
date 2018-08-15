@@ -1,15 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- tcCode:
-tcCode is the test collection code that is made up of three parts actor_profile_option.
-See collections.txt file for indexing.
+<!--
+Notes:
+
+ConfTests is the ToolId as defined in ToolLauncher.
+Sort order of the Conformance tool tab is defined by order of Tab elements in this file.
+
+Tab attributes:
+
+label:
+Permanent labels:
+	"Actors"
+	"Profiles"
+	"Options"
+Temporary labels:
+	At the actor level, this value is for tab organization purposes only. Before this Tab file was introduced, the value of testkit\actorcollections\[tcCode].txt is used as the tab name. To preserve this feature, the actor label is reset to the value that of the text file.
+	See "tabConfig.setLabel(tcd.getCollectionTitle());".
+
+type:
+Defines the tab type and correlates to a permanent label.
+
+tcCode:
+tcCode is the TestCollectionCode that is made up of three parts actor(profile)_option.
+The collections.txt file indexes tests to the tab that matches the test collection code.
+
+displayColorCode:
+The RGB hex value for the tab color in the main Conformance Overview Page.
+
+ConformanceTestTab Actor tab handler:
+See ActorSelectionHandler for the Actor tab click event handler.
+testCollectionDefinitionDAOs contains test collections for a given actor.
 -->
 
-<!-- Each actor tab maps to testCollectionDefinitionDAOs in ActorSelectionHandler -->
-
-<!-- If there is only one profile, select it. Then go ahead and show the default option. But if multiple profiles exist, without a default tab setting, show the profile map. -->
-
-<!-- Retrofit to ActorAndOption in Build*OrchestrationButton.java -->
 
 
 <tabs label="Actors">
