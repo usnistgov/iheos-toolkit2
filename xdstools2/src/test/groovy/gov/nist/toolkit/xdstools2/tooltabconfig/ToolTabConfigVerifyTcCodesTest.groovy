@@ -71,6 +71,7 @@ class ToolTabConfigVerifyTcCodesTest extends Specification {
                                   }
                               }
                            }
+                           break
                        }
                    }
 
