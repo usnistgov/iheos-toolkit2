@@ -802,8 +802,12 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 		else if (currentActorOption.isEdgeServerSut()) {
 			// TODO not implemented yet.
 		}
-		else if (currentActorOption.isSrc() && currentActorOption.isMhd()) {
-			orchInit = new BuildSrcTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label, currentActorOption);
+		else if (currentActorOption.isSrc()) {
+			if (currentActorOption.isMhd()) {
+				orchInit = new BuildSrcMhdTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label, currentActorOption);
+			} else if (currentActorOption.isXds())  {
+				orchInit = new BuildSrcXdsTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label, currentActorOption);
+			}
 			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
 			initializationPanel.add(orchInit.panel());
 		}

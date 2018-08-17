@@ -19,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -313,13 +314,16 @@ public class SimulatorTransaction implements TransactionRecordGetter<SimulatorTr
 
          for (SimDbEvent event : events) {
              try {
-                SimulatorTransaction st = get(simId, transactionType, null,
-                        new SimpleDateFormat(PidDateFilenameFilter.DATE_DIR_FORMAT).parse(event.getEventId()));
+                Date dt = new SimpleDateFormat(PidDateFilenameFilter.DATE_DIR_FORMAT).parse(event.getEventId());
+                SimulatorTransaction st = get(simId, event.getActorType(), transactionType, null, dt);
                 if (st != null) {
                     st.simDbEvent = event;
                    transactions.add(st);
                 }
              } catch (XdsInternalException xie) {
+                // Unwanted transaction in event?
+             } catch (ParseException pe) {
+                 // Probably picked up PIF transaction folder which cannot be parsed as Date
              }
          }
 

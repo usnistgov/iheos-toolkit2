@@ -96,7 +96,7 @@ class XdsValidaterRunSpec extends Specification {
 
         List<SimulatorTransaction> getSimulatorTransactions(SimReference simReference) throws XdsInternalException {
             SimulatorTransaction st = new SimulatorTransaction(simId, tType, null, null)
-            st.setRequest("")
+            st.setRequest("") // This only tests a basic roundtrip without any content checking
             SimDbEvent e = new SimDbEvent(simId, actorType.name, tType.name, 'event0')
             st.simDbEvent = e
             [st]

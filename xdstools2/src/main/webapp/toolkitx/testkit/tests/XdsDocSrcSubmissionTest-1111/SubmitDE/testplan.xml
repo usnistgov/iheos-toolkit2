@@ -1,0 +1,16 @@
+<TestPlan>
+    <Test>XdsDocSrcSubmissionTest-1111/SubmitDE</Test>
+    <TestStep id="prb">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <NullTransaction>
+            <Assertions>
+                <Assert id="SingleDocSubmit">
+                    <SimReference id="xdsregrep_support" transaction="prb"/> <!-- RegRep sim created by Xds DocSrc Orchestration -->
+		    <Validations type="XDS">
+			<SingleDocSubmissionValidater />
+		    </Validations>
+                </Assert>
+            </Assertions>
+        </NullTransaction>
+    </TestStep>
+</TestPlan>

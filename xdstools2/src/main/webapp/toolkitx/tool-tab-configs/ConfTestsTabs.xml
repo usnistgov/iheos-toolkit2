@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
+TODO:
+The "tabs" element adds extra layer which is not necessary. It can be removed, all the code that uses it needs to be updated.
+-->
+
+<!--
 Notes:
 
 ConfTests is the ToolId as defined in ToolLauncher.
@@ -26,6 +31,9 @@ The collections.txt file indexes tests to the tab that matches the test collecti
 
 displayColorCode:
 The RGB hex value for the tab color in the main Conformance Overview Page.
+
+externalStart:
+Vendor initiates first message of test.
 
 ConformanceTestTab Actor tab handler:
 See ActorSelectionHandler for the Actor tab click event handler.
@@ -67,16 +75,11 @@ testCollectionDefinitionDAOs contains test collections for a given actor.
 
 	<tab label="Document Source" type="actor" tcCode="src" displayColorCode="#D0E4F6">
 		<tabs label="Profiles">
-			<!--
 			<tab label="XDS" type="profile" tcCode="xds">
-				<tab label="Options">
+				<tabs label="Options">
 					<tab label="Required" type="option" tcCode="" externalStart="true"/>
-					<tab label="Doc Replace" type="option" tcCode="docreplace" externalStart="true"/>
-					<tab label="Life Cycle" type="option" tcCode="lifecycle" externalStart="true"/>
-					<tab label="Folder" type="option" tcCode="folder" externalStart="true"/>
-				</tab>
+				</tabs>
 			</tab>
-			-->
 			<tab label="MHD" type="profile" tcCode="mhd">
 				<tabs label="Options">
 					<tab label="Required" type="option" tcCode="" externalStart="true"/>
