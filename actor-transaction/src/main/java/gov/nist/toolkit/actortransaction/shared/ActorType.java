@@ -570,8 +570,6 @@ public enum ActorType implements IsSerializable, Serializable {
         this.isFhir = isFhir;
         this.proxyTransforms = null;
         this.actorCode = actorCode;
-        this.profile = profile;
-        this.options = options;
     }
 
     // All growth happens here
@@ -820,7 +818,7 @@ public enum ActorType implements IsSerializable, Serializable {
     }
 
     public String getActorCode() {
-       if (actorCode==null)
+       if (Constants.USE_SHORTNAME == actorCode)
            return shortName;
        else
             return actorCode;
@@ -828,6 +826,6 @@ public enum ActorType implements IsSerializable, Serializable {
 
 
     private static class Constants {
-        public static final String USE_SHORTNAME = null;
+        static final String USE_SHORTNAME = null;
     }
 }
