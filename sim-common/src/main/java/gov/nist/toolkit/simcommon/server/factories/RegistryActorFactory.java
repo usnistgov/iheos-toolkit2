@@ -60,6 +60,7 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
             addEditableConfig(sc, SimulatorProperties.TRANSACTION_NOTIFICATION_CLASS, ParamType.TEXT, "");
             addEditableConfig(sc, SimulatorProperties.METADATA_LIMITED, ParamType.BOOLEAN, false);
 			addFixedConfig(sc, SimulatorProperties.UPDATE_METADATA_OPTION, ParamType.BOOLEAN, false);
+			addFixedConfig(sc, SimulatorProperties.REMOTE_UPDATE_METADATA_OPTION, ParamType.BOOLEAN, false);
 			addFixedConfig(sc, SimulatorProperties.PART_OF_RECIPIENT, ParamType.BOOLEAN, true);
 			addFixedEndpoint(sc, SimulatorProperties.registerEndpoint,       actorType, TransactionType.REGISTER,     false);
 			addFixedEndpoint(sc, SimulatorProperties.registerTlsEndpoint,    actorType, TransactionType.REGISTER,     true);
@@ -76,6 +77,7 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
 			addEditableConfig(sc, SimulatorProperties.VALIDATE_AS_RECIPIENT, ParamType.BOOLEAN, false);
             addEditableConfig(sc, SimulatorProperties.REMOVE_METADATA, ParamType.BOOLEAN, false);
 			addEditableConfig(sc, SimulatorProperties.UPDATE_METADATA_OPTION, ParamType.BOOLEAN, false);
+			addEditableConfig(sc, SimulatorProperties.REMOTE_UPDATE_METADATA_OPTION, ParamType.BOOLEAN, false);
 			addEditableConfig(sc, SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, ParamType.BOOLEAN, true);
 			addEditableConfig(sc, SimulatorProperties.extraMetadataSupported, ParamType.BOOLEAN, true);
 			addEditableConfig(sc, SimulatorProperties.VALIDATE_CODES, ParamType.BOOLEAN, true);
@@ -107,35 +109,68 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
 
 	protected void verifyActorConfigurationOptions(SimulatorConfig config) throws Exception {
 		SimulatorConfigElement ele = config.get(SimulatorProperties.UPDATE_METADATA_OPTION);
-		if (ele == null)
-			return;
-		Boolean optionOn = ele.asBoolean();
-				
-		SimulatorConfigElement updateEndpointEle = config.get(SimulatorProperties.updateEndpoint);
-		
-		if (optionOn && updateEndpointEle == null) {
-			 //option is enabled but no endpoint present - create it
-			
-			updateEndpointEle = new SimulatorConfigElement();
-			updateEndpointEle.name = SimulatorProperties.updateEndpoint;
-			updateEndpointEle.type = ParamType.ENDPOINT;
-			updateEndpointEle.transType = TransactionType.UPDATE; 
-			updateEndpointEle.setStringValue(mkEndpoint(config, updateEndpointEle, ActorType.REGISTRY.getShortName(), false));
-			addFixed(config, updateEndpointEle);
-			 
-			updateEndpointEle = new SimulatorConfigElement();
-			updateEndpointEle.name = SimulatorProperties.updateTlsEndpoint;
-			updateEndpointEle.type = ParamType.ENDPOINT;
-			updateEndpointEle.transType = TransactionType.UPDATE; 
-			updateEndpointEle.setStringValue(mkEndpoint(config, updateEndpointEle, ActorType.REGISTRY.getShortName(), true));
-			addFixed(config, updateEndpointEle);
-			 
-			
-		} else if (!optionOn && updateEndpointEle != null) {
-			// option is disabled but endpoint is present - delete it
-			
-			config.deleteFixedByName(SimulatorProperties.updateEndpoint);
-			
+		if (ele != null) {
+
+			Boolean optionOn = ele.asBoolean();
+
+			SimulatorConfigElement updateEndpointEle = config.get(SimulatorProperties.updateEndpoint);
+
+			if (optionOn && updateEndpointEle == null) {
+				//option is enabled but no endpoint present - create it
+
+				updateEndpointEle = new SimulatorConfigElement();
+				updateEndpointEle.name = SimulatorProperties.updateEndpoint;
+				updateEndpointEle.type = ParamType.ENDPOINT;
+				updateEndpointEle.transType = TransactionType.UPDATE;
+				updateEndpointEle.setStringValue(mkEndpoint(config, updateEndpointEle, ActorType.REGISTRY.getShortName(), false));
+				addFixed(config, updateEndpointEle);
+
+				updateEndpointEle = new SimulatorConfigElement();
+				updateEndpointEle.name = SimulatorProperties.updateTlsEndpoint;
+				updateEndpointEle.type = ParamType.ENDPOINT;
+				updateEndpointEle.transType = TransactionType.UPDATE;
+				updateEndpointEle.setStringValue(mkEndpoint(config, updateEndpointEle, ActorType.REGISTRY.getShortName(), true));
+				addFixed(config, updateEndpointEle);
+
+
+			} else if (!optionOn && updateEndpointEle != null) {
+				// option is disabled but endpoint is present - delete it
+
+				config.deleteFixedByName(SimulatorProperties.updateEndpoint);
+
+			}
+		}
+		ele = config.get(SimulatorProperties.REMOTE_UPDATE_METADATA_OPTION);
+		if (ele != null) {
+
+			Boolean optionOn = ele.asBoolean();
+
+			SimulatorConfigElement updateEndpointEle = config.get(SimulatorProperties.rmuEndpoint);
+
+			if (optionOn && updateEndpointEle == null) {
+				//option is enabled but no endpoint present - create it
+
+				updateEndpointEle = new SimulatorConfigElement();
+				updateEndpointEle.name = SimulatorProperties.rmuEndpoint;
+				updateEndpointEle.type = ParamType.ENDPOINT;
+				updateEndpointEle.transType = TransactionType.RMU;
+				updateEndpointEle.setStringValue(mkEndpoint(config, updateEndpointEle, ActorType.REGISTRY.getShortName(), false));
+				addFixed(config, updateEndpointEle);
+
+				updateEndpointEle = new SimulatorConfigElement();
+				updateEndpointEle.name = SimulatorProperties.rmuTlsEndpoint;
+				updateEndpointEle.type = ParamType.ENDPOINT;
+				updateEndpointEle.transType = TransactionType.RMU;
+				updateEndpointEle.setStringValue(mkEndpoint(config, updateEndpointEle, ActorType.REGISTRY.getShortName(), true));
+				addFixed(config, updateEndpointEle);
+
+
+			} else if (!optionOn && updateEndpointEle != null) {
+				// option is disabled but endpoint is present - delete it
+
+				config.deleteFixedByName(SimulatorProperties.rmuEndpoint);
+
+			}
 		}
 	}
 

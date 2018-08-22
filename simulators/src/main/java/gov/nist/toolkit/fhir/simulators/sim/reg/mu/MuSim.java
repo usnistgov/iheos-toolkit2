@@ -116,7 +116,7 @@ public class MuSim extends RegRSim {
 
 	}
 
-	private void updateAssociationStatusTrigger(Metadata m) {
+	void updateAssociationStatusTrigger(Metadata m) {
 		List<OMElement> updateAssocs = m.getAssociations(m.getSubmissionSetId(), null, "urn:ihe:iti:2010:AssociationType:UpdateAvailabilityStatus");
 		for (OMElement updateAssocEle : updateAssocs) {
 			String updateAssocId = Metadata.getAssocTarget(updateAssocEle);
@@ -170,7 +170,7 @@ public class MuSim extends RegRSim {
 		}
 	}
 
-	private void submittedAssociationsTrigger(Metadata m) {
+	void submittedAssociationsTrigger(Metadata m) {
 		List<OMElement> submitAssocs = m.getAssociations(m.getSubmissionSetId(), null, "urn:ihe:iti:2010:AssociationType:SubmitAssociation");
 		for (OMElement submitAssocEle : submitAssocs) {
 			String newAssocId = Metadata.getAssocTarget(submitAssocEle);

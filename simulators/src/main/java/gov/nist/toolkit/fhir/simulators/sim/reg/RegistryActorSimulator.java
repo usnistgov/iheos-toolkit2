@@ -3,6 +3,7 @@ package gov.nist.toolkit.fhir.simulators.sim.reg;
 import gov.nist.toolkit.actorfactory.PatientIdentityFeedServlet;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.fhir.simulators.sim.reg.mu.RMuSim;
 import gov.nist.toolkit.simcommon.client.NoSimException;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
@@ -28,6 +29,7 @@ import java.util.List;
 public class RegistryActorSimulator extends BaseDsActorSimulator {
 	private static Logger logger = Logger.getLogger(RegistryActorSimulator.class);
 	boolean updateEnabled;
+	boolean rmuEnabled;
 	private boolean generateResponse = true;
 
 	static List<TransactionType> transactions = new ArrayList<>();
@@ -83,6 +85,9 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 		SimulatorConfigElement updateConfig = getSimulatorConfig().get(SimulatorProperties.UPDATE_METADATA_OPTION);
 		if (updateConfig != null)
 			updateEnabled = updateConfig.asBoolean();
+		updateConfig = getSimulatorConfig().get(SimulatorProperties.REMOTE_UPDATE_METADATA_OPTION);
+		if (updateConfig != null)
+			rmuEnabled = updateConfig.asBoolean();
 	}
 
 	// This constructor can be used to implement calls to onCreate(), onDelete(),
@@ -278,6 +283,55 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 			
 			mvc.run();
 			
+
+			registryResponseGenerator = new RegistryResponseGeneratorSim(common, dsSimCommon);
+			mvc.addMessageValidator("Attach Errors", registryResponseGenerator, er);
+
+			mvc.run();
+
+			// wrap in soap wrapper and http wrapper
+			mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, dsSimCommon, registryResponseGenerator), er);
+
+			// run all the queued up validators so we can check for errors
+			mvc.run();
+
+			if (!dsSimCommon.hasErrors())
+				commit(mvc, common, musim.delta);
+
+
+			return !dsSimCommon.hasErrors();
+
+		}
+		else if (transactionType.equals(TransactionType.RMU)) {
+			if (!rmuEnabled) {
+				dsSimCommon.sendFault("RMU not enabled on this actor ", null);
+				return false;
+			}
+			common.vc.isMU = true;
+			common.vc.isRMU = true;
+			common.vc.isRequest = true;
+
+			if (!dsSimCommon.verifySubmissionAllowed())
+				return false;
+
+			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
+				return false;
+
+			if (mvc.hasErrors()) {
+				dsSimCommon.sendErrorsInRegistryResponse(er);
+				return false;
+			}
+
+			MuSim musim = new RMuSim(common, dsSimCommon, getSimulatorConfig());
+			mvc.addMessageValidator("MuSim", musim, er);
+
+			mvc.run();
+
+			MetadataPatternValidator mpv = new MetadataPatternValidator(common, validation);
+			mvc.addMessageValidator("MetadataPatternValidator", mpv, er);
+
+			mvc.run();
+
 
 			registryResponseGenerator = new RegistryResponseGeneratorSim(common, dsSimCommon);
 			mvc.addMessageValidator("Attach Errors", registryResponseGenerator, er);

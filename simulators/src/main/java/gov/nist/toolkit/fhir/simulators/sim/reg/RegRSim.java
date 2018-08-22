@@ -308,6 +308,7 @@ public class RegRSim extends TransactionSimulator   {
 			// update index
 			try {
 				RegistryFactory.buildMetadataIndex(m, delta);
+				boolean ok = delta.docEntryCollection.okForRMU(mc, er);
 			} catch (MetadataException e) {
 				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, e);
 			}

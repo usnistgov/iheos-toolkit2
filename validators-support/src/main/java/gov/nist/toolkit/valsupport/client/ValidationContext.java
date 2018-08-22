@@ -44,6 +44,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	public boolean isXDM     = false;
 	public boolean isSQ      = false;
 	public boolean isMU      = false;
+	public boolean isRMU      = false;
 	public boolean isDIRECT  = false;
 	public boolean isCCDA	 = false;
 	/**
@@ -195,7 +196,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	}
 
 	public boolean requiresSimpleSoap() {
-		return isR || isMU || (isSQ && !isEpsos);
+		return isR || isMU || isRMU || (isSQ && !isEpsos);
 	}
 
 	public XdsErrorCode.Code getBasicErrorCode() {
@@ -221,6 +222,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 		return
 				updateEnabled == v.updateEnabled &&
 				isMU == v.isMU &&
+						isRMU == v.isRMU &&
 				isR == v.isR &&
  				isRODDE == v.isRODDE &&
 				isPnR == v.isPnR &&
@@ -257,6 +259,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 		xds_b = v.xds_b;
 
 		isMU = v.isMU;
+		isRMU = v.isRMU;
 		updateEnabled = v.updateEnabled;
 		//			minMeta = v.minMeta;
 
@@ -296,7 +299,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	}
 
 	public boolean hasMetadata() {
-		if ((isR || isRODDE || isMU || isPnR || isXDR || isXDM) && isRequest) return true;
+		if ((isR || isRODDE || isMU || isRMU || isPnR || isXDR || isXDM) && isRequest) return true;
 		if (isSQ && isResponse) return true;
 		return false;
 	}
@@ -321,6 +324,12 @@ public class ValidationContext  implements Serializable, IsSerializable {
 				return "RegistryResponse";
 		}
 		if (isMU) {
+			if (isRequest)
+				return "RMU";
+			if (isResponse)
+				return "RegistryResponse";
+		}
+		if (isRMU) {
 			if (isRequest)
 				return "Metadata Update";
 			if (isResponse)
@@ -410,7 +419,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 			if (isResponse)
 				return MetadataTypes.METADATA_TYPE_REGISTRY_RESPONSE3;
 		}
-		if (isR || isMU) {
+		if (isR || isMU || isRMU) {
 			if (isRequest)
 				return MetadataTypes.METADATA_TYPE_Rb;
 			if (isResponse)
@@ -452,6 +461,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 		if (isR) buf.append(";Register");
 		if (isRODDE) buf.append(";RegisterODDE");
 		if (isMU) buf.append(";MU");
+		if (isRMU) buf.append(";RMU");
 		if (isPnR) buf.append(";PnR");
 		if (isRet) buf.append(";Retrieve");
 		if (isRad69) buf.append(";RAD69");
@@ -505,7 +515,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	}
 
 	public boolean isTransactionKnown() {
-		return isR || isRODDE || isMU || isPnR || isRet || isXDR || isXDM || isSQ || isRad69 || isRad55;
+		return isR || isRODDE || isMU || isRMU || isPnR || isRet || isXDR || isXDM || isSQ || isRad69 || isRad55;
 	}
 
 	public boolean isMessageTypeKnown() {
@@ -521,7 +531,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	}
 
 	public boolean isSubmit() {
-		return isR || isRODDE || isMU || isPnR || isXDR || isXDM;
+		return isR || isRODDE || isMU || isRMU || isPnR || isXDR || isXDM;
 	}
 
 	public boolean availabilityStatusRequired() {
@@ -536,6 +546,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 		if (isR && isRequest) return true;
 		if (isRODDE && isRequest) return false;
 		if (isMU && isRequest) return true;
+		if (isRMU && isRequest) return true;
 		if (isSQ && isResponse) return false;
 		return true;
 	}
@@ -552,6 +563,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
         if (isPartOfRecipient) return false;
 		if (isR && isRequest) return true;
 		if (isMU && isRequest) return true;
+		if (isRMU && isRequest) return true;
 		if (isSQ && isResponse) return true;
 		return false;
 	}

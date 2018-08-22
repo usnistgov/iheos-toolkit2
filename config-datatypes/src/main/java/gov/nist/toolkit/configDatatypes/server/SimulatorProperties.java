@@ -19,6 +19,7 @@ public class SimulatorProperties {
      * Boolean property controlling whether Metadata Update is enabled on Registry Simulator.
      */
     public static final String                 UPDATE_METADATA_OPTION = "Update_Metadata_Option";
+    public static final String                 REMOTE_UPDATE_METADATA_OPTION = "Remote_Update_Metadata_Option";
 
     /**
      * String property identifying port number for V2 Patient Identity Feed on the Registry Simulator.
@@ -123,6 +124,7 @@ public class SimulatorProperties {
      * Updates to this property are ignored.
      */
     public static final String                         updateEndpoint = "update_endpoint";
+    public static final String                         rmuEndpoint = "rmu_endpoint";
 
     public static final String                          multiPatientQueryEndpoint = "multipatient_query_endpoint";
 
@@ -133,6 +135,7 @@ public class SimulatorProperties {
      * Updates to this property are ignored.
      */
     public static final String                      updateTlsEndpoint = "update_TLS_endpoint";
+    public static final String                      rmuTlsEndpoint = "rmu_TLS_endpoint";
 
     /**
      * Profile RMD: ITI-62
