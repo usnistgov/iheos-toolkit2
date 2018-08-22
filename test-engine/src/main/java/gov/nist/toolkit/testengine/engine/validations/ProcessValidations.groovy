@@ -9,15 +9,18 @@ import gov.nist.toolkit.testengine.engine.ILogReporting
 import gov.nist.toolkit.testengine.engine.SimReference
 import gov.nist.toolkit.testengine.engine.TransactionRecordGetter
 import gov.nist.toolkit.testengine.engine.validations.fhir.AbstractFhirValidater
+import gov.nist.toolkit.testengine.transactions.BasicTransaction
 import gov.nist.toolkit.testengine.transactions.TransactionInstanceBuilder
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException
 import gov.nist.toolkit.xdsexception.client.XdsInternalException
 import org.apache.axiom.om.OMElement
 
 class ProcessValidations<T extends TransactionRecordGetter<T>> {
+    final BasicTransaction basicTransaction;
     ILogReporting logReport
 
-    ProcessValidations(ILogReporting logReport) {
+    ProcessValidations(BasicTransaction bt, ILogReporting logReport) {
+        this.basicTransaction = bt
         this.logReport = logReport
     }
 

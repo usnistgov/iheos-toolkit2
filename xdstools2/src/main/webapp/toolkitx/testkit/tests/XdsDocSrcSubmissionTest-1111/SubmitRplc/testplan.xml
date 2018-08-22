@@ -1,0 +1,16 @@
+<TestPlan>
+    <Test>XdsDocSrcSubmissionTest-1111/SubmitApnd</Test>
+    <TestStep id="replace">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <NullTransaction>
+            <Assertions>
+                <Assert id="replaceCheck">
+                    <SimReference id="xdsregrep_support" transaction="rb"/> <!-- RegRep sim created by Xds DocSrc Orchestration -->
+                    <Validations type="XDS">
+			            <ExpectedContentsValidater expectedContentCode="HasRPLC"/>
+		            </Validations>
+                </Assert>
+            </Assertions>
+        </NullTransaction>
+    </TestStep>
+</TestPlan>

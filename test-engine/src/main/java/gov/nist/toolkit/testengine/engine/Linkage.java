@@ -52,19 +52,6 @@ public class Linkage extends BasicLinkage {
    String homeCommunityId = null;
    boolean debug = false;
 
-   public String getRepositoryUniqueId() {
-      return repUniqueId;
-   }
-
-   /**
-    * Add SUT home community id to links, if defined. For cross community
-    */
-   void addHome() {
-      if (testConfig != null && testConfig.configHome != null) {
-         addLinkage("$configHome$", testConfig.configHome);
-      }
-   }
-
    // m - metadata to modify based on linkage ( if null - no modifications made)
    // instruction_output - log output - place to search previous test steps for
    // linkage targets
@@ -110,6 +97,18 @@ public class Linkage extends BasicLinkage {
       m = null;
       this.debug = testConfig.verbose;
       addHome();
+   }
+   public String getRepositoryUniqueId() {
+      return repUniqueId;
+   }
+
+   /**
+    * Add SUT home community id to links, if defined. For cross community
+    */
+   void addHome() {
+      if (testConfig != null && testConfig.configHome != null) {
+         addLinkage("$configHome$", testConfig.configHome);
+      }
    }
 
    public void setUseObjectRef(List <OMElement> use_object_ref) {

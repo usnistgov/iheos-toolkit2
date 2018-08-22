@@ -1500,13 +1500,12 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 	protected String validate_assertions(OMElement result, int metadata_type, OMElement test_assertions)
 	throws XdsInternalException, MetadataException,
 	MetadataValidationException {
-
 		Metadata m = MetadataParser.parseNonSubmission(result);
-
-		Validator v = new Validator(test_assertions);
-		v.setInstruction_output(instruction_output);
-		v.setTestConfig(testConfig);
-		v.run_test_assertions(m);
+		Validator v = new Validator()
+			.setTest_assertions(test_assertions)
+			.setM(m)
+			.setTestConfig(testConfig);
+		v.run_test_assertions(instruction_output);
 
       return v.getErrors();
    }

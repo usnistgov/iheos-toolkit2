@@ -133,7 +133,7 @@ class ValidaterRunSpec extends Specification {
         TransactionInstanceBuilder transactionInstanceBuilder = new MyTransactionInstanceBuilder()
 //        List<FhirSimulatorTransaction> passing = mct.processValidations(transactionInstanceBuilder, simReference, a, null)
         List<FhirSimulatorTransaction> transactions = new FhirSimulatorTransaction(simReference.simId,simReference.transactionType).getAll()
-        List<FhirSimulatorTransaction> passing = new ProcessValidations(mct.logReport).run(new SimDbTransactionInstanceBuilder<FhirSimulatorTransaction>(new SimDb(simReference.simId)), simReference, a, null, transactions)
+        List<FhirSimulatorTransaction> passing = new ProcessValidations(mct, mct.logReport).run(new SimDbTransactionInstanceBuilder<FhirSimulatorTransaction>(new SimDb(simReference.simId)), simReference, a, null, transactions)
 
         then:
         thrown ValidaterNotFoundException

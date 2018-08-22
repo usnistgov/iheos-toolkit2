@@ -7,8 +7,8 @@ import gov.nist.toolkit.testengine.engine.validations.ValidaterResult
 
 class AllTrue extends AbstractFhirValidater {
     @Override
-    ValidaterResult validate(FhirSimulatorTransaction transaction) {
-        return new ValidaterResult(transaction, this, true)
+    ValidaterResult validate(FhirSimulatorTransaction transactionInstance) {
+        return new ValidaterResult(transactionInstance, this, true)
     }
 
     AllTrue(SimReference theSimReference, String theFilterDescription) {

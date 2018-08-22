@@ -6,7 +6,7 @@ public class MetadataTables {
 	static public final String SS_table = "ITI TF-3: Table 4.1-6";
 	static public final String Fol_table = "ITI TF-3: Table 4.1-7";
 	
-	static public final String Doc_relationships = "ITI TF-3: 4.1.6.1";
+	static public final String Doc_relationships = "ITI TF-3: 4.1.6.1"; // Should be Table 4.2.2.2-1: Document Relationship
 	static public final String Submission_request = "ITI TF-3: 4.1.3.1";
 	
 	// this is actually a future reference, this section is being added by cp

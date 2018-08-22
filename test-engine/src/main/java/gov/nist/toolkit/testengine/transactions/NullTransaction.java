@@ -69,7 +69,7 @@ public class NullTransaction extends BasicTransaction {
 			    if (TestKit.PluginType.FHIR_ASSERTION.equals(a.validations.getPluginType())) {
 
 					List<FhirSimulatorTransaction> transactions = new FhirSimulatorTransaction(simReference.getSimId(),simReference.getTransactionType()).getAll();
-					List<FhirSimulatorTransaction> passing = new ProcessValidations(getStepContext())
+					List<FhirSimulatorTransaction> passing = new ProcessValidations(this, getStepContext())
 							.run(new SimDbTransactionInstanceBuilder(new SimDb(simReference.getSimId()),null)
 									, simReference
 									, a
@@ -80,7 +80,7 @@ public class NullTransaction extends BasicTransaction {
 				} else if (TestKit.PluginType.XDS_ASSERTION.equals(a.validations.getPluginType())) {
 			        SimulatorTransaction st = new SimulatorTransaction(simReference.getSimId(),simReference.getTransactionType(),null,null);
 					List<SimulatorTransaction> transactions = st.getAll();
-					List<SimulatorTransaction> passing = new ProcessValidations<SimulatorTransaction>(getStepContext())
+					List<SimulatorTransaction> passing = new ProcessValidations<SimulatorTransaction>(this, getStepContext())
 							.run(new SimDbTransactionInstanceBuilder(new SimDb(simReference.getSimId()),null)
 									, simReference
 									, a

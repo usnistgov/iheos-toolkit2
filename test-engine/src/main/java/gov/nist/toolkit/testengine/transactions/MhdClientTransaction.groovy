@@ -52,7 +52,7 @@ class MhdClientTransaction extends BasicTransaction {
             if (a.hasValidations()) {
                 // the collection of FHIR transactions to search against
                 List<FhirSimulatorTransaction> transactions = new FhirSimulatorTransaction(simReference.simId,simReference.transactionType).getAll()
-                List<FhirSimulatorTransaction> passing = new ProcessValidations(logReport).run(new SimDbTransactionInstanceBuilder<FhirSimulatorTransaction>(new SimDb(simReference.simId)), simReference, a, assertion_output, transactions)
+                List<FhirSimulatorTransaction> passing = new ProcessValidations(this, logReport).run(new SimDbTransactionInstanceBuilder<FhirSimulatorTransaction>(new SimDb(simReference.simId)), simReference, a, assertion_output, transactions)
                 if (passing.isEmpty())
                     errs.add("No Transactions match requirements")
             } else
