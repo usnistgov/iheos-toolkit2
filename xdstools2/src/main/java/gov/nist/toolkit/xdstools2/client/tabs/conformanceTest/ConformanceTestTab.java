@@ -732,9 +732,9 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 								currentActorOption,
 								getTestInstancePatientId(testOverview.getTestInstance(), parms));
 								// Lazy loading of TestOverviewDTO until it is opened.
-								HandlerRegistration openTestBarHReg = testDisplay.getView().addOpenHandler(new TestBarOpenHandler(testDisplay, testOverview, getCommandContext(), diagramDisplay
-								, new SimpleCallbackT<TestOverviewDTO>(){public void run(TestOverviewDTO t){updateTestOverview(t);}} // a -> updateTestOverview(a).
-								));
+						HandlerRegistration openTestBarHReg = testDisplay.getView().addOpenHandler(new TestBarOpenHandler(testDisplay, testOverview, getCommandContext(), diagramDisplay
+							, new SimpleCallbackT<TestOverviewDTO>(){public void run(TestOverviewDTO t){updateTestOverview(t);}} // a -> updateTestOverview(a).
+						));
 						testDisplay.getView().setOpenTestBarHReg(openTestBarHReg);
 					}
 					updateTestsOverviewHeader(testsPerActorOption, testOverviewDTOs, testStatistics, currentActorOption);
