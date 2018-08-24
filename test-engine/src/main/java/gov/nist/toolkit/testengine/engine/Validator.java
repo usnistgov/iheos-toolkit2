@@ -3,7 +3,6 @@ package gov.nist.toolkit.testengine.engine;
 import gov.nist.toolkit.docref.MetadataTables;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
-import gov.nist.toolkit.testengine.transactions.BasicTransaction;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
@@ -11,6 +10,15 @@ import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
+
+import gov.nist.toolkit.valsupport.client.ValidationContext;
+import gov.nist.toolkit.installation.server.Installation;
+import gov.nist.toolkit.valregmsg.message.RegistryResponseValidator;
+import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
+import gov.nist.toolkit.errorrecording.factories.TextErrorRecorderBuilder;
+import gov.nist.toolkit.errorrecording.TextErrorRecorder;
+import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
+
 
 import javax.xml.namespace.QName;
 import java.io.File;
@@ -278,6 +286,35 @@ public class Validator {
 		return idents;
 	}
 
+	public boolean registryResponseIsValid() throws MetadataException {
+	    try {
+			ValidationContext vc = new ValidationContext(Installation.instance().getDefaultCodesFile().toString());
+		/*
+		It is better to use RegistryReponseValidator over RegistryResponseParser because the parser does not check for errors.
+		gov.nist.toolkit.registrymsg.registry.RegistryResponseParser rrp = new gov.nist.toolkit.registrymsg.registry.RegistryResponseParser(regresp)
+		Constructor already calls rrp.parse()
+		rrp.get_registry_response_status()
+		 */
+			RegistryResponseValidator rrv = new RegistryResponseValidator(vc, m.getMetadata());
+
+			ErrorRecorderBuilder erBuilder = new TextErrorRecorderBuilder();
+			TextErrorRecorder er = (TextErrorRecorder) erBuilder.buildNewErrorRecorder();
+			MessageValidatorEngine mvc = new MessageValidatorEngine();
+			rrv.run(er, mvc);
+			if (!"".equals(er.toString().trim())) {
+				// Error condition
+				err(er.toString());
+				return false;
+			} else {
+				// No errors
+				return true;
+			}
+		} catch (Exception ex) {
+	        // Exception
+			err(ex.toString());
+			return false;
+		}
+	}
 
 
 	public boolean ss1Doc() throws MetadataException {
@@ -528,6 +565,8 @@ public class Validator {
 			ssApproved();
 		} else if (ec_name.equals("SSwithOneDocOnly")) {
 			ss1Doc();
+		} else if (ec_name.equals("RegistryResponseIsValid")) {
+		   registryResponseIsValid();
 		} else if (ec_name.equals("NoSubmissionSet")) {
 			hasNoSubmissionSet();
 		}
@@ -738,10 +777,10 @@ public class Validator {
 		return true;
 	}
 
-	// skb TODO THis method doesn't seem to be used?
+	// NOTE: This method doesn't seem to be used except for document generation references
 	public boolean docRplcDoc() throws MetadataException {
 		hasDocuments(2);
-		hasAssociations(1); // According to TF 3 Figure 4.2.2.2.3-2 : document replace, Should be 2?
+		hasAssociations(1); // According to TF 3 Figure 4.2.2.2.3-2 : document replace, Should be 2.
 		if (isDocApproved(m.getExtrinsicObject(0))) { // Does this assume the DocumentEntry is always ordered this way?
 			hasAssociation(m.getExtrinsicObject(0), m.getExtrinsicObject(1), "RPLC");
 			docDeprecated(m.getExtrinsicObject(1));

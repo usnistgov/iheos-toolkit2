@@ -1,5 +1,5 @@
 <TestPlan>
-    <Test>XdsDocSrcSubmissionTest-1111/SubmitApnd</Test>
+    <Test>XdsDocSrcSubmissionTest-1111/SubmitRplc</Test>
     <TestStep id="replace">
         <ExpectedStatus>Success</ExpectedStatus>
         <NullTransaction>
