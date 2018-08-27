@@ -21,12 +21,14 @@ See collections.txt file for indexing.
 				<tabs label="Options">
 					<tab label="Required"  type="option" tcCode="" externalStart="false"/>
 					<tab label="Metadata Update Option" type="option" tcCode="mu" externalStart="false"/>
+					<tab label="Restricted Metadata Update Option" type="option" tcCode="rmu" externalStart="false"/>
 					<tab label="MPQ Option" type="option" tcCode="mpq" externalStart="false"/>
 					<tab label="On Demand Option" type="option" tcCode="od" externalStart="false"/>
 					<tab label="Integrated Source Repository" type="option" tcCode="isr" externalStart="true"/>
 					<tab label="XUA Option" type="option" tcCode="xua" externalStart="false"/>
 					<tab label="CAT Folder" type="option" tcCode="catfolder" externalStart="false"/>
 					<tab label="CAT Lifecycle" type="option" tcCode="catlifecycle" externalStart="false"/>
+					<!--<tab label="Remote Metadata Update Option" type="option" tcCode="rmu" externalStart="false"/>-->
 					<tab label="RMD Remote Registry Option" type="option" tcCode="rm" externalStart="false"/>
 					<tab label="XAD PID" type="option" tcCode="xadpid" externalStart="false"/>
 				</tabs>

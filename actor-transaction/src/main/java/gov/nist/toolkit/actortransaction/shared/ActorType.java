@@ -66,7 +66,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "gov.nist.toolkit.simcommon.server.factories.RegistryActorFactory",
             "gov.nist.toolkit.fhir.simulators.sim.reg.RegistryActorSimulator",
 //            "gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator",
-            Arrays.asList(TransactionType.REGISTER, TransactionType.REGISTER_ODDE, TransactionType.STORED_QUERY, TransactionType.UPDATE, TransactionType.MPQ, TransactionType.REMOVE_METADATA, TransactionType.XAD_PID),
+            Arrays.asList(TransactionType.REGISTER, TransactionType.REGISTER_ODDE, TransactionType.STORED_QUERY, TransactionType.UPDATE, TransactionType.RMU, TransactionType.MPQ, TransactionType.REMOVE_METADATA, TransactionType.XAD_PID),
             true,
             null,
             false,

@@ -60,7 +60,7 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
             addEditableConfig(sc, SimulatorProperties.TRANSACTION_NOTIFICATION_CLASS, ParamType.TEXT, "");
             addEditableConfig(sc, SimulatorProperties.METADATA_LIMITED, ParamType.BOOLEAN, false);
 			addFixedConfig(sc, SimulatorProperties.UPDATE_METADATA_OPTION, ParamType.BOOLEAN, false);
-			addFixedConfig(sc, SimulatorProperties.REMOTE_UPDATE_METADATA_OPTION, ParamType.BOOLEAN, false);
+			addFixedConfig(sc, SimulatorProperties.RESTRICTED_UPDATE_METADATA_OPTION, ParamType.BOOLEAN, false);
 			addFixedConfig(sc, SimulatorProperties.PART_OF_RECIPIENT, ParamType.BOOLEAN, true);
 			addFixedEndpoint(sc, SimulatorProperties.registerEndpoint,       actorType, TransactionType.REGISTER,     false);
 			addFixedEndpoint(sc, SimulatorProperties.registerTlsEndpoint,    actorType, TransactionType.REGISTER,     true);
@@ -77,7 +77,7 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
 			addEditableConfig(sc, SimulatorProperties.VALIDATE_AS_RECIPIENT, ParamType.BOOLEAN, false);
             addEditableConfig(sc, SimulatorProperties.REMOVE_METADATA, ParamType.BOOLEAN, false);
 			addEditableConfig(sc, SimulatorProperties.UPDATE_METADATA_OPTION, ParamType.BOOLEAN, false);
-			addEditableConfig(sc, SimulatorProperties.REMOTE_UPDATE_METADATA_OPTION, ParamType.BOOLEAN, false);
+			addEditableConfig(sc, SimulatorProperties.RESTRICTED_UPDATE_METADATA_OPTION, ParamType.BOOLEAN, false);
 			addEditableConfig(sc, SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, ParamType.BOOLEAN, true);
 			addEditableConfig(sc, SimulatorProperties.extraMetadataSupported, ParamType.BOOLEAN, true);
 			addEditableConfig(sc, SimulatorProperties.VALIDATE_CODES, ParamType.BOOLEAN, true);
@@ -98,6 +98,9 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
 
 			addFixedEndpoint(sc, SimulatorProperties.updateEndpoint,       actorType, TransactionType.UPDATE,     false);
             addFixedEndpoint(sc, SimulatorProperties.updateTlsEndpoint,    actorType, TransactionType.UPDATE,     true);
+			addFixedEndpoint(sc, SimulatorProperties.rmuEndpoint,       actorType, TransactionType.RMU,     false);
+			addFixedEndpoint(sc, SimulatorProperties.rmuTlsEndpoint,    actorType, TransactionType.RMU,     true);
+
             addFixedEndpoint(sc, SimulatorProperties.removeMetadataEndpoint,       actorType, TransactionType.REMOVE_METADATA,     false);
             addFixedEndpoint(sc, SimulatorProperties.removeMetadataTlsEndpoint,    actorType, TransactionType.REMOVE_METADATA,     true);
 		}
@@ -140,7 +143,7 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
 
 			}
 		}
-		ele = config.get(SimulatorProperties.REMOTE_UPDATE_METADATA_OPTION);
+		ele = config.get(SimulatorProperties.RESTRICTED_UPDATE_METADATA_OPTION);
 		if (ele != null) {
 
 			Boolean optionOn = ele.asBoolean();
@@ -256,6 +259,18 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
 					asc.get(SimulatorProperties.updateTlsEndpoint).asString(),
 					true, 
 					isAsync));
+		site.addTransaction(new TransactionBean(
+				TransactionType.RMU.getCode(),
+				RepositoryType.NONE,
+				asc.get(SimulatorProperties.rmuEndpoint).asString(),
+				false,
+				isAsync));
+		site.addTransaction(new TransactionBean(
+				TransactionType.RMU.getCode(),
+				RepositoryType.NONE,
+				asc.get(SimulatorProperties.rmuTlsEndpoint).asString(),
+				true,
+				isAsync));
 //		}
 
 			site.addTransaction(new TransactionBean(

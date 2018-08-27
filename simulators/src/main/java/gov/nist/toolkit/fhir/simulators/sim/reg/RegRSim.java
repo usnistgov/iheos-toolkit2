@@ -304,11 +304,15 @@ public class RegRSim extends TransactionSimulator   {
 				log.debug("Save Assoc(" + Metadata.getId(ele) + ")("+ Metadata.getAssocSource(ele) + ", " + Metadata.getAssocTarget(ele) + ", " + m.getSimpleAssocType(ele) + ")");
 		} catch (Exception e) {}
 
+		if (vc.isRMU) {
+			boolean ok = delta.docEntryCollection.okForRMU(mc, er);
+			if (!ok)
+				return;
+		}
 		if (buildIndex) {
 			// update index
 			try {
 				RegistryFactory.buildMetadataIndex(m, delta);
-				boolean ok = delta.docEntryCollection.okForRMU(mc, er);
 			} catch (MetadataException e) {
 				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, e);
 			}

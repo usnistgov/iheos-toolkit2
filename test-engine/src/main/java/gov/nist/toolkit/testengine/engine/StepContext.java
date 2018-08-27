@@ -373,6 +373,9 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
                case "MuTransaction":
                   transaction = new MuTransaction(this, instruction, instruction_output);
                   break;
+				case "RmuTransaction":
+					transaction = new RmuTransaction(this, instruction, instruction_output);
+					break;
                case "PublishTransaction":
                   transaction = new DsubPublishTransaction(this, instruction, instruction_output);
                   break;

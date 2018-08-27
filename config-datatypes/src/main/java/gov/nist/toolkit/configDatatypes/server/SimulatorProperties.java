@@ -19,7 +19,7 @@ public class SimulatorProperties {
      * Boolean property controlling whether Metadata Update is enabled on Registry Simulator.
      */
     public static final String                 UPDATE_METADATA_OPTION = "Update_Metadata_Option";
-    public static final String                 REMOTE_UPDATE_METADATA_OPTION = "Remote_Update_Metadata_Option";
+    public static final String RESTRICTED_UPDATE_METADATA_OPTION = "Restricted_Update_Metadata_Option";
 
     /**
      * String property identifying port number for V2 Patient Identity Feed on the Registry Simulator.
@@ -123,33 +123,33 @@ public class SimulatorProperties {
      * Endpoint to use to send the indicated transaction to this Simulator.
      * Updates to this property are ignored.
      */
-    public static final String                         updateEndpoint = "update_endpoint";
-    public static final String                         rmuEndpoint = "rmu_endpoint";
+    public static final String                         updateEndpoint = "Update_endpoint";
+    public static final String                         rmuEndpoint = "Restricted_update_endpoint";
 
-    public static final String                          multiPatientQueryEndpoint = "multipatient_query_endpoint";
+    public static final String                          multiPatientQueryEndpoint = "Multipatient_query_endpoint";
 
-    public static final String                          multiPatientQueryTlsEndpoint = "multipatient_query_TLS_endpoint";
+    public static final String                          multiPatientQueryTlsEndpoint = "Multipatient_query_TLS_endpoint";
 
     /**
      * Endpoint to use to send the indicated transaction to this Simulator.
      * Updates to this property are ignored.
      */
-    public static final String                      updateTlsEndpoint = "update_TLS_endpoint";
-    public static final String                      rmuTlsEndpoint = "rmu_TLS_endpoint";
-
-    /**
-     * Profile RMD: ITI-62
-     * Endpoint to use to send the indicated transaction to this Simulator.
-     * Updates to this property are ignored.
-     */
-    public static final String                         removeMetadataEndpoint = "removeMetadata_endpoint";
+    public static final String                      updateTlsEndpoint = "Update_TLS_endpoint";
+    public static final String                      rmuTlsEndpoint = "Restricted_update_TLS_endpoint";
 
     /**
      * Profile RMD: ITI-62
      * Endpoint to use to send the indicated transaction to this Simulator.
      * Updates to this property are ignored.
      */
-    public static final String                      removeMetadataTlsEndpoint = "removeMetadata_TLS_endpoint";
+    public static final String                         removeMetadataEndpoint = "Remove_metadata_endpoint";
+
+    /**
+     * Profile RMD: ITI-62
+     * Endpoint to use to send the indicated transaction to this Simulator.
+     * Updates to this property are ignored.
+     */
+    public static final String                      removeMetadataTlsEndpoint = "Remove_metadata_TLS_endpoint";
     
     /**
      * Endpoint to use to send the indicated transaction to this Simulator.

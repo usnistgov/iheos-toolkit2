@@ -52,6 +52,11 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 		return sce != null && sce.asBoolean();
 	}
 
+	private boolean isRmuEnabled() {
+		SimulatorConfigElement sce = getSimulatorConfig().get(SimulatorProperties.RESTRICTED_UPDATE_METADATA_OPTION);
+		return sce != null && sce.asBoolean();
+	}
+
 	private boolean isPartOfRecipient() {
 		SimulatorConfigElement sce = getSimulatorConfig().get(SimulatorProperties.PART_OF_RECIPIENT);
 		return sce != null && sce.asBoolean();
@@ -85,7 +90,7 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 		SimulatorConfigElement updateConfig = getSimulatorConfig().get(SimulatorProperties.UPDATE_METADATA_OPTION);
 		if (updateConfig != null)
 			updateEnabled = updateConfig.asBoolean();
-		updateConfig = getSimulatorConfig().get(SimulatorProperties.REMOTE_UPDATE_METADATA_OPTION);
+		updateConfig = getSimulatorConfig().get(SimulatorProperties.RESTRICTED_UPDATE_METADATA_OPTION);
 		if (updateConfig != null)
 			rmuEnabled = updateConfig.asBoolean();
 	}
@@ -115,6 +120,7 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 			common.vc.hasHttp = true;
 			common.vc.hasSoap = true;
 			common.vc.isXDRLimited = isMetadataLimited();
+			common.vc.isRMU = isRmuEnabled();
 
 			if (isValidateAsRecipient())
 				common.vc.isPartOfRecipient = true;

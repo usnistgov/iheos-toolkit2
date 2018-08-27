@@ -27,6 +27,10 @@ public class AcceptableUpdate {
             er.err(XdsErrorCode.Code.XDSMetadataUpdateError, "Illegal change made to SourcePatientId - was " + prev.sourcePatientId + " updated to " + de.sourcePatientId, null, null);
             ok = false;
         }
+        if (prev.documentAvailability == null)
+            prev.documentAvailability = "urn:ihe:iti:2010:DocumentAvailability:Online";
+        if (de.documentAvailability == null)
+            de.documentAvailability = "urn:ihe:iti:2010:DocumentAvailability:Online";
         if (!prev.documentAvailability.equals(de.documentAvailability)) {
             er.err(XdsErrorCode.Code.XDSMetadataUpdateError, "Illegal change made to documentAvailability - was " + prev.documentAvailability + " updated to " + de.documentAvailability, null, null);
             ok = false;
