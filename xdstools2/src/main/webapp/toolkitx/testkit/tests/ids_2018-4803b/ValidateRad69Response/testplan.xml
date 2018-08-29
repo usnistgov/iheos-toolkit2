@@ -113,7 +113,7 @@
     <XmlDetailTransaction>
       <Assertions>
         <Assert id="Returned doc(s)" process="sameRetImgs">
-          <TestResponse testDir="../Rad69RetrieveRequest" step="retrieve" />
+          <TestResponse testDir="../Rad69RetrieveRequest" step="Rad69RetrieveRequest" />
         </Assert>
       </Assertions>
     </XmlDetailTransaction>

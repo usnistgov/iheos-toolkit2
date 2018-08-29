@@ -68,8 +68,8 @@
 				<Image_Cache>/opt/xdsi/xds-toolkit/01/ImageCache</Image_Cache>
 				<Cas_mode>false</Cas_mode>
 				<Multiuser_mode>false</Multiuser_mode>
-				<Client_Cipher_SuitesX>TLS_RSA_WITH_AES_128_CBC_SHA</Client_Cipher_SuitesX>
-				<Client_SSL_ProtocolsX>TLSv1,TLSv1.1</Client_SSL_ProtocolsX>
+				<Client_Cipher_Suites>TLS_RSA_WITH_AES_128_CBC_SHA</Client_Cipher_Suites>
+				<Client_SSL_Protocols>TLSv1,TLSv1.1</Client_SSL_Protocols>
 			</properties>
 		</profile>
 
