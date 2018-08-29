@@ -130,10 +130,10 @@ See collections.txt file for indexing.
 		<tabs label="Profiles">
 			<tab label="XCA" type="profile" tcCode="xca">
 				<tabs label="Options">
-					<!--<tab label="Restricted Metadata Update Option" type="option" tcCode="rmu" externalStart="false"/>-->
 					<tab label="Required" type="option" tcCode="" externalStart="false"/>
 					<tab label="On Demand" type="option" tcCode="od" externalStart="false"/>
 					<tab label="XUA Option" type="option" tcCode="xua" externalStart="false"/>
+					<tab label="Restricted Metadata Update Option" type="option" tcCode="rmu" externalStart="false"/>
 				</tabs>
 			</tab>
 		</tabs>

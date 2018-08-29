@@ -292,6 +292,11 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 
             return true; // no updates anyway
 
+         case TransactionType.RMU:
+            RegistryActorSimulator ras = new RegistryActorSimulator(getDsSimCommon(), simulatorConfig);
+            ras.validationContext = validationContext;
+            return ras.processRMU(mvc, validation);
+
          default:
 
             dsSimCommon.sendFault("RGActorSimulator: Don't understand transaction " + transactionType, null);

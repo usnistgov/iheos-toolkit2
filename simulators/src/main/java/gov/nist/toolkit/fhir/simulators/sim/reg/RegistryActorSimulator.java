@@ -309,60 +309,64 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 
 		}
 		else if (transactionType.equals(TransactionType.RMU)) {
-			if (!rmuEnabled) {
-				dsSimCommon.sendFault("RMU not enabled on this actor ", null);
-				return false;
-			}
-			common.vc.isMU = true;
-			common.vc.isRMU = true;
-			common.vc.isRequest = true;
-
-			if (!dsSimCommon.verifySubmissionAllowed())
-				return false;
-
-			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
-				return false;
-
-			if (mvc.hasErrors()) {
-				dsSimCommon.sendErrorsInRegistryResponse(er);
-				return false;
-			}
-
-			MuSim musim = new RMuSim(common, dsSimCommon, getSimulatorConfig());
-			mvc.addMessageValidator("MuSim", musim, er);
-
-			mvc.run();
-
-			MetadataPatternValidator mpv = new MetadataPatternValidator(common, validation);
-			mvc.addMessageValidator("MetadataPatternValidator", mpv, er);
-
-			mvc.run();
-
-
-			registryResponseGenerator = new RegistryResponseGeneratorSim(common, dsSimCommon);
-			mvc.addMessageValidator("Attach Errors", registryResponseGenerator, er);
-
-			mvc.run();
-
-			// wrap in soap wrapper and http wrapper
-			mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, dsSimCommon, registryResponseGenerator), er);
-
-			// run all the queued up validators so we can check for errors
-			mvc.run();
-
-			if (!dsSimCommon.hasErrors())
-				commit(mvc, common, musim.delta);
-
-
-			return !dsSimCommon.hasErrors();
+			return processRMU(mvc, validation);
 
 		}
 		else {
 			dsSimCommon.sendFault("RegistryActorSimulator - Don't understand transaction " + transactionType, null);
 			return false;
 		}
+	}
+
+	public boolean processRMU(MessageValidatorEngine mvc, String validation) throws IOException {
+		if (!rmuEnabled) {
+			dsSimCommon.sendFault("RMU not enabled on this actor ", null);
+			return false;
+		}
+		RegistryResponseGeneratorSim registryResponseGenerator;
+
+		common.vc.isMU = true;
+		common.vc.isRMU = true;
+		common.vc.isRequest = true;
+
+		if (!dsSimCommon.verifySubmissionAllowed())
+			return false;
+
+		if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
+			return false;
+
+		if (mvc.hasErrors()) {
+			dsSimCommon.sendErrorsInRegistryResponse(er);
+			return false;
+		}
+
+		MuSim musim = new RMuSim(common, dsSimCommon, getSimulatorConfig());
+		mvc.addMessageValidator("MuSim", musim, er);
+
+		mvc.run();
+
+		MetadataPatternValidator mpv = new MetadataPatternValidator(common, validation);
+		mvc.addMessageValidator("MetadataPatternValidator", mpv, er);
+
+		mvc.run();
 
 
+		registryResponseGenerator = new RegistryResponseGeneratorSim(common, dsSimCommon);
+		mvc.addMessageValidator("Attach Errors", registryResponseGenerator, er);
+
+		mvc.run();
+
+		// wrap in soap wrapper and http wrapper
+		mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, dsSimCommon, registryResponseGenerator), er);
+
+		// run all the queued up validators so we can check for errors
+		mvc.run();
+
+		if (!dsSimCommon.hasErrors())
+			commit(mvc, common, musim.delta);
+
+
+		return !dsSimCommon.hasErrors();
 	}
 
 	void commit(MessageValidatorEngine mvc,

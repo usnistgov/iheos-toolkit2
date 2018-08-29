@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>40030c/initial_version</Test>
+  <TestStep id="initial_version">
+    <ExpectedStatus>Failure</ExpectedStatus>
+    <RmuTransaction>
+      <XDSb/>
+      <MetadataFile>single_doc.xml</MetadataFile>
+    </RmuTransaction>
+  </TestStep>
+</TestPlan>

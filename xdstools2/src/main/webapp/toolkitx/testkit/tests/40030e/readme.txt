@@ -1,0 +1,2 @@
+DocumentEntry - Submit Update to older version
+Tests ability of Registry to reject updates to older version of DocumentEntry.  This is detected by noticing that PreviousVersion in the message is not the previous version in the Registry.
