@@ -116,7 +116,7 @@ See collections.txt file for indexing.
 
 	<tab label="Initiating Gateway" type="actor" tcCode="ig" displayColorCode="#c8ffe5">
 		<tabs label="Profiles">
-			<tab label="XDS" type="profile" tcCode="xds">
+			<tab label="XCA" type="profile" tcCode="xca">
 				<tabs label="Options">
 					<tab label="non-Affinity Domain Option"  type="option" tcCode="" externalStart="false"/>
 					<tab label="Affinity Domain Option"  type="option" tcCode="ad" externalStart="false"/>
@@ -128,8 +128,9 @@ See collections.txt file for indexing.
 
 	<tab label="Responding Gateway" type="actor" tcCode="rg" displayColorCode="#c8ffe5">
 		<tabs label="Profiles">
-			<tab label="XDS" type="profile" tcCode="xds">
+			<tab label="XCA" type="profile" tcCode="xca">
 				<tabs label="Options">
+					<!--<tab label="Restricted Metadata Update Option" type="option" tcCode="rmu" externalStart="false"/>-->
 					<tab label="Required" type="option" tcCode="" externalStart="false"/>
 					<tab label="On Demand" type="option" tcCode="od" externalStart="false"/>
 					<tab label="XUA Option" type="option" tcCode="xua" externalStart="false"/>
