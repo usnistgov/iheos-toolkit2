@@ -1,6 +1,6 @@
 <TestPlan>
-  <Test>ids_4810/validate-Imgs</Test>
-  <TestStep id="validate-images">
+  <Test>ids_2018-4803a/ValidateReturnedImages</Test>
+  <TestStep id="ValidateReturnedImages">
     <Goal>Correct RetrieveDocumentSetResponse image</Goal>
     <XmlDetailTransaction>
       <Assertions>

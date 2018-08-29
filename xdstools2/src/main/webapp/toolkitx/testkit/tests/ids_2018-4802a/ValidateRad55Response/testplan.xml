@@ -1,5 +1,5 @@
 <TestPlan>
-  <Test>ids_4805/validate-R</Test>
+  <Test>ids_2018-4802a/ValidateRad55Response</Test>
   <TestStep id="ValidateRad55Response">
     <Goal>Correct Http Response Code</Goal>
     <Standard>

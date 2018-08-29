@@ -420,6 +420,16 @@ public class Session implements SecurityParams {
 	}
 
 	@Override
+	public File getTruststore() throws EnvironmentNotSelectedException {
+		File kd = getKeystoreDir();
+		File f = new File(kd, "truststore");
+		if (f.exists()) {
+			return f;
+		}
+		return getKeystore();
+	}
+
+	@Override
 	public String getKeystorePassword() throws IOException, EnvironmentNotSelectedException {
 		Properties p = new Properties();
 		File f = new File(getKeystoreDir(), "keystore.properties");
@@ -428,6 +438,19 @@ public class Session implements SecurityParams {
 		FileInputStream fis = new FileInputStream(f);
 		p.load(fis);
 		return p.getProperty("keyStorePassword");
+	}
+
+
+	@Override
+	public String getTruststorePassword() throws IOException, EnvironmentNotSelectedException {
+		Properties p = new Properties();
+		File f = new File(getKeystoreDir(), "truststore.properties");
+		if (!f.exists()) {
+			return getKeystorePassword();
+		}
+		FileInputStream fis = new FileInputStream(f);
+		p.load(fis);
+		return p.getProperty("trustStorePassword");
 	}
 	
 	static public List<String> getEnvironmentNames() {

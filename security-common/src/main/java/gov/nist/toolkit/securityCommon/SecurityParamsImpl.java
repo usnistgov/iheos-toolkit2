@@ -33,8 +33,24 @@ public class SecurityParamsImpl implements SecurityParams {
     }
 
     @Override
+    public File getTruststore() throws EnvironmentNotSelectedException {
+        if (environmentName == null)
+            throw new EnvironmentNotSelectedException("Environment not specified in call");
+        File truststoreFile = Installation.instance().getTruststore(environmentName);
+        if (!truststoreFile.exists())
+            throw new EnvironmentNotSelectedException("Environment " + environmentName + " does not have a truststore (file is " + truststoreFile + ")");
+        return truststoreFile;
+    }
+
+    @Override
     public String getKeystorePassword() throws IOException, EnvironmentNotSelectedException {
         return Installation.instance().getKeystorePassword(environmentName);
+    }
+
+
+    @Override
+    public String getTruststorePassword() throws IOException, EnvironmentNotSelectedException {
+        return Installation.instance().getTruststorePassword(environmentName);
     }
 
     @Override

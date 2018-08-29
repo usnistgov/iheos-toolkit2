@@ -1,6 +1,6 @@
 <TestPlan>
-  <Test>ids_2018-4810a/validate-R</Test>
-  <TestStep id="validate-rad69-response">
+  <Test>ids_2018-4803a/ValidateRad69Response</Test>
+  <TestStep id="ValidateRad69Response">
     <Goal>Correct RetrieveDocumentSetResponse values</Goal>
     <Standard>
       <ResponseBody>
