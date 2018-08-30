@@ -8,7 +8,10 @@ import java.io.IOException;
 public interface SecurityParams {
 	File getCodesFile() throws EnvironmentNotSelectedException;
 	File getKeystore() throws EnvironmentNotSelectedException;
+	File getTruststore() throws EnvironmentNotSelectedException;
 	String getKeystorePassword() throws IOException, EnvironmentNotSelectedException;
+	String getTruststorePassword() throws IOException, EnvironmentNotSelectedException;
+
 	
 	File getKeystoreDir() throws EnvironmentNotSelectedException;
 }

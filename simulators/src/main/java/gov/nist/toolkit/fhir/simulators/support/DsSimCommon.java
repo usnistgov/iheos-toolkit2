@@ -915,7 +915,11 @@ public class DsSimCommon {
         Path finalPath = Paths.get("");
         while (it.hasNext() && !found) {
             finalPath = folderPath.resolve(it.next().trim());
-            if (finalPath.toFile().exists()) found = true;
+            if (finalPath.toFile().exists()) {
+                found = true;
+            } else {
+		logger.error("Was searching for file with this path, but the file is not present: " + finalPath.toString());
+            }
         }
         StoredDocument sd = null;
         if (found) {

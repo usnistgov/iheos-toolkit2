@@ -403,8 +403,8 @@ public class WADOTransaction extends BasicTransaction {
 
          String keyStoreFile = securityParams.getKeystore().toString();
          String keyStorePass = securityParams.getKeystorePassword();
-         String trustStoreFile = keyStoreFile;
-         String trustStorePass = keyStorePass;
+         String trustStoreFile = securityParams.getTruststore().toString();
+         String trustStorePass = securityParams.getTruststorePassword();
 
          AuthSSLProtocolSocketFactory protocolFactory = new AuthSSLProtocolSocketFactory(
                  new URL("file://" + keyStoreFile), keyStorePass,
@@ -412,11 +412,11 @@ public class WADOTransaction extends BasicTransaction {
          SSLContext sslContext = protocolFactory.getSSLContext();
          PropertyManager propertyManager = Installation.instance().propertyServiceManager().getPropertyManager();
          String[] cipherSuites = propertyManager.getClientCipherSuites();
+         String[] sslProtocols = propertyManager.getClientSSLProtocols();
 
-         // Allow TLSv1 protocol only
          SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
                  sslContext,
-                 new String[] { "TLSv1" },
+                 sslProtocols,
                  cipherSuites,
                  new DumbHostNameVerifier());
 

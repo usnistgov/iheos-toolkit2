@@ -1,5 +1,5 @@
 <TestPlan>
-  <Test>ids_2018-4810c/validate-R</Test>
+  <Test>ids_2018-4803c/validate-R</Test>
   <TestStep id="validate-rad69-response">
     <Goal>Correct RetrieveDocumentSetResponse values</Goal>
     <Standard>
@@ -8,6 +8,33 @@
           xmlns:xdsb="urn:ihe:iti:xds-b:2007">
           <rs:RegistryResponse xmlns:rs="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0"
             status="urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Success" />
+          <xdsb:DocumentResponse>
+            <xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.80.110</xdsb:RepositoryUniqueId>
+            <xdsb:DocumentUniqueId>1.3.6.1.4.1.14519.5.2.1.3023.4017.272356498349872276284043913045</xdsb:DocumentUniqueId>
+            <xdsb:mimeType>application/dicom</xdsb:mimeType>
+            <xdsb:Document>
+              <xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+                href="cid:docxx@ihexds.nist.gov" />
+            </xdsb:Document>
+          </xdsb:DocumentResponse>
+          <xdsb:DocumentResponse>
+            <xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.80.110</xdsb:RepositoryUniqueId>
+            <xdsb:DocumentUniqueId>1.3.6.1.4.1.14519.5.2.1.3023.4017.269606581400245985986698690481</xdsb:DocumentUniqueId>
+            <xdsb:mimeType>application/dicom</xdsb:mimeType>
+            <xdsb:Document>
+              <xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+                href="cid:docxx@ihexds.nist.gov" />
+            </xdsb:Document>
+          </xdsb:DocumentResponse>
+          <xdsb:DocumentResponse>
+            <xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.80.110</xdsb:RepositoryUniqueId>
+            <xdsb:DocumentUniqueId>1.3.6.1.4.1.14519.5.2.1.3023.4017.651141679294473490768880697269</xdsb:DocumentUniqueId>
+            <xdsb:mimeType>application/dicom</xdsb:mimeType>
+            <xdsb:Document>
+              <xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+                href="cid:docxx@ihexds.nist.gov" />
+            </xdsb:Document>
+          </xdsb:DocumentResponse>
           <xdsb:DocumentResponse>
             <xdsb:RepositoryUniqueId>1.3.6.1.4.1.21367.13.80.110</xdsb:RepositoryUniqueId>
             <xdsb:DocumentUniqueId>1.3.6.1.4.1.14519.5.2.1.3023.4017.314375186917814049221126572944</xdsb:DocumentUniqueId>
@@ -113,7 +140,7 @@
     <XmlDetailTransaction>
       <Assertions>
         <Assert id="Returned doc(s)" process="sameRetImgs">
-          <TestResponse testDir="../Rad69RetrieveRequest" step="retrieve" />
+          <TestResponse testDir="../Rad69RetrieveRequest" step="Rad69RetrieveRequest" />
         </Assert>
       </Assertions>
     </XmlDetailTransaction>

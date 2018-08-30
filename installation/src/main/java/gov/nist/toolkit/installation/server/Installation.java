@@ -395,10 +395,28 @@ public class Installation {
 		return new File(getKeystoreDir(environmentName), "keystore");
 	}
 
-	public File getKeystorePropertiesFile(String environment) {
+    public File getTruststore(String environmentName) {
+        File f = new File(getKeystoreDir(environmentName), "truststore");
+        if (f.exists()) {
+            return f;
+        }
+        return getKeystore(environmentName);
+    }
+
+    public File getKeystorePropertiesFile(String environment) {
+        File dir = getKeystoreDir(environment);
+        return new File(dir, "keystore.properties");
+    }
+
+	public File getTruststorePropertiesFile(String environment) {
 		File dir = getKeystoreDir(environment);
-		return new File(dir, "keystore.properties");
+		File f   = new File(dir, "truststore.properties");
+		if (f.exists()) {
+		    return f;
+        }
+		return getKeystorePropertiesFile(environment);
 	}
+
 
 	public String getKeystorePassword(String environmentName) throws IOException {
 		File propertiesFile = getKeystorePropertiesFile(environmentName);
@@ -415,6 +433,23 @@ public class Installation {
 		}
 		return props.getProperty("keyStorePassword");
 	}
+
+    public String getTruststorePassword(String environmentName) throws IOException {
+        File propertiesFile = getTruststorePropertiesFile(environmentName);
+        if (!propertiesFile.exists() || propertiesFile.isDirectory())
+            return getKeystorePassword(environmentName);
+
+        Properties props = new Properties();
+        InputStream is = null;
+        try {
+            is = Io.getInputStreamFromFile(propertiesFile);
+            props.load(is);
+        } finally {
+            if (is!=null)
+                is.close();
+        }
+        return props.getProperty("trustStorePassword");
+    }
 
 	public String wikiBaseAddress() {
         return propertyServiceManager().getWikiBaseAddress();

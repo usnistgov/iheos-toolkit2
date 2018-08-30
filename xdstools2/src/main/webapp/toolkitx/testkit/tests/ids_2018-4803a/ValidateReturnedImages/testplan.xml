@@ -1,11 +1,11 @@
 <TestPlan>
-  <Test>ids_4810/validate-Imgs</Test>
-  <TestStep id="validate-images">
+  <Test>ids_2018-4803a/ValidateReturnedImages</Test>
+  <TestStep id="ValidateReturnedImages">
     <Goal>Correct RetrieveDocumentSetResponse image</Goal>
     <XmlDetailTransaction>
       <Assertions>
         <Assert id="Returned img(s)" process="sameDcmImgs">
-          <TestResponse testDir="../Rad69RetrieveRequest" step="retrieve" />
+          <TestResponse testDir="../Rad69RetrieveRequest" step="Rad69RetrieveRequest" />
           <TagList>
             <SOPClassUID />
             <SOPInstanceUID />

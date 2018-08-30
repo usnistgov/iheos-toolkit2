@@ -39,6 +39,7 @@ import org.apache.commons.httpclient.protocol.SecureProtocolSocketFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.lang.Exception;
 import javax.net.SocketFactory;
 import javax.net.ssl.*;
 import java.io.IOException;
@@ -49,6 +50,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Enumeration;
+import java.util.HashSet;
 
 
 public class AuthSSLProtocolSocketFactory implements SecureProtocolSocketFactory {
@@ -83,6 +85,7 @@ public class AuthSSLProtocolSocketFactory implements SecureProtocolSocketFactory
         this.keystorePassword = keystorePassword;
         this.truststoreUrl = truststoreUrl;
         this.truststorePassword = truststorePassword;
+
     }
 
     private static KeyStore createKeyStore(final URL url, final String password) 
@@ -251,14 +254,16 @@ public class AuthSSLProtocolSocketFactory implements SecureProtocolSocketFactory
         SSLSocketFactory socketfactory = getSSLContext().getSocketFactory();
         if (timeout == 0) {
             SSLSocket mySocket = (SSLSocket)socketfactory.createSocket(host, port, localAddress, localPort);
-            mySocket = setEnabledCipherSuites(mySocket);
+            mySocket = setEnabledCipherSuites(setEnabledSSLProtocols(mySocket));
+            this.logParameters(mySocket);
             return mySocket;
         } else {
             SSLSocket socket = (SSLSocket)socketfactory.createSocket();
             SocketAddress localaddr = new InetSocketAddress(localAddress, localPort);
             SocketAddress remoteaddr = new InetSocketAddress(host, port);
             socket.bind(localaddr);
-            socket = setEnabledCipherSuites(socket);
+            socket = setEnabledCipherSuites(setEnabledSSLProtocols(socket));
+            this.logParameters(socket);
             socket.connect(remoteaddr, timeout);
             return socket;
         }
@@ -280,7 +285,8 @@ public class AuthSSLProtocolSocketFactory implements SecureProtocolSocketFactory
             clientHost,
             clientPort
         );
-       socket = setEnabledCipherSuites(socket);
+       socket = setEnabledCipherSuites(setEnabledSSLProtocols(socket));
+       this.logParameters(socket);
        return socket;
     }
 
@@ -294,7 +300,8 @@ public class AuthSSLProtocolSocketFactory implements SecureProtocolSocketFactory
             host,
             port
         );
-        socket = setEnabledCipherSuites(socket);
+        socket = setEnabledCipherSuites(setEnabledSSLProtocols(socket));
+        this.logParameters(socket);
         return socket;
     }
 
@@ -314,27 +321,106 @@ public class AuthSSLProtocolSocketFactory implements SecureProtocolSocketFactory
                 port,
                 autoClose
         );
-        mySocket = setEnabledCipherSuites(mySocket);
+        mySocket = setEnabledCipherSuites(setEnabledSSLProtocols(mySocket));
+        this.logParameters(mySocket);
         return mySocket;
+    }
+
+    private SSLSocket setEnabledSSLProtocols(SSLSocket socket)
+    {
+        LOG.error("setEnabledSSLProtocols");
+        PropertyManager propertyManager = Installation.instance().propertyServiceManager().getPropertyManager();
+        String[] sslProtocols = propertyManager.getClientSSLProtocols();
+        if (sslProtocols == null)
+        {
+            LOG.debug("No Client SSL Protocols retrieved from runtime properties file; SSL Socket is unchanged");
+            return socket;
+        }
+        try {
+            socket.setEnabledProtocols(sslProtocols);
+            LOG.debug("socket.setEnabledProtocols completed successfully");
+        } catch ( java.lang.Exception e) {
+            LOG.error("Unable to complete operation: socket.setEnabledProtocols");
+            LOG.error(e.toString());
+        }
+        return socket;
+
     }
 
     private SSLSocket setEnabledCipherSuites(SSLSocket socket)
     {
+      LOG.debug("setEnabledCipherSuites");
       PropertyManager propertyManager = Installation.instance().propertyServiceManager().getPropertyManager();
       String[] cipherSuites = propertyManager.getClientCipherSuites();
+      LOG.debug("Got cipherSuites");
       if (cipherSuites == null)
       {
-         LOG.debug("No (Client Cipher Suites retrieved from runtime properties file; SSL Socket is unchanged");
+         LOG.debug("No Client Cipher Suites retrieved from runtime properties file; SSL Socket is unchanged");
          return socket;
       }
+      String[] supportedCipherSuites = socket.getSupportedCipherSuites();
+      HashSet<String> supportedSet = new HashSet<>();
       StringBuilder builder = new StringBuilder();
-
-      for (String c:cipherSuites) {
-        builder.append(c).append(',');
+      for (String c: supportedCipherSuites) {
+          supportedSet.add(c);
+          builder.append(c).append(',');
       }
-      LOG.debug("Enabled Client Cipher Suites: " + builder.toString());
+      LOG.debug("Supported CipherSuites" + builder.toString());
+      LOG.debug("Count of supported CipherSuites: " + supportedSet.size());
 
-      socket.setEnabledCipherSuites(cipherSuites);
+      HashSet<String> enabledCipherSuites = new HashSet<>();
+      builder = new StringBuilder();
+      for (String c: cipherSuites) {
+          if (supportedSet.contains(c)) {
+              enabledCipherSuites.add(c);
+              builder.append(c).append(',');
+          } else {
+              LOG.debug("User requested ciphersuite not supported by JVM: " + c);
+          }
+      }
+      LOG.debug("Final set of requested / accepted CipherSuites: " + builder.toString());
+      LOG.debug("Final count of requested / accepted CipherSuites: " + enabledCipherSuites.size());
+
+      String[] finalCipherSuites = new String[enabledCipherSuites.size()];
+      int i = 0;
+      for (String c: enabledCipherSuites) {
+          finalCipherSuites[i++] = c;
+      }
+
+      try {
+          socket.setEnabledCipherSuites(finalCipherSuites);
+          LOG.debug("socket.setEnabledCipherSuites completed successfully");
+      } catch ( java.lang.Exception e) {
+          LOG.error("Unable to complete operation: socket.setEnabledCipherSuites");
+          LOG.error(e.toString());
+      }
       return socket;
+    }
+
+    private void logParameters(SSLSocket s) {
+        LOG.debug("Logging parameters for SSL Socket (Client Side)");
+        String[] p = s.getSupportedCipherSuites();
+        LOG.debug("\nSupported Cipher Suites (Client Side)");
+        for (String px: p) {
+            LOG.debug(" " + px);
+        }
+
+        p = s.getEnabledCipherSuites();
+        LOG.debug("\nEnabled Cipher Suites (Client Side)");
+        for (String px: p) {
+            LOG.debug(" " + px);
+        }
+
+        LOG.debug("\nSupported SSL Protocols (Client Side)");
+        p = s.getSupportedProtocols();
+        for (String px: p) {
+            LOG.debug(" " + px);
+        }
+
+        LOG.debug("\nEnabled SSL Protocols (Client Side)");
+        p = s.getEnabledProtocols();
+        for (String px: p) {
+            LOG.debug(" " + px);
+        }
     }
 }

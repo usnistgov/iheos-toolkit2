@@ -5,7 +5,7 @@
     <XmlDetailTransaction>
       <Assertions>
         <Assert id="Returned img(s)" process="sameDcmImgs">
-          <TestResponse testDir="../Rad69RetrieveRequest" step="retrieve" />
+          <TestResponse testDir="../Rad69RetrieveRequest" step="Rad69RetrieveRequest" />
           <TagList>
             <SOPClassUID />
             <SOPInstanceUID />

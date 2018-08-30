@@ -643,8 +643,8 @@ public class Soap implements SoapInterface {
 			throw new EnvironmentNotSelectedException("Trying to initialize a TLS connection - keystore location not recorded in securityParams");
 		keyStoreFile = "file:" + securityParams.getKeystore().toString();
 		keyStorePass = securityParams.getKeystorePassword();
-		trustStoreFile = keyStoreFile;
-		trustStorePass = keyStorePass;
+		trustStoreFile = "file:" + securityParams.getTruststore().toString();
+		trustStorePass = securityParams.getTruststorePassword();
 		tlsPort = tlsPortFromEndpoint();
 
 		return new Protocol("https", new AuthSSLProtocolSocketFactory(

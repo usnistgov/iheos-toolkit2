@@ -1,5 +1,5 @@
 <TestPlan>
-  <Test>ids_2018-4801a/validate-metadata</Test>
+  <Test>ids_2018-4801a/ValidateMetadata</Test>
   <TestStep id="ValidateMetadata">
     <Goal>Validate KOS metadata sent to Repository simulator</Goal>
     <ExpectedStatus>Success</ExpectedStatus>
