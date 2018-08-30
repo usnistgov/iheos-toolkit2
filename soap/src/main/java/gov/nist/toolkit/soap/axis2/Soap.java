@@ -602,7 +602,8 @@ public class Soap implements SoapInterface {
 			try {
 				inMsgCtx.getEnvelope().build();
 			} catch (NullPointerException e) {
-				throw new XdsInternalException("Toolkit Exception: TLS handshake failed or service not available on this host:port (" + endpoint + ")");
+            	log.error(e);
+				throw new XdsInternalException("Toolkit Exception: TLS handshake failed or service not available on this host:port (" + endpoint + ")", e);
 			}
 
 			OMElement soapBody = inMsgCtx.getEnvelope().getBody();

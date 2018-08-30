@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?><TestPlan>
-  <Test>40030c/initial_version</Test>
+  <Test>40000c/initial_version</Test>
   <TestStep id="initial_version">
     <ExpectedStatus>Failure</ExpectedStatus>
     <RmuTransaction>
       <XDSb/>
+      <NoPatientId/> 
+      <UseReport 
+        reportName="$patientid$" 
+        test="15823"                
+        section="pif" 
+        step="step" 
+        useAs="$patientid$"/> 
       <MetadataFile>single_doc.xml</MetadataFile>
     </RmuTransaction>
   </TestStep>
