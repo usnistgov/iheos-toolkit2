@@ -1,6 +1,6 @@
 package gov.nist.toolkit.itTests.plugins
 
-import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.actortransaction.shared.ActorType
 import gov.nist.toolkit.actortransaction.client.TransactionInstance
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.installation.server.Installation
@@ -9,7 +9,6 @@ import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.client.SimIdFactory
-import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.simcommon.server.SimDbEvent
 import gov.nist.toolkit.testengine.assertionEngine.Assertion
 import gov.nist.toolkit.testengine.engine.FhirSimulatorTransaction
@@ -23,7 +22,6 @@ import gov.nist.toolkit.testengine.transactions.TransactionInstanceBuilder
 import gov.nist.toolkit.testkitutilities.TestKitSearchPath
 import gov.nist.toolkit.utilities.html.HeaderBlock
 import gov.nist.toolkit.utilities.xml.Util
-import gov.nist.toolkit.xdsexception.client.NoResultsException
 import gov.nist.toolkit.xdsexception.client.ValidaterNotFoundException
 import gov.nist.toolkit.xdsexception.client.XdsInternalException
 import org.apache.axiom.om.OMElement

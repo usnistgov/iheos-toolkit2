@@ -5,7 +5,7 @@
     <parent>
         <groupId>gov.nist.toolkit</groupId>
         <artifactId>tk-deps</artifactId>
-        <version>6.4.1</version>
+        <version>6.5.0-SNAPSHOT</version>
         <relativePath>../tk-deps/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -53,14 +53,15 @@
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>2.19.1</version>
                 <configuration>
-                    <!-- Note: Tests only support Multiuser_mode=false and Cas_mode=false. May be this can be checked at runtime and throw a graceful error message. -->
+                    <!-- Note: These tests were only tested in Single user mode: Multiuser_mode=false and Cas_mode=false. -->
                     <!-- Uncomment below to debug individual tests -->
+                    <!-- While running these tests, keep an eye on projectdir/webui-tests/target/2018_07_13.stderrout.log to view server for output,errors, or javascript wait timeout issues. -->
                     <includes>
                         <include>**/SimulatorManagerSpec.java</include>
                         <include>**/RegistryActorSimulatorSpec.java</include>
-                        <!--<include>**/RepositoryActorSimulatorSpec.java</include>-->
-                        <!--<include>**/RecipientActorSimulatorSpec.java</include>-->
-                        <!--<include>**/RespondingGatewayActorSimulatorSpec.java</include>-->
+                        <include>**/RepositoryActorSimulatorSpec.java</include>
+                        <include>**/RecipientActorSimulatorSpec.java</include>
+                        <include>**/RespondingGatewayActorSimulatorSpec.java</include>
                     </includes>
                     <!-- Uncomment below to Run all tests -->
                     <!--<includes>-->
@@ -130,6 +131,12 @@
                     <war>../xdstools2/target/xdstools2-${project.version}.war</war>
                     <stopKey>alpha</stopKey>
                     <stopPort>9099</stopPort>
+                    <systemProperties>
+                        <systemProperty>
+                            <name>jetty.logs</name>
+                            <value>${basedir}/target</value>
+                        </systemProperty>
+                    </systemProperties>
                 </configuration>
                 <executions>
                     <execution>

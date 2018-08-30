@@ -1,6 +1,6 @@
 <TestPlan>
     <Test>ids_4810c/retrieve</Test>
-    <TestStep id="retrieve">
+    <TestStep id="Rad69RetrieveRequest">
         <Goal>Imaging Document Set Retrieve of a single image</Goal>
         <ExpectedStatus>Success</ExpectedStatus>
         <ImagingDocSetRetrieveTransaction>

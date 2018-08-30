@@ -2,6 +2,7 @@ package gov.nist.toolkit.testkitutilities
 
 import gov.nist.toolkit.installation.server.ExternalCacheManager
 import gov.nist.toolkit.installation.server.Installation
+import gov.nist.toolkit.installation.shared.TestCollectionCode
 import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException
 import spock.lang.Specification
@@ -55,7 +56,7 @@ class SearchPathTest extends Specification {
     def 'get actor collection members'() {
         when:
         TestKitSearchPath searchPath = new TestKitSearchPath(environment, testSession)
-        Collection<String> members = searchPath.getCollectionMembers(Installation.actorCollectionsDirName, 'reg')
+        Collection<String> members = searchPath.getCollectionMembers(Installation.actorCollectionsDirName, new TestCollectionCode('reg'))
         List<String> tests = new ArrayList<>(members)
 
         then:

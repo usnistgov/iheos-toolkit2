@@ -5,7 +5,6 @@ import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.TreeItem;
 import gov.nist.toolkit.registrymetadata.client.*;
 import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.TestInstance;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,19 +19,23 @@ public class ListingDisplay {
 	DataModel data;
 	/** Tree element serving as root for this display */
 	TreeThing root;
-	TestInstance logId;
-	QueryOrigin queryOrigin;
+	/** Indicates the Test Instance Result Log as the origin of Metadata Object being inspected */
 
 	Map<String, DataModel> groupByMap = new HashMap<String, DataModel>();
 
-	public ListingDisplay(MetadataInspectorTab tab, DataModel data, TreeThing root, TestInstance logId, QueryOrigin queryOrigin) {
+	QueryOrigin queryOrigin;
+	QueryOriginFinder qoFinder;
+
+	interface QueryOriginFinder {
+		QueryOrigin get(String id);
+	}
+
+	public ListingDisplay(MetadataInspectorTab tab, DataModel data, TreeThing root, QueryOrigin queryOrigin) {
 		this.tab = tab;
 		this.data = data;
 		this.root = root;
-		this.logId = logId;
 		this.queryOrigin = queryOrigin;
 	}
-
 
 
 
@@ -168,27 +171,29 @@ public class ListingDisplay {
 				item.addItem(getLogicalItem);
 
 				if (!de.isFhir) {
+					if (qoFinder != null) {
+						queryOrigin = qoFinder.get(de.id);
+					}
 					/*
 					 "TF-3: Only an Approved DocumentEntry is replaceable."
 					 if ("urn:oasis:names:tc:ebxml-regrep:StatusType:Approved".equals(de.status))
 					 But for testing purposes, this is enabled.
 					*/
 					// We should only allow edit when this panel is not the right-part of compare. By chance, when in compare mode, the tree selection is hidden.
-					if (de.id!=null && de.id.startsWith("urn:uuid:") && (queryOrigin!=null && queryOrigin.hasValues())) {
-					    // Symbolic Id is indicative of a submission data, not as it was stored by the target registry. Exclude this from metadata update.
-						TreeItem mu = new TreeItem(HyperlinkFactory.metadataUpdate(tab, de, logId,  queryOrigin, "Action: MetadataUpdate"));
+
+
+					if (queryOrigin != null && queryOrigin.hasValues()) {
+						TreeItem mu = new TreeItem(HyperlinkFactory.metadataUpdate(tab, de, queryOrigin, "Action: MetadataUpdate"));
 						item.addItem(mu);
 					}
 				}
-
-			}
-            TreeItem retrieveItem = new TreeItem(HyperlinkFactory.retrieve(tab, de, "Action: Retrieve"));
-            item.addItem(retrieveItem);
+				TreeItem retrieveItem = new TreeItem(HyperlinkFactory.retrieve(tab, de, "Action: Retrieve"));
+				item.addItem(retrieveItem);
 
 //				TreeItem editItem = new TreeItem(HyperlinkFactory.edit(tab, de, container, data.siteSpec));
 //				item.addItem(editItem);
-        }
-
+			}
+		}
 		root.addItem(item);
 	}
 
@@ -235,5 +240,8 @@ public class ListingDisplay {
 		return dm;
 	}
 
-
+	public ListingDisplay setQoFinder(QueryOriginFinder qoFinder) {
+		this.qoFinder = qoFinder;
+		return this;
+	}
 }

@@ -276,7 +276,7 @@ public class TestDefinition {
 	private ReadMe parseReadmeHTML(String readmeHtmlContents) {
 		ReadMe rm = new ReadMe();
 		try {
-			OMElement html = Util.parse_xml(readmeHtmlContents);
+			OMElement html = Util.parse_xml(readmeHtmlContents, new Boolean(false));
 			OMElement title = XmlUtil.firstDecendentWithLocalName(html, "title");
 			if (title == null) title = XmlUtil.firstDecendentWithLocalName(html, "TITLE");
 

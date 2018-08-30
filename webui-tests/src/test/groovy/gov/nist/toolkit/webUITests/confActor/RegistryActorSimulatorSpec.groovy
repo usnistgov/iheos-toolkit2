@@ -14,16 +14,16 @@ import spock.lang.Timeout
  * Created by skb1 on 6/5/2017.
  */
 @Stepwise
-@Timeout(360)
+@Timeout(400) // Keep this to accommodate slow computers (Sunil's Windows 10 laptop).
 class RegistryActorSimulatorSpec extends ConformanceActor {
 
     static final String simName = "reg" /* Sim names should be lowered cased */
 
     @Shared DocumentRegRep regRepSim
 
-
     @Override
     void setupSim() {
+        setActorPage(String.format("%s/#ConfActor:env=default;testSession=%s;actor=reg;",toolkitBaseUrl,simUser))
         deleteOldRegSim()
         sleep(5000) // Why we need this -- Problem here is that the Delete request via REST could be still running before we execute the next Create REST command. The PIF Port release timing will be off causing a connection refused error.
         regRepSim = createNewRegSim()
@@ -44,13 +44,6 @@ class RegistryActorSimulatorSpec extends ConformanceActor {
 
 
     // Registry actor specific
-    def 'Get registry conformance actor page.'() {
-        when:
-        loadPage(String.format("%s/#ConfActor:default/%s/reg",toolkitBaseUrl,simUser))
-
-        then:
-        page != null
-    }
 
     // Was there a previous SUT selected but doesn't exist now?
     def 'No unexpected popup or error message presented in a dialog box.'() {
@@ -148,7 +141,20 @@ class RegistryActorSimulatorSpec extends ConformanceActor {
         elementList = page.getByXPath("//div[contains(@class, 'orchestrationTestMc') and contains(@class, 'testOverviewHeaderSuccess')]")
 
         then:
-        elementList!=null && elementList.size()==7
+        elementList!=null && elementList.size()==8 // Orchestration tests
+    }
+
+    def 'Count tests to verify later'() { // A complete run Jetty Log should have about 46K lines.
+        when:
+        List<HtmlDivision> nodeList = page.getByXPath("//div[@class='testCount']")
+        testCount = -1
+
+        if (nodeList!=null && nodeList.size()==1) {
+            testCount = Integer.parseInt(nodeList.get(0).getTextContent())
+        }
+
+        then:
+        testCount > -1
     }
 
     def 'Find and Click the RunAll Test Registry Conformance Actor image button.'() {
@@ -208,7 +214,6 @@ class RegistryActorSimulatorSpec extends ConformanceActor {
         runAllButtonWasFound
         runAllButtonWasClicked
         page != null
-
     }
 
     def 'Number of failed tests count should be zero.'() { // A complete run Jetty Log should have about 46K lines.
@@ -223,4 +228,28 @@ class RegistryActorSimulatorSpec extends ConformanceActor {
         then:
         testFail == 0
     }
+
+    def 'Reload page'() {
+        when:
+        loadPage(actorPage)
+
+        then:
+        page != null
+    }
+
+    def 'Count tests to make sure all tests are still present'() { // A complete run Jetty Log should have about 46K lines.
+        when:
+        List<HtmlDivision> nodeList = page.getByXPath("//div[@class='testCount']")
+        int testCountToVerify = -1
+
+        if (nodeList!=null && nodeList.size()==1) {
+            testCountToVerify = Integer.parseInt(nodeList.get(0).getTextContent())
+        }
+
+        then:
+        testCountToVerify == testCount
+        println ("Total tests: " + testCount)
+    }
+
+
 }

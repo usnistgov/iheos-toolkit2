@@ -42,6 +42,7 @@ class TestsHeaderView {
         testsLabel.setWidth("12em");
         table.setWidget(0, 0, testsLabel);
         table.setWidget(0, 1, testCount);
+        testCount.setStyleName("testCount");
 
         table.setText(1, 0, "Successes:");
         table.setWidget(1, 1, successes);

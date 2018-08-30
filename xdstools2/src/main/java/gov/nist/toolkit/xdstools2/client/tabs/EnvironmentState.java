@@ -8,7 +8,8 @@ import java.util.List;
 
 /**
  * Single instance is created by Xdstools2.java to manage environment choices.
- * Each tab gets a copy of EnvironmentManager.java
+ * Historically, each tab had its own copy of EnvironmentManager.java.
+ * Now, there is only one copy of EnvironmentManager for the entire Toolkit.
  * @author bill
  *
  */

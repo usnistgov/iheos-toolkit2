@@ -4,7 +4,9 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import edu.wustl.mir.erl.ihe.xdsi.util.PrsSimLogs;
 import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
 import gov.nist.toolkit.actortransaction.TransactionErrorCodeDbLoader;
-import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.shared.ActorOption;
+import gov.nist.toolkit.actortransaction.shared.ActorType;
+import gov.nist.toolkit.actortransaction.shared.IheItiProfile;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.PidSet;
@@ -17,6 +19,7 @@ import gov.nist.toolkit.fhir.simulators.support.od.TransactionUtil;
 import gov.nist.toolkit.installation.server.ExternalCacheManager;
 import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.installation.server.PropertyServiceManager;
+import gov.nist.toolkit.installation.shared.TestCollectionCode;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.interactionmapper.InteractionMapper;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
@@ -46,6 +49,7 @@ import gov.nist.toolkit.session.server.serviceManager.FhirServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.TestSessionServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
+import gov.nist.toolkit.session.server.testlog.QuickScanLog;
 import gov.nist.toolkit.session.shared.Message;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.Simulator;
@@ -57,7 +61,6 @@ import gov.nist.toolkit.simcommon.server.SiteServiceManager;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
-import gov.nist.toolkit.testkitutilities.Sections;
 import gov.nist.toolkit.testengine.engine.RegistryUtility;
 import gov.nist.toolkit.testengine.scripts.BuildCollections;
 import gov.nist.toolkit.testengine.scripts.CodesUpdater;
@@ -78,7 +81,9 @@ import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdstools2.client.GazelleXuaUsername;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.ActorOptionConfig;
 import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TabConfig;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.UserTestCollection;
 import gov.nist.toolkit.xdstools2.client.util.ToolkitService;
 import gov.nist.toolkit.xdstools2.server.serviceManager.DashboardServiceManager;
 import gov.nist.toolkit.xdstools2.server.serviceManager.GazelleServiceManager;
@@ -186,6 +191,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         response.setToolkitBaseUrl(Installation.instance().getToolkitBaseUrl());
         logger.info("Toolkit Base URL is " + response.getToolkitBaseUrl());
         response.setWikiBaseUrl(Installation.instance().wikiBaseAddress());
+        response.setTkPropMap(props.getToolkitProperties());
         return response;
     }
 
@@ -761,14 +767,25 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<TestInstance> getCollectionMembers(GetCollectionRequest request) throws Exception {
         installCommandContext(request);
-        return session().xdsTestServiceManager().getCollectionMembers(request.getCollectionSetName(), request.getCollectionName());
+        return session().xdsTestServiceManager().getCollectionMembers(request.getCollectionSetName(), request.getTcId());
     }
+
     @Override
     public List<TestOverviewDTO> getTestsOverview(GetTestsOverviewRequest request) throws Exception {
         installCommandContext(request);
         List<TestOverviewDTO> o = session().xdsTestServiceManager().getTestsOverview(request.getTestSession(), request.getTestInstances());
         return o;
     }
+
+    @Override
+    public List<TestOverviewDTO> getActorTestProgress(GetTestsOverviewRequest request) throws Exception {
+        installCommandContext(request);
+        QuickScanLog quickScanLog = new QuickScanLog(session());
+
+        List<TestOverviewDTO> o = quickScanLog.quickScanLogs(request.getTestSession(), request.getTestInstances(), request.getQuickScanAttributes());
+        return o;
+    }
+
     public List<SectionDefinitionDAO> getTestSectionsDAOs(GetTestSectionsDAOsRequest request) throws Exception {
         installCommandContext(request);
         Session session = session().xdsTestServiceManager().session;
@@ -788,9 +805,75 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
 
     @Override
+    public TabConfig getToolTabConfig(GetTabConfigRequest request) throws Exception {
+        String toolId = request.getToolId();
+        TabConfigLoader.init(Installation.instance().getToolTabConfigFile(toolId));
+        TabConfig tabConfigRoot = TabConfigLoader.getTabConfig(toolId);
+        return tabConfigRoot;
+    }
+
+    @Override
+    public UserTestCollection getPrunedToolTabConfig(GetTabConfigRequest request) throws Exception {
+        installCommandContext(request);
+
+        String toolId = request.getToolId();
+        TabConfigLoader.init(Installation.instance().getToolTabConfigFile(toolId));
+        TabConfig tabConfigRoot = TabConfigLoader.getTabConfig(toolId);
+
+        GetCollectionRequest getCollectionRequest = new GetCollectionRequest(request, "actorcollections");
+
+        // Sort according to the user defined tab config
+        List<TestCollectionDefinitionDAO> tcDefs = getTestCollections(getCollectionRequest);
+        UserTestCollection userTestCollection = new UserTestCollection();
+        userTestCollection.setTabConfig(tabConfigRoot);
+
+        for (TabConfig tabConfig : tabConfigRoot.getChildTabConfigs()) {
+            for (TestCollectionDefinitionDAO tcd : tcDefs) {
+                if (tabConfig.getTcCode().equals(new ActorOption(tcd.getCollectionID()).actorTypeId)) {
+                    userTestCollection.getTestCollectionDefinitionDAOs().add(tcd);
+                    break;
+                }
+            }
+        }
+
+        for (final TestCollectionDefinitionDAO tcd : userTestCollection.getTestCollectionDefinitionDAOs()) {
+            for (TabConfig tabConfig : tabConfigRoot.getChildTabConfigs()) {
+                ActorOption actorOption = new ActorOption(tcd.getCollectionID());
+                if (tabConfig.getTcCode().equals(actorOption.actorTypeId)) {
+                    tabConfig.setLabel(tcd.getCollectionTitle());
+                    // Prune empty options
+                    TabConfig profiles = tabConfig.getFirstChildTabConfig();
+                    if ("Profiles".equals(profiles.getLabel())) {
+                        for (final TabConfig profileTCfg : profiles.getChildTabConfigs()) {
+                            TabConfig options = profileTCfg.getFirstChildTabConfig();
+                            if ("Options".equals(options.getLabel())) {
+                                for (final TabConfig optionTCfg : options.getChildTabConfigs()) {
+                                    ActorOptionConfig actorOptionConfig =
+                                            new ActorOptionConfig(tabConfig.getTcCode(), IheItiProfile.find(profileTCfg.getTcCode()), optionTCfg.getTcCode());
+
+                                    GetCollectionRequest actorCollectionsRequest = new GetCollectionRequest(request, "collections", actorOptionConfig.getTestCollectionCode());
+                                    List<TestInstance> testInstances = getCollectionMembers(actorCollectionsRequest);
+
+                                    if (testInstances != null && !testInstances.isEmpty()) {
+                                        tabConfig.setVisible(true);
+                                        profileTCfg.setVisible(true);
+                                        optionTCfg.setVisible(true);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return userTestCollection;
+    }
+
+    @Override
     public Map<String, String> getCollection(GetCollectionRequest request) throws Exception {
         installCommandContext(request);
-        return session().xdsTestServiceManager().getCollection(request.getCollectionSetName(), request.getCollectionName());
+        return session().xdsTestServiceManager().getCollection(request.getCollectionSetName(), request.getTcId());
     }
 
     @Override
@@ -886,7 +969,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
      * @return testname ==> description mapping
      * @throws Exception if something goes wrong
      */
-    public Map<String, String> getCollection(String testsessionName,String collectionSetName, String collectionName) throws Exception {
+    public Map<String, String> getCollection(String testsessionName,String collectionSetName, TestCollectionCode collectionName) throws Exception {
         session().setTestSession(new TestSession(testsessionName));
         return session().xdsTestServiceManager().getCollection(collectionSetName, collectionName);
     }
@@ -1805,11 +1888,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return assertionMap;
     }
 
-    public TabConfig getToolTabConfig(GetTabConfigRequest request) throws Exception {
-        String toolId = request.getToolId();
-        TabConfigLoader.init(Installation.instance().getToolTabConfigFile(toolId));
-       return TabConfigLoader.getTabConfig(toolId);
-    }
+
 
     @Override
     public String clearTestSession(CommandContext context) throws Exception {

@@ -39,7 +39,7 @@ import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SelectionModel;
 import com.google.gwt.view.client.SingleSelectionModel;
-import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
@@ -958,18 +958,7 @@ public class SimManagerWidget2 extends Composite {
     }
 
     private void defaultEditTabAction(SimulatorConfig config) {
-        //							GenericQueryTab editTab;
-        if (ActorType.ONDEMAND_DOCUMENT_SOURCE.getShortName().equals(config.getActorType())
-                ) {
-            // This simulator requires content state initialization
-            OddsEditTab editTab;
-            editTab = new OddsEditTab(hostTab, config);
-            editTab.onTabLoad(true, "ODDS");
-        } else {
-            // Generic state-less type simulators
-            GenericQueryTab editTab = new EditTab(hostTab, config);
-            editTab.onTabLoad(true, "SimConfig " + config.getId().toString());
-        }
+        new SimConfigEditorTabLoader(hostTab, config).load();
     }
 
 

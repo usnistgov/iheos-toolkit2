@@ -1,0 +1,25 @@
+
+SimConfig tool
+
+http://127.0.0.1:8888/Xdstools2.html#Tool:toolId=SimConfig;env=alternate;testSession=default;systemId=reg;
+
+
+http://127.0.0.1:8888/Xdstools2.html#Tool:toolId=SimConfig;env=default;testSession=default;systemId=fixed1;
+
+
+http://127.0.0.1:8888/Xdstools2.html#Tool:toolId=SimConfig;env=default;testSession=webuitest;systemId=fixed;
+
+
+
+Conformance Tool
+
+http://127.0.0.1:8888/Xdstools2.html#ConfActor:default/dev/reg/xds//reg
+
+http://127.0.0.1:8888/Xdstools2.html#ConfActor:default/dev/reg/xds/catfolder/reg
+
+http://127.0.0.1:8888/Xdstools2.html#ConfActor:alternate/dev/reg/xds/catfolder/reg
+
+
+http://127.0.0.1:8888/Xdstools2.html#ConfActor:env=default;testSession=default;actor=reg;profile=xds;option=catfolder;systemId=reg;
+
+http://127.0.0.1:8888/Xdstools2.html#ConfActor:env=default;testSession=default;actor=rec;profile=mhd;option=docreciprespndr;systemId=reg;

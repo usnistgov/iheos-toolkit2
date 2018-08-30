@@ -6,8 +6,9 @@ package gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
-import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.installation.shared.TestCollectionCode;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
@@ -43,7 +44,7 @@ public class RIGTestTab extends GenericQueryTab implements GatewayTool {
     String selectedActor = ActorType.RESPONDING_IMAGING_GATEWAY.getShortName();
     List<SimulatorConfig> rgConfigs;
     GenericQueryTab genericQueryTab;
-    static final String COLLECTION_NAME =  "rigtool";
+    static final TestCollectionCode COLLECTION_NAME =  new TestCollectionCode("rigtool");
     final TestSelectionManager testSelectionManager;
 
     public RIGTestTab() {

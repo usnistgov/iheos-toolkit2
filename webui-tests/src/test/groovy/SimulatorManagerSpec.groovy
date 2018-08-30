@@ -1,5 +1,5 @@
 import com.gargoylesoftware.htmlunit.html.*
-import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.actortransaction.shared.ActorType
 import gov.nist.toolkit.webUITests.confActor.ToolkitWebPage
 import spock.lang.Stepwise
 import spock.lang.Timeout
@@ -10,7 +10,8 @@ class SimulatorManagerSpec extends ToolkitWebPage {
 
     def setupSpec() {
         // Load sim man page here.
-        loadPage(String.format("%s/#Tool:Simulators",toolkitBaseUrl))
+        // http://127.0.0.1:8888/Xdstools2.html#Tool:toolId=Simulators
+        loadPage(String.format("%s/#Tool:toolId=Simulators",toolkitBaseUrl))
     }
 
     def 'No unexpected popup after initial page load'() {

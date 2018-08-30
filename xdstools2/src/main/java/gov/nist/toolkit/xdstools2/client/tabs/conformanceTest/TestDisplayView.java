@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.xdstools2.client.util.HtmlUtil;
 
@@ -13,7 +14,7 @@ import java.util.List;
 /**
  * View for TestDisplay
  */
-class TestDisplayView extends FlowPanel implements TestStatusDisplay {
+public class TestDisplayView extends FlowPanel implements TestStatusDisplay {
     private TestOverviewDisplayPanel header = new TestOverviewDisplayPanel();
     private FlowPanel body = new FlowPanel();
     private DisclosurePanel panel = new DisclosurePanel(header);
@@ -33,6 +34,9 @@ class TestDisplayView extends FlowPanel implements TestStatusDisplay {
     private HTML description = new HTML();
     private Widget interactionDiagram = null;
     private List<TestSectionDisplay> sections = new ArrayList<>();
+
+    private HandlerRegistration openSectionIfOnlyOneHReg = null;
+    private HandlerRegistration openTestBarHReg = null;
 
     TestDisplayView() {
         header.fullWidth();
@@ -64,13 +68,23 @@ class TestDisplayView extends FlowPanel implements TestStatusDisplay {
         for (TestSectionDisplay section : sections) {
             body.add(section.asWidget());
         }
-        panel.addOpenHandler(new OpenHandler<DisclosurePanel>() {
-            @Override
-            public void onOpen(OpenEvent<DisclosurePanel> openEvent) {
-                if (sections.size() == 1)
-                    sections.get(0).open();
-            }
-        });
+        if (openSectionIfOnlyOneHReg == null) { // This is a one-time handler registration
+            openSectionIfOnlyOneHReg = addOpenHandler(new OpenHandler<DisclosurePanel>() {
+                @Override
+                public void onOpen(OpenEvent<DisclosurePanel> openEvent) {
+                    autoOpenIfOnlyOneSection();
+                }
+            });
+        }
+    }
+
+    public void autoOpenIfOnlyOneSection() {
+        if (sections.size() == 1)
+            sections.get(0).open();
+    }
+
+    public HandlerRegistration addOpenHandler(OpenHandler<DisclosurePanel> openHandler) {
+       return panel.addOpenHandler(openHandler);
     }
 
     void setTestTitle(String text) {
@@ -160,8 +174,11 @@ class TestDisplayView extends FlowPanel implements TestStatusDisplay {
         header.removeExtraStyle(name);
     }
 
-    public void labelTls() {
-        tls.setHTML("TLS");
+    public void labelTls(boolean isTls) {
+        if (isTls)
+            tls.setHTML("TLS");
+        else
+            tls.setHTML("");
     }
 
     void setTestKitSourceIcon(String testKitSource, String testKitSection) {
@@ -183,5 +200,21 @@ class TestDisplayView extends FlowPanel implements TestStatusDisplay {
         testKitSourceIcon.addStyleName("right");
         testKitSourceIcon.addStyleName("iconStyle");
         testKitSourceIcon.addStyleName("iconStyle_20x20");
+    }
+
+    public HandlerRegistration getOpenSectionIfOnlyOneHReg() {
+        return openSectionIfOnlyOneHReg;
+    }
+
+    public void setOpenSectionIfOnlyOneHReg(HandlerRegistration openSectionIfOnlyOneHReg) {
+        this.openSectionIfOnlyOneHReg = openSectionIfOnlyOneHReg;
+    }
+
+    public HandlerRegistration getOpenTestBarHReg() {
+        return openTestBarHReg;
+    }
+
+    public void setOpenTestBarHReg(HandlerRegistration openTestBarHReg) {
+        this.openTestBarHReg = openTestBarHReg;
     }
 }

@@ -1,6 +1,6 @@
 <TestPlan>
-  <Test>ids_2018-4810a/validate-R</Test>
-  <TestStep id="validate-rad69-response">
+  <Test>ids_2018-4803a/ValidateRad69Response</Test>
+  <TestStep id="ValidateRad69Response">
     <Goal>Correct RetrieveDocumentSetResponse values</Goal>
     <Standard>
       <ResponseBody>
@@ -23,7 +23,7 @@
     <XmlDetailTransaction>
       <Assertions>
         <Assert id="Returned doc(s)" process="sameRetImgs">
-          <TestResponse testDir="../Rad69RetrieveRequest" step="retrieve" />
+          <TestResponse testDir="../Rad69RetrieveRequest" step="Rad69RetrieveRequest" />
         </Assert>
       </Assertions>
     </XmlDetailTransaction>

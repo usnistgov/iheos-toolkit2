@@ -14,9 +14,9 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.tk.client.TkProps;
-import gov.nist.toolkit.xdstools2.client.command.command.GetToolkitPropertiesCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionOfferingsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.InitializationCommand;
+import gov.nist.toolkit.xdstools2.client.event.ToolkitInitializationCompleteEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.injector.Injector;
 import gov.nist.toolkit.xdstools2.client.selectors.*;
@@ -55,6 +55,9 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 
 	public static String toolkitBaseUrl = null;
 	public static String wikiBaseUrl = null;
+	/**
+	 * This value is only a snapshot of the toolkit property value at startup.
+	 */
 	public boolean multiUserModeEnabled;
 	public boolean casModeEnabled;
 	public static String servletContextName;
@@ -81,6 +84,10 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 		return ClientUtils.INSTANCE.getTestSessionManager();
 	}
 
+	public EnvironmentManager getEnvironmentManager() {
+		return ClientUtils.INSTANCE.getEnvironmentManager();
+	}
+
 	// Central storage for parameters shared across all
 	// query type tabs
 	QueryState queryState = new QueryState();
@@ -98,80 +105,66 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 		menuPanel.setWidth("100%");
 		tabContainer = Injector.INSTANCE.getTabContainer();
 		assert(tabContainer != null);
-		final EnvironmentManager environmentManager = new EnvironmentManager(tabContainer);
+		ClientUtils.INSTANCE.setEnvironmentManager(new EnvironmentManager(tabContainer));
 
-		Widget decoratedTray = makeMenuCollapsible();
+		Widget menuTray = addCollapsibleButton(mainMenuPanel, mainSplitPanel);
 
-		mainSplitPanel.addWest(decoratedTray, TRAY_SIZE);
-		mainSplitPanel.setWidgetToggleDisplayAllowed(decoratedTray,true);
+		mainSplitPanel.addWest(menuTray, TRAY_SIZE);
+		mainSplitPanel.setWidgetToggleDisplayAllowed(menuTray,true);
 
 
 		TabContainer.setWidth("100%");
 		TabContainer.setHeight("100%");
 
-		new GetToolkitPropertiesCommand() {
+		final Map<String, String> tkPropMap = ClientUtils.INSTANCE.getTkPropMap();
+		ClientUtils.INSTANCE.setTkPropMap(tkPropMap);
+		multiUserModeEnabled = Boolean.parseBoolean(tkPropMap.get("Multiuser_mode"));
+		casModeEnabled = Boolean.parseBoolean(tkPropMap.get("Cas_mode"));
+		defaultTestSession = tkPropMap.get("Default_Test_Session");
+		if (defaultTestSession != null && !defaultTestSession.equals(""))
+			ClientUtils.INSTANCE.getTestSessionManager().setCurrentTestSession(defaultTestSession);
+		defaultTestSessionisProtected = "true".equalsIgnoreCase(tkPropMap.get("Default_Test_Session_is_Protected"));
+
+		menuPanel.setSpacing(10);
+
+		HorizontalFlowPanel envPanel = new HorizontalFlowPanel();
+		// No environment selector for CAS mode, but allow for single user mode and multi user mode
+		if (!casModeEnabled) {
+			envPanel.add(ClientUtils.INSTANCE.getEnvironmentManager());
+		}
+
+		Anchor anchor = new Anchor("Codes");
+		anchor.addClickHandler(new ClickHandler() {
 			@Override
-			public void onFailure(Throwable throwable) {
-				new PopupMessage("BuildTabsWrapper error getting properties : " + throwable.toString());
+			public void onClick(ClickEvent clickEvent) {
+				Window.open(Xdstools2.servletContextName + "/sim/codes/" + ClientUtils.INSTANCE.getEnvironmentManager().getSelectedEnvironment(), "_blank","");
 			}
+		});
+		envPanel.add(anchor);
+		menuPanel.add(envPanel);
 
-
-			@Override
-			public void onComplete(final Map<String, String> tkPropMap) {
-                ClientUtils.INSTANCE.setTkPropMap(tkPropMap);
-				multiUserModeEnabled = Boolean.parseBoolean(tkPropMap.get("Multiuser_mode"));
-				casModeEnabled = Boolean.parseBoolean(tkPropMap.get("Cas_mode"));
-				defaultTestSession = tkPropMap.get("Default_Test_Session");
+		testSessionSelector = new TestSessionSelector(getTestSessionManager().getTestSessions(), getTestSessionManager().getCurrentTestSession(), Xdstools2.this);
+		testSessionSelector.setVisibility(false);
+		menuPanel.add(testSessionSelector.asWidget());
+		// Only single user mode has a selectable test session drop down
+		if (!multiUserModeEnabled && !casModeEnabled) {
+			getTestSessionManager().setCurrentTestSession("default");
+			enableTestSessionSelection();
+		} else {
+			if (multiUserModeEnabled && !casModeEnabled) {
+				// Only two options: 1) Change Test Session and 2) New Test Session
+				multiUserTestSessionSelector = new MultiUserTestSessionSelector( Xdstools2.this);
+				menuPanel.add(multiUserTestSessionSelector.asWidget());
 				if (defaultTestSession != null && !defaultTestSession.equals(""))
-					ClientUtils.INSTANCE.getTestSessionManager().setCurrentTestSession(defaultTestSession);
-				defaultTestSessionisProtected = "true".equalsIgnoreCase(tkPropMap.get("Default_Test_Session_is_Protected"));
-
-				menuPanel.setSpacing(10);
-
-				HorizontalFlowPanel envPanel = new HorizontalFlowPanel();
-				// No environment selector for CAS mode, but allow for single user mode and multi user mode
-				if (!casModeEnabled) {
-					envPanel.add(environmentManager);
-				}
-
-				Anchor anchor = new Anchor("Codes");
-				anchor.addClickHandler(new ClickHandler() {
-					@Override
-					public void onClick(ClickEvent clickEvent) {
-						Window.open(Xdstools2.servletContextName + "/sim/codes/" + environmentManager.getSelectedEnvironment(), "_blank","");
-					}
-				});
-				envPanel.add(anchor);
-				menuPanel.add(envPanel);
-
-				testSessionSelector = new TestSessionSelector(getTestSessionManager().getTestSessions(), getTestSessionManager().getCurrentTestSession());
-				testSessionSelector.setVisibility(false);
-				menuPanel.add(testSessionSelector.asWidget());
-
-				// Only single user mode has a selectable test session drop down
-				if (!multiUserModeEnabled && !casModeEnabled) {
-					getTestSessionManager().setCurrentTestSession("default");
-					enableTestSessionSelection();
-				} else {
-					if (multiUserModeEnabled && !casModeEnabled) {
-						// Only two options: 1) Change Test Session and 2) New Test Session
-						multiUserTestSessionSelector = new MultiUserTestSessionSelector( Xdstools2.this);
-						menuPanel.add(multiUserTestSessionSelector.asWidget());
-						if (defaultTestSession != null && !defaultTestSession.equals(""))
-							multiUserTestSessionSelector.change(defaultTestSession);
-					} else if (casModeEnabled) {
-						// Only one option: 1) Change Test Session
-						CasUserTestSessionSelector sel = new CasUserTestSessionSelector(Xdstools2.this);
-						multiUserTestSessionSelector = sel;
-						menuPanel.add(sel.asWidget());
-					}
-				}
-				menuPanel.add(new SignInSelector());
-
+					multiUserTestSessionSelector.change(defaultTestSession);
+			} else if (casModeEnabled) {
+				// Only one option: 1) Change Test Session
+				CasUserTestSessionSelector sel = new CasUserTestSessionSelector(Xdstools2.this);
+				multiUserTestSessionSelector = sel;
+				menuPanel.add(sel.asWidget());
 			}
-		}.run(ClientUtils.INSTANCE.getCommandContext());
-
-
+		}
+		menuPanel.add(new SignInSelector());
 
 		DockLayoutPanel mainPanel = new DockLayoutPanel(Style.Unit.EM);
 		mainPanel.addNorth(menuPanel, 4);
@@ -225,7 +218,7 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 
 	static public void clearMainMenu() { ME.mainMenuPanel.clear(); }
 
-	private Widget makeMenuCollapsible() {
+	private Widget addCollapsibleButton(final FlowPanel mainMenuPanel, final SplitLayoutPanel mainSplitPanel) {
 		final FlowPanel vpCollapsible =  new FlowPanel();
 
 		// Set margins
@@ -304,6 +297,7 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 				toolkitBaseUrl = var1.getToolkitBaseUrl();
 				wikiBaseUrl = var1.getWikiBaseUrl();
 				servletContextName = var1.getServletContextName();
+				ClientUtils.INSTANCE.setTkPropMap(var1.getTkPropMap());
 				run2();  // cannot be run until this completes
 			}
 
@@ -346,17 +340,12 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 		});
 
 
-		String currentTestSession = getTestSessionManager().fromCookie();
-		if (currentTestSession == null)
-			currentTestSession = "default";
-		if (getTestSessionManager().isLegalTestSession(currentTestSession)) {
-			// Don't overwrite initialization by ConfActor activity
-			if (getTestSessionManager().getCurrentTestSession() == null)
-				getTestSessionManager().setCurrentTestSession(currentTestSession);
-		}
 //		testSessionManager.load();
 //		loadServletContext();
 		reloadTransactionOfferings();
+
+		// Fire event to signal init complete status
+		ClientUtils.INSTANCE.getEventBus().fireEvent(new ToolkitInitializationCompleteEvent());
 	}
 
 	public String toolkitName;

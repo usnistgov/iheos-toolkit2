@@ -1,42 +1,45 @@
 package gov.nist.toolkit.xdstools2.client.inspector;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.results.client.TestInstance;
 
 import java.io.Serializable;
 
 public class QueryOrigin implements IsSerializable, Serializable {
     private static final long serialVersionUID = 1L;
-    String testName;
+    TestInstance testInstance;
     String sectionName;
     String stepName;
 
     public QueryOrigin() {
     }
 
-    public QueryOrigin(String testName, String sectionName, String stepName) {
-        this.testName = testName;
+    public QueryOrigin(TestInstance testInstance, String sectionName, String stepName) {
+        this.testInstance = testInstance;
         this.sectionName = sectionName;
         this.stepName = stepName;
     }
 
-    public String getTestName() {
-        return testName;
-    }
-
-    public void setTestName(String testName) {
-        this.testName = testName;
-    }
 
     public String getSectionName() {
         return sectionName;
     }
 
-    public void setSectionName(String sectionName) {
-        this.sectionName = sectionName;
-    }
 
     public String getStepName() {
         return stepName;
+    }
+
+    public TestInstance getTestInstance() {
+        return testInstance;
+    }
+
+    public void setTestInstance(TestInstance testInstance) {
+        this.testInstance = testInstance;
+    }
+
+    public void setSectionName(String sectionName) {
+        this.sectionName = sectionName;
     }
 
     public void setStepName(String stepName) {
@@ -44,13 +47,13 @@ public class QueryOrigin implements IsSerializable, Serializable {
     }
 
     public boolean hasValues() {
-        return ((testName !=null && !"".equals(testName)) && (sectionName != null && !"".equals(sectionName)) && (stepName != null && !"".equals(stepName)));
+        return ((testInstance!=null && !"".equals(testInstance)) && (sectionName != null && !"".equals(sectionName)) && (stepName != null && !"".equals(stepName)));
     }
 
     @Override
     public String toString() {
         return "QueryOrigin{" +
-                "testName='" + testName + '\'' +
+                "testInstance=" + testInstance +
                 ", sectionName='" + sectionName + '\'' +
                 ", stepName='" + stepName + '\'' +
                 '}';

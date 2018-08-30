@@ -13,7 +13,7 @@ import spock.lang.Timeout
  * Created by skb1 on 6/28/2017.
  */
 @Stepwise
-@Timeout(360)
+@Timeout(90)
 class RespondingGatewayActorSimulatorSpec extends ConformanceActor {
 
     static final String simName = "rg" /* Sim names should be lowered cased */
@@ -22,6 +22,7 @@ class RespondingGatewayActorSimulatorSpec extends ConformanceActor {
 
     @Override
     void setupSim() {
+        setActorPage(String.format("%s/#ConfActor:env=default;testSession=%s;actor=rg;", toolkitBaseUrl, simUser))
         deleteOldRgSim()
         sleep(5000) // Why we need this -- Problem here is that the Delete request via REST could be still running before we execute the next Create REST command. The PIF Port release timing will be off causing a connection refused error in the Jetty log.
         rgSim = createNewRgSim()
@@ -42,14 +43,6 @@ class RespondingGatewayActorSimulatorSpec extends ConformanceActor {
     }
 
     // Rg actor specific
-
-    def 'Get rg actor page.'() {
-        when:
-        loadPage(String.format("%s/#ConfActor:default/%s/rg", toolkitBaseUrl, simUser))
-
-        then:
-        page != null
-    }
 
     def 'No unexpected popup or error message presented in a dialog box.'() {
         when:
@@ -149,6 +142,19 @@ class RespondingGatewayActorSimulatorSpec extends ConformanceActor {
         elementList!=null && elementList.size()==2
     }
 
+    def 'Count tests to verify later'() { // A complete run Jetty Log should have about 46K lines.
+        when:
+        List<HtmlDivision> nodeList = page.getByXPath("//div[@class='testCount']")
+        testCount = -1
+
+        if (nodeList!=null && nodeList.size()==1) {
+            testCount = Integer.parseInt(nodeList.get(0).getTextContent())
+        }
+
+        then:
+        testCount > -1
+    }
+
     def 'Find and Click the RunAll Test Rg Conformance Actor image button.'() {
 
         when:
@@ -218,5 +224,27 @@ class RespondingGatewayActorSimulatorSpec extends ConformanceActor {
 
         then:
         testFail == 0
+    }
+
+    def 'Reload page'() {
+        when:
+        loadPage(actorPage)
+
+        then:
+        page != null
+    }
+
+    def 'Count tests to make sure all tests are still present'() { // A complete run Jetty Log should have about 46K lines.
+        when:
+        List<HtmlDivision> nodeList = page.getByXPath("//div[@class='testCount']")
+        int testCountToVerify = -1
+
+        if (nodeList!=null && nodeList.size()==1) {
+            testCountToVerify = Integer.parseInt(nodeList.get(0).getTextContent())
+        }
+
+        then:
+        testCountToVerify == testCount
+        println ("Total tests: " + testCount)
     }
 }

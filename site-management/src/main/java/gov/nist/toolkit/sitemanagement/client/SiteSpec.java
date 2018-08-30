@@ -1,7 +1,7 @@
 package gov.nist.toolkit.sitemanagement.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 

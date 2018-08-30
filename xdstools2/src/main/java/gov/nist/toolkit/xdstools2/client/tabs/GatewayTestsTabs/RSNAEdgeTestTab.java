@@ -3,9 +3,10 @@ package gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
-import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.installation.shared.TestCollectionCode;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
@@ -41,7 +42,7 @@ public class RSNAEdgeTestTab extends GenericQueryTab implements GatewayTool {
     String selectedActor = ActorType.RSNA_EDGE_DEVICE.getShortName();
     SimulatorConfig config;
     GenericQueryTab genericQueryTab;
-    static final String COLLECTION_NAME =  "rsnaedgetool";
+    static final TestCollectionCode COLLECTION_NAME =  new TestCollectionCode("rsnaedgetool");
     final TestSelectionManager testSelectionManager;
 
     public RSNAEdgeTestTab() {

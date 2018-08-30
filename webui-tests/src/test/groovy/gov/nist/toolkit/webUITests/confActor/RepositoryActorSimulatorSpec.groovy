@@ -11,16 +11,16 @@ import spock.lang.Timeout
  * Created by skb1 on 6/5/2017.
  */
 @Stepwise
-@Timeout(360)
+@Timeout(90)
 class RepositoryActorSimulatorSpec extends ConformanceActor {
 
     static final String simName = "rep" /* Sim names should be lowered cased */
-    final String actorPage = String.format("%s/#ConfActor:default/%s/rep", toolkitBaseUrl, simUser)
 
     @Shared DocumentRepository repSim
 
     @Override
     void setupSim() {
+        setActorPage(String.format("%s/#ConfActor:env=default;testSession=%s;actor=rep", toolkitBaseUrl, simUser))
         deleteOldRepSim()
         sleep(5000) // Why we need this -- Problem here is that the Delete request via REST could be still running before we execute the next Create REST command. The PIF Port release timing will be off causing a connection refused error in the Jetty log.
         repSim = createNewRepSim()
@@ -40,16 +40,8 @@ class RepositoryActorSimulatorSpec extends ConformanceActor {
         return getSpi().createDocumentRepository(simName, simUser, "default")
     }
 
-
-
     // Repository actor specific
-    def 'Get repository conformance actor page.'() {
-        when:
-        loadPage(actorPage)
 
-        then:
-        page != null
-    }
 
     // Was there a previous SUT selected but doesn't exist now?
     def 'No unexpected popup or error message presented in a dialog box.'() {
@@ -176,7 +168,7 @@ class RepositoryActorSimulatorSpec extends ConformanceActor {
         return getSpi().update(simConfig)
     }
 
-    def 'Get (again) repository conformance actor page.'() {
+    def 'Get again (x1) repository conformance actor page.'() {
         when:
         loadPage(actorPage)
 
@@ -226,14 +218,23 @@ class RepositoryActorSimulatorSpec extends ConformanceActor {
         page = initializeBtn.click(false, false, false)
         webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
 
-        while (!page.asText().contains("Initialization Complete")) {
-            webClient.waitForBackgroundJavaScript(500)
-        }
-
         then:
         page.asText().contains("Initialization Complete")
 
         // There are no tests for repository orchestration tests to look for.
+    }
+
+    def 'Count tests to verify later'() { // A complete run Jetty Log should have about 46K lines.
+        when:
+        List<HtmlDivision> nodeList = page.getByXPath("//div[@class='testCount']")
+        testCount = -1
+
+        if (nodeList!=null && nodeList.size()==1) {
+            testCount = Integer.parseInt(nodeList.get(0).getTextContent())
+        }
+
+        then:
+        testCount > -1
     }
 
     def 'Find and Click the RunAll Test Registry Conformance Actor image button.'() {
@@ -306,4 +307,27 @@ class RepositoryActorSimulatorSpec extends ConformanceActor {
         then:
         testFail == 0
     }
+
+    def 'Reload page'() {
+        when:
+        loadPage(actorPage)
+
+        then:
+        page != null
+    }
+
+    def 'Count tests to make sure all tests are still present'() { // A complete run Jetty Log should have about 46K lines.
+        when:
+        List<HtmlDivision> nodeList = page.getByXPath("//div[@class='testCount']")
+        int testCountToVerify = -1
+
+        if (nodeList!=null && nodeList.size()==1) {
+            testCountToVerify = Integer.parseInt(nodeList.get(0).getTextContent())
+        }
+
+        then:
+        testCountToVerify == testCount
+        println ("Total tests: " + testCount)
+    }
+
 }

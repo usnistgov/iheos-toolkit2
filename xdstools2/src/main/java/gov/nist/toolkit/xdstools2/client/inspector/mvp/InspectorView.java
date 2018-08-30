@@ -33,6 +33,9 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
     ActivityItem activityItem;
     int rowsPerPage = 10;
 
+    HorizontalPanel inspectorWrapper = new HorizontalPanel();
+    MetadataInspectorTab metadataInspectorLeft = new MetadataInspectorTab(true);
+    MetadataInspectorTab metadataInspectorRight = new MetadataInspectorTab(true);
 
     ButtonListSelector metadataObjectSelector = new ButtonListSelector("Select a Metadata Object") {
         @Override
@@ -247,9 +250,7 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         return width;
     }
 
-    HorizontalPanel inspectorWrapper = new HorizontalPanel();
-    MetadataInspectorTab metadataInspectorLeft = new MetadataInspectorTab(true);
-    MetadataInspectorTab metadataInspectorRight = new MetadataInspectorTab(true);
+
 
     @Override
     public void onResize() {

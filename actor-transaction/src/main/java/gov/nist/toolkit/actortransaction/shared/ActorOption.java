@@ -1,6 +1,7 @@
-package gov.nist.toolkit.actortransaction.client;
+package gov.nist.toolkit.actortransaction.shared;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.installation.shared.TestCollectionCode;
 
 import java.io.Serializable;
 
@@ -8,6 +9,59 @@ public class ActorOption implements Serializable, IsSerializable {
     public IheItiProfile profileId;
     public String optionId;
     public String actorTypeId;
+
+
+
+    public ActorOption() {
+
+    }
+
+    /**
+     * Will parse encoded values such as:
+     * actor        # Required option
+     * actor_option
+     * actor(profile) # Required
+     * actor(profile)_option
+     * @param tcCode
+     */
+    public ActorOption(TestCollectionCode tcCode)  {
+        String tcNameStr = tcCode.getCode();
+        String[] parts = tcNameStr.split("_");
+
+        if (tcNameStr.contains("_")) {
+            optionId = parts[1];
+        } else {
+               optionId = "";
+         }
+        if (tcNameStr.contains("(") && tcNameStr.contains(")"))  {
+            String[] actorProfile = tcNameStr.split("\\(");
+            actorTypeId = actorProfile[0];
+            String profileId = actorProfile[1].replace(")","");
+            this.profileId = IheItiProfile.find(profileId);
+        } else {
+            actorTypeId = parts[0];
+            profileId = IheItiProfile.XDS;
+        }
+    }
+
+    /**
+     * Puts the object back into the encoded-value test collection name string.
+     * @return
+     */
+    public TestCollectionCode getTestCollectionCode() {
+        String optionCode = (optionId!=null && !"".equals(optionId))?"_"+optionId:"";
+        String collectionName = "";
+        if ((profileId==null || "".equals(profileId) || "xds".equals(profileId.toString()))) {
+            if (optionId == null || "".equals(optionId))   {
+                collectionName = actorTypeId;
+            } else {
+                collectionName =  actorTypeId + optionCode;
+            }
+        } else { // actor(profile)_option
+            collectionName = actorTypeId + "(" + profileId + ")" + optionCode;
+        }
+        return new TestCollectionCode(collectionName);
+    }
 
     @Override
     public String toString() {
@@ -22,38 +76,6 @@ public class ActorOption implements Serializable, IsSerializable {
                 .append(actorTypeId);
 
         return buf.toString();
-    }
-
-    public ActorOption() {
-
-    }
-
-    /**
-     * Will parse codes such as:
-     * actor        # Required option
-     * actor_option
-     * actor(profile) # Required
-     * actor(profile)_option
-     * @param actorTypeShortName
-     */
-    public ActorOption(String actorTypeShortName)  {
-        String[] parts = actorTypeShortName.split("_");
-
-        if (actorTypeShortName.contains("_")) {
-            optionId = parts[1];
-        } else {
-               optionId = "";
-         }
-        if (actorTypeShortName.contains("(") && actorTypeShortName.contains(")"))  {
-            String[] actorProfile = actorTypeShortName.split("\\(");
-            actorTypeId = actorProfile[0];
-            String profileId = actorProfile[1].replace(")","");
-            this.profileId = IheItiProfile.find(profileId);
-        } else {
-            actorTypeId = parts[0];
-            profileId = IheItiProfile.XDS;
-        }
-
     }
 
     public IheItiProfile getProfileId() {

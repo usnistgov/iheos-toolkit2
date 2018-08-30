@@ -44,6 +44,7 @@ public class PropertyManager {
 	static private final String DEFAULT_TEST_SESSION = "Default_Test_Session";
 	static private final String DEFAULT_TEST_SESSION_IS_PROTECTED = "Default_Test_Session_is_Protected";
 	static private final String CLIENT_CIPHER_SUITES = "Client_Cipher_Suites";
+	static private final String CLIENT_SSL_PROTOCOLS = "Client_SSL_Protocols";
 
 	private String propFile;
 	private Properties toolkitProperties = null;
@@ -59,8 +60,8 @@ public class PropertyManager {
 			String value = props.get(key);
 			validateProperty(key, value);
 			toolkitProperties.put(key, value);
-			save(props);
 		}
+		save(props);
 	}
 
 	private void validateProperty(String name, String value) throws Exception {
@@ -351,7 +352,7 @@ public class PropertyManager {
 	public Map<String, String> getPropertyMap() {
 		loadProperties();
 		validateProperties();
-		Map<String, String> props = new HashMap<String, String>();
+		Map<String, String> props = new TreeMap<String, String>();
 		for (Object keyObj : toolkitProperties.keySet()) {
 			String key = (String) keyObj;
 			String value = toolkitProperties.getProperty(key);
@@ -425,14 +426,23 @@ public class PropertyManager {
 
 	public String[] getClientCipherSuites() {
 		loadProperties();
-		String text = (String) toolkitProperties.get(CLIENT_CIPHER_SUITES);
-		if (text == null  || text.trim().equals("")) return null;
+		return splitTrimProperty((String)toolkitProperties.get(CLIENT_CIPHER_SUITES), ",");
+	}
 
-		String[] cipherSuites = text.split(",");
-		for (int i = 0; i < cipherSuites.length; i++)
+
+	public String[] getClientSSLProtocols() {
+		loadProperties();
+		return splitTrimProperty((String)toolkitProperties.get(CLIENT_SSL_PROTOCOLS), ",");
+	}
+
+	private String[] splitTrimProperty(String text, String delimiter) {
+		if (text == null  || text.trim().equals("") || text.trim().startsWith("${")) return null;
+
+		String[] items = text.split(delimiter);
+		for (int i = 0; i < items.length; i++)
 		{
-			cipherSuites[i] = cipherSuites[i].trim();
+			items[i] = items[i].trim();
 		}
-		return cipherSuites;
+		return items;
 	}
 }

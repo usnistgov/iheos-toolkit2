@@ -30,9 +30,11 @@ class UserDefinedTabBar extends TabBar  {
               TabConfig subTabConfig = child.getFirstChildTabConfig();
               if (targetTabGroupType.equals(subTabConfig.getLabel())) {
                  for (TabConfig targetTab : subTabConfig.getChildTabConfigs())  {
-                     String tabTitle = targetTab.getLabel();
-                     addTab(tabTitle);
-                     tabConfigs.add(targetTab);
+                     if (targetTab.isVisible()) {
+                         String tabTitle = targetTab.getLabel();
+                         addTab(tabTitle);
+                         tabConfigs.add(targetTab);
+                     }
                  }
               }
            } else if (child.hasChildren()) {

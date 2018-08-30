@@ -3,40 +3,138 @@ package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
-import gov.nist.toolkit.actortransaction.client.IheItiProfile;
-import gov.nist.toolkit.xdstools2.client.ToolWindow;
+import gov.nist.toolkit.actortransaction.shared.IheItiProfile;
+import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
+import gov.nist.toolkit.testenginelogging.client.QuickScanLogAttribute;
+import gov.nist.toolkit.xdstools2.client.command.command.GetActorTestProgressCommand;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
+import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetTestsOverviewRequest;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public abstract class ToolWindowWithMenu extends ToolWindow {
-
-    // Tab config
-    protected TabConfig tabConfig;
-    protected int menuCols = 3;
-
-    public ToolWindowWithMenu() {
-    }
-
-    public ToolWindowWithMenu(double east, double west) {
-        super(east, west);
-    }
+public abstract class ConformanceToolMenu {
+    private TabConfig tabConfig;
+    static final int menuCols = 3;
 
     public abstract void onMenuSelect(TabConfig actor, Map<String,TabConfig> target);
-    public abstract void setTestStatistics(HTML statsBar, ActorOptionConfig actorOption);
+    abstract CommandContext getCommandContext();
+    abstract void updateTestStatistics(Map<ActorOptionConfig, List<TestInstance>> testsPerActorOption, Map<TestInstance, TestOverviewDTO> testOverviewDTOs, TestStatistics testStatistics, ActorOptionConfig actorOption);
+
+    private void setTestStatistics(final HTML statsBar,  final ActorOptionConfig actorOptionConfig) {
+        if (getCommandContext().getTestSessionName()==null || "".equals(getCommandContext().getTestSessionName()))
+            return;
+
+
+        final TestStatistics testStatistics = new TestStatistics();
+        final Map<TestInstance, TestOverviewDTO> myTestOverviewDTOs = new HashMap<>();
+        final Map<ActorOptionConfig, List<TestInstance>> myTestsPerActorOption = new HashMap<>();
+
+        String loadImgHtmlStr = "<img style=\"width:10px;height:14px;border:1px solid white;float:left;margin-right:2px;\" src=\"icons2/ajax-loader.gif\"/>";
+
+        statsBar.setHTML(loadImgHtmlStr);
+
+        actorOptionConfig.loadTests(new AsyncCallback<List<TestInstance>>() {
+            @Override
+            public void onFailure(Throwable throwable) {
+                statsBar.setVisible(false);
+                new PopupMessage("getTestStatistics: " + throwable.getMessage());
+            }
+
+            @Override
+            public void onSuccess(List<TestInstance> testInstances) {
+                myTestsPerActorOption.put(actorOptionConfig, testInstances);
+                displayActorTestProgress(myTestOverviewDTOs, myTestsPerActorOption, testStatistics, actorOptionConfig, statsBar, testInstances);
+            }
+        });
+    }
+
+    private void displayActorTestProgress(final Map<TestInstance, TestOverviewDTO> myTestOverviewDTOs, final Map<ActorOptionConfig, List<TestInstance>> myTestsPerActorOption, final TestStatistics testStatistics, final ActorOptionConfig actorOptionConfig, final HTML statsBar, final List<TestInstance> testInstances) {
+
+        new GetActorTestProgressCommand() {
+            @Override
+            public void onComplete(List<TestOverviewDTO> testOverviews) {
+                for (TestOverviewDTO testOverview : testOverviews) {
+                    myTestOverviewDTOs.put(testOverview.getTestInstance(), testOverview);
+                }
+
+                updateTestStatistics(myTestsPerActorOption, myTestOverviewDTOs, testStatistics, actorOptionConfig);
+                String htmlStr = "<div style=\"width:10px;height:13px;border:1px solid;float:left;margin-right:2px;";
+                if (testStatistics.getTestCount()>0 && testStatistics.getNotRun() != testStatistics.getTestCount()) { // Don't show anything if not run is 100%
+                    htmlStr += "border-color:black;\">\n";
+                    if (testStatistics.getSuccesses()==testStatistics.getTestCount()) {
+                        htmlStr += "<div style=\"background-color:cyan;height:100%\"></div>\n";
+                    } else if (testStatistics.getFailures()==testStatistics.getTestCount()) {
+                        htmlStr += "<div style=\"background-color:coral;height:100%\"></div>\n";
+                    } else {
+                        float ts[] = new float[3];
+                        ts[0] = (float)testStatistics.getNotRun() / (float)testStatistics.getTestCount();
+                        ts[1] = (float)testStatistics.getSuccesses() / (float)testStatistics.getTestCount();
+                        ts[2] = (float)testStatistics.getFailures() / (float)testStatistics.getTestCount();
+
+                        // Boost small values below $boostVal to make more visible
+                        float adjustedVal = 0.0F;
+                        float boostVal = .25F;
+                        for (int idx=0; idx < ts.length; idx++) {
+                            if (ts[idx]>0 && ts[idx]<boostVal) {
+                                adjustedVal  += (boostVal-ts[idx]);
+                                ts[idx] = boostVal;
+                            }
+                        }
+                        // Compensate for boosting from the majority index
+                        if (adjustedVal >0.0F) {
+                            int majorityIdx = -1;
+                            for (int idx = 0; idx < ts.length; idx++) {
+                                if (ts[idx] >= .33F) {
+                                    if (majorityIdx==-1)  {
+                                        majorityIdx = idx;
+                                    } else {
+                                        if (ts[idx]>ts[majorityIdx]) {
+                                            majorityIdx=idx;
+                                        }
+                                    }
+                                }
+                            }
+                            if (majorityIdx>-1)
+                                ts[majorityIdx] -= adjustedVal ;
+                        }
+
+                        htmlStr +=
+                                ((testStatistics.getNotRun() > 0) ?
+                                        "<div style=\"background-color:white;height:" + ts[0]*100F + "%;\"></div>\n" : "") +
+                                        (testStatistics.getSuccesses()>0?
+                                                "<div style=\"background-color:cyan;height:" + ts[1]*100F  + "%;\"></div>\n"	:"") +
+                                        (testStatistics.getFailures()>0?
+                                                "<div style=\"background-color:coral;height:" + ts[2]*100F + "%;\"></div>\n" :"");
+                    }
+                    htmlStr += "</div>\n";
+                    statsBar.setHTML(htmlStr);
+                } else {
+                    htmlStr += "border-color:white;\">\n";
+                    htmlStr += "<div style=\"background-color:white;height:100%\"></div>\n";
+                    statsBar.setHTML(htmlStr);
+                }
+            }
+        }.run(new GetTestsOverviewRequest(getCommandContext(), testInstances, new QuickScanLogAttribute[]{QuickScanLogAttribute.IS_RUN,QuickScanLogAttribute.IS_PASS}));
+    }
 
     public boolean displayMenu(Panel destinationPanel) {
-        if (tabConfig!=null) {
-            destinationPanel .clear();
-            destinationPanel.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+        destinationPanel.clear();
+        destinationPanel.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+        HTML testNavigationTip = new HTML("Tests are organized as: Actor Profile Option. Select the option you are interested in. ");
+        destinationPanel.add(testNavigationTip);
 
-            destinationPanel.add(new HTML("Tests are organized as: Actor Profile Option. Select the option you are interested in. "));
+        if (tabConfig!=null) {
 
             int colWidth = 100 / menuCols;
             int menuCt = 0;
@@ -50,6 +148,9 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
 //            for (String code : displayOrder) {
                 for (TabConfig tc : tabConfig.getChildTabConfigs()) {
 //                    if (code.equals(tc.getTcCode())) {
+                        if (!tc.isVisible())  {
+                            continue;
+                        }
                         if (menuCt % menuCols == 0) {
                             rowAdded = true;
                             destinationPanel.add(rowPanel);
@@ -91,19 +192,26 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
                 destinationPanel.add(rowPanel);
             }
 
-            // Add legend row
-            FlowPanel legendRowPanel = new FlowPanel();
+            if (menuCt!=0) {
+
+                // Add legend row
+                FlowPanel legendRowPanel = new FlowPanel();
                 legendRowPanel.add(new HTML("<div>Legend:</div>"
                         + "<div style='margin:3px'><div style=\"width:10px;height:13px;border:1px solid white;float:left;margin-right:2px;background-color:white;\"></div>Not Run</div>"
                         + "<div style='margin:3px'><div style=\"width:10px;height:13px;border:1px solid;float:left;margin-right:2px;background-color:cyan;\"></div><span>Successes</span></div>\n"
                         + "<div style='margin:3px'><div style=\"width:10px;height:13px;border:1px solid;float:left;margin-right:2px;background-color:coral;\"></div><span>Failures</span></div>\n"
                 ));
-            legendRowPanel.getElement().addClassName("tabConfigRow");
-            destinationPanel.add(legendRowPanel);
-
+                legendRowPanel.getElement().addClassName("tabConfigRow");
+                destinationPanel.add(legendRowPanel);
+            } else {
+                    testNavigationTip.setHTML("No tests found for the given combination of Ignore_internal_testkit Toolkit Property, Environment, and/or Test Session.");
+                    return false;
+            }
             return true;
+        } else {
+            testNavigationTip.setHTML("Unexpected Null TabConfig.");
+            return false;
         }
-        return false;
     }
 
     static void setParentTcCodePath(Map<String,TabConfig> rs, TabConfigTreeItem treeItem) {
@@ -131,6 +239,7 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
                 treeItem = new TabConfigTreeItem(tabConfig);
                 treeItem.setState(true);
                 treeItem.setText(tabConfig.getLabel());
+                // Actor
                 treeItem.setHTML("<span class='gwt-TabBarItem' style='font-size:16px;background-color:#D0E4F6'><span style='margin:5px'>"+treeItem.getText()+"</span></span>");
                 if (tabConfig.getType()!=null)
                     tcCodeMap.put(tabConfig.getType(), tabConfig.getTcCode());
@@ -139,6 +248,8 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
 
             if (tabConfig.hasChildren()) {
                 int idx = 0;
+
+                // Profile
                 for (TabConfig tc : tabConfig.getChildTabConfigs()) {
                     TabConfigTreeItem ti = new TabConfigTreeItem(tc);
                     ti.setState(true);
@@ -151,6 +262,7 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
                     FlowPanel flowPanel = new FlowPanel();
                     HTML statsBar = new HTML();
                     flowPanel.add(statsBar);
+
                     if (!tc.hasChildren()) {
 
 //                        Window.alert(""+tcCodeMap.get("actor") + tcCodeMap.get("profile") + tcCodeMap.get("option"));
@@ -159,17 +271,13 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
                             ActorOptionConfig actorOption = new ActorOptionConfig(tcCodeMap.get("actor"));
                             if (tcCodeMap.get("profile")!=null) {
                                 actorOption.setProfileId(IheItiProfile.find(tcCodeMap.get("profile")));
-
                                 if (tcCodeMap.get("option")!=null) {
                                     actorOption.setOptionId(tcCodeMap.get("option"));
                                     try {
                                         setTestStatistics(statsBar, actorOption);
                                     } catch (Throwable t) {}
-
                                 }
-
                             }
-
                         }
                     }
 
@@ -178,7 +286,8 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
                         if (tc.hasChildren()) {
                             flattenedTabConfig(tcCodeMap, treeItem, tc);
                         }
-                    } else {
+                    } else if (tc.isVisible()) {
+                        // Option
                         HTML label = new HTML("<span style='font-size:14px;'>" + tc.getLabel() + "</span>");
                         flowPanel.add(label);
                         ti.setWidget(flowPanel);
@@ -194,8 +303,7 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
 
                 }
 
-            } else if (!tabConfig.isHeader() && !tabConfig.hasChildren()){
-
+            } else if (!tabConfig.isHeader() && !tabConfig.hasChildren() && tabConfig.isVisible()){
                 TabConfigTreeItem ti = new TabConfigTreeItem(tabConfig);
                 ti.setState(true);
                 ti.setHTML("<span style='font-size:14px;'>" + tabConfig.getLabel() + "</span>");
@@ -227,5 +335,12 @@ public abstract class ToolWindowWithMenu extends ToolWindow {
         }
     }
 
+    public TabConfig getTabConfig() {
+        return tabConfig;
+    }
+
+    public void setTabConfig(TabConfig tabConfig) {
+        this.tabConfig = tabConfig;
+    }
 
 }

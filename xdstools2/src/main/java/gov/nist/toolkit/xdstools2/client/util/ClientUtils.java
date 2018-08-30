@@ -2,11 +2,14 @@ package gov.nist.toolkit.xdstools2.client.util;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
+import gov.nist.toolkit.installation.shared.TestCollectionCode;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
+import gov.nist.toolkit.xdstools2.client.selectors.EnvironmentManager;
 import gov.nist.toolkit.xdstools2.client.tabs.EnvironmentState;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -16,6 +19,7 @@ public class ClientUtils {
     public static final ClientUtils INSTANCE=new ClientUtils();
     private ClientFactory clientFactory=GWT.create(ClientFactory.class);
     private EnvironmentState environmentState = new EnvironmentState();
+    private EnvironmentManager environmentManager;
     private TestSessionManager2 testSessionManager;
     private Map<String, String> tkPropMap;
 
@@ -55,5 +59,13 @@ public class ClientUtils {
 
     public void setTkPropMap(Map<String, String> tkPropMap) {
         this.tkPropMap = tkPropMap;
+    }
+
+    public EnvironmentManager getEnvironmentManager() {
+        return environmentManager;
+    }
+
+    public void setEnvironmentManager(EnvironmentManager environmentManager) {
+        this.environmentManager = environmentManager;
     }
 }

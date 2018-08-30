@@ -226,7 +226,7 @@ public class XmlUtil {
 		return al;
 	}
 
-	private static void descendantsWithLocalNameEndsWith(List<OMElement> descendants, OMElement ele, String localName, int depth) {
+	public static void descendantsWithLocalNameEndsWith(List<OMElement> descendants, OMElement ele, String localName, int depth) {
 		if (depth == 0)
 			return;
 		for (Iterator<?> it=ele.getChildElements(); it.hasNext(); ) {

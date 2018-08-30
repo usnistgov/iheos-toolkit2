@@ -15,6 +15,7 @@ import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class TabContainer {
@@ -67,7 +68,7 @@ public class TabContainer {
 		formatTitle(titleHtml);
 		TABBAR.addTab(buildTabHeaderWidget(titleHtml, w));
 
-		deck.add(new TabContents(w, presenter));
+		deck.add(new TabContents(w, presenter, title));
 		TABBAR.selectTab(TABBAR.getTabCount() - 1);
 //		TABBAR.addSelectionHandler already calls --> selectTab(); Probably need not be called again.
 
@@ -91,7 +92,7 @@ public class TabContainer {
 		formatTitle(titleHtml);
 		TABBAR.addTab(buildTabHeaderWidget(titleHtml, w));
 
-		TabContents tabContents = new TabContents(w, presenter);
+		TabContents tabContents = new TabContents(w, presenter, title);
 		tabContents.setNotifyOnDelete(notifyOnDelete);
 		deck.add(tabContents);
 		TABBAR.selectTab(TABBAR.getTabCount() - 1);
@@ -103,6 +104,35 @@ public class TabContainer {
 		return titleHtml;
 	}
 
+
+	public static String getTabTitle(int tabIdx) {
+		if (tabIdx>-1) {
+		    /* This returns the HTML formatted title. Not very useful.
+			HTML tabTitle = new HTML(TABBAR.getTab(tabIdx).toString());
+			String tabName = tabTitle.getText();
+			*/
+            TabContents tc = deck.get(tabIdx);
+			return tc.tabName;
+		}
+		return "";
+	}
+	public static boolean hasMultipleTabsOfSameTitle(String title) {
+	    int ct=0;
+		Iterator it = deck.iterator();
+		while (it.hasNext()) {
+			TabContents tc = (TabContents)it.next();
+			if (tc.tabName.equals(title)) {
+				ct++;
+			}
+		}
+		return ct>1;
+	}
+
+	public static int getTabIndex(Widget dockLp) {
+		int tabIdx = INNER_DECKPANEL.getWidgetIndex(dockLp);
+		return tabIdx;
+	}
+
 	private static void selectTab() {
 		TabContents tc = deck.get(TABBAR.getSelectedTab());
 		if (tc.presenter != null)  // null for non-MVP tools
@@ -112,7 +142,7 @@ public class TabContainer {
 		if (INNER_DECKPANEL.getWidgetIndex(dockLp)==-1) {
 			INNER_DECKPANEL.add(dockLp);
 		}else {
-			String tabName=TABBAR.getTab(TABBAR.getSelectedTab()).toString().split("<div class=\"gwt-HTML\">")[1].split("</div>")[0];
+			String tabName = getTabTitle(TABBAR.getSelectedTab());
 			((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireTabSelectedEvent(tabName);
 		}
 //		INNER_DECKPANEL.getElement().getStyle().setMargin(4, Style.Unit.PX);

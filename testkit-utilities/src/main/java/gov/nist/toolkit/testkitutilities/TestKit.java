@@ -1,6 +1,7 @@
 package gov.nist.toolkit.testkitutilities;
 
 import gov.nist.toolkit.installation.server.Installation;
+import gov.nist.toolkit.installation.shared.TestCollectionCode;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.utilities.io.Io;
@@ -121,14 +122,14 @@ public class TestKit {
 	/**
 	 * Get test names and descriptions from a named test collection
 	 * @param collectionSetName name of directory holding tc files (collection definitions)
-	 * @param collectionName name of a collection 
+	 * @param testCollectionId name of a collection
 	 * @return list of test name => description
 	 * @throws Exception oops - collection doesn't exist or cannot be read
 	 */
-	public Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception {
+	public Map<String, String> getCollection(String collectionSetName, TestCollectionCode testCollectionId) throws Exception {
 		Map<String, String> testNames = new HashMap<String, String>();
 		
-		String[] parts = Io.stringFromFile(getCollectionFileByName(collectionSetName, collectionName)).split("\n");
+		String[] parts = Io.stringFromFile(getCollectionFileByName(collectionSetName, testCollectionId)).split("\n");
 		
 		for (int i=0; i<parts.length; i++) {
 			String name = parts[i];
@@ -149,15 +150,15 @@ public class TestKit {
 	/**
 	 * Get test names from collection.  Set is used incase of duplicates.
 	 * @param collectionSetName
-	 * @param collectionName
+	 * @param testCollectionId
 	 * @return
 	 * @throws Exception
      */
-	public List<String> getCollectionMembers(String collectionSetName, String collectionName) throws Exception {
+	public List<String> getCollectionMembers(String collectionSetName, TestCollectionCode testCollectionId) throws Exception {
 		Set<String> names = new HashSet<>();
 
 		String[] parts;
-		File file = getCollectionFileByName(collectionSetName, collectionName);
+		File file = getCollectionFileByName(collectionSetName, testCollectionId);
 		try {
 			parts = Io.stringFromFile(file).split("\n");
 		} catch (Exception e) {
@@ -183,14 +184,17 @@ public class TestKit {
 		List<TestCollectionDefinitionDAO> defs = new ArrayList<>();
 
 		File collectionDir = new File(testKit, collectionSetName);
-		if (!collectionDir.exists() || !collectionDir.isDirectory())
-			throw new Exception("Test collection set name " + collectionSetName + " does not exist");
+		if (!collectionDir.exists() || !collectionDir.isDirectory()) {
+			String msg = "Test collection set name " + collectionSetName + " does not exist";
+			logger.warn(msg + " in " + collectionDir);
+			throw new Exception(msg); // protect directory from user
+		}
 		for (File collectionFile : collectionDir.listFiles()) {
 			if (collectionFile.isDirectory()) continue;
 			if (!collectionFile.getName().endsWith(".txt")) continue;
 			String collectionId = stripFileType(collectionFile.getName());
 			String collectionTitle = Io.stringFromFile(collectionFile);
-			defs.add(new TestCollectionDefinitionDAO(collectionId, collectionTitle));
+			defs.add(new TestCollectionDefinitionDAO(new TestCollectionCode(collectionId), collectionTitle));
 		}
 
 		return defs;
@@ -206,14 +210,14 @@ public class TestKit {
 	/**
 	 * Given the name of a collection, return File reference. This format is used by collections and actorcollections
 	 * @param collectionSetName
-	 * @param collectionName
+	 * @param testCollectionId
 	 * @return
 	 */
-	public File getCollectionFileByName(String collectionSetName, String collectionName) {
+	public File getCollectionFileByName(String collectionSetName, TestCollectionCode testCollectionId) {
 		File collectionFile = new File(
 				testKit.toString() + File.separator +
 				collectionSetName + File.separator +
-				collectionName + ".tc"
+				testCollectionId + ".tc"
 				);
 		
 		return collectionFile;
