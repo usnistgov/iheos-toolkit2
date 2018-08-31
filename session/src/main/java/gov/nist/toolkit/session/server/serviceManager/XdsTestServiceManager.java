@@ -451,10 +451,22 @@ public class XdsTestServiceManager extends CommonService {
 			}
 
 			for (TestInstance ti : tis) {
-				TestDefinition def = session.getTestkitSearchPath().getTestDefinition(ti.getId());
+				TestDefinition def = null;
+				try {
+					def = session.getTestkitSearchPath().getTestDefinition(ti.getId());
+				} catch (Exception e) {
+					throw new XdsInternalException("Unable to load test definition  for " + ti.getId(), e);
+				}
 				if (def == null)
 					throw new XdsInternalException("Cannot find test definition for " + ti);
-				List<SectionDefinitionDAO> sectionDAOs = def.getSections();
+				List<SectionDefinitionDAO> sectionDAOs;
+				try {
+					sectionDAOs = def.getSections();
+				} catch (XdsInternalException e) {
+					throw new XdsInternalException(e.getMessage() + " of test " + ti.getId());
+				} catch (Exception e) {
+					throw new XdsInternalException("Unable to load test definition  for " + ti.getId(), e);
+				}
 				boolean sutInitiated = false;
 				for (SectionDefinitionDAO dao : sectionDAOs) {
 					if (dao.isSutInitiated()) sutInitiated = true;
