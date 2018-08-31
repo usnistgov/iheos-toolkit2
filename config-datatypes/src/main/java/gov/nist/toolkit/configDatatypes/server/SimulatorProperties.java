@@ -13,13 +13,14 @@ public class SimulatorProperties {
     /**
      * Boolean property controlling whether Remove Metadata is enabled on Registry Simulator.
      */
-    public static final String                 REMOVE_METADATA = "Remove_Metadata_Remote_Registry_Option";
+//    public static final String                 REMOVE_METADATA = "Remove_Metadata_Remote_Registry_Option";
     
     /**
      * Boolean property controlling whether Metadata Update is enabled on Registry Simulator.
      */
     public static final String                 UPDATE_METADATA_OPTION = "Update_Metadata_Option";
     public static final String RESTRICTED_UPDATE_METADATA_OPTION = "Restricted_Update_Metadata_Option";
+    public static final String REMOVE_METADATA = "Remove_Metadata";
 
     /**
      * String property identifying port number for V2 Patient Identity Feed on the Registry Simulator.

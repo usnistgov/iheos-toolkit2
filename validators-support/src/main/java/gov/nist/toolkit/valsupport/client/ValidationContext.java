@@ -45,6 +45,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	public boolean isSQ      = false;
 	public boolean isMU      = false;
 	public boolean isRMU      = false;
+	public boolean isRM       = false;
 	public boolean isDIRECT  = false;
 	public boolean isCCDA	 = false;
 	/**
@@ -196,7 +197,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	}
 
 	public boolean requiresSimpleSoap() {
-		return isR || isMU || isRMU || (isSQ && !isEpsos);
+		return isR || isMU || isRMU || isRM || (isSQ && !isEpsos);
 	}
 
 	public XdsErrorCode.Code getBasicErrorCode() {
@@ -223,6 +224,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 				updateEnabled == v.updateEnabled &&
 				isMU == v.isMU &&
 						isRMU == v.isRMU &&
+						isRM == v.isRM &&
 				isR == v.isR &&
  				isRODDE == v.isRODDE &&
 				isPnR == v.isPnR &&
@@ -260,6 +262,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 
 		isMU = v.isMU;
 		isRMU = v.isRMU;
+		isRM = v.isRM;
 		updateEnabled = v.updateEnabled;
 		//			minMeta = v.minMeta;
 
@@ -322,6 +325,12 @@ public class ValidationContext  implements Serializable, IsSerializable {
 				return "Register On-Demand Document Entry";
 			if (isResponse)
 				return "RegistryResponse";
+		}
+		if (isRM) {
+			if (isRequest)
+				return "Remove Metadata";
+			if (isResponse)
+				return "RegistryResponst";
 		}
 		if (isMU) {
 			if (isRequest)
@@ -419,7 +428,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 			if (isResponse)
 				return MetadataTypes.METADATA_TYPE_REGISTRY_RESPONSE3;
 		}
-		if (isR || isMU || isRMU) {
+		if (isR || isMU || isRMU || isRM) {
 			if (isRequest)
 				return MetadataTypes.METADATA_TYPE_Rb;
 			if (isResponse)
@@ -462,6 +471,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 		if (isRODDE) buf.append(";RegisterODDE");
 		if (isMU) buf.append(";MU");
 		if (isRMU) buf.append(";RMU");
+		if (isRM) buf.append(";RM");
 		if (isPnR) buf.append(";PnR");
 		if (isRet) buf.append(";Retrieve");
 		if (isRad69) buf.append(";RAD69");
@@ -515,7 +525,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	}
 
 	public boolean isTransactionKnown() {
-		return isR || isRODDE || isMU || isRMU || isPnR || isRet || isXDR || isXDM || isSQ || isRad69 || isRad55;
+		return isR || isRODDE || isMU || isRMU || isRM || isPnR || isRet || isXDR || isXDM || isSQ || isRad69 || isRad55;
 	}
 
 	public boolean isMessageTypeKnown() {
@@ -531,7 +541,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	}
 
 	public boolean isSubmit() {
-		return isR || isRODDE || isMU || isRMU || isPnR || isXDR || isXDM;
+		return isR || isRODDE || isMU || isRMU || isRM || isPnR || isXDR || isXDM;
 	}
 
 	public boolean availabilityStatusRequired() {
