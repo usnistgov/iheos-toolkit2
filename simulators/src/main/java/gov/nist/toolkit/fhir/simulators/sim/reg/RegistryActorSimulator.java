@@ -3,6 +3,7 @@ package gov.nist.toolkit.fhir.simulators.sim.reg;
 import gov.nist.toolkit.actorfactory.PatientIdentityFeedServlet;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.fhir.simulators.sim.reg.mu.RMSim;
 import gov.nist.toolkit.fhir.simulators.sim.reg.mu.RMuSim;
 import gov.nist.toolkit.simcommon.client.NoSimException;
 import gov.nist.toolkit.simcommon.client.SimId;
@@ -352,7 +353,8 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 			return false;
 		}
 
-		RMSim rmsim = new RMSim(common, dsSimCommon, getSimulatorConfig());
+
+		RMSim rmsim = new RMSim(dsSimCommon, getSimulatorConfig());
 		mvc.addMessageValidator("RMSim", rmsim, er);
 
 		mvc.run();
@@ -368,12 +370,7 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 		// run all the queued up validators so we can check for errors
 		mvc.run();
 
-		if (!dsSimCommon.hasErrors())
-			commit(mvc, common, musim.delta);
-
-
 		return !dsSimCommon.hasErrors();
-
 	}
 
 	public boolean processRMU(MessageValidatorEngine mvc, String validation) throws IOException {

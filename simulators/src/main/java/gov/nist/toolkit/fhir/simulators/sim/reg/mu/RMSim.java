@@ -2,6 +2,7 @@ package gov.nist.toolkit.fhir.simulators.sim.reg.mu;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.fhir.simulators.sim.reg.store.MetadataCollection;
 import gov.nist.toolkit.fhir.simulators.support.DsSimCommon;
 import gov.nist.toolkit.fhir.simulators.support.TransactionSimulator;
 import gov.nist.toolkit.registrymetadata.Metadata;
@@ -19,11 +20,10 @@ public class RMSim extends TransactionSimulator {
     protected MessageValidatorEngine mvc;
     protected DsSimCommon dsSimCommon;
     protected Metadata m = null;
-    private List<String> idsToDelete = new ArrayList<>();
+    public MetadataCollection mc;
 
-
-    public RMSim(SimCommon common, SimulatorConfig simulatorConfig) {
-        super(common, simulatorConfig);
+    public RMSim(DsSimCommon dsSimCommon, SimulatorConfig simulatorConfig) {
+        super(dsSimCommon.simCommon, simulatorConfig);
         this.dsSimCommon = dsSimCommon;
     }
 
@@ -37,6 +37,21 @@ public class RMSim extends TransactionSimulator {
         if (er.hasErrors())
             return;
 
+        List<String> toDelete = new ArrayList<>();
+
+        for (String id : m.getObjectRefIds()) {
+            if (mc.docEntryCollection.hasObject(id))
+                toDelete.add(id);
+            else
+                er.err(XdsErrorCode.Code.UnresolvedReferenceException, id, null, null);
+        }
+
+        if(er.hasErrors())
+            return;
+
+        for (String id : toDelete) {
+            mc.deleteRo(id);
+        }
     }
 
     protected void setup() {
@@ -66,8 +81,8 @@ public class RMSim extends TransactionSimulator {
             er.err(XdsErrorCode.Code.XDSRegistryError, "Remove Metadata request cannot contain Folder objects", null, null);
             return;
         }
+        mc = dsSimCommon.regIndex.mc;
 
-        List<String> missing = new ArrayList<>();
     }
 
 
