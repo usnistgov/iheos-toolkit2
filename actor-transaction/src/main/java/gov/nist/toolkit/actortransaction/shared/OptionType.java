@@ -23,7 +23,8 @@ public enum OptionType {
     Folder("folder", "Folder"),
     REMOVE("rm", "REMOVE"),
     REMOVE_DOCUMENT("rd", "Remove Document"),
-    XAD_PID("xadpid", "XAD_PID");
+    XAD_PID("xadpid", "XAD_PID"),
+    RMU("rmu", "RMU");
 
 
 

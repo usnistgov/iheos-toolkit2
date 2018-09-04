@@ -353,7 +353,6 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 			return false;
 		}
 
-
 		RMSim rmsim = new RMSim(dsSimCommon, getSimulatorConfig());
 		mvc.addMessageValidator("RMSim", rmsim, er);
 
@@ -370,7 +369,12 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 		// run all the queued up validators so we can check for errors
 		mvc.run();
 
+//		if (!dsSimCommon.hasErrors())
+//			commit(mvc, common, musim.delta);
+
+
 		return !dsSimCommon.hasErrors();
+
 	}
 
 	public boolean processRMU(MessageValidatorEngine mvc, String validation) throws IOException {

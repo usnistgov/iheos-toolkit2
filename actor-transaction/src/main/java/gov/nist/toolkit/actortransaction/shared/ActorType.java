@@ -72,7 +72,7 @@ public enum ActorType implements IsSerializable, Serializable {
             false,
             Constants.USE_SHORTNAME,
             IheItiProfile.XDS,
-            Arrays.asList(OptionType.REQUIRED, OptionType.METADATA_UPDATE, OptionType.MULTI_PATIENT_QUERY, OptionType.XUA, OptionType.CAT_FOLDER, OptionType.CAT_LIFECYCLE,OptionType.ISR,OptionType.ON_DEMAND, OptionType.REMOVE, OptionType.XAD_PID)
+            Arrays.asList(OptionType.REQUIRED, OptionType.METADATA_UPDATE, OptionType.MULTI_PATIENT_QUERY, OptionType.XUA, OptionType.CAT_FOLDER, OptionType.CAT_LIFECYCLE,OptionType.ISR,OptionType.ON_DEMAND, OptionType.REMOVE, OptionType.XAD_PID, OptionType.RMU)
     ),
 //    REGISTRY_RMD(
 //            "REMOVE Metadata",
@@ -271,7 +271,7 @@ public enum ActorType implements IsSerializable, Serializable {
             null,
             false,
             Constants.USE_SHORTNAME,
-            IheItiProfile.XDS,
+            IheItiProfile.XCA,
             Arrays.asList(OptionType.REQUIRED,OptionType.AFFINITY_DOMAIN,OptionType.XUA)
     ),
     INITIATING_IMAGING_GATEWAY(
@@ -314,8 +314,8 @@ public enum ActorType implements IsSerializable, Serializable {
             null,
             false,
             Constants.USE_SHORTNAME,
-            IheItiProfile.XDS,
-            Arrays.asList(OptionType.REQUIRED,OptionType.ON_DEMAND,OptionType.XUA)
+            IheItiProfile.XCA,
+            Arrays.asList(OptionType.REQUIRED,OptionType.ON_DEMAND,OptionType.XUA, OptionType.RMU)
     ),
     OD_RESPONDING_GATEWAY(
             "Responding Gateway - On Demand",
