@@ -105,7 +105,12 @@ public class TestDefinition {
 		List<SectionDefinitionDAO> sections = new ArrayList<>();
 		List<String> sectionNames = getSectionIndex();
 		for (String sectionName : sectionNames) {
-			SectionDefinitionDAO dao = getSection(sectionName);
+			SectionDefinitionDAO dao;
+			try {
+				dao = getSection(sectionName);
+			} catch (Exception e) {
+				throw new XdsInternalException("Cannot load testplan for section " + sectionName);
+			}
 			sections.add(dao);
 		}
 		return sections;
@@ -115,7 +120,11 @@ public class TestDefinition {
 		if (sectionName == null) {
 			return parseTestPlan(Util.parse_xml(new File(testDir, "testplan.xml")), sectionName);
 		}
-		return parseTestPlan(Util.parse_xml(new File(new File(testDir, sectionName), "testplan.xml")), sectionName);
+		try {
+			return parseTestPlan(Util.parse_xml(new File(new File(testDir, sectionName), "testplan.xml")), sectionName);
+		} catch (Exception e) {
+			throw new XdsInternalException("Unable to load test definition for test " + getId() + " section " + sectionName, e);
+		}
 	}
 
 	private final static QName TEST_QNAME = new QName("test");
