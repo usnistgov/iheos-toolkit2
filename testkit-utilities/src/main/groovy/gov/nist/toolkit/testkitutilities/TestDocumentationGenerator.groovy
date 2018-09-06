@@ -169,6 +169,9 @@ class TestDocumentationGenerator {
                 case 'DocRplcDoc':
                     assertion(doc, 'Two DocumentEntries linked by a RPLC Association')
                     break
+                case 'HasXFRM_RPLC':
+                    assertion(doc, 'Includes XFRM_RPLC Association')
+                    assertion(doc, 'Multiple XFRM_RPLC Associates not found for single DocumentEntry')
                 case 'OneDocDep':
                     assertion(doc, 'Includes single Deprecated DocumentEntry')
                     break
