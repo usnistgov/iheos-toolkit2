@@ -4,36 +4,31 @@
 package gov.nist.toolkit.testengine.engine;
 
 import edu.wustl.mir.erl.ihe.xdsi.util.PfnType;
-import edu.wustl.mir.erl.ihe.xdsi.util.PidDateFilenameFilter;
 import edu.wustl.mir.erl.ihe.xdsi.util.PrsSimLogs;
 import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
 import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.simcommon.client.SimId;
-import gov.nist.toolkit.simcommon.server.SimDb;
-import gov.nist.toolkit.simcommon.server.SimDbEvent;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 /**
  * Used to retrieve results of a transaction previously sent to a simulator
- * 
+ *
  * @author Ralph Moulton / MIR WUSTL IHE Development Project <a
  * href="mailto:moultonr@mir.wustl.edu">moultonr@mir.wustl.edu</a>
  *
  */
-public class SimulatorTransaction implements TransactionRecordGetter<SimulatorTransaction> {
-      
+public class SimulatorTransaction {
+
    private SimId simId;
    private TransactionType transactionType;
    private String pid;
@@ -49,8 +44,7 @@ public class SimulatorTransaction implements TransactionRecordGetter<SimulatorTr
    private List<String> pfns = new ArrayList<>();
    private String stdPfn;
    private String url;
-   private SimDbEvent simDbEvent;
-   
+
    private UseReportManager useReportManager = null;
 
    public SimulatorTransaction(SimId simId, TransactionType transactionType, String pid, Date timeStamp) {
@@ -234,7 +228,7 @@ public class SimulatorTransaction implements TransactionRecordGetter<SimulatorTr
    public void setResponseBody(String responseBody) {
       this.responseBody = responseBody;
    }
-   
+
    /**
     * @return the {@link #pfns} value.
     */
@@ -248,7 +242,7 @@ public class SimulatorTransaction implements TransactionRecordGetter<SimulatorTr
    public void setPfns(List <String> pfns) {
       this.pfns = pfns;
    }
-   
+
    /**
     * @return the {@link #stdPfn} value.
     */
@@ -270,7 +264,7 @@ public class SimulatorTransaction implements TransactionRecordGetter<SimulatorTr
    public void setUrl(String url) {
       this.url = url;
    }
-   
+
    /**
     * Returns value for name from useReportMananger
     * @param name use as name
@@ -282,7 +276,7 @@ public class SimulatorTransaction implements TransactionRecordGetter<SimulatorTr
       }
       return "unavailable";
    }
-   
+
 
    /**
     * @return the {@link #useReportManager} value.
@@ -299,50 +293,13 @@ public class SimulatorTransaction implements TransactionRecordGetter<SimulatorTr
    }
 
    /**
-    * Returns all simulator transactions, of the given type, since last marker.
-    * @param simId
-    * @param transactionType
-    * @return
-    * @throws XdsInternalException
-    */
-   public List<SimulatorTransaction> getAll() throws XdsInternalException {
-      SimDb simDb = null;
-      List<SimulatorTransaction> transactions = new ArrayList<>();
-      try {
-         simDb = new SimDb(simId);
-         List<SimDbEvent> events = simDb.getEventsSinceMarker();
-
-         for (SimDbEvent event : events) {
-             try {
-                Date dt = new SimpleDateFormat(PidDateFilenameFilter.DATE_DIR_FORMAT).parse(event.getEventId());
-                SimulatorTransaction st = get(simId, event.getActorType(), transactionType, null, dt);
-                if (st != null) {
-                    st.simDbEvent = event;
-                   transactions.add(st);
-                }
-             } catch (XdsInternalException xie) {
-                // Unwanted transaction in event?
-             } catch (ParseException pe) {
-                 // Probably picked up PIF transaction folder which cannot be parsed as Date
-             }
-         }
-
-      } catch (Exception ex) {
-        throw new XdsInternalException(ex.toString());
-      }
-
-      return transactions;
-   }
-
-
-   /**
     * Generates instance of this class for specified simulator transaction.
     * @param simId for the simulator which received the transaction. Must exist.
-    * @param transactionType TransactionType value we are looking for. For 
+    * @param transactionType TransactionType value we are looking for. For
     * example {@link TransactionType#PROVIDE_AND_REGISTER}.
     * @param pid <u>Complete</u> patient id if transaction is for a particular
     * patient. Null or blank string if any patient will do or transaction is
-    * not patient based. For example, 
+    * not patient based. For example,
     * "P20160831112743.2^^^&1.3.6.1.4.1.21367.2005.13.20.1000&ISO".
     * @param timeStamp of transaction. Earliest transaction not preceding this
     * time will be returned. If null, most recent transaction will be returned.
@@ -350,8 +307,8 @@ public class SimulatorTransaction implements TransactionRecordGetter<SimulatorTr
     * @throws XdsInternalException on error, such as: no such simulator, no
     * transaction matching parameters, and so on.
     */
-   public static SimulatorTransaction get(SimId simId, 
-      TransactionType transactionType, String pid, Date timeStamp) 
+   public static SimulatorTransaction get(SimId simId,
+      TransactionType transactionType, String pid, Date timeStamp)
       throws XdsInternalException {
       try {
          // Verify that simId represents an existing file
@@ -363,7 +320,7 @@ public class SimulatorTransaction implements TransactionRecordGetter<SimulatorTr
          String name = simId.toString();
          Path simPath = Paths.get(cache, "simdb", simId.getTestSession().getValue(), name);
          Utility.isValidPfn("simulator " + name,  simPath, PfnType.DIRECTORY, "r");
-         
+
          // Load simulator type
          String actorType = new String(Files.readAllBytes(simPath.resolve("sim_type.txt"))).trim();
          String requestedActorType = StringUtils.trimToEmpty(simId.getActorType());
@@ -384,15 +341,15 @@ public class SimulatorTransaction implements TransactionRecordGetter<SimulatorTr
                   ". actor type " + requestedActorType + " expected.";
                throw new Exception(em);
          }
-         
+
          // Create instance and load transaction
-         SimulatorTransaction trn = 
+         SimulatorTransaction trn =
             new SimulatorTransaction(simId, transactionType, pid, timeStamp);
          PrsSimLogs.loadTransaction(trn);
-         
+
          return trn;
       } catch (Exception e) {
-         throw new XdsInternalException("SimulatorTransaction.get error: " + 
+         throw new XdsInternalException("SimulatorTransaction.get error: " +
             e.getMessage());
       }
    }
@@ -443,13 +400,5 @@ public class SimulatorTransaction implements TransactionRecordGetter<SimulatorTr
       }
    }
 
-   @Override
-   public SimDbEvent getSimDbEvent() {
-      return simDbEvent;
-   }
 
-   @Override
-   public String getPlaceToken() {
-      return ""; // skb TODO
-   }
 }
