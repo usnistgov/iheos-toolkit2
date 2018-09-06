@@ -15,6 +15,7 @@ import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
 import gov.nist.toolkit.registrymetadata.client.MetadataObject;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
@@ -222,18 +223,33 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 //		selectDiff.setValue(false);
 
 		if (data.combinedMetadata != null) {
-
 			Tree contentTree = new Tree();
 			treeList.add(contentTree);
 			if (dataNotification!=null) {
 				addTreeSelectionHandler(contentTree);
 			}
-
-			new ListingDisplay(this, data, new TreeThing(contentTree), null, null).listing();
-
+			new ListingDisplay(this, data, new TreeThing(contentTree), null)
+					.setQoFinder(qoFinder)
+					.listing();
 			historyPanel.add(contentTree);
 		}
 	}
+
+	ListingDisplay.QueryOriginFinder qoFinder = new ListingDisplay.QueryOriginFinder() {
+		@Override
+		public QueryOrigin get(String id) {
+			// Lookup QueryOrigin if no queryOrigin was provided.
+			for (Result result : data.results) {
+				for (StepResult stepResult : result.stepResults) {
+					MetadataObject mo = stepResult.getMetadata().findObject(id);
+					if (mo instanceof DocumentEntry) {
+						return new QueryOrigin(result.logId, stepResult.section, stepResult.stepName);
+					}
+				}
+			}
+			return null;
+		}
+	};
 
 	boolean isHistory() {
 		if (selectContents == null)
@@ -408,9 +424,8 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 				}
 				*/
 
-				String testName = (res.logId != null) ? res.logId.getId() : "";
-				QueryOrigin queryOrigin = new QueryOrigin(testName, stepResult.section, stepResult.stepName);
-				new ListingDisplay(this, dm, new TreeThing(stepTreeItem), res.logId, queryOrigin).listing();
+				QueryOrigin queryOrigin = new QueryOrigin(res.logId, stepResult.section, stepResult.stepName);
+				new ListingDisplay(this, dm, new TreeThing(stepTreeItem), queryOrigin).listing();
 
 				if (data.enableActions && stepResult.toBeRetrieved.size() > 0) {
 					ObjectRefs ors = stepResult.nextNObjectRefs(10);
