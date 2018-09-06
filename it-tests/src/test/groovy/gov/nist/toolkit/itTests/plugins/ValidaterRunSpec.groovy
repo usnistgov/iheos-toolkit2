@@ -16,7 +16,8 @@ import gov.nist.toolkit.testengine.engine.FhirSimulatorTransaction
 import gov.nist.toolkit.testengine.engine.ILogReporting
 import gov.nist.toolkit.testengine.engine.TestConfig
 import gov.nist.toolkit.testengine.engine.ToolkitEnvironment
-import gov.nist.toolkit.testengine.engine.validations.ProcessValidations
+import gov.nist.toolkit.testengine.engine.validations.ValidationPluginRunner
+import gov.nist.toolkit.testengine.engine.validations.ValidaterResult
 import gov.nist.toolkit.testengine.engine.validations.fhir.FhirAssertionLoader
 import gov.nist.toolkit.testengine.engine.SimReference
 import gov.nist.toolkit.testengine.transactions.MhdClientTransaction
@@ -84,7 +85,7 @@ class ValidaterRunSpec extends Specification {
         MhdClientTransaction mct = new MhdClientTransaction(new LogReport(), null, null)
         TransactionInstanceBuilder transactionInstanceBuilder = new MyTransactionInstanceBuilder()
         List<FhirSimulatorTransaction> transactions = transactionInstanceBuilder.getSimulatorTransactions(simReference)
-        List<FhirSimulatorTransaction> passing = new ProcessValidations<FhirSimulatorTransaction>(mct.logReport).run(transactionInstanceBuilder, simReference, a, null, transactions)
+        List<ValidaterResult> passing = new ValidationPluginRunner<FhirSimulatorTransaction>(mct.logReport).run(transactionInstanceBuilder, simReference, a, null, transactions)
 
         then:
         passing.size() == 0
@@ -108,7 +109,7 @@ class ValidaterRunSpec extends Specification {
         MhdClientTransaction mct = new MhdClientTransaction(new LogReport(), null, null)
         TransactionInstanceBuilder transactionInstanceBuilder = new MyTransactionInstanceBuilder()
         List<FhirSimulatorTransaction> transactions = transactionInstanceBuilder.getSimulatorTransactions(simReference)
-        List<FhirSimulatorTransaction> passing = new ProcessValidations<FhirSimulatorTransaction>(mct.logReport).run(transactionInstanceBuilder, simReference, a, null, transactions)
+        List<ValidaterResult> passing = new ValidationPluginRunner<FhirSimulatorTransaction>(mct.logReport).run(transactionInstanceBuilder, simReference, a, null, transactions)
 
         then:
         passing.size() == 1
@@ -132,8 +133,8 @@ class ValidaterRunSpec extends Specification {
         MhdClientTransaction mct = new MhdClientTransaction(new LogReport(), null, null)
         TransactionInstanceBuilder transactionInstanceBuilder = new MyTransactionInstanceBuilder()
 //        List<FhirSimulatorTransaction> passing = mct.processValidations(transactionInstanceBuilder, simReference, a, null)
-        List<FhirSimulatorTransaction> transactions = new FhirSimulatorTransaction(simReference.simId,simReference.transactionType).getAll()
-        List<FhirSimulatorTransaction> passing = new ProcessValidations(mct, mct.logReport).run(new SimDbTransactionInstanceBuilder<FhirSimulatorTransaction>(new SimDb(simReference.simId)), simReference, a, null, transactions)
+        List<FhirSimulatorTransaction> transactions = new FhirSimulatorTransaction(simReference.simId,simReference.transactionType).get()
+        List<ValidaterResult> passing = new ValidationPluginRunner(mct.logReport).run(new SimDbTransactionInstanceBuilder<FhirSimulatorTransaction>(new SimDb(simReference.simId)), simReference, a, null, transactions)
 
         then:
         thrown ValidaterNotFoundException

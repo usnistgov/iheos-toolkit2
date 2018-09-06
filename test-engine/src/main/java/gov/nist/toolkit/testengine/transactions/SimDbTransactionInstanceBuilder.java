@@ -3,13 +3,13 @@ package gov.nist.toolkit.testengine.transactions;
 
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.simcommon.server.SimDb;
-import gov.nist.toolkit.testengine.engine.TransactionRecordGetter;
+import gov.nist.toolkit.testengine.engine.TransactionRecord;
 
 import java.util.List;
 
 // Ties collecting of TransactionInstance to SimDb
 // Test harness for IT testing offers alternate
-public class SimDbTransactionInstanceBuilder<U extends TransactionRecordGetter<U>> implements TransactionInstanceBuilder {
+public class SimDbTransactionInstanceBuilder<U extends TransactionRecord<U>> implements TransactionInstanceBuilder {
     SimDb simDb;
     List<String> errs;
 

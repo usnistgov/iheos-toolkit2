@@ -28,7 +28,7 @@ import java.util.List;
  * 
  *
  */
-public class FhirSimulatorTransaction implements TransactionRecordGetter<FhirSimulatorTransaction> {
+public class FhirSimulatorTransaction implements TransactionRecord<FhirSimulatorTransaction> {
    private SimDbEvent simDbEvent;
    private SimId simId;
    private TransactionType transactionType;
@@ -177,7 +177,7 @@ public class FhirSimulatorTransaction implements TransactionRecordGetter<FhirSim
     *                              transaction matching parameters, and so on.
     */
    @Override
-   public List<FhirSimulatorTransaction> getAll() throws XdsInternalException {
+   public List<FhirSimulatorTransaction> get() throws XdsInternalException {
       try {
          // Verify that simId represents an existing file
          Installation installation = Installation.instance();

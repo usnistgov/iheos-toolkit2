@@ -12,12 +12,12 @@ import gov.nist.toolkit.simcommon.client.SimIdFactory
 import gov.nist.toolkit.simcommon.server.SimDbEvent
 import gov.nist.toolkit.testengine.assertionEngine.Assertion
 import gov.nist.toolkit.testengine.engine.*
-import gov.nist.toolkit.testengine.engine.validations.ProcessValidations
+import gov.nist.toolkit.testengine.engine.validations.ValidationPluginRunner
+import gov.nist.toolkit.testengine.engine.validations.ValidaterResult
 import gov.nist.toolkit.testengine.transactions.NullTransaction
 import gov.nist.toolkit.testengine.transactions.TransactionInstanceBuilder
 import gov.nist.toolkit.testkitutilities.TestKitSearchPath
 import gov.nist.toolkit.utilities.xml.Util
-import gov.nist.toolkit.xdsexception.client.ValidaterNotFoundException
 import gov.nist.toolkit.xdsexception.client.XdsInternalException
 import org.apache.axiom.om.OMElement
 import org.apache.axis2.AxisFault
@@ -58,9 +58,9 @@ class XdsValidaterRunSpec extends Specification {
         setup:
         def assertionText = '''
 <Assert id='test1'>
-   <SimReference id="reg" transactiont="rb"/>
+   <SimReference id="reg" actorType="reg" transaction="rb"/>
    <Validations type="XDS">
-      <SingleDocSubmissionValidater />  <!-- Any attributes must match instance variables in the class specified here. -->
+      <DummyValidater testAttribute="testValue"/>  <!-- Any attributes must match instance variables in the class specified here. -->
    </Validations>
 </Assert>
 '''
@@ -72,8 +72,8 @@ class XdsValidaterRunSpec extends Specification {
         NullTransaction nt = new NullTransaction(new LogReport(), null, null)
         TransactionInstanceBuilder transactionInstanceBuilder = new MyTransactionInstanceBuilder()
 //        List<SimulatorTransaction> transactions = new SimulatorTransaction(simReference.simId,simReference.transactionType).getAll()
-        List<SimulatorTransaction> transactions = transactionInstanceBuilder.getSimulatorTransactions(simReference)
-        List<SimulatorTransaction> passing = new ProcessValidations<SimulatorTransaction>(nt.getLogReport()).run(transactionInstanceBuilder, simReference, a, null, transactions)
+        List<SoapSimulatorTransaction> transactions = transactionInstanceBuilder.getSimulatorTransactions(simReference)
+        List<ValidaterResult> passing = new ValidationPluginRunner<SoapSimulatorTransaction>(nt.getLogReport()).run(transactionInstanceBuilder, simReference, a, null, transactions)
 
         then:
         passing.size() == 1
@@ -94,12 +94,11 @@ class XdsValidaterRunSpec extends Specification {
             return ti
         }
 
-        List<SimulatorTransaction> getSimulatorTransactions(SimReference simReference) throws XdsInternalException {
-            SimulatorTransaction st = new SimulatorTransaction(simId, tType, null, null)
-            st.setRequest("") // This only tests a basic roundtrip without any content checking
-            SimDbEvent e = new SimDbEvent(simId, actorType.name, tType.name, 'event0')
-            st.simDbEvent = e
-            [st]
+        List<SoapSimulatorTransaction> getSimulatorTransactions(SimReference simReference) throws XdsInternalException {
+            SoapSimulatorTransaction sst = new SoapSimulatorTransaction(simReference)
+            SimDbEvent e = new SimDbEvent(new SimId(new TestSession("bogusTestSession"),"bogusSimId"), "reg", "rb", 'event0')
+            sst.simDbEvent = e
+            [sst]
         }
     }
 

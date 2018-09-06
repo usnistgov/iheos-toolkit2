@@ -1,5 +1,6 @@
 package gov.nist.toolkit.testengine.assertionEngine;
 
+import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.server.SimDb;
@@ -121,6 +122,12 @@ public class Assertion {
 		TransactionType tType = TransactionType.find(trans);
 		if (tType == null) throw new ToolkitRuntimeException(this.toString() + " invalid transaction");
 		SimId simId = SimDb.getFullSimId(new SimId(toolkitEnvironment.getTestSession(), id));
+		String actor = simTransactionElement.getAttributeValue(new QName("actorType"));
+		if (actor !=null && !"".equals(actor)) {
+			ActorType actorType = ActorType.findActor(actor);
+			if (actorType == null) throw new ToolkitRuntimeException(actor + " invalid actorType");
+			return new SimReference(simId, tType, actorType);
+		}
 		return new SimReference(simId, tType);
 	}
 

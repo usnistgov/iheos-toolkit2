@@ -1,11 +1,10 @@
 package gov.nist.toolkit.testengine.engine.validations.xds
 
 import gov.nist.toolkit.testengine.engine.AbstractValidater
-import gov.nist.toolkit.testengine.engine.SimulatorTransaction
 import gov.nist.toolkit.testengine.engine.SimReference
-import gov.nist.toolkit.testengine.engine.validations.ValidaterResult
+import gov.nist.toolkit.testengine.engine.SoapSimulatorTransaction
 
-abstract class AbstractXdsValidater extends AbstractValidater<SimulatorTransaction> {
+abstract class AbstractSoapValidater extends AbstractValidater<SoapSimulatorTransaction> {
     SimReference simReference
 
 
@@ -13,7 +12,7 @@ abstract class AbstractXdsValidater extends AbstractValidater<SimulatorTransacti
         this.simReference = simReference
     }
 
-    AbstractXdsValidater() {
+    AbstractSoapValidater() {
     }
 
 }

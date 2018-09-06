@@ -5,7 +5,7 @@
         <NullTransaction>
             <Assertions>
                 <Assert id="appendCheck">
-                    <SimReference id="xdsregrep_support" transaction="rb"/> <!-- RegRep sim created by Xds DocSrc Orchestration -->
+                    <SimReference id="xdsregrep_support" transaction="rb"/> <!-- This RegRep type sim is created by the Xds DocSrc conformance actor's orchestration -->
                     <Validations type="XDS">
 			            <ExpectedContentsValidater expectedContentCode=""/>
 		            </Validations>

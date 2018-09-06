@@ -1,37 +1,32 @@
 package gov.nist.toolkit.testengine.engine.validations
 
 import gov.nist.toolkit.actortransaction.client.TransactionInstance
-import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.testengine.assertionEngine.Assertion
 import gov.nist.toolkit.testengine.engine.AbstractValidater
-import gov.nist.toolkit.testengine.engine.FhirSimulatorTransaction
 import gov.nist.toolkit.testengine.engine.ILogReporting
 import gov.nist.toolkit.testengine.engine.SimReference
-import gov.nist.toolkit.testengine.engine.TransactionRecordGetter
-import gov.nist.toolkit.testengine.engine.validations.fhir.AbstractFhirValidater
-import gov.nist.toolkit.testengine.transactions.BasicTransaction
+import gov.nist.toolkit.testengine.engine.TransactionRecord
 import gov.nist.toolkit.testengine.transactions.TransactionInstanceBuilder
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException
 import gov.nist.toolkit.xdsexception.client.XdsInternalException
 import org.apache.axiom.om.OMElement
 
-class ProcessValidations<T extends TransactionRecordGetter<T>> {
-    final BasicTransaction basicTransaction;
+class ValidationPluginRunner<T extends TransactionRecord<T>> {
     ILogReporting logReport
 
-    ProcessValidations(BasicTransaction bt, ILogReporting logReport) {
-        this.basicTransaction = bt
+    ValidationPluginRunner(ILogReporting logReport) {
         this.logReport = logReport
     }
 
-    // return list of passing transactions
-    List<T> run(TransactionInstanceBuilder transactionInstanceBuilder, SimReference simReference, Assertion a, OMElement assertion_output, List<T> transactions) {
+    // return list of validater results
+    List<ValidaterResult> run(TransactionInstanceBuilder transactionInstanceBuilder, SimReference simReference, Assertion a, OMElement assertion_output, List<T> transactions) {
         String trans = simReference.transactionType.code
 
         if (transactions.size() == 0)
             throw new XdsInternalException("No ${simReference.transactionType.name} transactions found in simlog for ${simReference.simId}")
 
-        logReport.addDetail("#Validations run against all ${simReference.transactionType.name} transactions", '')
+        final long tranLimitSize = 10
+        logReport.addDetail("#Validations run against ${tranLimitSize} recent ${simReference.transactionType.name} transactions", '')
 
         a.validations.validaters.each { Assertion.Validations.ValidaterInstance v ->
             logReport.addDetail(v.validater.class.simpleName, v.validater.filterDescription)
@@ -41,29 +36,33 @@ class ProcessValidations<T extends TransactionRecordGetter<T>> {
         List<ValidaterResult> inProgress = []
         List<ValidaterResult> passing = []
         List<ValidaterResult> failing = []
-        transactions.each { T transaction ->
-//            TransactionInstance ti = transactionInstanceBuilder.build(transaction.simDbEvent.actor, transaction.simDbEvent.eventId, trans)
-            boolean hasError = false
+        transactions.stream().limit(tranLimitSize).each { T transaction ->
+            try {
+                boolean hasError = false
+                inProgress.clear()
 
-            // Run all validators on this transaction
-            a.getAllValidaters().collect { Assertion.Validations.ValidaterInstance validater1 ->
-                if (!(validater1.validater instanceof AbstractValidater))
-                    throw new ToolkitRuntimeException("oops")
-                AbstractValidater validater = (AbstractValidater) validater1.validater
-                ValidaterResult result = validater.validate(transaction)
-                result
-            }.each {ValidaterResult result ->
-                if (result.match) {
-                    inProgress << result
-                } else {
-                    failing << result
-                    hasError = true
+                // Run all validators on this transaction
+                a.getAllValidaters().collect { Assertion.Validations.ValidaterInstance validater1 ->
+                    if (!(validater1.validater instanceof AbstractValidater))
+                        throw new ToolkitRuntimeException("oops")
+                    AbstractValidater validater = (AbstractValidater) validater1.validater
+                    ValidaterResult result = validater.validate(transaction)
+                    result
+                }.each {ValidaterResult result ->
+                    if (result.match) {
+                        inProgress << result
+                    } else {
+                        failing << result
+                        hasError = true
+                    }
                 }
-            }
 
-            if (!hasError && !inProgress.isEmpty()) {
-                consolidateLogs(inProgress)
-                passing << inProgress[0]
+                if (!hasError && !inProgress.isEmpty()) {
+                    consolidateLogs(inProgress)
+                    passing << inProgress[0]
+                }
+            } catch (Exception ex) {
+                failing <<  new ValidaterResult(transaction)
             }
         }
 

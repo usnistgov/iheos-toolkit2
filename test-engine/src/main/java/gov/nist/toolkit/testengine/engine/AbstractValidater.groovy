@@ -24,6 +24,10 @@ abstract class AbstractValidater<T> {
         errors = true
     }
 
+    void error(String type, String msg) {
+        error("${type} Error: ${msg}")
+    }
+
     void setFilterDescription(String filterDescription) {
         this.filterDescription = filterDescription
     }

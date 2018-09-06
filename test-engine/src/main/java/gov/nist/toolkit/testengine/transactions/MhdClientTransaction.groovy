@@ -1,15 +1,12 @@
 package gov.nist.toolkit.testengine.transactions
 
-import gov.nist.toolkit.actortransaction.client.TransactionInstance
 import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.testengine.assertionEngine.Assertion
 import gov.nist.toolkit.testengine.assertionEngine.AssertionEngine
 import gov.nist.toolkit.testengine.engine.*
-import gov.nist.toolkit.testengine.engine.validations.ProcessValidations
+import gov.nist.toolkit.testengine.engine.validations.ValidationPluginRunner
 import gov.nist.toolkit.testengine.engine.validations.ValidaterResult
-import gov.nist.toolkit.testengine.engine.validations.fhir.*
 import gov.nist.toolkit.xdsexception.client.MetadataException
-import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException
 import gov.nist.toolkit.xdsexception.client.XdsInternalException
 import org.apache.axiom.om.OMElement
 
@@ -51,8 +48,8 @@ class MhdClientTransaction extends BasicTransaction {
             SimReference simReference = getSimReference(a)
             if (a.hasValidations()) {
                 // the collection of FHIR transactions to search against
-                List<FhirSimulatorTransaction> transactions = new FhirSimulatorTransaction(simReference.simId,simReference.transactionType).getAll()
-                List<FhirSimulatorTransaction> passing = new ProcessValidations(this, logReport).run(new SimDbTransactionInstanceBuilder<FhirSimulatorTransaction>(new SimDb(simReference.simId)), simReference, a, assertion_output, transactions)
+                List<FhirSimulatorTransaction> transactions = new FhirSimulatorTransaction(simReference.simId,simReference.transactionType).get()
+                List<ValidaterResult> passing = new ValidationPluginRunner(logReport).run(new SimDbTransactionInstanceBuilder<FhirSimulatorTransaction>(new SimDb(simReference.simId)), simReference, a, assertion_output, transactions)
                 if (passing.isEmpty())
                     errs.add("No Transactions match requirements")
             } else

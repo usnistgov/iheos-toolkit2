@@ -10,8 +10,9 @@ import gov.nist.toolkit.testengine.engine.SimReference;
 import gov.nist.toolkit.testengine.engine.SimulatorTransaction;
 import gov.nist.toolkit.testengine.engine.StepContext;
 import gov.nist.toolkit.testengine.engine.TestLogFactory;
-import gov.nist.toolkit.testengine.engine.TransactionRecordGetter;
-import gov.nist.toolkit.testengine.engine.validations.ProcessValidations;
+import gov.nist.toolkit.testengine.engine.SoapSimulatorTransaction;
+import gov.nist.toolkit.testengine.engine.validations.ValidationPluginRunner;
+import gov.nist.toolkit.testengine.engine.validations.ValidaterResult;
 import gov.nist.toolkit.testkitutilities.TestKit;
 import gov.nist.toolkit.xdsexception.client.XdsException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
@@ -61,15 +62,13 @@ public class NullTransaction extends BasicTransaction {
 
 	@Override
 	public void processAssertion(AssertionEngine engine, Assertion a, OMElement assertion_output) throws XdsInternalException {
-		// skb TODO: test validation plugin
 		List<String> errs = new ArrayList<>();
 		try {
 			SimReference simReference = getSimReference(errs, a);
 			if (a.hasValidations()) {
 			    if (TestKit.PluginType.FHIR_ASSERTION.equals(a.validations.getPluginType())) {
-
-					List<FhirSimulatorTransaction> transactions = new FhirSimulatorTransaction(simReference.getSimId(),simReference.getTransactionType()).getAll();
-					List<FhirSimulatorTransaction> passing = new ProcessValidations(this, getStepContext())
+					List<FhirSimulatorTransaction> transactions = new FhirSimulatorTransaction(simReference.getSimId(),simReference.getTransactionType()).get();
+					List<ValidaterResult> passing = new ValidationPluginRunner(getStepContext())
 							.run(new SimDbTransactionInstanceBuilder(new SimDb(simReference.getSimId()),null)
 									, simReference
 									, a
@@ -78,17 +77,25 @@ public class NullTransaction extends BasicTransaction {
 					if (passing.isEmpty())
 						errs.add("No " + simReference.getTransactionType() + " Transactions match requirements");
 				} else if (TestKit.PluginType.XDS_ASSERTION.equals(a.validations.getPluginType())) {
-			        SimulatorTransaction st = new SimulatorTransaction(simReference.getSimId(),simReference.getTransactionType(),null,null);
-					List<SimulatorTransaction> transactions = st.getAll();
-					List<SimulatorTransaction> passing = new ProcessValidations<SimulatorTransaction>(this, getStepContext())
+					SoapSimulatorTransaction sst = new SoapSimulatorTransaction(simReference);
+					List<SoapSimulatorTransaction> transactions = sst.get();
+					List<ValidaterResult> passing = new ValidationPluginRunner<SoapSimulatorTransaction>(getStepContext())
 							.run(new SimDbTransactionInstanceBuilder(new SimDb(simReference.getSimId()),null)
 									, simReference
 									, a
 									, assertion_output
 									, transactions);
 
-					if (passing.isEmpty())
-						errs.add("No " + simReference.getTransactionType() + " Transactions match requirements");
+					if (passing.isEmpty()) {
+						if (transactions!=null) {
+							if (transactions.size()==1 && transactions.get(0).getSimDbEvent()!=null) {
+								errs.add(String.format("Processed 1 simEventId %s", transactions.get(0).getSimDbEvent().getEventId()));
+							} else {
+								errs.add(String.format("Processed %s " , transactions.size() + " transactions"));
+							}
+						}
+						errs.add("No SOAP " + simReference.getTransactionType() + " Transactions match requirements");
+					}
 				}
 			} else
 				throw new XdsInternalException("NullTransaction: Unknown Assertion clause with not Assert statements");

@@ -7,9 +7,9 @@ import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 
 import java.util.List;
 
-public interface TransactionRecordGetter<T> {
+public interface TransactionRecord<T> {
 
-    List<T> getAll() throws XdsInternalException;
+    List<T> get() throws XdsInternalException;
 
     SimDbEvent getSimDbEvent();
 

@@ -3,6 +3,7 @@ package gov.nist.toolkit.testengine.engine;
 import gov.nist.toolkit.docref.MetadataTables;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
+import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
@@ -295,6 +296,8 @@ public class Validator {
 		Constructor already calls rrp.parse()
 		rrp.get_registry_response_status()
 		 */
+			vc.xds_b = true;
+			vc.isResponse = true;
 			RegistryResponseValidator rrv = new RegistryResponseValidator(vc, m.getMetadata());
 
 			ErrorRecorderBuilder erBuilder = new TextErrorRecorderBuilder();
@@ -306,7 +309,13 @@ public class Validator {
 				err(er.toString());
 				return false;
 			} else {
-				// No errors
+				// No structural errors
+                // Check for Failure Status
+				RegistryResponseParser rrp = new RegistryResponseParser(m.getMetadata());
+				if (MetadataSupport.status_failure.equals(rrp.get_registry_response_status())) {
+					err("Response status is Failure.");
+					return false;
+				}
 				return true;
 			}
 		} catch (Exception ex) {
@@ -341,24 +350,34 @@ public class Validator {
 		return true;
 	}
 
-	public boolean hasRplc() throws MetadataException {
+	public boolean hasUniqueDocumentRelationshipOfType(String typeParam) throws MetadataException {
 		String docUuid = null;
 		boolean found = false;
 
 		for (OMElement a : m.getAssociations()) {
 			String type = m.getSimpleAssocType(a);
-			if (type.equals("RPLC")) {
+			if (type.equals(typeParam)) {
 				found = true;
 				if (docUuid == null)
 					docUuid = m.getAssocTarget(a);
 				else {
 					if (docUuid.equals(m.getAssocTarget(a)))
-						throw new MetadataException("HasRPLC test: multiple RPLC associations found for same Document", MetadataTables.Doc_relationships);
+						throw new MetadataException("Multiple "+ type +" associations found for same Document", MetadataTables.Doc_relationships);
 				}
 			}
 		}
-
+		if (!found) {
+			err( typeParam + " association not found.");
+		}
 		return found;
+	}
+
+	public boolean hasXfrmRplc() throws MetadataException {
+	    return hasUniqueDocumentRelationshipOfType("XFRM_RPLC");
+	}
+
+	public boolean hasRplc() throws MetadataException {
+	    return hasUniqueDocumentRelationshipOfType("RPLC");
 	}
 
 	private boolean hasSnapshotPattern() throws MetadataException {
@@ -584,6 +603,9 @@ public class Validator {
 		}
 		else if (ec_name.equals("HasRPLC")) {
 			hasRplc();
+		}
+		else if (ec_name.equals("HasXFRM_RPLC")) {
+		    hasXfrmRplc();
 		}
 		else if (ec_name.equals("DocRplcDoc")) {
 			docRplcDoc();

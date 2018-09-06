@@ -198,7 +198,7 @@ class MhdSimProxySubmitSpec extends ToolkitSpecification {
 
     def 'find transactions in simulator log'() {
         when:
-        List<FhirSimulatorTransaction> trans = new FhirSimulatorTransaction(mhdSimId, TransactionType.FHIR).getAll()
+        List<FhirSimulatorTransaction> trans = new FhirSimulatorTransaction(mhdSimId, TransactionType.FHIR).get()
 
         then:
         trans.size() == 1
