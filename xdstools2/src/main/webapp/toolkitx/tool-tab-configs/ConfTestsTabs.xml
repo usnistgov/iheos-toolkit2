@@ -28,6 +28,7 @@ Defines the tab type and correlates to a permanent label.
 tcCode:
 tcCode is the TestCollectionCode that is made up of three parts actor(profile)_option.
 The collections.txt file indexes tests to the tab that matches the test collection code.
+You must have a matching entry in IheItiProfile enum class and OptionType enum class.
 
 displayColorCode:
 The RGB hex value for the tab color in the main Conformance Overview Page.
