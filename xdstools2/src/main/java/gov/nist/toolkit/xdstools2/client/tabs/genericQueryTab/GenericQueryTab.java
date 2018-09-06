@@ -376,7 +376,6 @@ public abstract class GenericQueryTab  extends ToolWindow implements StatusDispl
         }.run(getCommandContext());
 
 
-
         if (tlsEnabled) {
             doTls = new CheckBox("use TLS");
             doTls.setEnabled(tlsOptionEnabled);
@@ -703,7 +702,6 @@ public abstract class GenericQueryTab  extends ToolWindow implements StatusDispl
                 getGoButton().addClickHandler(new ClickHandler() {
                     @Override
                     public void onClick(final ClickEvent clickEvent) {
-
                         String selectedValue = samlListBox.getSelectedValue();
                         if (samlEnabled && !"NoSaml".equals(selectedValue)) {
                             Map<String,String> tkPropMap = ClientUtils.INSTANCE.getTkPropMap();
