@@ -13,7 +13,7 @@ import spock.lang.Timeout
  * Created by skb1 on 6/28/2017.
  */
 @Stepwise
-@Timeout(90)
+@Timeout(100)
 class RespondingGatewayActorSimulatorSpec extends ConformanceActor {
 
     static final String simName = "rg" /* Sim names should be lowered cased */

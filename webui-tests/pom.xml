@@ -53,11 +53,12 @@
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>2.19.1</version>
                 <configuration>
-                    <!-- Note: These tests were only tested in Single user mode: Multiuser_mode=false and Cas_mode=false. -->
+                    <!-- Note: These tests were only tested in Single user mode. This translates to Toolkit.Properties setting Multiuser_mode=false and Cas_mode=false. -->
                     <!-- Uncomment below to debug individual tests -->
                     <!-- While running these tests, keep an eye on projectdir/webui-tests/target/2018_07_13.stderrout.log to view server for output,errors, or javascript wait timeout issues. -->
+                    <runOrder>alphabetical</runOrder>
                     <includes>
-                        <include>**/SimulatorManagerSpec.java</include>
+                        <include>**/A1_RunFirst_SimulatorManagerSpec.java</include> <!-- SimulatorManager deletes and recreates all simulators. If this is not the first test to run, Simulator logs (Not TestLogCache) created by other tests are gone! You can tell by the created timestamp of the Test run time and Simulator creation time -->
                         <include>**/RegistryActorSimulatorSpec.java</include>
                         <include>**/RepositoryActorSimulatorSpec.java</include>
                         <include>**/RecipientActorSimulatorSpec.java</include>

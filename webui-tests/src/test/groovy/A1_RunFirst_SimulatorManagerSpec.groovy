@@ -6,7 +6,7 @@ import spock.lang.Timeout
 
 @Stepwise
 @Timeout(360)
-class SimulatorManagerSpec extends ToolkitWebPage {
+class A1_RunFirst_SimulatorManagerSpec extends ToolkitWebPage {
 
     def setupSpec() {
         // Load sim man page here.
