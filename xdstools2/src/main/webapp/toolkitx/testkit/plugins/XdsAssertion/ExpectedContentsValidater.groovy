@@ -41,6 +41,7 @@ class ExpectedContentsValidater extends AbstractSoapValidater {
 
     @Override
     ValidaterResult validate(SoapSimulatorTransaction sst) {
+        reset()
         boolean requestMatch = false
         boolean responseMatch = false
         if (!requestMsgExpectedContent || !responseMsgExpectedContent) {

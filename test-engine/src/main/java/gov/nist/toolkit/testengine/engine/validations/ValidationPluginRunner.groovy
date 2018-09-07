@@ -46,7 +46,7 @@ class ValidationPluginRunner<T extends TransactionRecord<T>> {
                     if (!(validater1.validater instanceof AbstractValidater))
                         throw new ToolkitRuntimeException("oops")
                     AbstractValidater validater = (AbstractValidater) validater1.validater
-                    ValidaterResult result = validater.reset().validate(transaction)
+                    ValidaterResult result = validater.validate(transaction)
                     result
                 }.each {ValidaterResult result ->
                     if (result.match) {
