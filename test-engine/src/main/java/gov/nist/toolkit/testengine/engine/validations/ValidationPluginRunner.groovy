@@ -25,7 +25,7 @@ class ValidationPluginRunner<T extends TransactionRecord<T>> {
         if (transactions.size() == 0)
             throw new XdsInternalException("No ${simReference.transactionType.name} transactions found in simlog for ${simReference.simId}")
 
-        final long tranLimitSize = 10
+        final long tranLimitSize = transactions.size()<=50?transactions.size():50
         logReport.addDetail("#Validations run against ${tranLimitSize} recent ${simReference.transactionType.name} transactions", '')
 
         a.validations.validaters.each { Assertion.Validations.ValidaterInstance v ->
@@ -46,7 +46,7 @@ class ValidationPluginRunner<T extends TransactionRecord<T>> {
                     if (!(validater1.validater instanceof AbstractValidater))
                         throw new ToolkitRuntimeException("oops")
                     AbstractValidater validater = (AbstractValidater) validater1.validater
-                    ValidaterResult result = validater.validate(transaction)
+                    ValidaterResult result = validater.reset().validate(transaction)
                     result
                 }.each {ValidaterResult result ->
                     if (result.match) {

@@ -380,6 +380,10 @@ public class Validator {
 	    return hasUniqueDocumentRelationshipOfType("RPLC");
 	}
 
+	public boolean hasApnd() throws MetadataException {
+		return hasUniqueDocumentRelationshipOfType("APND");
+	}
+
 	private boolean hasSnapshotPattern() throws MetadataException {
 		List<OMElement> snapshotAssocs = findAssociations("IsSnapshotOf");
 		if (snapshotAssocs.size() == 0) {
@@ -606,6 +610,9 @@ public class Validator {
 		}
 		else if (ec_name.equals("HasXFRM_RPLC")) {
 		    hasXfrmRplc();
+		}
+		else if (ec_name.equals("HasAPND")) {
+		    hasApnd();
 		}
 		else if (ec_name.equals("DocRplcDoc")) {
 			docRplcDoc();

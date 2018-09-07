@@ -1,0 +1,16 @@
+<TestPlan>
+    <Test>XdsDocSrcSubmissionTest-1112/SubmitXfrmRplc</Test>
+    <TestStep id="replace">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <NullTransaction>
+            <Assertions>
+                <Assert id="replaceCheck">
+                    <SimReference id="xdsregrep_support" actorType="reg" transaction="rb"/> <!-- This RegRep type sim is created by the Xds DocSrc conformance actor's orchestration -->
+                    <Validations type="XDS">
+			            <ExpectedContentsValidater requestMsgExpectedContent="HasXFRM_RPLC" responseMsgExpectedContent="RegistryResponseIsValid"/>
+		            </Validations>
+                </Assert>
+            </Assertions>
+        </NullTransaction>
+    </TestStep>
+</TestPlan>

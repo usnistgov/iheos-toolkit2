@@ -10,9 +10,10 @@ abstract class AbstractValidater<T> {
 
     abstract ValidaterResult validate(T transactionInstance)
 
-    void reset() {
+    AbstractValidater<T> reset() {
         log = new StringBuilder()
         errors = false
+        this
     }
 
     void log(String msg) {

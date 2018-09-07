@@ -89,9 +89,9 @@ public class NullTransaction extends BasicTransaction {
 					if (passing.isEmpty()) {
 						if (transactions!=null) {
 							if (transactions.size()==1 && transactions.get(0).getSimDbEvent()!=null) {
-								errs.add(String.format("Processed 1 simEventId %s", transactions.get(0).getSimDbEvent().getEventId()));
+								errs.add(String.format("Found 1 simEventId %s", transactions.get(0).getSimDbEvent().getEventId()));
 							} else {
-								errs.add(String.format("Processed %s " , transactions.size() + " transactions"));
+								errs.add(String.format("Found %s " , transactions.size() + " transactions"));
 							}
 						}
 						errs.add("No SOAP " + simReference.getTransactionType() + " Transactions match requirements");
