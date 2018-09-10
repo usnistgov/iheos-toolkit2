@@ -65,6 +65,7 @@
 				<Default_Environment>xdsi</Default_Environment>
 				<Toolkit_TLS_Port>8643</Toolkit_TLS_Port>
 				<Toolkit_Port>9280</Toolkit_Port>
+				<Listener_Port_Range>5000,5015</Listener_Port_Range>
 				<Image_Cache>/opt/xdsi/xds-toolkit/01/ImageCache</Image_Cache>
 				<Cas_mode>false</Cas_mode>
 				<Multiuser_mode>false</Multiuser_mode>
@@ -189,6 +190,12 @@
 			<id>SunilUbuntu</id>
 			<properties>
 				<build.profile.id>SunilUbuntu</build.profile.id>
+			</properties>
+		</profile>
+		<profile>
+			<id>SunilDocker</id>
+			<properties>
+				<build.profile.id>SunilDocker</build.profile.id>
 			</properties>
 		</profile>
 	</profiles>
