@@ -6,7 +6,7 @@
             <Assertions>
                 <Assert id="ssCheck">
                     <SimReference id="xdsregrep_support" actorType="rep" transaction="prb"/> <!-- This RegRep type sim is created by the Xds DocSrc conformance actor's orchestration -->
-                    <Validations type="XDS">
+                    <Validations type="SOAP">
 			            <ExpectedContentsValidater requestMsgExpectedContent="SSwithOneDocOnly" responseMsgExpectedContent="RegistryResponseIsValid" />
 		            </Validations>
                 </Assert>

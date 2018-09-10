@@ -1,9 +1,9 @@
-package war.toolkitx.testkit.plugins.XdsAssertion
+package war.toolkitx.testkit.plugins.SoapAssertion
 
 
 import gov.nist.toolkit.testengine.engine.SoapSimulatorTransaction
 import gov.nist.toolkit.testengine.engine.validations.ValidaterResult
-import gov.nist.toolkit.testengine.engine.validations.xds.AbstractSoapValidater
+import gov.nist.toolkit.testengine.engine.validations.soap.AbstractSoapValidater
 
 import gov.nist.toolkit.registrymetadata.Metadata
 import gov.nist.toolkit.registrymetadata.MetadataParser

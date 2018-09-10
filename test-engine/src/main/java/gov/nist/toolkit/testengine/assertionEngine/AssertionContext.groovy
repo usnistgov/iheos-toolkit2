@@ -4,7 +4,7 @@ import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.pluginSupport.loader.PluginClassLoader
 import gov.nist.toolkit.testengine.engine.AbstractValidater
 import gov.nist.toolkit.testengine.engine.validations.fhir.FhirAssertionLoader
-import gov.nist.toolkit.testengine.engine.validations.fhir.XdsAssertionLoader
+import gov.nist.toolkit.testengine.engine.validations.soap.SoapAssertionLoader
 import gov.nist.toolkit.testkitutilities.TestKit
 import gov.nist.toolkit.testkitutilities.TestKitSearchPath
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException
@@ -50,8 +50,8 @@ class AssertionContext {
             PluginClassLoader loader
             if (pluginType == TestKit.PluginType.FHIR_ASSERTION)
                 loader = new FhirAssertionLoader(new TestKitSearchPath(environment, testSession))
-            else if (pluginType == TestKit.PluginType.XDS_ASSERTION)
-                loader = new XdsAssertionLoader(new TestKitSearchPath(environment, testSession))
+            else if (pluginType == TestKit.PluginType.SOAP_ASSERTION)
+                loader = new SoapAssertionLoader(new TestKitSearchPath(environment, testSession))
             else
                 throw new ToolkitRuntimeException("No classloader for Plugin type $pluginType")
             context = new Context(pluginType, environment, testSession, loader)

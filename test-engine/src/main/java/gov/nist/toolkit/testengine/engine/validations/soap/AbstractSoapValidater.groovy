@@ -1,4 +1,4 @@
-package gov.nist.toolkit.testengine.engine.validations.xds
+package gov.nist.toolkit.testengine.engine.validations.soap
 
 import gov.nist.toolkit.testengine.engine.AbstractValidater
 import gov.nist.toolkit.testengine.engine.SimReference

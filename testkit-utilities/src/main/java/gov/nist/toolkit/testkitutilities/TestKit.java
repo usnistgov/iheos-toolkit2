@@ -70,7 +70,7 @@ public class TestKit {
 
 	public enum PluginType  {
 		FHIR_ASSERTION("FhirAssertion", "FHIR"),
-		XDS_ASSERTION("XdsAssertion", "XDS");
+		SOAP_ASSERTION("SoapAssertion", "SOAP");
 
 		private String pathName;
 		private String assertionName;

@@ -7,7 +7,6 @@ import gov.nist.toolkit.testengine.engine.FhirSimulatorTransaction;
 import gov.nist.toolkit.testengine.engine.ILogReporting;
 import gov.nist.toolkit.testengine.engine.ILogger;
 import gov.nist.toolkit.testengine.engine.SimReference;
-import gov.nist.toolkit.testengine.engine.SimulatorTransaction;
 import gov.nist.toolkit.testengine.engine.StepContext;
 import gov.nist.toolkit.testengine.engine.TestLogFactory;
 import gov.nist.toolkit.testengine.engine.SoapSimulatorTransaction;
@@ -76,7 +75,7 @@ public class NullTransaction extends BasicTransaction {
 									, transactions);
 					if (passing.isEmpty())
 						errs.add("No " + simReference.getTransactionType() + " Transactions match requirements");
-				} else if (TestKit.PluginType.XDS_ASSERTION.equals(a.validations.getPluginType())) {
+				} else if (TestKit.PluginType.SOAP_ASSERTION.equals(a.validations.getPluginType())) {
 					SoapSimulatorTransaction sst = new SoapSimulatorTransaction(simReference);
 					List<SoapSimulatorTransaction> transactions = sst.get();
 					List<ValidaterResult> passing = new ValidationPluginRunner<SoapSimulatorTransaction>(getStepContext())

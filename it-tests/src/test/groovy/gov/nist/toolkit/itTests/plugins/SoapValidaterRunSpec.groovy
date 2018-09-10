@@ -24,7 +24,7 @@ import org.apache.axis2.AxisFault
 import spock.lang.Shared
 import spock.lang.Specification
 
-class XdsValidaterRunSpec extends Specification {
+class SoapValidaterRunSpec extends Specification {
     @Shared Session session
     @Shared TestKitSearchPath path
     @Shared SimId simId
@@ -59,7 +59,7 @@ class XdsValidaterRunSpec extends Specification {
         def assertionText = '''
 <Assert id='test1'>
    <SimReference id="reg" actorType="reg" transaction="rb"/>
-   <Validations type="XDS">
+   <Validations type="SOAP">
       <DummyValidater testAttribute="testValue"/>  <!-- Any attributes must match instance variables in the class specified here. -->
    </Validations>
 </Assert>
