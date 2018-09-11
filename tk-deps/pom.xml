@@ -6,7 +6,7 @@
 
     <groupId>gov.nist.toolkit</groupId>
     <artifactId>tk-deps</artifactId>
-    <version>6.5.0-SNAPSHOT</version>
+    <version>6.6.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>tk-deps</name>
@@ -103,157 +103,157 @@
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>sim-proxy</artifactId>
-                <version>6.5.0-SNAPSHOT</version>
+                <version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>datasets</artifactId>
-                <version>6.5.0-SNAPSHOT</version>
+                <version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>config-datatypes</artifactId>
-                <version>6.5.0-SNAPSHOT</version>
+                <version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>it-support</artifactId>
-                <version>6.5.0-SNAPSHOT</version>
+                <version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>transaction-notification-service</artifactId>
-                <version>6.5.0-SNAPSHOT</version>
+                <version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>toolkit-services-common</artifactId>
-                <version>6.5.0-SNAPSHOT</version>
+                <version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>toolkit-api</artifactId>
-                <version>6.5.0-SNAPSHOT</version>
+                <version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>services</artifactId>
-                <version>6.5.0-SNAPSHOT</version>
+                <version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>toolkit-services</artifactId>
-                <version>6.5.0-SNAPSHOT</version>
+                <version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>rest-tools</artifactId>
-                <version>6.5.0-SNAPSHOT</version>
+                <version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>validators-soap-message</artifactId>
-                <version>6.5.0-SNAPSHOT</version>
+                <version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>simulators</artifactId>
-                <version>6.5.0-SNAPSHOT</version>
+                <version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>sim-support</artifactId>
-                <version>6.5.0-SNAPSHOT</version>
+                <version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>adt</artifactId>
-                <version>6.5.0-SNAPSHOT</version>
+                <version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>envSettings</artifactId>
-                <version>6.5.0-SNAPSHOT</version>
+                <version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>sim-common</artifactId>
-                <version>6.5.0-SNAPSHOT</version>
+                <version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>session</artifactId>
-                <version>6.5.0-SNAPSHOT</version>
+                <version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>actorfactory</artifactId>
-                <version>6.5.0-SNAPSHOT</version>
+                <version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>test-engine</artifactId>
-                <version>6.5.0-SNAPSHOT</version>
+                <version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>saml</artifactId>
-                <version>6.5.0-SNAPSHOT</version>
+                <version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>message-validator-factory2</artifactId>
-                <version>6.5.0-SNAPSHOT</version>
+                <version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>testkit-utilities</artifactId>
-		<version>6.5.0-SNAPSHOT</version>
+		<version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>soap</artifactId>
-		        <version>6.5.0-SNAPSHOT</version>
+		        <version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>validators-registry-metadata</artifactId>
-				<version>6.5.0-SNAPSHOT</version>
+				<version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>validators-registry-message</artifactId>
-				<version>6.5.0-SNAPSHOT</version>
+				<version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>xdstest2-logging</artifactId>
-				<version>6.5.0-SNAPSHOT</version>
+				<version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>installation</artifactId>
-				<version>6.5.0-SNAPSHOT</version>
+				<version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>common</artifactId>
-				<version>6.5.0-SNAPSHOT</version>
+				<version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>registry-msg-formats</artifactId>
-				<version>6.5.0-SNAPSHOT</version>
+				<version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>site-management</artifactId>
-				<version>6.5.0-SNAPSHOT</version>
+				<version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>http</artifactId>
-				<version>6.5.0-SNAPSHOT</version>
+				<version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>xml-security</groupId>
@@ -263,77 +263,77 @@
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>results</artifactId>
-				<version>6.5.0-SNAPSHOT</version>
+				<version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>docref</artifactId>
-				<version>6.5.0-SNAPSHOT</version>
+				<version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>dsig</artifactId>
-				<version>6.5.0-SNAPSHOT</version>
+				<version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>security-common</artifactId>
-				<version>6.5.0-SNAPSHOT</version>
+				<version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>tk</artifactId>
-				<version>6.5.0-SNAPSHOT</version>
+				<version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>validators-support</artifactId>
-				<version>6.5.0-SNAPSHOT</version>
+				<version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>xds-exceptions</artifactId>
-				<version>6.5.0-SNAPSHOT</version>
+				<version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>error-recording</artifactId>
-				<version>6.5.0-SNAPSHOT</version>
+				<version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>utilities</artifactId>
-				<version>6.5.0-SNAPSHOT</version>
+				<version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>registry-metadata</artifactId>
-				<version>6.5.0-SNAPSHOT</version>
+				<version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>registry-support</artifactId>
-				<version>6.5.0-SNAPSHOT</version>
+				<version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>common-datatypes</artifactId>
-				<version>6.5.0-SNAPSHOT</version>
+				<version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>grizzly-support</artifactId>
-				<version>6.5.0-SNAPSHOT</version>
+				<version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>actor-transaction</artifactId>
-                <version>6.5.0-SNAPSHOT</version>
+                <version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>fhir</artifactId>
-                <version>6.5.0-SNAPSHOT</version>
+                <version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
@@ -736,27 +736,27 @@
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>interaction-model</artifactId>
-				<version>6.5.0-SNAPSHOT</version>
+				<version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>interaction-mapper</artifactId>
-				<version>6.5.0-SNAPSHOT</version>
+				<version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>interaction-diagram</artifactId>
-				<version>6.5.0-SNAPSHOT</version>
+				<version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>plugin-support</artifactId>
-                <version>6.5.0-SNAPSHOT</version>
+                <version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>plugins</artifactId>
-                <version>6.5.0-SNAPSHOT</version>
+                <version>6.6.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.vectomatic</groupId>
