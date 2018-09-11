@@ -32,6 +32,7 @@ public class ValidationContextFactory {
         else if (MessageTransaction.XDM.equals(trans))          vc.isXDM = true;
         else if (MessageTransaction.SQ.equals(trans))           vc.isSQ  = true;
         else if (MessageTransaction.MU.equals(trans))           vc.isMU  = true;
+        else if (MessageTransaction.RM.equals(trans))           vc.isRM  = true;
 
         return vc;
     }
@@ -64,6 +65,10 @@ public class ValidationContextFactory {
             vc.isResponse = !isRequest;
         } else if (TransactionType.UPDATE.equals(tt)) {
             vc.isMU = true;
+            vc.isRequest = isRequest;
+            vc.isResponse = !isRequest;
+        } else if (TransactionType.REMOVE_METADATA.equals(tt)) {
+            vc.isRM = true;
             vc.isRequest = isRequest;
             vc.isResponse = !isRequest;
         } else if (TransactionType.STORED_QUERY.equals(tt)) {

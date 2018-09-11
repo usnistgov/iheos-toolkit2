@@ -136,7 +136,7 @@ public interface ToolkitService extends RemoteService  {
 
     Result updateDocumentEntry(UpdateDocumentEntryRequest request) throws Exception;
     MessageValidationResults validateDocumentEntry(ValidateDocumentEntryRequest request) throws Exception;
-    
+
     MessageValidationResults validateMessage(ValidateMessageRequest request) throws Exception;
 
 	List<String> getSiteNames(GetSiteNamesRequest request) throws Exception;
@@ -226,7 +226,8 @@ public interface ToolkitService extends RemoteService  {
 	RawResponse buildRepTestOrchestration(BuildRepTestOrchestrationRequest request) throws Exception;
 	RawResponse buildRegTestOrchestration(BuildRegTestOrchestrationRequest request) throws Exception;
 	RawResponse buildRSNAEdgeTestOrchestration(BuildRSNAEdgeTestOrchestrationRequest request) throws Exception;
-   RawResponse buildIdcTestOrchestration(IdcOrchestrationRequest request);
+    RawResponse buildIdcTestOrchestration(IdcOrchestrationRequest request);
+	RawResponse buildEsTestOrchestration(BuildEsTestOrchestrationRequest request);
 
 	Map<String, String> getSessionProperties() throws NoServletSessionException;
 	void setSessionProperties(Map<String, String> props) throws NoServletSessionException;

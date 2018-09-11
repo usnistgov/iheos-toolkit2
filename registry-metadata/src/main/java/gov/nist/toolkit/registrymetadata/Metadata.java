@@ -12,6 +12,7 @@ import gov.nist.toolkit.xdsexception.NoMetadataException;
 import gov.nist.toolkit.xdsexception.NoSubmissionSetException;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.*;
 
@@ -242,14 +243,16 @@ public class Metadata {
 		rmDuplicates(objectRefs);
 		rmDuplicates(classifications);
 
-		rmFromObjectRefs(extrinsicObjects);
-		rmFromObjectRefs(registryPackages);
-		rmFromObjectRefs(associations);
-		rmFromObjectRefs(classifications);
+//		rmFromObjectRefs(extrinsicObjects);
+//		rmFromObjectRefs(registryPackages);
+//		rmFromObjectRefs(associations);
+//		rmFromObjectRefs(classifications);
 
-		allObjects = new ArrayList<OMElement>();
+		allObjects = new ArrayList<>();
 		allObjects.addAll(extrinsicObjects);
 		allObjects.addAll(registryPackages);
+		allObjects.addAll(folders);
+		allObjects.addAll(submissionSets);
 		allObjects.addAll(associations);
 		allObjects.addAll(classifications);
 		allObjects.addAll(objectRefs);
@@ -326,6 +329,14 @@ public class Metadata {
 
 		return objs;
 
+	}
+
+	public String getLastUpdateTime(OMElement folEle) {
+		return getSlotValue(folEle,"lastUpdateTime", 0);
+	}
+
+	public void setLastUpdateTime(OMElement folEle, String time) {
+		setSlotValue(folEle, "lastUpdateTime", 0, time);
 	}
 
 	/**
@@ -627,6 +638,9 @@ public class Metadata {
 	 */
 
 	public OMElement addSubmissionSet(OMElement ss) {
+		if (ss == null) {
+			throw new ToolkitRuntimeException("Null SS");
+		}
 		submissionSet = ss;
 		submissionSets.add(ss);
 		allObjects.add(ss);
@@ -654,6 +668,38 @@ public class Metadata {
 	public void addExtrinsicObjects(List<OMElement> eos) {
 		extrinsicObjects.addAll(eos);
 		allObjects.addAll(eos);
+	}
+
+	public void addSubmissionSets(List<OMElement> sss) {
+		submissionSets.addAll(sss);
+		allObjects.addAll(sss);
+	}
+
+	public void addAssociations(List<OMElement> as) {
+		associations.addAll(as);
+		allObjects.addAll(as);
+	}
+
+	public void addFolders(List<OMElement> fols) {
+		folders.addAll(fols);
+		allObjects.addAll(fols);
+	}
+
+	// add all objects checking for duplicates
+	public void addAllObjects(Metadata m) {
+		addExtrinsicObjects(m.extrinsicObjects);
+		rmDuplicates(m.extrinsicObjects);
+
+		addSubmissionSets(m.submissionSets);
+		rmDuplicates(m.submissionSets);
+
+		addAssociations(m.associations);
+		rmDuplicates(m.associations);
+
+		addFolders(m.folders);
+		rmDuplicates(m.folders);
+
+		rmDuplicates();
 	}
 
 	public OMElement mkExtrinsicObject(String id, String mimeType) {
@@ -2251,6 +2297,10 @@ public class Metadata {
 		return submissionSet;
 	}
 
+	public void clearSubmissionSet() {
+		submissionSet = null;
+	}
+
 	public String getSubmissionSetId() {
 		OMElement ss = getSubmissionSet();
 		if (ss == null)
@@ -2281,6 +2331,23 @@ public class Metadata {
 			return aEle;
 		}
 		return null;
+	}
+
+	public List<OMElement> getAssociations(String source, String target, String type) {
+		List<OMElement> assocs = new ArrayList<>();
+		for (OMElement aEle : getAssociations()) {
+			if (source != null && !source.equals(getAssocSource(aEle))) {
+				continue;
+			}
+			if (target != null && !target.equals(getAssocTarget(aEle))) {
+				continue;
+			}
+			if (type != null && !getAssocType(aEle).endsWith(type)) {
+				continue;
+			}
+			assocs.add(aEle);
+		}
+		return assocs;
 	}
 
 	public List<String> getSubmissionSetIds() {

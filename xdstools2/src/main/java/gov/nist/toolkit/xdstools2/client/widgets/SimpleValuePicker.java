@@ -58,7 +58,7 @@ public class SimpleValuePicker extends DialogBox {
 		add.addClickHandler(new AddClickHandler());
 		buttonPanel.add(add);
 
-		Button rm = new Button("Remove");
+		Button rm = new Button("REMOVE");
 		rm.addClickHandler(new RmClickHandler());
 		buttonPanel.add(rm);
 

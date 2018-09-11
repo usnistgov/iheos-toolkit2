@@ -54,7 +54,7 @@ public class GetSubmissionSetAndContentsSim extends GetSubmissionSetAndContents 
 		
 		String ssid = ss.getId();
 		
-		List<Assoc> ssAssocs = mc.assocCollection.getBySourceDestAndType(ssid, null, RegIndex.AssocType.HASMEMBER);
+		List<Assoc> ssAssocs = mc.assocCollection.getBySourceDestAndType(ssid, null, RegIndex.AssocType.HasMember);
 		
 		// grab everything hanging off a SS HasMember assoc
 		
@@ -109,7 +109,7 @@ public class GetSubmissionSetAndContentsSim extends GetSubmissionSetAndContents 
 		
 		for (Fol f : fols) {
 			for (DocEntry de : docEntries) {
-				List<Assoc> aa = mc.assocCollection.getBySourceDestAndType(f.getId(), de.getId(), RegIndex.AssocType.HASMEMBER);
+				List<Assoc> aa = mc.assocCollection.getBySourceDestAndType(f.getId(), de.getId(), RegIndex.AssocType.HasMember);
 				folderAssocs.addAll(aa);
 			}
 		}

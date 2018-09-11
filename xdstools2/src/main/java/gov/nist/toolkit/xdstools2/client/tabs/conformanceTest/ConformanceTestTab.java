@@ -39,6 +39,7 @@ import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.BuildIGTestOrches
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.util.SimpleCallbackT;
 import gov.nist.toolkit.xdstools2.client.widgets.LaunchInspectorClickHandler;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 import gov.nist.toolkit.xdstools2.shared.command.request.*;
@@ -422,6 +423,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 	}
 	// . Show profiles
 	// actor type selection changes
+	// By clicking on actor in "Actor to test" tab bar.
 	private class ActorSelectionHandler implements SelectionHandler<Integer> {
 		@Override
 		public void onSelection(SelectionEvent<Integer> selectionEvent) {
@@ -752,6 +754,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 	}
 
 	private void displayOrchestrationHeader(Panel initializationPanel) {
+		//new PopupMessage("ConformanceTestTab#displayOrchestrationHeader " + currentActorOption.toString());
 		String label = "Initialize Test Environment";
 		ActorOptionConfig currentActorOption = this.currentActorOption;
 		if (currentActorOption.isRep()) {
@@ -799,8 +802,11 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
 			initializationPanel.add(orchInit.panel());
 		}
-		else if (currentActorOption.isEdgeServerSut()) {
-			// TODO not implemented yet.
+		else if (currentActorOption.isEs()) {
+			new PopupMessage("ConformanceTestTab:818");
+			orchInit = new BuildEsTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label);
+			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
+			initializationPanel.add(orchInit.panel());
 		}
 		else if (currentActorOption.isSrc() && currentActorOption.isMhd()) {
 			orchInit = new BuildSrcTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label, currentActorOption);

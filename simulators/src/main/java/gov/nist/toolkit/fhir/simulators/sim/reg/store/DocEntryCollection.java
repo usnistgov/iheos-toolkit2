@@ -1,5 +1,7 @@
 package gov.nist.toolkit.fhir.simulators.sim.reg.store;
 
+import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.fhir.simulators.sim.reg.mu.AcceptableUpdate;
 import gov.nist.toolkit.valregmsg.registry.SQCodeAnd;
 import gov.nist.toolkit.valregmsg.registry.SQCodeOr;
 import gov.nist.toolkit.valregmsg.registry.SQCodedTerm;
@@ -36,6 +38,17 @@ public class DocEntryCollection extends RegObCollection implements Serializable 
 //		
 //	}
 
+	public boolean okForRMU(MetadataCollection mc, ErrorRecorder er) {
+		boolean ok = true;
+
+		for (DocEntry de : entries) {
+			if (!AcceptableUpdate.acceptableRMU(de, mc, er))
+				ok = false;
+		}
+
+		return ok;
+	}
+
 	// caller handles synchronization
 	public void delete(String id) {
 		DocEntry toDelete = null;
@@ -48,6 +61,18 @@ public class DocEntryCollection extends RegObCollection implements Serializable 
 		if (toDelete != null)
 			entries.remove(toDelete);
 	}
+
+		@Override
+		public List<?> getNonDeprecated() {
+			List<DocEntry> nonDep = new ArrayList<>();
+			for (DocEntry a : entries) {
+				if (!a.isDeprecated())
+					nonDep.add(a);
+			}
+			if (parent != null)
+				return parent.getNonDeprecated();
+			return nonDep;
+		}
 
 	public int size() { return entries.size(); }
 

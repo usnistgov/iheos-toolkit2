@@ -40,7 +40,8 @@ public class XdsErrorCode implements IsSerializable  {
 		XDSUnknownCommunity,
 		XDSResultNotSinglePatient,
 		XDSIRequestError,
-		XDSIUnknownIdsUid
-	};
+		XDSIUnknownIdsUid,
+		UnresolvedReferenceException;
+    };
 	
 }

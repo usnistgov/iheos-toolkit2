@@ -408,7 +408,7 @@ public class SubmissionStructure {
 		if (source == null || target == null || type == null)
 			return;
 
-		if (!isDocumentEntry(source) && !vc.isMU)
+		if (!isDocumentEntry(source) && !vc.isMU && !vc.isRMU)
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, objectDescription(assoc) + ": with type " + simpleAssocType(type) + " must reference a DocumentEntry in submission with its sourceObject attribute, it references " + objectDescription(source), this, "ITI TF-3: 4.1.6.1");
 
 		if (containsObject(target)) { // This only checks for a circular reference but not the registry collection

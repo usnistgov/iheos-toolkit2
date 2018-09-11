@@ -1,6 +1,5 @@
 package gov.nist.toolkit.adt;
 
-
 import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
@@ -10,8 +9,11 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+
 public class AdtSender {
     private static Logger logger = Logger.getLogger(AdtSender.class);
+    private static String HL7_ACK_ACCEPTED = "AA";
+    
     private String server;
     private int port;
     private String[] message;
@@ -21,8 +23,12 @@ public class AdtSender {
         this.server = server;
         this.port = port;
     }
+    
+    public void send() throws IOException, AdtMessageParseException, AdtMessageRejectedException {
+    	send("");
+    }
 
-    public void send(String pid) throws IOException {
+    public void send(String pid) throws IOException, AdtMessageParseException, AdtMessageRejectedException {
         logger.debug("Sending Patient ID " + pid + " to " + server + ":" + port + "...");
         Socket echoSocket = null;
         PrintWriter out = null;
@@ -37,12 +43,10 @@ public class AdtSender {
         } catch (UnknownHostException e) {
             logger.error("Don't know about host: " + server);
             throw e;
-//            return;
         } catch (IOException e) {
             logger.error("Couldn't get I/O for "
                     + "the connection to: " + server + " at port: " + port, e);
             throw e;
-//            return;
         }
 
         char c;
@@ -57,6 +61,9 @@ public class AdtSender {
         }
 
         out.print(buf.toString().replace("$pid$", pid));
+        
+        logger.debug("Sending ADT message...");
+        logger.debug(buf.toString());
 
         c = 0x1c;
         out.print(c);
@@ -65,12 +72,64 @@ public class AdtSender {
         out.print(c);
         out.flush();
 
-        in.readLine();
+        String output = getStringFromBufferedReader(in);
 
         out.close();
         in.close();
         echoSocket.close();
+        
+        logger.debug("ADT message response...");
+        logger.debug(output);
+ 
+        isSuccessful(output);
     }
+ 
+    
+	/**
+	 * @param br
+	 * @return
+	 * @throws IOException
+	 */
+	private static String getStringFromBufferedReader(BufferedReader br) throws IOException {
+
+		StringBuilder sb = new StringBuilder();
+
+		String line;
+		try {
+			while ((line = br.readLine()) != null) {
+				sb.append(line);
+				sb.append(System.lineSeparator());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		return sb.toString();
+	}
+    
+	/**
+	 * Reads EVN Segment to determine if message was accepted.
+	 * 
+	 * @param message
+	 * @throws AdtMessageParseException
+	 */
+	private static void isSuccessful(String message) throws AdtMessageRejectedException, AdtMessageParseException {
+
+		AdtMessage adtMessage = new AdtMessage(message);
+		String ackCode = adtMessage.getACKCode();
+		if (!ackCode.equals(HL7_ACK_ACCEPTED)) {
+			throw new AdtMessageRejectedException("Application returned code: '" + ackCode + "'");
+		}
+	}
 
 }
 

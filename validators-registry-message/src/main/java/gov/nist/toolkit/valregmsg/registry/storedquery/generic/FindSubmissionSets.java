@@ -74,7 +74,8 @@ abstract public class FindSubmissionSets extends StoredQuery {
 	protected SQCodedTerm         content_type;
 	protected List<String>    status;
 
-	void parseParameters() throws XdsInternalException, XdsException, LoggerException {
+	protected void parseParameters() throws XdsInternalException, XdsException, LoggerException {
+		super.parseParameters();
 
 		patient_id                               = sqs.params.getStringParm   ("$XDSSubmissionSetPatientId");
 		source_id                                = sqs.params.getListParm("$XDSSubmissionSetSourceId");

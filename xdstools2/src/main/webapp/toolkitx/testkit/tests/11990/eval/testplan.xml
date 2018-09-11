@@ -12,4 +12,15 @@
       </ExpectedContents>
     </StoredQueryTransaction>
   </TestStep>
+  <TestStep id="verify_availabilityStatus">
+    <NullTransaction>
+      <Assertions>
+        <DataRef file="THIS" as="output"/>
+        <Assert id="availabilityStatus">
+          //*[local-name()='ExtrinsicObject']/@status = 'urn:oasis:names:tc:ebxml-regrep:StatusType:Approved'
+        </Assert>
+        
+      </Assertions>
+    </NullTransaction>
+  </TestStep>
 </TestPlan>

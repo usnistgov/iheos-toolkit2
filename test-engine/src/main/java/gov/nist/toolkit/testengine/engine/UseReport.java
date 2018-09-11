@@ -12,6 +12,10 @@ public class UseReport {
 	public String reportName;
 	public String useAs;
 	public String value;
+	
+	public UseReport() {
+		System.out.println("Initialized new UseReport()");
+	}
 
 	public OMElement toXML() {
 		OMElement ur = MetadataSupport.om_factory.createOMElement("UseReport", null);
@@ -19,7 +23,7 @@ public class UseReport {
 		normalize();
 
 		if (!testInstance.isEmpty())
-			ur.addAttribute("test", testInstance.getId(), null);
+		ur.addAttribute("test", testInstance.getId(), null);
 		ur.addAttribute("section", section, null);
 		ur.addAttribute("step", step, null);
 		ur.addAttribute("reportName", reportName, null);

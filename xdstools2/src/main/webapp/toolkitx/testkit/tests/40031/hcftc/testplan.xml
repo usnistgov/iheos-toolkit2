@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>40031/hcftc</Test>
+  <TestStep id="submit_original">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <RegisterTransaction>
+      <AssignUuids/>
+      <XDSb/>
+      <NoPatientId/>
+      <UseReport reportName="$patientid$" test="15823" section="pif" step="step" useAs="$patientid$"/>
+      <MetadataFile>original.xml</MetadataFile>
+      <Report name="doc_uuid" section="InputMetadata">
+                //*[local-name()='ExtrinsicObject'][1]/@id
+            </Report>
+    </RegisterTransaction>
+  </TestStep>
+  <TestStep id="submit_update">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <RmuTransaction>
+      <NoAssignUids id="Document01"/>
+      <XDSb/>
+      <NoPatientId/>
+      <UseReport reportName="$patientid$" test="15823" section="pif" step="step" useAs="$patientid$"/>
+      <AssignUuids/>
+      <MetadataFile>update.xml</MetadataFile>
+      <UseId id="Document01" symbol="$lid$" step="submit_original" section="AssignedUuids"/>
+      <UseId id="Document01" symbol="$Document01_uid$" step="submit_original" section="AssignedUids"/>
+      <Report name="update_doc_uuid" section="InputMetadata">
+        //*[local-name()='ExtrinsicObject'][1]/@id
+      </Report>
+    </RmuTransaction>
+  </TestStep>
+  <TestStep id="query">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetDocuments</SQ>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <InteractionSequence useId="StoredQueryTransactionByDocAdmin"/>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+      <UseId id="Document01" symbol="Document01" step="submit_update" section="AssignedUuids"/>
+      <ExpectedContents>
+        <Documents count="1"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep 
+    id="validate"> 
+    <NullTransaction> 
+      <UseReport 
+        reportName="doc_uuid" 
+        section="THIS"
+        step="submit_original" 
+        useAs="orig_uuid"/> 
+      <Assertions> 
+        <DataRef 
+          file="THIS" 
+          as="output"/> 
+        <Assert 
+          id="validation">count(//*[local-name()='ExtrinsicObject'][@lid="orig_uuid"]//*[local-name()='Classification'][@classificationScheme='urn:uuid:f33fb8ac-18af-42cc-ae0e-ed0b0bdb91e1']) = 0</Assert> 
+      </Assertions>     
+    </NullTransaction>
+  </TestStep>
+</TestPlan>

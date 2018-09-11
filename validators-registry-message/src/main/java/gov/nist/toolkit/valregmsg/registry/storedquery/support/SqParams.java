@@ -3,6 +3,7 @@ package gov.nist.toolkit.valregmsg.registry.storedquery.support;
 import gov.nist.toolkit.docref.SqDocRef;
 import gov.nist.toolkit.valregmsg.registry.And;
 import gov.nist.toolkit.valregmsg.registry.SQCodedTerm;
+import gov.nist.toolkit.valregmsg.registry.SQStatusTerm;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 
@@ -133,6 +134,30 @@ public class SqParams {
 		}
 
 		throw new XdsInternalException("getCodedParm(): bad type = " + o.getClass().getName());
+	}
+
+	public SQStatusTerm getStatusParm(String name) throws MetadataException {
+		Object o = params.get(name);
+		if (o == null)
+			return null;
+		List<String> rawValues = null;
+		if (o instanceof List)
+			rawValues = (List) o;
+		else
+			throw new MetadataException("Parameter " + name + " does not parse", SqDocRef.Request_parms);
+		SQStatusTerm ret = new SQStatusTerm();
+		for (String s : rawValues) {
+			if (! s.startsWith("urn:oasis:names:tc:ebxml-regrep:StatusType:"))
+				throw new MetadataException("Parameter " + name + " - bad namespace", SqDocRef.Request_parms);
+			if (s.endsWith(SQStatusTerm.StatusValues.Approved.name()))
+				ret.values.add(SQStatusTerm.StatusValues.Approved);
+			else if (s.endsWith(SQStatusTerm.StatusValues.Deprecated.name()))
+				ret.values.add(SQStatusTerm.StatusValues.Deprecated);
+			else
+				throw new MetadataException("Parameter " + name + " does not parse - value must be " + SQStatusTerm.StatusValues.Approved.name() + " or " + SQStatusTerm.StatusValues.Deprecated.name() + " with namespace - found " + s + " instead", SqDocRef.Request_parms);
+		}
+
+		return ret;
 	}
 
 	public boolean isAnd(Object values) {

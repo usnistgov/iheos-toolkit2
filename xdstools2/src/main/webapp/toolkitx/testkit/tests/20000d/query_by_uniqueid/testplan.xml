@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>20000d/query_by_uniqueid</Test>
+  <Rule>GetFolderAndContents Stored Query by uniqueId</Rule>
+  <TestStep id="uniqueid_query">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetFolderAndContents</SQ>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+      <UseId testdir="../two_doc_w_fol" step="submit_2doc_w_fol" section="AssignedUids" id="Folder" symbol="$uid$"/>
+	  <!--[Testing for Approved - Level 1 regardless? May not know about deprecated? FolApp?]-->
+      <ExpectedContents>
+        <Folders count="2"/>
+		<Documents count="2"/>
+		<Associations count="4"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="validations">
+	<!--add check confirming both a Folder-->
+    <NullTransaction>
+      <UseReport section="two_doc_w_fol" step="submit_2doc_w_fol" reportName="Folder_uuid" useAs="orig_uuid"/>
+      <UseReport section="update" step="update" reportName="Folder01_uuid" useAs="update_uuid"/>
+      <Assertions>
+        <DataRef file="THIS" as="output"/>
+        <Assert id="same_logicalId">
+               count(//*[local-name()='RegistryPackage'][@lid="orig_uuid"]) = 2
+        </Assert>
+        <Assert id="different_id">
+          //*[local-name()='RegistryPackage'][1]/@id != //*[local-name()='RegistryPackage'][2]/@id
+        </Assert>
+        <Assert id="orig_is_version_1">
+          //*[local-name()='RegistryPackage'][@id="orig_uuid"]/*[local-name()='VersionInfo']/@versionName = '1'
+        </Assert>
+        <Assert id="update_is_version_2">
+          //*[local-name()='RegistryPackage'][@id="update_uuid"]/*[local-name()='VersionInfo']/@versionName = '2'
+        </Assert>
+        <Assert id="orig_id_and_lid_same">
+          'orig_uuid' = //*[local-name()='RegistryPackage'][@id="orig_uuid"]/@lid
+        </Assert>
+        <Assert id="update_id_and_lid_different">
+          'update_uuid' != //*[local-name()='RegistryPackage'][@id="update_uuid"]/@lid
+        </Assert>
+        <Assert id="uniqueid_same">
+          //*[local-name()='RegistryPackage'][@id="orig_uuid"]/*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:75df8f67-9973-4fbe-a900-df66cefecc5a']/@value
+          =
+          //*[local-name()='RegistryPackage'][@id="update_uuid"]/*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:75df8f67-9973-4fbe-a900-df66cefecc5a']/@value
+        </Assert>
+        <Assert id="original_is_deprecated">
+          //*[local-name()='RegistryPackage'][@id="orig_uuid"]/@status = 'urn:oasis:names:tc:ebxml-regrep:StatusType:Deprecated'
+        </Assert>
+        <Assert id="update_is_approved">
+          //*[local-name()='RegistryPackage'][@id="update_uuid"]/@status = 'urn:oasis:names:tc:ebxml-regrep:StatusType:Approved'
+        </Assert>
+      </Assertions>
+    </NullTransaction>
+  </TestStep>
+</TestPlan>

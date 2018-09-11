@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>20000c/update</Test>
+  <Rule>Submit Folder with Wrong Version Using ITI-57</Rule>
+  <TestStep id="update">
+    <Goal>Response message is expected to contain error code: XDSMetadataVersionError.</Goal>
+    <ExpectedStatus>Failure</ExpectedStatus>
+	<ExpectedErrorCode>XDSMetadataVersionError</ExpectedErrorCode>
+    <MuTransaction>
+      <NoAssignUids id="Folder01"/> 
+      <XDSb/>
+      <NoPatientId/>
+      <UseReport reportName="$patientid$" test="15817" section="pif" step="step" useAs="$patientid$"/>
+      <AssignUuids/>
+      <MetadataFile>single_fd.xml</MetadataFile>
+      <UseId testdir="../original" step="original" section="AssignedUuids" id="Folder01" symbol="$lid$" />
+      <UseId testdir="../original" step="original" section="AssignedUids" id="Folder01" symbol="$uid$" />
+	</MuTransaction>
+  </TestStep>
+</TestPlan>

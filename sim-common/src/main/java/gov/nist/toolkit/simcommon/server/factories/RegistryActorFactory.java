@@ -37,7 +37,8 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
 				TransactionType.REGISTER,
 				TransactionType.REGISTER_ODDE, // Optional ITI-61
 				TransactionType.STORED_QUERY,
-				TransactionType.UPDATE
+				TransactionType.UPDATE,
+				TransactionType.REMOVE_METADATA
 				);
 
 	// This does not start any listeners allocated.  The port assignment is made
@@ -59,6 +60,7 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
             addEditableConfig(sc, SimulatorProperties.TRANSACTION_NOTIFICATION_CLASS, ParamType.TEXT, "");
             addEditableConfig(sc, SimulatorProperties.METADATA_LIMITED, ParamType.BOOLEAN, false);
 			addFixedConfig(sc, SimulatorProperties.UPDATE_METADATA_OPTION, ParamType.BOOLEAN, false);
+			addFixedConfig(sc, SimulatorProperties.RESTRICTED_UPDATE_METADATA_OPTION, ParamType.BOOLEAN, false);
 			addFixedConfig(sc, SimulatorProperties.PART_OF_RECIPIENT, ParamType.BOOLEAN, true);
 			addFixedEndpoint(sc, SimulatorProperties.registerEndpoint,       actorType, TransactionType.REGISTER,     false);
 			addFixedEndpoint(sc, SimulatorProperties.registerTlsEndpoint,    actorType, TransactionType.REGISTER,     true);
@@ -73,7 +75,9 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
             }
 
 			addEditableConfig(sc, SimulatorProperties.VALIDATE_AS_RECIPIENT, ParamType.BOOLEAN, false);
+//            addEditableConfig(sc, SimulatorProperties.REMOVE_METADATA, ParamType.BOOLEAN, false);
 			addEditableConfig(sc, SimulatorProperties.UPDATE_METADATA_OPTION, ParamType.BOOLEAN, false);
+			addEditableConfig(sc, SimulatorProperties.RESTRICTED_UPDATE_METADATA_OPTION, ParamType.BOOLEAN, false);
 			addEditableConfig(sc, SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, ParamType.BOOLEAN, true);
 			addEditableConfig(sc, SimulatorProperties.extraMetadataSupported, ParamType.BOOLEAN, true);
 			addEditableConfig(sc, SimulatorProperties.VALIDATE_CODES, ParamType.BOOLEAN, true);
@@ -94,6 +98,11 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
 
 			addFixedEndpoint(sc, SimulatorProperties.updateEndpoint,       actorType, TransactionType.UPDATE,     false);
             addFixedEndpoint(sc, SimulatorProperties.updateTlsEndpoint,    actorType, TransactionType.UPDATE,     true);
+			addFixedEndpoint(sc, SimulatorProperties.rmuEndpoint,       actorType, TransactionType.RMU,     false);
+			addFixedEndpoint(sc, SimulatorProperties.rmuTlsEndpoint,    actorType, TransactionType.RMU,     true);
+
+            addFixedEndpoint(sc, SimulatorProperties.removeMetadataEndpoint,       actorType, TransactionType.REMOVE_METADATA,     false);
+            addFixedEndpoint(sc, SimulatorProperties.removeMetadataTlsEndpoint,    actorType, TransactionType.REMOVE_METADATA,     true);
 		}
 
 		return new Simulator(sc);
@@ -103,35 +112,68 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
 
 	protected void verifyActorConfigurationOptions(SimulatorConfig config) throws Exception {
 		SimulatorConfigElement ele = config.get(SimulatorProperties.UPDATE_METADATA_OPTION);
-		if (ele == null)
-			return;
-		Boolean optionOn = ele.asBoolean();
-				
-		SimulatorConfigElement updateEndpointEle = config.get(SimulatorProperties.updateEndpoint);
-		
-		if (optionOn && updateEndpointEle == null) {
-			 //option is enabled but no endpoint present - create it
-			
-			updateEndpointEle = new SimulatorConfigElement();
-			updateEndpointEle.name = SimulatorProperties.updateEndpoint;
-			updateEndpointEle.type = ParamType.ENDPOINT;
-			updateEndpointEle.transType = TransactionType.UPDATE; 
-			updateEndpointEle.setStringValue(mkEndpoint(config, updateEndpointEle, ActorType.REGISTRY.getShortName(), false));
-			addFixed(config, updateEndpointEle);
-			 
-			updateEndpointEle = new SimulatorConfigElement();
-			updateEndpointEle.name = SimulatorProperties.updateTlsEndpoint;
-			updateEndpointEle.type = ParamType.ENDPOINT;
-			updateEndpointEle.transType = TransactionType.UPDATE; 
-			updateEndpointEle.setStringValue(mkEndpoint(config, updateEndpointEle, ActorType.REGISTRY.getShortName(), true));
-			addFixed(config, updateEndpointEle);
-			 
-			
-		} else if (!optionOn && updateEndpointEle != null) {
-			// option is disabled but endpoint is present - delete it
-			
-			config.deleteFixedByName(SimulatorProperties.updateEndpoint);
-			
+		if (ele != null) {
+
+			Boolean optionOn = ele.asBoolean();
+
+			SimulatorConfigElement updateEndpointEle = config.get(SimulatorProperties.updateEndpoint);
+
+			if (optionOn && updateEndpointEle == null) {
+				//option is enabled but no endpoint present - create it
+
+				updateEndpointEle = new SimulatorConfigElement();
+				updateEndpointEle.name = SimulatorProperties.updateEndpoint;
+				updateEndpointEle.type = ParamType.ENDPOINT;
+				updateEndpointEle.transType = TransactionType.UPDATE;
+				updateEndpointEle.setStringValue(mkEndpoint(config, updateEndpointEle, ActorType.REGISTRY.getShortName(), false));
+				addFixed(config, updateEndpointEle);
+
+				updateEndpointEle = new SimulatorConfigElement();
+				updateEndpointEle.name = SimulatorProperties.updateTlsEndpoint;
+				updateEndpointEle.type = ParamType.ENDPOINT;
+				updateEndpointEle.transType = TransactionType.UPDATE;
+				updateEndpointEle.setStringValue(mkEndpoint(config, updateEndpointEle, ActorType.REGISTRY.getShortName(), true));
+				addFixed(config, updateEndpointEle);
+
+
+			} else if (!optionOn && updateEndpointEle != null) {
+				// option is disabled but endpoint is present - delete it
+
+				config.deleteFixedByName(SimulatorProperties.updateEndpoint);
+
+			}
+		}
+		ele = config.get(SimulatorProperties.RESTRICTED_UPDATE_METADATA_OPTION);
+		if (ele != null) {
+
+			Boolean optionOn = ele.asBoolean();
+
+			SimulatorConfigElement updateEndpointEle = config.get(SimulatorProperties.rmuEndpoint);
+
+			if (optionOn && updateEndpointEle == null) {
+				//option is enabled but no endpoint present - create it
+
+				updateEndpointEle = new SimulatorConfigElement();
+				updateEndpointEle.name = SimulatorProperties.rmuEndpoint;
+				updateEndpointEle.type = ParamType.ENDPOINT;
+				updateEndpointEle.transType = TransactionType.RMU;
+				updateEndpointEle.setStringValue(mkEndpoint(config, updateEndpointEle, ActorType.REGISTRY.getShortName(), false));
+				addFixed(config, updateEndpointEle);
+
+				updateEndpointEle = new SimulatorConfigElement();
+				updateEndpointEle.name = SimulatorProperties.rmuTlsEndpoint;
+				updateEndpointEle.type = ParamType.ENDPOINT;
+				updateEndpointEle.transType = TransactionType.RMU;
+				updateEndpointEle.setStringValue(mkEndpoint(config, updateEndpointEle, ActorType.REGISTRY.getShortName(), true));
+				addFixed(config, updateEndpointEle);
+
+
+			} else if (!optionOn && updateEndpointEle != null) {
+				// option is disabled but endpoint is present - delete it
+
+				config.deleteFixedByName(SimulatorProperties.rmuEndpoint);
+
+			}
 		}
 	}
 
@@ -217,7 +259,33 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
 					asc.get(SimulatorProperties.updateTlsEndpoint).asString(),
 					true, 
 					isAsync));
+		site.addTransaction(new TransactionBean(
+				TransactionType.RMU.getCode(),
+				RepositoryType.NONE,
+				asc.get(SimulatorProperties.rmuEndpoint).asString(),
+				false,
+				isAsync));
+		site.addTransaction(new TransactionBean(
+				TransactionType.RMU.getCode(),
+				RepositoryType.NONE,
+				asc.get(SimulatorProperties.rmuTlsEndpoint).asString(),
+				true,
+				isAsync));
 //		}
+
+			site.addTransaction(new TransactionBean(
+					TransactionType.REMOVE_METADATA.getCode(),
+					RepositoryType.NONE,
+					asc.get(SimulatorProperties.updateEndpoint).asString(),
+					false,
+					isAsync));
+			site.addTransaction(new TransactionBean(
+					TransactionType.REMOVE_METADATA.getCode(),
+					RepositoryType.NONE,
+					asc.get(SimulatorProperties.updateTlsEndpoint).asString(),
+					true,
+					isAsync));
+
 		SimulatorConfigElement pifPortElement = asc.get(SimulatorProperties.PIF_PORT);
 		if (pifPortElement != null)
 			site.pifPort = pifPortElement.asString();

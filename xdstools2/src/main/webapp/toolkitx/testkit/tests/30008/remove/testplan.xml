@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>30008/remove</Test>
+  <TestStep id="remove_all">
+	<Goal>Succeed in removing the all metadata objects.</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+	<RemoveMetadataTransaction>
+      <XDSb/>
+      <NoPatientId/>
+	  <ParseMetadata>False</ParseMetadata>
+	  <UseId testdir="../submit" step="submit" section="AssignedUuids" id="Document01" symbol="$Document00$"  />
+	  <UseId testdir="../submit" step="submit" section="AssignedUuids" id="SSHMAssoc01" symbol="$SSHM00Association$"  />
+	  <UseId testdir="../submit" step="submit" section="AssignedUuids" id="SubmissionSet01" symbol="$SubmissionSet00$"  /> 
+	  <UseId testdir="../apnd" step="apnd" section="AssignedUuids" id="APNDAssoc01" symbol="$APNDAssociation$"  />
+	  <UseId testdir="../apnd" step="apnd" section="AssignedUuids" id="Document01" symbol="$Document02$"  />
+	  <UseId testdir="../apnd" step="apnd" section="AssignedUuids" id="SSHMAssoc01" symbol="$SSHM02Association$"  />
+	  <UseId testdir="../apnd" step="apnd" section="AssignedUuids" id="SubmissionSet01" symbol="$SubmissionSet02$"  />
+	  <UseId testdir="../xfrm_rplc" step="xfrm_rplc" section="AssignedUuids" id="XFRMRPLCAssociation" symbol="$XFRM_RPLCAssociation$"/>
+	  <UseId testdir="../xfrm_rplc" step="xfrm_rplc" section="AssignedUuids" id="Document01" symbol="$Document01$"  />
+	  <UseId testdir="../xfrm_rplc" step="xfrm_rplc" section="AssignedUuids" id="SSHM01Association" symbol="$SSHM01Association$"/>
+	  <UseId testdir="../xfrm_rplc" step="xfrm_rplc" section="AssignedUuids" id="SubmissionSet01" symbol="$SubmissionSet01$"/>
+      <MetadataFile>remove_all.xml</MetadataFile>
+    </RemoveMetadataTransaction>
+  </TestStep> 
+</TestPlan>

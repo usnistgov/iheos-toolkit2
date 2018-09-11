@@ -140,4 +140,13 @@ public class AdtMessage {
         return val;
     }
 
+    public String getACKCode() throws AdtMessageParseException {
+        String line = getLine("MSA");
+        if (line == null)
+            throw new AdtMessageParseException("No MSA segment\nInput was\n" + input);
+        String[] parts = line.split("\\|");
+        String name = parts[1];
+        return name;
+    }
+    
 }

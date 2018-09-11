@@ -204,6 +204,17 @@ public class SubSetCollection extends RegObCollection implements Serializable {
 		return ids;
 	}
 
+	@Override
+	public List<?> getNonDeprecated() {
+		List<SubSet> nonDep = new ArrayList<>();
+		for (SubSet a : subSets) {
+			if (!a.isDeprecated())
+				nonDep.add(a);
+		}
+		if (parent != null)
+			return parent.getNonDeprecated();
+		return nonDep;
+	}
 
 
 }

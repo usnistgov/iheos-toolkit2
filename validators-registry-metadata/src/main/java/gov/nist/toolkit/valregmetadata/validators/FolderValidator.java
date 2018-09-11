@@ -20,7 +20,8 @@ public class FolderValidator  implements ObjectValidator {
 
     static List<String> statusValues =
             Arrays.asList(
-                    MetadataSupport.status_type_namespace + "Approved"
+                    MetadataSupport.status_type_namespace + "Approved",
+                    MetadataSupport.status_type_namespace + "Deprecated"
             );
 
     static List<String> definedSlots =

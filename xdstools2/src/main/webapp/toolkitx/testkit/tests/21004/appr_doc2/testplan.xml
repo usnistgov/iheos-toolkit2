@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>21004/appr_doc2</Test>
+  <Rule>Successful Approve DocumentEntry</Rule>
+  <TestStep id="update">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <MuTransaction>
+      <XDSb/>
+      <NoPatientId/>
+      <UseReport reportName="$patientid$" test="15817" section="pif" step="step" useAs="$patientid$"/>
+      <AssignUuids/>
+      <MetadataFile>new_status.xml</MetadataFile>
+      <UseId testdir="../doc2" section="AssignedUuids" step="submit" id="Document01" symbol="$Doc01Uuid$"/>
+    </MuTransaction>
+  </TestStep>
+</TestPlan>

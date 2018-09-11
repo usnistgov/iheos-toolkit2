@@ -1,0 +1,1 @@
+The value of PreviousVersion supplied in this message does not match Registry contents.

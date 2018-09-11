@@ -121,7 +121,8 @@ abstract public class GetAll extends StoredQuery {
         return buf.toString();
     }
 
-    void parseParameters() throws XdsException {
+    protected void parseParameters() throws XdsException {
+        super.parseParameters();
 
         patient_id                        = sqs.params.getStringParm("$patientId");
         conf_codes                        = sqs.params.getCodedParm("$XDSDocumentEntryConfidentialityCode");

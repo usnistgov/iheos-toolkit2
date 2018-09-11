@@ -42,8 +42,14 @@ public class PatientIdentityFeedTransaction extends BasicTransaction {
 				Map<String, String> linkage = getExternalLinkage();
 				pidString = linkage.get("$patientid$");
 			}
+		
+			
 			transactionSettings.patientId = pidString;
 			testLog.add_name_value(instruction_output, "PatientId", pidString);
+			
+			Map<String, String> params = getStep().getPlan().getExtraLinkage();
+			params.put("$patientid$", pidString);
+
 
 			if (testConfig == null) throw new Exception("Internal Error - TestConfig not initialized");
 			if (testConfig.site == null) throw new Exception("Internal Error - TestConfig.site not initialized");

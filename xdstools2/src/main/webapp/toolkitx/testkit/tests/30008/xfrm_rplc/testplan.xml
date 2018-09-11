@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>30008/xfrm_rplc</Test>
+  <TestStep id="xfrm_rplc">
+    <Goal>Replace the appended document.</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <RegisterTransaction>
+      <XDSb/>
+      <NoPatientId/>
+	  <AssignUuids/>
+      <UseReport reportName="$patientid$" test="15817" section="pif" step="step" useAs="$patientid$"/>
+	  <UseId testdir="../apnd" step="apnd" section="AssignedUuids" id="Document01" symbol="$rplc_doc_uuid$"  />
+      <MetadataFile>metadata.xml</MetadataFile>
+    </RegisterTransaction>
+  </TestStep>
+</TestPlan>

@@ -1,0 +1,1 @@
+Use the stored queries, GetSubmissionSetAndContents and GetFolderAndContents, to verify the submitted metadata objects.

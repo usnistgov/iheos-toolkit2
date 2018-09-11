@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>16101b/verify_created_docs</Test>
+  <Rule>Find Documents Stored Query for initial XAD-PID</Rule>
+  <TestStep id="query">
+	<Goal>Verify that two Document Entry objects created by Document Registry under the new XAD-PID are approved.</Goal>  	
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>FindDocuments</SQ>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>SQfindDoc.xml</MetadataFile>
+      <UseReport reportName="$patientid$" test="16101b" section="add_new_XADPID" step="register" useAs="$pid$"/>
+      <ExpectedContents>
+        <Documents count="2"/>
+        <DocApp/>
+      </ExpectedContents>   
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="validate">
+	<!--add check confirming both a Documents-->
+    <NullTransaction> 	
+      <Assertions>
+        <DataRef file="THIS" as="output"/>
+        <Assert id="both_are_version_2">
+               count(//*[local-name()='ExtrinsicObject']/*[local-name()='VersionInfo'][@versionName = 2]) = 2
+        </Assert>
+        <Assert id="verify_id_and_lid_different">
+               //*[local-name()='ExtrinsicObject']/@id != //*[local-name()='ExtrinsicObject']/@lid
+        </Assert>
+      </Assertions>
+    </NullTransaction>
+  </TestStep>  
+</TestPlan>

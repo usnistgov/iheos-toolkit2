@@ -1,0 +1,1 @@
+Successfully submit an original approved Folder object to the Document Registry.

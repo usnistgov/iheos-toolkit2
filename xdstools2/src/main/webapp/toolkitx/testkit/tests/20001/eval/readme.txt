@@ -1,0 +1,1 @@
+Use SQ:GetSubmissionSetAndContents to verify Registry contents.

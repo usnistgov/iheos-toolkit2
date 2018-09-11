@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>20001/deprecate_assoc</Test>
+  <TestStep id="submit">
+	<Goal>Successfully deprecate the Association.</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <MuTransaction>
+      <XDSb/>
+      <NoPatientId/>
+      <UseReport reportName="$patientid$" test="15817" section="pif" step="step" useAs="$patientid$"/>
+      <AssignUuids/>
+      <MetadataFile>deprecate.xml</MetadataFile>
+      <UseReport reportName="ReturnAssociation01" section="eval_assoc" step="query" useAs="$association_uuid$"/>
+    </MuTransaction>
+  </TestStep>
+</TestPlan>

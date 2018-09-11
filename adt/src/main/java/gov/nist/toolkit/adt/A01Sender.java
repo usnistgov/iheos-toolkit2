@@ -20,7 +20,7 @@ public class A01Sender {
         A01[3] = "PV1||I";
     }
 
-    static public void send(String server, int port, String patientId) throws IOException {
+    static public void send(String server, int port, String patientId) throws IOException, AdtMessageRejectedException, AdtMessageParseException {
 //        String templateFile = A01Sender.class.getResource("/adt/A01.txt").getFile();
 //        logger.info("Loading template from " + templateFile);
 

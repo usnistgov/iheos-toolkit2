@@ -85,7 +85,7 @@ public class ValidationContextValidationFactory {
                 mvc.addMessageValidator("RegistryResponse", new RegistryResponseValidator(vc, xml), erBuilder.buildNewErrorRecorder());
                 return mvc;
             }
-        } else if (vc.isMU) {
+        } else if (vc.isMU || vc.isRMU) {
             if (vc.isRequest) {
                 CommonMessageValidatorFactory.validateToplevelElement(erBuilder, mvc, "SubmitObjectsRequest", rootElementName);
                 mvc.addMessageValidator("SubmitObjectsRequest", new MetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());

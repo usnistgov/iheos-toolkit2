@@ -1,0 +1,1 @@
+Use the stored query, GetSubmissionSetAndContents, to verify both DocumentEntry objects were stored successfully.

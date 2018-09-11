@@ -65,14 +65,43 @@ public enum ActorType implements IsSerializable, Serializable {
             "reg",
             "gov.nist.toolkit.simcommon.server.factories.RegistryActorFactory",
             "gov.nist.toolkit.fhir.simulators.sim.reg.RegistryActorSimulator",
-            Arrays.asList(TransactionType.REGISTER, TransactionType.REGISTER_ODDE, TransactionType.STORED_QUERY, TransactionType.UPDATE, TransactionType.MPQ),
+//            "gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator",
+            Arrays.asList(TransactionType.REGISTER, TransactionType.REGISTER_ODDE, TransactionType.STORED_QUERY, TransactionType.UPDATE, TransactionType.RMU, TransactionType.MPQ, TransactionType.REMOVE_METADATA, TransactionType.XAD_PID),
             true,
             null,
             false,
             Constants.USE_SHORTNAME,
             IheItiProfile.XDS,
-            Arrays.asList(OptionType.REQUIRED, OptionType.METADATA_UPDATE, OptionType.MULTI_PATIENT_QUERY, OptionType.XUA, OptionType.CAT_FOLDER, OptionType.CAT_LIFECYCLE,OptionType.ISR,OptionType.ON_DEMAND)
+            Arrays.asList(OptionType.REQUIRED, OptionType.METADATA_UPDATE, OptionType.MULTI_PATIENT_QUERY, OptionType.XUA, OptionType.CAT_FOLDER, OptionType.CAT_LIFECYCLE,OptionType.ISR,OptionType.ON_DEMAND, OptionType.REMOVE, OptionType.XAD_PID, OptionType.RMU)
     ),
+//    REGISTRY_RMD(
+//            "REMOVE Metadata",
+//            Arrays.asList(""),
+//            "reg_rm",
+//            "",
+//            "",
+//            Arrays.asList(TransactionType.REMOVE_METADATA),
+//            false,
+//            null,
+//            false,
+//            null,
+//            IheItiProfile.RMD,
+//            Arrays.asList(OptionType.REMOVE)
+//    ),
+//    REGISTRY_XADPID(
+//            "XAD_PID",
+//            Arrays.asList(""),
+//            "reg_xadpid",
+//            "",
+//            "",
+//            Arrays.asList(TransactionType.XAD_PID),
+//            false,
+//            null,
+//            false,
+//            null,
+//            null,
+//            null
+//    ),
     // Update option on Document Registry
     // this should be removed once implications are re-discovered
 //		UPDATE (
@@ -95,7 +124,7 @@ public enum ActorType implements IsSerializable, Serializable {
             false,
             Constants.USE_SHORTNAME,
             IheItiProfile.XDS,
-            Arrays.asList(OptionType.REQUIRED, OptionType.XUA)
+            Arrays.asList(OptionType.REQUIRED, OptionType.XUA, OptionType.REMOVE_DOCUMENT)
     ),
     ONDEMAND_DOCUMENT_SOURCE(
             "On-Demand Document Source",
@@ -242,7 +271,7 @@ public enum ActorType implements IsSerializable, Serializable {
             null,
             false,
             Constants.USE_SHORTNAME,
-            IheItiProfile.XDS,
+            IheItiProfile.XCA,
             Arrays.asList(OptionType.REQUIRED,OptionType.AFFINITY_DOMAIN,OptionType.XUA)
     ),
     INITIATING_IMAGING_GATEWAY(
@@ -285,8 +314,8 @@ public enum ActorType implements IsSerializable, Serializable {
             null,
             false,
             Constants.USE_SHORTNAME,
-            IheItiProfile.XDS,
-            Arrays.asList(OptionType.REQUIRED,OptionType.ON_DEMAND,OptionType.XUA)
+            IheItiProfile.XCA,
+            Arrays.asList(OptionType.REQUIRED,OptionType.ON_DEMAND,OptionType.XUA, OptionType.RMU)
     ),
     OD_RESPONDING_GATEWAY(
             "Responding Gateway - On Demand",

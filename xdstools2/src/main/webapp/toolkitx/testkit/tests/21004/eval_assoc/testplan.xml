@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>21004/eval_assoc</Test>
+  <Rule>Use SQ:GetRelatedDocuments to confirm successful update association transaction</Rule>
+  <TestStep id="query">
+	<Goal>Level 1 SQ will successfully return the approved Association and both Document Entries.</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+	  <UseReport test="15817" reportName="$patientid$" section="pif" step="step" useAs="$patientid$"/> 
+	  <UseReport reportName="Document01_uuid" section="doc1" step="submit" useAs="$Doc01Uuid$"/>
+	  <UseReport reportName="Document01_uuid" section="doc2" step="submit" useAs="$Doc02Uuid$"/>
+      <MetadataFile>query.xml</MetadataFile>
+      <ExpectedContents>
+        <Documents count="2"/>
+		<Associations count = "1"/>
+		<DocApp/>
+      </ExpectedContents>
+	  <Assertions>
+			<DataRef file="THIS" as="output"/>
+			<Assert id="patientIdCheck01">
+string(//*[local-name()='ExtrinsicObject'][1]/*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427']/@value) = "$patientid$"
+			</Assert>	
+			<Assert id="patientIdCheck02">
+string(//*[local-name()='ExtrinsicObject'][2]/*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427']/@value) = "$patientid$"
+			</Assert>
+			<Assert id="associationCheckSource">
+string(//*[local-name()='Association'][1]/@sourceObject) = "$Doc01Uuid$"
+			</Assert>
+			<Assert id="associationCheckTarget">
+string(//*[local-name()='Association'][1]/@targetObject) = "$Doc02Uuid$"
+			</Assert>
+			<Assert id="associationCheckType">
+string(//*[local-name()='Association'][1]/@associationType) = "urn:ihe:iti:2007:AssociationType:APND"
+			</Assert>
+			<Assert id="associationCheckType">
+string(//*[local-name()='Association'][1]/@status) = "urn:oasis:names:tc:ebxml-regrep:StatusType:Approved"
+			</Assert>			
+	  </Assertions>	  
+    </StoredQueryTransaction>
+  </TestStep>  
+</TestPlan>
