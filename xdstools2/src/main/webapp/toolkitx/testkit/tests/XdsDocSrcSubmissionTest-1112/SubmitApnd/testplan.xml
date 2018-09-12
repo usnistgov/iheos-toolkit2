@@ -1,6 +1,6 @@
 <TestPlan>
     <Test>XdsDocSrcSubmissionTest-1112/SubmitApnd</Test>
-    <TestStep id="append">
+    <TestStep id="verify">
         <ExpectedStatus>Success</ExpectedStatus>
         <NullTransaction>
             <Assertions>

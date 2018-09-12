@@ -2,6 +2,7 @@ package gov.nist.toolkit.testengine.engine
 
 import gov.nist.toolkit.testengine.engine.validations.ValidaterResult
 import gov.nist.toolkit.testengine.transactions.BasicTransaction
+import org.opensaml.xml.signature.P
 
 abstract class AbstractValidater<T> {
     String filterDescription
@@ -26,7 +27,8 @@ abstract class AbstractValidater<T> {
     }
 
     void error(String type, String msg) {
-        error("${type} Error: ${msg}")
+        log("Error: ${type}:  ${msg}")
+        errors = true
     }
 
     void setFilterDescription(String filterDescription) {
@@ -36,4 +38,6 @@ abstract class AbstractValidater<T> {
     String getLog() {
         log.toString()
     }
+
+
 }

@@ -67,7 +67,7 @@ public class NullTransaction extends BasicTransaction {
 			if (a.hasValidations()) {
 			    if (TestKit.PluginType.FHIR_ASSERTION.equals(a.validations.getPluginType())) {
 					List<FhirSimulatorTransaction> transactions = new FhirSimulatorTransaction(simReference.getSimId(),simReference.getTransactionType()).get();
-					List<ValidaterResult> passing = new ValidationPluginRunner(getStepContext())
+					List<ValidaterResult> passing = new ValidationPluginRunner<FhirSimulatorTransaction>(getStepContext())
 							.run(new SimDbTransactionInstanceBuilder(new SimDb(simReference.getSimId()),null)
 									, simReference
 									, a

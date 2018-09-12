@@ -1,0 +1,20 @@
+<TestPlan>
+    <Test>XdsDocSrcSubmissionTest-1113/SubmitFolderwDE</Test>
+    <TestStep id="verify">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <NullTransaction>
+            <Assertions>
+                <Assert id="folderwDECheck">
+                    <SimReference id="xdsregrep_support" actorType="rep" transaction="prb"/> <!-- This RegRep type sim is created by the Xds DocSrc conformance actor's orchestration -->
+                    <Validations type="SOAP">
+			            <ExpectedContentsValidater requestMsgExpectedContent="SSwithOneDocOneFol" responseMsgExpectedContent="RegistryResponseIsValid" />
+                        <ExpectedContentsValidater requestMsgExpectedContent="SubmissionSets" requestMsgECCount="1"  />
+                        <ExpectedContentsValidater requestMsgExpectedContent="Associations" requestMsgECCount="1"  />
+                        <ExpectedContentsValidater requestMsgExpectedContent="Documents" requestMsgECCount="1"  />
+                        <ExpectedContentsValidater requestMsgExpectedContent="Folders" requestMsgECCount="1"  />
+                    </Validations>
+                </Assert>
+            </Assertions>
+        </NullTransaction>
+    </TestStep>
+</TestPlan>

@@ -1,14 +1,15 @@
 <TestPlan>
-    <Test>XdsDocSrcSubmissionTest-1111/SubmitDE</Test>
+    <Test>XdsDocSrcSubmissionTest-1113/SubmitFolder</Test>
     <TestStep id="verify">
         <ExpectedStatus>Success</ExpectedStatus>
         <NullTransaction>
             <Assertions>
-                <Assert id="ssCheck">
+                <Assert id="folderCheck">
                     <SimReference id="xdsregrep_support" actorType="rep" transaction="prb"/> <!-- This RegRep type sim is created by the Xds DocSrc conformance actor's orchestration -->
                     <Validations type="SOAP">
-			            <ExpectedContentsValidater requestMsgExpectedContent="SSwithOneDocOnly" responseMsgExpectedContent="RegistryResponseIsValid" />
-		            </Validations>
+			            <ExpectedContentsValidater requestMsgExpectedContent="SSwithOneFol" responseMsgExpectedContent="RegistryResponseIsValid" />
+                        <ExpectedContentsValidater requestMsgExpectedContent="SSApproved" />
+                    </Validations>
                 </Assert>
             </Assertions>
         </NullTransaction>

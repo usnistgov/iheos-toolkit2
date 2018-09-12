@@ -1,0 +1,26 @@
+<TestPlan>
+    <Test>XdsDocSrcSubmissionTest-1113/AddToExistingFolder</Test>
+    <TestStep id="verify">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <NullTransaction>
+            <Assertions>
+                <Assert id="assert">
+                    <SimReference id="xdsregrep_support" actorType="rep" transaction="prb"/> <!-- This RegRep type sim is created by the Xds DocSrc conformance actor's orchestration -->
+                    <Validations type="SOAP">
+			            <ExpectedContentsValidater requestMsgExpectedContent="SSwithOneDocOneFol" responseMsgExpectedContent="RegistryResponseIsValid" />
+                        <ExpectedContentsValidater requestMsgExpectedContent="SubmissionSets" requestMsgECCount="1"  />
+                        <ExpectedContentsValidater requestMsgExpectedContent="Documents" requestMsgECCount="1"  />
+                        <ExpectedContentsValidater requestMsgExpectedContent="Associations" requestMsgECCount="3"  /> <!-- 1. ss-de 2. ss-hasMember (hm) 3. hm:[expected fd]-de -->
+                        <AddToExistingFolderValidater/>
+                        <!-- find an association
+                        1. where associationType='HasMember'
+                        2. sourceObject != SSid. When True, record this Id has as a parameter to be used in GetFolder SQ
+                        3. target = DocId
+                        -->
+                         <!-- need a SQ here to check if the fd-de is indeed a folder  -->
+                    </Validations>
+                </Assert>
+            </Assertions>
+        </NullTransaction>
+    </TestStep>
+</TestPlan>

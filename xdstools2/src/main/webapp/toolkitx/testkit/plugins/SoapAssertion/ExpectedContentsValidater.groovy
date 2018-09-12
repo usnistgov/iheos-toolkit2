@@ -1,6 +1,6 @@
 package war.toolkitx.testkit.plugins.SoapAssertion
 
-
+import gov.nist.toolkit.testengine.engine.SimReference
 import gov.nist.toolkit.testengine.engine.SoapSimulatorTransaction
 import gov.nist.toolkit.testengine.engine.validations.ValidaterResult
 import gov.nist.toolkit.testengine.engine.validations.soap.AbstractSoapValidater
@@ -41,7 +41,7 @@ class ExpectedContentsValidater extends AbstractSoapValidater {
 
     @Override
     ValidaterResult validate(SoapSimulatorTransaction sst) {
-        reset()
+        reset() // Clear log
         boolean requestMatch = false
         boolean responseMatch = false
         if (!requestMsgExpectedContent || !responseMsgExpectedContent) {
@@ -97,7 +97,20 @@ class ExpectedContentsValidater extends AbstractSoapValidater {
         }
 
 
-        new ValidaterResult(sst, this, match)
+        new ValidaterResult(sst, this.copy(), match)
+    }
+
+
+    AbstractSoapValidater copy() {
+        ExpectedContentsValidater ecv = new ExpectedContentsValidater()
+        ecv.responseMsgExpectedContent = responseMsgExpectedContent
+        ecv.requestMsgExpectedContent = requestMsgExpectedContent
+        ecv.responseMsgECCount = responseMsgECCount
+        ecv.requestMsgECCount = requestMsgECCount
+        ecv.simReference = new SimReference(simReference?.simId, simReference?.transactionType, simReference?.actorType)
+        ecv.errors = this.errors
+        ecv.setLog(new StringBuilder(this.log))
+        ecv
     }
 
 }

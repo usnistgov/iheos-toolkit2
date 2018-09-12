@@ -1,5 +1,5 @@
 <TestPlan>
-    <Test>XdsDocSrcSubmissionTest-1111/SubmitDE</Test>
+    <Test>XdsDocSrcSubmissionTest-1113/SubmitTwoDEs</Test>
     <TestStep id="verify">
         <ExpectedStatus>Success</ExpectedStatus>
         <NullTransaction>
@@ -7,7 +7,7 @@
                 <Assert id="ssCheck">
                     <SimReference id="xdsregrep_support" actorType="rep" transaction="prb"/> <!-- This RegRep type sim is created by the Xds DocSrc conformance actor's orchestration -->
                     <Validations type="SOAP">
-			            <ExpectedContentsValidater requestMsgExpectedContent="SSwithOneDocOnly" responseMsgExpectedContent="RegistryResponseIsValid" />
+			            <ExpectedContentsValidater requestMsgExpectedContent="SSwithTwoDoc" responseMsgExpectedContent="RegistryResponseIsValid" />
 		            </Validations>
                 </Assert>
             </Assertions>

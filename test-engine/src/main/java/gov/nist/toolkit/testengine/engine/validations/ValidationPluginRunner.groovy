@@ -62,7 +62,8 @@ class ValidationPluginRunner<T extends TransactionRecord<T>> {
                     passing << inProgress[0]
                 }
             } catch (Exception ex) {
-                failing <<  new ValidaterResult(transaction)
+               this.logReport.fail(ex.toString())
+                failing <<  new ValidaterResult(transaction, this, false)
             }
         }
 
