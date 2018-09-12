@@ -61,6 +61,7 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
             addEditableConfig(sc, SimulatorProperties.METADATA_LIMITED, ParamType.BOOLEAN, false);
 			addFixedConfig(sc, SimulatorProperties.UPDATE_METADATA_OPTION, ParamType.BOOLEAN, false);
 			addFixedConfig(sc, SimulatorProperties.RESTRICTED_UPDATE_METADATA_OPTION, ParamType.BOOLEAN, false);
+			addFixedConfig(sc, SimulatorProperties.REMOVE_METADATA, ParamType.BOOLEAN, false);
 			addFixedConfig(sc, SimulatorProperties.PART_OF_RECIPIENT, ParamType.BOOLEAN, true);
 			addFixedEndpoint(sc, SimulatorProperties.registerEndpoint,       actorType, TransactionType.REGISTER,     false);
 			addFixedEndpoint(sc, SimulatorProperties.registerTlsEndpoint,    actorType, TransactionType.REGISTER,     true);
@@ -84,6 +85,7 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
 			addEditableConfig(sc, SimulatorProperties.TRANSACTION_NOTIFICATION_URI, ParamType.TEXT, "");
             addEditableConfig(sc, SimulatorProperties.TRANSACTION_NOTIFICATION_CLASS, ParamType.TEXT, "");
 			addEditableConfig(sc, SimulatorProperties.METADATA_LIMITED, ParamType.BOOLEAN, false);
+			addEditableConfig(sc, SimulatorProperties.REMOVE_METADATA, ParamType.BOOLEAN, false);
             if (!isTransactionOnly())
 				addFixedConfig(sc, SimulatorProperties.PIF_PORT, ParamType.TEXT, Integer.toString(ListenerFactory.allocatePort(simId.toString())));
 			addFixedEndpoint(sc, SimulatorProperties.registerEndpoint,       actorType, TransactionType.REGISTER,     false);
@@ -276,13 +278,13 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
 			site.addTransaction(new TransactionBean(
 					TransactionType.REMOVE_METADATA.getCode(),
 					RepositoryType.NONE,
-					asc.get(SimulatorProperties.updateEndpoint).asString(),
+					asc.get(SimulatorProperties.removeMetadataEndpoint).asString(),
 					false,
 					isAsync));
 			site.addTransaction(new TransactionBean(
 					TransactionType.REMOVE_METADATA.getCode(),
 					RepositoryType.NONE,
-					asc.get(SimulatorProperties.updateTlsEndpoint).asString(),
+					asc.get(SimulatorProperties.removeMetadataTlsEndpoint).asString(),
 					true,
 					isAsync));
 
