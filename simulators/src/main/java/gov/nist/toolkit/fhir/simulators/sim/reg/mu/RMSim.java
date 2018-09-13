@@ -2,6 +2,7 @@ package gov.nist.toolkit.fhir.simulators.sim.reg.mu;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.fhir.simulators.sim.reg.store.Assoc;
 import gov.nist.toolkit.fhir.simulators.sim.reg.store.MetadataCollection;
 import gov.nist.toolkit.fhir.simulators.support.DsSimCommon;
 import gov.nist.toolkit.fhir.simulators.support.TransactionSimulator;
@@ -31,6 +32,7 @@ public class RMSim extends TransactionSimulator {
     public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
         this.er = er;
         this.mvc = mvc;
+        MetadataCollection delta = mc.mkDelta();
 
         setup();
 
@@ -39,11 +41,18 @@ public class RMSim extends TransactionSimulator {
 
         List<String> toDelete = new ArrayList<>();
 
+        // good references?
         for (String id : m.getObjectRefIds()) {
-            if (mc.docEntryCollection.hasObject(id))
-                toDelete.add(id);
+            if (delta.hasObject(id))
+                delta.deleteRo(id);
             else
                 er.err(XdsErrorCode.Code.UnresolvedReferenceException, id, null, null);
+        }
+
+        // would leave dangling association references?
+        for (String id : toDelete) {
+            List<Assoc> assocsThatReference = mc.assocCollection.allThatReference(id);
+            assocsThatReference = assocsThatReference.removeAll()
         }
 
         if(er.hasErrors())

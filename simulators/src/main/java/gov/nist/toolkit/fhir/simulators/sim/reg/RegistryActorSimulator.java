@@ -134,8 +134,6 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 			common.vc.hasHttp = true;
 			common.vc.hasSoap = true;
 			common.vc.isXDRLimited = isMetadataLimited();
-			common.vc.isRMU = isRmuEnabled();
-			common.vc.isRM = isRmEnabled();
 
 			if (isValidateAsRecipient())
 				common.vc.isPartOfRecipient = true;

@@ -21,7 +21,8 @@ class RemoveMetadata {
      * @return
      */
     Response ruleNotInRegistry(Uuid id) {
-        if (!r.exists(id)) return new Response(ErrorType.UnresolvedReferenceException, id)
+        if (!r.exists(id))
+            return new Response(ErrorType.UnresolvedReferenceException, id)
         return Response.NoError
     }
 
