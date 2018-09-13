@@ -9,18 +9,9 @@ import java.util.List;
 public class AssocCollection extends RegObCollection implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
-	public List<Assoc> assocs = new ArrayList<Assoc>();
+	private List<Assoc> assocs = new ArrayList<Assoc>();
 	
 	transient public AssocCollection parent = null;
-
-	
-	public String toString() {
-		return assocs.size() + " Associations";
-	}
-	
-	public void init() {
-		assocs = new ArrayList<Assoc>();
-	}
 
 	public List<Assoc> getAll() {
 		List<Assoc> all = new ArrayList<>();
@@ -28,30 +19,44 @@ public class AssocCollection extends RegObCollection implements Serializable {
 		all.addAll(assocs);
 		AssocCollection theParent = parent;
 		while (theParent != null) {
-			all.addAll(theParent.assocs);
+			all.addAll(theParent.getAll());
 			theParent = theParent.parent;
 		}
 
 		return all;
 	}
+
+	public List<Assoc> getAllForUpdate() {
+		return assocs;
+	}
+
+
+	public String toString() {
+		return getAll().size() + " Associations";
+	}
 	
+	public void init() {
+		assocs = new ArrayList<Assoc>();
+	}
+
+
 	// caller handles synchronization
 	public void delete(String id) {
 		Assoc toDelete = null;
-		for (Assoc a : assocs) {
+		for (Assoc a : getAllForUpdate()) {
 			if (a.id.equals(id)) {
 				toDelete = a;
 				break;
 			}
 		}
 		if (toDelete != null)
-			assocs.remove(toDelete);
+			getAllForUpdate().remove(toDelete);
 	}
 
 	@Override
 	public List<?> getNonDeprecated() {
 		List<Assoc> nonDep = new ArrayList<>();
-		for (Assoc a : assocs) {
+		for (Assoc a : getAll()) {
 			if (!a.isDeprecated())
 				nonDep.add(a);
 		}
@@ -60,10 +65,10 @@ public class AssocCollection extends RegObCollection implements Serializable {
 		return nonDep;
 	}
 
-	public int size() { return assocs.size(); }
+	public int size() { return getAll().size(); }
 	
 	public Ro getRo(String id) {
-		for (Assoc a : assocs) {
+		for (Assoc a : getAll()) {
 			String aid = a.id;
 			if (aid == null)
 				throw new ToolkitRuntimeException("bad association");
@@ -81,15 +86,15 @@ public class AssocCollection extends RegObCollection implements Serializable {
 	public String statsToString() {
 		int parentCount = 0;
 		if (parent != null)
-			parentCount = parent.assocs.size();
-		return (parentCount + assocs.size()) + " Associations";
+			parentCount = parent.getAll().size();
+		return (parentCount + getAll().size()) + " Associations";
 	}
 	
 
 	public Assoc getById(String id) {
 		if (id == null)
 			return null;
-		for (Assoc a : assocs) {
+		for (Assoc a : getAll()) {
 			if (id.equals(a.id))
 				return a;
 		}
@@ -102,7 +107,7 @@ public class AssocCollection extends RegObCollection implements Serializable {
 	public boolean hasObject(String id) {
 		if (id == null)
 			return false;
-		for (Assoc a : assocs) {
+		for (Assoc a : getAll()) {
 			if (a.id.equals(id))
 				return true;
 		}
@@ -119,21 +124,21 @@ public class AssocCollection extends RegObCollection implements Serializable {
 	@Override
 	public List<String> getIds() {
 		List<String> ids = new ArrayList<>();
-		for (Assoc a : assocs) ids.add(a.getId());
+		for (Assoc a : getAll()) ids.add(a.getId());
 		return ids;
 	}
 
 	/**
 	 * Any of the parameters may be null implying ANY.
 	 * @param sourceId
-	 * @param destId
+	 * @param targetId
 	 * @param type
 	 * @return
 	 */
 	public List<Assoc> getBySourceDestAndType(String sourceId, String targetId, RegIndex.AssocType type) {
 		List<Assoc> myassocs = new ArrayList<Assoc>();
 		
-		for (Assoc a : assocs) {
+		for (Assoc a : getAll()) {
 			if ( sourceId != null && ! a.from.equals(sourceId))
 				continue;
 			if ( targetId != null && ! a.to.equals(targetId))
@@ -152,7 +157,7 @@ public class AssocCollection extends RegObCollection implements Serializable {
 	public List<Assoc> getBySourceOrDestAndType(String sourceId, String targetId, RegIndex.AssocType type) {
 		List<Assoc> myassocs = new ArrayList<Assoc>();
 		
-		for (Assoc a : assocs) {
+		for (Assoc a : getAll()) {
 			if ( type != null && a.type != type)
 				continue;
 			if ( a.from.equals(sourceId)) {
@@ -171,13 +176,19 @@ public class AssocCollection extends RegObCollection implements Serializable {
 		return myassocs;
 	}
 
+	public List<Assoc> allThatReference(String id) {
+		List<Assoc> all = new ArrayList<>();
+
+		for (Assoc a : getAll()) {
+			if (a.from.equals(id) || a.to.equals(id))
+				all.add(a);
+		}
+
+		return all;
+	}
+
 	public List<?> getAllRo() {
-		if (parent == null)
-			return assocs;
-		List<Assoc> as = new ArrayList<Assoc>();
-		as.addAll(assocs);
-		as.addAll(parent.assocs);
-		return as;
+			return getAll();
 	}
 
 

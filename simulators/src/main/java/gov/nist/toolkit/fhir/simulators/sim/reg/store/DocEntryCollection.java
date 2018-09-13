@@ -13,17 +13,36 @@ import java.util.List;
 public class DocEntryCollection extends RegObCollection implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
-	List<DocEntry> entries;
+	private List<DocEntry> entries;
 	
 	transient public DocEntryCollection parent = null;
-	
+
+	public List<DocEntry> getAll() {
+		List<DocEntry> all = new ArrayList<>();
+
+		all.addAll(entries);
+
+		all.removeAll(idsBeingDeleted());
+
+		DocEntryCollection theParent = parent;
+		while (theParent != null) {
+			all.addAll(theParent.getAll());
+			theParent = theParent.parent;
+		}
+
+		return all;
+	}
+
+	public List<DocEntry> getAllForUpdate() {
+		return entries;
+	}
 	
 	public String toString() {
-		return entries.size() + " DocumentEntries";
+		return getAll().size() + " DocumentEntries";
 	}
 	
 	public void init() {
-		entries = new ArrayList<DocEntry>();
+		entries = new ArrayList<>();
 	}
 	
 //	// caller handles synchronization
@@ -41,7 +60,7 @@ public class DocEntryCollection extends RegObCollection implements Serializable 
 	public boolean okForRMU(MetadataCollection mc, ErrorRecorder er) {
 		boolean ok = true;
 
-		for (DocEntry de : entries) {
+		for (DocEntry de : getAll()) {
 			if (!AcceptableUpdate.acceptableRMU(de, mc, er))
 				ok = false;
 		}
@@ -52,20 +71,20 @@ public class DocEntryCollection extends RegObCollection implements Serializable 
 	// caller handles synchronization
 	public void delete(String id) {
 		DocEntry toDelete = null;
-		for (DocEntry a : entries) {
+		for (DocEntry a : getAllForUpdate()) {
 			if (a.id.equals(id)) {
 				toDelete = a;
 				break;
 			}
 		}
 		if (toDelete != null)
-			entries.remove(toDelete);
+			getAllForUpdate().remove(toDelete);
 	}
 
 		@Override
 		public List<?> getNonDeprecated() {
 			List<DocEntry> nonDep = new ArrayList<>();
-			for (DocEntry a : entries) {
+			for (DocEntry a : getAll()) {
 				if (!a.isDeprecated())
 					nonDep.add(a);
 			}
@@ -74,17 +93,17 @@ public class DocEntryCollection extends RegObCollection implements Serializable 
 			return nonDep;
 		}
 
-	public int size() { return entries.size(); }
+	public int size() { return getAll().size(); }
 
 	public String statsToString() {
 		int siz = 0;
 		if (parent != null)
-			siz = parent.entries.size();
-		return (siz + entries.size()) + " DocumentEntries";
+			siz = parent.getAll().size();
+		return (siz + getAll().size()) + " DocumentEntries";
 	}
 
 	public Ro getRo(String id) {
-		for (DocEntry de : entries) {
+		for (DocEntry de : getAll()) {
 			if (de.id.equals(id))
 				return de;
 		}
@@ -96,7 +115,7 @@ public class DocEntryCollection extends RegObCollection implements Serializable 
 	public DocEntry getById(String id) {
 		if (id == null)
 			return null;
-		for (DocEntry de : entries) {
+		for (DocEntry de : getAll()) {
 			if (id.equals(de.id))
 				return de;
 		}
@@ -109,7 +128,7 @@ public class DocEntryCollection extends RegObCollection implements Serializable 
 		List<DocEntry> des = new ArrayList<DocEntry>();
 		if (uid == null)
 			return des;
-		for (DocEntry de : entries) {
+		for (DocEntry de : getAll()) {
 			if (uid.equals(de.uid))
 				des.add(de);
 		}
@@ -122,7 +141,7 @@ public class DocEntryCollection extends RegObCollection implements Serializable 
 		List<DocEntry> des = new ArrayList<DocEntry>();
 		if (lid == null)
 			return des;
-		for (DocEntry de : entries) {
+		for (DocEntry de : getAll()) {
 			if (lid.equals(de.lid))
 				des.add(de);
 		}
@@ -163,15 +182,11 @@ public class DocEntryCollection extends RegObCollection implements Serializable 
 		return null;
 	}
 
-	public List<DocEntry> getAll() {
-		return entries;
-	}
-		
 	public List<DocEntry> findByPid(String pid) {
 		List<DocEntry> results = new ArrayList<DocEntry>();
 		
-		for (int i=0; i<entries.size(); i++) {
-			DocEntry de = entries.get(i);
+		for (int i=0; i<getAll().size(); i++) {
+			DocEntry de = getAll().get(i);
 			// pid == null handles MPQ
 			if (pid != null && pid.equals(de.pid))
 				results.add(de);
@@ -468,7 +483,7 @@ public class DocEntryCollection extends RegObCollection implements Serializable 
 	public boolean hasObject(String id) {
 		if (id == null)
 			return false;
-		for (DocEntry a : entries) {
+		for (DocEntry a : getAll()) {
 			if (a.id == null)
 				continue;
 			if (a.id.equals(id))
@@ -488,7 +503,7 @@ public class DocEntryCollection extends RegObCollection implements Serializable 
 	}
 
 	public Ro getRoByUid(String uid) {
-		for (DocEntry de : entries) {
+		for (DocEntry de : getAll()) {
 			if (de.uid.equals(uid))
 				return de;
 		}
@@ -500,18 +515,13 @@ public class DocEntryCollection extends RegObCollection implements Serializable 
 
 
 	public List<?> getAllRo() {
-		if (parent == null)
-			return entries;
-		List<DocEntry> de = new ArrayList<DocEntry>();
-		de.addAll(entries);
-		de.addAll(parent.entries);
-		return de;
+		return getAll();
 	}
 
 	@Override
 	public List<String> getIds() {
 		List<String> ids = new ArrayList<>();
-		for (DocEntry a : entries) ids.add(a.getId());
+		for (DocEntry a : getAll()) ids.add(a.getId());
 		return ids;
 	}
 

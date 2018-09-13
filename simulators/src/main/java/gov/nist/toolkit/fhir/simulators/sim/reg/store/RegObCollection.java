@@ -1,6 +1,7 @@
 package gov.nist.toolkit.fhir.simulators.sim.reg.store;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 abstract public class RegObCollection {
@@ -13,4 +14,13 @@ abstract public class RegObCollection {
 	abstract public List<String> getIds();
 	abstract public void delete(String id);  	// caller handles synchronization
 	abstract public List<?> getNonDeprecated();
+
+	private List<String> deleting = new ArrayList<>();
+
+	public void setDeleting(List<String> ids) {
+		deleting = ids;
+	}
+
+	public List<String> idsBeingDeleted() { return deleting; }
+
 }
