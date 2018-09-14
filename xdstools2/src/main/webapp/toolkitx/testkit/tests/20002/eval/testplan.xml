@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>20002/eval</Test>
+  <!-- -->
+  <TestStep id="invalid_slot">
+	<Goal>Update DocumentEntry status: Slot, PreviousVersion, not used in this operation.</Goal>
+    <ExpectedStatus>Failure</ExpectedStatus>
+	<ExpectedErrorCode>XDSMetadataUpdateOperationError</ExpectedErrorCode>
+    <MuTransaction>
+      <XDSb/>
+      <NoPatientId/>
+	  <NoAssignUids id="Document01"/>
+      <UseReport reportName="$patientid$" test="15817" section="pif" step="step" useAs="$patientid$"/>
+	  <UseId testdir="../original" step="submit" section="AssignedUuids" id="Document01" symbol="$orig_docentry_uuid$"/>
+      <MetadataFile>invalid_slot.xml</MetadataFile>
+    </MuTransaction>
+  </TestStep>
+  <TestStep id="missing_slot_originalstatus">
+	<Goal>Update DocumentEntry status: Slot, OriginalStatus, not included.</Goal>
+    <ExpectedStatus>Failure</ExpectedStatus>
+	<ExpectedErrorCode>XDSMetadataUpdateOperationError</ExpectedErrorCode>
+    <MuTransaction>
+      <XDSb/>
+      <NoPatientId/>
+	  <NoAssignUids id="Document01"/>
+      <UseReport reportName="$patientid$" test="15817" section="pif" step="step" useAs="$patientid$"/>
+	  <UseId testdir="../original" step="submit" section="AssignedUuids" id="Document01" symbol="$orig_docentry_uuid$"/>
+      <MetadataFile>missing_slot_originalstatus.xml</MetadataFile>
+    </MuTransaction>
+  </TestStep>
+  <TestStep id="missing_slot_newstatus">
+	<Goal>Update DocumentEntry status: Slot, NewStatus, not included.</Goal>
+    <ExpectedStatus>Failure</ExpectedStatus>
+	<ExpectedErrorCode>XDSMetadataUpdateOperationError</ExpectedErrorCode>
+    <MuTransaction>
+      <XDSb/>
+      <NoPatientId/>
+	  <NoAssignUids id="Document01"/>
+      <UseReport reportName="$patientid$" test="15817" section="pif" step="step" useAs="$patientid$"/>
+	  <UseId testdir="../original" step="submit" section="AssignedUuids" id="Document01" symbol="$orig_docentry_uuid$"/>
+      <MetadataFile>missing_slot_newstatus.xml</MetadataFile>
+    </MuTransaction>
+  </TestStep>
+  <TestStep id="slot_newstatus_invalid_value">
+	<Goal>Update DocumentEntry status: Slot, NewStatus, has a invalid value.</Goal>
+    <ExpectedStatus>Failure</ExpectedStatus>
+	<ExpectedErrorCode>XDSMetadataUpdateOperationError</ExpectedErrorCode>
+    <MuTransaction>
+      <XDSb/>
+      <NoPatientId/>
+	  <NoAssignUids id="Document01"/>
+      <UseReport reportName="$patientid$" test="15817" section="pif" step="step" useAs="$patientid$"/>
+	  <UseId testdir="../original" step="submit" section="AssignedUuids" id="Document01" symbol="$orig_docentry_uuid$"/>
+      <MetadataFile>slot_newstatus_invalid_value.xml</MetadataFile>
+    </MuTransaction>
+  </TestStep>
+  <TestStep id="slot_originalstatus_invalid_value">
+	<Goal>Update DocumentEntry status: Slot, OriginalStatus, has a invalid value.</Goal>
+    <ExpectedStatus>Failure</ExpectedStatus>
+	<ExpectedErrorCode>XDSMetadataUpdateOperationError</ExpectedErrorCode>
+    <MuTransaction>
+      <XDSb/>
+      <NoPatientId/>
+	  <NoAssignUids id="Document01"/>
+      <UseReport reportName="$patientid$" test="15817" section="pif" step="step" useAs="$patientid$"/>
+	  <UseId testdir="../original" step="submit" section="AssignedUuids" id="Document01" symbol="$orig_docentry_uuid$"/>
+      <MetadataFile>slot_originalstatus_invalid_value.xml</MetadataFile>
+    </MuTransaction>
+  </TestStep>
+  <TestStep id="slot_same_value">
+	<Goal>Update DocumentEntry status: NewStatus and OriginalStatus cannot have the same value.</Goal>
+    <ExpectedStatus>Failure</ExpectedStatus>
+	<ExpectedErrorCode>XDSMetadataUpdateOperationError</ExpectedErrorCode>
+    <MuTransaction>
+      <XDSb/>
+      <NoPatientId/>
+	  <NoAssignUids id="Document01"/>
+      <UseReport reportName="$patientid$" test="15817" section="pif" step="step" useAs="$patientid$"/>
+	  <UseId testdir="../original" step="submit" section="AssignedUuids" id="Document01" symbol="$orig_docentry_uuid$"/>
+      <MetadataFile>slot_same_value.xml</MetadataFile>
+    </MuTransaction>
+  </TestStep>  
+</TestPlan>

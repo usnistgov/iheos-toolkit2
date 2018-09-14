@@ -50,7 +50,8 @@ abstract public class GetFoldersForDocument extends StoredQuery {
 	protected String uid;
 	protected String uuid;
 
-	void parseParameters() throws XdsInternalException, XdsException, LoggerException {
+	protected void parseParameters() throws XdsInternalException, XdsException, LoggerException {
+		super.parseParameters();
 		uid 			= sqs.params.getStringParm("$XDSDocumentEntryUniqueId");
 		uuid 		    = sqs.params.getStringParm("$XDSDocumentEntryEntryUUID");
 	}

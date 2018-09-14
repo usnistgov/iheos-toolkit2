@@ -305,7 +305,7 @@ public class Linkage extends BasicLinkage {
       for (Iterator ita = e.getAllAttributes(); ita.hasNext();) {
          OMAttribute att = (OMAttribute) ita.next();
          String value = att.getAttributeValue();
-         if (value.contains(old_text)) {
+         if (value != null && value.contains(old_text)) {
             value = value.replaceAll(escape_pattern(old_text), new_text);
             att.setAttributeValue(value);
          }

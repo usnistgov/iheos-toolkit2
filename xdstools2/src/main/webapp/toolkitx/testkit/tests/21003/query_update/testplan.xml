@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>21003/query_update</Test>
+  <Rule>GetDocuments SQ Updated DocumentEntry</Rule>
+  <TestStep id="query">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetDocuments</SQ>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+      <UseId testdir="../update" section="AssignedUuids" step="submit" id="Folder01" symbol="$uuid$"/>
+      <ExpectedContents>
+        <Folders count="1"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="validate">
+    <NullTransaction>
+      <UseReport reportName="Folder01_uuid" section="update" step="submit" useAs="orig_uuid"/>
+      <Assertions>
+        <DataRef file="THIS" as="output"/>
+        <Assert id="version">
+               //*[local-name()='RegistryPackage'][@id="orig_uuid"]/*[local-name()='VersionInfo']/@versionName = '2'
+               </Assert>
+        <Assert id="lid">
+               'orig_uuid' != //*[local-name()='RegistryPackage'][@id="orig_uuid"]/@lid
+               </Assert>
+        <Assert id="status">
+               //*[local-name()='RegistryPackage'][@id="orig_uuid"]/@status = 'urn:oasis:names:tc:ebxml-regrep:StatusType:Approved'
+               </Assert>
+      </Assertions>
+    </NullTransaction>
+  </TestStep>
+</TestPlan>

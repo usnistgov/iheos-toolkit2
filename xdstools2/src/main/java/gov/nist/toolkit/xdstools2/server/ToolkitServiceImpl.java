@@ -27,12 +27,7 @@ import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
 import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
-import gov.nist.toolkit.results.client.CodesResult;
-import gov.nist.toolkit.results.client.DocumentEntryDetail;
-import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.Test;
-import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.results.client.TestLogs;
+import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest;
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationResponse;
 import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
@@ -104,13 +99,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class ToolkitServiceImpl extends RemoteServiceServlet implements
@@ -651,6 +640,12 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         Session s = getSession();
         if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
         return new OrchestrationManager().buildIdcTestEnvironment(s, request);
+    }
+    @Override
+    public RawResponse buildEsTestOrchestration(BuildEsTestOrchestrationRequest request) {
+        Session s = getSession();
+        if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+        return new OrchestrationManager().buildEstTestEnvironment(s, request.getEsOrchestrationRequest());
     }
     @Override
     public RawResponse buildRSNAEdgeTestOrchestration(BuildRSNAEdgeTestOrchestrationRequest request) throws Exception{

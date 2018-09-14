@@ -22,7 +22,7 @@ class RespondingGatewayActorSimulatorSpec extends ConformanceActor {
 
     @Override
     void setupSim() {
-        setActorPage(String.format("%s/#ConfActor:env=default;testSession=%s;actor=rg;", toolkitBaseUrl, simUser))
+        setActorPage(String.format("%s/#ConfActor:env=default;testSession=%s;actor=rg;profile=xca", toolkitBaseUrl, simUser))
         deleteOldRgSim()
         sleep(5000) // Why we need this -- Problem here is that the Delete request via REST could be still running before we execute the next Create REST command. The PIF Port release timing will be off causing a connection refused error in the Jetty log.
         rgSim = createNewRgSim()

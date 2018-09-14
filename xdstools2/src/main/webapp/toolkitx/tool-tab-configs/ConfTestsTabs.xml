@@ -2,7 +2,7 @@
 
 <!--
 TODO:
-The "tabs" element adds extra layer which is not necessary. It can be removed, all the code that uses it needs to be updated.
+The "tabs" element adds extra layer which is not necessary. It can be removed but all the code that uses it needs to be updated.
 -->
 
 <!--
@@ -51,14 +51,28 @@ testCollectionDefinitionDAOs contains test collections for a given actor.
 				<tabs label="Options">
 					<tab label="Required"  type="option" tcCode="" externalStart="false"/>
 					<tab label="Metadata Update Option" type="option" tcCode="mu" externalStart="false"/>
+					<tab label="Restricted Metadata Update Option" type="option" tcCode="rmu" externalStart="false"/>
 					<tab label="MPQ Option" type="option" tcCode="mpq" externalStart="false"/>
 					<tab label="On Demand Option" type="option" tcCode="od" externalStart="false"/>
 					<tab label="Integrated Source Repository" type="option" tcCode="isr" externalStart="true"/>
 					<tab label="XUA Option" type="option" tcCode="xua" externalStart="false"/>
 					<tab label="CAT Folder" type="option" tcCode="catfolder" externalStart="false"/>
 					<tab label="CAT Lifecycle" type="option" tcCode="catlifecycle" externalStart="false"/>
+					<!--<tab label="Remote Metadata Update Option" type="option" tcCode="rmu" externalStart="false"/>-->
+					<tab label="RMD Remote Registry Option" type="option" tcCode="rm" externalStart="false"/>
+					<tab label="XAD PID" type="option" tcCode="xadpid" externalStart="false"/>
 				</tabs>
 			</tab>
+			<!--<tab label="RMD" type="profile" tcCode="rmd">-->
+				<!--<tabs label="Options">-->
+					<!--<tab label="RMD Remote Registry Option" type="option" tcCode="rm" externalStart="false"/>-->
+				<!--</tabs>-->
+			<!--</tab>-->
+			<!--<tab label="XAD-PID" type="profile" tcCode="xadpid">-->
+				<!--<tabs label="Options">-->
+					<!--<tab label="Required" type="option" tcCode="req" externalStart="false"/>-->
+				<!--</tabs>-->
+			<!--</tab>-->
 		</tabs>
 	</tab>
 
@@ -68,9 +82,15 @@ testCollectionDefinitionDAOs contains test collections for a given actor.
 			<tab label="XDS" type="profile" tcCode="xds">
 				<tabs label="Options">
 					<tab label="Required"  type="option" tcCode="" externalStart="false"/>
-					<tab label="XUA Option" type="option" tcCode="xua" externalStart="false"/> 
+					<tab label="XUA Option" type="option" tcCode="xua" externalStart="false"/>
+					<tab label="Remote Repository Option" type="option" tcCode="rd" externalStart="false"/>
 				</tabs>
 			</tab>
+			<!--<tab label="RMD" type="profile" tcCode="rmd">-->
+				<!--<tabs label="Options">-->
+					<!--<tab label="Remote Repository Option" type="option" tcCode="rd" externalStart="false"/>-->
+				<!--</tabs>-->
+			<!--</tab>-->
 		</tabs>
 	</tab>
 
@@ -121,7 +141,7 @@ testCollectionDefinitionDAOs contains test collections for a given actor.
 
 	<tab label="Initiating Gateway" type="actor" tcCode="ig" displayColorCode="#c8ffe5">
 		<tabs label="Profiles">
-			<tab label="XDS" type="profile" tcCode="xds">
+			<tab label="XCA" type="profile" tcCode="xca">
 				<tabs label="Options">
 					<tab label="non-Affinity Domain Option"  type="option" tcCode="" externalStart="false"/>
 					<tab label="Affinity Domain Option"  type="option" tcCode="ad" externalStart="false"/>
@@ -133,11 +153,12 @@ testCollectionDefinitionDAOs contains test collections for a given actor.
 
 	<tab label="Responding Gateway" type="actor" tcCode="rg" displayColorCode="#c8ffe5">
 		<tabs label="Profiles">
-			<tab label="XDS" type="profile" tcCode="xds">
+			<tab label="XCA" type="profile" tcCode="xca">
 				<tabs label="Options">
 					<tab label="Required" type="option" tcCode="" externalStart="false"/>
 					<tab label="On Demand" type="option" tcCode="od" externalStart="false"/>
 					<tab label="XUA Option" type="option" tcCode="xua" externalStart="false"/>
+					<tab label="Restricted Metadata Update Option" type="option" tcCode="rmu" externalStart="false"/>
 				</tabs>
 			</tab>
 		</tabs>
@@ -174,11 +195,21 @@ testCollectionDefinitionDAOs contains test collections for a given actor.
 	</tab>
 
 
-	<tab label="Responding Imaging Gateway" type="actor" tcCode="rig" displayColorCode="#f8eefd">
+	<!--<tab label="Responding Imaging Gateway" type="actor" tcCode="rig" displayColorCode="#f8eefd">-->
+		<!--<tabs label="Profiles">-->
+			<!--<tab label="XCA-I" type="profile" tcCode="xca-i">-->
+				<!--<tabs label="Options">-->
+					<!--<tab label="Required" type="option" tcCode="" externalStart="false"/>-->
+				<!--</tabs>-->
+			<!--</tab>-->
+		<!--</tabs>-->
+	<!--</tab>-->
+
+	<tab label="RSNA ISN Edge Server 5.0" type="actor" tcCode="ris" displayColorCode="#a6ffd0">
 		<tabs label="Profiles">
-			<tab label="XCA-I" type="profile" tcCode="xca-i">
+			<tab label="XDS" type="profile" tcCode="xds">
 				<tabs label="Options">
-					<tab label="Required" type="option" tcCode="" externalStart="false"/>
+					<tab label="Required"  type="option" tcCode="" externalStart="false"/>
 				</tabs>
 			</tab>
 		</tabs>

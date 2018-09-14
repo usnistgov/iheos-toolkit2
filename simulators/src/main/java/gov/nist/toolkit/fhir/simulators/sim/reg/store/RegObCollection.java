@@ -12,5 +12,5 @@ abstract public class RegObCollection {
 	abstract public Ro getRoByUid(String uid);
 	abstract public List<String> getIds();
 	abstract public void delete(String id);  	// caller handles synchronization
-	
+	abstract public List<?> getNonDeprecated();
 }

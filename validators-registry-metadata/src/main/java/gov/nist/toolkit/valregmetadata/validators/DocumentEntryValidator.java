@@ -80,16 +80,16 @@ public class DocumentEntryValidator implements ObjectValidator {
                         MetadataSupport.XDSDocumentEntry_hcftCode_uuid ,
                         MetadataSupport.XDSDocumentEntry_psCode_uuid ,
                         MetadataSupport.XDSDocumentEntry_typeCode_uuid,
-                        MetadataSupport.XDSDocumentEntry_author_uuid
+                        MetadataSupport.XDSDocumentEntry_author_uuid,
+                        MetadataSupport.XDSDocumentEntry_typeCode_uuid
                 );
         classificationDescription.requiredSchemes =
                 Arrays.asList(
                         MetadataSupport.XDSDocumentEntry_classCode_uuid,
-                        MetadataSupport.XDSDocumentEntry_confCode_uuid,
-                        MetadataSupport.XDSDocumentEntry_formatCode_uuid,
-                        MetadataSupport.XDSDocumentEntry_hcftCode_uuid,
-                        MetadataSupport.XDSDocumentEntry_psCode_uuid,
-                        MetadataSupport.XDSDocumentEntry_typeCode_uuid
+                        MetadataSupport.XDSDocumentEntry_confCode_uuid
+//                        MetadataSupport.XDSDocumentEntry_formatCode_uuid,
+//                        MetadataSupport.XDSDocumentEntry_hcftCode_uuid,
+//                        MetadataSupport.XDSDocumentEntry_psCode_uuid,
                 );
         classificationDescription.multipleSchemes =
                 Arrays.asList(

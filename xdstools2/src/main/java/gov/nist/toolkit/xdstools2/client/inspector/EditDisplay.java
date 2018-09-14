@@ -711,7 +711,7 @@ public class EditDisplay extends CommonDisplay {
         FlowPanel personPanel = new FlowPanel();
         personPanel.add(editFieldsForAuthor.personTxt);
         Image removeAuthorImg = new Image("icons/exclude-button-red.png");
-        removeAuthorImg.setTitle("Remove Author");
+        removeAuthorImg.setTitle("REMOVE Author");
         removeAuthorImg.setAltText("Minus symbol");
         removeAuthorImg.setStyleName("copyBtn"); // reuse
         personPanel.add(removeAuthorImg);
@@ -720,11 +720,11 @@ public class EditDisplay extends CommonDisplay {
                 @Override
                 public void onClick(ClickEvent clickEvent) {
                     SafeHtmlBuilder safeHtmlBuilder = new SafeHtmlBuilder();
-                    safeHtmlBuilder.appendHtmlConstant("<img src=\"icons/exclude-button-red.png\" title=\"Remove Author\" />");
+                    safeHtmlBuilder.appendHtmlConstant("<img src=\"icons/exclude-button-red.png\" title=\"REMOVE Author\" />");
                     safeHtmlBuilder.appendHtmlConstant("Confirm remove author " + (author.person!=null?author.person:""));
 
                     VerticalPanel body = new VerticalPanel();
-                    body.add(new HTML("<p>Remove author?<br/></p>"));
+                    body.add(new HTML("<p>REMOVE author?<br/></p>"));
                     Button actionBtn =  new Button("Ok");
                     actionBtn.addClickHandler(new ClickHandler() {
                         @Override

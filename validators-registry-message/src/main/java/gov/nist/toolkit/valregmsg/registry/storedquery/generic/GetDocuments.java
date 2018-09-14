@@ -55,8 +55,9 @@ abstract public class GetDocuments extends StoredQuery {
 	protected List<String> uuids;
 	protected List<String> lids;
 	protected String metadataLevel;
-	
-	void parseParameters() throws XdsInternalException, XdsException, LoggerException {
+
+	protected void parseParameters() throws XdsInternalException, XdsException, LoggerException {
+		super.parseParameters();
 		uids = sqs.params.getListParm("$XDSDocumentEntryUniqueId");
 		uuids = sqs.params.getListParm("$XDSDocumentEntryEntryUUID");
 		lids = sqs.params.getListParm("$XDSDocumentEntryLogicalID");

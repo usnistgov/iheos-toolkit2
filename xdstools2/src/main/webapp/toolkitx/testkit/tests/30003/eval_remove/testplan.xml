@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>30003/eval_remove</Test>
+  <Rule>Evaluate all contents after Remove Metadata transaction.</Rule>
+  <TestStep id="eval_ss_contents">
+    <Goal>Confirm SubmissionSet content.</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseId testdir="../submit" id="SubmissionSet01" symbol="$ssuid$" step="submit" section="AssignedUids"/>
+      <MetadataFile>query_ss.xml</MetadataFile>
+      <ExpectedContents>
+        <SubmissionSets count="1"/>
+        <Associations count="2"/>
+        <Documents count="1"/>
+        <Folders count="1"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="eval_fd_contents">
+	<Goal>Confirm Folder no longer has references to any documents.</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseId testdir="../submit" id="Folder01" symbol="$foluid$" step="submit" section="AssignedUids"/>
+      <MetadataFile>query_fd.xml</MetadataFile>
+      <ExpectedContents>
+        <Folders count="1"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>  
+</TestPlan>

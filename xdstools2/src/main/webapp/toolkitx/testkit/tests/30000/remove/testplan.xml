@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>30000/remove</Test>
+  <TestStep id="remove_target">
+	<Goal>Failure to remove a non-existent metadata object</Goal>
+    <ExpectedStatus>Failure</ExpectedStatus>
+	<ExpectedErrorCode>UnresolvedReferenceException</ExpectedErrorCode>
+    <RemoveMetadataTransaction>
+      <XDSb/>
+      <NoPatientId/>
+	  <ParseMetadata>False</ParseMetadata>
+      <MetadataFile>remove.xml</MetadataFile>
+    </RemoveMetadataTransaction>
+  </TestStep>
+</TestPlan>

@@ -189,6 +189,7 @@ public class UseReportManager  {
             if (useReport.isResolved())
                 continue;
 
+            /**TODO Original Code**/
 			LogFileContentDTO logFileContentDTO = previousLogs.get(useReport.section);
 			if (logFileContentDTO == null) {
 				TestSection testSection = new TestSection(useReport.testInstance, useReport.section);
@@ -197,6 +198,22 @@ public class UseReportManager  {
 			}
 			if (logFileContentDTO == null)
 				throw new XdsInternalException("UseReportManager#resolve: cannot find Report for " + useReport.getURI() + "\n");
+
+//            /**TODO - KM Added**/
+//            String useReportSearchKey;
+//            if(!useReport.section.equals("THIS")) {
+//            	useReportSearchKey = useReport.testInstance.getId() + ":" + useReport.section;
+//            }
+//            else {
+//            	useReportSearchKey = "THIS";
+//            }
+//
+//			LogFileContentDTO logFileContentDTO = previousLogs.get(useReport.section);
+//			if (logFileContentDTO == null)
+//				logFileContentDTO = sectionLogMapDTO.get(useReportSearchKey);
+//			if (logFileContentDTO == null)
+//				throw new XdsInternalException("UseReportManager#resolve: cannot find Report for " + useReport.getURI() + "\n");
+//			/**TODO - End KM Added**/
 
 			TestStepLogContentDTO testStepLogContentDTO = logFileContentDTO.getStepLog(useReport.step);
 			if (testStepLogContentDTO == null)
@@ -244,6 +261,7 @@ public class UseReportManager  {
 		}
 	}
 
+	/** TODO KM **/
 	public String get(String theUseAs) {
 		for (UseReport ur : useReports) {
 			if (theUseAs.equals(ur.useAs))

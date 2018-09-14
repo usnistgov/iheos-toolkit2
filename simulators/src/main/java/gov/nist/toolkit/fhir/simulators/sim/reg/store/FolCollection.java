@@ -69,6 +69,19 @@ public class FolCollection extends RegObCollection implements Serializable {
 		return latest;
 	}
 
+	public Fol getPreviousVersion(Fol fol) {
+		int thisVersion = fol.version;
+		if (thisVersion == 1)
+			return null;
+		int targetVersion = thisVersion - 1;
+		List<Fol> allVersions = getByLid(fol.lid);
+		for (Fol f : allVersions) {
+			if (f.version == targetVersion)
+				return f;
+		}
+		return null;
+	}
+
 	
 	public Ro getRo(String id) {
 		for (Fol de : fols) {
@@ -92,16 +105,17 @@ public class FolCollection extends RegObCollection implements Serializable {
 		return parent.getById(id);
 	}
 	
-	public Fol getByUid(String uid) {
+	public List<Fol> getByUid(String uid) {
+		List<Fol> des = new ArrayList<>();
 		if (uid == null)
-			return null;
+			return des;
 		for (Fol f : fols) {
 			if (uid.equals(f.uid))
-				return f;
+				des.add(f);
 		}
-		if (parent == null)
-			return null;
-		return parent.getByUid(uid);
+		if (parent != null)
+			des.addAll(parent.getByUid(uid));
+		return des;
 	}
 	
 
@@ -215,6 +229,18 @@ public class FolCollection extends RegObCollection implements Serializable {
 		List<String> ids = new ArrayList<>();
 		for (Fol a : fols) ids.add(a.getId());
 		return ids;
+	}
+
+	@Override
+	public List<?> getNonDeprecated() {
+		List<Fol> nonDep = new ArrayList<>();
+		for (Fol a : fols) {
+			if (!a.isDeprecated())
+				nonDep.add(a);
+		}
+		if (parent != null)
+			return parent.getNonDeprecated();
+		return nonDep;
 	}
 
 

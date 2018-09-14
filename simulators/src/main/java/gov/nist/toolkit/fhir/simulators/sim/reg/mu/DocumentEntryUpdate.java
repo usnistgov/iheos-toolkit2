@@ -3,23 +3,17 @@ package gov.nist.toolkit.fhir.simulators.sim.reg.mu;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
-import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.fhir.simulators.sim.reg.store.DocEntry;
+import gov.nist.toolkit.fhir.simulators.sim.reg.store.ProcessMetadataInterface;
 import gov.nist.toolkit.fhir.simulators.sim.reg.store.StatusValue;
-import gov.nist.toolkit.simcommon.server.SimCommon;
+import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.valsupport.client.ValidationContext.MetadataPattern;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
-
 import org.apache.axiom.om.OMElement;
 
 public class DocumentEntryUpdate  {
 	ErrorRecorder er;
 	
-	public DocumentEntryUpdate(SimCommon common, ErrorRecorder er) {
-//		super(common);
-//		this.er = er;
-	}
-
 	public void run(MuSim muSim, Metadata m, OMElement docEle, OMElement ssAssoc, String prevVer) {
 		er = muSim.er;
 		String lid = m.getLid(docEle);
@@ -93,13 +87,19 @@ public class DocumentEntryUpdate  {
 		
 		operation.addExtrinsicObject(docEle);
 		operation.add_association(ssAssoc);
+		if (m.getSubmissionSet() == null) {
+			er.err(Code.XDSMetadataUpdateError, "Update contains no SubmissionSet object", null,null);
+			return;
+		}
+		operation.addSubmissionSet(m.getSubmissionSet());
 
 		// run normal processing for a Register
 		// Note that this method farms out all the work to other
 		// worker methods that can be overridden by this class to
 		// control the processing. (That's why this class inherits
 		// from RegRSim).
-		muSim.processMetadata(operation, new ProcessMetadataForDocumentEntryUpdate(er, muSim.mc, muSim.delta));
+		ProcessMetadataInterface pmi = new ProcessMetadataForDocumentEntryUpdate(er, muSim.mc, muSim.delta);
+		muSim.processMetadata(operation, pmi);
 
 		if (!muSim.hasErrors()) {
 			muSim.save(operation, false);

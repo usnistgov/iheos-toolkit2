@@ -28,7 +28,7 @@ public class TransactionBean implements IsSerializable, Serializable {
 	ActorType actorType = null;
 	
 	
-	// Remove this? Not used for anything real yet.
+	// REMOVE this? Not used for anything real yet.
 	public enum RepositoryType  implements IsSerializable  { REPOSITORY, ODDS, NONE, IDS;
 	
 		RepositoryType() {}

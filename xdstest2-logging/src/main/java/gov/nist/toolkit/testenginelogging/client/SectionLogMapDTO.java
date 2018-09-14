@@ -37,6 +37,12 @@ public class SectionLogMapDTO implements Serializable, IsSerializable {
 			throw new XdsInternalException("Null log for section " + sectionName);
 		if (sectionName == null)
 			throw new XdsInternalException("SectionLogMapDTO#put - sectionName is null");
+		
+//		/**TODO - KM add**/
+//		if(!sectionName.equals("THIS")) {
+//			sectionName = sectionName + ":" + log.getTest();
+//		}
+		
 		sectionNames.add(sectionName);
 		sectionLogs.put(sectionName, log);
 		setSection(log.getReportDTOs(), sectionName);

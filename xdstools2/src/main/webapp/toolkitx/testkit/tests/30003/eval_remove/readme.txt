@@ -1,0 +1,1 @@
+Verify the original Submission Set remains in the Document Registry, but without the FD-DE HM association.

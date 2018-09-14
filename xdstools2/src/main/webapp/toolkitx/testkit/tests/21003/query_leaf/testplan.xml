@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>21003/query_leaf</Test>
+  <TestStep id="query">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetFolders</SQ>
+    </Rule>
+    <ExpectedStatus>Failure</ExpectedStatus>
+	<ExpectedErrorCode>XDSResultNotSinglePatient</ExpectedErrorCode>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+      <UseId testdir="../original" step="submit" section="AssignedUuids" id="Folder01" symbol="$lid$"/>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

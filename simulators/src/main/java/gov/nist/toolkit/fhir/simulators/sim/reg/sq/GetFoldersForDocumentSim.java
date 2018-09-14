@@ -52,7 +52,7 @@ public class GetFoldersForDocumentSim extends GetFoldersForDocument {
 		HashSet<String> folIds = new HashSet<String>();
 		
 		for (String docid : docIds) {
-			List<Assoc> as = mc.assocCollection.getBySourceDestAndType(null, docid, RegIndex.AssocType.HASMEMBER);
+			List<Assoc> as = mc.assocCollection.getBySourceDestAndType(null, docid, RegIndex.AssocType.HasMember);
 			for (Assoc a : as) {
 				String sourceId = a.getFrom();
 				Fol f = mc.folCollection.getById(sourceId);

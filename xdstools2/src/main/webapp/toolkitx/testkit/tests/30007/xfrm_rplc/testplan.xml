@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>30007/xfrm_rplc</Test>
+  <TestStep id="xfrm_rplc">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <RegisterTransaction>
+      <XDSb/>
+      <NoPatientId/>
+	  <AssignUuids/>
+      <UseReport reportName="$patientid$" test="15817" section="pif" step="step" useAs="$patientid$"/>
+	  <UseId testdir="../submit" step="submit" section="AssignedUuids" id="Document01" symbol="$rplc_doc_uuid$"  />
+      <MetadataFile>metadata.xml</MetadataFile>
+    </RegisterTransaction>
+  </TestStep>
+</TestPlan>

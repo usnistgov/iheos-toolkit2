@@ -42,7 +42,7 @@ public class Validator {
 		MUST_ONLY_INCLUDE,
 		INCLUDE,
 		EXCLUDE
-	};
+	}
 
 	public Validator() {
 	}
@@ -499,6 +499,17 @@ public class Validator {
 		}
 		return true;
 	}
+	
+	public boolean folsDeprecated() throws MetadataException {
+		for (OMElement fol : m.getFolders()) {
+			String status = m.stripNamespace(fol.getAttributeValue(MetadataSupport.status_qname));
+			if ( status == null || !status.equals("Deprecated")) {
+				err("Folder " + fol.getAttributeValue(MetadataSupport.id_qname) + " has status " + status + " instead of 'Deprecated'");
+				return false;
+			}
+		}
+		return true;
+	}
 
 	public boolean ssApproved() throws MetadataException {
 		OMElement ss = m.getSubmissionSet();
@@ -559,7 +570,6 @@ public class Validator {
 	}
 
 
-
 	public void run_test_assertions(OMElement instruction_output) throws MetadataException, XdsInternalException {
 		for (Iterator it=test_assertions.getChildElements(); it.hasNext(); ) {
 			OMElement ec = (OMElement) it.next();
@@ -570,8 +580,8 @@ public class Validator {
 				count = Integer.parseInt(countAttrValStr);
 			}
 			if (ec_name.equals("DocumentEntries")) {
-			    if (testConfig == null) {
-			    	throw new IllegalArgumentException("testConfig is null!");
+				if (testConfig == null) {
+					throw new IllegalArgumentException("testConfig is null!");
 				} else if (instruction_output == null) {
 					throw new IllegalArgumentException("instruction_output is null!");
 				}
@@ -581,6 +591,8 @@ public class Validator {
 			}
 		}
 	}
+
+
 
 	public void run_test_assertion(String ec_name, int count) throws MetadataException, XdsInternalException  {
 		if (ec_name.equals("SSwithOneDoc")) {
@@ -673,9 +685,13 @@ public class Validator {
 		else if (ec_name.equals("Associations")) {
 			hasAssociations(count);
 		}
-	else if (ec_name.equals("HasSnapshotPattern")) {
+		else if (ec_name.equals("HasSnapshotPattern")) {
 			hasSnapshotPattern();
-		} else {
+		}
+		else if (ec_name.equals("FolDep")) {
+			folsDeprecated();
+		}
+		else {
 			throw new XdsInternalException("QueryTransaction: validate_expected_contents(): don't understand verification request " + ec_name);
 		}
 

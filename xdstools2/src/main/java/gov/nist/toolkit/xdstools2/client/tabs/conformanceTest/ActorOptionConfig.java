@@ -112,8 +112,8 @@ public class ActorOptionConfig extends ActorOption {
                 && ActorType.RESPONDING_IMAGING_GATEWAY.getActorCode().equals(actorTypeId);
     }
 
-    public boolean isEdgeServerSut() {
-        return false;
+    public boolean isEs() {
+        return actorTypeId != null && ActorType.RSNA_EDGE_DEVICE.getShortName().equals(actorTypeId);
     }
 
     public boolean isOnDemand() {

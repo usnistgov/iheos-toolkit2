@@ -97,6 +97,20 @@ class OrchestrationManager {
         }
     }
 
+    public RawResponse buildEstTestEnvironment(Session session, EsOrchestrationRequest request) {
+        try {
+            ToolkitApi api
+            if(Installation.instance().warHome()) {
+                api = ToolkitApi.forNormalUse(session)
+            } else {
+                api = ToolkitApi.forInternalUse()
+            }
+            return new EstOrchestrationBuilder(api, session, request).buildTestEnvironment()
+        } catch (Exception e) {
+            return RawResponseBuilder.build(e);
+        }
+    }
+
     public RawResponse buildRepTestEnvironment(Session session, RepOrchestrationRequest request) {
         try {
             ToolkitApi api

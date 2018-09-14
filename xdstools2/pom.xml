@@ -67,6 +67,7 @@
 				<Toolkit_Port>9280</Toolkit_Port>
 				<Listener_Port_Range>5000,5020</Listener_Port_Range>
 				<Image_Cache>/opt/xdsi/xds-toolkit/01/ImageCache</Image_Cache>
+                <Enable_SAML>true</Enable_SAML>
 				<Cas_mode>false</Cas_mode>
 				<Multiuser_mode>false</Multiuser_mode>
 				<Client_Cipher_Suites>TLS_RSA_WITH_AES_128_CBC_SHA</Client_Cipher_Suites>

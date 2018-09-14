@@ -21,6 +21,9 @@ public class RegistryFactory {
 		de.hash = m.getSlotValue(ele, "hash", 0);
 		de.size = m.getSlotValue(ele, "size", 0);
 		de.objecttype = m.getObjectTypeById(de.id);
+		de.sourcePatientId = m.getSlotValue(ele, "sourcePatientId", 0);
+		de.documentAvailability = m.getSlotValue(ele, "documentAvailability", 0) ;
+		de.repositoryUniqueId = m.getSlotValue(ele, "repositoryUniqueId", 0);
 
 		String version = m.getVersion(ele);
 

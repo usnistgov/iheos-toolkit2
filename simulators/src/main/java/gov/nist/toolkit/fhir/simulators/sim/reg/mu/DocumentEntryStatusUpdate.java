@@ -17,7 +17,7 @@ public class DocumentEntryStatusUpdate extends RegRSim {
 	ErrorRecorder er;
 	DsSimCommon dsSimCommon;
 	
-	public DocumentEntryStatusUpdate(SimCommon common, DsSimCommon dsSimCommon, ErrorRecorder er, SimulatorConfig asc) {
+	DocumentEntryStatusUpdate(SimCommon common, DsSimCommon dsSimCommon, ErrorRecorder er, SimulatorConfig asc) {
 		super(common, dsSimCommon, asc);
 		this. dsSimCommon = dsSimCommon;
 		this.er = er;

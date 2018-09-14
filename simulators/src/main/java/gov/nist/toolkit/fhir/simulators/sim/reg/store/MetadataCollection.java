@@ -9,10 +9,12 @@ import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.utilities.id.UuidAllocator;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
+import gov.nist.toolkit.valregmsg.registry.SQStatusTerm;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
@@ -20,7 +22,6 @@ import org.apache.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -255,7 +256,7 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 	List<Fol> getFoldersContaining(String id) {
 		List<Fol> fols = new ArrayList<Fol>();
 
-		List<Assoc> hasmembers = assocCollection.getBySourceDestAndType(null, id, AssocType.HASMEMBER);
+		List<Assoc> hasmembers = assocCollection.getBySourceDestAndType(null, id, AssocType.HasMember);
 
 		for (Assoc a : hasmembers) {
 			if (isFolder(a.from))
@@ -263,6 +264,17 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 		}
 
 		return fols;
+	}
+
+	public List<DocEntry> getDocEntriesInFolder(Fol fol) {
+		List<DocEntry> des = new ArrayList<>();
+
+		List<Assoc> hasmembers = assocCollection.getBySourceDestAndType(fol.id, null, AssocType.HasMember);
+		for (Assoc a : hasmembers) {
+			des.add(docEntryCollection.getById(a.to));
+		}
+
+		return des;
 	}
 
 	public List<Fol> getFoldersContaining(DocEntry de) {
@@ -276,11 +288,17 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 			if (ro != null)
 				return ro;
 		}
+		if (parent != null)
+			return parent.getObjectById(id);
 		return null;
 	}
 
 	public void addDocEntryToFolAssoc(DocEntry de, Fol f) throws MetadataException, XdsInternalException, IOException {
-		addAssoc(f.getId(), de.getId(), AssocType.HASMEMBER);
+		addAssoc(f.getId(), de.getId(), AssocType.HasMember);
+	}
+
+	public void addDocEntryToFolAssoc(String deId, String fId) throws MetadataException, XdsInternalException, IOException {
+		addAssoc(fId, deId, AssocType.HasMember);
 	}
 
 
@@ -318,11 +336,14 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 		Ro ro = getRo(id);
 		if (ro == null)
 			return null;
-		File f = null;
+		File f;
 		if (ro.isPathIsRelative()) {
 		 	f = regIndex.getAbsolutePathForObject(ro).toFile(); //ro.getFile();
 		} else {
-			f = new File(ro.getPathToMetadata());
+			String path = ro.getPathToMetadata();
+			if (path == null)
+				throw new ToolkitRuntimeException("Object " + id + " does not have a path to metadata stored in the index");
+			f = new File(path);
 		}
 		Metadata m = MetadataParser.parseNonSubmission(f);
 		attachAvailabilityStatus(m);
@@ -422,8 +443,8 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 	}
 
 	private void idPresentCheck(Ro obj) throws MetadataException {
-		if (hasObject(obj.id))
-			throw new MetadataException("id " + obj.id + " already present in registry",null);
+		if (parent != null && parent.hasObject(obj.id))
+			throw new MetadataException("id " + obj.id + " (" + obj.getType() + ") already present in registry",null);
 	}
 
 	public List<String> getIdsForObjects(List objects) {
@@ -487,7 +508,7 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 		File rof = regIndex.installInternalPath(ro);
 
 		if (!overwriteOk && rof.exists())
-			throw new MetadataException("Object with id " + id + " already exists in Registry", null);
+			throw new MetadataException("Object with id " + id + " already exists in Registry and has type " + ro.getType(), null);
 
 		OMElement wrapper = MetadataSupport.createElement("LeafRegistryObjectList", MetadataSupport.ebRIMns3);
 		wrapper.addChild(ele);
@@ -495,7 +516,7 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 		Io.stringToFile(rof, new OMFormatter(wrapper).toString());
 	}
 
-	private void storeMetadata(Metadata m, boolean overwriteOk) throws MetadataException, IOException, XdsInternalException {
+	public void storeMetadata(Metadata m, boolean overwriteOk) throws MetadataException, IOException, XdsInternalException {
 //		logger().debug("storeMetadata:\n" + m.getSummary() + "\ngiven existing index:\n" + getStats("    "));
 		for (OMElement ele : m.getExtrinsicObjects())
 			storeMetadata(ele, overwriteOk);
@@ -527,7 +548,7 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 		return subSetCollection.hasObject(uuid);
 	}
 
-	void addAssoc(String source, String target, AssocType type) throws MetadataException, XdsInternalException, IOException {
+	public void addAssoc(String source, String target, AssocType type) throws MetadataException, XdsInternalException, IOException {
 		Assoc a = new Assoc();
 		a.from = source;
 		a.to = target;
@@ -566,6 +587,22 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 
 		return out;
 	}
+
+	public List<Assoc> filterAssocsByStatus(List<Assoc> assocs, SQStatusTerm status) {
+	    List<Assoc> rets = new ArrayList<>();
+
+	    if (status == null)
+	        return rets;
+
+	    for (Assoc a : assocs) {
+	        if (a.isDeprecated() && status.isDeprecatedAceptable())
+	            rets.add(a);
+	        if (!a.isDeprecated() && status.isApprovedAceptable())
+	            rets.add(a);
+        }
+
+	    return rets;
+    }
 
 	private boolean hasRo(List<Ro> ros, String id) {
 		for (Ro ro : ros) {

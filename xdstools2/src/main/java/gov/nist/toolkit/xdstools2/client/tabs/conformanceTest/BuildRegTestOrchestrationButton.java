@@ -32,6 +32,8 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
     private RadioButton noFeed = new RadioButton("pidFeedGroup", "No Patient Identity Feed");
     private RadioButton v2Feed = new RadioButton("pidFeedGroup", "V2 Patient Identitfy Feed");
 
+    static private final String XADPID_OPTION = "xadpid"; // corresponds to collection reg_xadpid in testkit collections.txt file
+    static private final String RM_OPTION = "rm"; // corresponds to collection reg_rm in testkit collections.txt file
     static private final String MU_OPTION = "mu";  // corresponds to collection reg_mu in testkit collections.txt file
     static private final String MPQ_OPTION = "mpq";
     static private final String OD_OPTION = "od";
@@ -45,10 +47,13 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
                 new ActorAndOption("reg", MU_OPTION, "Metadata Update Option", false),
                 new ActorAndOption("reg", MPQ_OPTION, "MPQ Option", false),
                 new ActorAndOption("reg", OD_OPTION, "On Demand Option", false),
+                new ActorAndOption("reg", RM_OPTION, "Remote Registry Option", false),
                 new ActorAndOption("reg", ISR_OPTION, "Integrated Source Repository", true),
                 new ActorAndOption("reg", XUA_OPTION, "XUA Option", false),
                 new ActorAndOption("reg", CAT_FOLDER_OPTION, "CAT Folder", false),
-                new ActorAndOption("reg", CAT_LIFECYCLE_OPTION, "CAT Lifecycle", false)
+                new ActorAndOption("reg", CAT_LIFECYCLE_OPTION, "CAT Lifecycle", false),
+                new ActorAndOption("reg", XADPID_OPTION, "XAD-PID Required", false)
+                
         );
     }
 
@@ -73,6 +78,16 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
         setCustomPanel(pidFeedPanel);
         build();
         panel().add(initializationResultsPanel);
+        
+        /** TODO - KM turned off**/
+        //setCustomPanel(pidFeedPanel);
+        /** TODO - End KM turned off**/
+        /** TODO - KM turned off**/
+        //build();
+        /** TODO - End KM turned off**/
+        /** TODO - KM turned off**/
+        //panel().add(initializationResultsPanel);
+        /** TODO - End KM turned off**/
 
     }
 

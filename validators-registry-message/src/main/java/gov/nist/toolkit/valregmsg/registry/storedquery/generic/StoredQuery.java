@@ -7,6 +7,7 @@ import gov.nist.toolkit.valregmsg.registry.storedquery.support.StoredQuerySuppor
 import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.XDSRegistryOutOfResourcesException;
 import gov.nist.toolkit.xdsexception.client.XdsException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +57,7 @@ abstract public class StoredQuery extends BasicQuery  {
 
 	// Generic Stored Query parameters (returnType etc)
 	protected StoredQuerySupport sqs;
+	protected boolean metadataLevel2 = false;
 
 	static protected final String stableDocumentType = "urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1";
 	static protected final String onDemandDocumentType = "urn:uuid:34268e47-fdf5-41a6-ba33-82133c465248";
@@ -65,6 +67,11 @@ abstract public class StoredQuery extends BasicQuery  {
 		documentTypes = new ArrayList<>();
 		documentTypes.add(stableDocumentType);
 		documentTypes.add(onDemandDocumentType);
+	}
+
+	protected void parseParameters() throws XdsInternalException, XdsException, LoggerException {
+		String value = sqs.params.getIntParm("$MetadataLevel");
+		metadataLevel2 = (value != null) && value.equals("2");
 	}
 
 	protected String validDocumentTypesString() { return "[" + stableDocumentType + ", " + onDemandDocumentType + "]"; }

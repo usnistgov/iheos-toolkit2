@@ -86,8 +86,9 @@ class A1_RunFirst_SimulatorManagerSpec extends ToolkitWebPage {
                 ActorType actorType = ActorType.findActor(actorTypeName)
                 if (actorType!=null) {
                     String testSimActorShortName = actorType.getShortName()
-                    if (testSimActorShortName.equals(ActorType.RSNA_EDGE_DEVICE.getShortName())
-                            || testSimActorShortName.equals(ActorType.ISR.getShortName())) {
+                    if (
+//                    testSimActorShortName.equals(ActorType.EDGE_SERVER.getShortName()) ||
+                            testSimActorShortName.equals(ActorType.ISR.getShortName())) {
                         println("Skipping actor type (short name) due to known defect: " + testSimActorShortName)
                         defectCt++
                         continue

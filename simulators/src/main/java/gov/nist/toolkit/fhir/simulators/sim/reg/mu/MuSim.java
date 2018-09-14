@@ -1,16 +1,16 @@
 package gov.nist.toolkit.fhir.simulators.sim.reg.mu;
 
+import com.sun.ebxml.registry.util.Utility;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
+import gov.nist.toolkit.fhir.simulators.sim.reg.store.*;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.fhir.simulators.sim.reg.RegRSim;
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.ProcessMetadataForRegister;
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.ProcessMetadataInterface;
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.fhir.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simcommon.server.SimCommon;
+import gov.nist.toolkit.valregmetadata.coding.Uuid;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import org.apache.axiom.om.OMElement;
@@ -107,7 +107,170 @@ public class MuSim extends RegRSim {
 
 		docEntryUpdateStatusTrigger(clone);
 
+		submittedAssociationsTrigger(clone);
 
+		updateAssociationStatusTrigger(clone);
+
+		folderUpdateTrigger(clone);
+
+
+	}
+
+	void updateAssociationStatusTrigger(Metadata m) {
+		List<OMElement> updateAssocs = m.getAssociations(m.getSubmissionSetId(), null, "urn:ihe:iti:2010:AssociationType:UpdateAvailabilityStatus");
+		for (OMElement updateAssocEle : updateAssocs) {
+			String updateAssocId = Metadata.getAssocTarget(updateAssocEle);
+			String originalStatus = m.getSlotValue(updateAssocEle, "OriginalStatus", 0);
+			boolean originalStatusisDeprecated;
+			if (originalStatus.equals(RegIndex.getStatusString(StatusValue.APPROVED))) {
+				originalStatusisDeprecated = false;
+			} else if (originalStatus.equals(RegIndex.getStatusString(StatusValue.DEPRECATED))) {
+				originalStatusisDeprecated = true;
+			} else {
+				er.err(Code.XDSMetadataUpdateError, "UpdateAvailabilityStatus - invalid OriginalStatus in request - " + originalStatus, null, null);
+				continue;
+			}
+			String newStatus = m.getSlotValue(updateAssocEle, "NewStatus", 0);
+			boolean newStatusIsDeprecated;
+			if (newStatus.equals(RegIndex.getStatusString(StatusValue.APPROVED))) {
+				newStatusIsDeprecated = false;
+			} else if (newStatus.equals(RegIndex.getStatusString(StatusValue.DEPRECATED))) {
+				newStatusIsDeprecated = true;
+			} else {
+				er.err(Code.XDSMetadataUpdateError, "UpdateAvailabilityStatus - invalid requested new status value - " + newStatus, null, null);
+				continue;
+			}
+
+			Ro ro = mc.getObjectById(updateAssocId);
+			if (!(ro instanceof Assoc)) {
+				er.err(Code.XDSRegistryError, "UpdateAssociation points to non-association " + ro.toString(), null, null);
+				continue;
+			}
+			Assoc assoc = (Assoc) ro;
+			boolean oldStatusIsDeprecated = assoc.isDeprecated();
+			if (originalStatusisDeprecated != oldStatusIsDeprecated) {
+				er.err(Code.XDSRegistryError, "UpdateAssociation OriginalStatus in request is " + originalStatus + " but current Association status is " + RegIndex.getStatusString(oldStatusIsDeprecated), null, null);
+				continue;
+			}
+			if (!RegIndex.statusValues.contains(newStatus)) {
+				er.err(Code.XDSRegistryError, "UpdateAssociation NewStatus is " + newStatus + " which is not understood", null, null);
+				continue;
+			}
+			Ro sourceObject = mc.getObjectById(assoc.from);
+			Ro targetObject = mc.getObjectById(assoc.to);
+			if (assoc.type == RegIndex.AssocType.HasMember && !(sourceObject instanceof Fol)) {
+				er.err(Code.XDSMetadataUpdateError, "UpdateAvailabilityStatus - HasMember Association attached to SubmissionSet cannot bne updated", null, null);
+				continue;
+			}
+			if (!RegIndex.isRelationshipAssoc(assoc.type.name())) {
+				er.err(Code.XDSMetadataUpdateError, "UpdateAvailabilityStatus - Association being updated must be attached to Folder or be a Relationship AssociationHasMember Association - attempting to update Association of type " + assoc.type.name(), null, null);
+				continue;
+			}
+			delta.changeAvailabilityStatus(assoc.id, RegIndex.getStatusValue(originalStatus), RegIndex.getStatusValue(newStatus));
+		}
+	}
+
+	void submittedAssociationsTrigger(Metadata m) {
+		List<OMElement> submitAssocs = m.getAssociations(m.getSubmissionSetId(), null, "urn:ihe:iti:2010:AssociationType:SubmitAssociation");
+		for (OMElement submitAssocEle : submitAssocs) {
+			String newAssocId = Metadata.getAssocTarget(submitAssocEle);
+			if (!m.isAssociation(newAssocId)) {
+				er.err(Code.XDSMetadataUpdateError, "SubmitAssociation references Association " + newAssocId + " which does not exist in submission", null, null);
+				continue;
+			}
+
+			OMElement newAssocEle;
+			try {
+				newAssocEle = m.getObjectById(newAssocId);
+			} catch (Exception e) {
+				er.err(Code.XDSRegistryError, "Internal error - cannot find known object in input",null, null);
+				return;
+			}
+			String src = Metadata.getAssocSource(newAssocEle);
+			String tgt = Metadata.getAssocTarget(newAssocEle);
+			String type = Metadata.getAssocType(newAssocEle);
+			if (!m.isUuid(src)) {
+				er.err(Code.XDSMetadataUpdateError, "SubmitAssociation - sourceObject attribute must be UUID format - found " + src,null, null);
+				continue;
+			}
+			if (!m.isUuid(tgt)) {
+				er.err(Code.XDSMetadataUpdateError, "SubmitAssociation - targetObject attribute must be UUID format - found " + tgt,null, null);
+				continue;
+			}
+			Ro srcObject = mc.getObjectById(src);
+			if (srcObject == null) {
+				er.err(Code.XDSMetadataUpdateError, "SubmitAssociation - sourceObject attribute does not reference an object in the registry - value " + src,null, null);
+				continue;
+			}
+			Ro tgtObject = mc.getObjectById(tgt);
+			if (tgtObject == null) {
+				er.err(Code.XDSMetadataUpdateError, "SubmitAssociation - targetObject attribute does not reference an object in the registry - value " + tgt,null, null);
+				continue;
+			}
+			if (srcObject.isDeprecated()) {
+				er.err(Code.XDSMetadataUpdateError, "SubmitAssociation - sourceObject attribute references deprecated object in the registry - value " + src,null, null);
+				continue;
+			}
+			if (tgtObject.isDeprecated()) {
+				er.err(Code.XDSMetadataUpdateError, "SubmitAssociation - targetObject attribute references deprecated object in the registry - value " + tgt,null, null);
+				continue;
+			}
+			if (srcObject instanceof SubSet) {
+				er.err(Code.XDSMetadataUpdateError, "SubmitAssociation - submitted association shall not reference a SubmissionSet ", null, null);
+				continue;
+			}
+			if (tgtObject instanceof SubSet) {
+				er.err(Code.XDSMetadataUpdateError, "SubmitAssociation - submitted association shall not reference a SubmissionSet ", null, null);
+				continue;
+			}
+
+			if (RegIndex.isRelationshipAssoc(type) && (srcObject instanceof Fol || tgtObject instanceof Fol) ) {
+				er.err(Code.XDSMetadataUpdateError, "SubmitAssociation - submitted association of type " + type + " references a Folder", null, null);
+				continue;
+			}
+			if (type == RegIndex.AssocType.HasMember.name()) {
+				boolean error = false;
+				if (!(srcObject instanceof Fol)) {
+					er.err(Code.XDSMetadataUpdateError, "SubmitAssociation - submitted association of type " + type + " must reference a Folder with its sourceObject attribute", null, null);
+					error = true;
+				}
+				if (!(tgtObject instanceof DocEntry)) {
+					er.err(Code.XDSMetadataUpdateError, "SubmitAssociation - submitted association of type " + type + " must reference a DocumentEntry with its targetObject attribute", null, null);
+					error = true;
+				}
+				if (error)
+					continue;
+			}
+
+			// cannot create approved Association if PatientId does not match
+			if ((srcObject instanceof PatientObject) && (tgtObject instanceof PatientObject)) {
+				String srcPid = ((PatientObject) srcObject).pid;
+				String tgtPid = ((PatientObject) tgtObject).pid;
+				if (!srcPid.equals(tgtPid)) {
+					er.err(Code.XDSMetadataUpdateError, "Attempting to submit Association linking two objects with different Patient IDs", null, null);
+				}
+			}
+
+			// cannot create two approved Associations between a pair of objects
+			// this is implied by the overall metadata model
+			List<Assoc> as = mc.assocCollection.getBySourceDestAndType(srcObject.id, tgtObject.id, null);
+			List<Assoc> approved = new ArrayList<>();
+			for (Assoc a : as) {
+				if (!a.isDeprecated())
+					approved.add(a);
+			}
+			if (!approved.isEmpty()) {
+				er.err(Code.XDSMetadataUpdateError, "There is already an Approved Association between " + srcObject.id + " and " + tgtObject.id, null, null);
+			}
+			if (!er.hasErrors()) {
+				try {
+					delta.addAssoc(srcObject.id, tgtObject.id, RegIndex.getAssocType(type));
+				} catch (Exception e) {
+					er.err(Code.XDSMetadataUpdateError, e.getMessage(), null, null);
+					return;
+				}
+			}
+		}
 	}
 
 
@@ -148,10 +311,10 @@ public class MuSim extends RegRSim {
 		
 		// process updateDocStatus associations
 		for (OMElement assoc : updateDocStatusAssocs) {
-			String sourceId = m.getAssocSource(assoc);
-			String targetId = m.getAssocTarget(assoc);
+			String sourceId = Metadata.getAssocSource(assoc);
+			String targetId = Metadata.getAssocTarget(assoc);
 
-			String id = m.getId(assoc);
+			String id = Metadata.getId(assoc);
 			String prefix = "Update (trigger=Assoc(" + UUIDToSymbolic.get(id) +")) - cannot process - ";
 			String updateDocEntryAvailStatusRef = "ITI TF-2b:3.57.4.1.3.3.2.2";
 
@@ -185,7 +348,70 @@ public class MuSim extends RegRSim {
 			
 			new DocumentEntryStatusUpdate(common, dsSimCommon, er, simulatorConfig).run(this, operation, assoc, delta.docEntryCollection.getById(targetId), originalStatus, newStatus);
 
+			m.rmObject(assoc);
 		}
+
+		if (m.getAllObjects().size() == 1 && m.getSubmissionSet() != null) {
+			m.rmObject(m.getSubmissionSet());
+			m.clearSubmissionSet();
+		}
+	}
+
+	void folderUpdateTrigger(Metadata m) {
+		while (m.getFolders().size() > 0) {
+			OMElement folEle = m.getFolder(0);
+
+			String id = m.getId(folEle);
+			String lid = m.getLid(folEle);
+
+			OMElement ssAssoc = m.getAssociation(ssId, id, "HasMember");
+			String prevVer = null;
+			if (ssAssoc != null)
+				prevVer = m.getSlotValue(ssAssoc, "PreviousVersion", 0);
+
+			String prefix = "Update (trigger=" + UUIDToSymbolic.get(id) +") - cannot process - ";
+			String updateDocEntryRef = "ITI TF-2b:3.57.4.1.3.3.3";
+
+			boolean process = true;
+
+			if (ssAssoc == null) {
+				er.err(Code.XDSMetadataUpdateError, prefix + "no SubmissionSet HasMember Association found", this, updateDocEntryRef);
+				process = false;
+			}
+
+
+			if (lid == null) {
+				er.err(Code.XDSMetadataUpdateError, prefix + "logicalId not found, this cannot be an update (id=" + id + " lid=" + lid + ")", this, updateDocEntryRef);
+				process = false;
+			}
+
+			if (id.equals(lid)) {
+				er.err(Code.XDSMetadataUpdateError, prefix + "logicalId is same as id, this cannot be an update (id=" + id + " lid=" + lid + ")", this, updateDocEntryRef);
+				process = false;
+			}
+
+			if (lid != null && !m.isUuid(lid)) {
+				er.err(Code.XDSMetadataUpdateError, prefix + "logicalId is symbolic (not a UUID)  (id=" + id + " lid=" + lid + ")", this, updateDocEntryRef);
+				process = false;
+			}
+
+			if (prevVer == null) {
+				er.err(Code.XDSMetadataUpdateError, prefix + "PreviousVersion Slot not found on SubmissionSet to DocumentEntry HasMember Association", this, updateDocEntryRef);
+				process = false;
+			}
+
+			if (process)
+				new FolderUpdate().run(this, m, folEle, ssAssoc, prevVer);
+
+
+			// so we don't process these again
+			m.rmObject(folEle);
+			if (ssAssoc != null)
+				m.rmObject(ssAssoc);
+		}
+
+		if (m.getAllObjects().size() == 1 && m.getSubmissionSet() != null)
+			m.rmObject(m.getSubmissionSet());
 	}
 
 
@@ -235,13 +461,17 @@ public class MuSim extends RegRSim {
 
 
 			if (process) 
-				new DocumentEntryUpdate(common, er).run(this, m, docEle, ssAssoc, prevVer);
+				new DocumentEntryUpdate().run(this, m, docEle, ssAssoc, prevVer);
 
 			// so we don't process these again
 			m.rmObject(docEle);
 			if (ssAssoc != null)
 				m.rmObject(ssAssoc);
 
+			// if SS is all there is left then delete it
+			if (m.getAllObjects().size() == 1 && m.getSubmissionSet() != null)
+				m.rmObject(m.getSubmissionSet());
+				m.clearSubmissionSet();
 		}
 	}
 

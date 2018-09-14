@@ -1,0 +1,16 @@
+<query:AdhocQueryRequest xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0">
+    <query:ResponseOption returnComposedObjects="true" returnType="LeafClass"/>
+		<rim:AdhocQuery xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" id="urn:uuid:d90e5407-b356-4d91-a89f-873917b4b0e6">
+			<!--GetRelatedDocuments-->
+			<rim:Slot name="$XDSDocumentEntryEntryUUID">
+				<rim:ValueList>
+					<rim:Value>'$Document01$'</rim:Value>
+				</rim:ValueList>
+			</rim:Slot>
+			<rim:Slot name="$AssociationTypes">
+				<rim:ValueList>
+					<rim:Value>'urn:ihe:iti:2007:AssociationType:APND'</rim:Value>
+				</rim:ValueList>
+			</rim:Slot>
+		</rim:AdhocQuery>
+</query:AdhocQueryRequest>

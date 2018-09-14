@@ -10,6 +10,7 @@ import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
 import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
+import gov.nist.toolkit.saml.util.UUIDGenerator;
 import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.soap.axis2.Soap;
 import gov.nist.toolkit.testengine.assertionEngine.Assertion;
@@ -198,7 +199,7 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 			if (async)
 				xds_version = BasicTransaction.xds_b;
 
-			if (trans.equals("sq") || trans.equals("pr") || trans.equals("r")) {
+			if (trans.equals("sq") || trans.equals("pr") || trans.equals("r") ||  trans.equals("xadpid")) {
 				//			if (async)
 				//				trans = trans + ".as";
 				//			else
@@ -646,7 +647,16 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 		}
 	}
 
-
+	private void addToLinkage(String name, String value) throws XdsInternalException, MetadataException {
+		Linkage l = new Linkage(testConfig, instruction_output);
+		l.addLinkage(name, value);
+		try {
+			addToLinkage(l.compile());
+		}
+		catch (XdsInternalException e) {
+			throw new XdsInternalException(s_ctx.get("step_id") + ": " + e.getMessage(),e);
+		}
+	}
 
 	protected void compileUseIdLinkage(Metadata m, ArrayList use_id) throws XdsInternalException, MetadataException, FactoryConfigurationError {
 		Linkage l = new Linkage(testConfig, instruction_output, m, use_id);
@@ -1087,6 +1097,16 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 		else if (part_name.equals("UseId")) {
 			use_id.add(part);
 			testLog.add_name_value(instruction_output, "UseId", part);
+		}
+		else if (part_name.equals("AssignNewUuid")) {
+			String symbol = part.getAttributeValue(new QName("symbol"));
+//			testLog.add_name_value(instruction_output, "UseId", );
+			try {
+				addToLinkage(symbol, UUIDGenerator.getUUID());
+			} catch (MetadataException e) {
+				throw new XdsInternalException("AssignNewUuid failed", e);
+			}
+
 		}
 		else if (part_name.equals("UseRepositoryUniqueId")) {
 			use_repository_unique_id.add(part);
