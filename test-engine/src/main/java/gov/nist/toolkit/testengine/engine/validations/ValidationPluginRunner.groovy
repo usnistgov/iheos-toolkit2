@@ -25,8 +25,9 @@ class ValidationPluginRunner<T extends TransactionRecord<T>> {
         if (transactions.size() == 0)
             throw new XdsInternalException("No ${simReference.transactionType.name} transactions found in simlog for ${simReference.simId}")
 
-        final long tranLimitSize = transactions.size()<=50?transactions.size():50
-        logReport.addDetail("#Validations run against ${tranLimitSize} recent ${simReference.transactionType.name} transactions", '')
+        final long maxTranLimit = 50
+        final long tranLimitSize = transactions.size()<=maxTranLimit?transactions.size():maxTranLimit
+        logReport.addDetail("#Validations run against ${tranLimitSize} recent ${simReference.transactionType.name} transactions (Max. ${maxTranLimit})", '')
 
         a.validations.validaters.each { Assertion.Validations.ValidaterInstance v ->
             logReport.addDetail(v.validater.class.simpleName, v.validater.filterDescription)

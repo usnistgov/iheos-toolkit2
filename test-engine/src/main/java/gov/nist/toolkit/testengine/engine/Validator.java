@@ -588,6 +588,10 @@ public class Validator {
 			ssApproved();
 		} else if (ec_name.equals("SSwithOneDocOnly")) {
 			ss1Doc();
+			// Cannot call ssApproved since we could be asserting a Submission to a Supporting Sim without a SubmissionSet status
+		} else if (ec_name.equals("SSwithTwoDocOnly")) {
+			ss2Doc();
+			// Cannot call ssApproved since we could be asserting a Submission to a Supporting Sim without a SubmissionSet status
 		} else if (ec_name.equals("RegistryResponseIsValid")) {
 		   registryResponseIsValid();
 		} else if (ec_name.equals("NoSubmissionSet")) {
