@@ -8,7 +8,9 @@
                     <SimReference id="xdsregrep_support" actorType="rep" transaction="prb"/> <!-- This RegRep type sim is created by the Xds DocSrc conformance actor's orchestration -->
                     <Validations type="SOAP">
 			            <ExpectedContentsValidater requestMsgExpectedContent="SSwithOneFol" responseMsgExpectedContent="RegistryResponseIsValid" />
-                        <ExpectedContentsValidater requestMsgExpectedContent="SSApproved" />
+                        <!--
+                        Cannot call ssApproved since we could be asserting a Submission to a Supporting Sim without a SubmissionSet status
+                        -->
                     </Validations>
                 </Assert>
             </Assertions>

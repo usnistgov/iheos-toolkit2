@@ -44,7 +44,7 @@ class ExpectedContentsValidater extends AbstractSoapValidater {
         reset() // Clear log
         boolean requestMatch = false
         boolean responseMatch = false
-        if (!requestMsgExpectedContent || !responseMsgExpectedContent) {
+        if (!requestMsgExpectedContent && !responseMsgExpectedContent) {
             String illegalArg = "Either requestMsgExpectedContent attribute or responseMsgExpectedContent attribute must be specified. See Validator#run_test_assertion for a list of codes."
             error(illegalArg)
             throw new IllegalArgumentException(illegalArg)

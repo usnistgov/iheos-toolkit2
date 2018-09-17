@@ -27,7 +27,7 @@ class ValidationPluginRunner<T extends TransactionRecord<T>> {
 
         final long maxTranLimit = 50
         final long tranLimitSize = transactions.size()<=maxTranLimit?transactions.size():maxTranLimit
-        logReport.addDetail("#Validations run against ${tranLimitSize} recent ${simReference.transactionType.name} transactions (Max. ${maxTranLimit})", '')
+        logReport.addDetail("#Validations run against ${tranLimitSize} recent ${simReference.transactionType.name} transactions Max. ${maxTranLimit}", '')
 
         a.validations.validaters.each { Assertion.Validations.ValidaterInstance v ->
             logReport.addDetail(v.validater.class.simpleName, v.validater.filterDescription)
