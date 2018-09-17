@@ -256,8 +256,8 @@ public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 	// verify that no associations are being added that:
 	//     link objects with different patient ids (except for special cases)
 	public void associationPatientIdRules() {
-		log.debug("Checking Association PID rules for " + delta.assocCollection.assocs);
-		for (Assoc a : delta.assocCollection.assocs) {
+		log.debug("Checking Association PID rules for " + delta.assocCollection.getAll());
+		for (Assoc a : delta.assocCollection.getAll()) {
 			String fromId = a.getFrom();
 			String toId = a.getTo();
 

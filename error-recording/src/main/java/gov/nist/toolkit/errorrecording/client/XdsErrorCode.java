@@ -41,6 +41,8 @@ public class XdsErrorCode implements IsSerializable  {
 		XDSResultNotSinglePatient,
 		XDSIRequestError,
 		XDSIUnknownIdsUid,
+		ReferencesExistException,
+		XDSUnreferencedObjectException,
 		UnresolvedReferenceException;
     };
 	

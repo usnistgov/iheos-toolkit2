@@ -372,8 +372,8 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 		// run all the queued up validators so we can check for errors
 		mvc.run();
 
-//		if (!dsSimCommon.hasErrors())
-//			commit(mvc, common, musim.delta);
+		if (!dsSimCommon.hasErrors())
+			commit(mvc, common, rmsim.delta);
 
 
 		return !dsSimCommon.hasErrors();

@@ -19,9 +19,42 @@ public class AssocCollection extends RegObCollection implements Serializable {
 		all.addAll(assocs);
 		AssocCollection theParent = parent;
 		while (theParent != null) {
+			all.addAll(theParent.getAll2(idsBeingDeleted()));
+			theParent = theParent.parent;
+		}
+
+		List<String> deletedIds = idsBeingDeleted();
+		List<Assoc> deleted = new ArrayList<>();
+		for (Assoc a : assocs) {
+			if (deletedIds.contains(a.id))
+				deleted.add(a);
+		}
+
+
+		all.removeAll(deleted);
+
+		return all;
+	}
+
+	public List<Assoc> getAll2(List<String> deletedIds) {
+		List<Assoc> all = new ArrayList<>();
+
+		all.addAll(assocs);
+
+		AssocCollection theParent = parent;
+		while (theParent != null) {
 			all.addAll(theParent.getAll());
 			theParent = theParent.parent;
 		}
+
+		List<Assoc> deleted = new ArrayList<>();
+		for (Assoc a : assocs) {
+			if (deletedIds.contains(a.id))
+				deleted.add(a);
+		}
+
+
+		all.removeAll(deleted);
 
 		return all;
 	}
@@ -41,7 +74,10 @@ public class AssocCollection extends RegObCollection implements Serializable {
 
 
 	// caller handles synchronization
-	public void delete(String id) {
+	public boolean delete(String id) {
+		boolean deleted = false;
+		List<String> deleting = new ArrayList<>(idsBeingDeleted());
+		setDeleting(new ArrayList<String>());
 		Assoc toDelete = null;
 		for (Assoc a : getAllForUpdate()) {
 			if (a.id.equals(id)) {
@@ -49,8 +85,14 @@ public class AssocCollection extends RegObCollection implements Serializable {
 				break;
 			}
 		}
-		if (toDelete != null)
+		if (toDelete != null) {
 			getAllForUpdate().remove(toDelete);
+			if (parent != null)
+				parent.getAllForUpdate().remove(toDelete);
+			deleted = true;
+		}
+		setDeleting(deleting);
+		return deleted;
 	}
 
 	@Override
@@ -179,7 +221,9 @@ public class AssocCollection extends RegObCollection implements Serializable {
 	public List<Assoc> allThatReference(String id) {
 		List<Assoc> all = new ArrayList<>();
 
-		for (Assoc a : getAll()) {
+		List<Assoc> allA = getAll();
+
+		for (Assoc a : allA) {
 			if (a.from.equals(id) || a.to.equals(id))
 				all.add(a);
 		}

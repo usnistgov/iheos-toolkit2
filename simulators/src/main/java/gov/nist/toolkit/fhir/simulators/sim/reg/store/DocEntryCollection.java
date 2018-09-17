@@ -22,13 +22,43 @@ public class DocEntryCollection extends RegObCollection implements Serializable 
 
 		all.addAll(entries);
 
-		all.removeAll(idsBeingDeleted());
+		DocEntryCollection theParent = parent;
+		while (theParent != null) {
+			all.addAll(theParent.getAll2(idsBeingDeleted()));
+			theParent = theParent.parent;
+		}
+
+		List<String> deletedIds = idsBeingDeleted();
+
+		List<DocEntry> deleted = new ArrayList<>();
+		for (DocEntry de : entries) {
+			if (deletedIds.contains(de.id))
+				deleted.add(de);
+		}
+
+		all.removeAll(deleted);
+
+		return all;
+	}
+
+	private List<DocEntry> getAll2(List<String> deletedIds) {
+		List<DocEntry> all = new ArrayList<>();
+
+		all.addAll(entries);
 
 		DocEntryCollection theParent = parent;
 		while (theParent != null) {
 			all.addAll(theParent.getAll());
 			theParent = theParent.parent;
 		}
+
+		List<DocEntry> deleted = new ArrayList<>();
+		for (DocEntry de : entries) {
+			if (deletedIds.contains(de.id))
+				deleted.add(de);
+		}
+
+		all.removeAll(deleted);
 
 		return all;
 	}
@@ -69,7 +99,10 @@ public class DocEntryCollection extends RegObCollection implements Serializable 
 	}
 
 	// caller handles synchronization
-	public void delete(String id) {
+	public boolean delete(String id) {
+		boolean deleted = false;
+		List<String> deleting = new ArrayList<>(idsBeingDeleted());
+		setDeleting(new ArrayList<String>());
 		DocEntry toDelete = null;
 		for (DocEntry a : getAllForUpdate()) {
 			if (a.id.equals(id)) {
@@ -77,8 +110,14 @@ public class DocEntryCollection extends RegObCollection implements Serializable 
 				break;
 			}
 		}
-		if (toDelete != null)
+		if (toDelete != null) {
 			getAllForUpdate().remove(toDelete);
+			if (parent != null)
+				parent.getAllForUpdate().remove(toDelete);
+			deleted = true;
+		}
+		setDeleting(deleting);
+		return deleted;
 	}
 
 		@Override

@@ -74,7 +74,7 @@ public class Ro  implements Serializable  {
 		return ro.getId() == id;
 	}
 
-	public String toString() { return id; }
+	public String toString() { return this.getClass().getSimpleName() + ": " + id; }
 
     static public List<String> getIds(List<Ro> ros) {
         List<String> ids = new ArrayList<>();

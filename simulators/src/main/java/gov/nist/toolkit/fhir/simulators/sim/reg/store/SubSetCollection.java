@@ -19,9 +19,39 @@ public class SubSetCollection extends RegObCollection implements Serializable {
 		all.addAll(subSets);
 		SubSetCollection theParent = parent;
 		while (theParent != null) {
+			all.addAll(theParent.getAll2(idsBeingDeleted()));
+			theParent = theParent.parent;
+		}
+		List<String> deletedIds = idsBeingDeleted();
+
+		List<SubSet> deleted = new ArrayList<>();
+		for (SubSet ss : subSets) {
+			if (deletedIds.contains(ss.id))
+				deleted.add(ss);
+		}
+
+		all.removeAll(deleted);
+
+		return all;
+	}
+
+	private List<SubSet> getAll2(List<String> deletedIds) {
+		List<SubSet> all = new ArrayList<>();
+
+		all.addAll(subSets);
+		SubSetCollection theParent = parent;
+		while (theParent != null) {
 			all.addAll(theParent.getAll());
 			theParent = theParent.parent;
 		}
+
+		List<SubSet> deleted = new ArrayList<>();
+		for (SubSet ss : subSets) {
+			if (deletedIds.contains(ss.id))
+				deleted.add(ss);
+		}
+
+		all.removeAll(deleted);
 
 		return all;
 	}
@@ -39,7 +69,11 @@ public class SubSetCollection extends RegObCollection implements Serializable {
 	}
 	
 	// caller handles synchronization
-	public void delete(String id) {
+	public boolean delete(String id) {
+		boolean deleted = false;
+		List<String> deleting = new ArrayList<>(idsBeingDeleted());
+		setDeleting(new ArrayList<String>());
+
 		SubSet toDelete = null;
 		for (SubSet a : getAll()) {
 			if (a.id.equals(id)) {
@@ -47,8 +81,14 @@ public class SubSetCollection extends RegObCollection implements Serializable {
 				break;
 			}
 		}
-		if (toDelete != null)
+		if (toDelete != null) {
 			getAllForUpdate().remove(toDelete);
+			if (parent != null)
+				parent.getAllForUpdate().remove(toDelete);
+			deleted = true;
+		}
+		setDeleting(deleting);
+		return deleted;
 	}
 
 	public int size() { return getAll().size(); }
