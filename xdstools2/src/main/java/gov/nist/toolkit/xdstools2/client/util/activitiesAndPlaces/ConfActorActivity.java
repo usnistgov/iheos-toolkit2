@@ -1,19 +1,10 @@
 package gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces;
 
 import com.google.gwt.activity.shared.AbstractActivity;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
-import gov.nist.toolkit.actortransaction.shared.IheItiProfile;
-import gov.nist.toolkit.installation.shared.TestSession;
-import gov.nist.toolkit.installation.shared.ToolkitUserMode;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
-import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.command.command.GetToolkitPropertiesCommand;
-import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
-import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.ConformanceTestTab;
 import gov.nist.toolkit.xdstools2.client.toolLauncher.ToolLauncher;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.toolContext.State;
