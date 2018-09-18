@@ -122,6 +122,7 @@ public class Assertion {
 		TransactionType tType = TransactionType.find(trans);
 		if (tType == null) throw new ToolkitRuntimeException(this.toString() + " invalid transaction");
 		SimId simId = SimDb.getFullSimId(new SimId(toolkitEnvironment.getTestSession(), id));
+		simId.setEnvironmentName(toolkitEnvironment.getEnvironment());
 		String actor = simTransactionElement.getAttributeValue(new QName("actorType"));
 		if (actor !=null && !"".equals(actor)) {
 			ActorType actorType = ActorType.findActor(actor);
