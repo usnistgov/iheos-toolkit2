@@ -1,6 +1,6 @@
 <TestPlan>
-    <Test>XdsDocSrcSubmissionTest-1113/AddToExistingFolder</Test>
-    <TestStep id="verify">
+    <Test>XdsDocSrcSubmissionTest-1113/AssociateExistingDEwithExistingFolder</Test>
+    <TestStep id="validate">
         <ExpectedStatus>Success</ExpectedStatus>
         <NullTransaction>
             <Assertions>
@@ -9,9 +9,10 @@
                     <Validations type="SOAP">
 			            <ExpectedContentsValidater filterDescription="Check Response Status" responseMsgExpectedContent="RegistryResponseIsValid" />
                         <ExpectedContentsValidater filterDescription="SubmissionSets count should be 1" requestMsgExpectedContent="SubmissionSets" requestMsgECCount="1"  />
-                        <ExpectedContentsValidater filterDescription="Document Entry count should be 1" requestMsgExpectedContent="Documents" requestMsgECCount="1"  />
-                        <ExpectedContentsValidater filterDescription="Associations count should be 3" requestMsgExpectedContent="Associations" requestMsgECCount="3"  /> <!-- 1. ss-de 2. ss-hasMember (hm) 3. hm:[expected fd]-de -->
-                        <AddToExistingFolderValidater filterDescription="Checks Folder through a GetFolders StoredQuery" /> <!-- This validater cannot be extracted to a Step/GetFolders Transaction because when the Step executes, the SUT is not in Responder mode. Since we are only checking logs, we need to code a plugin to query our supporting sim. -->
+                        <ExpectedContentsValidater filterDescription="Document Entry count should be 0" requestMsgExpectedContent="Documents" requestMsgECCount="0"  />
+                        <ExpectedContentsValidater filterDescription="Associations count should be 2" requestMsgExpectedContent="Associations" requestMsgECCount="2"  /> <!-- 1. ss-HasMember-de 2. ss-hm-assoc -->
+                        <!-- FolderSourceAssociationValidater cannot be extracted to a Step/GetFolders Transaction because when the Step executes, the SUT is not in Responder mode. Since we are only checking logs, we need to code a plugin to query our supporting sim. -->
+                        <FolderAssociationValidater filterDescription="Checks Folder Association through StoredQuery" totalAssociationsInSs="2" docEntryScopeCheck="Registry" />
                         <!-- find an association
                         1. where associationType='HasMember'
                         2. sourceObject != SSid. When True, record this Id has as a parameter to be used in GetFolder SQ

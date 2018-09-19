@@ -1,6 +1,6 @@
 <TestPlan>
     <Test>XdsDocSrcSubmissionTest-1111/SubmitRplc</Test>
-    <TestStep id="verify">
+    <TestStep id="validate">
         <ExpectedStatus>Success</ExpectedStatus>
         <NullTransaction>
             <Assertions>

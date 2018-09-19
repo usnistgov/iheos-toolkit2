@@ -1019,7 +1019,6 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 		} catch (Exception e) {
 			showPopupMessage(e.getMessage());
 		}
-
 	}
 
 	private void setPatientId(Map<String, String> parms, String patientId) {
