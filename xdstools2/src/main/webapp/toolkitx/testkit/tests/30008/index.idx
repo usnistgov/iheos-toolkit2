@@ -2,7 +2,9 @@ submit
 apnd
 xfrm_rplc
 eval_submit
-remove_branches
-eval_remove_branches
-remove
+attempt_remove_original_set
+remove_APND_assoc_only
+remove_orig_set
+attempt_remove_apnd_set
+remove_xfrm_rplc
 eval_remove

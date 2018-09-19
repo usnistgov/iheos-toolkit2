@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+	<Test>30008/remove_xfrm_rplc</Test>
+  <TestStep id="remove_xfrm_rplc">
+	<Goal>Remove the replacement document.</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+	<RemoveMetadataTransaction>
+      <XDSb/>
+      <NoPatientId/>
+	  <ParseMetadata>False</ParseMetadata>
+	  <UseId testdir="../xfrm_rplc" step="xfrm_rplc" section="AssignedUuids" id="XFRMRPLCAssociation" symbol="$XFRM_RPLCAssociation$"/>
+	  <UseId testdir="../xfrm_rplc" step="xfrm_rplc" section="AssignedUuids" id="Document01" symbol="$Document01$"/>
+	  <UseId testdir="../xfrm_rplc" step="xfrm_rplc" section="AssignedUuids" id="SSHM01Association" symbol="$SSHM01Association$"/>
+	  <UseId testdir="../xfrm_rplc" step="xfrm_rplc" section="AssignedUuids" id="SubmissionSet01" symbol="$SubmissionSet01$"/>
+      <MetadataFile>remove_rplc_set_only.xml</MetadataFile>
+    </RemoveMetadataTransaction>
+  </TestStep> 
+</TestPlan>
