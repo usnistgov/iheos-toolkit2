@@ -1,0 +1,16 @@
+<TestPlan>
+    <Test>XdsDocSrcSubmissionTest-1111/SubmitApnd</Test>
+    <TestStep id="verify">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <NullTransaction>
+            <Assertions>
+                <Assert id="appendCheck">
+                    <SimReference id="xdsregrep_support" transaction="rb"/> <!-- This RegRep type sim is created by the Xds DocSrc conformance actor's orchestration -->
+                    <Validations type="SOAP">
+			            <ExpectedContentsValidater expectedContentCode=""/>
+		            </Validations>
+                </Assert>
+            </Assertions>
+        </NullTransaction>
+    </TestStep>
+</TestPlan>

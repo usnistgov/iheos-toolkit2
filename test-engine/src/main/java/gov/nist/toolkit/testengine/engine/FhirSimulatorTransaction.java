@@ -28,7 +28,7 @@ import java.util.List;
  * 
  *
  */
-public class FhirSimulatorTransaction {
+public class FhirSimulatorTransaction implements TransactionRecord<FhirSimulatorTransaction> {
    private SimDbEvent simDbEvent;
    private SimId simId;
    private TransactionType transactionType;
@@ -68,6 +68,7 @@ public class FhirSimulatorTransaction {
    /**
     * @return the {@link #transactionType} value.
     */
+   @Override
    public TransactionType getTransactionType() {
       return transactionType;
    }
@@ -168,15 +169,15 @@ public class FhirSimulatorTransaction {
    /**
     * Generates instance of this class for specified simulator transaction.
     *
-    * @param simId           for the simulator which received the transaction. Must exist.
-    * @param transactionType TransactionType value we are looking for. For
+    * Uses instance param simId           for the simulator which received the transaction. Must exist.
+    * Uses instance param transactionType TransactionType value we are looking for. For
     *                        example {@link TransactionType#PROVIDE_AND_REGISTER}.
     * @return instance of this class for transaction.
     * @throws XdsInternalException on error, such as: no such simulator, no
     *                              transaction matching parameters, and so on.
     */
-   public static List<FhirSimulatorTransaction> getAll(SimId simId, TransactionType transactionType)
-           throws XdsInternalException {
+   @Override
+   public List<FhirSimulatorTransaction> get() throws XdsInternalException {
       try {
          // Verify that simId represents an existing file
          Installation installation = Installation.instance();
@@ -228,6 +229,7 @@ public class FhirSimulatorTransaction {
       this.timeStamp = timeStamp;
    }
 
+   @Override
    public String getUrl() {
       return url;
    }
@@ -236,6 +238,7 @@ public class FhirSimulatorTransaction {
       this.url = url;
    }
 
+   @Override
    public SimDbEvent getSimDbEvent() {
       return simDbEvent;
    }
@@ -244,6 +247,7 @@ public class FhirSimulatorTransaction {
       this.simDbEvent = simDbEvent;
    }
 
+   @Override
    public String getPlaceToken() {
       return placeToken;
    }

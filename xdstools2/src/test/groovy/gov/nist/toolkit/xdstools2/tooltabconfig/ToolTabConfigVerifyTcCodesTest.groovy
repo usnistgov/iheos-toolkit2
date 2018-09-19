@@ -18,7 +18,7 @@ class ToolTabConfigVerifyTcCodesTest extends Specification {
 
     }
 
-    def 'Verify if Tc codes in ToolTabConfig match values in ActorType'() {
+    def 'Verify if TestCollection codes in ToolTabConfig match values in ActorType'() {
 
         when:
         String toolId = "ConfTests"
@@ -33,7 +33,7 @@ class ToolTabConfigVerifyTcCodesTest extends Specification {
 
         then:
         for (TabConfig actorTabConfig : confTestsTabConfig.getChildTabConfigs()) {
-            print "\nChecking actor " + actorTabConfig.getLabel() + "... "
+            print "Checking actor " + actorTabConfig.getLabel() + "... "
 
             // Both the collections.txt and the actorCode must be lower-cased
             String actorTypeCode = actorTabConfig.getTcCode()
@@ -45,42 +45,49 @@ class ToolTabConfigVerifyTcCodesTest extends Specification {
             "Profiles".equals(profiles.getLabel())
 
             for (TabConfig profile : profiles.getChildTabConfigs()) {
-                String profileTypeCode = profile.getTcCode();
+                String profileTypeCode = profile.getTcCode()
                 IheItiProfile itiProfile = IheItiProfile.find(profileTypeCode)
                 int optionCt = 0
                 TabConfig options = profile.getFirstChildTabConfig()
-               for (TabConfig option : options.getChildTabConfigs())  {
-                   OptionType optionType1 = OptionType.find(option.tcCode)
+                for (TabConfig option : options.getChildTabConfigs())  {
+                    OptionType optionType1 = OptionType.find(option.tcCode)
 
-                   boolean foundMatch = false
-                   ActorType actorType1
-                   for (ActorType actorType : ActorType.values()) {
-                       if (actorType.getActorCode().equals(actorTypeCode)) {
-                           actorType1 = actorType
-                           if (actorType.profile.equals(itiProfile)) {
-                               for (OptionType optionType : actorType.options) {
-                                  if (optionType.equals(optionType1))  {
-                                      foundMatch = true
-                                  }
-                               }
-                           }
-                       }
-                   }
+                    boolean foundActor = false
+                    boolean foundProfile = false
+                    boolean foundOption = false
 
-                   if (!foundMatch) {
-//                       println "ActorTypeCode: " + actorTypeCode + "/" + actorType1.shortName + " Profile: " + profileTypeCode + "/" + itiProfile.toString() \
-//                            + " Option: " + option.tcCode + "/" + optionType1.toString() \
-//                             +  " not found!"
-                       println "When scanning ConfTestsTabs.xml..."
-                       println "Profile Type Code ${profileTypeCode} " + ((itiProfile) ? "found" : "NOT found") + " in IheItiProfile.java"
-                       println "Option Type Code ${option.tcCode} " + ((optionType1) ? "found" : "NOT found") + " in OptionType.java"
-                       println "Looking in ActorType.java..."
-                       println "   no entry found for actorTypeCode = ${actorTypeCode}, with profile = ${itiProfile} and option = ${optionType1}"
-                   }
-                   assert foundMatch
-                   optionCt++
-               }
-               println optionCt + " " + profileTypeCode + " option(s) verified using ActorType enum."
+                    ActorType actorType1 = null
+                    for (ActorType actorType : ActorType.values()) {
+                        if (actorType.getActorCode().equals(actorTypeCode)) {
+                            actorType1 = actorType
+                            foundActor = true
+                            for (IheItiProfile p: IheItiProfile.values()) {
+                                if (p.equals(itiProfile)) {
+                                    foundProfile = true
+                                    for (OptionType optionType : OptionType.values()) {
+                                        if (optionType.equals(optionType1))  {
+                                            foundOption = true
+                                        }
+                                    }
+                                }
+                            }
+                            break
+                        }
+                    }
+
+                    if (!foundActor || !foundProfile || !foundOption)
+                        println "ActorTypeCode: '" + actorTypeCode  + "' : " + actorType1.shortName \
+                             + " Profile: '" + profileTypeCode + "' : " + itiProfile.toString() \
+                            + " Option: '" + option.tcCode + "' : " + optionType1.toString() \
+                             +  " is missing one or more Enum mapping."
+
+                    assert foundActor
+                    assert foundProfile
+                    assert foundOption
+
+                    optionCt++
+                }
+                println optionCt + " " + profileTypeCode + " option(s) verified using ActorType enum."
             }
 
 

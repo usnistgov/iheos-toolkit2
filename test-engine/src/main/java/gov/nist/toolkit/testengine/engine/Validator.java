@@ -3,7 +3,7 @@ package gov.nist.toolkit.testengine.engine;
 import gov.nist.toolkit.docref.MetadataTables;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
-import gov.nist.toolkit.testengine.transactions.BasicTransaction;
+import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
@@ -11,6 +11,15 @@ import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
+
+import gov.nist.toolkit.valsupport.client.ValidationContext;
+import gov.nist.toolkit.installation.server.Installation;
+import gov.nist.toolkit.valregmsg.message.RegistryResponseValidator;
+import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
+import gov.nist.toolkit.errorrecording.factories.TextErrorRecorderBuilder;
+import gov.nist.toolkit.errorrecording.TextErrorRecorder;
+import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
+
 
 import javax.xml.namespace.QName;
 import java.io.File;
@@ -24,24 +33,18 @@ public class Validator {
 	StringBuffer errs = new StringBuffer();
 	boolean error = false;
 	OMElement test_assertions;
-	ArrayList<OMElement> use_id = new ArrayList<OMElement>();;
+	ArrayList<OMElement> use_id = new ArrayList<OMElement>();
 	private final static Logger logger = Logger.getLogger(Validator.class);
 
 	TestConfig testConfig = null;
-	protected OMElement instruction_output;
 
 	private enum DocumentEntryFilter {
 		MUST_ONLY_INCLUDE,
 		INCLUDE,
 		EXCLUDE
-	};
-
-	public Validator(Metadata m) {
-		this.m = m;
 	}
 
-	public Validator(OMElement test_assertions) {
-		this.test_assertions = test_assertions;
+	public Validator() {
 	}
 
 	public Validator(File test_assertion_file, String subset_name) throws XdsInternalException {
@@ -51,6 +54,21 @@ public class Validator {
 			if ( test_assertions == null)
 				throw new XdsInternalException("Validator: assertion subset " + subset_name + " not found in file " + test_assertion_file);
 		}
+	}
+
+	public Validator setTestConfig(TestConfig testConfig) {
+		this.testConfig = testConfig;
+		return this;
+	}
+
+	public Validator setM(Metadata m) {
+		this.m = m;
+		return this;
+	}
+
+	public Validator setTest_assertions(OMElement test_assertions) {
+		this.test_assertions = test_assertions;
+		return this;
 	}
 
 	// return is ArrayList of ArrayLists.  Each internal ArrayList has two elements, The first is testname, the second is status, third
@@ -269,6 +287,43 @@ public class Validator {
 		return idents;
 	}
 
+	public boolean registryResponseIsValid() throws MetadataException {
+	    try {
+			ValidationContext vc = new ValidationContext(Installation.instance().getDefaultCodesFile().toString());
+		/*
+		It is better to use RegistryReponseValidator over RegistryResponseParser because the parser does not check for errors.
+		gov.nist.toolkit.registrymsg.registry.RegistryResponseParser rrp = new gov.nist.toolkit.registrymsg.registry.RegistryResponseParser(regresp)
+		Constructor already calls rrp.parse()
+		rrp.get_registry_response_status()
+		 */
+			vc.xds_b = true;
+			vc.isResponse = true;
+			RegistryResponseValidator rrv = new RegistryResponseValidator(vc, m.getMetadata());
+
+			ErrorRecorderBuilder erBuilder = new TextErrorRecorderBuilder();
+			TextErrorRecorder er = (TextErrorRecorder) erBuilder.buildNewErrorRecorder();
+			MessageValidatorEngine mvc = new MessageValidatorEngine();
+			rrv.run(er, mvc);
+			if (!"".equals(er.toString().trim())) {
+				// Error condition
+				err(er.toString());
+				return false;
+			} else {
+				// No structural errors
+                // Check for Failure Status
+				RegistryResponseParser rrp = new RegistryResponseParser(m.getMetadata());
+				if (MetadataSupport.status_failure.equals(rrp.get_registry_response_status())) {
+					err("Response status is Failure.");
+					return false;
+				}
+				return true;
+			}
+		} catch (Exception ex) {
+	        // Exception
+			err(ex.toString());
+			return false;
+		}
+	}
 
 
 	public boolean ss1Doc() throws MetadataException {
@@ -295,24 +350,38 @@ public class Validator {
 		return true;
 	}
 
-	public boolean hasRplc() throws MetadataException {
+	public boolean hasUniqueDocumentRelationshipOfType(String typeParam) throws MetadataException {
 		String docUuid = null;
 		boolean found = false;
 
 		for (OMElement a : m.getAssociations()) {
 			String type = m.getSimpleAssocType(a);
-			if (type.equals("RPLC")) {
+			if (type.equals(typeParam)) {
 				found = true;
 				if (docUuid == null)
 					docUuid = m.getAssocTarget(a);
 				else {
 					if (docUuid.equals(m.getAssocTarget(a)))
-						throw new MetadataException("HasRPLC test: multiple RPLC associations found for same Document", MetadataTables.Doc_relationships);
+						throw new MetadataException("Multiple "+ type +" associations found for same Document", MetadataTables.Doc_relationships);
 				}
 			}
 		}
-
+		if (!found) {
+			err( typeParam + " association not found.");
+		}
 		return found;
+	}
+
+	public boolean hasXfrmRplc() throws MetadataException {
+	    return hasUniqueDocumentRelationshipOfType("XFRM_RPLC");
+	}
+
+	public boolean hasRplc() throws MetadataException {
+	    return hasUniqueDocumentRelationshipOfType("RPLC");
+	}
+
+	public boolean hasApnd() throws MetadataException {
+		return hasUniqueDocumentRelationshipOfType("APND");
 	}
 
 	private boolean hasSnapshotPattern() throws MetadataException {
@@ -493,126 +562,152 @@ public class Validator {
 		return false;
 	}
 
-	public void run_test_assertions(OMElement xml)  throws MetadataException, XdsInternalException, MetadataValidationException {
+	public void run_test_assertions(OMElement xml, OMElement instruction_output)  throws MetadataException, XdsInternalException, MetadataValidationException {
 		Metadata m = new Metadata(xml);
 
-		run_test_assertions(m);
+		setM(m);
+		run_test_assertions(instruction_output);
 	}
 
-	public void run_test_assertions(Metadata m) throws MetadataException, XdsInternalException {
-		this.m = m;
 
+	public void run_test_assertions(OMElement instruction_output) throws MetadataException, XdsInternalException {
 		for (Iterator it=test_assertions.getChildElements(); it.hasNext(); ) {
 			OMElement ec = (OMElement) it.next();
 			String ec_name = ec.getLocalName();
-
-			if (ec_name.equals("SSwithOneDoc")) {
-				ss1Doc();
-				ssApproved();
+			int count = -1; // Count=-1 means Not Used
+			String countAttrValStr = ec.getAttributeValue(new QName("count"));
+			if (countAttrValStr!=null) {
+				count = Integer.parseInt(countAttrValStr);
 			}
-			else if (ec_name.equals("NoSubmissionSet")) {
-				hasNoSubmissionSet();
+			if (ec_name.equals("DocumentEntries")) {
+				if (testConfig == null) {
+					throw new IllegalArgumentException("testConfig is null!");
+				} else if (instruction_output == null) {
+					throw new IllegalArgumentException("instruction_output is null!");
+				}
+				verifyDocumentEntries(m, ec, instruction_output);
+			} else{
+				run_test_assertion(ec_name, count);
 			}
-			else if (ec_name.equals("NoDocument")) {
-				hasDocuments(0);
-			}
-			else if (ec_name.equals("SSApproved")) {
-				ssApproved();
-			}
-			else if (ec_name.equals("DocDep")) {
-				docsDeprecated();
-			}
-			else if (ec_name.equals("DocApp")) {
-				docsApproved();
-			}
-			else if (ec_name.equals("HasRPLC")) {
-				hasRplc();
-			}
-			else if (ec_name.equals("DocRplcDoc")) {
-				docRplcDoc();
-			}
-			else if (ec_name.equals("OneDocDep")) {
-				oneDocDeprecated();
-			}
-			else if (ec_name.equals("OneDocApp")) {
-				oneDocApproved();
-			}
-			else if (ec_name.equals("FolApp")) {
-				folsApproved();
-			}
-			else if (ec_name.equals("FolDep")) {
-				folsDeprecated();
-			}
-			else if (ec_name.equals("SSwithTwoDoc")) {
-				ss2Doc();
-				ssApproved();
-			}
-			else if (ec_name.equals("SSwithOneDocOneFol")) {
-				sswithOneDocOneFol();
-			}
-			else if (ec_name.equals("SSwithTwoDocOneFol")) {
-				sswithTwoDocOneFol();
-			}
-			else if (ec_name.equals("SSwithTwoDocOneFolOneDocInFol")) {
-				sswithTwoDocOneFolOneDocInFol();
-			}
-			else if (ec_name.equals("SSwithOneFol")) {
-				sswithOneFol();
-			}
-			else if (ec_name.equals("None")) {
-				hasNoSubmissionSet();
-				hasDocuments(0);
-				hasFolders(0);
-				if (hasError())
-					continue;
-				hasAssociations(0);
-			}
-			else if (ec_name.equals("ObjectRefs")) {
-				int count = Integer.parseInt(ec.getAttributeValue(new QName("count")));
-				hasObjectRefs(count);
-				hasNoSubmissionSet();
-				hasDocuments(0);
-				hasFolders(0);
-				hasAssociations(0);
-			}
-			else if (ec_name.equals("Documents")) {
-				int count = Integer.parseInt(ec.getAttributeValue(new QName("count")));
-				hasDocuments(count);
-			}
-			else if (ec_name.equals("Folders")) {
-				int count = Integer.parseInt(ec.getAttributeValue(new QName("count")));
-				hasFolders(count);
-			}
-			else if (ec_name.equals("SubmissionSets")) {
-				int count = Integer.parseInt(ec.getAttributeValue(new QName("count")));
-				hasSubmissionSets(count);
-			}
-			else if (ec_name.equals("Associations")) {
-				int count = Integer.parseInt(ec.getAttributeValue(new QName("count")));
-				hasAssociations(count);
-			}
-			else if (ec_name.equals("DocumentEntries")) {
-				verifyDocumentEntries(m, ec);
-			} else if (ec_name.equals("HasSnapshotPattern")) {
-				hasSnapshotPattern();
-			} else {
-				throw new XdsInternalException("QueryTransaction: validate_expected_contents(): don't understand verification request " + ec_name);
-			}
-
 		}
 	}
 
-	private boolean verifyDocumentEntries(Metadata m, OMElement ec) throws XdsInternalException, MetadataException {
+
+
+	public void run_test_assertion(String ec_name, int count) throws MetadataException, XdsInternalException  {
+		if (ec_name.equals("SSwithOneDoc")) {
+			ss1Doc();
+			ssApproved();
+		} else if (ec_name.equals("SSwithOneDocOnly")) {
+			ss1Doc();
+			// Cannot call ssApproved since we could be asserting a Submission to a Supporting Sim without a SubmissionSet status
+		} else if (ec_name.equals("SSwithTwoDocOnly")) {
+			ss2Doc();
+			// Cannot call ssApproved since we could be asserting a Submission to a Supporting Sim without a SubmissionSet status
+		} else if (ec_name.equals("RegistryResponseIsValid")) {
+		   registryResponseIsValid();
+		} else if (ec_name.equals("NoSubmissionSet")) {
+			hasNoSubmissionSet();
+		}
+		else if (ec_name.equals("NoDocument")) {
+			hasDocuments(0);
+		}
+		else if (ec_name.equals("SSApproved")) {
+			ssApproved();
+		}
+		else if (ec_name.equals("DocDep")) {
+			docsDeprecated();
+		}
+		else if (ec_name.equals("DocApp")) {
+			docsApproved();
+		}
+		else if (ec_name.equals("HasRPLC")) {
+			hasRplc();
+		}
+		else if (ec_name.equals("HasXFRM_RPLC")) {
+		    hasXfrmRplc();
+		}
+		else if (ec_name.equals("HasAPND")) {
+		    hasApnd();
+		}
+		else if (ec_name.equals("DocRplcDoc")) {
+			docRplcDoc();
+		}
+		else if (ec_name.equals("OneDocDep")) {
+			oneDocDeprecated();
+		}
+		else if (ec_name.equals("OneDocApp")) {
+			oneDocApproved();
+		}
+		else if (ec_name.equals("FolApp")) {
+			folsApproved();
+		}
+		else if (ec_name.equals("SSwithTwoDoc")) {
+			ss2Doc();
+			ssApproved();
+		}
+		else if (ec_name.equals("SSwithOneDocOneFol")) {
+			sswithOneDocOneFol();
+		}
+		else if (ec_name.equals("SSwithTwoDocOneFol")) {
+			sswithTwoDocOneFol();
+		}
+		else if (ec_name.equals("SSwithTwoDocOneFolOneDocInFol")) {
+			sswithTwoDocOneFolOneDocInFol();
+		}
+		else if (ec_name.equals("SSwithOneFol")) {
+			sswithOneFol();
+		}
+		else if (ec_name.equals("None")) {
+			hasNoSubmissionSet();
+			hasDocuments(0);
+			hasFolders(0);
+			if (hasError())
+				return;
+			hasAssociations(0);
+		}
+		else if (ec_name.equals("ObjectRefs")) {
+			hasObjectRefs(count);
+			hasNoSubmissionSet();
+			hasDocuments(0);
+			hasFolders(0);
+			hasAssociations(0);
+		}
+		else if (ec_name.equals("Documents")) {
+			hasDocuments(count);
+		}
+		else if (ec_name.equals("Folders")) {
+			hasFolders(count);
+		}
+		else if (ec_name.equals("SubmissionSets")) {
+			hasSubmissionSets(count);
+		}
+		else if (ec_name.equals("Associations")) {
+			hasAssociations(count);
+		}
+		else if (ec_name.equals("HasSnapshotPattern")) {
+			hasSnapshotPattern();
+		}
+		else if (ec_name.equals("FolDep")) {
+			folsDeprecated();
+		}
+		else {
+			throw new XdsInternalException("QueryTransaction: validate_expected_contents(): don't understand verification request " + ec_name);
+		}
+
+	}
+
+	public boolean verifyDocumentEntries(Metadata m, OMElement ec, OMElement instruction_output) throws XdsInternalException, MetadataException {
 		for (Iterator selectiveIt = ec.getChildElements(); selectiveIt.hasNext(); ) {
 			OMElement selectionPart = (OMElement) selectiveIt.next();
 			String selectionLocalName = selectionPart.getLocalName();
 
 			if ("MustOnlyInclude".equals(selectionLocalName)) {
-				verifySubmittedEOIdInRegistryResponse(DocumentEntryFilter.MUST_ONLY_INCLUDE, m, selectionPart);
+				verifySubmittedEOIdInRegistryResponse(DocumentEntryFilter.MUST_ONLY_INCLUDE, m, selectionPart, instruction_output);
 			} else if ("Include".equals(selectionLocalName)) {
-				verifySubmittedEOIdInRegistryResponse(DocumentEntryFilter.INCLUDE, m, selectionPart);
+				verifySubmittedEOIdInRegistryResponse(DocumentEntryFilter.INCLUDE, m, selectionPart, instruction_output);
 			} else if ("Exclude".equals(selectionLocalName)) {
-				verifySubmittedEOIdInRegistryResponse(DocumentEntryFilter.EXCLUDE,m,selectionPart);
+				verifySubmittedEOIdInRegistryResponse(DocumentEntryFilter.EXCLUDE,m,selectionPart, instruction_output);
 			} else if ("DocumentEntryType".equals(selectionLocalName)) { // Looks to see if all EOs in the metadata collection are of this type. The EO Id matching is not used in this case.
 				verifyAllEntriesByAttribute("objectType", m, selectionPart);
 			}
@@ -646,7 +741,10 @@ public class Validator {
 	 * @throws XdsInternalException
 	 * @throws MetadataException
 	 */
-	private boolean verifySubmittedEOIdInRegistryResponse(DocumentEntryFilter def, Metadata m, OMElement ec) throws XdsInternalException, MetadataException {
+	private boolean verifySubmittedEOIdInRegistryResponse(DocumentEntryFilter def, Metadata m, OMElement ec, OMElement instruction_output) throws XdsInternalException, MetadataException {
+		if (instruction_output==null) {
+			throw new IllegalArgumentException("OMElement instruction_output cannot be null.");
+		}
 		int counter = 0;
 		for (Iterator deIt = ec.getChildElements(); deIt.hasNext(); ) {
 
@@ -728,10 +826,11 @@ public class Validator {
 		return true;
 	}
 
+	// NOTE: This method doesn't seem to be used except for document generation references
 	public boolean docRplcDoc() throws MetadataException {
 		hasDocuments(2);
-		hasAssociations(1);
-		if (isDocApproved(m.getExtrinsicObject(0))) {
+		hasAssociations(1); // According to TF 3 Figure 4.2.2.2.3-2 : document replace, Should be 2.
+		if (isDocApproved(m.getExtrinsicObject(0))) { // Does this assume the DocumentEntry is always ordered this way?
 			hasAssociation(m.getExtrinsicObject(0), m.getExtrinsicObject(1), "RPLC");
 			docDeprecated(m.getExtrinsicObject(1));
 		} else {
@@ -1128,7 +1227,7 @@ public class Validator {
 				path.add("AdhocQueryResponse");
 //				path.add("RegistryObjectList");
 				OMElement ele_of_focus = v.find_nested_element(input, path);
-				v.run_test_assertions(ele_of_focus);
+				v.run_test_assertions(ele_of_focus, null);
 			}
 			else {
 				OMElement step = XmlUtil.firstChildWithLocalName(input, test_step);
@@ -1160,16 +1259,6 @@ public class Validator {
 		return testConfig;
 	}
 
-	public void setTestConfig(TestConfig testConfig) {
-		this.testConfig = testConfig;
-	}
 
-	public OMElement getInstruction_output() {
-		return instruction_output;
-	}
-
-	public void setInstruction_output(OMElement instruction_output) {
-		this.instruction_output = instruction_output;
-	}
 
 }

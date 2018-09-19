@@ -74,6 +74,10 @@ public class ActorOptionConfig extends ActorOption {
         return actorTypeId != null && ActorType.DOC_SOURCE.getActorCode().equals(actorTypeId);
     }
 
+    public boolean isXds() {
+        return profileId != null && IheItiProfile.XDS.equals(profileId);
+    }
+
     public boolean isMhd() {
         return profileId != null && IheItiProfile.MHD.equals(profileId);
     }

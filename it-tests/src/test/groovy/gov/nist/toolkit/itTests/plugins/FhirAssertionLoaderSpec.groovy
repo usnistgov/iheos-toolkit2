@@ -8,10 +8,10 @@ import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.client.SimIdFactory
 import gov.nist.toolkit.testengine.engine.FhirSimulatorTransaction
-import gov.nist.toolkit.testengine.engine.fhirValidations.AbstractFhirValidater
-import gov.nist.toolkit.testengine.engine.fhirValidations.FhirAssertionLoader
-import gov.nist.toolkit.testengine.engine.fhirValidations.SimReference
-import gov.nist.toolkit.testengine.engine.fhirValidations.ValidaterResult
+import gov.nist.toolkit.testengine.engine.validations.fhir.AbstractFhirValidater
+import gov.nist.toolkit.testengine.engine.validations.fhir.FhirAssertionLoader
+import gov.nist.toolkit.testengine.engine.SimReference
+import gov.nist.toolkit.testengine.engine.validations.ValidaterResult
 import gov.nist.toolkit.testkitutilities.TestKitSearchPath
 import spock.lang.Shared
 import spock.lang.Specification

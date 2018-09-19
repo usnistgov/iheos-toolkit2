@@ -8,6 +8,7 @@
     </Rule>
     <RegisterTransaction>
       <XDSb/>
+      <AssignUuids/>
       <UseId testdir="../submit" id="Document01" symbol="$rplc_doc_uuid$" step="submit" section="AssignedUuids"/>
       <MetadataFile>rplc.xml</MetadataFile>
     </RegisterTransaction>

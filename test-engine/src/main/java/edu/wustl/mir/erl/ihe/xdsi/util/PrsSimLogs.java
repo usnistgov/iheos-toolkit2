@@ -47,8 +47,8 @@ public class PrsSimLogs {
    /**
     * Load SOAP Message components into passed {@link SimulatorTransaction} instance.
     * <p/>
-    * This method will retrieve the SOAP Request and Response messages from the 
-    * NIST log and load the following properties into the passed 
+    * This method will retrieve the SOAP Request and Response messages from the
+    * NIST log and load the following properties into the passed
     * SimulatorTransaction instance (all in String format):<ul>
     * <li/> Request - The entire SOAP request (raw).
     * <li/> Response - The entire SOAP response (raw).
@@ -57,27 +57,55 @@ public class PrsSimLogs {
     * <li/> RequestBody - The SOAP request envelope body. The root element
     * of this file will be the child element of {@code <env:Body>}, for example,
     * the {@code <xdsiB:RetrieveImagingDocumentSetRequest>} element.
-    * <li/> ResponseBody - The SOAP response envelope header. The root 
-    * element of this file will be the child element of {@code <env:Body>}, for 
+    * <li/> ResponseBody - The SOAP response envelope header. The root
+    * element of this file will be the child element of {@code <env:Body>}, for
     * example, the {@code <xdsiB:RetrieveDocumentSetResponse>} element.
-    * <li/> Pfns - List of physical file names for files processed by the 
+    * <li/> Pfns - List of physical file names for files processed by the
     * transaction. Empty if none.</ul>
     * If the SOAP Request and/or Response cannot be parsed, the corresponding
     * Header and Body files will not be present, but the raw Request and
     * Response xml files should always be present.<p/>
-    * 
+    *
     * @param trn SimulatorTransaction xdstools log directory for transaction.
     * @throws Exception on error, such as IO error.
     */
    public static void loadTransaction(SimulatorTransaction trn) throws Exception {
-      
-      Path path = getTransactionLogDirectoryPath(trn.getSimId(), 
-         trn.getTransactionType().getShortName(), trn.getPid(), trn.getTimeStamp());
+      Path path = getTransactionLogDirectoryPath(trn.getSimId(),
+           trn.getTransactionType().getShortName(), trn.getPid(), trn.getTimeStamp());
       if (path == null)
          throw new Exception("No valid transactions for " + trn.getSimId()
-         + " ec_dir via Paths.get is: [" + externalCache + "]"
+                 + " ec_dir via Paths.get is: [" + externalCache + "]"
                  + " ec_dir via installation is: [" + installation.externalCache().getAbsolutePath() + "]"
          );
+      loadTransaction(trn, path);
+   }
+      /**
+       * Load SOAP Message components into passed {@link SimulatorTransaction} instance.
+       * <p/>
+       * This method will retrieve the SOAP Request and Response messages from the
+       * NIST log and load the following properties into the passed
+       * SimulatorTransaction instance (all in String format):<ul>
+       * <li/> Request - The entire SOAP request (raw).
+       * <li/> Response - The entire SOAP response (raw).
+       * <li/> RequestHeader - The SOAP request envelope header.
+       * <li/> ResponseHeader - The SOAP response envelope header.
+       * <li/> RequestBody - The SOAP request envelope body. The root element
+       * of this file will be the child element of {@code <env:Body>}, for example,
+       * the {@code <xdsiB:RetrieveImagingDocumentSetRequest>} element.
+       * <li/> ResponseBody - The SOAP response envelope header. The root
+       * element of this file will be the child element of {@code <env:Body>}, for
+       * example, the {@code <xdsiB:RetrieveDocumentSetResponse>} element.
+       * <li/> Pfns - List of physical file names for files processed by the
+       * transaction. Empty if none.</ul>
+       * If the SOAP Request and/or Response cannot be parsed, the corresponding
+       * Header and Body files will not be present, but the raw Request and
+       * Response xml files should always be present.<p/>
+       *
+       * @param trn SimulatorTransaction xdstools log directory for transaction.
+       * @param path Path to the request/response directory
+       * @throws Exception on error, such as IO error.
+       */
+   public static void loadTransaction(SimulatorTransaction trn, Path path) throws Exception {
       trn.setLogDirPath(path);
       
       // SOAP Request
@@ -294,6 +322,8 @@ public class PrsSimLogs {
          while (str.substring(p).startsWith("<") == false)
             p-- ;
          str = str.substring(p);
+         if (mimeBoundary==null)
+            return str;
          p = str.indexOf(mimeBoundary);
          if (p != -1) str = str.substring(0, p);
          str = new String(str.replaceAll("\\s+", " "));

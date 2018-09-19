@@ -1,4 +1,4 @@
-package gov.nist.toolkit.testengine.engine.fhirValidations
+package gov.nist.toolkit.testengine.engine.validations.fhir
 
 import gov.nist.toolkit.pluginSupport.loader.PluginClassLoader
 import gov.nist.toolkit.testkitutilities.TestKit

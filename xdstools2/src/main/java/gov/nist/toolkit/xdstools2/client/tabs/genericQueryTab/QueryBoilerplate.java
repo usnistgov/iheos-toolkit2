@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.RadioButton;
@@ -43,17 +44,18 @@ public class QueryBoilerplate {
 //		genericQueryTab.resultPanel = new VerticalPanel();
 //		genericQueryTab.tabTopPanel.add(genericQueryTab.resultPanel);
 
-
 		genericQueryTab.addActorReloader();
 
-		if (GenericQueryTab.transactionOfferings == null) {
+		if (GenericQueryTab.transactionOfferings == null
+				|| /* Issue #426 */
+				((GenericQueryTab.transactionOfferings!=null && GenericQueryTab.transactionOfferings.map!=null && GenericQueryTab.transactionOfferings.map.isEmpty()) &&
+					(GenericQueryTab.transactionOfferings!=null && GenericQueryTab.transactionOfferings.tmap!=null && GenericQueryTab.transactionOfferings.tmap.isEmpty()))) {
 			genericQueryTab.reloadTransactionOfferings();
 		} else {
             // TODO - this probablt needs to change to true
 			genericQueryTab.redisplay(false);
 		}
 	}
-
 
 	QueryBoilerplate(GenericQueryTab genericQueryTab2, ClickHandler runner, List<TransactionType> transactionTypes, CoupledTransactions couplings) {
 		this(genericQueryTab2, runner, transactionTypes, couplings, null);

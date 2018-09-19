@@ -124,11 +124,19 @@ public class QuickScanLog {
                     atLeastOneNotRun = true;
                 }
             }
+            /* See TestDisplay#display for color coding logic */
             if (atLeastOneFailed) {
                 testOverviewDTO.setRun(true);
                 testOverviewDTO.setPass(false);
             } else if (atLeastOneNotRun) {
-                testOverviewDTO.setRun(false);
+                if (passCt == 0) {
+                    // No section logs at all
+                    testOverviewDTO.setRun(false);
+                } else {
+                    // Incomplete status (some run, some not, none failed.) Mark as failed since this is how it was represented before and we don't really have an Incomplete status. In the test overview only three Status exists: not run, pass, fail.
+                    testOverviewDTO.setRun(true);
+                    testOverviewDTO.setPass(false);
+                }
             } else if (passCt == testPlanSections.size()) {
                 testOverviewDTO.setRun(true);
                 testOverviewDTO.setPass(true);

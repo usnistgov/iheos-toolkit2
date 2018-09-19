@@ -8,7 +8,6 @@ import spock.lang.Timeout
  * Created by skb1 on 6/5/2017.
  */
 @Stepwise
-@Timeout(90)
 abstract class ConformanceActor extends ToolkitWebPage {
 
     @Shared String actorPage

@@ -60,6 +60,69 @@ public class SimDb {
 	private TestSession testSession = null;
 
 	static final String MARKER = 'MARKER';
+	/**
+	 * Base constructor Loads the simulator db directory
+	 */
+	SimDb() {}
+	/**
+	 * open existing sim
+	 * @param simId
+	 * @throws NoSimException
+	 */
+	SimDb(SimId simId) throws NoSimException {
+		assert simId?.testSession?.value
+		File dbRoot = getSimDbFile(simId);
+		this.simId = simId;
+		validateSimId(simId);
+		if (simId == null)
+			throw new ToolkitRuntimeException("SimDb - cannot build SimDb with null simId");
+
+		if (!dbRoot.exists())
+			dbRoot.mkdirs();
+
+		if (!dbRoot.canWrite() || !dbRoot.isDirectory())
+			throw new ToolkitRuntimeException("Simulator database location, [" + dbRoot.toString() + "] is not a directory or cannot be written to");
+
+		String ipdir = simId.toString();
+		simDir = new File(dbRoot.toString()  /*.getAbsolutePath()*/ + File.separatorChar + ipdir);
+		if (!simDir.exists()) {
+			logger.error("Simulator " + simId + " does not exist (" + simDir + ")");
+			throw new NoSimException("Simulator " + simId + " does not exist (" + simDir + ")");
+		}
+
+		simDir.mkdirs();
+
+		if (!simDir.isDirectory())
+			throw new ToolkitRuntimeException("Cannot create content in Simulator database, creation of " + simDir.toString() + " failed");
+
+		createSimSafetyFile()
+	}
+	SimDb(SimId simId, ActorType actor, TransactionType transaction, boolean openToLastTransaction) {
+		this(simId, actor.shortName, transaction.shortName, openToLastTransaction)
+	}
+
+	SimDb(SimId simId, String actor, String transaction, boolean openToLastTransaction) {
+		this(simId);
+		assert actor
+		this.actor = actor;
+		this.transaction = transaction;
+
+		if (actor != null && transaction != null) {
+			transactionDir = transactionDirectory(actor, transaction)
+		} else
+			return;
+
+		if (openToLastTransaction) {
+			openMostRecentEvent(actor, transaction)
+		} else {
+			eventDate = new Date();
+			File eventDir = mkEventDir(eventDate);
+			eventDir.mkdirs();
+			Serialize.out(new File(eventDir, "date.ser"), eventDate);
+		}
+	}
+
+
 
 	SimDb mkSim(SimId simid, String actor) throws IOException, NoSimException {
 		assert simid?.testSession?.value
@@ -183,44 +246,6 @@ public class SimDb {
 		return f.exists();
 	}
 
-	/**
-	 * Base constructor Loads the simulator db directory 
-	 */
-	SimDb() {}
-
-	/**
-	 * open existing sim
-	 * @param simId
-	 * @throws NoSimException
-	 */
-	SimDb(SimId simId) throws NoSimException {
-		assert simId?.testSession?.value
-		File dbRoot = getSimDbFile(simId);
-		this.simId = simId;
-		validateSimId(simId);
-		if (simId == null)
-			throw new ToolkitRuntimeException("SimDb - cannot build SimDb with null simId");
-
-		if (!dbRoot.exists())
-			dbRoot.mkdirs();
-
-		if (!dbRoot.canWrite() || !dbRoot.isDirectory())
-			throw new ToolkitRuntimeException("Simulator database location, [" + dbRoot.toString() + "] is not a directory or cannot be written to");
-
-		String ipdir = simId.toString();
-		simDir = new File(dbRoot.toString()  /*.getAbsolutePath()*/ + File.separatorChar + ipdir);
-		if (!simDir.exists()) {
-			logger.error("Simulator " + simId + " does not exist (" + simDir + ")");
-			throw new NoSimException("Simulator " + simId + " does not exist (" + simDir + ")");
-		}
-
-		simDir.mkdirs();
-
-		if (!simDir.isDirectory())
-			throw new ToolkitRuntimeException("Cannot create content in Simulator database, creation of " + simDir.toString() + " failed");
-
-		createSimSafetyFile()
-	}
 
 	void createSimSafetyFile() {
 		// add this for safety when deleting simulators -
@@ -293,30 +318,6 @@ public class SimDb {
 		return eventDate;
 	}
 
-	SimDb(SimId simId, ActorType actor, TransactionType transaction, boolean openToLastTransaction) {
-		this(simId, actor.shortName, transaction.shortName, openToLastTransaction)
-	}
-
-	SimDb(SimId simId, String actor, String transaction, boolean openToLastTransaction) {
-		this(simId);
-		assert actor
-		this.actor = actor;
-		this.transaction = transaction;
-
-		if (actor != null && transaction != null) {
-			transactionDir = transactionDirectory(actor, transaction)
-		} else
-			return;
-
-		if (openToLastTransaction) {
-			openMostRecentEvent(actor, transaction)
-		} else {
-			eventDate = new Date();
-			File eventDir = mkEventDir(eventDate);
-			eventDir.mkdirs();
-			Serialize.out(new File(eventDir, "date.ser"), eventDate);
-		}
-	}
 
 	static SimDb createMarker(SimId simId) {
 		return new SimDb(simId, MARKER, MARKER, false)
@@ -324,11 +325,16 @@ public class SimDb {
 
 	/**
 	 * Events returned most recent first
-	 * If no marker then return all events
+	 * If no marker then return all events.
+	 * (I think this method assumes there is only one actor type and transaction type within the scope of a simulator because getAllEvents returns all events for all actors and all transactions.)
 	 * @return
 	 */
 	List<SimDbEvent> getEventsSinceMarker() {
-		List<SimDbEvent> events = getAllEvents()
+		getEventsSinceMarker(null, null)
+	}
+
+	List<SimDbEvent> getEventsSinceMarker(String actor, String tran) {
+		List<SimDbEvent> events = getAllEvents(actor, tran)
 		Map<String, SimDbEvent> eventMap = [:]
 		events.each { SimDbEvent event -> eventMap[event.eventId] = event }
 		def ordered = eventMap.keySet().sort().reverse()
@@ -924,7 +930,7 @@ public class SimDb {
 		} catch (ClassNotFoundException e) {
 		}
 //					if (date == null) continue;  // only interested in transactions that have dates
-		t.labelInterpretedAsDate = (date == null) ? "" : date.toString();
+		t.labelInterpretedAsDate = (date == null) ? event?:"" : date.toString();
 		t.nameInterpretedAsTransactionType = TransactionType.find(t.trans);
 
 		String ipAddr = null;
@@ -1134,13 +1140,27 @@ public class SimDb {
 	}
 
 	List<SimDbEvent> getAllEvents() {
+		getAllEvents(null, null);
+	}
+
+	/**
+	 *
+	 * @param actor Optional.
+	 * @param tran Optional.
+	 * @return
+	 */
+	List<SimDbEvent> getAllEvents(String actor, String tran) {
 		List<SimDbEvent> eventDirs = []
 		for (File actorDir : simDir.listFiles()) {
 			if (!actorDir.isDirectory()) continue
-			for (File transDir : actorDir.listFiles()) {
-				if (!transDir.isDirectory()) continue
-				for (File eventDir : transDir.listFiles()) {
-					eventDirs << new SimDbEvent(simId, actorDir.name, transDir.name, eventDir.name)
+			if (actor?actorDir.getName().equals(actor):true) {
+				for (File transDir : actorDir.listFiles()) {
+					if (!transDir.isDirectory()) continue
+                    if ((tran?transDir.getName().equals(tran):true)) {
+						for (File eventDir : transDir.listFiles()) {
+							eventDirs << new SimDbEvent(simId, actorDir.name, transDir.name, eventDir.name)
+						}
+					}
 				}
 			}
 		}

@@ -1,12 +1,13 @@
 package gov.nist.toolkit.testengine.assertionEngine;
 
+import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.testengine.engine.AbstractValidater;
 import gov.nist.toolkit.testengine.engine.TestConfig;
 import gov.nist.toolkit.testengine.engine.ToolkitEnvironment;
-import gov.nist.toolkit.testengine.engine.fhirValidations.SimReference;
+import gov.nist.toolkit.testengine.engine.SimReference;
 import gov.nist.toolkit.testkitutilities.TestKit;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import org.apache.axiom.om.OMAttribute;
@@ -22,7 +23,7 @@ import java.util.*;
 public class Assertion {
 
 	// This is used to manage assertion plugins
-	// this is processed by MhdClientTransaction for pluginType FHIR
+	// this is processed by MhdClientTransaction for pluginType FHIR (and Xds)
 	public static class Validations {
 
 		TestKit.PluginType pluginType;
@@ -40,6 +41,10 @@ public class Assertion {
 		}
 
 		public List<ValidaterInstance> validaters = new ArrayList<>();
+
+		public TestKit.PluginType getPluginType() {
+			return pluginType;
+		}
 	}
 
 	public Validations validations = new Validations();
@@ -117,6 +122,12 @@ public class Assertion {
 		TransactionType tType = TransactionType.find(trans);
 		if (tType == null) throw new ToolkitRuntimeException(this.toString() + " invalid transaction");
 		SimId simId = SimDb.getFullSimId(new SimId(toolkitEnvironment.getTestSession(), id));
+		String actor = simTransactionElement.getAttributeValue(new QName("actorType"));
+		if (actor !=null && !"".equals(actor)) {
+			ActorType actorType = ActorType.findActor(actor);
+			if (actorType == null) throw new ToolkitRuntimeException(actor + " invalid actorType");
+			return new SimReference(simId, tType, actorType);
+		}
 		return new SimReference(simId, tType);
 	}
 
