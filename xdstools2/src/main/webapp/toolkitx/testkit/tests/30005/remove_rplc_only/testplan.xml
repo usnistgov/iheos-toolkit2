@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestPlan>
   <Test>30005/remove</Test>
+  <!--
   <TestStep id="remove_assoc_only">
 	<Goal>Fail to remove only the RPLC association.</Goal>
     <ExpectedStatus>Failure</ExpectedStatus>
@@ -13,15 +14,16 @@
       <MetadataFile>remove_rplc.xml</MetadataFile>
     </RemoveMetadataTransaction>
   </TestStep> 
+  -->
   <TestStep id="remove_rplc_set">
 	<Goal>Fail to remove the replacement document.</Goal>
     <ExpectedStatus>Failure</ExpectedStatus>
-	<ExpectedErrorCode>XDSMetadataModelException</ExpectedErrorCode>
+    <ExpectedErrorCode>ReferencesExistException</ExpectedErrorCode> 
     <RemoveMetadataTransaction>
       <XDSb/>
       <NoPatientId/>
 	  <ParseMetadata>False</ParseMetadata>
-	  <UseId testdir="../rplc" step="rplc" section="AssignedUuids" id="RPLCAssociation" symbol="$RPLCAssociation$"  />
+	<!--  <UseId testdir="../rplc" step="rplc" section="AssignedUuids" id="RPLCAssociation" symbol="$RPLCAssociation$"  /> -->
 	  <UseId testdir="../rplc" step="rplc" section="AssignedUuids" id="Document01" symbol="$Document01$"  />
 	  <UseId testdir="../rplc" step="rplc" section="AssignedUuids" id="SSHM01Association" symbol="$SSHM01Association$"  />
 	  <UseId testdir="../rplc" step="rplc" section="AssignedUuids" id="SubmissionSet01" symbol="$SubmissionSet01$"  />

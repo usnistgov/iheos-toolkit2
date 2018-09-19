@@ -56,8 +56,14 @@ public class SubSetCollection extends RegObCollection implements Serializable {
 		return all;
 	}
 
-	public List<SubSet> getAllForUpdate() {
+	List<SubSet> getAllForUpdate() {
 		return subSets;
+	}
+
+	private List<SubSet> getAllForDelete() {
+		if (parent == null)
+			return new ArrayList<>();
+		return parent.subSets;
 	}
 
 	public String toString() {
@@ -71,23 +77,18 @@ public class SubSetCollection extends RegObCollection implements Serializable {
 	// caller handles synchronization
 	public boolean delete(String id) {
 		boolean deleted = false;
-		List<String> deleting = new ArrayList<>(idsBeingDeleted());
-		setDeleting(new ArrayList<String>());
 
 		SubSet toDelete = null;
-		for (SubSet a : getAll()) {
+		for (SubSet a : getAllForDelete()) {
 			if (a.id.equals(id)) {
 				toDelete = a;
 				break;
 			}
 		}
 		if (toDelete != null) {
-			getAllForUpdate().remove(toDelete);
-			if (parent != null)
-				parent.getAllForUpdate().remove(toDelete);
+			getAllForDelete().remove(toDelete);
 			deleted = true;
 		}
-		setDeleting(deleting);
 		return deleted;
 	}
 

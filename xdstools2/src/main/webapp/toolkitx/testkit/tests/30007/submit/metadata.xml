@@ -274,7 +274,7 @@
             </tag0:Name>
          </tag0:ExternalIdentifier>
       </tag0:RegistryPackage>
-      <tag0:Classification ID="ClassifySS" classifiedObject="SubmissionSet01"
+      <tag0:Classification id="ClassifySS" classifiedObject="SubmissionSet01"
             classificationNode="urn:uuid:a54d6aa5-d40d-43f9-88c5-b4633d873bdd"/>
       <tag0:Association id="SSHMAssoc01" sourceObject="SubmissionSet01"
             targetObject="Document01" associationType="HasMember">

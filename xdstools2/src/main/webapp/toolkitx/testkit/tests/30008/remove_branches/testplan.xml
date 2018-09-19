@@ -2,9 +2,9 @@
 <TestPlan>
   <Test>30008/remove_branches</Test>
   <TestStep id="remove_APND_assoc_only">
-	<Goal>Fail to remove only the APND association.</Goal>
-    <ExpectedStatus>Failure</ExpectedStatus>
-	<ExpectedErrorCode>XDSMetadataModelException</ExpectedErrorCode>
+	<Goal>Remove only the APND association.</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+<!--	<ExpectedErrorCode>XDSMetadataModelException</ExpectedErrorCode>  -->
     <RemoveMetadataTransaction>
       <XDSb/>
       <NoPatientId/>
@@ -15,8 +15,8 @@
   </TestStep>
   <TestStep id="remove_XFRM_RPLC_assoc_only">
 	<Goal>Fail to remove only the XFRM_RPLC association.</Goal>
-    <ExpectedStatus>Failure</ExpectedStatus>
-	<ExpectedErrorCode>XDSMetadataModelException</ExpectedErrorCode>
+    <ExpectedStatus>Success</ExpectedStatus>
+	<!--<ExpectedErrorCode>XDSMetadataModelException</ExpectedErrorCode> -->
     <RemoveMetadataTransaction>
       <XDSb/>
       <NoPatientId/>

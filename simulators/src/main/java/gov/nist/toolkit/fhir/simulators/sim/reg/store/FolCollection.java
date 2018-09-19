@@ -57,8 +57,14 @@ public class FolCollection extends RegObCollection implements Serializable {
 		return all;
 	}
 
-	public List<Fol> getAllForUpdate() {
+	List<Fol> getAllForUpdate() {
 		return fols;
+	}
+
+	private List<Fol> getAllForDelete() {
+		if (parent == null)
+			return new ArrayList<>();
+		return parent.fols;
 	}
 	
 	public String toString() {
@@ -73,22 +79,17 @@ public class FolCollection extends RegObCollection implements Serializable {
 	// caller handles synchronization
 	public boolean delete(String id) {
 		boolean deleted = false;
-		List<String> deleting = new ArrayList<>(idsBeingDeleted());
-		setDeleting(new ArrayList<String>());
 		Fol toDelete = null;
-		for (Fol a : getAllForUpdate()) {
+		for (Fol a : getAllForDelete()) {
 			if (a.id.equals(id)) {
 				toDelete = a;
 				break;
 			}
 		}
 		if (toDelete != null) {
-			getAllForUpdate().remove(toDelete);
-			if (parent != null)
-				parent.getAllForUpdate().remove(toDelete);
+			getAllForDelete().remove(toDelete);
 			deleted = true;
 		}
-		setDeleting(deleting);
 		return deleted;
 	}
 

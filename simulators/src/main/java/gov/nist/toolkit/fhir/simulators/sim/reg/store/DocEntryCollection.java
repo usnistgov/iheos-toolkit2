@@ -66,6 +66,12 @@ public class DocEntryCollection extends RegObCollection implements Serializable 
 	public List<DocEntry> getAllForUpdate() {
 		return entries;
 	}
+
+	public List<DocEntry> getAllForDelete() {
+		if (parent == null)
+			return new ArrayList<>();
+		return parent.entries;
+	}
 	
 	public String toString() {
 		return getAll().size() + " DocumentEntries";
@@ -101,22 +107,17 @@ public class DocEntryCollection extends RegObCollection implements Serializable 
 	// caller handles synchronization
 	public boolean delete(String id) {
 		boolean deleted = false;
-		List<String> deleting = new ArrayList<>(idsBeingDeleted());
-		setDeleting(new ArrayList<String>());
 		DocEntry toDelete = null;
-		for (DocEntry a : getAllForUpdate()) {
+		for (DocEntry a : getAllForDelete()) {
 			if (a.id.equals(id)) {
 				toDelete = a;
 				break;
 			}
 		}
 		if (toDelete != null) {
-			getAllForUpdate().remove(toDelete);
-			if (parent != null)
-				parent.getAllForUpdate().remove(toDelete);
+			getAllForDelete().remove(toDelete);
 			deleted = true;
 		}
-		setDeleting(deleting);
 		return deleted;
 	}
 

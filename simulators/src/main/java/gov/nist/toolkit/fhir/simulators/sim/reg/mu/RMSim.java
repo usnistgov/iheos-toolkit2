@@ -58,6 +58,7 @@ public class RMSim extends TransactionSimulator {
 
         Map<String, Ro> typeMap = delta.buildTypeMap();
 
+        // for each object type verify that no dangling references will be left behind
         for (String id : toDelete) {
             if (typeMap.get(id) instanceof DocEntry) {
                 List<Assoc> deAssocs = delta.assocCollection.allThatReference(id);
@@ -75,7 +76,11 @@ public class RMSim extends TransactionSimulator {
                 List<Assoc> deAssocs = delta.assocCollection.allThatReference(id);
                 if (!deAssocs.isEmpty())
                     er.err(XdsErrorCode.Code.ReferencesExistException, "Cannot delete Folder " + typeMap.get(id).toString() + " because " + deAssocs.size() + " Associations reference it", null, null);
-
+            }
+            if (typeMap.get(id) instanceof Assoc) {
+                List<Assoc> aAssocs = delta.assocCollection.allThatReference(id);
+                if (!aAssocs.isEmpty())
+                    er.err(XdsErrorCode.Code.ReferencesExistException, "Cannot delete Association " + typeMap.get(id).toString() + " because " + aAssocs.size() + " Associations reference it", null, null);
             }
         }
 
