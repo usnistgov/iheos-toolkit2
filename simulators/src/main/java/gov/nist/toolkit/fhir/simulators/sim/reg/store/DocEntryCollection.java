@@ -96,7 +96,9 @@ public class DocEntryCollection extends RegObCollection implements Serializable 
 	public boolean okForRMU(MetadataCollection mc, ErrorRecorder er) {
 		boolean ok = true;
 
-		for (DocEntry de : getAll()) {
+		List<DocEntry> allDe = getAll();
+
+		for (DocEntry de : allDe) {
 			if (!AcceptableUpdate.acceptableRMU(de, mc, er))
 				ok = false;
 		}

@@ -62,7 +62,8 @@ public class RegRSim extends TransactionSimulator   {
 			// this MetadataCollection is separate from delta and only used for PID validation
 			MetadataCollection submission = new MetadataCollection();
 			try {
-				RegistryFactory.buildMetadataIndex(m, submission);
+				boolean muEnabled = common.vc.updateEnabled;
+				RegistryFactory.buildMetadataIndex(m, submission, muEnabled);
 			} catch (MetadataException e) {
 				er.err(Code.XDSRegistryMetadataError, e);
 				return;
@@ -183,7 +184,7 @@ public class RegRSim extends TransactionSimulator   {
 
 	public void buildMetadataIndex(Metadata m) {
 		try {
-			RegistryFactory.buildMetadataIndex(m, delta);
+			RegistryFactory.buildMetadataIndex(m, delta, common.vc.updateEnabled);
 		} catch (MetadataException e) {
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, e);
 		}
@@ -312,7 +313,8 @@ public class RegRSim extends TransactionSimulator   {
 		if (buildIndex) {
 			// update index
 			try {
-				RegistryFactory.buildMetadataIndex(m, delta);
+				boolean muEnabled = common.vc.updateEnabled;
+				RegistryFactory.buildMetadataIndex(m, delta, muEnabled);
 			} catch (MetadataException e) {
 				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, e);
 			}
