@@ -29,7 +29,7 @@ class CreateIndexTest extends Specification {
         sub1Dir.listFiles().each { File f ->
             metadata.addMetadata(MetadataParser.parseNonSubmission(f))
         }
-        RegistryFactory.buildMetadataIndex(metadata, metadataCollection)
+        RegistryFactory.buildMetadataIndex(metadata, metadataCollection, false)
 
         then:
         metadataCollection.docEntryCollection.allRo.size() == 1
