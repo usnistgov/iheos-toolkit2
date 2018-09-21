@@ -3,7 +3,6 @@ package war.toolkitx.testkit.plugins.SoapAssertion
 import gov.nist.toolkit.commondatatypes.MetadataSupport
 import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.installation.shared.TestSession
-import gov.nist.toolkit.registrymetadata.client.AnyId
 import gov.nist.toolkit.registrymetadata.client.AnyIds
 import gov.nist.toolkit.registrymetadata.client.ObjectRef
 import gov.nist.toolkit.results.client.Result
@@ -21,12 +20,14 @@ import gov.nist.toolkit.registrymetadata.MetadataParser
 import gov.nist.toolkit.utilities.xml.Util
 import gov.nist.toolkit.results.client.AssertionResult
 import gov.nist.toolkit.valregmetadata.coding.Uuid
+import groovy.transform.TypeChecked
 import org.apache.axiom.om.OMElement
 
 
 /**
- * Runs a plugin based on GetFolders utility. (Overwrites GetFolders log.)
+ * Runs a plugin based on utility tools. (Overwrites user session utility tool logs.)
  */
+@TypeChecked
 class FolderAssociationValidater extends AbstractSoapValidater {
     /**
      * Total associations in SubmissionSet
@@ -36,6 +37,10 @@ class FolderAssociationValidater extends AbstractSoapValidater {
      * If Local, checks for the Document Entry in the local metadata model. Any other value checks Registry using the target object UUID.
      */
     String docEntryScopeCheck
+
+    FolderAssociationValidater() {
+        filterDescription = "Folder association validater"
+    }
 
     @Override
     ValidaterResult validate(SoapSimulatorTransaction sst) {
@@ -108,19 +113,21 @@ class FolderAssociationValidater extends AbstractSoapValidater {
 
 
         void getFolder(String Uuid) {
-            List<Result> results = new GetFolders(mySession).run(siteSpec, new AnyIds(Uuid))
+            ObjectRef objectRef = new ObjectRef(Uuid)
+            List<Result> results = new GetFolders(mySession).setObjectRefReturn().run(siteSpec, new AnyIds(objectRef))
             Result result = results ? results.get(0) : null
-            checkResult("GetFolders UUID ${Uuid}", result)
+            checkResult(objectRef, "GetFolders UUID ${Uuid}", result)
         }
 
         void getDocuments(String Uuid) {
-            List<Result> results = new GetDocuments(mySession).run(siteSpec, new AnyIds(Uuid))
+            ObjectRef objectRef = new ObjectRef(Uuid)
+            List<Result> results = new GetDocuments(mySession).setObjectRefReturn().run(siteSpec, new AnyIds(objectRef))
             Result result = results ? results.get(0) : null
-            checkResult("GetDocuments UUID ${Uuid}", result)
+            checkResult(objectRef, "GetDocuments UUID ${Uuid}", result)
         }
 
 
-        private void checkResult(String queryType, Result result) {
+        private void checkResult(ObjectRef objectRef, String queryType, Result result) {
             if (result==null) {
                 error("Request", "Null ${queryType} stored query result")
             }
@@ -137,7 +144,7 @@ class FolderAssociationValidater extends AbstractSoapValidater {
                 // If LeafClass then use:
                 // String folderId = result.stepResults.get(0).getMetadata().folders.get(0).id // .docEntries.get(0).uniqueId;
                 List<ObjectRef> refList = result.stepResults.get(0).getObjectRefs()
-                if (refList.contains(sourceObjId)) {
+                if (refList.contains(objectRef)) {
                     // Cleared
                 } else {
                     error("${queryType} StoredQuery did not match the supporting sim Registry")

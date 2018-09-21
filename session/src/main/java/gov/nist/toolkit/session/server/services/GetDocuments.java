@@ -21,6 +21,16 @@ public class GetDocuments extends CommonService {
 		this.session = session;
 	}
 
+	public GetDocuments setLeafClassReturn() {
+		returnType = "LeafClass";
+		return this;
+	}
+
+	public GetDocuments setObjectRefReturn() {
+		returnType = "ObjectRef";
+		return this;
+	}
+
 	public List<Result> run(SiteSpec site, AnyIds aids) {
 		try {
 			// load site config into session
@@ -62,13 +72,6 @@ public class GetDocuments extends CommonService {
 
 	}
 
-	public void setLeafClassReturn() {
-		returnType = "LeafClass";
-	}
-	
-	public void setObjectRefReturn() {
-		returnType = "ObjectRef";
-	}
-	
+
 
 }
