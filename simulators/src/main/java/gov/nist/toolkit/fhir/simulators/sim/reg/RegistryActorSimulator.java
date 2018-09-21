@@ -134,7 +134,6 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 			common.vc.hasHttp = true;
 			common.vc.hasSoap = true;
 			common.vc.isXDRLimited = isMetadataLimited();
-			common.vc.isRMU = isRmuEnabled();
 
 			if (isValidateAsRecipient())
 				common.vc.isPartOfRecipient = true;
@@ -326,6 +325,10 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 			return processRMU(mvc, validation);
 
 		}
+		else if (transactionType.equals(TransactionType.REMOVE_METADATA)) {
+			return processRMD(mvc, validation);
+
+		}
 		else {
 			dsSimCommon.sendFault("RegistryActorSimulator - Don't understand transaction " + transactionType, null);
 			return false;
@@ -334,7 +337,7 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 
 	public boolean processRMD(MessageValidatorEngine mvc, String validation) throws IOException {
 		if (!rmEnabled) {
-			dsSimCommon.sendFault("RMU not enabled on this actor ", null);
+			dsSimCommon.sendFault("RMD not enabled on this actor ", null);
 			return false;
 		}
 		RegistryResponseGeneratorSim registryResponseGenerator;
@@ -369,8 +372,8 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 		// run all the queued up validators so we can check for errors
 		mvc.run();
 
-//		if (!dsSimCommon.hasErrors())
-//			commit(mvc, common, musim.delta);
+		if (!dsSimCommon.hasErrors())
+			commit(mvc, common, rmsim.delta);
 
 
 		return !dsSimCommon.hasErrors();

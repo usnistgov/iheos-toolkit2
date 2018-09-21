@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+	<Test>30008/attempt_remove_apnd_set</Test>
+  <TestStep id="attempt_remove_apnd_set">
+	<Goal>Fail to removing the appended documents.</Goal>
+    <ExpectedStatus>Failure</ExpectedStatus>
+	<ExpectedErrorCode>ReferencesExistException</ExpectedErrorCode>
+	<RemoveMetadataTransaction>
+      <XDSb/>
+      <NoPatientId/>
+	  <ParseMetadata>False</ParseMetadata>
+<!--	  <UseId testdir="../apnd" step="apnd" section="AssignedUuids" id="APNDAssoc01" symbol="$APNDAssociation$"/>  -->
+	  <UseId testdir="../apnd" step="apnd" section="AssignedUuids" id="Document01" symbol="$Document01$"/>
+	  <UseId testdir="../apnd" step="apnd" section="AssignedUuids" id="SSHMAssoc01" symbol="$SSHM01Association$"/>
+	  <UseId testdir="../apnd" step="apnd" section="AssignedUuids" id="SubmissionSet01" symbol="$SubmissionSet01$"/>
+      <MetadataFile>remove_apnd_set_only.xml</MetadataFile>
+    </RemoveMetadataTransaction>
+  </TestStep>  
+</TestPlan>

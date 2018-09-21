@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>30008/remove_orig_set</Test>
+  <TestStep id="remove_orig_set">
+    <Goal>Fail to remove the original document.</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+<!--    <ExpectedErrorCode>ReferencesExistException</ExpectedErrorCode> -->
+    <RemoveMetadataTransaction>
+      <XDSb/>
+      <NoPatientId/>
+      <ParseMetadata>False</ParseMetadata>
+ <!--     <UseId testdir="../xfrm_rplc" step="xfrm_rplc" section="AssignedUuids"
+        id="XFRMRPLCAssociation" symbol="$XFRM_RPLCAssociation$"/>  -->
+      <UseId testdir="../submit" step="submit" section="AssignedUuids" id="Document01"
+        symbol="$Document01$"/>
+      <UseId testdir="../submit" step="submit" section="AssignedUuids" id="SSHMAssoc01"
+        symbol="$SSHM01Association$"/>
+      <UseId testdir="../submit" step="submit" section="AssignedUuids" id="SubmissionSet01"
+        symbol="$SubmissionSet01$"/>
+      <MetadataFile>remove_orig_set_only.xml</MetadataFile>
+    </RemoveMetadataTransaction>
+  </TestStep>
+</TestPlan>

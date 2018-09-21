@@ -9,7 +9,7 @@
 			</rim:Slot>
 			<rim:Slot name="$AssociationTypes">
 				<rim:ValueList>
-					<rim:Value>'urn:ihe:iti:2007:AssociationType:RPLC'</rim:Value>
+					<rim:Value>('urn:ihe:iti:2007:AssociationType:RPLC')</rim:Value>
 				</rim:ValueList>
 			</rim:Slot>
 		</rim:AdhocQuery>

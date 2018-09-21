@@ -61,7 +61,15 @@ public class MetadataMessageValidator extends AbstractMessageValidator {
 			MetadataValidator mv = new MetadataValidator(m, vc, rvi);
 			new ObjectStructureValidator(m, vc, rvi).run(er);
 			mv.runCodeValidation(er);
-			new SubmissionStructure(m, rvi).run(er, vc);
+			if (vc.isRequest && vc.isRM) {
+				// must be object ref list
+				if (!m.isObjectRefsOnly()) {
+					er.err(XdsErrorCode.Code.XDSRegistryError, "Request must be ObjectRefs only", null, null);
+				}
+			}
+			else {
+				new SubmissionStructure(m, rvi).run(er, vc);
+			}
 
 		} catch (Exception e) {
 			er.err(XdsErrorCode.Code.XDSRegistryError, e);

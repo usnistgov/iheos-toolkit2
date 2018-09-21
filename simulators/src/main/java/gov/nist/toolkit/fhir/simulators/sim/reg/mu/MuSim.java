@@ -97,6 +97,7 @@ public class MuSim extends RegRSim {
 
 		// save metadata index and objects - seems too early
 		// recheck this later
+		// This updates delta but does not save delta to disk
 		save(operation, true);
 
 
@@ -112,8 +113,6 @@ public class MuSim extends RegRSim {
 		updateAssociationStatusTrigger(clone);
 
 		folderUpdateTrigger(clone);
-
-
 	}
 
 	void updateAssociationStatusTrigger(Metadata m) {

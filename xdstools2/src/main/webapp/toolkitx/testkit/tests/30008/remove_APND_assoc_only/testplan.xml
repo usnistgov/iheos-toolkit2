@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>30008/remove_APND_assoc_only</Test>
+  <TestStep id="remove_APND_assoc_only">
+    <Goal>Remove only the APND association.</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <!--	<ExpectedErrorCode>XDSMetadataModelException</ExpectedErrorCode>  -->
+    <RemoveMetadataTransaction>
+      <XDSb/>
+      <NoPatientId/>
+      <ParseMetadata>False</ParseMetadata>
+      <UseId testdir="../apnd" step="apnd" section="AssignedUuids" id="APNDAssoc01"
+        symbol="$Association$"/>
+      <MetadataFile>remove_assoc_only.xml</MetadataFile>
+    </RemoveMetadataTransaction>
+  </TestStep>
+
+</TestPlan>

@@ -118,7 +118,7 @@ public class ProcessMetadataForDocumentEntryUpdate implements ProcessMetadataInt
 	//     link objects with different patient ids (except for special cases)
 	public void associationPatientIdRules() {
 
-		for (Assoc a : delta.assocCollection.assocs) {
+		for (Assoc a : delta.assocCollection.getAll()) {
 			String fromId = a.getFrom();
 			String toId = a.getTo();
 

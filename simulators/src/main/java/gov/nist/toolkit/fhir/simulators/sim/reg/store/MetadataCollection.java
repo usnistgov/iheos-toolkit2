@@ -22,9 +22,7 @@ import org.apache.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class MetadataCollection implements Serializable, RegistryValidationInterface {
 	private static final long serialVersionUID = 1L;
@@ -49,6 +47,13 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 	public MetadataCollection() {
 		init();
 		buildAllCollections();
+	}
+
+	public void setDeleting(List<String> ids) {
+		docEntryCollection.setDeleting(ids);
+		assocCollection.setDeleting(ids);
+		subSetCollection.setDeleting(ids);
+		folCollection.setDeleting(ids);
 	}
 
 	private Logger logger() { return Logger.getLogger(MetadataCollection.class); }
@@ -139,27 +144,27 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 			ons.ro.setAvailabilityStatus(newVal);
 		}
 
-		for (Fol f  : updatedFolCollection.fols) {
+		for (Fol f  : updatedFolCollection.getAll()) {
 			String fid = f.getId();
 
-			for (int i=0; i<parent.folCollection.fols.size(); i++) {
-				Fol origFol = parent.folCollection.fols.get(i);
+			for (int i=0; i<parent.folCollection.getAll().size(); i++) {
+				Fol origFol = parent.folCollection.getAllForUpdate().get(i);
 
 				if (fid.equals(origFol.getId())) {
-					parent.folCollection.fols.set(i, f);
+					parent.folCollection.getAllForUpdate().set(i, f);
 					break;
 				}
 			}
 		}
 
 
-		parent.docEntryCollection.entries.addAll(docEntryCollection.entries);
+		parent.docEntryCollection.getAllForUpdate().addAll(docEntryCollection.getAllForUpdate());
 
-		parent.assocCollection.assocs.addAll(assocCollection.assocs);
+		parent.assocCollection.getAllForUpdate().addAll(assocCollection.getAllForUpdate());
 
-		parent.folCollection.fols.addAll(folCollection.fols);
+		parent.folCollection.getAllForUpdate().addAll(folCollection.getAllForUpdate());
 
-		parent.subSetCollection.subSets.addAll(subSetCollection.subSets);
+		parent.subSetCollection.getAllForUpdate().addAll(subSetCollection.getAllForUpdate());
 
 		return true;
 	}
@@ -167,7 +172,7 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 	void labelFolderUpdated(Fol f, String lastUpdateTime) {
 		Fol nf = f.clone();
 		nf.lastUpdateTime = lastUpdateTime;
-		updatedFolCollection.fols.add(nf);
+		updatedFolCollection.getAllForUpdate().add(nf);
 	}
 
 	public void init() {
@@ -193,7 +198,7 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 	private void buildAllCollections() {
 //		allCollections = null;
 		if (allCollections == null)
-			allCollections = new ArrayList<RegObCollection>(); // GWT needs explicit type in ArrayList<>
+			allCollections = new ArrayList<>(); // GWT needs explicit type in ArrayList<>
 		allCollections.clear();
 		allCollections.add(docEntryCollection);
 		allCollections.add(assocCollection);
@@ -205,6 +210,9 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 	}
 
 	public String deleteRo(String id) {
+
+		List<String> deleting = new ArrayList<>(docEntryCollection.idsBeingDeleted());
+		setDeleting(new ArrayList<String>());
 
 		buildAllCollections();
 
@@ -221,7 +229,8 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 
 			synchronized(regIndex) {
 				// delete entry in registry index
-				roc.delete(id);
+				if(roc.delete(id))
+					setDirty(true);
 
 				// delete file containing xml
 				File xml = ro.getFile();
@@ -229,8 +238,10 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 
 
 			}
+			setDeleting(deleting);
 			return uid;
 		}
+		setDeleting(deleting);
 		return null;
 	}
 
@@ -282,15 +293,65 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 	}
 
 	public Ro getObjectById(String id) {
-		buildAllCollections();
-		for (RegObCollection c : allCollections) {
-			Ro ro = c.getRo(id);
-			if (ro != null)
-				return ro;
-		}
-		if (parent != null)
-			return parent.getObjectById(id);
+		DocEntry de = docEntryCollection.getById(id);
+		if (de != null) return de;
+		SubSet ss = subSetCollection.getById(id);
+		if (ss != null) return ss;
+		Fol fol = folCollection.getById(id);
+		if (fol != null) return fol;
+		Assoc a = assocCollection.getById(id);
+		if (a != null) return a;
 		return null;
+	}
+
+	// this breaks delete
+//	public Ro getObjectById2(String id) {
+//		buildAllCollections();
+//		for (RegObCollection c : allCollections) {
+//			Ro ro = c.getRo(id);
+//			if (ro != null)
+//				return ro;
+//		}
+//		if (parent != null)
+//			return parent.getObjectById(id);
+//		return null;
+//	}
+
+	Map<String, Ro> objs = new HashMap<>();
+
+	// includes objects being deleted
+	public Map<String, Ro> buildTypeMap() {
+		List<String> deletingSave = new ArrayList<>(docEntryCollection.idsBeingDeleted());
+		setDeleting(new ArrayList<String>());
+
+		objs.clear();
+		for (DocEntry de : docEntryCollection.getAll())
+			objs.put(de.id, de);
+		for (SubSet ss : subSetCollection.getAll())
+			objs.put(ss.id, ss);
+		for (Assoc a : assocCollection.getAll())
+			objs.put(a.id, a);
+		for (Fol f : folCollection.getAll())
+			objs.put(f.id, f);
+
+		setDeleting(deletingSave);
+
+		return objs;
+	}
+
+	// buildTypeMap must be called before using this
+	public List<Ro> getObjectsOfType(List<String> ids, Class clas) {
+		List<Ro> objects = new ArrayList<>();
+
+		for (String id : ids) {
+			Ro ro = objs.get(id);
+			if (ro == null)
+				continue;
+			if (ro.getClass().equals(clas))
+				objects.add(ro);
+		}
+
+		return objects;
 	}
 
 	public void addDocEntryToFolAssoc(DocEntry de, Fol f) throws MetadataException, XdsInternalException, IOException {
@@ -474,25 +535,25 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 
 	public void add(DocEntry de) throws MetadataException {
 		idPresentCheck(de);
-		docEntryCollection.entries.add(de);
+		docEntryCollection.getAllForUpdate().add(de);
 		dirty = true;
 	}
 
 	public void add(Assoc a) throws MetadataException {
 		idPresentCheck(a);
-		assocCollection.assocs.add(a);
+		assocCollection.getAllForUpdate().add(a);
 		dirty = true;
 	}
 
 	public void add(SubSet ss) throws MetadataException {
 		idPresentCheck(ss);
-		subSetCollection.subSets.add(ss);
+		subSetCollection.getAllForUpdate().add(ss);
 		dirty = true;
 	}
 
 	public void add(Fol f) throws MetadataException {
 		idPresentCheck(f);
-		folCollection.fols.add(f);
+		folCollection.getAllForUpdate().add(f);
 		dirty = true;
 	}
 
@@ -562,7 +623,7 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 		OMElement ele = m.mkAssociation(MetadataSupport.associationTypeWithNamespace(RegIndex.getAssocString(type)), source, target);
 		ele.addAttribute("id", a.id, null);
 
-		assocCollection.assocs.add(a);
+		assocCollection.getAllForUpdate().add(a);
 
 		storeMetadata(ele, false);
 	}

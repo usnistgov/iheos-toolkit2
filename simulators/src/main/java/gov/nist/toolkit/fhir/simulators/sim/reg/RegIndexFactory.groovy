@@ -15,7 +15,7 @@ class RegIndexFactory {
         submissionDir.listFiles().each { File f ->
             Metadata m = MetadataParser.parseNonSubmission(f)
             OMElement ele = m.getAllLeafClasses().get(0)
-            RegistryFactory.buildMetadataIndex(ele, f.toString(), metadataCollection)
+            RegistryFactory.buildMetadataIndex(ele, f.toString(), metadataCollection, false)
         }
         return new RegIndex(metadataCollection)
     }
@@ -26,7 +26,7 @@ class RegIndexFactory {
             submissionDir.listFiles().each { File f ->
                 Metadata m = MetadataParser.parseNonSubmission(f)
                 OMElement ele = m.getAllLeafClasses().get(0)
-                RegistryFactory.buildMetadataIndex(ele, f.toString(), metadataCollection)
+                RegistryFactory.buildMetadataIndex(ele, f.toString(), metadataCollection, false)
             }
         }
         return new RegIndex(metadataCollection)
