@@ -68,7 +68,6 @@ class FolderAssociationValidater extends AbstractSoapValidater {
                            String targetObjId = Metadata.getAssocTarget(e)
                           String sourceObjId = Metadata.getAssocSource(e) // Pursue this target
                           if (m.getSubmissionSetId() != sourceObjId) { // Should be the Folder Id
-//                              checkFolderB(sst, sourceObjId)
                               AssociationUtil util = new AssociationUtil(sst)
                               util.getFolder(sourceObjId)
                               if ("Local" == docEntryScopeCheck) {
@@ -152,25 +151,6 @@ class FolderAssociationValidater extends AbstractSoapValidater {
             }
         }
      }
-
-        void checkFolder(SoapSimulatorTransaction sst, String sourceObjId) {
-            TestSession testSession = sst.simReference.simId.testSession
-            String env = sst.simReference.simId.environmentName
-            SiteSpec siteSpec = sst.simReference.simId.siteSpec
-
-            Map<String, String> params = new HashMap<String, String>()
-            params.put('$returnType$', "ObjectRef") // Another option: LeafClass
-
-            String prefix = "uid"
-            for (int i=0; i<10; i++) {
-                params.put('$' + prefix + i + '$', '')
-            }
-
-            params.put('$id0$', sourceObjId)
-
-            List<Result> results = XdsTestServiceManager.runTestInstance(env, testSession, siteSpec, "GetFolders", "XDS", params, false)
-
-        }
 
 
     AbstractSoapValidater copy() {
