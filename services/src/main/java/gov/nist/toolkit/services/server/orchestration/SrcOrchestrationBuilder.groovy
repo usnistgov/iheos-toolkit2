@@ -52,7 +52,7 @@ class SrcOrchestrationBuilder extends AbstractOrchestrationBuilder {
     RawResponse buildXdsTestEnvironment() {
         try {
             String supportIdName = "docsrc_support"
-            SimId simId;
+            SimId simId
             SimulatorConfig simConfig
 
             SrcOrchestrationResponse response = new SrcOrchestrationResponse()
