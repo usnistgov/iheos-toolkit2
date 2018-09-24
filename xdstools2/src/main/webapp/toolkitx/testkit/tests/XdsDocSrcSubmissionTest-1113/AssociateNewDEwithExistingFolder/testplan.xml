@@ -5,7 +5,7 @@
         <NullTransaction>
             <Assertions>
                 <Assert id="assert">
-                    <SimReference id="xdsregrep_support" actorType="rep" transaction="prb"/> <!-- This RegRep type sim is created by the Xds DocSrc conformance actor's orchestration -->
+                    <SimReference id="docsrc_support" actorType="rep" transaction="prb"/> <!-- This RegRep type sim is created by the Xds DocSrc conformance actor's orchestration -->
                     <Validations type="SOAP">
 			            <ExpectedContentsValidater filterDescription="Check Response Status" responseMsgExpectedContent="RegistryResponseIsValid" />
                         <ExpectedContentsValidater filterDescription="SubmissionSets count should be 1" requestMsgExpectedContent="SubmissionSets" requestMsgECCount="1"  />
