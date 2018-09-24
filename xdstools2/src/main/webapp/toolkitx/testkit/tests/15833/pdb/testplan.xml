@@ -4,8 +4,13 @@
         <ExpectedStatus>Success</ExpectedStatus>
         <MhdClientTransaction>
             <Assertions>
-                <Assert id="SingleDocSubmit" process="FindSingleDRSubmit">
+                <Assert id="SingleDocSubmit">
                     <SimReference id="mhdrec_support" transaction="pdb"/>
+                    <Validations type="FHIR">
+                        <PostValidater/>
+                        <SingleDocSubmissionValidater/>
+                        <StatusValidater statusCode="200"/>
+                    </Validations>
                 </Assert>
             </Assertions>
         </MhdClientTransaction>
