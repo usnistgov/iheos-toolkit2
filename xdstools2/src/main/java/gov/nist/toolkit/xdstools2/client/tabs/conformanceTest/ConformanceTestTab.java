@@ -808,7 +808,13 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
 			initializationPanel.add(orchInit.panel());
 		}
-		else if (currentActorOption.isSrc()) {
+		else if (currentActorOption.isDocAdmin()) {
+			if (currentActorOption.isXds())  {
+			    orchInit = new BuildDocAdminTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label, currentActorOption);
+				orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
+				initializationPanel.add(orchInit.panel());
+			}
+		} else if (currentActorOption.isSrc()) {
 			if (currentActorOption.isMhd()) {
 				orchInit = new BuildSrcMhdTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label, currentActorOption);
 			} else if (currentActorOption.isXds())  {

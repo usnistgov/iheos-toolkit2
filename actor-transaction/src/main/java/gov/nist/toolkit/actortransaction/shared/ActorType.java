@@ -426,6 +426,22 @@ public enum ActorType implements IsSerializable, Serializable {
             null,
             "src"   // must match src from src(mhd) in collections.txt
     ),
+    DOC_ADMIN(
+            "Document Administrator",
+            Arrays.asList("docadmin"),
+            "docadmin",
+            "", // no factory
+            "", // no simulator
+            Arrays.asList(TransactionType.STORED_QUERY, TransactionType.UPDATE),
+            false,  // show in config - only partially configured
+            null,  // actorsFileLabel
+            null,   // httpSimulatorClassName
+            null,    // http transaction types
+            false,    // is fhir
+            // proxy transform classes
+            null,
+            Constants.USE_SHORTNAME   // must match docadmin in collections.txt
+    ),
     FHIR_SUPPORT(
             "FHIR Support",
             Arrays.asList(""),

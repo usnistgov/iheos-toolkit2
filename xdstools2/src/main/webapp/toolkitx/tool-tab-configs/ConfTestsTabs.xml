@@ -1,14 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<!--
-TODO:
-The "tabs" element adds extra layer which is not necessary. It can be removed but all the code that uses it needs to be updated.
--->
-
 <!--
 Notes:
 
-ConfTests is the ToolId as defined in ToolLauncher.
+ConfTests, the prefix of this configuration file, is the ToolId as defined in ToolLauncher.
 Sort order of the Conformance tool tab is defined by order of Tab elements in this file.
 
 Tab attributes:
@@ -41,7 +35,10 @@ See ActorSelectionHandler for the Actor tab click event handler.
 testCollectionDefinitionDAOs contains test collections for a given actor.
 -->
 
-
+<!--
+TODO:
+The "tabs" element adds extra layer which is not necessary. It can be removed but all the code that uses it needs to be updated.
+-->
 
 <tabs label="Actors">
 
@@ -102,6 +99,16 @@ testCollectionDefinitionDAOs contains test collections for a given actor.
 				</tabs>
 			</tab>
 			<tab label="MHD" type="profile" tcCode="mhd">
+				<tabs label="Options">
+					<tab label="Required" type="option" tcCode="" externalStart="true"/>
+				</tabs>
+			</tab>
+		</tabs>
+	</tab>
+
+	<tab label="Document Administrator" type="actor" tcCode="docadmin" displayColorCode="#D0E4F6">
+		<tabs label="Profiles">
+			<tab label="XDS" type="profile" tcCode="xds">
 				<tabs label="Options">
 					<tab label="Required" type="option" tcCode="" externalStart="true"/>
 				</tabs>

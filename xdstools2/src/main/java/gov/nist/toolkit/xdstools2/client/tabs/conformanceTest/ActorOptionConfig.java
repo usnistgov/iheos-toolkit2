@@ -70,6 +70,10 @@ public class ActorOptionConfig extends ActorOption {
         return actorTypeId != null && ActorType.FHIR_SUPPORT.getActorCode().equals(actorTypeId);
     }
 
+    public boolean isDocAdmin() {
+        return actorTypeId != null && ActorType.DOC_ADMIN.getActorCode().equals(actorTypeId);
+    }
+
     public boolean isSrc() {
         return actorTypeId != null && ActorType.DOC_SOURCE.getActorCode().equals(actorTypeId);
     }

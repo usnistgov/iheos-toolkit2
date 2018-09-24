@@ -167,6 +167,20 @@ class OrchestrationManager {
         }
     }
 
+    RawResponse buildDocAdminTestEnvironment(Session session, DocAdminOrchestrationRequest request) {
+        try {
+            ToolkitApi api
+            if(Installation.instance().warHome()) {
+                api = ToolkitApi.forNormalUse(session)
+            } else {
+                api = ToolkitApi.forInternalUse()
+            }
+            return new DocAdminOrchestrationBuilder(api, session, request).buildTestEnvironment()
+        } catch (Exception e) {
+            return RawResponseBuilder.build(e)
+        }
+    }
+
     RawResponse buildSrcTestEnvironment(Session session, SrcOrchestrationRequest request) {
         try {
             ToolkitApi api
@@ -175,9 +189,9 @@ class OrchestrationManager {
             } else {
                 api = ToolkitApi.forInternalUse()
             }
-            return new SrcOrchestrationBuilder(api, session, request).buildTestEnvironment();
+            return new SrcOrchestrationBuilder(api, session, request).buildTestEnvironment()
         } catch (Exception e) {
-            return RawResponseBuilder.build(e);
+            return RawResponseBuilder.build(e)
         }
     }
 

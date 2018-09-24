@@ -282,6 +282,7 @@ public interface ToolkitServiceAsync {
 
     void getDatasetContent(GetDatasetElementContentRequest var1, AsyncCallback<String> callback);
 
+    void buildDocAdminTestOrchestration(BuildDocAdminTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
     void buildSrcTestOrchestration(BuildSrcTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 
     void buildFhirSupportOrchestration(FhirSupportOrchestrationRequest var1, AsyncCallback<RawResponse> callback);
