@@ -197,6 +197,9 @@ public class SoapMessageValidator extends AbstractMessageValidator {
         } else if (wsaction.equals("urn:ihe:iti:2010:DeleteDocumentSet")) {
             vc.isRequest = true;
             vc.isRM = true;
+        } else if (wsaction.equals("urn:ihe:iti:2017:RemoveDocuments")) {
+            vc.isRequest = true;
+            vc.isRD = true;
         } else if (wsaction.equals("urn:ihe:iti:2018:RegisterDocumentSet-bResponse")) {
             vc.isResponse = true;
             vc.isR = true;

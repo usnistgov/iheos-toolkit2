@@ -111,7 +111,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "rep",
             "gov.nist.toolkit.simcommon.server.factories.RepositoryActorFactory",
             "gov.nist.toolkit.fhir.simulators.sim.rep.RepositoryActorSimulator",
-            Arrays.asList(TransactionType.PROVIDE_AND_REGISTER, TransactionType.RETRIEVE),
+            Arrays.asList(TransactionType.PROVIDE_AND_REGISTER, TransactionType.RETRIEVE, TransactionType.REMOVE_DOCUMENTS),
             true,
             "repository",
             false,

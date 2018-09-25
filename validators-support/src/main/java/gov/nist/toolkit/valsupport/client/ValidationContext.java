@@ -48,6 +48,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	public boolean isRM       = false;
 	public boolean isDIRECT  = false;
 	public boolean isCCDA	 = false;
+	public boolean isRD      = false;
 	/**
 	 * Is this a Retrieve Imaging Document Set (RAD-69) transaction? Also set for
 	 * Cross Gateway Retrieve Imaging Document Set (RAD-75) transaction. In that
@@ -229,6 +230,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
  				isRODDE == v.isRODDE &&
 				isPnR == v.isPnR &&
 				isRet == v.isRet &&
+						isRD == v.isRD &&
 				isRad69 == v.isRad69 &&
 				//			isXDR == v.isXDR &&     // not sure how this needs to work
 				isDIRECT == v.isDIRECT &&
@@ -270,6 +272,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 		isRODDE = v.isRODDE;
 		isPnR = v.isPnR;
 		isRet = v.isRet;
+		isRD = v.isRD;
 		isRad69 = v.isRad69;
 		isXDR = v.isXDR;
 		isXDRLimited = v.isXDRLimited;
@@ -341,6 +344,12 @@ public class ValidationContext  implements Serializable, IsSerializable {
 		if (isRMU) {
 			if (isRequest)
 				return "Metadata Update";
+			if (isResponse)
+				return "RegistryResponse";
+		}
+		if (isRD) {
+			if (isRequest)
+				return "Remove Documents";
 			if (isResponse)
 				return "RegistryResponse";
 		}
@@ -448,6 +457,8 @@ public class ValidationContext  implements Serializable, IsSerializable {
 			return MetadataTypes.METADATA_TYPE_SQ;
 		if (isRet)
 			return MetadataTypes.METADATA_TYPE_RET;
+		if (isRD)
+			return MetadataTypes.METADATA_TYPE_RD;
 		if (isRad69)
 			return MetadataTypes.METADATA_TYPE_RAD69;
 		return MetadataTypes.METADATA_TYPE_UNKNOWN;
@@ -474,6 +485,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 		if (isRM) buf.append(";RM");
 		if (isPnR) buf.append(";PnR");
 		if (isRet) buf.append(";Retrieve");
+		if (isRD) buf.append(";RD");
 		if (isRad69) buf.append(";RAD69");
 		if (isXDR) buf.append(";XDR");
 		if (isXDM) buf.append(";XDM");
@@ -525,7 +537,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	}
 
 	public boolean isTransactionKnown() {
-		return isR || isRODDE || isMU || isRMU || isRM || isPnR || isRet || isXDR || isXDM || isSQ || isRad69 || isRad55;
+		return isR || isRODDE || isMU || isRMU || isRM || isPnR || isRet || isRD || isXDR || isXDM || isSQ || isRad69 || isRad55;
 	}
 
 	public boolean isMessageTypeKnown() {

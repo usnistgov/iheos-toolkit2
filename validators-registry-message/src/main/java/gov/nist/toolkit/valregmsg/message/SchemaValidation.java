@@ -107,6 +107,17 @@ public class SchemaValidation extends MetadataTypes {
 			"http://" + host + ":" + portString + "/xdsref/schema/v3/rs.xsd" :
 			localSchema + "/v3/rs.xsd"	);
 			break;
+			case METADATA_TYPE_RD:
+				schemaLocation = "urn:ihe:iti:rmd:2017 " +
+						((localSchema == null) ?
+								"http://" + host + ":" + portString + "/xdsref/schema/v3/rmd.xsd " :
+								localSchema + "/v3/rmd.xsd ") +
+
+						"urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0 " +
+						((localSchema == null) ?
+								"http://" + host + ":" + portString + "/xdsref/schema/v3/rs.xsd" :
+								localSchema + "/v3/rs.xsd"	);
+				break;
 		case AUDIT_LOG:
 			schemaLocation = "noNamespaceSchemaLocation " + 
 			((localSchema == null) ?

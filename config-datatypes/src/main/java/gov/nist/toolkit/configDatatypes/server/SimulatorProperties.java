@@ -145,13 +145,17 @@ public class SimulatorProperties {
      */
     public static final String                         removeMetadataEndpoint = "Remove_metadata_endpoint";
 
+    public static final String                         removeDocumentsEndpoint = "Remove_documents_endpoint";
+
     /**
      * Profile RMD: ITI-62
      * Endpoint to use to send the indicated transaction to this Simulator.
      * Updates to this property are ignored.
      */
     public static final String                      removeMetadataTlsEndpoint = "Remove_metadata_TLS_endpoint";
-    
+
+    public static final String                         removeDocumentsTlsEndpoint = "Remove_documents_TLS_endpoint";
+
     /**
      * Endpoint to use to send the indicated transaction to this Simulator.
      * Updates to this property are ignored.

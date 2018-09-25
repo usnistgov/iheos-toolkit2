@@ -57,6 +57,8 @@ public class RepositoryActorFactory extends AbstractActorFactory implements IAct
 			addFixedEndpoint(sc, SimulatorProperties.pnrTlsEndpoint, actorType, TransactionType.PROVIDE_AND_REGISTER, true);
 			addFixedEndpoint(sc, SimulatorProperties.retrieveEndpoint, actorType, TransactionType.RETRIEVE, false);
 			addFixedEndpoint(sc, SimulatorProperties.retrieveTlsEndpoint, actorType, TransactionType.RETRIEVE, true);
+			addFixedEndpoint(sc, SimulatorProperties.removeDocumentsEndpoint, actorType, TransactionType.REMOVE_DOCUMENTS, false);
+			addFixedEndpoint(sc, SimulatorProperties.removeDocumentsTlsEndpoint, actorType, TransactionType.REMOVE_DOCUMENTS, true);
 			addEditableNullEndpoint(sc, SimulatorProperties.registerEndpoint, actorType, TransactionType.REGISTER, false);
 			addEditableNullEndpoint(sc, SimulatorProperties.registerTlsEndpoint, actorType, TransactionType.REGISTER, true);
 		}
@@ -108,6 +110,19 @@ public class RepositoryActorFactory extends AbstractActorFactory implements IAct
 				RepositoryType.NONE,
 				asc.get(SimulatorProperties.pnrTlsEndpoint).asString(),
 				true, 
+				isAsync));
+
+		site.addTransaction(new TransactionBean(
+				TransactionType.REMOVE_DOCUMENTS.getCode(),
+				RepositoryType.NONE,
+				asc.get(SimulatorProperties.removeDocumentsEndpoint).asString(),
+				false,
+				isAsync));
+		site.addTransaction(new TransactionBean(
+				TransactionType.REMOVE_DOCUMENTS.getCode(),
+				RepositoryType.NONE,
+				asc.get(SimulatorProperties.removeDocumentsTlsEndpoint).asString(),
+				true,
 				isAsync));
 
 		site.addRepository(new TransactionBean(

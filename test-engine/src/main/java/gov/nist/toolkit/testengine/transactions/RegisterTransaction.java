@@ -52,11 +52,16 @@ public class RegisterTransaction extends BasicTransaction {
 		if (testConfig.prepare_only)
 			return;
 
+		doSoapCall(request);
+
+
+	}
+
+	public void doSoapCall(OMElement request) throws XdsInternalException {
 		try {
 			soapCall(request);
 			OMElement result = getSoapResult();
 			if (result != null) {
-//				testLog.add_name_value(instruction_output, "Result", result);
 
 				validate_response(result);
 
@@ -65,15 +70,13 @@ public class RegisterTransaction extends BasicTransaction {
 				s_ctx.set_error("Result was null");
 			}
 
-		} 
+		}
 		catch (Exception e) {
 			fail(ExceptionUtil.exception_details(e));
 			System.out.println(ExceptionUtil.exception_details(e));
 		}
-
-
 	}
-	
+
 	protected void validate_response(OMElement result) throws XdsException {
 		validate_registry_response(
 				result,

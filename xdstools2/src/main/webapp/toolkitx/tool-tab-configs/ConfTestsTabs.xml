@@ -82,6 +82,7 @@ testCollectionDefinitionDAOs contains test collections for a given actor.
 			<tab label="XDS" type="profile" tcCode="xds">
 				<tabs label="Options">
 					<tab label="Required"  type="option" tcCode="" externalStart="false"/>
+					<tab label="RMD Option" type="option" tcCode="rd" externalStart="false"/>
 					<tab label="XUA Option" type="option" tcCode="xua" externalStart="false"/>
 					<tab label="Remote Repository Option" type="option" tcCode="rd" externalStart="false"/>
 				</tabs>
