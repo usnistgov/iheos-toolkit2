@@ -61,6 +61,8 @@ public class RepositoryActorFactory extends AbstractActorFactory implements IAct
 			addFixedEndpoint(sc, SimulatorProperties.removeDocumentsTlsEndpoint, actorType, TransactionType.REMOVE_DOCUMENTS, true);
 			addEditableNullEndpoint(sc, SimulatorProperties.registerEndpoint, actorType, TransactionType.REGISTER, false);
 			addEditableNullEndpoint(sc, SimulatorProperties.registerTlsEndpoint, actorType, TransactionType.REGISTER, true);
+			addEditableConfig(sc, SimulatorProperties.REMOVE_DOCUMENTS, ParamType.BOOLEAN, false);
+
 		}
 
 		return new Simulator(sc);

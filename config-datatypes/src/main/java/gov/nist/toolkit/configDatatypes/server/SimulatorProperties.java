@@ -21,6 +21,7 @@ public class SimulatorProperties {
     public static final String                 UPDATE_METADATA_OPTION = "Update_Metadata_Option";
     public static final String RESTRICTED_UPDATE_METADATA_OPTION = "Restricted_Update_Metadata_Option";
     public static final String REMOVE_METADATA = "Remove_Metadata";
+    public static final String REMOVE_DOCUMENTS = "Remove_Documents_Option";
 
     /**
      * String property identifying port number for V2 Patient Identity Feed on the Registry Simulator.

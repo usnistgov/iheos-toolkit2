@@ -1,6 +1,7 @@
 package gov.nist.toolkit.fhir.simulators.sim.rep;
 
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymsg.registry.Response;
@@ -37,6 +38,7 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 //	SimDb db;
 	String repositoryUniqueId;
 	private boolean forward = true;
+	private boolean rd_enabled = false;
 
 	static List<TransactionType> transactions = new ArrayList<>();
 
@@ -73,6 +75,7 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 		SimulatorConfigElement configEle = getSimulatorConfig().get("repositoryUniqueId");
 		if (configEle != null)   // happens when used to implement a Document Recipient
 			this.repositoryUniqueId = configEle.asString();
+		this.rd_enabled = getSimulatorConfig().get(SimulatorProperties.REMOVE_DOCUMENTS).asBoolean();
 	}
 
     @Override
@@ -177,6 +180,10 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 			return true;
 		}
 		else if (transactionType.equals(TransactionType.REMOVE_DOCUMENTS)) {
+			if (!rd_enabled) {
+				dsSimCommon.sendFault("RMD not enabled on this actor ", null);
+				return false;
+			}
 
 			common.vc.isRD = true;
 			common.vc.xds_b = true;
