@@ -52,6 +52,7 @@ testCollectionDefinitionDAOs contains test collections for a given actor.
 					<tab label="Required"  type="option" tcCode="" externalStart="false"/>
 					<tab label="Metadata Update Option" type="option" tcCode="mu" externalStart="false"/>
 					<tab label="Restricted Metadata Update Option" type="option" tcCode="rmu" externalStart="false"/>
+					<tab label="RMD Option" type="option" tcCode="rm" externalStart="false"/>
 					<tab label="MPQ Option" type="option" tcCode="mpq" externalStart="false"/>
 					<tab label="On Demand Option" type="option" tcCode="od" externalStart="false"/>
 					<tab label="Integrated Source Repository" type="option" tcCode="isr" externalStart="true"/>
@@ -59,8 +60,7 @@ testCollectionDefinitionDAOs contains test collections for a given actor.
 					<tab label="CAT Folder" type="option" tcCode="catfolder" externalStart="false"/>
 					<tab label="CAT Lifecycle" type="option" tcCode="catlifecycle" externalStart="false"/>
 					<!--<tab label="Remote Metadata Update Option" type="option" tcCode="rmu" externalStart="false"/>-->
-					<tab label="RMD Remote Registry Option" type="option" tcCode="rm" externalStart="false"/>
-					<tab label="XAD PID" type="option" tcCode="xadpid" externalStart="false"/>
+					<!--<tab label="XAD PID" type="option" tcCode="xadpid" externalStart="false"/>-->
 				</tabs>
 			</tab>
 			<!--<tab label="RMD" type="profile" tcCode="rmd">-->

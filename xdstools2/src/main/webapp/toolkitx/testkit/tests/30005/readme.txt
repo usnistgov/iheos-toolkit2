@@ -1,4 +1,4 @@
-ITI-62: Remove DE0:RPLC:DE1 Objects
+ITI-62: Remove DocumentEntry and RPLC
 
 Test a Document Registry's ability to restrict removal of a RPLC Association and the SubmissionSet containing the replacement DocumentEntry while referenced.
 
