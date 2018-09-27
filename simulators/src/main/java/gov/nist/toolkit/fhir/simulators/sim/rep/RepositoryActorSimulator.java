@@ -75,7 +75,8 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 		SimulatorConfigElement configEle = getSimulatorConfig().get("repositoryUniqueId");
 		if (configEle != null)   // happens when used to implement a Document Recipient
 			this.repositoryUniqueId = configEle.asString();
-		this.rd_enabled = getSimulatorConfig().get(SimulatorProperties.REMOVE_DOCUMENTS).asBoolean();
+		configEle = getSimulatorConfig().get(SimulatorProperties.REMOVE_DOCUMENTS);
+		rd_enabled = (configEle != null) ?  configEle.asBoolean() : false;
 	}
 
     @Override
