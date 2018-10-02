@@ -16,6 +16,7 @@ import gov.nist.toolkit.fhir.simulators.sim.reg.store.*;
 import gov.nist.toolkit.fhir.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simcommon.server.SimCommon;
 import gov.nist.toolkit.fhir.simulators.support.TransactionSimulator;
+import gov.nist.toolkit.valregmetadata.top.AbstractCustomMetadataValidator;
 import gov.nist.toolkit.valregmsg.message.MetadataContainer;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
@@ -35,6 +36,7 @@ public class RegRSim extends TransactionSimulator   {
 	public MetadataCollection delta;
 	protected MessageValidatorEngine mvc;
     protected DsSimCommon dsSimCommon;
+	private AbstractCustomMetadataValidator customMetadataValidator = null;
 
 	static Logger log = Logger.getLogger(RegRSim.class);
 
@@ -91,6 +93,12 @@ public class RegRSim extends TransactionSimulator   {
 		// if errors then don't commit registry update
 		if (hasErrors())
 			return;
+
+		if (customMetadataValidator != null) {
+			mvc.addMessageValidator("Register Transaction", customMetadataValidator, er);
+			if (hasErrors())
+				return;
+		}
 
 		// save metadata objects XML
 		saveMetadataXml();
@@ -327,4 +335,13 @@ public class RegRSim extends TransactionSimulator   {
 			er.err(XdsErrorCode.Code.XDSRegistryError, e1);
 		}
 	}
+
+	public AbstractCustomMetadataValidator getCustomMetadataValidator() {
+		return customMetadataValidator;
+	}
+
+	public void setCustomMetadataValidator(AbstractCustomMetadataValidator customMetadataValidator) {
+		this.customMetadataValidator = customMetadataValidator;
+	}
+
 }

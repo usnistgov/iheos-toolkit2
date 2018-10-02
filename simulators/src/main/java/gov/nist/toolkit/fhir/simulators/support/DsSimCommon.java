@@ -30,6 +30,7 @@ import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.validatorsSoapMessage.engine.ValidateMessageService;
 import gov.nist.toolkit.validatorsSoapMessage.message.*;
+import gov.nist.toolkit.valregmetadata.top.AbstractCustomMetadataValidator;
 import gov.nist.toolkit.valregmsg.message.StoredDocumentInt;
 import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
@@ -222,7 +223,7 @@ public class DsSimCommon {
     public MessageValidatorEngine runValidation(ValidationContext vc, SimDb db, 
        MessageValidatorEngine mvc, ErrorRecorderBuilder gerb) throws IOException {
        ValidateMessageService vms = new ValidateMessageService(regIndex);
-       MessageValidatorEngine mve = vms.runValidation(vc, 
+       MessageValidatorEngine mve = vms.runValidation(vc,
            db.getRequestMessageHeader(), db.getRequestMessageBody(), mvc, gerb, db.getTestSession());
        hparser = vms.getHttpMessageValidator().getHttpParserBa();
        return mve;
@@ -945,4 +946,5 @@ public class DsSimCommon {
         }
         return sd;
     }
+
 }
