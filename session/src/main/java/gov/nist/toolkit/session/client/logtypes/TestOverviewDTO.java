@@ -3,6 +3,7 @@ package gov.nist.toolkit.session.client.logtypes;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.testenginelogging.client.LogMapDTO;
+import gov.nist.toolkit.testkitutilities.client.ConfTestPropertyName;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -27,6 +28,8 @@ public class TestOverviewDTO implements BasicTestOverview, Serializable, IsSeria
     private Collection<String> dependencies;
     private String testKitSource;
     private String testKitSection;
+    // ConfTest properties
+    private Map<ConfTestPropertyName, String> confTestPropertyMap;
 
     public TestOverviewDTO() {}
 
@@ -40,11 +43,20 @@ public class TestOverviewDTO implements BasicTestOverview, Serializable, IsSeria
         return name;
     }
 
+    /**
+     * Sets both the Name and TestInstance
+     * @param testInstance
+     */
     public void setName(String name) {
         this.name = name;
+        // Hmm. Don't know why setName also overwrites testInstance.
         this.testInstance = new TestInstance(name);
     }
 
+    /**
+     * Sets both the Name and TestInstance
+     * @param testInstance
+     */
     public void setTestInstance(TestInstance testInstance) {
         this.testInstance = testInstance;
         this.name = testInstance.getId();
@@ -176,5 +188,13 @@ public class TestOverviewDTO implements BasicTestOverview, Serializable, IsSeria
 
     public void setTestKitSection(String testKitSection) {
         this.testKitSection = testKitSection;
+    }
+
+    public Map<ConfTestPropertyName, String> getConfTestPropertyMap() {
+        return confTestPropertyMap;
+    }
+
+    public void setConfTestPropertyMap(Map<ConfTestPropertyName, String> confTestPropertyMap) {
+        this.confTestPropertyMap = confTestPropertyMap;
     }
 }

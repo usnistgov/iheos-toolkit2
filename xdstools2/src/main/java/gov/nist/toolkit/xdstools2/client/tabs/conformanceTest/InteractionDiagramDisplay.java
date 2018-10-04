@@ -31,13 +31,13 @@ public class InteractionDiagramDisplay extends FlowPanel {
     TestOverviewDTO testOverviewDTO;
 
     String sessionName;
-    SiteSpec testTarget;
+    SiteSpec siteSpec;
     String pid;
     ActorOptionConfig actorOption;
     String sutSystemName;
 
 
-    public InteractionDiagramDisplay(TestOverviewDTO testResultDTO, String sessionName, SiteSpec testTarget, String sutSystemName, ActorOptionConfig actorOption, String pid) {
+    public InteractionDiagramDisplay(TestOverviewDTO testResultDTO, String sessionName, SiteSpec siteSpec, String sutSystemName, ActorOptionConfig actorOption, String pid) {
 
         diagramCtl.addStyleName("iconStyle");
         diagramCtl.addStyleName("inlineLink");
@@ -46,7 +46,7 @@ public class InteractionDiagramDisplay extends FlowPanel {
 
         setTestOverviewDTO(testResultDTO);
         setSessionName(sessionName);
-        setTestTarget(testTarget);
+        setSiteSpec(siteSpec);
         setSutSystemName(sutSystemName);
         setActorOption(actorOption);
         setPid(pid);
@@ -68,7 +68,7 @@ public class InteractionDiagramDisplay extends FlowPanel {
     public InteractionDiagramDisplay render() {
         if (getTestOverviewDTO()!=null) {
             try {
-                final InteractionDiagram diagram = new InteractionDiagram(ClientUtils.INSTANCE.getEventBus(), getTestOverviewDTO(), sessionName, testTarget, sutSystemName, ActorType.findActor(getActorOption().getActorTypeId()).getName());
+                final InteractionDiagram diagram = new InteractionDiagram(ClientUtils.INSTANCE.getEventBus(), getTestOverviewDTO(), sessionName, siteSpec, sutSystemName, ActorType.findActor(getActorOption().getActorTypeId()).getName());
                 if (diagram != null) {
 
                         clear();
@@ -94,7 +94,7 @@ public class InteractionDiagramDisplay extends FlowPanel {
                                         contentPanel.add(diagram);
                                     }
                                 }
-                            }.run(new SetSutInitiatedTransactionInstanceRequest(ClientUtils.INSTANCE.getCommandContext(), diagram.getEntityList(), SimIdFactory.simIdBuilder(getTestTarget().getName()), getPid()));
+                            }.run(new SetSutInitiatedTransactionInstanceRequest(ClientUtils.INSTANCE.getCommandContext(), diagram.getEntityList(), SimIdFactory.simIdBuilder(getSiteSpec().getName()), getPid()));
                         } else {
                             diagram.draw();
                             if ((diagram!=null && diagram.hasMeaningfulDiagram())) {
@@ -124,12 +124,12 @@ public class InteractionDiagramDisplay extends FlowPanel {
         this.sessionName = sessionName;
     }
 
-    public SiteSpec getTestTarget() {
-        return testTarget;
+    public SiteSpec getSiteSpec() {
+        return siteSpec;
     }
 
-    public void setTestTarget(SiteSpec testTarget) {
-        this.testTarget = testTarget;
+    public void setSiteSpec(SiteSpec siteSpec) {
+        this.siteSpec = siteSpec;
     }
 
     public String getPid() {
@@ -166,7 +166,7 @@ public class InteractionDiagramDisplay extends FlowPanel {
         testOverviewDTO.setRun(getTestOverviewDTO().isRun());
         testOverviewDTO.setPass(getTestOverviewDTO().isPass());
 
-       InteractionDiagramDisplay diagramDisplay =  new InteractionDiagramDisplay(testOverviewDTO, getSessionName(), getTestTarget(), getSutSystemName(), getActorOption(), getPid());
+       InteractionDiagramDisplay diagramDisplay =  new InteractionDiagramDisplay(testOverviewDTO, getSessionName(), getSiteSpec(), getSutSystemName(), getActorOption(), getPid());
        return diagramDisplay;
     }
 

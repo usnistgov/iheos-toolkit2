@@ -158,43 +158,6 @@ public class XdsTestServiceManager extends CommonService {
 
 	/**
 	 * Wrapper to TestRunner#run
-	 * Uses a built-in server-side session called mySession
-	 * @param environmentName
-	 * @param testSession
-	 * @param siteSpec
-	 * @param tpName
-	 * @param testSection
-	 * @param params
-	 * @param persistResult
-	 * @return
-	 */
-	static public List<Result> runTestInstance(String environmentName, TestSession testSession, SiteSpec siteSpec, String tpName, String testSection, Map<String, String> params, boolean persistResult) {
-		Session mySession = new Session(Installation.instance().warHome(), testSession.toString());
-		mySession.setEnvironment(environmentName);
-
-		if (mySession.getTestSession() == null)
-			mySession.setTestSession(testSession);
-		mySession.setSiteSpec(siteSpec);
-		mySession.setTls(false);
-
-		// Site must exist
-		// Example
-		// String tpName = "GetFolders"
-		// TP with SQ to GetFolders
-
-		TestInstance testInstance = new TestInstance(tpName, testSession);
-
-		List<String> sections = new ArrayList<>();
-		sections.add(testSection);
-
-		XdsTestServiceManager xtsm = new XdsTestServiceManager(mySession);
-		List<Result> results =  XdsTestServiceManager.runTestInstance(xtsm, environmentName,testSession,siteSpec,testInstance,sections,params,true, persistResult);
-
-		return results;
-	}
-
-	/**
-	 * Wrapper to TestRunner#run
 	 * Expects an instance of XdsTestServiceManager
 	 * @param xdsTestServiceManager
 	 * @param environment

@@ -2,6 +2,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
+import gov.nist.toolkit.testkitutilities.client.ConfTestPropertyName;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +35,16 @@ public class TestDisplayGroup {
             testDisplay.allowDelete(allowDelete);
             testDisplay.allowRun(allowRun);
             testDisplay.showValidate(allowValidate);
+            // Override Run/Validation option by ConfTest.properties
+            if (testOverview.getConfTestPropertyMap()!=null) {
+               if (testOverview.getConfTestPropertyMap().containsKey(ConfTestPropertyName.RUN_ENTIRE_TEST)) {
+                  String externalStartVal =  testOverview.getConfTestPropertyMap().get(ConfTestPropertyName.RUN_ENTIRE_TEST);
+                  if ("false".equals(externalStartVal)) {
+                     testDisplay.allowRun(false);
+                     testDisplay.allowValidate(false);
+                  }
+               }
+            }
             put(testOverview.getTestInstance(), testDisplay);
         }
         testDisplay.setDiagramDisplay(diagramDisplay);

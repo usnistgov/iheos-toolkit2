@@ -2,8 +2,8 @@
 <!--
 Notes:
 
-ConfTests, the prefix of this configuration file, is the ToolId as defined in ToolLauncher.
-Sort order of the Conformance tool tab is defined by order of Tab elements in this file.
+ConfTests, the prefix of this configuration file, is the ToolId as defined in ToolLauncher. Each Tool gets its own copy of the Tabs.xml configuration file.
+Sort order of the Conformance Tool's Tabs is defined by order of Tab elements in this file.
 
 Tab attributes:
 
@@ -13,7 +13,9 @@ Permanent labels:
 	"Profiles"
 	"Options"
 Temporary labels:
-	At the actor level, this value is for tab organization purposes only. Before this Tab file was introduced, the value of testkit\actorcollections\[tcCode].txt is used as the tab name. To preserve this feature, the actor label is reset to the value that of the text file.
+	At the actor level, this value is for tab organization purposes only. Before this Tab file was introduced,
+	the value of testkit\actorcollections\[tcCode].txt is used as the tab name. To preserve this feature,
+	the actor label is reset to the value that of the text file.
 	See "tabConfig.setLabel(tcd.getCollectionTitle());".
 
 type:
@@ -28,11 +30,19 @@ displayColorCode:
 The RGB hex value for the tab color in the main Conformance Overview Page.
 
 externalStart:
-Vendor initiates first message of test.
+Vendor initiates first message of test. If externalStart is True, two Conformance Test Tool UI elements are different.
+Test Validation method and SUT selection.
+a) In the Test Bar, a Validation icon is used instead of the regular Run button.
+(The Run button is at both the Test Bar level and the Section levels.) In contrast, a Validation icon only appears at the Test Bar.
+Furthermore, no Sections can be run independently.
+But not all actors configured in this configuration file follow this
+attribute strictly because the flexibility of running a Section is needed.
+One example is IIG actor. Hence, usage of externalStart is only a suggestion and for the beginner this may be confusing.
+b) SUT selection is not required when externalStart is True. Either "null" or None will displayed in the SUT Test Context.
 
-ConformanceTestTab Actor tab handler:
+ConformanceTestTab Actor Tab click event handler registrations:
 See ActorSelectionHandler for the Actor tab click event handler.
-testCollectionDefinitionDAOs contains test collections for a given actor.
+	testCollectionDefinitionDAOs contains test collections for a given actor.
 -->
 
 <!--

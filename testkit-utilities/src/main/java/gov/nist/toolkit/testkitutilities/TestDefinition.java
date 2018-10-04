@@ -4,6 +4,7 @@ import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.interactionmodel.server.InteractionSequences;
 import gov.nist.toolkit.interactionmodel.shared.TransactionSequenceNotFoundException;
+import gov.nist.toolkit.testkitutilities.client.ConfTestPropertyName;
 import gov.nist.toolkit.testkitutilities.client.Gather;
 import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
 import gov.nist.toolkit.testkitutilities.client.StepDefinitionDAO;
@@ -11,6 +12,8 @@ import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.io.LinesOfFile;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
+import gov.nist.toolkit.xdsexception.client.TkNotFoundException;
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 
@@ -21,6 +24,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class TestDefinition {
@@ -95,6 +99,22 @@ public class TestDefinition {
 		} catch (Exception e) {}
 		
 		return names;
+	}
+
+	public Map<ConfTestPropertyName,String> getConfTestProperties() throws TkNotFoundException {
+		return getConfTestProperties(null); // No section
+	}
+	public Map<ConfTestPropertyName,String> getConfTestProperties(String sectionName) throws TkNotFoundException {
+	    try {
+	    	File f = getTestDir();
+	    	if (sectionName!=null && !"".equals(sectionName)) {
+	    		f = new File(f, sectionName);
+			}
+			return new ConfTestPropertyLoader(f).load().getMap();
+		} catch (ToolkitRuntimeException tre) {
+	    	// Ignore runtime exception
+			return null;
+		}
 	}
 
 	/**

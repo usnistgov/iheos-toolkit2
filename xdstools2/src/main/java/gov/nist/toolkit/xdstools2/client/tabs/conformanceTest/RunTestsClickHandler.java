@@ -26,11 +26,9 @@ class RunTestsClickHandler implements ClickHandler, TestIterator {
     List<TestInstance> tests = new ArrayList<>();
     private TestsHeaderView testsHeaderView;
     private AbstractOrchestrationButton orchInit;
-    private TestTarget testTarget;
 
-    RunTestsClickHandler(ConformanceTestTab conformanceTestTab, TestTarget testTarget, TestsHeaderView testsHeaderView, AbstractOrchestrationButton orchInit, List<TestInstance> tests) {
+    RunTestsClickHandler(ConformanceTestTab conformanceTestTab, TestsHeaderView testsHeaderView, AbstractOrchestrationButton orchInit, List<TestInstance> tests) {
         this.conformanceTestTab = conformanceTestTab;
-        this.testTarget = testTarget;
         this.testsHeaderView = testsHeaderView;
         this.orchInit = orchInit;
         this.tests.addAll(tests);
@@ -41,7 +39,7 @@ class RunTestsClickHandler implements ClickHandler, TestIterator {
         clickEvent.preventDefault();
         clickEvent.stopPropagation();
 
-        testTarget.getSiteToIssueTestAgainst().setTls(orchInit.isTls());
+        conformanceTestTab.getSiteToIssueTestAgainst().setTls(orchInit.isTls());
 
         if (orchInit.isSaml()) {
             Map<String,String> tkPropMap = ClientUtils.INSTANCE.getTkPropMap();
@@ -59,7 +57,7 @@ class RunTestsClickHandler implements ClickHandler, TestIterator {
             Map<String, String> params = new HashMap<>();
 
             if (orchInit.isXuaOption()) {
-                testTarget.getSiteToIssueTestAgainst().setSaml(true);
+                conformanceTestTab.getSiteToIssueTestAgainst().setSaml(true);
 
                 try {
                     new GetStsSamlAssertionMapCommand() {
@@ -81,8 +79,8 @@ class RunTestsClickHandler implements ClickHandler, TestIterator {
                     new GetStsSamlAssertionCommand() {
                         @Override
                         public void onComplete(String result) {
-                            testTarget.getSiteToIssueTestAgainst().setSaml(true);
-                            testTarget.getSiteToIssueTestAgainst().setStsAssertion(result);
+                            conformanceTestTab.getSiteToIssueTestAgainst().setSaml(true);
+                            conformanceTestTab.getSiteToIssueTestAgainst().setStsAssertion(result);
 
                             onDone(null);
                         }
@@ -94,7 +92,7 @@ class RunTestsClickHandler implements ClickHandler, TestIterator {
             }
         } else {
             // No SAML
-            testTarget.getSiteToIssueTestAgainst().setSaml(false);
+            conformanceTestTab.getSiteToIssueTestAgainst().setSaml(false);
             onDone(null);
         }
 
