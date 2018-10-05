@@ -38,6 +38,7 @@ public class SoapActionFactory {
 		    	 put(pnr_b_action,                                       "urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-bResponse");
 
 				 put("urn:ihe:iti:2018:RestrictedUpdateDocumentSet",      "urn:ihe:iti:2018:RestrictedUpdateDocumentSetResponse");
+				put("urn:ihe:iti:2017:RemoveDocuments",                   "urn:ihe:iti:2017:RemoveDocumentsResponse");
 		    	 put("urn:ihe:iti:2010:UpdateDocumentSet",               "urn:ihe:iti:2010:UpdateDocumentSetResponse");
 				put("urn:ihe:iti:2010:DeleteDocumentSet",               "urn:ihe:iti:2010:DeleteDocumentSetResponse");
 		    	 put(r_b_action,                                         "urn:ihe:iti:2007:RegisterDocumentSet-bResponse");

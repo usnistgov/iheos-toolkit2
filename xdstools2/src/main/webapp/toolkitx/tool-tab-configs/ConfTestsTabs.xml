@@ -59,6 +59,7 @@ The "tabs" element adds extra layer which is not necessary. It can be removed bu
 					<tab label="Required"  type="option" tcCode="" externalStart="false"/>
 					<tab label="Metadata Update Option" type="option" tcCode="mu" externalStart="false"/>
 					<tab label="Restricted Metadata Update Option" type="option" tcCode="rmu" externalStart="false"/>
+					<tab label="RMD Option" type="option" tcCode="rm" externalStart="false"/>
 					<tab label="MPQ Option" type="option" tcCode="mpq" externalStart="false"/>
 					<tab label="On Demand Option" type="option" tcCode="od" externalStart="false"/>
 					<tab label="Integrated Source Repository" type="option" tcCode="isr" externalStart="true"/>
@@ -66,8 +67,7 @@ The "tabs" element adds extra layer which is not necessary. It can be removed bu
 					<tab label="CAT Folder" type="option" tcCode="catfolder" externalStart="false"/>
 					<tab label="CAT Lifecycle" type="option" tcCode="catlifecycle" externalStart="false"/>
 					<!--<tab label="Remote Metadata Update Option" type="option" tcCode="rmu" externalStart="false"/>-->
-					<tab label="RMD Remote Registry Option" type="option" tcCode="rm" externalStart="false"/>
-					<tab label="XAD PID" type="option" tcCode="xadpid" externalStart="false"/>
+					<!--<tab label="XAD PID" type="option" tcCode="xadpid" externalStart="false"/>-->
 				</tabs>
 			</tab>
 			<!--<tab label="RMD" type="profile" tcCode="rmd">-->
@@ -89,8 +89,9 @@ The "tabs" element adds extra layer which is not necessary. It can be removed bu
 			<tab label="XDS" type="profile" tcCode="xds">
 				<tabs label="Options">
 					<tab label="Required"  type="option" tcCode="" externalStart="false"/>
+					<tab label="RMD Option" type="option" tcCode="rd" externalStart="false"/>
 					<tab label="XUA Option" type="option" tcCode="xua" externalStart="false"/>
-					<tab label="Remote Repository Option" type="option" tcCode="rd" externalStart="false"/>
+					<!--<tab label="Remote Repository Option" type="option" tcCode="rd" externalStart="false"/>-->
 				</tabs>
 			</tab>
 			<!--<tab label="RMD" type="profile" tcCode="rmd">-->

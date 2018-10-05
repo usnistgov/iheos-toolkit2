@@ -45,15 +45,15 @@ class MhdClientTransaction extends BasicTransaction {
     void processAssertion(AssertionEngine engine, Assertion a, OMElement assertion_output) throws XdsInternalException {
         errs = new ArrayList <>();
         try {
-            SimReference simReference = getSimReference(a)
+            SimReference simReference = getSimReference(errs, a)
             if (a.hasValidations()) {
                 // the collection of FHIR transactions to search against
                 List<FhirSimulatorTransaction> transactions = new FhirSimulatorTransaction(simReference.simId,simReference.transactionType).get()
-                List<ValidaterResult> passing = new ValidationPluginRunner(logReport).run(new SimDbTransactionInstanceBuilder<FhirSimulatorTransaction>(new SimDb(simReference.simId)), simReference, a, assertion_output, transactions)
+                List<ValidaterResult> passing = new ValidationPluginRunner(logReport).run(new SimDbTransactionInstanceBuilder<FhirSimulatorTransaction>(new SimDb(simReference.simId), errs), simReference, a, assertion_output, transactions)
                 if (passing.isEmpty())
                     errs.add("No Transactions match requirements")
             } else
-                throw new XdsInternalException("MhdClientTransaction: Unknown Assertion clause with not Assert statements");
+                throw new XdsInternalException("MhdClientTransaction: Unknown Assertion clause with no Assert statements");
         } catch (XdsInternalException ie) {
             errs.add(ie.getMessage());
         }

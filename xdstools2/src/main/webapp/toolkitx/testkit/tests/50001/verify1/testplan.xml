@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>50001/verify1</Test>
+  <TestStep id="retrieve">
+    <ExpectedStatus>Failure</ExpectedStatus>
+    <RetrieveTransaction>
+      <UseReport reportName="repuid" section="query" step="by_uid" useAs="$repuid$"/>
+      <UseReport reportName="Document01_uid" section="submit" step="submit" useAs="$docuid1$"/>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+    </RetrieveTransaction>
+  </TestStep>
+</TestPlan>

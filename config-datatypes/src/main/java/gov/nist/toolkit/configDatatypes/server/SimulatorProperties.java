@@ -21,6 +21,7 @@ public class SimulatorProperties {
     public static final String                 UPDATE_METADATA_OPTION = "Update_Metadata_Option";
     public static final String RESTRICTED_UPDATE_METADATA_OPTION = "Restricted_Update_Metadata_Option";
     public static final String REMOVE_METADATA = "Remove_Metadata";
+    public static final String REMOVE_DOCUMENTS = "Remove_Documents_Option";
 
     /**
      * String property identifying port number for V2 Patient Identity Feed on the Registry Simulator.
@@ -145,13 +146,17 @@ public class SimulatorProperties {
      */
     public static final String                         removeMetadataEndpoint = "Remove_metadata_endpoint";
 
+    public static final String                         removeDocumentsEndpoint = "Remove_documents_endpoint";
+
     /**
      * Profile RMD: ITI-62
      * Endpoint to use to send the indicated transaction to this Simulator.
      * Updates to this property are ignored.
      */
     public static final String                      removeMetadataTlsEndpoint = "Remove_metadata_TLS_endpoint";
-    
+
+    public static final String                         removeDocumentsTlsEndpoint = "Remove_documents_TLS_endpoint";
+
     /**
      * Endpoint to use to send the indicated transaction to this Simulator.
      * Updates to this property are ignored.

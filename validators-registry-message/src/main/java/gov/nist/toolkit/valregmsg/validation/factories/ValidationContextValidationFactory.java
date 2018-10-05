@@ -148,6 +148,16 @@ public class ValidationContextValidationFactory {
                 return mvc;
             }
         }
+        else if (vc.isRD) {
+            if (vc.isRequest) {
+                // no further validation required
+                return mvc;
+            } else {
+                CommonMessageValidatorFactory.validateToplevelElement(erBuilder, mvc, "RegistryResponse", rootElementName);
+                mvc.addMessageValidator("RegistryResponse", new RegistryResponseValidator(vc, xml), erBuilder.buildNewErrorRecorder());
+                return mvc;
+            }
+        }
         else {
             ValUtil.reportError(erBuilder, mvc, "ValidationContext", "Don't know how to parse this: " + vc.toString());
             return mvc;

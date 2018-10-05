@@ -1,4 +1,4 @@
-ITI-62: Remove FD:HM:DE Objects
+ITI-62: Remove Folder and DocumentEntry
 
 Test a Document Registry's ability to remove a SubmissionSet containing a single DocumentEntry added to a Folder.
 

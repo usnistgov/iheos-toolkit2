@@ -38,6 +38,7 @@ public enum TransactionType implements Serializable, IsSerializable {
 //    FHIR("FHIR", "FHIR", "fhir", "fhir", "fhir.as", true, "fhir", "fhir", true, SimulatorProperties.fhirEndpoint, SimulatorProperties.fhirTlsEndpoint, true),
     XAD_PID("ITI-43", "XAD-PID", "xadpid", "xadpid", "xadpid", false, "", "", false, null, null),
     REMOVE_METADATA("ITI-62", "Remove Metadata", "rm", "rm.b", "rm.b.as", false, "urn:ihe:iti:2010:DeleteDocumentSet", "urn:ihe:iti:2010:DeleteDocumentSetResponse", false, SimulatorProperties.removeMetadataEndpoint, SimulatorProperties.removeMetadataTlsEndpoint),
+    REMOVE_DOCUMENTS("ITI-86", "Remove Documents", "rd", "rd.b", "rd.b.as", false, "urn:ihe:iti:2017:RemoveDocuments", "urn:ihe:iti:2017:RemoveDocumentsResponse", false, SimulatorProperties.removeDocumentsEndpoint, SimulatorProperties.removeDocumentsTlsEndpoint),
 	//    ANY("ANY", "ANY", "any", "any", "any.as", false, "any", "any", false, null, null, false),
     FHIR("FHIR", "FHIR", "fhir", "fhir", "fhir.as", true, "fhir", "fhir", true, SimulatorProperties.fhirEndpoint, SimulatorProperties.fhirTlsEndpoint, true, FhirVerb.NONE),
     PROV_DOC_BUNDLE("ITI-65", "Provide Document Bundle", "pdb", "pdb", "pdb.as", false, "fhir", "fhir", false, SimulatorProperties.pdbEndpoint, SimulatorProperties.pdbTlsEndpoint, true, FhirVerb.TRANSACTION),

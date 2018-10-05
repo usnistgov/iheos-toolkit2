@@ -1,4 +1,4 @@
-ITI-62: Remove DE0:XFRM_RPLC:DE1 DE1:APND:DE2 Branch Objects
+ITI-62: Remove DocumentEntry with XFR<_RPLC and APND
 
 Test a Document Registry's ability to restrict the removal of a DocumentEntry object used to transform and replace an original DocumentEntry object. In this test, the replacement DocumentEntry object is subsequently appended. 
 

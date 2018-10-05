@@ -1,4 +1,4 @@
-ITI-62: Remove DE0:APND:DE1 Objects
+ITI-62: Remove DocumentEntry and APND
 
 Test a Document Registry's ability to restrict the removal of an APND Association and the SubmissionSet containing the appended DocumentEntry while referenced.
 

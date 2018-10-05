@@ -101,5 +101,9 @@ public class RepIndex implements Serializable {
 		return stats;
 	}
 
+	public void delete(String uid) {
+		dc.delete(uid);
+	}
+
 
 }

@@ -1,4 +1,4 @@
-ITI-62: Remove DE Object
+ITI-62: Remove Objects from submission - DocumentEntry
 
 Test a Document Registry's ability to remove a SubmissionSet containing a single DocumentEntry.
 

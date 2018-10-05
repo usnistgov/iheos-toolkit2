@@ -1,6 +1,7 @@
 package gov.nist.toolkit.fhir.simulators.sim.rep;
 
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymsg.registry.Response;
@@ -24,8 +25,10 @@ import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.namespace.QName;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class RepositoryActorSimulator extends BaseDsActorSimulator {
@@ -35,6 +38,7 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 //	SimDb db;
 	String repositoryUniqueId;
 	private boolean forward = true;
+	private boolean rd_enabled = false;
 
 	static List<TransactionType> transactions = new ArrayList<>();
 
@@ -71,6 +75,8 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 		SimulatorConfigElement configEle = getSimulatorConfig().get("repositoryUniqueId");
 		if (configEle != null)   // happens when used to implement a Document Recipient
 			this.repositoryUniqueId = configEle.asString();
+		configEle = getSimulatorConfig().get(SimulatorProperties.REMOVE_DOCUMENTS);
+		rd_enabled = (configEle != null) ?  configEle.asBoolean() : false;
 	}
 
     @Override
@@ -152,6 +158,72 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 			}
 
 			RetrieveDocumentResponseSim dms = new RetrieveDocumentResponseSim(common.vc, docUids, common, dsSimCommon, repositoryUniqueId);
+			mvc.addMessageValidator("Generate DocumentResponse", dms, gerb.buildNewErrorRecorder());
+
+			mvc.run();
+
+			// generate special retrieve response message
+			Response resp = dms.getResponse();
+			// add in any errors collected
+			try {
+				RegistryErrorListGenerator relg = dsSimCommon.getRegistryErrorList();
+				resp.add(relg, null);
+			} catch (Exception e) {}
+
+			// wrap in soap wrapper and http wrapper
+			// auto-detects need for multipart/MTOM
+			mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, dsSimCommon, dms), gerb.buildNewErrorRecorder());
+
+			mvc.run();
+
+
+
+			return true;
+		}
+		else if (transactionType.equals(TransactionType.REMOVE_DOCUMENTS)) {
+			if (!rd_enabled) {
+				dsSimCommon.sendFault("RMD not enabled on this actor ", null);
+				return false;
+			}
+
+			common.vc.isRD = true;
+			common.vc.xds_b = true;
+			common.vc.isRequest = true;
+			common.vc.hasHttp = true;
+			common.vc.hasSoap = true;
+
+			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
+				return false;
+
+			if (mvc.hasErrors()) {
+				dsSimCommon.sendErrorsInRegistryResponse(er);
+				return false;
+			}
+
+			SoapMessageValidator smv = (SoapMessageValidator) dsSimCommon.getMessageValidatorIfAvailable(SoapMessageValidator.class);
+			if (smv == null) {
+				er.err(Code.XDSRepositoryError, "Internal Error: cannot find SoapMessageValidator.class", "RepositoryActorSimulator.java", null);
+				return false;
+			}
+			OMElement removeRequest = smv.getMessageBody();
+
+			List<RepIdUidPair> pairs = new ArrayList<>();
+			for (OMElement requestEle : XmlUtil.decendentsWithLocalName(removeRequest, "DocumentRequest")) {
+				String uid = null;
+				String repUid = null;
+				Iterator it = requestEle.getChildElements();
+				while ( it.hasNext()) {
+					OMElement ele = (OMElement) it.next();
+					if ("RepositoryUniqueId".equals(ele.getLocalName()))
+						repUid = ele.getText();
+					else if ("DocumentUniqueId".equals(ele.getLocalName()))
+						uid = ele.getText();
+				}
+				RepIdUidPair pair = new RepIdUidPair(repUid, uid);
+				pairs.add(pair);
+			}
+
+			RemoveDocumentResponseSim dms = new RemoveDocumentResponseSim(common.vc, pairs, common, dsSimCommon, repositoryUniqueId);
 			mvc.addMessageValidator("Generate DocumentResponse", dms, gerb.buildNewErrorRecorder());
 
 			mvc.run();

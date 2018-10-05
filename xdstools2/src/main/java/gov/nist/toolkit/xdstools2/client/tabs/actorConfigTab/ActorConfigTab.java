@@ -348,6 +348,7 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
 					|| ActorType.COMBINED_INITIATING_GATEWAY.equals(actorType)
 					|| ActorType.COMBINED_RESPONDING_GATEWAY.equals(actorType)
 					|| ActorType.OD_RESPONDING_GATEWAY.equals(actorType)
+					|| ActorType.FIXED_REPLY.equals(actorType)
 					|| ActorType.FHIR_SERVER.equals(actorType) // MHD combines both the FHIR Server and the PDB extension so the basic FHIR (base address) will be made available as part of MHD(displayed in the UI, see the label change below, as FHIR Server).
 					|| (!site.isSimulator() && ActorType.ONDEMAND_DOCUMENT_SOURCE.equals(actorType)))
 				continue;

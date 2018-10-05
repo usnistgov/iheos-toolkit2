@@ -1,4 +1,4 @@
-ITI-62: Remove FD Object
+ITI-62: Remove Objects from submission - Folder
 
 Test a Document Registry's ability to remove a SubmissionSet containing a single empty Folder.
 
