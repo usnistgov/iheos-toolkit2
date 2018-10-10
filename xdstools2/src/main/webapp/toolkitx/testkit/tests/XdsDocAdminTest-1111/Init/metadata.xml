@@ -158,11 +158,14 @@
                     </ValueList>
                 </Slot>
             </Classification>
+            <!--
+            Confidentiality Code "U" means "Unrestriced"
+            -->
             <Classification classificationScheme="urn:uuid:f4f85eac-e6cb-4883-b524-f2705394840f"
-                            classifiedObject="Document01" nodeRepresentation="R"
+                            classifiedObject="Document01" nodeRepresentation="U"
                             xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
                 <Name xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-                    <LocalizedString value="Restricted"
+                    <LocalizedString value="Unrestricted"
                                      xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
                 </Name>
                 <Slot name="codingScheme" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">

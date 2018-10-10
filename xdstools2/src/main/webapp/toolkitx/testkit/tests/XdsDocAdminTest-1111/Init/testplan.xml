@@ -4,9 +4,20 @@
     <TestStep id="init">
         <ExpectedStatus>Success</ExpectedStatus>
         <RegisterTransaction>
+            <AssignUuids/>
             <NoPatientId/>
             <XDSb/>
             <MetadataFile>metadata.xml</MetadataFile>
+            <!-- In the original document metadata, LID is same as ID. -->
+            <Report name="lid" section="InputMetadata">
+                //*[local-name()='ExtrinsicObject']/@id
+            </Report>
+            <Report name="objectType" section="InputMetadata">
+                //*[local-name()='ExtrinsicObject']/@objectType
+            </Report>
+            <Report name="docUniqueId" section="InputMetadata">
+                //*[local-name()='ExtrinsicObject']/*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab']/@value
+            </Report>
         </RegisterTransaction>
     </TestStep>
 </TestPlan>
