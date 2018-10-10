@@ -1,3 +1,8 @@
 Append and Transform Document Entry
 
-Send a Document Entry to a Document Repository. Append a Document Entry. Transform replace Document Entry.
+SubmitSingleDoc looks for a single Document Entry submission.
+
+SubmitApnd looks for a valid APND operation.
+
+SubmitXfrmRplc looks for a XFRM_RPLC of an APND.
+
