@@ -94,7 +94,7 @@ public class Assertion {
 
 				String validaterClassName = valEle.getLocalName();
 
-				AssertionContext.Context context = AssertionContext.get(pluginType, toolkitEnvironment.getEnvironment(), toolkitEnvironment.getTestSession());
+				Context context = AssertionContext.get(pluginType, toolkitEnvironment.getEnvironment(), toolkitEnvironment.getTestSession());
 
 				Map<String, String> params = new HashMap<>();
 				for (Iterator ita = valEle.getAllAttributes(); ita.hasNext() ; ) {

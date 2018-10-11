@@ -241,6 +241,12 @@ public class SimulatorProperties {
     public static final String                       codesEnvironment = "Codes_Environment";
 
     /**
+     * Class name of custom plugin to validate metadata on Register transaction
+     */
+
+    public static final String                      metadataValidatorClass = "Register_Metadata_Validator_Class_Name";
+
+    /**
      * Boolean property controlling whether a Registry Simulator should support the Extra Metadata option.
      */
     public static final String                 extraMetadataSupported = "Extra_Metadata_Supported";

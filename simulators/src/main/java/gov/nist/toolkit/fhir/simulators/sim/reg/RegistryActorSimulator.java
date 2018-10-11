@@ -20,7 +20,6 @@ import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.fhir.simulators.support.BaseDsActorSimulator;
 import gov.nist.toolkit.fhir.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simcommon.server.SimCommon;
-import gov.nist.toolkit.valregmetadata.top.NullCustomMetadataValidator;
 import gov.nist.toolkit.valregmsg.message.MetadataContainer;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
@@ -53,6 +52,10 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 	}
 
 	public RegistryActorSimulator() {}
+
+	private String getMetadataValidatorName() {
+		return getSimulatorConfig().get(SimulatorProperties.metadataValidatorClass).asString();
+	}
 
 	private boolean isMetadataLimited() {
 		SimulatorConfigElement sce = getSimulatorConfig().get(SimulatorProperties.METADATA_LIMITED);
@@ -169,10 +172,16 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 			RegRSim rsim = new RegRSim(common, dsSimCommon, getSimulatorConfig());
 
 
-			// Insert placeholder NULL custom validator
-			rsim.setCustomMetadataValidator(new NullCustomMetadataValidator(
-					getMetadata(mvc),
-					dsSimCommon.simCommon.vc, null));
+			if (getMetadataValidatorName() != null) {
+				// Insert placeholder NULL custom validator
+				rsim.setCustomMetadataValidator(new CustomMetadataValidator(
+						getMetadataValidatorName(),
+						getMetadata(mvc),
+						dsSimCommon.simCommon.vc,
+						null,
+						getSimulatorConfig().get(SimulatorProperties.environment).asString(),
+						dsSimCommon.simCommon.db.getTestSession()));
+			}
 
 
 			mvc.addMessageValidator("Register Transaction", rsim, er);
