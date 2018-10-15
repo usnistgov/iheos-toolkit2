@@ -284,6 +284,7 @@ public interface ToolkitServiceAsync {
 
     void buildDocAdminTestOrchestration(BuildDocAdminTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
     void buildSrcTestOrchestration(BuildSrcTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+    void buildIsrTestOrchestration(BuildIsrTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 
     void buildFhirSupportOrchestration(FhirSupportOrchestrationRequest var1, AsyncCallback<RawResponse> callback);
 

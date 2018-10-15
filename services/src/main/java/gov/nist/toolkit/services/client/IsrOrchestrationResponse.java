@@ -4,7 +4,7 @@ package gov.nist.toolkit.services.client;
 /**
  *
  */
-public class DocAdminOrchestrationResponse extends OrchestratedRegSiteResponse {
+public class IsrOrchestrationResponse extends OrchestratedRegSiteResponse {
 
     @Override
     public boolean isExternalStart() {

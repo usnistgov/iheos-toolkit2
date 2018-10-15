@@ -118,7 +118,20 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 		}
 
 		@Override
+		public void onMenuLoadBegin() {
+			mainView.showLoadingMessage("Loading...");
+		}
+
+		@Override
+		public void onMenuLoadEnd() {
+			mainView.clearLoadingMessage();
+		}
+
+		@Override
 		void updateTestStatistics(Map<ActorOptionConfig, List<TestInstance>> testsPerActorOption, Map<TestInstance, TestOverviewDTO> testOverviewDTOs, TestStatistics testStatistics, ActorOptionConfig actorOption) {
+			if (actorOption.equals(getLastVisibleAoc())) {
+			 onMenuLoadEnd();
+			}
 			Collection<TestOverviewDTO> items = testOverviews(testsPerActorOption, testOverviewDTOs, actorOption);
 			resetStatistics(testStatistics,items.size());
 			for (TestOverviewDTO testOverview : items) {
@@ -205,7 +218,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 				currentActorOption.setActorTypeId(null);
 				currentActorOption.setProfileId(null);
 				currentActorOption.setOptionId(null);
-
+				conformanceToolMenu.onMenuLoadBegin();
 				conformanceToolMenu.displayMenu(mainView.getTestsPanel());
 			}
 		});
@@ -419,7 +432,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 	}
 
 	protected void setCurrentActorTabConfig(String newActorTypeId) {
-		for (TabConfig tabConfig : conformanceToolMenu.getTabConfig().getChildTabConfigs()) {
+		for (TabConfig tabConfig : conformanceToolMenu.getTabConfigRoot().getChildTabConfigs()) {
 			if (tabConfig.getTcCode().equals(newActorTypeId)) {
 				currentActorOption.setTabConfig(tabConfig);
 			}
@@ -536,7 +549,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 		getMainView().getTestsPanel().clear();
 		mainView.getProfileTabBar().clear();
 		mainView.getOptionsTabBar().clear();
-		mainView.getProfileTabBar().display(conformanceToolMenu.getTabConfig(), "Profiles", newActorTypeId);
+		mainView.getProfileTabBar().display(conformanceToolMenu.getTabConfigRoot(), "Profiles", newActorTypeId);
 		selectProfileTab();
 		GWT.log("actor was refreshed.");
 	}
@@ -594,12 +607,15 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 
 	// load tab bar with actor types
 	private void loadTestCollections() {
+		if (currentActorOption==null || currentActorOption.getActorTypeId()==null) {
+			conformanceToolMenu.onMenuLoadBegin();
+		}
 			new GetPrunedTabConfigCommand() {
 				@Override
 				public void onComplete(UserTestCollection userTestCollection) {
 //					GWT.log("In loadTestCollections.");
 					testCollectionDefinitionDAOs = userTestCollection.getTestCollectionDefinitionDAOs();
-					conformanceToolMenu.setTabConfig(userTestCollection.getTabConfig());
+					conformanceToolMenu.setTabConfigRoot(userTestCollection.getTabConfig());
 					// Initial load of tests in a test session
 					displayActors();
 
@@ -826,8 +842,13 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 			}
 			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
 			initializationPanel.add(orchInit.panel());
-		}
-		else if (currentActorOption.isFhirSupport()) {
+		} else if (currentActorOption.isIsr()) {
+			if (currentActorOption.isXds())  {
+				orchInit = new BuildIsrTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label, currentActorOption);
+				orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
+				initializationPanel.add(orchInit.panel());
+			}
+		} else if (currentActorOption.isFhirSupport()) {
 			orchInit = new BuildFhirSupportOrchestrationButton(this, testContext, testContextView, initializationPanel, label, currentActorOption);
 			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
 			initializationPanel.add(orchInit.panel());
@@ -839,8 +860,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 	}
 
 	private void displayActorsTabBar(TabBar actorTabBar) {
-		if (actorTabBar.getTabCount() == 0 && conformanceToolMenu.getTabConfig()!=null) {
-			for (TabConfig tabConfig : conformanceToolMenu.getTabConfig().getChildTabConfigs()) {
+		if (actorTabBar.getTabCount() == 0 && conformanceToolMenu.getTabConfigRoot()!=null) {
+			for (TabConfig tabConfig : conformanceToolMenu.getTabConfigRoot().getChildTabConfigs()) {
 				if (tabConfig.isVisible()) {
 					actorTabBar.addTab(tabConfig.getLabel());
 				}

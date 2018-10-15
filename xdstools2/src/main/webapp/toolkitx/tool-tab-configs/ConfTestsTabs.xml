@@ -13,7 +13,7 @@ Permanent labels:
 	"Profiles"
 	"Options"
 Temporary labels:
-	At the actor level, this value is for tab organization purposes only. Before this Tab file was introduced,
+	At the actor level, the Tab Label attribute value is for tab organization purposes only. Before this Tab file was introduced,
 	the value of testkit\actorcollections\[tcCode].txt is used as the tab name. To preserve this feature,
 	the actor label is reset to the value that of the text file.
 	See "tabConfig.setLabel(tcd.getCollectionTitle());".
@@ -22,7 +22,13 @@ type:
 Defines the tab type and correlates to a permanent label.
 
 tcCode:
-tcCode is the TestCollectionCode that is made up of three parts actor(profile)_option.
+tcCode is a TestCollectionCode that is an ordered list specified as: actor(profile)_option.
+	Collections.txt naming convention:
+	Actor is required.
+	However, both the Profile and the Option are optional elements. If any of the optional elements are specified, such as Profile or Option, they need to be annotated with a parenthesis or an underscore, respectively.
+	An easy way to remember the order of the elements is the natural Conformance Tool UI Tab selection order: first Actor, second Profile, last Option.
+	See this page for more details: https://github.com/usnistgov/iheos-toolkit2/wiki/Test-collections-and-Conformance-tool-tabs
+Only the element that is relevant to the Tab level needs to be provided in the tcCode attribute value. Only the value, without any parenthesis or underscore, is used in tcCode.
 The collections.txt file indexes tests to the tab that matches the test collection code.
 You must have a matching entry in IheItiProfile enum class and OptionType enum class.
 
@@ -110,6 +116,16 @@ The "tabs" element adds extra layer which is not necessary. It can be removed bu
 				</tabs>
 			</tab>
 			<tab label="MHD" type="profile" tcCode="mhd">
+				<tabs label="Options">
+					<tab label="Required" type="option" tcCode="" externalStart="true"/>
+				</tabs>
+			</tab>
+		</tabs>
+	</tab>
+
+	<tab label="Integrated Source Repository" type="actor" tcCode="isr" displayColorCode="#D0E4F6">
+		<tabs label="Profiles">
+			<tab label="XDS" type="profile" tcCode="xds">
 				<tabs label="Options">
 					<tab label="Required" type="option" tcCode="" externalStart="true"/>
 				</tabs>
@@ -232,6 +248,8 @@ The "tabs" element adds extra layer which is not necessary. It can be removed bu
 			</tab>
 		</tabs>
 	</tab>
+
+
 
 </tabs>
 

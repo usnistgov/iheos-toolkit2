@@ -26,7 +26,7 @@ class UserDefinedTabBar extends TabBar  {
     void display(TabConfig tabConfig, String targetTabGroupType, String parentTabCode) {
 
         for (TabConfig child : tabConfig.getChildTabConfigs()) {
-           if (parentTabCode.equals(child.getTcCode()))  {
+           if (parentTabCode.equals(child.getTcCode()) && child.hasChildren())  {
               TabConfig subTabConfig = child.getFirstChildTabConfig();
               if (targetTabGroupType.equals(subTabConfig.getLabel())) {
                  for (TabConfig targetTab : subTabConfig.getChildTabConfigs())  {

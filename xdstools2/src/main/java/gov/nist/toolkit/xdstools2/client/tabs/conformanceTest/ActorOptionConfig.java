@@ -44,6 +44,38 @@ public class ActorOptionConfig extends ActorOption {
         this.profileId = profileId;
     }
 
+    public ActorOptionConfig(TabConfig actorTabConfig) {
+        TabConfig lastVisibleProfileTabConfig = null;
+        TabConfig lastVisibleOptionTabConfig = null;
+        if (actorTabConfig!=null && actorTabConfig.hasChildren() ) {
+            TabConfig profiles = actorTabConfig.getFirstChildTabConfig();
+            if ("Profiles".equals(profiles.getLabel())) {
+                for (TabConfig tc : profiles.getChildTabConfigs()) {
+                    if (!tc.isVisible()) {
+                        continue;
+                    }
+                    lastVisibleProfileTabConfig = tc;
+                }
+            }
+        }
+        if (lastVisibleProfileTabConfig!=null && lastVisibleProfileTabConfig.hasChildren()) {
+            TabConfig options = lastVisibleProfileTabConfig.getFirstChildTabConfig();
+            if ("Options".equals(options.getLabel())) {
+                for (TabConfig tc : options.getChildTabConfigs()) {
+                    if (!tc.isVisible()) {
+                        continue;
+                    }
+                    lastVisibleOptionTabConfig = tc;
+                }
+            }
+        }
+        if (lastVisibleOptionTabConfig!=null) {
+            this.actorTypeId = actorTabConfig.getTcCode();
+            this.profileId = IheItiProfile.find(lastVisibleProfileTabConfig.getTcCode());
+            this.optionId = lastVisibleOptionTabConfig.getTcCode();
+        }
+    }
+
     /**
      * Tests for options are listed in collections as
      * actor
@@ -76,6 +108,10 @@ public class ActorOptionConfig extends ActorOption {
 
     public boolean isSrc() {
         return actorTypeId != null && ActorType.DOC_SOURCE.getActorCode().equals(actorTypeId);
+    }
+
+    public boolean isIsr() {
+       return actorTypeId != null && ActorType.ISR.getActorCode().equals(actorTypeId);
     }
 
     public boolean isXds() {

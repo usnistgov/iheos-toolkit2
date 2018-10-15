@@ -60,7 +60,7 @@ class DocAdminOrchestrationBuilder extends AbstractOrchestrationBuilder {
             boolean forceNewPatientIds = !request.isUseExistingState()
 
             simId = new SimId(request.testSession, supportIdName, ActorType.REGISTRY.name, request.environmentName)
-            OrchestrationProperties orchProps = new OrchestrationProperties(session, request.testSession, ActorType.REGISTRY, pidNameMap.keySet(), forceNewPatientIds)
+            OrchestrationProperties orchProps = new OrchestrationProperties(session, request.testSession, ActorType.DOC_ADMIN, pidNameMap.keySet(), forceNewPatientIds)
 
             if (!request.useExistingState) {
                 api.deleteSimulatorIfItExists(simId)

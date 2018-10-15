@@ -671,6 +671,14 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return new OrchestrationManager().buildSrcTestEnvironment(s, request.getSrcOrchestrationRequest());
     }
 
+    @Override
+    public RawResponse buildIsrTestOrchestration(BuildIsrTestOrchestrationRequest request) throws Exception {
+        installCommandContext(request);
+        Session s = getSession();
+        if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+        return new OrchestrationManager().buildIsrTestEnvironment(s, request.getIsrOrchestrationRequest());
+    }
+
 
     @Override
     public RawResponse buildFhirSupportOrchestration(FhirSupportOrchestrationRequest request) throws Exception {
