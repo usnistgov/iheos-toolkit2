@@ -1,5 +1,5 @@
 <TestPlan>
-    <Test>XdsIsrSubmissionTest-1111/SubmitSingleDoc</Test>
+    <Test>XdsIsrSubmissionTest-1112/SubmitSingleDoc</Test>
     <TestStep id="validate">
         <ExpectedStatus>Success</ExpectedStatus>
         <NullTransaction>

@@ -1,13 +1,13 @@
 <TestPlan>
-    <Test>XdsIsrSubmissionTest-1111/SubmitSingleDoc</Test>
+    <Test>XdsIsrSubmissionTest-1112/SubmitXfrmRplc</Test>
     <TestStep id="validate">
         <ExpectedStatus>Success</ExpectedStatus>
         <NullTransaction>
             <Assertions>
-                <Assert id="ssCheck">
+                <Assert id="replaceCheck">
                     <SimReference id="isr_support" actorType="reg" transaction="rb"/> <!-- This sim is created by the conformance actor's orchestration -->
                     <Validations type="SOAP">
-			            <ExpectedContentsValidater requestMsgExpectedContent="SSwithOneDocOnly" responseMsgExpectedContent="RegistryResponseIsValid" />
+			            <ExpectedContentsValidater requestMsgExpectedContent="HasXFRM_RPLC" responseMsgExpectedContent="RegistryResponseIsValid"/>
 		            </Validations>
                 </Assert>
             </Assertions>

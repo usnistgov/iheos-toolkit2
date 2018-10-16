@@ -1,14 +1,14 @@
 <TestPlan>
-    <Test>XdsIsrSubmissionTest-1111/SubmitSingleDoc</Test>
+    <Test>XdsIsrSubmissionTest-1113/SubmitFolderwDoc</Test>
     <TestStep id="validate">
         <ExpectedStatus>Success</ExpectedStatus>
         <NullTransaction>
             <Assertions>
-                <Assert id="ssCheck">
+                <Assert id="folderwDocCheck">
                     <SimReference id="isr_support" actorType="reg" transaction="rb"/> <!-- This sim is created by the conformance actor's orchestration -->
                     <Validations type="SOAP">
-			            <ExpectedContentsValidater requestMsgExpectedContent="SSwithOneDocOnly" responseMsgExpectedContent="RegistryResponseIsValid" />
-		            </Validations>
+			            <ExpectedContentsValidater filterDescription="SubmissionSet should have 1 Folder, 1 Document Entry, and Assoc. count should be 4." requestMsgExpectedContent="SSwithOneDocOneFol" responseMsgExpectedContent="RegistryResponseIsValid" />
+                    </Validations>
                 </Assert>
             </Assertions>
         </NullTransaction>
