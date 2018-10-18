@@ -111,14 +111,17 @@ public class ToolkitApi {
      * @throws ThreadPoolExhaustedException if simulator needs to launch a socket listener and no ports are left in the configuration
      * @throws Exception - if simulator of that id already exists
      */
-    public Simulator createSimulator(ActorType actorType, SimId simId) throws Exception {
+    public Simulator createSimulator(ActorType actorType, SimId simId, String environment) throws Exception {
         simId.setActorType(actorType.getName());
-        Simulator sim = simulatorServiceManager().getNewSimulator(actorType.getName(), simId);
+        Simulator sim = simulatorServiceManager().getNewSimulator(actorType.getName(), simId, environment);
         sim.getConfig(0).getConfigEle(SimulatorProperties.environment).setStringValue(simId.getEnvironmentName());
         return sim;
     }
 
-    public Simulator createSimulator(SimId simId) throws Exception {
+    public Simulator createSimulator(ActorType actorType, SimId simId) throws Exception {
+        return createSimulator(actorType, simId, "default");
+    }
+        public Simulator createSimulator(SimId simId) throws Exception {
         ActorType actorType = ActorType.findActor(simId.getActorType());
         logger.info(String.format("Create sim %s of type %s", simId.toString(), simId.getActorType()));
         if (actorType == null) throw new BadSimConfigException("Simulator type " + simId.getActorType() + " does not exist");

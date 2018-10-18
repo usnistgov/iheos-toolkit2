@@ -24,7 +24,9 @@ public class CustomMetadataValidator extends AbstractCustomMetadataValidator {
 
     @Override
     public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
-        System.out.println("running");
         AbstractServerValidater val = ValidatorLookup.find(validatorClassName, environment, testSession);
+
+        Metadata m = getM();
+        val.doRun(m, er);
     }
 }

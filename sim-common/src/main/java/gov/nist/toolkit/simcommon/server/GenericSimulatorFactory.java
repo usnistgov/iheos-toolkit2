@@ -26,12 +26,12 @@ public class GenericSimulatorFactory extends AbstractActorFactory {
 	}
 
 	// ActorFactory needs to be directly
-	public Simulator buildNewSimulator(SimManager simm, String simtype, SimId simID) throws Exception {
-		return buildNewSimulator(simm, simtype, simID, true);
+	public Simulator buildNewSimulator(SimManager simm, String simtype, SimId simID, String environment) throws Exception {
+		return buildNewSimulator(simm, simtype, simID, environment, true);
 	}
 
 	@Override
-	protected Simulator buildNew(SimManager simm, SimId newID, boolean configureBase) throws Exception {
+	protected Simulator buildNew(SimManager simm, SimId newID, String environment, boolean configureBase) throws Exception {
 		this.newID = newID;
 		return null;
 	}

@@ -22,7 +22,7 @@ class MhdRecipientFactory extends SimProxyFactory {
         String recSimIdName = baseSimId.toString() + '_regrep'
         SimId recSimId = SimIdFactory.simIdBuilder(recSimIdName)
 
-        Simulator regrep = new RepositoryRegistryActorFactory().buildNew(simm, recSimId, true)
+        Simulator regrep = new RepositoryRegistryActorFactory().buildNew(simm, recSimId, config.environmentName, true)
 
         regrep.configs[0].getConfigEle(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED).setBooleanValue(false)
 

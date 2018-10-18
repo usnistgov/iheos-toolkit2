@@ -37,18 +37,18 @@ class SimProxyFactory extends AbstractActorFactory implements IActorFactory{
     SimProxyFactory() {}
 
     @Override
-    protected Simulator buildNew(SimManager simm, SimId simId, boolean configureBase) throws Exception {
+    protected Simulator buildNew(SimManager simm, SimId simId, String environment, boolean configureBase) throws Exception {
         ActorType actorType = getActorType(); //ActorType.SIM_PROXY
         SimulatorConfig config
         if (configureBase)
-            config = configureBaseElements(actorType, simId, simId.testSession)
+            config = configureBaseElements(actorType, simId, simId.testSession, environment)
         else
             config = new SimulatorConfig()
 
         SimId simId2 = new SimId(simId.testSession, simId.id + '_be')   // 'be' for back end
         SimulatorConfig config2
         if (configureBase)
-            config2 = configureBaseElements(actorType, simId2, simId2.testSession)
+            config2 = configureBaseElements(actorType, simId2, simId2.testSession, environment)
         else
             config2 = new SimulatorConfig()
 

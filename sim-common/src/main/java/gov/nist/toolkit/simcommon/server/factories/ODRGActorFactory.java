@@ -36,13 +36,13 @@ public class ODRGActorFactory extends AbstractActorFactory implements IActorFact
       Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE);
 
    @Override
-   protected Simulator buildNew(SimManager simm, @SuppressWarnings("hiding") SimId newID,
+   protected Simulator buildNew(SimManager simm, @SuppressWarnings("hiding") SimId newID, String environment,
                                 boolean configureBase)
            throws Exception {
       this.newID = newID;
       ActorType actorType = ActorType.OD_RESPONDING_GATEWAY;
       SimulatorConfig sc;
-      if (configureBase) sc = configureBaseElements(actorType, newID, newID.getTestSession());
+      if (configureBase) sc = configureBaseElements(actorType, newID, newID.getTestSession(), environment);
       else sc = new SimulatorConfig();
 
       SimId simId = sc.getId();
@@ -70,12 +70,12 @@ public class ODRGActorFactory extends AbstractActorFactory implements IActorFact
       RegistryActorFactory raf = new RegistryActorFactory();
       raf.setTransactionOnly(isTransactionOnly());
       SimulatorConfig registryConfig =
-         raf.buildNew(simm, simId, true).getConfig(0); // was
+         raf.buildNew(simm, simId, environment,true).getConfig(0); // was
                                                                               // false
 
 //      // This needs to be grouped with an ODDS also
       SimulatorConfig oddsConfig =
-         new OnDemandDocumentSourceActorFactory().buildNew(simm, simId, true).getConfig(0); // was
+         new OnDemandDocumentSourceActorFactory().buildNew(simm, simId, environment, true).getConfig(0); // was
                                                                                 // false
       sc.add(registryConfig); // this adds the individual
                               // SimulatorConfigElements to the RG

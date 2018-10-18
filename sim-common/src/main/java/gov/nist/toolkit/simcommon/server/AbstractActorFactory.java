@@ -44,7 +44,7 @@ public abstract class AbstractActorFactory {
 	 *  Abstracts
 	 *
 	 */
-	protected abstract Simulator buildNew(SimManager simm, SimId simId, boolean configureBase) throws Exception;
+	protected abstract Simulator buildNew(SimManager simm, SimId simId, String environment, boolean configureBase) throws Exception;
 	protected abstract void verifyActorConfigurationOptions(SimulatorConfig config) throws Exception;
 	public abstract Site buildActorSite(SimulatorConfig asc, Site site) throws NoSimulatorException;
 	public abstract List<TransactionType> getIncomingTransactions();
@@ -121,14 +121,14 @@ public abstract class AbstractActorFactory {
 		return ActorType.findActor(name);
 	}
 
-	protected SimulatorConfig configureBaseElements(ActorType simType, TestSession testSession) {
-		return configureBaseElements(simType, null, testSession);
+	protected SimulatorConfig configureBaseElements(ActorType simType, TestSession testSession, String environment) {
+		return configureBaseElements(simType, null, testSession, environment);
 	}
 
-	protected SimulatorConfig configureBaseElements(ActorType simType, SimId newId, TestSession testSession) {
+	protected SimulatorConfig configureBaseElements(ActorType simType, SimId newId, TestSession testSession, String environment) {
 		if (newId == null)
 			newId = getNewId(testSession);
-		SimulatorConfig sc = new SimulatorConfig(newId, simType.getShortName(), SimDb.getNewExpiration(SimulatorConfig.class));
+		SimulatorConfig sc = new SimulatorConfig(newId, simType.getShortName(), SimDb.getNewExpiration(SimulatorConfig.class), environment);
 
 		return configureBaseElements(sc);
 	}
@@ -162,7 +162,7 @@ public abstract class AbstractActorFactory {
 		addEditableConfig(sc, SimulatorProperties.locked, ParamType.BOOLEAN, false);
 		addEditableConfig(sc, SimulatorProperties.requiresStsSaml, ParamType.BOOLEAN, false);
         addEditableConfig(sc, SimulatorProperties.FORCE_FAULT, ParamType.BOOLEAN, false);
-		addFixedConfig(sc, SimulatorProperties.environment, ParamType.TEXT, "null");
+		addFixedConfig(sc, SimulatorProperties.environment, ParamType.TEXT, sc.getEnvironmentName());
 
         return sc;
 	}
@@ -173,14 +173,14 @@ public abstract class AbstractActorFactory {
 
 	// Returns list since multiple simulators could be built as a grouping/cluster
 	// only used by SimulatorFactory to offer a generic API for building sims
-	public Simulator buildNewSimulator(SimManager simm, String simtype, SimId simID, boolean save) throws Exception {
+	public Simulator buildNewSimulator(SimManager simm, String simtype, SimId simID, String environment, boolean save) throws Exception {
         logger.info("Build New Simulator " + simtype);
 		ActorType at = ActorType.findActor(simtype);
 
 		if (at == null)
 			throw new NoSimException("Simulator type [" + simtype + "] does not exist");
 
-		return buildNewSimulator(simm, at, simID, save);
+		return buildNewSimulator(simm, at, simID, environment, save);
 
 	}
 
@@ -190,7 +190,7 @@ public abstract class AbstractActorFactory {
 		return actorType;
 	}
 
-	public Simulator buildNewSimulator(SimManager simm, ActorType at, SimId simID, boolean save) throws Exception {
+	public Simulator buildNewSimulator(SimManager simm, ActorType at, SimId simID, String environment, boolean save) throws Exception {
 		logger.info("Build new Simulator of type " + getClass().getSimpleName() + " simID: " + simID);
 
 		// This is the simulator-specific factory
@@ -207,7 +207,7 @@ public abstract class AbstractActorFactory {
         if (simID.getId().contains("__"))
             throw new Exception("Simulator ID cannot contain double underscore (__)");
 
-		Simulator simulator = af.buildNew(simm, simID, true);
+		Simulator simulator = af.buildNew(simm, simID, environment,true);
 
 		if (simulator.size() > 1) {
 			List<String> simIdsInGroup = new ArrayList<>();

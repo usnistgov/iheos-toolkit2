@@ -168,14 +168,13 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 				return false;
 			}
 
-			
 			RegRSim rsim = new RegRSim(common, dsSimCommon, getSimulatorConfig());
 
-
-			if (getMetadataValidatorName() != null) {
+			String metadataValidatorName = getMetadataValidatorName();
+			if (metadataValidatorName != null && !metadataValidatorName.equals("")) {
 				// Insert placeholder NULL custom validator
 				rsim.setCustomMetadataValidator(new CustomMetadataValidator(
-						getMetadataValidatorName(),
+						metadataValidatorName,
 						getMetadata(mvc),
 						dsSimCommon.simCommon.vc,
 						null,
@@ -183,8 +182,15 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 						dsSimCommon.simCommon.db.getTestSession()));
 			}
 
-
 			mvc.addMessageValidator("Register Transaction", rsim, er);
+
+			mvc.run();
+
+			if (mvc.hasErrors()) {
+				if (generateResponse)
+					dsSimCommon.sendErrorsInRegistryResponse(er);
+				return false;
+			}
 
 			registryResponseGenerator = new RegistryResponseGeneratorSim(common, dsSimCommon);
 			mvc.addMessageValidator("Attach Errors", registryResponseGenerator, er);

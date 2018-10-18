@@ -28,7 +28,7 @@ public class SimulatorApi {
         this.session = session;
     }
 
-    public Simulator create(String actorTypeName, SimId simID) throws Exception {
+    public Simulator create(String actorTypeName, SimId simID, String environment) throws Exception {
 //        return new SimulatorServiceManager(session).getNewSimulator(actorTypeName, simID);
         try {
             if (SimDb.exists(simID))
@@ -36,7 +36,7 @@ public class SimulatorApi {
 
             SimManager simMgr = SimCache.getSimManagerForSession(session.id(), true);
 
-            Simulator scl = new GenericSimulatorFactory(simMgr).buildNewSimulator(simMgr, actorTypeName, simID);
+            Simulator scl = new GenericSimulatorFactory(simMgr).buildNewSimulator(simMgr, actorTypeName, simID, environment);
             logger.info("New simulator for session " + session.id() + ": " + actorTypeName + " ==> " + scl.getIds());
             return scl;
         } catch (EnvironmentNotSelectedException e) {
