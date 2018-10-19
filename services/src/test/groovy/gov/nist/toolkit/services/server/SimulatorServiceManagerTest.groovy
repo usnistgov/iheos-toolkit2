@@ -17,6 +17,7 @@ import spock.lang.Specification
 class SimulatorServiceManagerTest extends Specification {
     Session session = new Session(Installation.instance().warHome(), Installation.defaultSessionName())
     SimulatorServiceManager mgr = new SimulatorServiceManager(session)
+    def environment = 'default'
 
     def setupSpec() {
         ExternalCacheManager.initializeFromMarkerFile(new File(this.getClass().getResource('/external_cache/external_cache.txt').file))
@@ -131,7 +132,7 @@ class SimulatorServiceManagerTest extends Specification {
         when:
         SimId simId = SimIdFactory.simIdBuilder('bill__aa')
         mgr.delete(simId)
-        Simulator sim = mgr.getNewSimulator(ActorType.REPOSITORY.name, simId)
+        Simulator sim = mgr.getNewSimulator(ActorType.REPOSITORY.name, simId, environment)
 
         then:
         true
@@ -146,7 +147,7 @@ class SimulatorServiceManagerTest extends Specification {
         when:
         SimId simId = SimIdFactory.simIdBuilder('bill__AA')
         mgr.delete(simId)
-        Simulator sim = mgr.getNewSimulator(ActorType.REPOSITORY.name, simId)
+        Simulator sim = mgr.getNewSimulator(ActorType.REPOSITORY.name, simId, environment)
 
         then:
         sim.ids.size() == 1

@@ -27,6 +27,7 @@ class SimSiteTest extends Specification {
     @Shared String sessionid = 'session'
     @Shared Session session
     @Shared SimulatorServiceManager simMgr
+    def environment = 'default'
 
     def setupSpec() {
         InitEC.init()
@@ -80,7 +81,7 @@ class SimSiteTest extends Specification {
         !simMgr.exists(simId)
 
         when:
-        simMgr.getNewSimulator(ActorType.REPOSITORY.name, simId)
+        simMgr.getNewSimulator(ActorType.REPOSITORY.name, simId, environment)
 
         then:
         simMgr.exists(simId)
@@ -89,10 +90,10 @@ class SimSiteTest extends Specification {
     def 'inherited sim'() {
         when:
         SimId defaultSimId = SimIdFactory.simIdBuilder('default__one')
-        simMgr.getNewSimulator(ActorType.REPOSITORY.name, defaultSimId)
+        simMgr.getNewSimulator(ActorType.REPOSITORY.name, defaultSimId, environment)
 
         SimId fooSimId = SimIdFactory.simIdBuilder('foo__two')
-        simMgr.getNewSimulator(ActorType.REPOSITORY.name, fooSimId)
+        simMgr.getNewSimulator(ActorType.REPOSITORY.name, fooSimId, environment)
 
         then:
         SimDb.getAllSimIds(defaultTestSession) as Set == [defaultSimId] as Set
@@ -102,10 +103,10 @@ class SimSiteTest extends Specification {
     def 'inherited sim and common site'() {
         when:
         SimId defaultSimId = SimIdFactory.simIdBuilder('default__one')
-        simMgr.getNewSimulator(ActorType.REPOSITORY.name, defaultSimId)
+        simMgr.getNewSimulator(ActorType.REPOSITORY.name, defaultSimId, environment)
 
         SimId fooSimId = SimIdFactory.simIdBuilder('foo__two')
-        simMgr.getNewSimulator(ActorType.REPOSITORY.name, fooSimId)
+        simMgr.getNewSimulator(ActorType.REPOSITORY.name, fooSimId, environment)
 
         and:
         addRegistry(defaultTestSession, 'bob')

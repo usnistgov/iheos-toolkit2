@@ -44,7 +44,7 @@ class DirectInsertPatientResourceSpec  extends FhirSpecification {
     def cleanupSpec() {
         SimIndexManager.close()
 
-        //SimDb.fdelete(simId)
+        SimDb.fdelete(simId)
     }
 
     def setup() {

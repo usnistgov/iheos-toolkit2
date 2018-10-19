@@ -87,7 +87,7 @@ class ValidationPluginRunner<T extends TransactionRecord<T>> {
             TransactionInstance ti = transactionInstanceBuilder.build(transaction.simDbEvent.actor, transaction.simDbEvent.eventId, trans)
             String label = ti.toString()
             logReport.addDetailLink(transaction.url, transaction.placeToken, label, result.filter.filterDescription)
-            result.filter.log.eachLine { String line ->
+            result.log.eachLine { String line ->
                 logReport.addDetail('', line)
             }
         }

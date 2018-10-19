@@ -593,6 +593,30 @@ public class SimDb {
 		SimIdFactory.simIdBuilder(rawId)
 	}
 
+	// is this sim valid - does it have the necessary parts
+	static boolean isValid(SimId simId) {
+		File d = getSimDbFile(simId)
+		File f = new File(d, simId.toString())
+		if (! new File(f, 'simId.txt').exists())
+			return false
+		if (! new File(f, 'sim_type.txt').exists())
+			return false
+		if (! new File(f, 'simctl.json').exists())
+			return false
+		return true;
+	}
+
+	static void scanAllSims() {
+		List<TestSession> testSessions = Installation.instance().getTestSessions()
+		testSessions.each { TestSession testSession ->
+			List<SimId> simIds = getAllSimIds(testSession)
+			simIds.each { SimId simId ->
+				if (!isValid(simId))
+					throw new ToolkitRuntimeException("Invalid SIM ${simId} found")
+			}
+		}
+	}
+
 	static List<SimId> getAllSimIds(TestSession testSession) throws BadSimIdException {
 
 		List soapSimIds = getSimDbFile(testSession).listFiles().findAll { File file ->

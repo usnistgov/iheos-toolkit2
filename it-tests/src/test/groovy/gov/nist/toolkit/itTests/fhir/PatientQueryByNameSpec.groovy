@@ -37,6 +37,7 @@ class PatientQueryByNameSpec extends FhirSpecification {
 
     def cleanupSpec() {
         SimIndexManager.close()
+        SimDb.fdelete(simId)
     }
 
     def setup() {

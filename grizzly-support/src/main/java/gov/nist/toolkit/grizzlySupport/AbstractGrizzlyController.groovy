@@ -4,6 +4,7 @@ import gov.nist.toolkit.fhir.server.servlet.FhirServletFilter
 import gov.nist.toolkit.fhir.simulators.servlet.HttpSimServlet
 import gov.nist.toolkit.fhir.server.servlet.RestfulServlet
 import gov.nist.toolkit.fhir.simulators.servlet.SimServlet
+import gov.nist.toolkit.simcommon.server.SimDb
 import groovy.transform.TypeChecked
 import org.apache.log4j.Logger
 import org.glassfish.grizzly.http.server.HttpServer
@@ -76,6 +77,7 @@ abstract public class AbstractGrizzlyController {
     }
 
     AbstractGrizzlyController withSimServlet() {
+        SimDb.scanAllSims()
         final WebappContext tools2 = new WebappContext("xdstools2","")
         final ServletRegistration sims = tools2.addServlet("SimServlet",new SimServlet());
         sims.addMapping('sim/*')
