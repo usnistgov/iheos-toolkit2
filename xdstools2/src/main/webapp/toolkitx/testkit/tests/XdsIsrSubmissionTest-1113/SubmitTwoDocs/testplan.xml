@@ -1,0 +1,16 @@
+<TestPlan>
+    <Test>XdsIsrSubmissionTest-1113/SubmitTwoDocs</Test>
+    <TestStep id="validate">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <NullTransaction>
+            <Assertions>
+                <Assert id="ssCheck">
+                    <SimReference id="isr_support" actorType="reg" transaction="rb"/> <!-- This sim is created by the conformance actor's orchestration -->
+                    <Validations type="SOAP">
+			            <ExpectedContentsValidater requestMsgExpectedContent="SSwithTwoDocOnly" responseMsgExpectedContent="RegistryResponseIsValid" />
+		            </Validations>
+                </Assert>
+            </Assertions>
+        </NullTransaction>
+    </TestStep>
+</TestPlan>

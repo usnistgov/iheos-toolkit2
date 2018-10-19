@@ -162,4 +162,30 @@ public class TabConfig implements Serializable, IsSerializable {
        return dest;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TabConfig tabConfig = (TabConfig) o;
+
+        if (isVisible != tabConfig.isVisible) return false;
+        if (!label.equals(tabConfig.label)) return false;
+        if (!type.equals(tabConfig.type)) return false;
+        if (!tcCode.equals(tabConfig.tcCode)) return false;
+        if (externalStart != null ? !externalStart.equals(tabConfig.externalStart) : tabConfig.externalStart != null)
+            return false;
+        return displayColorCode != null ? displayColorCode.equals(tabConfig.displayColorCode) : tabConfig.displayColorCode == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = label.hashCode();
+        result = 31 * result + type.hashCode();
+        result = 31 * result + tcCode.hashCode();
+        result = 31 * result + (externalStart != null ? externalStart.hashCode() : 0);
+        result = 31 * result + (displayColorCode != null ? displayColorCode.hashCode() : 0);
+        result = 31 * result + (isVisible ? 1 : 0);
+        return result;
+    }
 }

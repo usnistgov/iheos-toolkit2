@@ -7,9 +7,7 @@ import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * This class holds user test collections as configured in Toolkit.properties and Testkit in External Cache.

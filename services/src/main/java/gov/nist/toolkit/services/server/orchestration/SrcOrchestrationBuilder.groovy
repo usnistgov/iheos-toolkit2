@@ -51,8 +51,8 @@ class SrcOrchestrationBuilder extends AbstractOrchestrationBuilder {
 
     RawResponse buildXdsTestEnvironment() {
         try {
-            String supportIdName = 'xdsregrep_support'
-            SimId simId;
+            String supportIdName = "docsrc_support"
+            SimId simId
             SimulatorConfig simConfig
 
             SrcOrchestrationResponse response = new SrcOrchestrationResponse()
@@ -63,7 +63,7 @@ class SrcOrchestrationBuilder extends AbstractOrchestrationBuilder {
             boolean forceNewPatientIds = !request.isUseExistingState()
 
             simId = new SimId(request.testSession, supportIdName, ActorType.REPOSITORY_REGISTRY.name, request.environmentName)
-            OrchestrationProperties orchProps = new OrchestrationProperties(session, request.testSession, ActorType.REPOSITORY_REGISTRY, pidNameMap.keySet(), forceNewPatientIds)
+            OrchestrationProperties orchProps = new OrchestrationProperties(session, request.testSession, ActorType.DOC_SOURCE, pidNameMap.keySet(), forceNewPatientIds)
 
             if (!request.useExistingState) {
                 api.deleteSimulatorIfItExists(simId)

@@ -156,7 +156,21 @@ public class XdsTestServiceManager extends CommonService {
 		return getTestOverview(mesaTestSession, testInstance);
 	}
 
-	static public List<Result> runTestplan(String environment, TestSession testSession, SiteSpec siteSpec, TestInstance testId, List<String> sections, Map<String, String> params, boolean stopOnFirstError, XdsTestServiceManager xdsTestServiceManager, boolean persistResult) {
+	/**
+	 * Wrapper to TestRunner#run
+	 * Expects an instance of XdsTestServiceManager
+	 * @param xdsTestServiceManager
+	 * @param environment
+	 * @param testSession
+	 * @param siteSpec
+	 * @param testId
+	 * @param sections
+	 * @param params
+	 * @param stopOnFirstError
+	 * @param persistResult
+	 * @return
+	 */
+	static public List<Result> runTestInstance(XdsTestServiceManager xdsTestServiceManager, String environment, TestSession testSession, SiteSpec siteSpec, TestInstance testId, List<String> sections, Map<String, String> params, boolean stopOnFirstError, boolean persistResult) {
 
 		List<Result> results; // This wrapper does two important things of interest: 1) Set patient id if it is available in the Params map and 2) Eventually calls the UtilityRunner
 		try {
@@ -228,7 +242,7 @@ public class XdsTestServiceManager extends CommonService {
 		sections.add(query);
 
 		XdsTestServiceManager xtsm = new XdsTestServiceManager(mySession);
-		List<Result> results =  runTestplan(environmentName,testSession,stsSpec,testInstance,sections,params,true, xtsm, persistResult);
+		List<Result> results =  runTestInstance(xtsm, environmentName,testSession,stsSpec,testInstance,sections,params,true, persistResult);
 
 		return results;
 	}

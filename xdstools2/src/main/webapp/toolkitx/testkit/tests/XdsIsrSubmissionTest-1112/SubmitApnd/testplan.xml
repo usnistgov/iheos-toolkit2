@@ -1,0 +1,16 @@
+<TestPlan>
+    <Test>XdsIsrSubmissionTest-1112/SubmitApnd</Test>
+    <TestStep id="validate">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <NullTransaction>
+            <Assertions>
+                <Assert id="appendCheck">
+                    <SimReference id="isr_support" actorType="reg" transaction="rb"/> <!-- This sim is created by the conformance actor's orchestration -->
+                    <Validations type="SOAP">
+                        <ExpectedContentsValidater requestMsgExpectedContent="HasAPND" responseMsgExpectedContent="RegistryResponseIsValid"/>
+                    </Validations>
+                </Assert>
+            </Assertions>
+        </NullTransaction>
+    </TestStep>
+</TestPlan>

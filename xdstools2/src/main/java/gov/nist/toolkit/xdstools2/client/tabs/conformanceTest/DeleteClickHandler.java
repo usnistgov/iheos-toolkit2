@@ -40,7 +40,7 @@ public class DeleteClickHandler implements ClickHandler {
                 InteractionDiagramDisplay diagramDisplay = new InteractionDiagramDisplay(
                         testOverviewDTO,
                         testContext.getTestSession(),
-                        testRunner.getSiteToIssueTestAgainst(),
+                        testRunner.getSiteToIssueTestAgainst(testInstance),
                         siteName,
                         testRunner.getCurrentActorOption(),
                         null);

@@ -22,11 +22,14 @@ import gov.nist.toolkit.interactiondiagram.client.events.DiagramPartClickedEvent
 import gov.nist.toolkit.interactiondiagram.client.widgets.InteractionDiagram;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.services.client.*;
+import gov.nist.toolkit.session.client.logtypes.SectionOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.sort.TestSorter;
+import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testenginelogging.client.QuickScanLogAttribute;
+import gov.nist.toolkit.testkitutilities.client.ConfTestPropertyName;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.xdstools2.client.NotifyOnDelete;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
@@ -51,7 +54,7 @@ import static gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TestContext
 /**
  * All Conformance tests will be run out of here
  */
-public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTarget, Controller, NotifyOnDelete {
+public class ConformanceTestTab extends ToolWindow implements TestRunner, Controller, NotifyOnDelete {
 
 	private TestsHeaderView testsHeaderView = new TestsHeaderView(this);
 	private TestContextView testContextView;
@@ -115,7 +118,20 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 		}
 
 		@Override
+		public void onMenuLoadBegin() {
+			mainView.showLoadingMessage("Loading...");
+		}
+
+		@Override
+		public void onMenuLoadEnd() {
+			mainView.clearLoadingMessage();
+		}
+
+		@Override
 		void updateTestStatistics(Map<ActorOptionConfig, List<TestInstance>> testsPerActorOption, Map<TestInstance, TestOverviewDTO> testOverviewDTOs, TestStatistics testStatistics, ActorOptionConfig actorOption) {
+			if (actorOption.equals(getLastVisibleAoc())) {
+			 onMenuLoadEnd();
+			}
 			Collection<TestOverviewDTO> items = testOverviews(testsPerActorOption, testOverviewDTOs, actorOption);
 			resetStatistics(testStatistics,items.size());
 			for (TestOverviewDTO testOverview : items) {
@@ -202,7 +218,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 				currentActorOption.setActorTypeId(null);
 				currentActorOption.setProfileId(null);
 				currentActorOption.setOptionId(null);
-
+				conformanceToolMenu.onMenuLoadBegin();
 				conformanceToolMenu.displayMenu(mainView.getTestsPanel());
 			}
 		});
@@ -311,6 +327,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 		return false;
 	}
 
+	@Override
 	public void removeTestDetails(TestInstance testInstance) {
 		TestOverviewDTO dto = testOverviewDTOs.get(testInstance);
 		if (dto != null)
@@ -415,7 +432,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 	}
 
 	protected void setCurrentActorTabConfig(String newActorTypeId) {
-		for (TabConfig tabConfig : conformanceToolMenu.getTabConfig().getChildTabConfigs()) {
+		for (TabConfig tabConfig : conformanceToolMenu.getTabConfigRoot().getChildTabConfigs()) {
 			if (tabConfig.getTcCode().equals(newActorTypeId)) {
 				currentActorOption.setTabConfig(tabConfig);
 			}
@@ -532,7 +549,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 		getMainView().getTestsPanel().clear();
 		mainView.getProfileTabBar().clear();
 		mainView.getOptionsTabBar().clear();
-		mainView.getProfileTabBar().display(conformanceToolMenu.getTabConfig(), "Profiles", newActorTypeId);
+		mainView.getProfileTabBar().display(conformanceToolMenu.getTabConfigRoot(), "Profiles", newActorTypeId);
 		selectProfileTab();
 		GWT.log("actor was refreshed.");
 	}
@@ -590,12 +607,15 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 
 	// load tab bar with actor types
 	private void loadTestCollections() {
+		if (currentActorOption==null || currentActorOption.getActorTypeId()==null) {
+			conformanceToolMenu.onMenuLoadBegin();
+		}
 			new GetPrunedTabConfigCommand() {
 				@Override
 				public void onComplete(UserTestCollection userTestCollection) {
 //					GWT.log("In loadTestCollections.");
 					testCollectionDefinitionDAOs = userTestCollection.getTestCollectionDefinitionDAOs();
-					conformanceToolMenu.setTabConfig(userTestCollection.getTabConfig());
+					conformanceToolMenu.setTabConfigRoot(userTestCollection.getTabConfig());
 					// Initial load of tests in a test session
 					displayActors();
 
@@ -688,7 +708,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 		testDisplayGroup.allowRun(allowRun);
 		testDisplayGroup.allowValidate(allowValidate());
 
-		final GetTestsOverviewRequest tor = new GetTestsOverviewRequest(getCommandContext(), testInstances, new QuickScanLogAttribute[]{QuickScanLogAttribute.IS_RUN,QuickScanLogAttribute.IS_PASS,QuickScanLogAttribute.HL7TIME, QuickScanLogAttribute.IS_TLS, QuickScanLogAttribute.SITE, QuickScanLogAttribute.TEST_DEPENDENCIES});
+		final GetTestsOverviewRequest tor = new GetTestsOverviewRequest(getCommandContext(), testInstances, new QuickScanLogAttribute[]{QuickScanLogAttribute.IS_RUN,QuickScanLogAttribute.IS_PASS,QuickScanLogAttribute.HL7TIME, QuickScanLogAttribute.IS_TLS, QuickScanLogAttribute.SITE, QuickScanLogAttribute.TEST_DEPENDENCIES, QuickScanLogAttribute.CONFTEST_PROPERTIES});
 		mainView.showLoadingMessage("Loading...");
         new GetActorTestProgressCommand() {
 			@Override
@@ -729,7 +749,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 						InteractionDiagramDisplay diagramDisplay = new InteractionDiagramDisplay(
 								null,
 								testContext.getTestSession(),
-								getSiteToIssueTestAgainst(),
+								getSiteToIssueTestAgainst(testOverview.getTestInstance()),
 								((testContext.getSiteUnderTestAsSiteSpec() != null) ? testContext.getSiteUnderTestAsSiteSpec().getName() : ""),
 								currentActorOption,
 								getTestInstancePatientId(testOverview.getTestInstance(), parms));
@@ -808,7 +828,13 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
 			initializationPanel.add(orchInit.panel());
 		}
-		else if (currentActorOption.isSrc()) {
+		else if (currentActorOption.isDocAdmin()) {
+			if (currentActorOption.isXds())  {
+			    orchInit = new BuildDocAdminTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label, currentActorOption);
+				orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
+				initializationPanel.add(orchInit.panel());
+			}
+		} else if (currentActorOption.isSrc()) {
 			if (currentActorOption.isMhd()) {
 				orchInit = new BuildSrcMhdTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label, currentActorOption);
 			} else if (currentActorOption.isXds())  {
@@ -816,8 +842,13 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 			}
 			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
 			initializationPanel.add(orchInit.panel());
-		}
-		else if (currentActorOption.isFhirSupport()) {
+		} else if (currentActorOption.isIsr()) {
+			if (currentActorOption.isXds())  {
+				orchInit = new BuildIsrTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label, currentActorOption);
+				orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
+				initializationPanel.add(orchInit.panel());
+			}
+		} else if (currentActorOption.isFhirSupport()) {
 			orchInit = new BuildFhirSupportOrchestrationButton(this, testContext, testContextView, initializationPanel, label, currentActorOption);
 			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
 			initializationPanel.add(orchInit.panel());
@@ -829,8 +860,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 	}
 
 	private void displayActorsTabBar(TabBar actorTabBar) {
-		if (actorTabBar.getTabCount() == 0 && conformanceToolMenu.getTabConfig()!=null) {
-			for (TabConfig tabConfig : conformanceToolMenu.getTabConfig().getChildTabConfigs()) {
+		if (actorTabBar.getTabCount() == 0 && conformanceToolMenu.getTabConfigRoot()!=null) {
+			for (TabConfig tabConfig : conformanceToolMenu.getTabConfigRoot().getChildTabConfigs()) {
 				if (tabConfig.isVisible()) {
 					actorTabBar.addTab(tabConfig.getLabel());
 				}
@@ -840,7 +871,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 
 	@Override
 	public RunTestsClickHandler getRunAllClickHandler() {
-		return new RunTestsClickHandler(this, (TestTarget)this, testsHeaderView, orchInit, testsPerActorOption.get(currentActorOption));
+		return new RunTestsClickHandler(this, testsHeaderView, orchInit, testsPerActorOption.get(currentActorOption));
 	}
 
 
@@ -885,12 +916,12 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 			clickEvent.preventDefault();
 			clickEvent.stopPropagation();
 			List <TestInstance> tests = testsPerActorOption.get(actorOption);
-			for (TestInstance testInstance : tests) {
+			for (final TestInstance testInstance : tests) {
 				new DeleteSingleTestCommand(){
 					@Override
 					public void onComplete(TestOverviewDTO testOverviewDTO) {
 						updateTestOverview(testOverviewDTO);
-						InteractionDiagramDisplay diagramDisplay = new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestName(),actorOption,null);
+						InteractionDiagramDisplay diagramDisplay = new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), getSiteToIssueTestAgainst(testInstance), testContext.getSiteUnderTestName(),actorOption,null);
 						testDisplayGroup.display(testOverviewDTO, diagramDisplay);
 						updateTestsOverviewHeader(testsPerActorOption, testOverviewDTOs, testStatistics, actorOption);
 					}
@@ -920,7 +951,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 			new RunTestCommand(){
 				@Override
 				public void onComplete(TestOverviewDTO testOverviewDTO) {
-					InteractionDiagramDisplay diagramDisplay = new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestName(),currentActorOption,patientId);
+					InteractionDiagramDisplay diagramDisplay = new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), getSiteToIssueTestAgainst(testOverviewDTO.getTestInstance()), testContext.getSiteUnderTestName(),currentActorOption,patientId);
 					// returned testStatus of entire test
 					testDisplayGroup.display(testOverviewDTO, diagramDisplay);
 					Collection<TestOverviewDTO> overviews = updateTestOverview(testOverviewDTO);
@@ -929,15 +960,13 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 					if (sectionDone != null)
 						sectionDone.onDone(sectionInstance);
 				}
-			}.run(new RunTestRequest(getCommandContext(),getSiteToIssueTestAgainst(),sectionInstance,parms,true));
+			}.run(new RunTestRequest(getCommandContext(),getSiteToIssueTestAgainst(sectionInstance),sectionInstance,parms,true));
 		} catch (Exception e) {
 			showPopupMessage(e.getMessage());
 		}
 	}
 
-
-
-
+	@Override
 	public void runTest(final TestInstance testInstance, final Map<String, String> sectionParms, final TestIterator testIterator) {
 
 		getSiteToIssueTestAgainst().setTls(orchInit.isTls());
@@ -982,7 +1011,6 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 				// Reuse SAML when running the entire Actor test collection OR as set by the Xua option
 				runTestInstance(testInstance, null, testIterator);
 			}
-
 		} else {
 			// No SAML
 			getSiteToIssueTestAgainst().setSaml(false);
@@ -1006,7 +1034,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 			new RunTestCommand(){
 				@Override
 				public void onComplete(TestOverviewDTO testOverviewDTO) {
-				    InteractionDiagramDisplay diagramDisplay = new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), getSiteToIssueTestAgainst(), testContext.getSiteUnderTestName(),currentActorOption,patientId);
+				    InteractionDiagramDisplay diagramDisplay = new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), getSiteToIssueTestAgainst(testInstance), testContext.getSiteUnderTestName(),currentActorOption,patientId);
 					// returned testStatus of entire test
 					testDisplayGroup.display(testOverviewDTO, diagramDisplay);
 					updateTestOverview(testOverviewDTO);
@@ -1015,11 +1043,10 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 					if (testIterator != null)
 						testIterator.onDone(testInstance);
 				}
-			}.run(new RunTestRequest(getCommandContext(),getSiteToIssueTestAgainst(),testInstance, parms,true));
+			}.run(new RunTestRequest(getCommandContext(),getSiteToIssueTestAgainst(testInstance),testInstance, parms,true));
 		} catch (Exception e) {
 			showPopupMessage(e.getMessage());
 		}
-
 	}
 
 	private void setPatientId(Map<String, String> parms, String patientId) {
@@ -1066,6 +1093,10 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 
 		if (ActorType.REGISTRY.getActorCode().equals(currentActorOption.actorTypeId)) {
 			setPatientId(parms, regOrchestrationResponse.getRegisterPid().asString());
+		}
+
+		if (ActorType.DOC_ADMIN.getActorCode().equals(currentActorOption.actorTypeId)) {
+			setPatientId(parms, ((DocAdminOrchestrationResponse)orchestrationResponse).getRegisterPid().asString());
 		}
 
 		if (getSiteToIssueTestAgainst() == null && !getOptionTabConfig(currentActorOption).isExternalStart()) {
@@ -1120,6 +1151,52 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, TestTa
 	}
 
 	@Override
+	public SiteSpec getSiteToIssueTestAgainst(TestInstance testInstance) {
+		// Override
+		   for (TestInstance ti : testOverviewDTOs.keySet()) {
+				if (ti.getId().equals(testInstance.getId())) { // Need to find a TI with only an Id match (but not the TestInstance Equals method, which is too strict in this case).
+					TestOverviewDTO tod = testOverviewDTOs.get(ti);
+					TestSession testSession = tod.getTestInstance().getTestSession();
+					if (testInstance.getSection()!=null && !"".equals(testInstance.getSection())) {
+						 SectionOverviewDTO sectionOverviewDTO = tod.getSectionOverview(testInstance.getSection());
+						 return getSiteSpec(testSession, sectionOverviewDTO.getConfTestPropertyMap());
+					} else {
+						if (tod != null) {
+							return getSiteSpec(testSession, tod.getConfTestPropertyMap());
+						}
+					}
+
+					break;
+			   }
+		}
+		// Default
+		return getSiteToIssueTestAgainst();
+	}
+
+	private SiteSpec getSiteSpec(TestSession testSession, Map<ConfTestPropertyName, String> cfPropMap) {
+		if (cfPropMap!=null && testSession!=null) {
+			String aTshortName = null;
+			if (cfPropMap.containsKey(ConfTestPropertyName.TARGET_SIM_ACTORTYPE_SHORTNAME)) {
+				aTshortName = cfPropMap.get(ConfTestPropertyName.TARGET_SIM_ACTORTYPE_SHORTNAME);
+			}
+			ActorType actorType = ActorType.findActor(aTshortName);
+			if (cfPropMap.containsKey(ConfTestPropertyName.TARGET_SIM)) {
+				String targetSiteVal = cfPropMap.get(ConfTestPropertyName.TARGET_SIM);
+				SimId targetSim = new SimId(testSession, targetSiteVal);
+				SiteSpec siteSpec = targetSim.getSiteSpec();
+				siteSpec.setActorType(actorType);
+				// Propagate to overridden site spec
+				if (siteToIssueTestAgainst!=null) {
+					siteSpec.setSaml(siteToIssueTestAgainst.isSaml);
+					siteSpec.setStsAssertion(siteToIssueTestAgainst.getStsAssertion());
+				}
+				return siteSpec;
+			}
+		}
+		// Default
+		return getSiteToIssueTestAgainst();
+	}
+
 	public SiteSpec getSiteToIssueTestAgainst() {
 		return (siteToIssueTestAgainst == null ? new SiteSpec("gov/nist/toolkit/installation/shared", getTestSession()) : siteToIssueTestAgainst);
 	}

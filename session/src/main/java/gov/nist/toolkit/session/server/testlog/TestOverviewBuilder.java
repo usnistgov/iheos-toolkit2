@@ -13,6 +13,7 @@ import gov.nist.toolkit.testenginelogging.client.StepGoalsDTO;
 import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
 import gov.nist.toolkit.testkitutilities.ReadMe;
 import gov.nist.toolkit.testkitutilities.TestDefinition;
+import gov.nist.toolkit.testkitutilities.client.ConfTestPropertyName;
 import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
 import gov.nist.toolkit.testkitutilities.client.StepDefinitionDAO;
 
@@ -46,13 +47,13 @@ public class TestOverviewBuilder {
 
     public TestOverviewDTO build() throws Exception {
         testOverview.setPass(true);  // will be updated by addSections()
-        testOverview.setName(testId);
         testOverview.setTestInstance(new TestInstance(testId, session.getTestSession()));
         ReadMe readme = testDefinition.getTestReadme();
         if (readme != null) {
             testOverview.setTitle(stripHeaderMarkup(readme.line1));
             testOverview.setDescription(Markdown.toHtml(readme.rest));
         }
+        testOverview.setConfTestPropertyMap(testDefinition.getConfTestProperties());
         addSections();
         testOverview.setDependencies(testDependencies);
         return testOverview;
@@ -91,7 +92,12 @@ public class TestOverviewBuilder {
                     }
 
                     SectionOverviewDTO sectionOverview = addSection(section, logFileContentDTO);
-
+                    if (testOverview.getConfTestPropertyMap()!=null && testOverview.getConfTestPropertyMap().containsKey(ConfTestPropertyName.ENABLE_SECTION_PROPERTIES)) {
+                        String enableSectionProp = testOverview.getConfTestPropertyMap().get(ConfTestPropertyName.ENABLE_SECTION_PROPERTIES);
+                        if ("true".equals(enableSectionProp)) {
+                            sectionOverview.setConfTestPropertyMap(testDefinition.getConfTestProperties(section));
+                        }
+                    }
                     try {
                         SectionDefinitionDAO sectionDef = testDefinition.getSection(section);
                         sectionOverview.setSutInitiated(sectionDef.isSutInitiated());

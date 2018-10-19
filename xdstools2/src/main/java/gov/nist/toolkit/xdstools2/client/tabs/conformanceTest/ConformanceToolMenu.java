@@ -24,10 +24,13 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class ConformanceToolMenu {
-    private TabConfig tabConfig;
+    private TabConfig tabConfigRoot;
+    private ActorOptionConfig lastVisibleAoc;
     static final int menuCols = 3;
 
     public abstract void onMenuSelect(TabConfig actor, Map<String,TabConfig> target);
+    public abstract void onMenuLoadBegin();
+    public abstract void onMenuLoadEnd();
     abstract CommandContext getCommandContext();
     abstract void updateTestStatistics(Map<ActorOptionConfig, List<TestInstance>> testsPerActorOption, Map<TestInstance, TestOverviewDTO> testOverviewDTOs, TestStatistics testStatistics, ActorOptionConfig actorOption);
 
@@ -124,8 +127,24 @@ public abstract class ConformanceToolMenu {
                     htmlStr += "<div style=\"background-color:white;height:100%\"></div>\n";
                     statsBar.setHTML(htmlStr);
                 }
+//                if ( lastVisibleTabConfig.equals(
+//                onMenuLoadEnd();
             }
         }.run(new GetTestsOverviewRequest(getCommandContext(), testInstances, new QuickScanLogAttribute[]{QuickScanLogAttribute.IS_RUN,QuickScanLogAttribute.IS_PASS}));
+    }
+
+    private void setLastVisibleActorOption() {
+        TabConfig lastVisibleActor = null;
+        for (TabConfig tc : tabConfigRoot.getChildTabConfigs()) {
+//                    if (code.equals(tc.getTcCode())) {
+            if (!tc.isVisible()) {
+                continue;
+            }
+            lastVisibleActor = tc;
+        }
+        if (lastVisibleActor!=null) {
+           lastVisibleAoc = new ActorOptionConfig(lastVisibleActor);
+        }
     }
 
     public boolean displayMenu(Panel destinationPanel) {
@@ -134,7 +153,7 @@ public abstract class ConformanceToolMenu {
         HTML testNavigationTip = new HTML("Tests are organized as: Actor Profile Option. Select the option you are interested in. ");
         destinationPanel.add(testNavigationTip);
 
-        if (tabConfig!=null) {
+        if (tabConfigRoot !=null) {
 
             int colWidth = 100 / menuCols;
             int menuCt = 0;
@@ -145,8 +164,10 @@ public abstract class ConformanceToolMenu {
 
             FlowPanel rowPanel = new FlowPanel();
 
+            setLastVisibleActorOption();
+
 //            for (String code : displayOrder) {
-                for (TabConfig tc : tabConfig.getChildTabConfigs()) {
+                for (TabConfig tc : tabConfigRoot.getChildTabConfigs()) {
 //                    if (code.equals(tc.getTcCode())) {
                         if (!tc.isVisible())  {
                             continue;
@@ -232,7 +253,14 @@ public abstract class ConformanceToolMenu {
           }
     }
 
-    private TabConfigTreeItem flattenedTabConfig(Map<String, String> tcCodeMap, TabConfigTreeItem treeItem, TabConfig tabConfig) {
+    /**
+     * Flattens the hierarchical TabConfig (actor->profile->option) into an equivalent of an ActorOptionConfig object.
+     * @param tcCodeMap
+     * @param treeItem
+     * @param tabConfig
+     * @return
+     */
+   private TabConfigTreeItem flattenedTabConfig(Map<String, String> tcCodeMap, TabConfigTreeItem treeItem, TabConfig tabConfig) {
         if (tabConfig!=null) {
 
             if (treeItem==null) {
@@ -335,12 +363,15 @@ public abstract class ConformanceToolMenu {
         }
     }
 
-    public TabConfig getTabConfig() {
-        return tabConfig;
+    public TabConfig getTabConfigRoot() {
+        return tabConfigRoot;
     }
 
-    public void setTabConfig(TabConfig tabConfig) {
-        this.tabConfig = tabConfig;
+    public void setTabConfigRoot(TabConfig tabConfigRoot) {
+        this.tabConfigRoot = tabConfigRoot;
     }
 
+    public ActorOptionConfig getLastVisibleAoc() {
+        return lastVisibleAoc;
+    }
 }

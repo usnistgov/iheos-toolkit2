@@ -44,5 +44,21 @@ public class ObjectRef extends MetadataObject implements IsSerializable, Seriali
 		return "[" + id + " home=" + home + "]";
 	}
 
+	@Override
+	public boolean equals(Object o) {
+	    if (this==o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		ObjectRef objectRef = (ObjectRef)o;
+		if (id!=null && objectRef.id!=null)
+			return (id.equals(objectRef.id));
+		return false;
+	}
 
+	@Override
+	public int hashCode() {
+	    if (id!=null)
+			return id.hashCode();
+	    else
+	    	return 0;
+	}
 }

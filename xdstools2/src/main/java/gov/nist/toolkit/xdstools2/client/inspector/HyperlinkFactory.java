@@ -117,9 +117,19 @@ public class HyperlinkFactory {
 		return panel;
 	}
 
+	static Widget link(MetadataInspectorTab it, ObjectRef o) {
+		Hyperlink h = new Hyperlink();
+		h.setText(o.id);
+		h.addClickHandler(new HistorySelector(it, o));
+		return h;
+	}
+
 	static Widget link(MetadataInspectorTab it, MetadataObject mo) {
 		Hyperlink h = new Hyperlink();
 		h.setText(prefix(mo.displayName(), 40));
+		if (mo.displayName()!=null && mo.displayName().length() > 40) {
+			h.setTitle(mo.displayName());
+		}
 		h.addClickHandler(new HistorySelector(it, mo));
 		return h;
 	}

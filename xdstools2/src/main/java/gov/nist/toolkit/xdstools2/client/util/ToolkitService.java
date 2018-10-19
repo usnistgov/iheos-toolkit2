@@ -325,7 +325,9 @@ public interface ToolkitService extends RemoteService  {
 
     String getDatasetContent(GetDatasetElementContentRequest var1);
 
+	RawResponse buildDocAdminTestOrchestration(BuildDocAdminTestOrchestrationRequest request) throws Exception;
     RawResponse buildSrcTestOrchestration(BuildSrcTestOrchestrationRequest request) throws Exception;
+	RawResponse buildIsrTestOrchestration(BuildIsrTestOrchestrationRequest request) throws Exception;
 
     RawResponse buildFhirSupportOrchestration(FhirSupportOrchestrationRequest var1) throws Exception;
 

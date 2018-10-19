@@ -656,11 +656,27 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
 
     @Override
+    public RawResponse buildDocAdminTestOrchestration(BuildDocAdminTestOrchestrationRequest request) throws Exception {
+        installCommandContext(request);
+        Session s = getSession();
+        if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+        return new OrchestrationManager().buildDocAdminTestEnvironment(s, request.getDocAdminOrchestrationRequest());
+    }
+
+    @Override
     public RawResponse buildSrcTestOrchestration(BuildSrcTestOrchestrationRequest request) throws Exception {
         installCommandContext(request);
         Session s = getSession();
         if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
         return new OrchestrationManager().buildSrcTestEnvironment(s, request.getSrcOrchestrationRequest());
+    }
+
+    @Override
+    public RawResponse buildIsrTestOrchestration(BuildIsrTestOrchestrationRequest request) throws Exception {
+        installCommandContext(request);
+        Session s = getSession();
+        if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+        return new OrchestrationManager().buildIsrTestEnvironment(s, request.getIsrOrchestrationRequest());
     }
 
 

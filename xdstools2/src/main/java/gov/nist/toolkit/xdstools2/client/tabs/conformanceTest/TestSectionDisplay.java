@@ -19,6 +19,7 @@ import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
 import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
 import gov.nist.toolkit.testenginelogging.client.ReportDTO;
 import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
+import gov.nist.toolkit.testkitutilities.client.ConfTestPropertyName;
 import gov.nist.toolkit.testkitutilities.client.Gather;
 import gov.nist.toolkit.xdstools2.client.command.command.GetSectionTestPartFileCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTestLogDetailsCommand;
@@ -70,13 +71,28 @@ class TestSectionDisplay implements IsWidget {
             view.addOpenHandler(new SectionNotRunOpenHandler(sessionName, testInstance, sectionOverview.getName()));
         }
 
-        if (allowRun && !sectionOverview.isSutInitiated()) {
-            view.setPlay("Run", "Play button", new RunSection(fullTestInstance));
+        if (sectionOverview.getConfTestPropertyMap()!=null && sectionOverview.getConfTestPropertyMap().containsKey(ConfTestPropertyName.EXTERNAL_START)) {
+            String externalStartVal =  sectionOverview.getConfTestPropertyMap().get(ConfTestPropertyName.EXTERNAL_START);
+            if ("false".equals(externalStartVal)) {
+               // Override
+                view.setPlay("Run", "Play button", new RunSection(fullTestInstance));
+            } else if ("true".equals(externalStartVal)) {
+                // Normally, Validation is only available at the Test Bar but not at the Test Section level.
+                // If externalStart is True, then a Validate Option is available at the Test Section level.
+                view.setValidate("Validate", new RunSection(fullTestInstance));
+            }
+
+        } else {
+           // Default behavior
+            if (allowRun && !sectionOverview.isSutInitiated()) {
+                view.setPlay("Run", "Play button", new RunSection(fullTestInstance));
+            }
         }
 
         if (sectionOverview.isSutInitiated()) {
             view.setDone("Manual operation", "Manual operation", null);
         }
+
         view.setDescription(sectionOverview.getDescription());
         if (diagramDisplay!=null)
             view.setDiagram(diagramDisplay.render());
@@ -264,6 +280,8 @@ class TestSectionDisplay implements IsWidget {
             }.run(new GetTestLogDetailsRequest(ClientUtils.INSTANCE.getCommandContext(),testInstance));
         }
     }
+
+
 
     private class RunSection implements ClickHandler {
         TestInstance testInstance;

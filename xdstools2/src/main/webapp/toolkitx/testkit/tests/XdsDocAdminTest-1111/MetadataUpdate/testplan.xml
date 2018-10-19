@@ -1,0 +1,18 @@
+<TestPlan>
+    <Test>XdsDocAdminTest-1111/MetadataUpdate</Test>
+    <TestStep id="validate">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <NullTransaction>
+            <Assertions>
+                <Assert id="assert">
+                    <SimReference id="docadmin_support" actorType="reg" transaction="update"/> <!-- This Reg type sim is created by the Xds DocAdmin conformance actor's orchestration -->
+                    <Validations type="SOAP">
+	                <ExpectedContentsValidater filterDescription="Check Response Status" responseMsgExpectedContent="RegistryResponseIsValid" />
+                        <ExpectedContentsValidater filterDescription="SubmissionSets count should be 1" requestMsgExpectedContent="SubmissionSets" requestMsgECCount="1"  />
+                        <ExpectedContentsValidater filterDescription="Document Entry count should be 1" requestMsgExpectedContent="Documents" requestMsgECCount="1"  />
+                    </Validations>
+                </Assert>
+            </Assertions>
+        </NullTransaction>
+    </TestStep>
+</TestPlan>

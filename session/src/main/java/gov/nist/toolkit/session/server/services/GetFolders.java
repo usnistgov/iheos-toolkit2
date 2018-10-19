@@ -21,6 +21,16 @@ public class GetFolders extends CommonService {
 		this.session = session;
 	}
 
+	public GetFolders setLeafClassReturn() {
+		returnType = "LeafClass";
+		return this;
+	}
+
+	public GetFolders setObjectRefReturn() {
+		returnType = "ObjectRef";
+		return this;
+	}
+
 	public List<Result> run(SiteSpec site, AnyIds aids) {
 		try {
 			session.setSiteSpec(site);
@@ -53,15 +63,6 @@ public class GetFolders extends CommonService {
 		}
 
 	}
-
-	public void setLeafClassReturn() {
-		returnType = "LeafClass";
-	}
-	
-	public void setObjectRefReturn() {
-		returnType = "ObjectRef";
-	}
-	
 
 
 }
