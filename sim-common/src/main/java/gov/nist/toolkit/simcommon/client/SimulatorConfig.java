@@ -109,6 +109,10 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 		this.actorType = actorType;
 		expires = expiration;
 		this.environmentName = environment;
+
+		ActorType at = ActorType.findActor(actorType);
+		if (at != null && at.isFhir())
+			this.id.forFhir();
 	}
 	
 	public List<SimulatorConfigElement> elements() {

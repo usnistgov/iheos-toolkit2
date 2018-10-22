@@ -10,6 +10,7 @@ import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.simcommon.client.SimId;
+import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.commons.lang3.StringUtils;
 
@@ -322,7 +323,7 @@ public class SimulatorTransaction {
          Utility.isValidPfn("simulator " + name,  simPath, PfnType.DIRECTORY, "r");
 
          // Load simulator type
-         String actorType = new String(Files.readAllBytes(simPath.resolve("sim_type.txt"))).trim();
+         String actorType = new SimDb(simId).getSimulatorActorType().getShortName(); //new String(Files.readAllBytes(simPath.resolve(SimDb.getSimTypeFilename()))).trim();
          String requestedActorType = StringUtils.trimToEmpty(simId.getActorType());
          switch (requestedActorType) {
             // No requested actor type; use whatever type is there.
