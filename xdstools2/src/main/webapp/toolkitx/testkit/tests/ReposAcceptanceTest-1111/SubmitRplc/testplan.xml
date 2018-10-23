@@ -1,0 +1,12 @@
+<TestPlan>
+    <Test>ReposAcceptanceTest-1111/SubmitRplc</Test>
+    <TestStep id="replace">
+        <ExpectedStatus>Success</ExpectedStatus>
+	  <ProvideAndRegisterTransaction>
+	    <XDSb/>
+  	    <UseReport reportName="myDocId1_uuid" section="SubmitSingleDoc" step="submit" useAs="$original_doc_uuid$"/>
+	    <MetadataFile>single_doc.xml</MetadataFile>
+	    <Document id="myDocId1">my_document.txt</Document>
+	  </ProvideAndRegisterTransaction>
+    </TestStep>
+</TestPlan>
