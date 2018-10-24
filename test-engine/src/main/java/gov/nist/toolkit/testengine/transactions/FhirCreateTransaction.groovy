@@ -210,7 +210,7 @@ class FhirCreateTransaction extends BasicFhirTransaction {
                         stepContext.set_error("Return bundle entry #${eleCount} has no response element")
                         return
                     }
-                    if (resp.status != '200')
+                    if (resp.status != '201')
                         stepContext.set_error("Response Bundle reported status of ${resp.status} (bundle.entry.response.status) for component (location) ${resp.location}")
                     def reportName
                     FhirId fhirId1 = new FhirId(resp.location)

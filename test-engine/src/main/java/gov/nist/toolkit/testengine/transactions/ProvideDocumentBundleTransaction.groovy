@@ -67,10 +67,10 @@ class ProvideDocumentBundleTransaction extends FhirCreateTransaction {
             while (sendEntry && returnEntry) {
                 def responseEntry = returnEntry.response
                 if (sendEntry.class.simpleName == returnEntry.class.simpleName) {
-                    if (responseEntry.status == '200') {
+                    if (responseEntry.status == '201') {
                         if (responseEntry.outcome) {
                             hasError = true
-                            err("Entry #${index} (${sendEntry.class.simpleName}) returned status 200 and a response outcome:...")
+                            err("Entry #${index} (${sendEntry.class.simpleName}) returned status 201 and a response outcome:...")
                             FhirSupport.operationOutcomeIssues(responseEntry.outcome).each { err(it) }
                         }
                     } else {
