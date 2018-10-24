@@ -19,6 +19,7 @@ public class FindDocumentsByReferenceIdSim extends FindDocumentsByReferenceId {
         super(sqs);
 
         fdsim = new FindDocumentsSim(sqs);
+        setFd(fdsim);
     }
 
     @Override

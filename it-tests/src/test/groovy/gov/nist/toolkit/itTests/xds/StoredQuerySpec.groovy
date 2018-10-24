@@ -54,11 +54,8 @@ class StoredQuerySpec extends ToolkitSpecification {
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
-//        System.gc()
         spi.delete('reg', testSession)
         api.deleteSimulatorIfItExists(simId)
-//        server.stop()
-//        ListenerFactory.terminateAll()
     }
 
     def setup() {
@@ -70,26 +67,6 @@ class StoredQuerySpec extends ToolkitSpecification {
             api.createSimulator(ActorType.REGISTRY, simId)
         }
     }
-
-//    // submits the patient id configured above to the registry in a Patient Identity Feed transaction
-//    def 'Submit Pid transaction to Registry simulator'() {
-//        when:
-//        String siteName = 'bill__reg'
-//        TestInstance testId = new TestInstance("15804")
-//        List<String> SECTIONS = new ArrayList<>()
-//        SECTIONS.add("section")
-//        Map<String, String> params = new HashMap<>()
-//        params.put('$patientid$', patientId)
-//        boolean stopOnFirstError = true
-//
-//        and: 'Run pid transaction test'
-//        List<Result> results = api.runTest(testSession, siteName, testId, SECTIONS, params, stopOnFirstError)
-//
-//        then:
-//        true
-//        results.size() == 1
-//        results.get(0).passed()
-//    }
 
     // submits the patient id configured above to the registry in a Patient Identity Feed transaction
     def 'Submit second Pid transaction to Registry simulator'() {
@@ -127,7 +104,8 @@ class StoredQuerySpec extends ToolkitSpecification {
 
     def 'Run SQ tests'() {
         when:
-        TestInstance testId = new TestInstance("tc:SQ.b", new TestSession(testSession))
+        TestInstance testId = new TestInstance("11897", new TestSession(testSession))
+//        TestInstance testId = new TestInstance("tc:SQ.b", new TestSession(testSession))
         List<String> sections = new ArrayList<>()
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId2)   // not used
@@ -140,21 +118,5 @@ class StoredQuerySpec extends ToolkitSpecification {
         results.size() == 1
         results.get(0).passed()
     }
-
-//    def 'Run 11897/approved tests'() {
-//        when:
-//        TestInstance testId = new TestInstance("11897")
-//        List<String> SECTIONS = ['approved']
-//        Map<String, String> params = new HashMap<>()
-//        params.put('$patientid$', patientId2)   // not used
-//        boolean stopOnFirstError = true
-//
-//        and: 'Run'
-//        List<Result> results = api.runTest(testSession, siteName, testId, SECTIONS, params, stopOnFirstError)
-//
-//        then:
-//        results.size() == 1
-//        results.get(0).passed()
-//    }
 
 }

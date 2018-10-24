@@ -29,13 +29,21 @@ abstract public class FindDocumentsByReferenceId extends StoredQuery {
 
     public FindDocumentsByReferenceId(StoredQuerySupport storedQuerySupport) {
         super(storedQuerySupport);
-        fd = new FindDocumentsSupport(storedQuerySupport);
+    }
+
+    public void setFd(FindDocuments fd) {
+        this.fd = fd;
     }
 
     @Override
     public Metadata runSpecific() throws XdsException, LoggerException, XDSRegistryOutOfResourcesException {
         parseParameters();
-        return null;
+        Metadata m = runImplementation();
+
+        if (sqs.log_message != null)
+            sqs.log_message.addOtherParam("Results structure", m.structure());
+
+        return m;
     }
 
     protected void parseParameters() throws XdsException {

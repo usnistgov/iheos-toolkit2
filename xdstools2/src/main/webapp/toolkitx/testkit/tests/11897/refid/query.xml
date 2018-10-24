@@ -1,0 +1,21 @@
+
+<query:AdhocQueryRequest xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0">
+    <query:ResponseOption returnComposedObjects="true" returnType="ObjectRef"/>
+    <tag0:AdhocQuery xmlns:tag0="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" id="urn:uuid:12941a89-e02e-4be5-967c-ce4bfc8fe492">
+        <tag0:Slot name="$XDSDocumentEntryPatientId">
+            <tag0:ValueList>
+                <tag0:Value>'$patient_id$'</tag0:Value>
+            </tag0:ValueList>
+        </tag0:Slot>
+        <tag0:Slot name="$XDSDocumentEntryStatus">
+            <tag0:ValueList>
+                <tag0:Value>('urn:oasis:names:tc:ebxml-regrep:StatusType:Approved')</tag0:Value>
+            </tag0:ValueList>
+        </tag0:Slot>
+        <tag0:Slot name="$XDSDocumentEntryReferenceIdList">
+            <tag0:ValueList>
+                <tag0:Value>('20061223^^^&amp;1.2.5643.2&amp;ISO^urn:ihe:iti:xds:2013:uniqueId')</tag0:Value>
+            </tag0:ValueList>
+        </tag0:Slot>
+    </tag0:AdhocQuery>
+</query:AdhocQueryRequest>

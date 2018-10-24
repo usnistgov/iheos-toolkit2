@@ -56,9 +56,14 @@
                <rim:Value>en-us</rim:Value>
             </rim:ValueList>
          </rim:Slot>
-         <rim:Slot name="serviceStartTime">
+         <rim:Slot name="languageCode">
             <rim:ValueList>
-               <rim:Value>200612230800</rim:Value>
+               <rim:Value>en-us</rim:Value>
+            </rim:ValueList>
+         </rim:Slot>
+         <rim:Slot name="urn:ihe:iti:xds:2013:referenceIdList">
+            <rim:ValueList>
+               <rim:Value>20061223^^^&amp;1.2.5643.2&amp;ISO^urn:ihe:iti:xds:2013:uniqueId</rim:Value>
             </rim:ValueList>
          </rim:Slot>
          <rim:Slot name="serviceStopTime">
