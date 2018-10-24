@@ -13,9 +13,6 @@
                     <!-- To satisfied sourcePatientID (R) -->
                     <Patient>
                         <id value="a2"/>
-                        <meta>
-                            <lastUpdated value="2013-07-01T13:11:33Z"/>
-                        </meta>
                         <text>
                             <status value="generated"/>
                             <div xmlns="http://www.w3.org/1999/xhtml">Person DOE, John, M, dob: 27/05/1956</div>
@@ -41,9 +38,6 @@
                     </Patient>
                     <Practitioner>
                         <id value="a3"/>
-                        <meta>
-                            <lastUpdated value="2013-07-01T13:11:33Z"/>
-                        </meta>
                         <text>
                             <status value="generated"/>
                             <div xmlns="http://www.w3.org/1999/xhtml">Author Gerald Smitty @ Cleveland Clinic</div>
@@ -57,9 +51,6 @@
                     <Practitioner>
                         <id value="a4"/>
                         <!--    cid:51b578b4-3ccb-4e67-b0dc-ef519d82ef2d@healthintersections.com.au    -->
-                        <meta>
-                            <lastUpdated value="2013-07-01T13:11:33Z"/>
-                        </meta>
                         <text>
                             <status value="generated"/>
                             <div xmlns="http://www.w3.org/1999/xhtml">Author Person @ Cleveland Clinic</div>
