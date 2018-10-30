@@ -142,13 +142,14 @@ public class ReconfigureSimulators extends HttpServlet {
                 }
             }
 
-            // Update the SimId part of an endpoint only when the Sim Config Element endpoint is a non-user editable field
-            if (!ep.getSimId().equals(simIdString) && !ele.isEditable()) {
+            /* Fix Issue #436: This block is not needed since simulators cannot be renamed.
+            if (!ep.getSimId().equals(simIdString)) {
                 ep.setSimId(simIdString);
                 logger.info("...to " + ep.getEndpoint());
                 ele.setStringValue(ep.getEndpoint());
                 updated = true;
             }
+            */
         }
 
         try {
