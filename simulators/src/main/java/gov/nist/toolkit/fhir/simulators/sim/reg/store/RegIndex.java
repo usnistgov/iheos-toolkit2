@@ -249,4 +249,9 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 
 		return stats;
 	}
+
+	@Override
+	public boolean hasRegistryIndex() {
+        return db.getRegistryIndexFile().exists();
+	}
 }
