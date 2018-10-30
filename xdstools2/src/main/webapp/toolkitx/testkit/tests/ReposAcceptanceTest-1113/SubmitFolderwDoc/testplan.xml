@@ -1,0 +1,12 @@
+<TestPlan>
+    <Test>ReposAcceptanceTest-1113/SubmitFolderwDoc</Test>
+    <TestStep id="submit">
+        <ExpectedStatus>Success</ExpectedStatus>
+	<ProvideAndRegisterTransaction>
+	    <XDSb/>
+	    <AssignUuids/>
+	    <MetadataFile>fol_doc.xml</MetadataFile>
+	    <Document id="myDocId1">my_document.txt</Document>
+	</ProvideAndRegisterTransaction>
+    </TestStep>
+</TestPlan>
