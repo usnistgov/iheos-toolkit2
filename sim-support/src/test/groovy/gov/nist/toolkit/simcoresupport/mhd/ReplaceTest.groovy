@@ -23,6 +23,10 @@ class ReplaceTest extends Specification {
     def origDocRef = '''
 <DocumentReference>
     <id value="1"/>
+                <masterIdentifier>
+                    <system value="urn:ietf:rfc:3986"/>
+                    <value value="urn:oid:1.2.129.6.58.92.88336"/>
+                </masterIdentifier>
     <identifier>
         <system value="urn:ietf:rfc:3986"/>
         <use value="official"/>
@@ -38,6 +42,10 @@ class ReplaceTest extends Specification {
 '''
     def replacement = '''
 <DocumentReference>
+                <masterIdentifier>
+                    <system value="urn:ietf:rfc:3986"/>
+                    <value value="urn:oid:1.2.129.6.58.92.88336.1"/>
+                </masterIdentifier>
     <relatesTo>
         <code value="replaces"/>
         <target>

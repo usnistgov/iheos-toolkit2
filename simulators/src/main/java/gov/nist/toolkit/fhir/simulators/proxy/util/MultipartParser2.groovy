@@ -70,29 +70,35 @@ class MultipartParser2 {
     static CR = '\r'
     static LF = '\n'
     static CRLF = CR + LF
-    static boundaryStart = CR + LF + '--'
+    static SEP = '--'
+    static boundaryStart1 = CR + LF + '--'
+    static boundaryStart2 = LF + '--'
 
     static List<BinaryPartSpec> parse(byte[] x) {
-        int index = 0
-        def boundary = null
-        def endBoundary = null
-        boolean inheader = false
+        int index
+        def boundary // without preceding or following CR LF
+        def endBoundary
+        boolean inheader
         boolean done = false
         String contentType = null
         String contentId = null
         String contentEncoding = null
         def parts = [:]
 
-        byte[] buf = new byte[x.size()]
-        int size = 0
+//        byte[] buf = new byte[x.size()]
+//        int size = 0
 
-        index = find(x, index, boundaryStart.bytes)
+        x = stripCR(x)  // strip out CR chars - rely on LF
+
+        index = 0
+        index = find(x, index, SEP.bytes)
         if (index == -1)
             return new ArrayList()
-        //index += 2  // past initial CRLF
-        boundary = new String(lineStartingAt(x, index)) + CRLF
-        endBoundary = new String(lineStartingAt(x, index)) + '--' + CRLF
-        index = index + boundary.size()// + 4  // past preceding and ending CRLF
+        boundary = new String(lineStartingAt(x, index))
+        endBoundary = boundary + '--'
+        index += boundary.size()
+        index ++  // past LF
+
 
         while (index < x.size() - 1) {
 
@@ -102,14 +108,20 @@ class MultipartParser2 {
             byte[] partContent
             int end
             // now at start of header
-            if (x[index] == CR.bytes[0] + x[index + 1] == LF.bytes[0]) {
+            if (x[index] == LF.bytes[0]) {
                 // empty header
-                index += 2
+                index++
+                // now at start of part content
+            }
+            if (x[index] == LF.bytes[0]) {
+                // empty header
+                index++
                 // now at start of part content
             } else {
-                byte[] headerBytes = upto(x, index, (CRLF + CRLF).bytes)
+                byte[] headerBytes = upto(x, index, (LF + LF).bytes)
                 if (headerBytes.size() == 0)
-                    break
+                    break  // no new header
+                int offset = headerBytes.size() + 2
                 String headers = new String(headerBytes)
                 index = index + headerBytes.size()
                 headers.eachLine { String line ->
@@ -124,7 +136,7 @@ class MultipartParser2 {
                         contentEncoding = partss[1].split(';')[0].trim()
                     }
                 }
-                index += 4 // CRLF CRLF
+                index += 2 //  CR CR
             }
 
             //
@@ -133,7 +145,11 @@ class MultipartParser2 {
                 done = true
                 partContent = upto(x, index, endBoundary.bytes)
             }
+            partContent = endTrim(partContent, 1)
             end = find(x, index, boundary.bytes)
+
+            // trailing CR belongs to header
+
 
             String partContentString = new String(partContent)
 
@@ -151,19 +167,58 @@ class MultipartParser2 {
         }
     }
 
+    static int skip(byte[] x, int index, String what) {
+        if (index >= x.size()) return index
+        if (x[index] == what.bytes[0]) return index + 1
+        return index
+    }
+
+    static byte[] strip(byte[] line) {
+        byte[] buf = new byte[line.size()]
+        int size=0
+        int i = 0
+
+        boolean prefix = true
+        while (i<line.size()) {
+            if (prefix && line[i] == CR || line[i] == LF) {
+                i++
+                continue
+            }
+            buf[size++] = line[i++]
+            prefix = false
+        }
+        if (size > 0 && (buf[size-1] == LF.bytes[0] | buf[size-1] == CR.bytes[0]))
+            size--
+        if (size > 0 && (buf[size-1] == LF.bytes[0] | buf[size-1] == CR.bytes[0]))
+            size--
+        return Arrays.copyOf(buf, size)
+    }
+
     // does not include CRLF at end
     static byte[] lineStartingAt(byte[] content, int startingAt) {
         byte[] buf = new byte[content.size()]
         int size=0
 
         for (int i=startingAt; i< content.size(); i++) {
-            if (i >= content.size() - 2)
+            if (i >= content.size() - 1)
                 return new byte[0]
             buf[size++] = content[i]
-            if (content[i+1] == CR.bytes[0] && content[i+2] == LF.bytes[0])
+            if (content[i+1] == LF.bytes[0] /* && content[i+2] == LF.bytes[0] */)
                 return Arrays.copyOf(buf, size)
         }
         return new byte[0]
+    }
+
+    static byte[] stripCR(byte[] x) {
+        byte[] buf = new byte[x.size()]
+        int size = 0
+
+        for (int i=0; i<x.size(); i++) {
+            if (x[i] == CR.bytes[0])
+                continue
+            buf[size++] = x[i]
+        }
+        return Arrays.copyOf(buf, size)
     }
 
     // where does pattern start
@@ -198,4 +253,21 @@ class MultipartParser2 {
         }
         return true
     }
+
+    static byte[] add(byte[] x, byte[] y) {
+        byte[] buf = new byte[x.size() + y.size()]
+        int size=0
+
+        for (int i=0; i<x.size(); i++)
+            buf[size++] = x[i]
+
+        for (int i=0; i<y.size(); i++)
+            buf[size++] = y[i]
+        return buf
+    }
+
+    static byte[] endTrim(byte[] x, int amount) {
+        Arrays.copyOf(x, x.size() - 1)
+    }
+
 }

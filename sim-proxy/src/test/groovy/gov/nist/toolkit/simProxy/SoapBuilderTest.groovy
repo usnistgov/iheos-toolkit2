@@ -29,8 +29,8 @@ class SoapBuilderTest extends Specification {
     def 'mtom test' () {
         given:
         String referenceMsg = getClass().getResource('/sample_mtom_message.txt').text
-        def part1 = getClass().getResource('/sample_part_1.txt').text   // start part
-        def part2 = getClass().getResource('/sample_part_2.txt').text   // text attachment
+        def part1 = correctCRLF(getClass().getResource('/sample_part_1.txt').text)   // start part
+        def part2 = correctCRLF(getClass().getResource('/sample_part_2.txt').text)   // text attachment
 
         def part1Spec = new PartSpec(PartSpec.SOAPXOP, part1, '444')
         def part2Spec = new PartSpec(PartSpec.PLAINTEXT, part2, '555')
@@ -45,6 +45,23 @@ class SoapBuilderTest extends Specification {
 
         then:
         bparts[1].content == part2.bytes
+    }
+
+    def correctCRLF(String msg) {
+        StringBuilder buf = new StringBuilder()
+
+        String last = ''
+        msg.each { String c ->
+            if (last == '\r' && c != '\n') {
+                buf.append(last)
+                buf.append('\n')
+            } else if (last != '')
+                buf.append(last)
+            last = c
+        }
+        if (last != '')
+            buf.append(last)
+        return buf.toString()
     }
 
 }
