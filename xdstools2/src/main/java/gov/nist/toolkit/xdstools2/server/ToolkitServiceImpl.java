@@ -1372,7 +1372,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public Simulator getNewSimulator(GetNewSimulatorRequest request) throws Exception {
         installCommandContext(request);
-        return new SimulatorServiceManager(session()).getNewSimulator(request.getActorTypeName(), request.getSimId());
+        return new SimulatorServiceManager(session()).getNewSimulator(request.getActorTypeName(), request.getSimId(), getDefaultEnvironment(request));
     }
     @Override
     public void deleteSimFile(DeleteSimFileRequest request) throws Exception {

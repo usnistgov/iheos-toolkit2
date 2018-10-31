@@ -24,13 +24,13 @@ public class IGActorFactory extends AbstractActorFactory implements IActorFactor
    static final List <TransactionType> incomingTransactions =
       Arrays.asList(TransactionType.STORED_QUERY, TransactionType.RETRIEVE);
 
-   public Simulator buildNew(SimManager simm, SimId newID,
+   public Simulator buildNew(SimManager simm, SimId newID, String environment,
                              boolean configureBase) throws Exception {
       this.newID = newID;
 
       ActorType actorType = ActorType.INITIATING_GATEWAY;
       SimulatorConfig sc;
-      if (configureBase) sc = configureBaseElements(actorType, newID, newID.getTestSession());
+      if (configureBase) sc = configureBaseElements(actorType, newID, newID.getTestSession(), environment);
       else sc = new SimulatorConfig();
 
       addFixedEndpoint(sc, SimulatorProperties.igqEndpoint, actorType,

@@ -284,9 +284,9 @@ public class SimulatorServiceManager extends CommonService {
 		}
 	}
 
-	public Simulator getNewSimulator(String actorTypeName, SimId simID) throws Exception  {
+	public Simulator getNewSimulator(String actorTypeName, SimId simID, String environment) throws Exception  {
 		logger.debug(session.id() + ": " + "getNewSimulator(type=" + actorTypeName + ")");
-		return new SimulatorApi(session).create(actorTypeName, simID);
+		return new SimulatorApi(session).create(actorTypeName, simID, environment);
 	}
 
 

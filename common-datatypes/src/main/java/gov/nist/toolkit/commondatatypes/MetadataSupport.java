@@ -240,6 +240,7 @@ public class MetadataSupport {
 	// Stored Query query ids
 
 	public static String SQ_FindDocuments = "urn:uuid:14d4debf-8f97-4251-9a74-a90016b0af0d";
+	public static String SQ_FindDocumentsByRefId = "urn:uuid:12941a89-e02e-4be5-967c-ce4bfc8fe492";
 	public static String SQ_FindSubmissionSets = "urn:uuid:f26abbcb-ac74-4422-8a30-edb644bbc1a9";
 	public static String SQ_FindFolders = "urn:uuid:958f3006-baad-4929-a4de-ff1114824431";
 	public static String SQ_GetAll = "urn:uuid:10b545ea-725c-446d-9b95-8aeb444eddf3";

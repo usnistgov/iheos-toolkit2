@@ -326,7 +326,26 @@ public class DocEntryCollection extends RegObCollection implements Serializable 
 		}
 		return pattern.substring(startAt, endAt);
 	}
-	
+
+	public List<DocEntry> filterByReferenceId(List<String> refIds, List<DocEntry> docs) {
+		if (docs.isEmpty()) return docs;
+		if (refIds.isEmpty()) return docs;
+
+		nextDoc:
+		for (int i=0; i<docs.size(); i++) {
+			DocEntry de = docs.get(i);
+			for (String value : de.referenceIdList) {
+				if (refIds.contains(value))
+					continue nextDoc;
+			}
+			docs.remove(i);
+			i--;
+		}
+		return docs;
+	}
+
+
+
 	public List<DocEntry> filterByCreationTime(String from, String to, List<DocEntry> docs) {
 		if (docs.isEmpty()) return docs;
 		if ((from == null || from.equals("")) && (to == null || to.equals(""))) return docs;

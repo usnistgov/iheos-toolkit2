@@ -29,6 +29,8 @@ public class DocEntry extends PatientObject implements Serializable {
 	public String sourcePatientId;
 	public String documentAvailability;
 	public String repositoryUniqueId;
+
+	public String[] referenceIdList;
 	
 	public String getType() {
 		return "DocumentEntry";

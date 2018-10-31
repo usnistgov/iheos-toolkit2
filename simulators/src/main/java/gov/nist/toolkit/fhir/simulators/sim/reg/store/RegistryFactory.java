@@ -25,6 +25,9 @@ public class RegistryFactory {
 		de.documentAvailability = m.getSlotValue(ele, "documentAvailability", 0) ;
 		de.repositoryUniqueId = m.getSlotValue(ele, "repositoryUniqueId", 0);
 
+		List<String> refIds = m.getSlotValues(ele, "urn:ihe:iti:xds:2013:referenceIdList");
+		de.referenceIdList = refIds.toArray(new String[0]);
+
 		String version = m.getVersion(ele);
 
 		if ("1.1".equals(version)) {

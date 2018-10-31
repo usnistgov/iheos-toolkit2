@@ -45,11 +45,11 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
 	// and the caller gets the responsibility for starting the listeners
 	// Listeners cannot be started until the sim config is saved
 	@Override
-	public Simulator buildNew(SimManager simm, SimId simId, boolean configureBase) throws Exception {
+	public Simulator buildNew(SimManager simm, SimId simId, String environment, boolean configureBase) throws Exception {
 		ActorType actorType = ActorType.REGISTRY;
 		SimulatorConfig sc;
 		if (configureBase)
-			sc = configureBaseElements(actorType, simId, simId.getTestSession());
+			sc = configureBaseElements(actorType, simId, simId.getTestSession(), environment);
 		else
 			sc = new SimulatorConfig();
 
@@ -106,6 +106,7 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
             addFixedEndpoint(sc, SimulatorProperties.removeMetadataEndpoint,       actorType, TransactionType.REMOVE_METADATA,     false);
             addFixedEndpoint(sc, SimulatorProperties.removeMetadataTlsEndpoint,    actorType, TransactionType.REMOVE_METADATA,     true);
 		}
+		addEditableConfig(sc, SimulatorProperties.metadataValidatorClass, ParamType.TEXT, "");
 
 		return new Simulator(sc);
 	}

@@ -198,7 +198,7 @@ public class HttpSimServlet extends HttpServlet {
       try {
          for (TestSession testSession : Installation.instance().getTestSessions()) {
 
-            List<SimId> simIds = new SimDb().getAllSimIds(testSession);
+            List<SimId> simIds = SimDb.getAllSimIds(testSession);
             for (SimId simId : simIds) {
                BaseHttpActorSimulator sim = (BaseHttpActorSimulator) RuntimeManager.getHttpSimulatorRuntime(simId);
                if (sim == null) continue;

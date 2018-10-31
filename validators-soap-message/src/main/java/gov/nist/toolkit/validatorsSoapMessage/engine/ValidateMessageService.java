@@ -7,6 +7,7 @@ import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.validatorsSoapMessage.message.HttpMessageValidator;
+import gov.nist.toolkit.valregmetadata.top.AbstractCustomMetadataValidator;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
@@ -27,13 +28,22 @@ import java.util.List;
 public class ValidateMessageService {
 	RegistryValidationInterface rvi;
 	private HttpMessageValidator val = null;
-	
+	private List<AbstractCustomMetadataValidator> customMetadataValidators = new ArrayList<>();
+
+	public void addCustomMetadataValidator(AbstractCustomMetadataValidator val) {
+		customMetadataValidators.add(val);
+	}
+
+	public List<AbstractCustomMetadataValidator> getCustomMetadataValidators() {
+		return customMetadataValidators;
+	}
+
 	public HttpMessageValidator getHttpMessageValidator() {
 	   return val;
 	}
 
 	public ValidateMessageService(RegistryValidationInterface rvi) {
-	this.rvi = rvi;
+	    this.rvi = rvi;
 	}
 	
 

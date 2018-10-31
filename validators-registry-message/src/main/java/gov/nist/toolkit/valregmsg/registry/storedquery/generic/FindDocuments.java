@@ -41,7 +41,7 @@ abstract public class FindDocuments extends StoredQuery {
 	 * @param sqs
 	 * @throws MetadataValidationException
 	 */
-	public FindDocuments(StoredQuerySupport sqs) throws MetadataValidationException {
+	public FindDocuments(StoredQuerySupport sqs)  {
 		super(sqs);
 	}
 

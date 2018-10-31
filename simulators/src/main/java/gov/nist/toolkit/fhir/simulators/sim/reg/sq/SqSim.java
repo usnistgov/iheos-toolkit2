@@ -122,6 +122,10 @@ public class SqSim  extends TransactionSimulator implements MetadataGeneratingSi
 		if (sq instanceof FindDocumentsSim) {
 			FindDocumentsSim sim = (FindDocumentsSim) sq;
 			sim.setRegIndex(dsSimCommon.regIndex);
+		}
+		else if (sq instanceof FindDocumentsByReferenceIdSim) {
+			FindDocumentsByReferenceIdSim sim = (FindDocumentsByReferenceIdSim) sq;
+				sim.setRegIndex(dsSimCommon.regIndex);
 		} else if (sq instanceof FindSubmissionSetsSim) {
 				FindSubmissionSetsSim sim = (FindSubmissionSetsSim) sq;
 				sim.setRegIndex(dsSimCommon.regIndex);

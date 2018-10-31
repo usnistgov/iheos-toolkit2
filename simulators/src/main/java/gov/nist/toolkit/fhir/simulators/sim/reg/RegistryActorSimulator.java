@@ -5,6 +5,7 @@ import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.fhir.simulators.sim.reg.mu.RMSim;
 import gov.nist.toolkit.fhir.simulators.sim.reg.mu.RMuSim;
+import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.simcommon.client.NoSimException;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
@@ -19,6 +20,7 @@ import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.fhir.simulators.support.BaseDsActorSimulator;
 import gov.nist.toolkit.fhir.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simcommon.server.SimCommon;
+import gov.nist.toolkit.valregmsg.message.MetadataContainer;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import org.apache.log4j.Logger;
@@ -50,6 +52,10 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 	}
 
 	public RegistryActorSimulator() {}
+
+	private String getMetadataValidatorName() {
+		return getSimulatorConfig().get(SimulatorProperties.metadataValidatorClass).asString();
+	}
 
 	private boolean isMetadataLimited() {
 		SimulatorConfigElement sce = getSimulatorConfig().get(SimulatorProperties.METADATA_LIMITED);
@@ -115,6 +121,11 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 		setSimulatorConfig(simulatorConfig);
 	}
 
+	private Metadata getMetadata(MessageValidatorEngine mvc) {
+		MetadataContainer container = (MetadataContainer) mvc.findMessageValidator("MetadataContainer");
+		return container.getMetadata();
+	}
+
 	public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
 		AdhocQueryResponseGenerator queryResponseGenerator;
 		RegistryResponseGeneratorSim registryResponseGenerator;
@@ -150,16 +161,36 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 
 			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
 				return false;  // returns if SOAP Fault was generated
-			
+
 			if (mvc.hasErrors()) {
 				if (generateResponse)
-				dsSimCommon.sendErrorsInRegistryResponse(er);
+					dsSimCommon.sendErrorsInRegistryResponse(er);
 				return false;
 			}
 
-			
 			RegRSim rsim = new RegRSim(common, dsSimCommon, getSimulatorConfig());
+
+			String metadataValidatorName = getMetadataValidatorName();
+			if (metadataValidatorName != null && !metadataValidatorName.equals("")) {
+				// Insert placeholder NULL custom validator
+				rsim.setCustomMetadataValidator(new CustomMetadataValidator(
+						metadataValidatorName,
+						getMetadata(mvc),
+						dsSimCommon.simCommon.vc,
+						null,
+						getSimulatorConfig().get(SimulatorProperties.environment).asString(),
+						dsSimCommon.simCommon.db.getTestSession()));
+			}
+
 			mvc.addMessageValidator("Register Transaction", rsim, er);
+
+			mvc.run();
+
+			if (mvc.hasErrors()) {
+				if (generateResponse)
+					dsSimCommon.sendErrorsInRegistryResponse(er);
+				return false;
+			}
 
 			registryResponseGenerator = new RegistryResponseGeneratorSim(common, dsSimCommon);
 			mvc.addMessageValidator("Attach Errors", registryResponseGenerator, er);

@@ -21,6 +21,7 @@ class FindTest extends Specification {
     @Shared SimDb simDb = new SimDb()
     @Shared SimulatorServiceManager simulatorServiceManager
     @Shared Session session
+    def environment = 'default'
 
     def setupSpec() {
         URL externalCacheMarker = getClass().getResource('/external_cache/external_cache.txt')
@@ -51,8 +52,8 @@ class FindTest extends Specification {
         simDb.deleteAllSims(billTestSession)
         SimId lynnSimId = SimIdFactory.simIdBuilder('lynn__bill')
         SimId billSimId = SimIdFactory.simIdBuilder('bill__bill')
-        Simulator lynnSim = simulatorServiceManager.getNewSimulator(ActorType.REPOSITORY.shortName, lynnSimId)
-        Simulator billSim = simulatorServiceManager.getNewSimulator(ActorType.REPOSITORY.shortName, billSimId)
+        Simulator lynnSim = simulatorServiceManager.getNewSimulator(ActorType.REPOSITORY.shortName, lynnSimId, environment)
+        Simulator billSim = simulatorServiceManager.getNewSimulator(ActorType.REPOSITORY.shortName, billSimId, environment)
 
         then:
         SimDb.getSimIdsForUser(lynnTestSession).size() == 1
@@ -68,8 +69,8 @@ class FindTest extends Specification {
         SimId defaultSimId = SimIdFactory.simIdBuilder('default__bill')
         SimId billSimId = SimIdFactory.simIdBuilder('bill__bill')
         Set createdSims = [defaultSimId, billSimId]
-        Simulator defaultSim = simulatorServiceManager.getNewSimulator(ActorType.REPOSITORY.shortName, defaultSimId)
-        Simulator billSim = simulatorServiceManager.getNewSimulator(ActorType.REPOSITORY.shortName, billSimId)
+        Simulator defaultSim = simulatorServiceManager.getNewSimulator(ActorType.REPOSITORY.shortName, defaultSimId, environment)
+        Simulator billSim = simulatorServiceManager.getNewSimulator(ActorType.REPOSITORY.shortName, billSimId, environment)
         Set billSims = SimDb.getAllSimIds(billTestSession) as Set
         Set defaultSims = SimDb.getAllSimIds(defaultTestSession) as Set
 

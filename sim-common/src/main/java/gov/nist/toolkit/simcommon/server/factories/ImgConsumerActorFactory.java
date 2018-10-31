@@ -25,11 +25,11 @@ public class ImgConsumerActorFactory  extends AbstractActorFactory implements IA
     static final List<TransactionType> incomingTransactions = new ArrayList<>();
 
     @Override
-    public Simulator buildNew(SimManager simm, SimId simId, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
+    public Simulator buildNew(SimManager simm, SimId simId, String environment, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
         ActorType actorType = ActorType.IMAGING_DOC_CONSUMER;
         SimulatorConfig sc;
         if (configureBase)
-            sc = configureBaseElements(actorType, simId, simId.getTestSession());
+            sc = configureBaseElements(actorType, simId, simId.getTestSession(), environment);
         else
             sc = new SimulatorConfig();
 

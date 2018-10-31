@@ -40,13 +40,13 @@ public class RGActorFactory extends AbstractActorFactory implements IActorFactor
       Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE);
 
    @Override
-   public Simulator buildNew(SimManager simm, @SuppressWarnings("hiding") SimId newID,
+   public Simulator buildNew(SimManager simm, @SuppressWarnings("hiding") SimId newID, String environment,
                              boolean configureBase)
            throws Exception {
       this.newID = newID;
       ActorType actorType = ActorType.RESPONDING_GATEWAY;
       SimulatorConfig sc;
-      if (configureBase) sc = configureBaseElements(actorType, newID, newID.getTestSession());
+      if (configureBase) sc = configureBaseElements(actorType, newID, newID.getTestSession(), environment);
       else sc = new SimulatorConfig();
 
       SimId simId = sc.getId();
@@ -77,12 +77,12 @@ public class RGActorFactory extends AbstractActorFactory implements IActorFactor
       RegistryActorFactory raf = new RegistryActorFactory();
       raf.setTransactionOnly(isTransactionOnly());
       SimulatorConfig registryConfig =
-         raf.buildNew(simm, simId, true).getConfig(0); // was
+         raf.buildNew(simm, simId, environment, true).getConfig(0); // was
                                                                               // false
 
       // This needs to be grouped with a Document Repository also
       SimulatorConfig repositoryConfig =
-         new RepositoryActorFactory().buildNew(simm, simId, true).getConfig(0); // was
+         new RepositoryActorFactory().buildNew(simm, simId, environment, true).getConfig(0); // was
                                                                                 // false
       sc.add(registryConfig); // this adds the individual
                               // SimulatorConfigElements to the RG

@@ -34,6 +34,7 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	private String actorType;
 	private Date expires;
 	private boolean expired = false;
+	private String environmentName = null;
 	private List<SimulatorConfigElement> elements  = new ArrayList<SimulatorConfigElement>();
 
 	// This is only used to record validation requirements for included document(s)
@@ -103,10 +104,15 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 		
 	}
 	
-	public SimulatorConfig(SimId id, String actorType, Date expiration) {
+	public SimulatorConfig(SimId id, String actorType, Date expiration, String environment) {
 		this.id = id;
 		this.actorType = actorType;
 		expires = expiration;
+		this.environmentName = environment;
+
+		ActorType at = ActorType.findActor(actorType);
+		if (at != null && at.isFhir())
+			this.id.forFhir();
 	}
 	
 	public List<SimulatorConfigElement> elements() {
@@ -277,6 +283,8 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	public TestSession getTestSession() {
 		return id.getTestSession();
 	}
+
+	public String getEnvironmentName() { return environmentName; }
 
 	@Override
 	public boolean equals(Object o) {
