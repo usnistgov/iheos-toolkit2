@@ -45,6 +45,7 @@ class RegOrchestrationBuilder extends AbstractOrchestrationBuilder {
 
         boolean forceNewPatientIds = !request.isUseExistingState()
 
+        // Step 1. Create Patient ID Strings if forceNewPatientIds is set to True
         OrchestrationProperties orchProps = new OrchestrationProperties(session, request.testSession, ActorType.REGISTRY, pidNameMap.keySet(), forceNewPatientIds)
 
         SiteSpec registrySut
@@ -57,12 +58,14 @@ class RegOrchestrationBuilder extends AbstractOrchestrationBuilder {
         }
         response.setSut(registrySut)
 
+        // Make Pid objects from String created in Step 1.
         Pid registerPid = PidBuilder.createPid(orchProps.getProperty("registerPid"))
         Pid registerAltPid = PidBuilder.createPid(orchProps.getProperty("registerAltPid"))
         Pid sqPid       = PidBuilder.createPid(orchProps.getProperty("sqPid"))
         Pid mpq1Pid     = PidBuilder.createPid(orchProps.getProperty("mpq1Pid"))
         Pid mpq2Pid     = PidBuilder.createPid(orchProps.getProperty("mpq2Pid"))
 
+        // Assign Pid to the response
         response.setRegisterPid(registerPid)
         response.setRegisterAltPid(registerAltPid)
         response.setSqPid(sqPid)
