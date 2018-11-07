@@ -73,6 +73,9 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
         FlowPanel pidFeedPanel = new FlowPanel();
         pidFeedPanel.add(noFeed);
         pidFeedPanel.add(v2Feed);
+
+        // TODO: Restore pifType from Orchestration properties previously saved
+
         v2Feed.setChecked(true);
 
         setCustomPanel(pidFeedPanel);
