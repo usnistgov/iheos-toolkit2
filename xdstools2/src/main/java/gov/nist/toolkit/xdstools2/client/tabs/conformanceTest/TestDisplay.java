@@ -60,7 +60,7 @@ public class TestDisplay  implements IsWidget {
         view.setTestTitle("Test: " + testOverview.getName() + " - " +testOverview.getTitle());
         view.setTime(testOverview.getLatestSectionTime());
 
-        if (allowRun) view.setPlay("Run", new RunClickHandler(testRunner, testInstance, testContext, testContextView, controller));
+        if (allowRun) view.setPlay("Run", new RunClickHandler(testDisplayGroup, testRunner, testInstance, testContext, testContextView, controller));
         if (allowValidate) view.setValidate("Validate", new RunClickHandler(testRunner, testInstance, testContext, testContextView, controller, true));
 
         if (testOverview.isRun()) {

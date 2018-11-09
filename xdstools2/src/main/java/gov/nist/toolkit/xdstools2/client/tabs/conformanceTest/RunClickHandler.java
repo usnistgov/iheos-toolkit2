@@ -9,6 +9,7 @@ import gov.nist.toolkit.results.client.TestInstance;
  *
  */
 public class RunClickHandler implements ClickHandler {
+    private TestDisplayGroup testDisplayGroup;
     private TestInstance testInstance;
     private TestRunner testRunner;
     private TestContext testContext;
@@ -25,7 +26,8 @@ public class RunClickHandler implements ClickHandler {
         this.ignoreSiteSelection = ignoreSiteSelection;
     }
 
-    RunClickHandler(TestRunner testRunner, TestInstance testInstance, TestContext testContext, TestContextView testContextView, Controller controller) {
+    RunClickHandler(TestDisplayGroup testDisplayGroup, TestRunner testRunner, TestInstance testInstance, TestContext testContext, TestContextView testContextView, Controller controller) {
+        this.testDisplayGroup = testDisplayGroup;
         this.testRunner = testRunner;
         this.testInstance = testInstance;
         this.testContext = testContext;
@@ -47,7 +49,7 @@ public class RunClickHandler implements ClickHandler {
 
         String msg = testContext.verifyTestContext(ignoreSiteSelection);
         if (msg == null)
-            testRunner.runTest(testInstance, null, null);
+            testRunner.runTest(testDisplayGroup, testInstance, null, null);
         else {
             if (testContextView != null)
                 testContextView.launchDialog(msg);

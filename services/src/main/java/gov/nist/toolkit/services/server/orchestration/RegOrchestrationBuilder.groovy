@@ -117,6 +117,7 @@ class RegOrchestrationBuilder extends AbstractOrchestrationBuilder {
 
                 // Initialize Registry for Stored Query testing
                 Map<String, String> parms = new HashMap<>()
+                // TODO: Make this params put for patientid a test-specific. Other tests should not blindly re-use this value.
                 parms.put('$patientid$', sqPid.toString())
 
                 try {
@@ -129,7 +130,17 @@ class RegOrchestrationBuilder extends AbstractOrchestrationBuilder {
                 try {
                     request.registrySut.isTls = request.isUseTls()
                     // This test submits/uses an separate "alternate" PID that is not part of the PidNameMap above
-                    util.submit(request.testSession.value, request.registrySut, testInstance12374, parms)
+                    // Exclude the PIF section and use the registerAltPid because it was already created. Unwantedly, the test appears in red if one section is not run.
+                    // TODO: Need to copy this test and remove the PIF section.
+                    List<String> sections = Arrays.asList(
+                        'submit_doc'
+                        ,'submit_doc_w_fol'
+                        ,'submit_2doc_w_fol'
+                        ,'submit_doc_for_rplc'
+                        ,'rplc'
+                        ,'reset_patient_id')
+                    parms.put('$patientid$', orchProps.getProperty('registerAltPid'))
+                    util.submit(request.testSession.value, request.registrySut, testInstance12374, sections, parms)
                 } catch (Exception e) {
                     item12374.setSuccess(false)
                 }
@@ -137,6 +148,7 @@ class RegOrchestrationBuilder extends AbstractOrchestrationBuilder {
                 try {
                     request.registrySut.isTls = request.isUseTls()
                     // This test uses a patient Id from its Test plan UseReport instruction
+                    // TODO: 1) remove the usereport and 2) pass the $patientid$ parameter
                     util.submit(request.testSession.value, request.registrySut, testInstance12361, parms)
                 } catch (Exception e) {
                     item12361.setSuccess(false)
