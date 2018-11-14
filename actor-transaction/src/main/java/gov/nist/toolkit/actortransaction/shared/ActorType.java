@@ -331,7 +331,7 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList("RSNA_EDGE"),
             "ris",
             null,
-            "gov.nist.toolkit.fhir.simulators.sim.ris.RisActorSimulator", //TODO: Change to correct domainß
+            "gov.nist.toolkit.fhir.simulators.sim.ris.RisActorSimulator", //TODO: Change to correct domain
             Arrays.asList(TransactionType.RET_IMG_DOC_SET_GW), //TODO: Change to correct Transaction Type
             true,
             null,
