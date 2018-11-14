@@ -1,6 +1,8 @@
 package gov.nist.toolkit.fhir.simulators.sim.ig
 
 import gov.nist.toolkit.configDatatypes.client.TransactionType
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
+import gov.nist.toolkit.errorrecording.client.XdsErrorCode
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
 import gov.nist.toolkit.simcommon.server.SimDb
@@ -12,6 +14,7 @@ import gov.nist.toolkit.simcommon.server.SimCommon
 import gov.nist.toolkit.validatorsSoapMessage.message.SoapMessageValidator
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator
+import gov.nist.toolkit.valsupport.message.ForcedErrorMessageValidator
 import groovy.transform.TypeChecked
 import org.apache.axiom.om.OMElement
 import org.apache.log4j.Logger
@@ -41,6 +44,8 @@ public class IgActorSimulator extends GatewaySimulatorCommon {
    public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validationPattern) throws IOException {
 
       logger.info("IgActorSimulator: run - transactionType is " + transactionType);
+
+      mvc.addMessageValidator("Forced Error", new ForcedErrorMessageValidator(common.vc, XdsErrorCode.fromString(getSimulatorConfig().get(SimulatorProperties.errors).asString())), er);
 
       switch (transactionType) {
 

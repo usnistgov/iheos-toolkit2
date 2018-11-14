@@ -4,6 +4,7 @@ import gov.nist.toolkit.actortransaction.client.Severity
 import gov.nist.toolkit.commondatatypes.MetadataSupport
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.*
+import gov.nist.toolkit.errorrecording.client.XdsErrorCode
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code
 import gov.nist.toolkit.registrymetadata.Metadata
 import gov.nist.toolkit.registrymsg.registry.AdhocQueryRequest
@@ -29,6 +30,7 @@ import gov.nist.toolkit.valregmsg.service.SoapActionFactory
 import gov.nist.toolkit.valsupport.client.ValidationContext
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator
+import gov.nist.toolkit.valsupport.message.ForcedErrorMessageValidator
 import groovy.transform.TypeChecked
 import org.apache.axiom.om.OMElement
 import org.apache.log4j.Logger
@@ -60,6 +62,9 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
    public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
 
       this.mvc = mvc;
+
+
+      mvc.addMessageValidator("Forced Error", new ForcedErrorMessageValidator(common.vc, XdsErrorCode.fromString(getSimulatorConfig().get(SimulatorProperties.errors).asString())), er);
 
       switch (transactionType) {
          case TransactionType.XC_RETRIEVE:
