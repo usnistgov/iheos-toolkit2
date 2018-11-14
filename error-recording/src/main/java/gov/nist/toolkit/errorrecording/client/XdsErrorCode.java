@@ -45,5 +45,14 @@ public class XdsErrorCode implements IsSerializable  {
 		XDSUnreferencedObjectException,
 		UnresolvedReferenceException;
     };
+
+	public static Code fromString(String text) {
+		for (Code b : Code.values()) {
+			if (b.name().equalsIgnoreCase(text)) {
+				return b;
+			}
+		}
+		return null;
+	}
 	
 }
