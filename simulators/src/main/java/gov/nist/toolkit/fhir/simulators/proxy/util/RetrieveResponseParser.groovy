@@ -1,9 +1,14 @@
 package gov.nist.toolkit.fhir.simulators.proxy.util
 
 class RetrieveResponseParser {
+
     List<RetrieveContent> parse(String msg) {
+        parse(msg.bytes)
+    }
+
+    List<RetrieveContent> parse(byte[] msg) {
         // since this is has to work with our sim no need to check for start part - always first
-        List<BinaryPartSpec> parts = MultipartParser2.parse(msg.bytes)
+        List<BinaryPartSpec> parts = MultipartParser2.parse(msg)
         List<RetrieveContent> contents = []
         byte[] contentBytes  = parts[0].content
         String contentString = new String(contentBytes)

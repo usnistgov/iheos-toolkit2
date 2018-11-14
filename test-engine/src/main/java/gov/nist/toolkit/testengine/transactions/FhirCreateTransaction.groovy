@@ -324,6 +324,7 @@ class FhirCreateTransaction extends BasicFhirTransaction {
                 if (binaryUrl?.startsWith('file://')) {
                     String filename = binaryUrl.substring('file://'.size())
                     def (id, ext) = filename.split('\\.', 2)
+                    //  (testConfig.testplanDir,
                     Binary binary = new Binary()
                     File contentFile = new File(testConfig.testplanDir, filename)
                     if (!contentFile.exists()) {
@@ -337,6 +338,7 @@ class FhirCreateTransaction extends BasicFhirTransaction {
                     // resourceFile
                     binary.setContent(Io.bytesFromFile(contentFile))
                     binary.contentTypeElement = new CodeType(FhirSupport.mimeType(contentFile))
+                    //
                     toAdd << [id, binary]
                     dr.content[0].attachment.url = id
                     dr.content[0].attachment.contentType = FhirSupport.mimeType(contentFile)
@@ -352,6 +354,23 @@ class FhirCreateTransaction extends BasicFhirTransaction {
         }
     }
 
+
+    Binary binaryFromTestFile(File testdir, String filename) {
+        Binary binary = new Binary()
+        File contentFile = new File(testdir, filename)
+        if (!contentFile.exists()) {
+            // that was looking in the directory with the testplan.  If this is a utility
+            // it will be in a different directory
+            File dir = resourceFile.parentFile
+            contentFile = new File(dir, filename)
+            if (!contentFile.exists())
+                throw new Exception("Binary file reference from Resource (${filename}) cannot be found")
+        }
+        // resourceFile
+        binary.setContent(Io.bytesFromFile(contentFile))
+        binary.contentTypeElement = new CodeType(FhirSupport.mimeType(contentFile))
+        binary
+    }
 
 
 }
