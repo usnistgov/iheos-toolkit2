@@ -9,38 +9,32 @@ import gov.nist.toolkit.results.client.TestInstance;
  *
  */
 public class RunClickHandler implements ClickHandler {
-    private TestDisplayGroup testDisplayGroup;
     private TestInstance testInstance;
     private TestRunner testRunner;
     private TestContext testContext;
     private TestContextView testContextView;
     private boolean ignoreSiteSelection = false;
     private Controller controller = null;
+    private OnTestRunComplete onRunComplete;
 
-    RunClickHandler(TestRunner testRunner, TestInstance testInstance, TestContext testContext, TestContextView testContextView, Controller controller, boolean ignoreSiteSelection) {
+    RunClickHandler(TestRunner testRunner, TestInstance testInstance, TestContext testContext, TestContextView testContextView, Controller controller, boolean ignoreSiteSelection, OnTestRunComplete onRunComplete) {
         this.testRunner = testRunner;
         this.testInstance = testInstance;
         this.testContext = testContext;
         this.testContextView = testContextView;
         this.controller = controller;
         this.ignoreSiteSelection = ignoreSiteSelection;
+        this.onRunComplete = onRunComplete;
     }
 
-    RunClickHandler(TestDisplayGroup testDisplayGroup, TestRunner testRunner, TestInstance testInstance, TestContext testContext, TestContextView testContextView, Controller controller) {
-        this.testDisplayGroup = testDisplayGroup;
+    RunClickHandler(TestRunner testRunner, TestInstance testInstance, TestContext testContext, TestContextView testContextView, Controller controller, OnTestRunComplete onRunComplete) {
         this.testRunner = testRunner;
         this.testInstance = testInstance;
         this.testContext = testContext;
         this.controller = controller;
         this.testContextView = testContextView;
+        this.onRunComplete = onRunComplete;
     }
-
-//    RunClickHandler(TestRunner testRunner, TestInstance testInstance, TestContext testContext) {
-//        this.testRunner = testRunner;
-//        this.testInstance = testInstance;
-//        this.testContext = testContext;
-//        this.testContextView = null;
-//    }
 
     @Override
     public void onClick(ClickEvent clickEvent) {
@@ -49,7 +43,7 @@ public class RunClickHandler implements ClickHandler {
 
         String msg = testContext.verifyTestContext(ignoreSiteSelection);
         if (msg == null)
-            testRunner.runTest(testDisplayGroup, testInstance, null, null);
+            testRunner.runTest(testInstance, null, null, onRunComplete);
         else {
             if (testContextView != null)
                 testContextView.launchDialog(msg);

@@ -28,10 +28,10 @@ public class TestDisplayGroup {
         this.controller = controller;
     }
 
-    public TestDisplay display(TestOverviewDTO testOverview, InteractionDiagramDisplay diagramDisplay) {
+    public TestDisplay add(TestOverviewDTO testOverview) {
         TestDisplay testDisplay = get(testOverview.getTestInstance());
         if (testDisplay == null) {
-            testDisplay = new TestDisplay(testOverview.getTestInstance(), this, testRunner, testContext, testContextView, controller);
+            testDisplay = new TestDisplay(testOverview.getTestInstance(), testRunner, testContext, testContextView, controller);
             testDisplay.allowDelete(allowDelete);
             testDisplay.allowRun(allowRun);
             testDisplay.showValidate(allowValidate);
@@ -47,16 +47,14 @@ public class TestDisplayGroup {
             }
             put(testOverview.getTestInstance(), testDisplay);
         }
-        testDisplay.setDiagramDisplay(diagramDisplay);
-        testDisplay.display(testOverview);
         return testDisplay;
     }
 
-    public void put(TestInstance testInstance, TestDisplay testDisplay) {
+    private void put(TestInstance testInstance, TestDisplay testDisplay) {
         testDisplays.put(testInstance.getId(), testDisplay);
     }
 
-    public void remove(TestInstance testInstance) {
+    private void remove(TestInstance testInstance) {
         testDisplays.remove(testInstance.getId());
     }
 

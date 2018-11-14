@@ -4,6 +4,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.command.command.GetStsSamlAssertionCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetStsSamlAssertionMapCommand;
@@ -26,8 +27,10 @@ class RunTestsClickHandler implements ClickHandler, TestIterator {
     List<TestInstance> tests = new ArrayList<>();
     private TestsHeaderView testsHeaderView;
     private AbstractOrchestrationButton orchInit;
+    private TestDisplayGroup testDisplayGroup;
 
-    RunTestsClickHandler(ConformanceTestTab conformanceTestTab, TestsHeaderView testsHeaderView, AbstractOrchestrationButton orchInit, List<TestInstance> tests) {
+    RunTestsClickHandler(TestDisplayGroup testDisplayGroup, ConformanceTestTab conformanceTestTab, TestsHeaderView testsHeaderView, AbstractOrchestrationButton orchInit, List<TestInstance> tests) {
+        this.testDisplayGroup = testDisplayGroup;
         this.conformanceTestTab = conformanceTestTab;
         this.testsHeaderView = testsHeaderView;
         this.orchInit = orchInit;
@@ -112,7 +115,14 @@ class RunTestsClickHandler implements ClickHandler, TestIterator {
             setXuaOptionSamlAssertion(next);
         }
 
-        conformanceTestTab.runTest(next, null, this);
+        final TestDisplay testDisplay = testDisplayGroup.get(next);
+
+        conformanceTestTab.runTest(next, null, this, new OnTestRunComplete() {
+            @Override
+            void updateDisplay(TestOverviewDTO testOverviewDTO, InteractionDiagramDisplay diagramDisplay) {
+               testDisplay.display(testOverviewDTO, diagramDisplay);
+            }
+        });
     }
 
     private void setXuaOptionSamlAssertion(TestInstance testInstance) {

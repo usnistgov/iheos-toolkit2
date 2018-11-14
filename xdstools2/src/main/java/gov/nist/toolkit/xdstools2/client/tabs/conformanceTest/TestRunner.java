@@ -9,8 +9,7 @@ import java.util.Map;
  *
  */
 public interface TestRunner {
-    void runTest(TestInstance testInstance, Map<String, String> sectionParms, TestIterator testIterator);
-    TestDisplayGroup getTestDisplayGroup();
+    void runTest(TestInstance testInstance, Map<String, String> sectionParms, TestIterator testIterator, OnTestRunComplete onRunComplete);
     void removeTestDetails(TestInstance testInstance);
     SiteSpec getSiteToIssueTestAgainst(TestInstance testInstance);
     ActorOptionConfig getCurrentActorOption();

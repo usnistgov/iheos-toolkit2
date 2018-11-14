@@ -744,7 +744,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 					for (final TestOverviewDTO testOverview : testOverviews) {
 						updateTestOverview(testOverview);
 
-						final TestDisplay testDisplay = testDisplayGroup.display(testOverview, null); // Null diagram: No diagram will be available for Not-run test status.
+						final TestDisplay testDisplay = testDisplayGroup.add(testOverview); // Null diagram: No diagram will be available for Not-run test status.
 						testsPanel.add(testDisplay.asWidget());
 						InteractionDiagramDisplay diagramDisplay = new InteractionDiagramDisplay(
 								null,
@@ -753,6 +753,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 								((testContext.getSiteUnderTestAsSiteSpec() != null) ? testContext.getSiteUnderTestAsSiteSpec().getName() : ""),
 								currentActorOption,
 								getTestInstancePatientId(testOverview.getTestInstance(), parms));
+						testDisplay.display(testOverview, diagramDisplay);
 								// Lazy loading of TestOverviewDTO until it is opened.
 						HandlerRegistration openTestBarHReg = testDisplay.getView().addOpenHandler(new TestBarOpenHandler(testDisplay, testOverview, getCommandContext(), diagramDisplay
 							, new SimpleCallbackT<TestOverviewDTO>(){public void run(TestOverviewDTO t){updateTestOverview(t);}} // a -> updateTestOverview(a).
@@ -871,7 +872,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 
 	@Override
 	public RunTestsClickHandler getRunAllClickHandler() {
-		return new RunTestsClickHandler(this, testsHeaderView, orchInit, testsPerActorOption.get(currentActorOption));
+		return new RunTestsClickHandler(testDisplayGroup, this, testsHeaderView, orchInit, testsPerActorOption.get(currentActorOption));
 	}
 
 
@@ -922,7 +923,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 					public void onComplete(TestOverviewDTO testOverviewDTO) {
 						updateTestOverview(testOverviewDTO);
 						InteractionDiagramDisplay diagramDisplay = new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), getSiteToIssueTestAgainst(testInstance), testContext.getSiteUnderTestName(),actorOption,null);
-						testDisplayGroup.display(testOverviewDTO, diagramDisplay);
+						TestDisplay testDisplay = testDisplayGroup.add(testOverviewDTO);
+						testDisplay.display(testOverviewDTO, diagramDisplay);
 						updateTestsOverviewHeader(testsPerActorOption, testOverviewDTOs, testStatistics, actorOption);
 					}
 				}.run(new DeleteSingleTestRequest(getCommandContext(),testInstance));
@@ -953,7 +955,8 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 				public void onComplete(TestOverviewDTO testOverviewDTO) {
 					InteractionDiagramDisplay diagramDisplay = new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), getSiteToIssueTestAgainst(testOverviewDTO.getTestInstance()), testContext.getSiteUnderTestName(),currentActorOption,patientId);
 					// returned testStatus of entire test
-					testDisplayGroup.display(testOverviewDTO, diagramDisplay);
+					TestDisplay testDisplay = testDisplayGroup.add(testOverviewDTO);
+					testDisplay.display(testOverviewDTO, diagramDisplay);
 					Collection<TestOverviewDTO> overviews = updateTestOverview(testOverviewDTO);
 					updateTestsOverviewHeader(testsPerActorOption, testOverviewDTOs, testStatistics, currentActorOption);
 					// Schedule next section to be run
@@ -975,7 +978,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 	 * @param testIterator
 	 */
 	@Override
-	public void runTest(final TestInstance testInstance, final Map<String, String> sectionParms, final TestIterator testIterator) {
+	public void runTest(final TestInstance testInstance, final Map<String, String> sectionParms, final TestIterator testIterator, final OnTestRunComplete onRunComplete) {
 
 		getSiteToIssueTestAgainst().setTls(orchInit.isTls());
 
@@ -1009,7 +1012,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 							getSiteToIssueTestAgainst().setSaml(true);
 							getSiteToIssueTestAgainst().setStsAssertion(result);
 
-							runTestInstance(myTestDisplayGroup, testInstance, null, null);
+							runTestInstance(testInstance, null, null, onRunComplete);
 						}
 					}.run(new GetStsSamlAssertionRequest(getCommandContext(),xuaUsername,stsTestInstance,stsSpec,params));
 				} catch (Exception ex) {
@@ -1017,16 +1020,16 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 				}
 			} else {
 				// Reuse SAML when running the entire Actor test collection OR as set by the Xua option
-				runTestInstance(myTestDisplayGroup, testInstance, null, testIterator);
+				runTestInstance(testInstance, null, testIterator, onRunComplete);
 			}
 		} else {
 			// No SAML
 			getSiteToIssueTestAgainst().setSaml(false);
-			runTestInstance(myTestDisplayGroup, testInstance, sectionParms, testIterator);
+			runTestInstance(testInstance, sectionParms, testIterator, onRunComplete);
 		}
 	}
 
-	private void runTestInstance(final TestDisplayGroup myTestDisplayGroup, final TestInstance testInstance, final Map<String, String> sectionParms, final TestIterator testIterator) {
+	private void runTestInstance(final TestInstance testInstance, final Map<String, String> sectionParms, final TestIterator testIterator, final OnTestRunComplete onRunComplete) {
 		Map<String, String> parms = initializeTestParameters();
 		final String patientId = getTestInstancePatientId(testInstance, parms);
 
@@ -1045,9 +1048,19 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 				    InteractionDiagramDisplay diagramDisplay = new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), getSiteToIssueTestAgainst(testInstance), testContext.getSiteUnderTestName(),currentActorOption,patientId);
 					// returned testStatus of entire test
                     // At this point we cannot tell if this is from an Orchestration Run Test Display Group
-					myTestDisplayGroup.display(testOverviewDTO, diagramDisplay);
-					updateTestOverview(testOverviewDTO);
-					updateTestsOverviewHeader(testsPerActorOption, testOverviewDTOs, testStatistics, currentActorOption);
+//					myTestDisplayGroup.add(testOverviewDTO, diagramDisplay);
+//					testDisplay.setDiagramDisplay(diagramDisplay);
+                    try {
+						onRunComplete.updateDisplay(testOverviewDTO, diagramDisplay);
+					} catch (Exception ex) {
+//                    	Window.alert(ex.toString());
+					}
+					try {
+						updateTestOverview(testOverviewDTO);
+						updateTestsOverviewHeader(testsPerActorOption, testOverviewDTOs, testStatistics, currentActorOption);
+					} catch (Exception ex) {
+//						Window.alert(ex.toString());
+					}
 					// Schedule next test to be run
 					if (testIterator != null)
 						testIterator.onDone(testInstance);
