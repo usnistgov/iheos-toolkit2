@@ -242,17 +242,21 @@ public class StepView implements IsWidget {
 
         StringBuilder buf = new StringBuilder();
         buf.append("Goals:<br />");
-        buf.append(sectionOverview.getStep(stepName).getGoals());
+        if (sectionOverview != null && sectionOverview.getStep(stepName) != null) {
+            buf.append(sectionOverview.getStep(stepName).getGoals());
+        }
         buf.append("<br /><br />");
 //        List<String> goals = sectionOverview.getStep(stepName).getGoals();
 //        for (String goal : goals)  buf.append("&nbsp;&nbsp;&nbsp;&nbsp;").append(goal).append("<br />");
 
 
-        buf.append("Endpoint: " + step.getEndpoint()).append("<br />");
-        if (step.isExpectedSuccess())
-            buf.append("Expected Status: Success").append("<br />");
-        else
-            buf.append("Expected Status: Failure").append("<br />");
+        if (step != null) {
+            buf.append("Endpoint: " + step.getEndpoint()).append("<br />");
+            if (step.isExpectedSuccess())
+                buf.append("Expected Status: Success").append("<br />");
+            else
+                buf.append("Expected Status: Failure").append("<br />");
+        }
 
         for (String fault : step.getSoapFaults()) {
             buf.append("Fault: " + fault).append("<br />");
