@@ -34,6 +34,7 @@ class RegOrchestrationBuilder extends AbstractOrchestrationBuilder {
         RegOrchestrationResponse response = new RegOrchestrationResponse()
 
         // TODO: Manual PIF
+        // If SUT is a simulator, Default to V2 PIF? Otherwise, use Manual?
         // FIXME: If Manual PIF, exclude the PIF tests from being added to the Response through the TestInstanceManager constructor
         // If v2 PIF, every call to this TestInstanceManager constructor adds a TestInstance to the response object
         // If No PIF, no TI is added to the response object
@@ -55,7 +56,7 @@ class RegOrchestrationBuilder extends AbstractOrchestrationBuilder {
         // Step 1. Create Patient ID Strings if forceNewPatientIds is set to True
         OrchestrationProperties orchProps = new OrchestrationProperties(session, request.testSession, ActorType.REGISTRY, pidNameMap.keySet(), forceNewPatientIds)
 
-        // TODO: Persist the PIF setting, otherwise, V2 is always selected and the NoPIF mode, if it were previously selected, is lost.
+        // TODO: Persist the PIF setting, otherwise, V2 is always selected and the NoPIF mode, if it were previously selected, is lost and double-entries are created.
         orchProps.setProperty("pifType", request.pifType.name())
 
         SiteSpec registrySut
