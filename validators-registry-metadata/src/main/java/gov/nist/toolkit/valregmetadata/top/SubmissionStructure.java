@@ -214,7 +214,7 @@ public class SubmissionStructure {
 
 		if (!m.getFolderIds().contains(source)) {
 			if (isUUID(source)) {
-				if (rvi != null && !rvi.isFolder(source))
+				if (rvi != null && rvi.hasRegistryIndex() && !rvi.isFolder(source))
 					return false;
 			} else {
 				return false;
@@ -223,7 +223,7 @@ public class SubmissionStructure {
 
 		if (!m.getExtrinsicObjectIds().contains(target)) {
 			if (isUUID(target)) {
-				if (rvi != null && !rvi.isDocumentEntry(target))
+				if (rvi != null && rvi.hasRegistryIndex() && !rvi.isDocumentEntry(target))
 					return false;
 			} else {
 				return false;
@@ -317,7 +317,7 @@ public class SubmissionStructure {
 		} else {
 			// in registry?
 			if (isUUID(tsource)) {
-				if (rvi != null && !rvi.isFolder(tsource))
+				if (rvi != null && rvi.hasRegistryIndex() && !rvi.isFolder(tsource))
 					return false;
 			} else {
 				return false;
@@ -331,7 +331,7 @@ public class SubmissionStructure {
 		} else {
 			// in registry?
 			if (isUUID(ttarget)) {
-				if (rvi != null && !rvi.isDocumentEntry(ttarget))
+				if (rvi != null && rvi.hasRegistryIndex() && !rvi.isDocumentEntry(ttarget))
 					return false;
 			} else {
 				return false;
@@ -952,4 +952,5 @@ public class SubmissionStructure {
 	//	void err(String msg) {
 	//		rel.add_error(MetadataSupport.XDSRegistryMetadataError, msg, "Structure.java", null);
 	//	}
+
 }

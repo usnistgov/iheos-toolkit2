@@ -1,0 +1,13 @@
+<TestPlan>
+    <Test>ReposAcceptanceTest-1112/SubmitApnd</Test>
+    <TestStep id="append">
+        <ExpectedStatus>Success</ExpectedStatus>
+	  <ProvideAndRegisterTransaction>
+	    <XDSb/>
+	    <AssignUuids/>
+  	    <UseReport reportName="myDocId1_uuid" section="SubmitSingleDoc" step="submit" useAs="$original_doc_uuid$"/>
+	    <MetadataFile>single_doc.xml</MetadataFile>
+	    <Document id="myDocId1">my_document.txt</Document>
+	  </ProvideAndRegisterTransaction>
+    </TestStep>
+</TestPlan>

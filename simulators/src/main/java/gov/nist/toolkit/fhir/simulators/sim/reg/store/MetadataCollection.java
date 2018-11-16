@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 
-public class MetadataCollection implements Serializable, RegistryValidationInterface {
+public class MetadataCollection implements RegistryValidationInterface, Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public DocEntryCollection docEntryCollection;
@@ -678,4 +678,8 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 
 	void clearAllCollections() { allCollections = null; }
 
+	@Override
+	public boolean hasRegistryIndex() {
+		return regIndex.getSimDb().getRegistryIndexFile().exists();
+	}
 }
