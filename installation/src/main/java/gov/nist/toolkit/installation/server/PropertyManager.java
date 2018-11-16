@@ -352,15 +352,18 @@ public class PropertyManager {
 	public Map<String, String> getPropertyMap() {
 		loadProperties();
 		validateProperties();
-		Map<String, String> props = new TreeMap<String, String>();
-		for (Object keyObj : toolkitProperties.keySet()) {
+		return xformProperties2Map(toolkitProperties);
+	}
+
+	public static Map<String, String> xformProperties2Map(final Properties properties) {
+		Map<String, String> props = new TreeMap<>();
+		for (Object keyObj : properties.keySet()) {
 			String key = (String) keyObj;
-			String value = toolkitProperties.getProperty(key);
+			String value = properties.getProperty(key);
 			props.put(key, value);
 		}
 		return props;
 	}
-
 
 	public String getWikiBaseAddress() {
 		loadProperties();

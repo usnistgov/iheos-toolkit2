@@ -170,6 +170,8 @@ public interface ToolkitServiceAsync {
     void setToolkitProperties(SetToolkitPropertiesRequest request, AsyncCallback<String> callback);
     void reloadPropertyFile(AsyncCallback<Boolean> callback);
 
+    void getOrchestrationProperties(CommandContext context, AsyncCallback<Map<String, String>> callback);
+
     void getActorTypeNames(CommandContext context,AsyncCallback<List<String>> callback);
     void getNewSimulator(GetNewSimulatorRequest request, AsyncCallback<Simulator> callback);
     void getSimConfigs(GetSimConfigsRequest request,AsyncCallback<List<SimulatorConfig>> callback);

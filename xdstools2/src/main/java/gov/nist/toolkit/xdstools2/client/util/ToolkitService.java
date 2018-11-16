@@ -109,6 +109,8 @@ public interface ToolkitService extends RemoteService  {
 	Map<String, String> getToolkitProperties(CommandContext context) throws Exception;
 	boolean reloadPropertyFile() throws NoServletSessionException;
 
+	Map<String, String> getOrchestrationProperties(GetOrchestrationPropertiesRequest request) throws Exception;
+
 	Message getTransactionRequest(GetTransactionRequest request) throws Exception;
 	Message getTransactionResponse(GetTransactionRequest request) throws Exception;
 	String getTransactionLog(GetTransactionRequest request)  throws Exception;

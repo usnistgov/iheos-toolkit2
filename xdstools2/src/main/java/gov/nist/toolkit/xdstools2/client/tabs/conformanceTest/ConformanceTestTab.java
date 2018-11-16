@@ -651,14 +651,21 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 		}
 	}
 
-	// This includes Testing Environment and initialization sections
+	/** This performs two duties (the second being dependant on the first):
+	 1. Testing Environment (Orchestration Setup) and its initialization sections, and then
+	 2. eventually loads the Actor Test Collection for the selected actor/profile/option combination
+	 */
 	private void displayTestingPanel(final Panel testsPanel) {
 
 		mainView.getInitializationPanel().clear();
+		// 4.
+		// call async getOrchProp {
+		// 	call async getSUTType or "hasSiteFile"? A sim can be saved as a site file? { Use the Installation property get ActorDir.
+		// The outer shell is displayed here
 		displayOrchestrationHeader(mainView.getInitializationPanel());
-
+		// The data is displayed here
 		initializeTestDisplay(testsPanel);
-//		displayTestCollection(testsPanel);
+		// }}
 	}
 
 	private void initializeTestDisplay(Panel testsPanel) {
@@ -670,8 +677,9 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 		new AutoInitConformanceTestingCommand() {
 			@Override
 			public void onComplete(Boolean result) {
-				if (result)
-					orchInit.handleClick(null);   // auto init orchestration
+				if (result) // Auto init orchestration is turned ON
+				    // 2.
+					orchInit.handleClick(null);
 //					Orchestration eventually calls displayTestCollection when it is done initializing
 //				}
 			}
@@ -784,6 +792,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 			initializationPanel.add(orchInit.panel());
 		}
 		else if (currentActorOption.isReg()) {
+			// 3.
 			orchInit = new BuildRegTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label);
 			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
 			initializationPanel.add(orchInit.panel());

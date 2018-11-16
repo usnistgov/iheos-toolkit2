@@ -63,11 +63,6 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
         this.testContext = testContext;
         this.testContextView = testContextView;
 
-        //
-        // Disable selections that are not yet supported
-        //
-//        noFeed.setEnabled(false);
-
         setParentPanel(initializationPanel);
 
         FlowPanel pidFeedPanel = new FlowPanel();
@@ -75,6 +70,7 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
         pidFeedPanel.add(v2Feed);
 
         // TODO: Restore pifType from Orchestration properties previously saved
+        // 1.
 
         v2Feed.setChecked(true);
 

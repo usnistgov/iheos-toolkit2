@@ -18,6 +18,7 @@ import gov.nist.toolkit.fhir.simulators.support.StoredDocument;
 import gov.nist.toolkit.fhir.simulators.support.od.TransactionUtil;
 import gov.nist.toolkit.installation.server.ExternalCacheManager;
 import gov.nist.toolkit.installation.server.Installation;
+import gov.nist.toolkit.installation.server.PropertyManager;
 import gov.nist.toolkit.installation.server.PropertyServiceManager;
 import gov.nist.toolkit.installation.shared.TestCollectionCode;
 import gov.nist.toolkit.installation.shared.TestSession;
@@ -95,6 +96,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -1171,6 +1173,19 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
             throw new Exception(t.getMessage());
         }
     }
+
+    @Override
+    public Map<String, String> getOrchestrationProperties(GetOrchestrationPropertiesRequest request) throws Exception {
+       installCommandContext(request);
+       File orchestrationPropFile = Installation.instance().orchestrationPropertiesFile(request.getTestSession(), request.getActorTypeShortName());
+       if (orchestrationPropFile.exists()) {
+           Properties props = new Properties();
+           props.load(new FileInputStream(orchestrationPropFile));
+           return PropertyManager.xformProperties2Map(props);
+       }
+       throw new Exception("Error Property file does not exist: " + orchestrationPropFile.toString());
+    }
+
     @Override
     public boolean isGazelleConfigFeedEnabled(CommandContext context) throws Exception {
         installCommandContext(context);
