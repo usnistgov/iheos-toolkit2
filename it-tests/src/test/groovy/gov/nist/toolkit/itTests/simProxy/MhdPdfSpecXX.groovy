@@ -19,7 +19,7 @@ import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import gov.nist.toolkit.toolkitServicesCommon.ToolkitFactory
 import spock.lang.Shared
 
-class MhdPdfSpec extends ToolkitSpecification {
+class MhdPdfSpecXX extends ToolkitSpecification {
     @Shared SimulatorBuilder spi
 
 
