@@ -134,7 +134,10 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 
         logger.info(getSimulatorConfig());
 
-        mvc.addMessageValidator("Forced Error", new ForcedErrorMessageValidator(common.vc, XdsErrorCode.fromString(getSimulatorConfig().get(SimulatorProperties.errors).asString())), er);
+        List<String> errors = getSimulatorConfig().get(SimulatorProperties.errors).asList();
+        if (errors != null && !errors.isEmpty()) {
+			mvc.addMessageValidator("Forced Error", new ForcedErrorMessageValidator(common.vc, XdsErrorCode.fromString(errors.get(0))), er);
+		}
 
 		common.getValidationContext().updateEnabled = updateEnabled;
 		

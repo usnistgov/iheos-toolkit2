@@ -45,7 +45,10 @@ public class IgActorSimulator extends GatewaySimulatorCommon {
 
       logger.info("IgActorSimulator: run - transactionType is " + transactionType);
 
-      mvc.addMessageValidator("Forced Error", new ForcedErrorMessageValidator(common.vc, XdsErrorCode.fromString(getSimulatorConfig().get(SimulatorProperties.errors).asString())), er);
+      List<String> errors = getSimulatorConfig().get(SimulatorProperties.errors).asList();
+      if (errors != null && !errors.isEmpty()) {
+         mvc.addMessageValidator("Forced Error", new ForcedErrorMessageValidator(common.vc, XdsErrorCode.fromString(errors.get(0))), er);
+      }
 
       switch (transactionType) {
 

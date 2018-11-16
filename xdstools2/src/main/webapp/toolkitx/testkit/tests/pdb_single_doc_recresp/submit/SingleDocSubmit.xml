@@ -82,6 +82,10 @@
                     </div>
                 </text>
                 <status value="current"/>
+                <masterIdentifier>
+                    <system value="http://example.org/documents"/>
+                    <value value="1.2.23425234234.2347"/>
+                </masterIdentifier>
                 <type>
                     <coding>
                         <system value="http://loinc.org"/>

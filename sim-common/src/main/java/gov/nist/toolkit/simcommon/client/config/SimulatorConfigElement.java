@@ -95,7 +95,7 @@ public class SimulatorConfigElement implements Serializable,IsSerializable {
 	public String asString() {
 		if (valueType == ValueType.STRING)
 			return stringValue;
-		if (valueType == ValueType.SINGLE_SELECT_LIST && listValue != null)
+		if (valueType == ValueType.SINGLE_SELECT_LIST && listValue != null && listValue.size() > 0)
 			return listValue.get(0);
 		return Boolean.toString(false);
 	}
