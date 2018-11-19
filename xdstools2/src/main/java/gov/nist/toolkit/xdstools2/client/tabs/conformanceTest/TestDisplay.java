@@ -22,6 +22,7 @@ public class TestDisplay  implements IsWidget {
     private boolean allowValidate = false;
     private TestDisplayView view = new TestDisplayView();
     private Controller controller;
+    // TODO skb: create Map<String,String> here for test params
 
     public TestDisplay(TestInstance testInstance, TestRunner testRunner, TestContext testContext, TestContextView testContextView, Controller controller) {
         this.testInstance = testInstance;
@@ -56,6 +57,7 @@ public class TestDisplay  implements IsWidget {
         view.setTestTitle("Test: " + testOverview.getName() + " - " +testOverview.getTitle());
         view.setTime(testOverview.getLatestSectionTime());
 
+        // TODO skb read test params and assign to the RunClickHandler
         if (allowRun) view.setPlay("Run", new RunClickHandler(testRunner, testInstance, testContext, testContextView, controller, new OnTestRunComplete() {
             @Override
             void updateDisplay(TestOverviewDTO testOverviewDTO, InteractionDiagramDisplay diagramDisplay) {

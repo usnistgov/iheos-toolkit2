@@ -31,6 +31,7 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
     private FlowPanel initializationResultsPanel = new FlowPanel();
     private RadioButton noFeed = new RadioButton("pidFeedGroup", "No Patient Identity Feed");
     private RadioButton v2Feed = new RadioButton("pidFeedGroup", "V2 Patient Identitfy Feed");
+    private PifType pifType;
 
     static private final String XADPID_OPTION = "xadpid"; // corresponds to collection reg_xadpid in testkit collections.txt file
     static private final String RM_OPTION = "rm"; // corresponds to collection reg_rm in testkit collections.txt file
@@ -57,11 +58,12 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
         );
     }
 
-    BuildRegTestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextView testContextView, Panel initializationPanel, String label) {
+    BuildRegTestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextView testContextView, Panel initializationPanel, String label, PifType pifType) {
         this.initializationPanel = initializationPanel;
         this.testTab = testTab;
         this.testContext = testContext;
         this.testContextView = testContextView;
+        this.pifType = pifType;
 
         setParentPanel(initializationPanel);
 
@@ -72,7 +74,11 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
         // TODO: Restore pifType from Orchestration properties previously saved
         // 1.
 
-        v2Feed.setChecked(true);
+        if (PifType.V2.equals(pifType)) {
+            v2Feed.setChecked(true);
+        } else { // Default to NoFeed otherwise.
+            noFeed.setChecked(true);
+        }
 
         setCustomPanel(pidFeedPanel);
         build();
@@ -126,26 +132,36 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
                 final RegOrchestrationResponse orchResponse = (RegOrchestrationResponse) rawResponse;
                 testTab.setRegOrchestrationResponse(orchResponse);
 
-                initializationResultsPanel.add(new HTML("Initialization Complete"));
+                if (!PifType.NONE.equals(pifType)) {
+                    initializationResultsPanel.add(new HTML("Initialization Complete"));
+                } else {
+                    initializationResultsPanel.add(new HTML("Initialization partially complete: there are two additional steps below for you to complete."));
+                }
 
                 if (testContext.getSiteUnderTest() != null) {
                     initializationResultsPanel.add(new SiteDisplay("System Under Test Configuration", testContext.getSiteUnderTest()));
                 }
 
                 initializationResultsPanel.add(new HTML("<h2>Supporting Environment Configuration</h2>"));
-
                 handleMessages(initializationResultsPanel, orchResponse);
 
-                // Display tests run as part of orchestration - so links to their logs are available
-                initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testContext, testContextView, testTab, testTab ));
-
-                initializationResultsPanel.add(new HTML("<br />"));
-
+                if (PifType.NONE.equals(pifType)) {
+                    initializationResultsPanel.add(new HTML("<h3>1. On your system, manually perform the Patient Identity Feed for these PIDs as shown below</h3>"));
+                }
                 initializationResultsPanel.add(new HTML("Patient ID for Register tests: " + orchResponse.getRegisterPid().toString()));
                 initializationResultsPanel.add(new HTML("Alternate Patient ID for Register tests: " + orchResponse.getRegisterAltPid().toString()));
                 initializationResultsPanel.add(new HTML("Patient ID for Stored Query tests: " + orchResponse.getSqPid().toString()));
                 initializationResultsPanel.add(new HTML("Patient ID for MPQ tests: " + orchResponse.getMpq1Pid().toString()));
                 initializationResultsPanel.add(new HTML("Patient ID for MPQ tests: " + orchResponse.getMpq2Pid().toString()));
+
+                if (PifType.NONE.equals(pifType)) {
+                    initializationResultsPanel.add(new HTML("<h3>2. Run these utility tests manually to fully initialize the Testing Environment</h3>"));
+                }
+
+                // Display tests run as part of orchestration - so links to their logs are available
+                initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testContext, testContextView, testTab, testTab ));
+
+
                 initializationResultsPanel.add(new HTML("<br />"));
 
                 testTab.displayTestCollection(testTab.getMainView().getTestsPanel());

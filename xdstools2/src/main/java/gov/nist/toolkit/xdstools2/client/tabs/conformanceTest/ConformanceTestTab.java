@@ -484,7 +484,6 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 							currentActorTypeDescription = getDescriptionForTestCollection(currentActorOption.actorTypeId);
 
 							displayTestingPanel(mainView.getTestsPanel());
-							orchInit.setXuaOption(orchInit.XUA_OPTION.equals(currentActorOption.getOptionId()));
 						}
 
 					}
@@ -658,14 +657,19 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 	private void displayTestingPanel(final Panel testsPanel) {
 
 		mainView.getInitializationPanel().clear();
-		// 4.
-		// call async getOrchProp {
-		// 	call async getSUTType or "hasSiteFile"? A sim can be saved as a site file? { Use the Installation property get ActorDir.
-		// The outer shell is displayed here
-		displayOrchestrationHeader(mainView.getInitializationPanel());
-		// The data is displayed here
-		initializeTestDisplay(testsPanel);
-		// }}
+		new GetOrchestrationPifTypeCommand() {
+			@Override
+			public void onComplete(PifType result) {
+				// The outer shell is displayed here
+				displayOrchestrationHeader(mainView.getInitializationPanel(), result);
+				// The data is displayed here
+				initializeTestDisplay(testsPanel);
+			}
+			@Override
+			public void onFailure(Throwable throwable) {
+			    Window.alert(throwable.toString());
+			}
+		}.run(new GetOrchestrationPifTypeRequest(getCommandContext(), testContext.getSiteUnderTest(), currentActorOption.getActorTypeId()));
 	}
 
 	private void initializeTestDisplay(Panel testsPanel) {
@@ -782,7 +786,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 		return (parms!=null)?parms.get("$patientid$"):null;
 	}
 
-	private void displayOrchestrationHeader(Panel initializationPanel) {
+	private void displayOrchestrationHeader(Panel initializationPanel, PifType pifType) {
 		//new PopupMessage("ConformanceTestTab#displayOrchestrationHeader " + currentActorOption.toString());
 		String label = "Initialize Test Environment";
 		ActorOptionConfig currentActorOption = this.currentActorOption;
@@ -792,8 +796,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 			initializationPanel.add(orchInit.panel());
 		}
 		else if (currentActorOption.isReg()) {
-			// 3.
-			orchInit = new BuildRegTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label);
+			orchInit = new BuildRegTestOrchestrationButton(this, testContext, testContextView, initializationPanel, label, pifType);
 			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
 			initializationPanel.add(orchInit.panel());
 		}
@@ -867,6 +870,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 			if (testContext.getSiteUnderTest() != null)
 				siteToIssueTestAgainst = testContext.getSiteUnderTestAsSiteSpec();
 		}
+		orchInit.setXuaOption(orchInit.XUA_OPTION.equals(currentActorOption.getOptionId()));
 	}
 
 	private void displayActorsTabBar(TabBar actorTabBar) {

@@ -16,6 +16,7 @@ import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest;
 import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
+import gov.nist.toolkit.services.client.PifType;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.session.client.TestSessionStats;
@@ -110,6 +111,7 @@ public interface ToolkitService extends RemoteService  {
 	boolean reloadPropertyFile() throws NoServletSessionException;
 
 	Map<String, String> getOrchestrationProperties(GetOrchestrationPropertiesRequest request) throws Exception;
+	PifType getOrchestrationPifType(GetOrchestrationPifTypeRequest request) throws Exception;
 
 	Message getTransactionRequest(GetTransactionRequest request) throws Exception;
 	Message getTransactionResponse(GetTransactionRequest request) throws Exception;

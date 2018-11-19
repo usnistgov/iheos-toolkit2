@@ -14,6 +14,7 @@ import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest;
 import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
+import gov.nist.toolkit.services.client.PifType;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.session.client.TestSessionStats;
@@ -170,7 +171,8 @@ public interface ToolkitServiceAsync {
     void setToolkitProperties(SetToolkitPropertiesRequest request, AsyncCallback<String> callback);
     void reloadPropertyFile(AsyncCallback<Boolean> callback);
 
-    void getOrchestrationProperties(CommandContext context, AsyncCallback<Map<String, String>> callback);
+    void getOrchestrationProperties(GetOrchestrationPropertiesRequest request, AsyncCallback<Map<String, String>> callback);
+    void getOrchestrationPifType(GetOrchestrationPifTypeRequest request, AsyncCallback<PifType> callback);
 
     void getActorTypeNames(CommandContext context,AsyncCallback<List<String>> callback);
     void getNewSimulator(GetNewSimulatorRequest request, AsyncCallback<Simulator> callback);

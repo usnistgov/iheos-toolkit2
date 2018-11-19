@@ -36,8 +36,8 @@ class RegOrchestrationBuilder extends AbstractOrchestrationBuilder {
         // TODO: Manual PIF
         // If SUT is a simulator, Default to V2 PIF? Otherwise, use Manual?
         // FIXME: If Manual PIF, exclude the PIF tests from being added to the Response through the TestInstanceManager constructor
-        // If v2 PIF, every call to this TestInstanceManager constructor adds a TestInstance to the response object
-        // If No PIF, no TI is added to the response object
+        // If Request parameter has v2 PIF, every call to this TestInstanceManager constructor adds a TestInstance to the response object
+        // If Request parameter has No PIF, no TI is added to the response object
         Map<String, TestInstanceManager> pidNameMap = [
                 registerPid:  new TestInstanceManager(request, response, '15817'),
                 registerAltPid:  new TestInstanceManager(request, response, '15817b'),
@@ -91,8 +91,8 @@ class RegOrchestrationBuilder extends AbstractOrchestrationBuilder {
         TestInstance testInstance12346 = TestInstanceManager.initializeTestInstance(request.testSession, new TestInstance("12346", request.testSession))
         MessageItem item12346 = response.addMessage(testInstance12346, true, "")
 
-        TestInstance testInstance12374 = TestInstanceManager.initializeTestInstance(request.testSession, new TestInstance("12374", request.testSession))
-        MessageItem item12374 = response.addMessage(testInstance12374, true, "")
+        TestInstance testInstance12374base = TestInstanceManager.initializeTestInstance(request.testSession, new TestInstance("12374base", request.testSession))
+        MessageItem item12374base = response.addMessage(testInstance12374base, true, "")
 
         TestInstance testInstance12361 = TestInstanceManager.initializeTestInstance(request.testSession, new TestInstance("12361"))
         MessageItem item12361 = response.addMessage(testInstance12361, true, "")
@@ -102,15 +102,16 @@ class RegOrchestrationBuilder extends AbstractOrchestrationBuilder {
                 List<TestInstance> tILogToBeDeleted = new ArrayList<>()
                 tILogToBeDeleted.add(testInstanceReadme)
                 tILogToBeDeleted.add(testInstance12346)
-                tILogToBeDeleted.add(testInstance12374)
+                tILogToBeDeleted.add(testInstance12374base)
                 tILogToBeDeleted.add(testInstance12361)
                 session.getXdsTestServiceManager().delTestResults(tILogToBeDeleted, request.getEnvironmentName(), request.getTestSession())
+            } else {
+                // TODO skb: link TestInstances -> Map<String,String> for Test params
             }
 
             // send necessary Patient ID Feed messages
-            // FIXME: The .send method below always uses the V2 Option, need to use request.pifType
             // If Manual PIF, then do not Run any of the Load tests, just add the Load tests to the response.
-            // Instruct the user to manuall Run the Load test.
+            // Instruct the user to manually Run the Load test.
             // Move the auto-generated PID section to the top of the Load tests.
             if (PifType.V2 == request.pifType) {
                 new PifSender(api, request.testSession, request.registrySut, orchProps)
@@ -131,25 +132,17 @@ class RegOrchestrationBuilder extends AbstractOrchestrationBuilder {
                 try {
                     request.registrySut.isTls = request.isUseTls()
                     // This test submits/uses an separate "alternate" PID that is not part of the PidNameMap above
-                    // Exclude the PIF section and use the registerAltPid because it was already created. Unwantedly, the test appears in red if one section is not run.
-                    // TODO: Need to copy this test and remove the PIF section.
-                    List<String> sections = Arrays.asList(
-                        'submit_doc'
-                        ,'submit_doc_w_fol'
-                        ,'submit_2doc_w_fol'
-                        ,'submit_doc_for_rplc'
-                        ,'rplc'
-                        ,'reset_patient_id')
+                    // If we exclude the PIF section in Test 12374 (non-base) and use the registerAltPid because it was already created. Unwantedly, the test appears in red if one section is not run.
                     parms.put('$patientid$', orchProps.getProperty('registerAltPid'))
-                    util.submit(request.testSession.value, request.registrySut, testInstance12374, sections, parms)
+                    util.submit(request.testSession.value, request.registrySut, testInstance12374base, parms)
                 } catch (Exception e) {
-                    item12374.setSuccess(false)
+                    item12374base.setSuccess(false)
                 }
 
                 try {
                     request.registrySut.isTls = request.isUseTls()
                     // This test uses a patient Id from its Test plan UseReport instruction
-                    // TODO: 1) remove the usereport and 2) pass the $patientid$ parameter
+                    // Pass the $patientid$ parameter
                     util.submit(request.testSession.value, request.registrySut, testInstance12361, parms)
                 } catch (Exception e) {
                     item12361.setSuccess(false)
@@ -157,7 +150,7 @@ class RegOrchestrationBuilder extends AbstractOrchestrationBuilder {
             }
         } else {
             item12346.setSuccess(api.getTestLogs(testInstance12346).isSuccess())
-            item12374.setSuccess(api.getTestLogs(testInstance12374).isSuccess())
+            item12374base.setSuccess(api.getTestLogs(testInstance12374base).isSuccess())
             item12361.setSuccess(api.getTestLogs(testInstance12361).isSuccess())
         }
 
