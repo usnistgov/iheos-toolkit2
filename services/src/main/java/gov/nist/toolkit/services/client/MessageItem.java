@@ -4,6 +4,8 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.results.client.TestInstance;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Encapsulates a test instance which will be run to initialize a SUT or a
@@ -11,6 +13,7 @@ import java.io.Serializable;
  */
 public class MessageItem implements Serializable, IsSerializable {
     private TestInstance testInstance;
+    private Map<String, String> params = new HashMap<>();
     private String message;
     private boolean success;
 
@@ -41,5 +44,13 @@ public class MessageItem implements Serializable, IsSerializable {
 
     public boolean isSuccess() {
         return success;
+    }
+
+    public void setTestInstance(TestInstance testInstance) {
+        this.testInstance = testInstance;
+    }
+
+    public void addParam(String key, String value) {
+        params.put(key, value);
     }
 }

@@ -16,7 +16,6 @@ abstract public class AbstractOrchestrationResponse extends RawResponse {
     private List<MessageItem> messages = new ArrayList<>();
     private String additionalDocumentation = null;
     private boolean wasStarted = true;  // many services do not load this - check first
-    // TODO skb create a Map<TestInstance,Map<String,String> here
 
     public AbstractOrchestrationResponse() {}
     /**

@@ -8,6 +8,8 @@ import gov.nist.toolkit.session.client.logtypes.SectionOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.xdstools2.client.widgets.LaunchInspectorClickHandler;
 
+import java.util.Map;
+
 /**
  * Display of a single test including its sections.
  * This is the View and Presentation.
@@ -22,7 +24,7 @@ public class TestDisplay  implements IsWidget {
     private boolean allowValidate = false;
     private TestDisplayView view = new TestDisplayView();
     private Controller controller;
-    // TODO skb: create Map<String,String> here for test params
+    private Map<String,String> params;
 
     public TestDisplay(TestInstance testInstance, TestRunner testRunner, TestContext testContext, TestContextView testContextView, Controller controller) {
         this.testInstance = testInstance;
@@ -57,8 +59,7 @@ public class TestDisplay  implements IsWidget {
         view.setTestTitle("Test: " + testOverview.getName() + " - " +testOverview.getTitle());
         view.setTime(testOverview.getLatestSectionTime());
 
-        // TODO skb read test params and assign to the RunClickHandler
-        if (allowRun) view.setPlay("Run", new RunClickHandler(testRunner, testInstance, testContext, testContextView, controller, new OnTestRunComplete() {
+        if (allowRun) view.setPlay("Run", new RunClickHandler(testRunner, testInstance, testContext, testContextView, controller, params, new OnTestRunComplete() {
             @Override
             void updateDisplay(TestOverviewDTO testOverviewDTO, InteractionDiagramDisplay diagramDisplay) {
                 TestDisplay.this.display(testOverviewDTO, diagramDisplay);
@@ -140,4 +141,11 @@ public class TestDisplay  implements IsWidget {
         view.removeExtraStyle(name);
     }
 
+    public Map<String, String> getParams() {
+        return params;
+    }
+
+    public void setParams(Map<String, String> params) {
+        this.params = params;
+    }
 }
