@@ -225,7 +225,10 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 
 			//		reportManagerPreRun(request_element);  // must run before prepareMetadata (assign uuids)
 
-			run(request_element);
+			if (getExternalLinkage()!=null && !getExternalLinkage().containsKey("PifTypeNONE_BypassAllTransactions")) {
+					run(request_element);
+			} else
+				run(request_element);
 
 			if (s_ctx.getExpectedStatus().size()>0 && !s_ctx.getExpectedStatus().get(0).isFault())
 				reportManagerPostRun();
@@ -1396,8 +1399,6 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 				}
 		}
 		*/
-
-
 
 		try {
 			testLog.add_name_value(instruction_output, "InputMetadata", requestBody);

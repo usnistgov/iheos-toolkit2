@@ -109,18 +109,26 @@ class RegOrchestrationBuilder extends AbstractOrchestrationBuilder {
         item12361.params.put('$patient_id2$', orchProps.getProperty('mpq2Pid'))
         response.testParams.put(testInstance12361, item12361.params)
 
-        if (orchProps.updated()) {
-            if (!request.isUseExistingState()) {
+        if (orchProps.updated() && !request.isUseExistingState()) {
                 List<TestInstance> tILogToBeDeleted = new ArrayList<>()
+                pidNameMap.each { String key, TestInstanceManager value ->
+                    String pidId = key
+                    TestInstanceManager testInstanceManager = value
+                    tILogToBeDeleted.add(testInstanceManager.messageItem.testInstance)
+                }
                 tILogToBeDeleted.add(testInstanceReadme)
                 tILogToBeDeleted.add(testInstance12346_nopif)
                 tILogToBeDeleted.add(testInstance12374_nopif)
                 tILogToBeDeleted.add(testInstance12361)
                 session.getXdsTestServiceManager().delTestResults(tILogToBeDeleted, request.getEnvironmentName(), request.getTestSession())
-            }
 
             // Instruct the user to manually Run PIF feed on their system and then run load the test data.
         } else {
+            pidNameMap.each { String key, TestInstanceManager value ->
+                String pidId = key
+                TestInstanceManager testInstanceManager = value
+                testInstanceManager.messageItem.setSuccess(api.getTestLogs(testInstanceManager.messageItem.testInstance).isSuccess())
+            }
             item12346_nopif.setSuccess(api.getTestLogs(testInstance12346_nopif).isSuccess())
             item12374base.setSuccess(api.getTestLogs(testInstance12374_nopif).isSuccess())
             item12361.setSuccess(api.getTestLogs(testInstance12361).isSuccess())
@@ -198,18 +206,19 @@ class RegOrchestrationBuilder extends AbstractOrchestrationBuilder {
         item12361.params.put('$patient_id2$', orchProps.getProperty('mpq2Pid'))
         response.testParams.put(testInstance12361, item12361.params)
 
-        if (orchProps.updated()) {
-            // V2: send necessary Patient ID Feed messages
+        if (orchProps.updated() && !request.isUseExistingState()) {
+            // V2: Send Patient ID Feed messages based on values in pidNameMap
             new PifSender(api, request.testSession, request.registrySut, orchProps)
                 .send(PifType.V2, pidNameMap)
 
             // Initialize Registry for Stored Query testing
             Map<String, String> parms = new HashMap<>()
-            // TODO: Make this params put for patientid a test-specific. Other tests should not reuse this param value
-            parms.put('$patientid$', sqPid.toString())
+            // Make this params put for patientid a test-specific. Other tests should not reuse this param value
 
             try {
                 request.registrySut.isTls = request.isUseTls()
+                parms.clear()
+                parms.put('$patientid$', sqPid.toString())
                 util.submit(request.testSession.value, request.registrySut, testInstance12346, parms)
             } catch (Exception e) {
                 item12346.setSuccess(false)
@@ -219,6 +228,7 @@ class RegOrchestrationBuilder extends AbstractOrchestrationBuilder {
                 request.registrySut.isTls = request.isUseTls()
                 // This test submits/uses an separate "alternate" PID that is not part of the PidNameMap above
                 // If we exclude the PIF section in Test 12374 (non-base) and use the registerAltPid because it was already created. Unwantedly, the test appears in red if one section is not run.
+                parms.clear()
                 parms.put('$patientid$', orchProps.getProperty('registerAltPid'))
                 util.submit(request.testSession.value, request.registrySut, testInstance12374, parms)
             } catch (Exception e) {
@@ -229,6 +239,9 @@ class RegOrchestrationBuilder extends AbstractOrchestrationBuilder {
                 request.registrySut.isTls = request.isUseTls()
                 // This test uses a patient Id from its Test plan UseReport instruction
                 // Pass the $patientid$ parameter
+                parms.clear()
+                parms.put('$patient_id1$', orchProps.getProperty('mpq1Pid'))
+                parms.put('$patient_id2$', orchProps.getProperty('mpq2Pid'))
                 util.submit(request.testSession.value, request.registrySut, testInstance12361, parms)
             } catch (Exception e) {
                 item12361.setSuccess(false)

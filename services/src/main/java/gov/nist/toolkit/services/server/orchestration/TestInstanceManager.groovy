@@ -18,8 +18,10 @@ class TestInstanceManager {
 
     TestInstanceManager(AbstractOrchestrationRequest request, AbstractOrchestrationResponse response, String testId) {
         testInstance = initializeTestInstance(request.testSession, new TestInstance(testId, request.testSession))
-        if (PifType.NONE != request.pifType) {
-            messageItem = response.addMessage(testInstance, true, "")  // all default to success until shown otherwise
+        messageItem = response.addMessage(testInstance, true, "")  // all default to success until shown otherwise
+        if (PifType.NONE == request.pifType) {
+           messageItem.params.put("PifTypeNONE_BypassAllTransactions", "true")
+           response.testParams.put(testInstance, messageItem.params)
         }
     }
 
