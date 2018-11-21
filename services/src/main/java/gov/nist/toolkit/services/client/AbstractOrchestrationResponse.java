@@ -1,10 +1,13 @@
 package gov.nist.toolkit.services.client;
 
+import gov.nist.toolkit.results.client.Test;
 import gov.nist.toolkit.results.client.TestInstance;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Base class for Toolkit service responses for orchestration building.
@@ -16,6 +19,7 @@ abstract public class AbstractOrchestrationResponse extends RawResponse {
     private List<MessageItem> messages = new ArrayList<>();
     private String additionalDocumentation = null;
     private boolean wasStarted = true;  // many services do not load this - check first
+    private Map<TestInstance, Map<String,String>> testParams = new HashMap<>();
 
     public AbstractOrchestrationResponse() {}
     /**
@@ -82,5 +86,13 @@ abstract public class AbstractOrchestrationResponse extends RawResponse {
 
     public void setWasStarted(boolean wasStarted) {
         this.wasStarted = wasStarted;
+    }
+
+    public Map<TestInstance, Map<String, String>> getTestParams() {
+        return testParams;
+    }
+
+    public void setTestParams(Map<TestInstance, Map<String, String>> testParams) {
+        this.testParams = testParams;
     }
 }

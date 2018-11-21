@@ -1,6 +1,6 @@
 
 <TestPlan>
-  <Test>12374/submit_doc_w_fol</Test>
+  <Test>12374_nopif/submit_doc_w_fol</Test>
   <TestStep id="submit_doc_w_fol">
   <ExpectedStatus>Success</ExpectedStatus>
   <Rule>

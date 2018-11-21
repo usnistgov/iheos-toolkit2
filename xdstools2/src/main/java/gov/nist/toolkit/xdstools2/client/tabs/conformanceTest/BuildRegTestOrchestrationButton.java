@@ -71,7 +71,7 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
         pidFeedPanel.add(noFeed);
         pidFeedPanel.add(v2Feed);
 
-        // TODO: Restore pifType from Orchestration properties previously saved
+        // Restore pifType from Orchestration properties previously saved
         // 1.
 
         if (PifType.V2.equals(pifType)) {
@@ -132,10 +132,12 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
                 final RegOrchestrationResponse orchResponse = (RegOrchestrationResponse) rawResponse;
                 testTab.setRegOrchestrationResponse(orchResponse);
 
-                if (!PifType.NONE.equals(pifType)) {
+                if (PifType.V2.equals(pifType)) {
                     initializationResultsPanel.add(new HTML("Initialization Complete"));
-                } else {
+                } else if (PifType.NONE.equals(pifType)) {
                     initializationResultsPanel.add(new HTML("Initialization partially complete: there are two additional steps below for you to complete."));
+                } else {
+                    initializationResultsPanel.add(new HTML("Initialization Error: Unknown pifType."));
                 }
 
                 if (testContext.getSiteUnderTest() != null) {

@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public class MessageItem implements Serializable, IsSerializable {
     private TestInstance testInstance;
-    private Map<String, String> params = new HashMap<>();
+    private Map<String,String> params = new HashMap<>();
     private String message;
     private boolean success;
 
@@ -50,7 +50,11 @@ public class MessageItem implements Serializable, IsSerializable {
         this.testInstance = testInstance;
     }
 
-    public void addParam(String key, String value) {
-        params.put(key, value);
+    public Map<String, String> getParams() {
+        return params;
+    }
+
+    public void setParams(Map<String, String> params) {
+        this.params = params;
     }
 }

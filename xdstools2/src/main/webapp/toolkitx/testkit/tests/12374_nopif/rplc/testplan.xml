@@ -1,6 +1,6 @@
 
 <TestPlan>
-  <Test>12374/rplc</Test>
+  <Test>12374_nopif/rplc</Test>
   <TestStep id="rplc">
   <ExpectedStatus>Success</ExpectedStatus>
   <Rule>

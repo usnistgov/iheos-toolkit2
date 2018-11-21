@@ -1,6 +1,6 @@
 
 <TestPlan>
-  <Test>12374/submit_2doc_w_fol</Test>
+  <Test>12374_nopif/submit_2doc_w_fol</Test>
   <TestStep id="submit_2doc_w_fol">
   <Rule>
     <Transaction>R</Transaction>

@@ -8,6 +8,7 @@ import gov.nist.toolkit.session.client.logtypes.SectionOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.xdstools2.client.widgets.LaunchInspectorClickHandler;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -59,12 +60,16 @@ public class TestDisplay  implements IsWidget {
         view.setTestTitle("Test: " + testOverview.getName() + " - " +testOverview.getTitle());
         view.setTime(testOverview.getLatestSectionTime());
 
-        if (allowRun) view.setPlay("Run", new RunClickHandler(testRunner, testInstance, testContext, testContextView, controller, params, new OnTestRunComplete() {
-            @Override
-            void updateDisplay(TestOverviewDTO testOverviewDTO, InteractionDiagramDisplay diagramDisplay) {
-                TestDisplay.this.display(testOverviewDTO, diagramDisplay);
-            }
-        }));
+        if (allowRun) {
+            RunClickHandler runClickHandler = new RunClickHandler(testRunner, testInstance, testContext, testContextView, controller, new OnTestRunComplete() {
+                @Override
+                void updateDisplay(TestOverviewDTO testOverviewDTO, InteractionDiagramDisplay diagramDisplay) {
+                    TestDisplay.this.display(testOverviewDTO, diagramDisplay);
+                }
+            });
+            runClickHandler.setParams(params);
+            view.setPlay("Run", runClickHandler);
+        }
         if (allowValidate) view.setValidate("Validate", new RunClickHandler(testRunner, testInstance, testContext, testContextView, controller,
                 true, new OnTestRunComplete() {
             @Override

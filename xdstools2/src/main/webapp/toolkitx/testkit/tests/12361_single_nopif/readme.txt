@@ -16,6 +16,6 @@ single_doc defines one DocumentEntry objects with codes
 MPQ-classcode-1, MPQ-eventcode-1, MPQ-hcftcode-1
 
 To submit this using the GUI interface, select a section
-(multi_doc or single_doc), enter a new Patient ID and
-submit.  Then repeat other section with another new 
+(single_doc), enter a new Patient ID and submit.  
+Then repeat other section with another new 
 Patient ID.

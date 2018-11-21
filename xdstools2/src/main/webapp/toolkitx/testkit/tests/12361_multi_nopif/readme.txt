@@ -17,7 +17,7 @@ Document01) MPQ-classcode-1, MPQ-eventcode-1, MPQ-hcftcode-1
 Document02) MPQ-classcode-1, MPQ-eventcode-2, MPQ-hcftcode-2
 Document03) MPQ-classcode-1, MPQ-eventcode-2, MPQ-hcftcode-2
 
-To submit this using the GUI interface, select a section
-(multi_doc or single_doc), enter a new Patient ID and
-submit.  Then repeat other section with another new 
+To submit this using the GUI interface, select a section, 
+enter a new Patient ID and submit.  
+Then repeat other section with another new 
 Patient ID.

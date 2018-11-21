@@ -68,12 +68,12 @@
          </rim:Slot>
          <rim:Slot name="sourcePatientId">
             <rim:ValueList>
-               <rim:Value>89765a87b^^^&amp;1.2.3&amp;ISO</rim:Value>
+               <rim:Value>89765a87b^^^&amp;1.3.4.5&amp;ISO</rim:Value>
             </rim:ValueList>
          </rim:Slot>
          <rim:Slot name="sourcePatientInfo">
             <rim:ValueList>
-               <rim:Value>PID-3|89765a87b^^^&amp;1.2.3&amp;ISO</rim:Value>
+               <rim:Value>PID-3|pid1^^^&amp;1.2.3&amp;ISO</rim:Value>
                <rim:Value>PID-5|Doe^John^^^</rim:Value>
                <rim:Value>PID-7|19560527</rim:Value>
                <rim:Value>PID-8|M</rim:Value>
@@ -129,9 +129,9 @@
             </rim:Slot>
          </rim:Classification>
          <rim:Classification classifiedObject="Document01"
-               nodeRepresentation="REPORTS" classificationScheme="urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a">
+               nodeRepresentation="IMAGES" classificationScheme="urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a">
             <rim:Name>
-               <rim:LocalizedString value="Reports"/>
+               <rim:LocalizedString value="Images"/>
             </rim:Name>
             <rim:Slot name="codingScheme">
                <rim:ValueList>
@@ -163,13 +163,13 @@
             </rim:Slot>
          </rim:Classification>
          <rim:Classification classifiedObject="Document01"
-               nodeRepresentation="MPQ-hcftcode-1" classificationScheme="urn:uuid:f33fb8ac-18af-42cc-ae0e-ed0b0bdb91e1">
+               nodeRepresentation="66280005" classificationScheme="urn:uuid:f33fb8ac-18af-42cc-ae0e-ed0b0bdb91e1">
             <rim:Name>
-               <rim:LocalizedString value="Hospital"/>
+               <rim:LocalizedString value="Private home-based care"/>
             </rim:Name>
             <rim:Slot name="codingScheme">
                <rim:ValueList>
-                  <rim:Value>1.3.6.1.4.1.21367.2017.3</rim:Value>
+                  <rim:Value>2.16.840.1.113883.6.96</rim:Value>
                </rim:ValueList>
             </rim:Slot>
          </rim:Classification>
@@ -185,10 +185,22 @@
             </rim:Slot>
          </rim:Classification>
          <rim:Classification classifiedObject="Document01"
-               nodeRepresentation="MPQ-eventcode-2"
+               nodeRepresentation="urn:connectathon:bppc:foundational:policy"
                classificationScheme="urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4">
             <rim:Name>
-               <rim:LocalizedString value="MPQ-eventcode-2"/>
+               <rim:LocalizedString value="Foundational Connectathon Read-Access Policy"/>
+            </rim:Name>
+            <rim:Slot name="codingScheme">
+               <rim:ValueList>
+                  <rim:Value>1.3.6.1.4.1.21367.2017.3</rim:Value>
+               </rim:ValueList>
+            </rim:Slot>
+         </rim:Classification>
+         <rim:Classification classifiedObject="Document01"
+               nodeRepresentation="urn:connectathon:policy:full-access"
+               classificationScheme="urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4">
+            <rim:Name>
+               <rim:LocalizedString value="FULL ACCESS TO ALL POLICY"/>
             </rim:Name>
             <rim:Slot name="codingScheme">
                <rim:ValueList>
@@ -207,7 +219,7 @@
                </rim:ValueList>
             </rim:Slot>
          </rim:Classification>
-         <rim:ExternalIdentifier value="$patient_id2$"
+         <rim:ExternalIdentifier value="$patientid$"
                identificationScheme="urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427">
             <rim:Name>
                <rim:LocalizedString value="XDSDocumentEntry.patientId"/>
@@ -279,7 +291,7 @@
                <rim:LocalizedString value="XDSSubmissionSet.sourceId"/>
             </rim:Name>
          </rim:ExternalIdentifier>
-         <rim:ExternalIdentifier value="$patient_id2$"
+         <rim:ExternalIdentifier value="$patientid$"
                identificationScheme="urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446">
             <rim:Name>
                <rim:LocalizedString value="XDSSubmissionSet.patientId"/>

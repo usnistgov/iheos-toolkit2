@@ -35,6 +35,7 @@ public class OrchestrationSupportTestsDisplay extends FlowPanel {
                         ));
                         testDisplay.getView().setOpenTestBarHReg(openTestBarHReg);
                         add(testDisplay.asWidget());
+                        testDisplay.setParams(orchResponse.getTestParams().get(testOverview.getTestInstance()));
                         testDisplay.display(testOverview, null);
                         hasTests = true;
                     }

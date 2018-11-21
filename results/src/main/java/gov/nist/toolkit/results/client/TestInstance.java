@@ -11,11 +11,11 @@ import java.io.Serializable;
  */
 public class TestInstance implements IsSerializable, Serializable {
    private static final long serialVersionUID = 1L;
-	String id = null;    //  id of the test
-	String section = null;  // this is optional
-	String event = null;
-	String eventDir;
-	boolean sutInitiated;  // part of this test must be initiated by the SUT
+   String id = null;    //  id of the test
+   String section = null;  // this is optional
+   String event = null;
+   String eventDir;
+   boolean sutInitiated;  // part of this test must be initiated by the SUT
 
    // params to re-create LogRepository
    String location = null;
@@ -211,4 +211,5 @@ public class TestInstance implements IsSerializable, Serializable {
 	public void setSutInitiated(boolean sutInitiated) {
 		this.sutInitiated = sutInitiated;
 	}
+
 }

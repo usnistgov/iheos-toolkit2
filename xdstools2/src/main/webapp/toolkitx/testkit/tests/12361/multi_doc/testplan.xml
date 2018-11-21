@@ -10,7 +10,9 @@
     <RegisterTransaction>
       <XDSb/>
       <NoPatientId/>
+      <!--
       <UseReport reportName="$patientid$" test="15819" section="pif" step="step" useAs="$patient_id$"/>
+      -->
       <AssignUuids/>
       <MetadataFile>multi_doc.xml</MetadataFile>
     </RegisterTransaction>

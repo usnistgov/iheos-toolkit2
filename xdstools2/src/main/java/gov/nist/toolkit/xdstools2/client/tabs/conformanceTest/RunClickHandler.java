@@ -30,13 +30,12 @@ public class RunClickHandler implements ClickHandler {
         this.onRunComplete = onRunComplete;
     }
 
-    RunClickHandler(TestRunner testRunner, TestInstance testInstance, TestContext testContext, TestContextView testContextView, Controller controller, Map<String,String> params, OnTestRunComplete onRunComplete) {
+    RunClickHandler(TestRunner testRunner, TestInstance testInstance, TestContext testContext, TestContextView testContextView, Controller controller, OnTestRunComplete onRunComplete) {
         this.testRunner = testRunner;
         this.testInstance = testInstance;
         this.testContext = testContext;
         this.controller = controller;
         this.testContextView = testContextView;
-        this.params = params;
         this.onRunComplete = onRunComplete;
     }
 
@@ -59,4 +58,11 @@ public class RunClickHandler implements ClickHandler {
 //        }
     }
 
+    public Map<String, String> getParams() {
+        return params;
+    }
+
+    public void setParams(Map<String, String> params) {
+        this.params = params;
+    }
 }
