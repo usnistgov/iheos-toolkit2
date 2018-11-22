@@ -15,6 +15,10 @@ class DocumentReferenceEntryUUIDTest extends Specification {
         given:
         def docRefNoEntryUUID = '''
 <DocumentReference>
+                <masterIdentifier>
+                    <system value="urn:ietf:rfc:3986"/>
+                    <value value="urn:oid:1.2.129.6.58.92.88336"/>
+                </masterIdentifier>
     <content>
         <attachment>
             <contentType value="text/plain"/>
@@ -35,6 +39,10 @@ class DocumentReferenceEntryUUIDTest extends Specification {
     def 'submitted with entryUUID'() {
         def docRefWithEntryUUID = '''
 <DocumentReference>
+                <masterIdentifier>
+                    <system value="urn:ietf:rfc:3986"/>
+                    <value value="urn:oid:1.2.129.6.58.92.88336"/>
+                </masterIdentifier>
     <identifier>
         <system value="urn:ietf:rfc:3986"/>
         <use value="official"/>

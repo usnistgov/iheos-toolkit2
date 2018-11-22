@@ -19,6 +19,7 @@ import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -107,6 +108,7 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
             addFixedEndpoint(sc, SimulatorProperties.removeMetadataTlsEndpoint,    actorType, TransactionType.REMOVE_METADATA,     true);
 		}
 		addEditableConfig(sc, SimulatorProperties.metadataValidatorClass, ParamType.TEXT, "");
+		addEditableConfig(sc, SimulatorProperties.errors, ParamType.SELECTION, new ArrayList<String>(), false);
 
 		return new Simulator(sc);
 	}

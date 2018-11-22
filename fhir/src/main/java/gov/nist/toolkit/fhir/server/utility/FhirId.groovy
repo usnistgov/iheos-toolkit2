@@ -1,5 +1,6 @@
 package gov.nist.toolkit.fhir.server.utility
 
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException
 import org.hl7.fhir.dstu3.model.Resource
 
 /**
@@ -21,7 +22,8 @@ class FhirId {
 
     FhirId(Resource theResource) {
         type = theResource.class.simpleName
-        assert theResource.id, 'Logical ID of the resource is missing. - http://hl7.org/fhir/resource.html#id'
+        if (!theResource.id)
+            throw new ToolkitRuntimeException('Logical ID of the resource is missing. - http://hl7.org/fhir/resource.html#id')
         id = theResource.id
         if (id.contains('/'))
             id = id.substring(id.indexOf('/') + 1)

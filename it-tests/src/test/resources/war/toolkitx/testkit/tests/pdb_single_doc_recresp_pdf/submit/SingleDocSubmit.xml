@@ -6,13 +6,16 @@
     </meta>
     <type value="transaction"/>
     <entry>
-        <fullUrl value="urn:uuid:3fdc72f4-a11d-4a9d-9260-a9f745779e1d"/>
+        <fullUrl value="urn:uuid:3fdc72f4-a11d-4a9d-9260-a9f745779e1f"/>
         <resource>
             <DocumentReference>
                 <contained>
                     <!-- To satisfied sourcePatientID (R) -->
                     <Patient>
-                        <id value="a2"/>
+                        <id value="p4"/>
+                        <meta>
+                            <lastUpdated value="2013-07-01T13:11:33Z"/>
+                        </meta>
                         <text>
                             <status value="generated"/>
                             <div xmlns="http://www.w3.org/1999/xhtml">Person DOE, John, M, dob: 27/05/1956</div>
@@ -38,6 +41,9 @@
                     </Patient>
                     <Practitioner>
                         <id value="a3"/>
+                        <meta>
+                            <lastUpdated value="2013-07-01T13:11:33Z"/>
+                        </meta>
                         <text>
                             <status value="generated"/>
                             <div xmlns="http://www.w3.org/1999/xhtml">Author Gerald Smitty @ Cleveland Clinic</div>
@@ -51,6 +57,9 @@
                     <Practitioner>
                         <id value="a4"/>
                         <!--    cid:51b578b4-3ccb-4e67-b0dc-ef519d82ef2d@healthintersections.com.au    -->
+                        <meta>
+                            <lastUpdated value="2013-07-01T13:11:33Z"/>
+                        </meta>
                         <text>
                             <status value="generated"/>
                             <div xmlns="http://www.w3.org/1999/xhtml">Author Person @ Cleveland Clinic</div>
@@ -86,7 +95,7 @@
                 </type>
                 <class>
                     <coding>
-                        <system value="urn:oid:1.3.6.1.4.1.19376.1.2.6.1"/>
+                        <system value="urn:ihe:cat:classCode"/>
                         <code value="REPORTS"/>
                         <display value="Reports"/>
                     </coding>
@@ -105,7 +114,7 @@
                 <description value="Physical"/>
                 <securityLabel>
                     <coding>
-                        <system value="http://hl7.org/fhir/v3/Confidentiality"/>
+                        <system value="urn:oid:1.3.6.1.4.1.21367.2017.3"/>
                         <code value="N"/>
                         <display value="normal"/>
                     </coding>
@@ -114,16 +123,16 @@
                     <attachment>
                         <contentType value="text/plain"/>
                         <language value="en-us"/>
-                        <url value="http://localhost:9556/svc/fhir/Binary/1e404af3-077f-4bee-b7a6-a9be97e1ce32"/>
+                        <url value="file://pdffile.pdf"/>
                     </attachment>
                     <format>
-                        <system value="urn:oid:1.3.6.1.4.1.19376.1.2.3"/>
+                        <system value="urn:oid:1.3.6.1.4.1.21367.2017.3"/>
                         <code value="urn:ihe:iti:appc:2016:consent"/>
                     </format>
                 </content>
                 <context>
                     <sourcePatientInfo>
-                        <reference value="#a2"/>
+                        <reference value="#p4"/>
                     </sourcePatientInfo>
                     <period>
                         <start value="2004-12-23T08:00:00+10:00"/>
@@ -131,16 +140,16 @@
                     </period>
                     <practiceSetting>
                         <coding>
-                            <system value="http://connectathon.ihe"/>
-                            <code value="Practice-E"/>
-                            <display value="Ophthalmology"/>
+                            <system value="urn:oid:1.3.6.1.4.1.21367.2017.3"/>
+                            <code value="419192003"/>
+                            <display value="Other"/>
                         </coding>
                     </practiceSetting>
                     <facilityType>
                         <coding>
-                            <system value="http://www.snomed.org"/>
-                            <code value="35971002"/>
-                            <display value="Ambulatory care site"/>
+                            <system value="urn:oid:1.3.6.1.4.1.21367.2017.3"/>
+                            <code value="281PC2000N"/>
+                            <display value="Residential institution"/>
                         </coding>
                     </facilityType>
                 </context>
@@ -176,16 +185,22 @@
                         </telecom>
                     </Practitioner>
                 </contained>
-                
-                
+                <masterIdentifier>
+                    <system value="http://example.org/documents"/>
+                    <value value="1.2.23425234234.2346"/>
+                </masterIdentifier>
+                <identifier>
+                    <system value="http://example.org/documents"/>
+                    <value value="23425234234-2347"/>
+                </identifier>
                 <status value="current"/>
                 <type>
                     <coding>
-                        <system value="http://www.snomed.org"/>
-                        <code value="22232009"/>
-                        <display value="Hospital"/>
+                        <system value="urn:oid:1.3.6.1.4.1.21367.2017.3"/>
+                        <code value="39350007"/>
+                        <display value="Residential institution"/>
                     </coding>
-                    <text value="Hospital"/>
+                    <text value="History and Physical"/>
                 </type>
                 <subject>
                     <reference value="http://localhost:8080/fhir/Patient/a2"/>
@@ -201,7 +216,7 @@
                 <description value="Physical"/>
                 <content>
                     <pReference>
-                        <reference value="urn:uuid:3fdc72f4-a11d-4a9d-9260-a9f745779e1d"/>
+                        <reference value="urn:uuid:3fdc72f4-a11d-4a9d-9260-a9f745779e1f"/>
                     </pReference>
                 </content>
                 <related>
@@ -215,22 +230,5 @@
                 </related>
             </DocumentManifest>
         </resource>
-    </entry>
-    <entry>
-        <fullUrl value="http://localhost:9556/svc/fhir/Binary/1e404af3-077f-4bee-b7a6-a9be97e1ce32"/>
-        <resource>
-            <Binary>
-                <id value="1e404af3-077f-4bee-b7a6-a9be97e1ce32"/>
-                <meta>
-                    <lastUpdated value="2013-07-01T13:11:33Z"/>
-                </meta>
-                <contentType value="text/plain"/>
-                <content value="YXNkYXNkYXNkYXNkYXNk"/>
-            </Binary>
-        </resource>
-        <request>
-            <method value="POST"/>
-            <url value="Binary"/>
-        </request>
     </entry>
 </Bundle>

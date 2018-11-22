@@ -45,6 +45,7 @@ public class IGActorFactory extends AbstractActorFactory implements IActorFactor
          ParamType.SELECTION, new ArrayList <String>(), true);
       addEditableConfig(sc, SimulatorProperties.returnNoHome,
               ParamType.BOOLEAN, false);
+      addEditableConfig(sc, SimulatorProperties.errors, ParamType.SELECTION, new ArrayList<String>(), false);
 
       return new Simulator(sc);
    }

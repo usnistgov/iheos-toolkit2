@@ -3,6 +3,7 @@ package gov.nist.toolkit.fhir.simulators.sim.reg;
 import gov.nist.toolkit.actorfactory.PatientIdentityFeedServlet;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.fhir.simulators.sim.reg.mu.RMSim;
 import gov.nist.toolkit.fhir.simulators.sim.reg.mu.RMuSim;
 import gov.nist.toolkit.registrymetadata.Metadata;
@@ -23,6 +24,7 @@ import gov.nist.toolkit.simcommon.server.SimCommon;
 import gov.nist.toolkit.valregmsg.message.MetadataContainer;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
+import gov.nist.toolkit.valsupport.message.ForcedErrorMessageValidator;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -131,6 +133,11 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 		RegistryResponseGeneratorSim registryResponseGenerator;
 
         logger.info(getSimulatorConfig());
+
+        List<String> errors = getSimulatorConfig().get(SimulatorProperties.errors).asList();
+        if (errors != null && !errors.isEmpty()) {
+			mvc.addMessageValidator("Forced Error", new ForcedErrorMessageValidator(common.vc, XdsErrorCode.fromString(errors.get(0))), er);
+		}
 
 		common.getValidationContext().updateEnabled = updateEnabled;
 		

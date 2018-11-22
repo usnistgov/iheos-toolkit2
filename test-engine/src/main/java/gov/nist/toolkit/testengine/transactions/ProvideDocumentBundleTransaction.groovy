@@ -67,10 +67,10 @@ class ProvideDocumentBundleTransaction extends FhirCreateTransaction {
             while (sendEntry && returnEntry) {
                 def responseEntry = returnEntry.response
                 if (sendEntry.class.simpleName == returnEntry.class.simpleName) {
-                    if (responseEntry.status == '200') {
+                    if (responseEntry.status == '201') {
                         if (responseEntry.outcome) {
                             hasError = true
-                            err("Entry #${index} (${sendEntry.class.simpleName}) returned status 200 and a response outcome:...")
+                            err("Entry #${index} (${sendEntry.class.simpleName}) returned status 201 and a response outcome:...")
                             FhirSupport.operationOutcomeIssues(responseEntry.outcome).each { err(it) }
                         }
                     } else {
@@ -140,8 +140,11 @@ class ProvideDocumentBundleTransaction extends FhirCreateTransaction {
 
         } else {
             stepContext.set_error("Provide Document Bundle transaction must return bundle - returned ${returnResource.class.simpleName} instead")
-            if (returnResource instanceof OperationOutcome)
+            if (returnResource instanceof OperationOutcome) {
+                testLog.add_name_value(instruction_output, "Result", fhirCtx.newXmlParser().setPrettyPrint(true).encodeResourceToString(returnResource));
+
                 err(FhirSupport.operationOutcomeIssues(returnResource).join(']n'))
+            }
         }
     }
 
@@ -152,7 +155,7 @@ class ProvideDocumentBundleTransaction extends FhirCreateTransaction {
 <li>bundle.type is transaction-response
 <li>Same number of resources are returned in the Bundle as were sent
 <li>The resource types returned match what was sent
-<li>bundle.entry.response.status is 200 for each entry in the Bundle returned
+<li>bundle.entry.response.status is 201 for each entry in the Bundle returned
 <li>All DocumentReference resources returned have an absolute URL in the bundle.entry.response.location attribute
 <li>For all these returned bundle.entry.response.location's, a FHIR READ is used to verify the resource is available at that location
 </ul>

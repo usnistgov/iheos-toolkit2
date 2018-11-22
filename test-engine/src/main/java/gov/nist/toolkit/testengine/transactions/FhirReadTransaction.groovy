@@ -17,6 +17,7 @@ import org.hl7.fhir.dstu3.model.Binary
 import org.hl7.fhir.dstu3.model.DocumentReference
 import org.hl7.fhir.dstu3.model.OperationOutcome
 import org.hl7.fhir.dstu3.model.Resource
+import org.hl7.fhir.dstu3.model.StringType
 import org.hl7.fhir.dstu3.model.codesystems.DocumentReferenceStatus
 import org.hl7.fhir.instance.model.api.IBaseResource
 /**
@@ -104,15 +105,29 @@ class FhirReadTransaction extends BasicFhirTransaction {
             if (returnedContentType.contains('fhir')) {
                 // returned Binary instead of just the byte stream
                 IBaseResource returned = FhirSupport.parse(content)
-                assert returned instanceof Binary, "Since return is type ${returnedContentType}, content must be Binary resource - got ${returned.class.simpleName} instead"
-                Binary returnedBinary = returned
-                byte[] returnedBytes = returnedBinary.content
-                if (referenceBytes !=  returnedBytes) {
-                    stepContext.set_error("Returned bytes do not match those sent")
-                    stepContext.set_error("Sent ${referenceBytes.size()}")
-                    stepContext.set_error("Received ${contentBytes.size()}")
-                    stepContext.set_error(describe(referenceBytes, contentBytes))
-                    return
+                if (returned instanceof OperationOutcome) {
+                    OperationOutcome oo = (OperationOutcome) returned
+                    oo.issue.each { OperationOutcome.OperationOutcomeIssueComponent oc ->
+                        stepContext.set_error(oc.severity.name() + ':' + oc.code + ';' + oc.diagnostics)
+                        oc.location.each { StringType e ->
+                            String msg = e.valueAsString
+                            msg = msg.replace('.', ' ')
+                            stepContext.set_error('...' + msg)
+                        }
+                    }
+                }
+                if (returned instanceof Binary) {
+                    Binary returnedBinary = returned
+                    byte[] returnedBytes = returnedBinary.content
+                    if (referenceBytes != returnedBytes) {
+                        stepContext.set_error("Returned bytes do not match those sent")
+                        stepContext.set_error("Sent ${referenceBytes.size()}")
+                        stepContext.set_error("Received ${contentBytes.size()}")
+                        stepContext.set_error(describe(referenceBytes, contentBytes))
+                        return
+                    }
+                } else {
+                    stepContext.set_error("Since return is type ${returnedContentType}, content must be Binary resource - got ${returned.class.simpleName} instead")
                 }
             } else {
                 // natural content returned (not a resource)
@@ -178,9 +193,11 @@ class FhirReadTransaction extends BasicFhirTransaction {
                     }
 
                     FhirId requestId = new FhirId(fullEndpoint)
-                    FhirId returnedId = new FhirId(returnedResource)
-                    if (requestId.id != returnedId.id)
-                        stepContext.set_error("Requested ID ${requestId.id} but received ${returnedId.id}")
+                    if (!(returnedResource instanceof Binary)) {
+                        FhirId returnedId = new FhirId(returnedResource)
+                        if (requestId.id != returnedId.id)
+                            stepContext.set_error("Requested ID ${requestId.id} but received ${returnedId.id}")
+                    }
                 }
                 if (returnedResource instanceof DocumentReference) {
                     String binaryReference = returnedResource?.content?.attachment?.get(0)?.url

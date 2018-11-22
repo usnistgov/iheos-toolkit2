@@ -1054,6 +1054,7 @@ these codes unless you are testing MPQ -->
 
 
     <CodeType name="typeCode" classScheme="urn:uuid:f0306f51-975f-434e-a61c-c59651d33983">
+        <Code code="34133-9" display="Summary of episode note" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
         <!-- SMM 2016.12.14 C-CDA -->
         <Code code="52521-2" codingScheme="2.16.840.1.113883.6.1"
               display = "Overall Plan of Care/Advance Care Directives" system="urn:oid:1.3.6.1.4.1.21367.2017.3" deprecated="yes" />
