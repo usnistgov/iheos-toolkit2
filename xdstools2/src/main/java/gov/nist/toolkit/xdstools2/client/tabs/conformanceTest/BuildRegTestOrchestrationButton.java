@@ -41,6 +41,7 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
     static private final String ISR_OPTION = "isr";
     static private final String CAT_FOLDER_OPTION = "catfolder";   // run as part of Connectathon
     static private final String CAT_LIFECYCLE_OPTION = "catlifecycle";   // run as part of Connectathon
+    /*
     public static List<ActorAndOption> ACTOR_OPTIONS = new ArrayList<>();
     static {
         ACTOR_OPTIONS = java.util.Arrays.asList(
@@ -57,6 +58,7 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
                 
         );
     }
+    */
 
     BuildRegTestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextView testContextView, Panel initializationPanel, String label, PifType pifType) {
         this.initializationPanel = initializationPanel;
@@ -107,7 +109,7 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
         testTab.getMainView().showLoadingMessage("Initializing...");
 
         TestSession testSession = new TestSession(testTab.getCurrentTestSession());
-        RegOrchestrationRequest request = new RegOrchestrationRequest();
+        final RegOrchestrationRequest request = new RegOrchestrationRequest();
         request.selfTest(isSelfTest());
         request.setPifType((v2Feed.isChecked()) ? PifType.V2 : PifType.NONE);
         request.setUseTls(isTls());
@@ -132,9 +134,9 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
                 final RegOrchestrationResponse orchResponse = (RegOrchestrationResponse) rawResponse;
                 testTab.setRegOrchestrationResponse(orchResponse);
 
-                if (PifType.V2.equals(pifType)) {
+                if (PifType.V2.equals(request.getPifType())) {
                     initializationResultsPanel.add(new HTML("Initialization Complete"));
-                } else if (PifType.NONE.equals(pifType)) {
+                } else if (PifType.NONE.equals(request.getPifType())) {
                     initializationResultsPanel.add(new HTML("Initialization partially complete: there are two additional steps below for you to complete."));
                 } else {
                     initializationResultsPanel.add(new HTML("Initialization Error: Unknown pifType."));
@@ -147,7 +149,7 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
                 initializationResultsPanel.add(new HTML("<h2>Supporting Environment Configuration</h2>"));
                 handleMessages(initializationResultsPanel, orchResponse);
 
-                if (PifType.NONE.equals(pifType)) {
+                if (PifType.NONE.equals(request.getPifType())) {
                     initializationResultsPanel.add(new HTML("<h3>1. On your system, manually perform the Patient Identity Feed for these PIDs as shown below</h3>"));
                 }
                 initializationResultsPanel.add(new HTML("Patient ID for Register tests: " + orchResponse.getRegisterPid().toString()));
@@ -156,7 +158,7 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
                 initializationResultsPanel.add(new HTML("Patient ID for MPQ tests: " + orchResponse.getMpq1Pid().toString()));
                 initializationResultsPanel.add(new HTML("Patient ID for MPQ tests: " + orchResponse.getMpq2Pid().toString()));
 
-                if (PifType.NONE.equals(pifType)) {
+                if (PifType.NONE.equals(request.getPifType())) {
                     initializationResultsPanel.add(new HTML("<h3>2. Run these utility tests manually to fully initialize the Testing Environment</h3>"));
                 }
 

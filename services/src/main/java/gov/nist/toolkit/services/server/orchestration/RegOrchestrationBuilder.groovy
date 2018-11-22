@@ -44,6 +44,9 @@ class RegOrchestrationBuilder extends AbstractOrchestrationBuilder {
         // Depending on the orchestration options selected the elements of a set, or tests, can vary.
         RegOrchestrationResponse response = new RegOrchestrationResponse()
 
+        TestInstance testInstanceReadme = TestInstanceManager.initializeTestInstance(request.testSession, new TestInstance("ManualPif-Readme", request.testSession))
+        MessageItem itemReadme = response.addMessage(testInstanceReadme, true, "")
+
         // If Request parameter has No PIF, no TI is added to the response object
         Map<String, TestInstanceManager> pidNameMap = [
                 registerPid:  new TestInstanceManager(request, response, '15817'),
@@ -90,8 +93,14 @@ class RegOrchestrationBuilder extends AbstractOrchestrationBuilder {
         response.setMpq1Pid(mpq1Pid)
         response.setMpq2Pid(mpq2Pid)
 
-        TestInstance testInstanceReadme = TestInstanceManager.initializeTestInstance(request.testSession, new TestInstance("ManualPif-Readme", request.testSession))
-        MessageItem itemReadme = response.addMessage(testInstanceReadme, true, "")
+        // Setup PIF patientid param
+        pidNameMap.each { String key, TestInstanceManager value ->
+            String pidId = key
+            TestInstanceManager testInstanceManager = value
+            testInstanceManager.messageItem.params.put('$patientid$', orchProps.getProperty(pidId))
+        }
+
+
 
         TestInstance testInstance12346_nopif = TestInstanceManager.initializeTestInstance(request.testSession, new TestInstance("12346", request.testSession))
         MessageItem item12346_nopif = response.addMessage(testInstance12346_nopif, true, "")
