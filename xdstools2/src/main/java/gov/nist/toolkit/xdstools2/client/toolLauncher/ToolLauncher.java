@@ -3,13 +3,13 @@ package gov.nist.toolkit.xdstools2.client.toolLauncher;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Timer;
 import gov.nist.toolkit.actortransaction.shared.IheItiProfile;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.installation.shared.ToolkitUserMode;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
-import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.tabs.*;
 import gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab.SubmitResource;
@@ -24,6 +24,7 @@ import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.SimConfigEdito
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.SimulatorControlTab;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.TestsOverviewTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.util.SimpleCallback;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.toolContext.State;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.toolContext.Token;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
@@ -85,6 +86,30 @@ public class ToolLauncher implements ClickHandler {
 
 	final static public String conformanceTestsLabel = "Conformance Tests";
 	final static public String toolConfigTabLabel = "Toolkit configuration";
+
+	private ToolUserProperties toolUserProperties;
+	private class ToolUserProperties {
+		private final boolean multiUserModeEnabled;
+		private final boolean casModeEnabled;
+		private final ToolkitUserMode userMode;
+		private final String currentEnvironment;
+		private final String requestedTestSession;
+		private final String requestedEnvironment;
+
+		public ToolUserProperties(State state, Map<String,String> tkPropMap) {
+			multiUserModeEnabled = Boolean.parseBoolean(tkPropMap.get("Multiuser_mode"));
+			casModeEnabled = Boolean.parseBoolean(tkPropMap.get("Cas_mode"));
+			userMode = (multiUserModeEnabled) ? (casModeEnabled ? ToolkitUserMode.CAS_USER : ToolkitUserMode.MULTI_USER) : ToolkitUserMode.SINGLE_USER;
+			currentEnvironment = tkPropMap.get("Default_Environment");
+			if (state!=null) {
+				requestedEnvironment = state.getValue(Token.ENVIRONMENT);
+				requestedTestSession = state.getValue(Token.TEST_SESSION);
+			} else {
+				requestedEnvironment = null;
+				requestedTestSession = null;
+			}
+		}
+	}
 
 	private static List<ToolDef> tools = new ArrayList<>();
 
@@ -153,90 +178,127 @@ public class ToolLauncher implements ClickHandler {
 
 	private ToolWindow getTool(ToolDef def) {
 		if (def == null) return null;
-
-		final Map<String,String> tkPropMap = ClientUtils.INSTANCE.getTkPropMap();
-		boolean multiUserModeEnabled = Boolean.parseBoolean(tkPropMap.get("Multiuser_mode"));
-		boolean casModeEnabled = Boolean.parseBoolean(tkPropMap.get("Cas_mode"));
-		ToolkitUserMode userMode = (multiUserModeEnabled) ? (casModeEnabled ? ToolkitUserMode.CAS_USER : ToolkitUserMode.MULTI_USER) : ToolkitUserMode.SINGLE_USER;
-		String currentEnvironment = tkPropMap.get("Default_Environment");
-		final String requestedTestSession;
-		final String requestedEnvironment;
-		if (state !=null) {
-			requestedEnvironment = state.getValue(Token.ENVIRONMENT);
-			requestedTestSession = state.getValue(Token.TEST_SESSION);
-		} else {
-			requestedEnvironment = null;
-			requestedTestSession = null;
-		}
 		String menuName = def.getMenuName();
 
-		if (menuName.equals(mpqFindDocumentsTabLabel))
+		if (menuName.equals(mpqFindDocumentsTabLabel)) {
 			return new MPQFindDocumentsTab();
+		}
 
-		if (menuName.equals(findDocumentsAllParametersTabLabel)) return new FindDocuments2Tab();
-		if (menuName.equals(findDocumentsTabLabel)) return new FindDocumentsTab();
+		if (menuName.equals(findDocumentsAllParametersTabLabel)) {
+			return new FindDocuments2Tab();
+		}
+		if (menuName.equals(findDocumentsTabLabel)) {
+			return new FindDocumentsTab();
+		}
 //		if (menuName.equals(igTestsTabLabel)) return new IGTestTab();
 //		if (menuName.equals(rgTestsTabLabel)) return new RGTestTab();
-		if (menuName.equals(findDocumentsByRefIdTabLabel)) return new FindDocumentsByRefIdTab();
-		if (menuName.equals(findDocumentsAllParametersTabLabel)) return new FindDocuments2Tab();
-		if (menuName.equals(findFoldersTabLabel)) return new FindFoldersTab();
-		if (menuName.equals(getDocumentsTabLabel)) return new GetDocumentsTab();
-		if (menuName.equals(getFoldersTabLabel)) return new GetFoldersTab();
-		if (menuName.equals(getFolderAndContentsTabLabel)) return new GetFolderAndContentsTab();
-		if (menuName.equals(getSubmissionSetTabLabel)) return new GetSubmissionSetAndContentsTab();
-		if (menuName.equals(registryDoThisFirstTabLabel)) return new RegisterAndQueryTab();
-		if (menuName.equals(rmdInitTabLabel)) return new RMDInitTab();
-		if (menuName.equals(getRelatedTabLabel)) return new GetRelatedTab();
-		if (menuName.equals(getAllTabLabel)) return new GetAllTab();
-		if (menuName.equals(connectathonTabLabel)) return new ConnectathonTab();
-		if (menuName.equals(srcStoresDocValTabLabel)) return new SourceStoredDocValTab();
-		if (menuName.equals(documentRetrieveTabLabel)) return new DocRetrieveTab();
-		if (menuName.equals(imagingDocumentSetRetrieveTabLabel)) return new ImagingDocSetRetrieveTab();
-		if (menuName.equals(registryTestDataTabLabel)) return new RegistryTestdataTab();
-		if (menuName.equals(repositoryTestDataTabLabel)) return new RepositoryTestdataTab();
-		if (menuName.equals(recipientTestDataTabLabel)) return new XDRTestdataTab();
-		if (menuName.equals(repositoryDoThisFirstTabLabel)) return new ProvideAndRetrieveTab();
-		if (menuName.equals(registryLifecycleTabLabel)) return new LifecycleTab();
-		if (menuName.equals(registryFolderHandlingTabLabel)) return new FolderTab();
-		if (menuName.equals(sitesTabLabel)) return new ActorConfigTab();
-		if (menuName.equals(messageValidatorTabLabel)) return new MessageValidatorTab();
-		if (menuName.equals(simulatorMessageViewTabLabel)) return new SimulatorMessageViewTab();
-		if (menuName.equals(newSimulatorMessageViewTabLabel)) return new NewToolLauncher().launch(new SimMsgViewer());
-		if (menuName.equals(simulatorControlTabLabel)) return new SimulatorControlTab();
+		if (menuName.equals(findDocumentsByRefIdTabLabel)) {
+			return new FindDocumentsByRefIdTab();
+		}
+		if (menuName.equals(findDocumentsAllParametersTabLabel)) {
+			return new FindDocuments2Tab();
+		}
+		if (menuName.equals(findFoldersTabLabel)) {
+			return new FindFoldersTab();
+		}
+		if (menuName.equals(getDocumentsTabLabel)) {
+			return new GetDocumentsTab();
+		}
+		if (menuName.equals(getFoldersTabLabel)) {
+			return new GetFoldersTab();
+		}
+		if (menuName.equals(getFolderAndContentsTabLabel)) {
+			return new GetFolderAndContentsTab();
+		}
+		if (menuName.equals(getSubmissionSetTabLabel)) {
+			return new GetSubmissionSetAndContentsTab();
+		}
+		if (menuName.equals(registryDoThisFirstTabLabel)) {
+			return new RegisterAndQueryTab();
+		}
+		if (menuName.equals(rmdInitTabLabel)) {
+			return new RMDInitTab();
+		}
+		if (menuName.equals(getRelatedTabLabel)) {
+			return new GetRelatedTab();
+		}
+		if (menuName.equals(getAllTabLabel)) {
+			return new GetAllTab();
+		}
+		if (menuName.equals(connectathonTabLabel)) {
+			return new ConnectathonTab();
+		}
+		if (menuName.equals(srcStoresDocValTabLabel)) {
+			return new SourceStoredDocValTab();
+		}
+		if (menuName.equals(documentRetrieveTabLabel)) {
+			return new DocRetrieveTab();
+		}
+		if (menuName.equals(imagingDocumentSetRetrieveTabLabel)) {
+			return new ImagingDocSetRetrieveTab();
+		}
+		if (menuName.equals(registryTestDataTabLabel)) {
+			return new RegistryTestdataTab();
+		}
+		if (menuName.equals(repositoryTestDataTabLabel)) {
+			return new RepositoryTestdataTab();
+		}
+		if (menuName.equals(recipientTestDataTabLabel)) {
+			return new XDRTestdataTab();
+		}
+		if (menuName.equals(repositoryDoThisFirstTabLabel)) {
+			return new ProvideAndRetrieveTab();
+		}
+		if (menuName.equals(registryLifecycleTabLabel)) {
+			return new LifecycleTab();
+		}
+		if (menuName.equals(registryFolderHandlingTabLabel)) {
+			return new FolderTab();
+		}
+		if (menuName.equals(sitesTabLabel)) {
+			return new ActorConfigTab();
+		}
+		if (menuName.equals(messageValidatorTabLabel)) {
+			return new MessageValidatorTab();
+		}
+		if (menuName.equals(simulatorMessageViewTabLabel)) {
+			return new SimulatorMessageViewTab();
+		}
+		if (menuName.equals(newSimulatorMessageViewTabLabel)) {
+			return new NewToolLauncher().launch(new SimMsgViewer());
+		}
+		if (menuName.equals(simulatorControlTabLabel)) {
+			return new SimulatorControlTab();
+		}
 		if (menuName.equals(simulatorConfigEditTabLabel)) {
-			/*
-			This specific tool requires explicit parameters
-			 */
-			if (state!=null) {
+		    if (state!=null) {
 				// Environment
-				if (requestedEnvironment==null || "".equals(requestedEnvironment)) {
+                String requestedEnvironment = state.getValue(Token.ENVIRONMENT);
+				if (requestedEnvironment == null || "".equals(requestedEnvironment)) {
 					throw new ToolkitRuntimeException("env parameter is required.");
-				} else {
-					setupEnvironment(state, userMode, requestedEnvironment, currentEnvironment);
 				}
-
 				// Test session
-				if (requestedTestSession==null || "".equals(requestedTestSession)) {
+				String requestedTestSession = state.getValue(Token.TEST_SESSION);
+				if (requestedTestSession == null || "".equals(requestedTestSession)) {
 					throw new ToolkitRuntimeException("testSession parameter is required.");
-				} else {
-					setupTestSession(userMode, requestedTestSession, null);
 				}
-
 				// systemId
 				String systemId = state.getValue(Token.SYSTEM_ID);
-				if (systemId==null || "".equals(systemId)) {
+				if (systemId == null || "".equals(systemId)) {
 					throw new ToolkitRuntimeException("systemId parameter is required.");
 
 				}
-				SimConfigEditorTabLoader tool = new SimConfigEditorTabLoader();
-				tool.load(state);
-				return tool.getTab();
+				SimConfigEditorTabLoader tabLoader = new SimConfigEditorTabLoader();
+				tabLoader.load(state);
+				return tabLoader.getTab();
 			}
-
-
 		}
-		if (menuName.equals(toolConfigTabLabel)) return new ToolConfigTab();
-		if (menuName.equals(mesaTabLabel)) return new MesaTestTab();
+		if (menuName.equals(toolConfigTabLabel)) {
+			return new ToolConfigTab();
+		}
+		if (menuName.equals(mesaTabLabel)) {
+			return new MesaTestTab();
+		}
 		if (menuName.equals(conformanceTestsLabel)) {
 			ConformanceTestTab conformanceTestTab = new ConformanceTestTab();
 
@@ -246,20 +308,18 @@ public class ToolLauncher implements ClickHandler {
 			}
 
 
-
-			setupEnvironment(state, userMode, requestedEnvironment, currentEnvironment);
-			setupTestSession(userMode, requestedTestSession, conformanceTestTab);
-
+			setupEnvironment(state, toolUserProperties.userMode, toolUserProperties.requestedEnvironment, toolUserProperties.currentEnvironment);
+			setupTestSession(toolUserProperties.userMode, toolUserProperties.requestedTestSession, conformanceTestTab);
 
 			conformanceTestTab.getCurrentActorOption().setActorTypeId(state.getValue(Token.ACTOR));
 			conformanceTestTab.getCurrentActorOption().setProfileId(IheItiProfile.find(state.getValue(Token.PROFILE)));
 			conformanceTestTab.getCurrentActorOption().setOptionId(state.getValue(Token.OPTION));
-			SiteSpec site = new SiteSpec(state.getValue(Token.SYSTEM_ID), new TestSession(requestedTestSession));
+			SiteSpec site = new SiteSpec(state.getValue(Token.SYSTEM_ID), new TestSession(toolUserProperties.requestedTestSession));
 			conformanceTestTab.setCommonSiteSpec(site);
 			conformanceTestTab.setSiteToIssueTestAgainst(site);
 
 			GWT.log("Launch ConformanceTool for " +
-					"/testsession=" + requestedTestSession +
+					"/testsession=" + toolUserProperties.requestedTestSession +
 					"/actor=" + conformanceTestTab.getCurrentActorOption().getActorTypeId() +
 					"/profile=" + conformanceTestTab.getCurrentActorOption().getProfileId() +
 					"/option=" + conformanceTestTab.getCurrentActorOption().getOptionId() +
@@ -268,20 +328,41 @@ public class ToolLauncher implements ClickHandler {
 
 			return conformanceTestTab;
 		}
-		if (menuName.equals(dashboardTabLabel)) return new DashboardTab();
-		if (menuName.equals(repositoryTabLabel)) return new RepositoryListingTab();
-		if (menuName.equals(pidFavoritesLabel)) return new PidFavoritesTab(def.getTabName());
-		if (menuName.equals(testsOverviewTabLabel)) return new TestsOverviewTab();
-		if (menuName.equals(homeTabLabel)) return new HomeTab();
+		if (menuName.equals(dashboardTabLabel)) {
+			return new DashboardTab();
+		}
+		if (menuName.equals(repositoryTabLabel)) {
+			return new RepositoryListingTab();
+		}
+		if (menuName.equals(pidFavoritesLabel)) {
+			return new PidFavoritesTab(def.getTabName());
+		}
+		if (menuName.equals(testsOverviewTabLabel)) {
+			return new TestsOverviewTab();
+		}
+		if (menuName.equals(homeTabLabel)) {
+			return new HomeTab();
+		}
 //		if (menuName.equals(iigTestsTabLabel)) return new IIGTestTab();
 //		if (menuName.equals(rigTestsTabLabel)) return new RIGTestTab();
 //		if (menuName.equals(idsTestsTabLabel)) return new IDSTestTab();
 //		if (menuName.equals(rsnaedgeTestsTabLabel)) return new RSNAEdgeTestTab();
-		if (menuName.equals(submitResourceTabLabel)) return new NewToolLauncher().launch(new SubmitResource());
-		if (menuName.equals(fhirSearchTabLabel)) return new NewToolLauncher().launch(new FhirSearch());
+		if (menuName.equals(submitResourceTabLabel)) {
+			return new NewToolLauncher().launch(new SubmitResource());
+		}
+		if (menuName.equals(fhirSearchTabLabel)) {
+			return new NewToolLauncher().launch(new FhirSearch());
+		}
 		return null;
 	}
 
+	/**
+	 *  NOTE: CAS user mode will be automatically considered for setupEnvironment, and will be silently ignored if it does not apply.
+	 * @param state
+	 * @param userMode
+	 * @param requestedEnvironment
+	 * @param currentEnvironment
+	 */
 	private void setupEnvironment(State state, ToolkitUserMode userMode, String requestedEnvironment, String currentEnvironment) {
 		if (!ToolkitUserMode.CAS_USER.equals(userMode)
 				&& requestedEnvironment!=null && !"".equals(requestedEnvironment)
@@ -293,12 +374,12 @@ public class ToolLauncher implements ClickHandler {
 			}
 		}
 	}
-	private void setupTestSession(ToolkitUserMode userMode, String testSession, ConformanceTestTab conformanceTestTab) {
+	private void setupTestSession(ToolkitUserMode userMode, String testSession, ToolWindow toolWindow) {
 		if ("default".equalsIgnoreCase(testSession)) {
 			if (ToolkitUserMode.SINGLE_USER.equals(userMode)) {
 				ClientUtils.INSTANCE.getTestSessionManager().setCurrentTestSession(testSession); // This is needed so that Sign-In selector doesn't overwrite the requested test session with default-test-session
-                if (conformanceTestTab!=null) {
-					conformanceTestTab.setCurrentTestSession(testSession);
+                if (toolWindow!=null) {
+					toolWindow.setCurrentTestSession(testSession);
 				}
 				ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, testSession, "ToolLauncher"));
 			} else {
@@ -306,28 +387,42 @@ public class ToolLauncher implements ClickHandler {
 			}
 		} else {
 			ClientUtils.INSTANCE.getTestSessionManager().setCurrentTestSession(testSession);
-			if (conformanceTestTab!=null) {
-				conformanceTestTab.setCurrentTestSession(testSession);
+			if (toolWindow!=null) {
+				toolWindow.setCurrentTestSession(testSession);
 			}
 			ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, testSession, "ToolLauncher"));
 		}
 	}
 
 	private ToolWindow launch(String requestedName) {
-		boolean mu = Xdstools2.getInstance().multiUserModeEnabled;
-		TestSession testSession = ClientUtils.INSTANCE.getCurrentTestSession();
-		if (mu && (testSession == null || testSession.getValue().equals(""))) {
-			new PopupMessage("A Test Session must be selected");
-			return null;
-		}
+		toolUserProperties = new ToolUserProperties(state, ClientUtils.INSTANCE.getTkPropMap());
+
+
 		ToolDef def = getToolDef(requestedName);
-		ToolWindow tool = getTool(def);
+		final ToolWindow tool = getTool(def);
 		if (tool == null) return null;
+
+
 		if (!tool.loaded()) {
 			new PopupMessage(tool.notLoadedReason());
 			return null;
 		}
 		tool.onTabLoad(true, def.tabName);
+
+		if (!requestedName.equals(conformanceTestsLabel)) {
+			Timer timer = new Timer() {
+				@Override
+				public void run() {
+					if (state != null) {
+						setupEnvironment(state, toolUserProperties.userMode, toolUserProperties.requestedEnvironment, toolUserProperties.currentEnvironment);
+						setupTestSession(toolUserProperties.userMode, toolUserProperties.requestedTestSession, tool);
+					}
+				}
+			};
+			// Add this to the end of the async queue
+			timer.schedule(1);
+		}
+
 		return tool;
 	}
 
@@ -347,4 +442,5 @@ public class ToolLauncher implements ClickHandler {
 	public void setState(State state) {
 		this.state = state;
 	}
+
 }
