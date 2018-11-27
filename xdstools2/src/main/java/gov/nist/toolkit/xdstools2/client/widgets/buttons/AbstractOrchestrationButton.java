@@ -170,7 +170,7 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
     public void handleClick(ClickEvent event) {
         if (isSaml() || isXuaOption()) {
             // Get STS SAML Assertion
-            String xuaUsername = "Xuagood";
+            String xuaUsername = "valid";
             getSamlParams().put("$saml-username$",xuaUsername);
             try {
 

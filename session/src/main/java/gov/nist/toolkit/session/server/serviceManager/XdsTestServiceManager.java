@@ -220,7 +220,7 @@ public class XdsTestServiceManager extends CommonService {
 		}
 	}
 
-	public List<Result> querySts(String siteName, String query, Map<String, String> params, boolean persistResult, TestSession testSession) {
+	public List<Result> querySts(SiteSpec siteSpec, String query, Map<String, String> params, boolean persistResult, TestSession testSession) {
 		setGazelleTruststore();
 
 		String environmentName = "default";
@@ -228,10 +228,9 @@ public class XdsTestServiceManager extends CommonService {
 		mySession.setEnvironment(environmentName);
 
 		// Site must exist
-		SiteSpec stsSpec =  new SiteSpec(siteName, testSession);
 		if (mySession.getTestSession() == null)
 			mySession.setTestSession(testSession);
-		mySession.setSiteSpec(stsSpec);
+		mySession.setSiteSpec(siteSpec);
 		mySession.setTls(true); // Required for STS
 
 		String stsTpName = Installation.instance().propertyServiceManager().getStsTpName();
@@ -242,7 +241,7 @@ public class XdsTestServiceManager extends CommonService {
 		sections.add(query);
 
 		XdsTestServiceManager xtsm = new XdsTestServiceManager(mySession);
-		List<Result> results =  runTestInstance(xtsm, environmentName,testSession,stsSpec,testInstance,sections,params,true, persistResult);
+		List<Result> results =  runTestInstance(xtsm, environmentName,testSession,siteSpec,testInstance,sections,params,true, persistResult);
 
 		return results;
 	}
@@ -1079,53 +1078,57 @@ public class XdsTestServiceManager extends CommonService {
 						if (inRequest || inResponse)
 							result.includesMetadata = true;
 
-						// look for document contents
+						// look for document contents (Not all responses will have this so catch exception)
 						if (stepPass) {
+
 							String response = null;
+							OMElement rdsr = null;
 							try {
 								response = testStepLogContentDTO.getResult();  // throws exception on Direct messages (no response)
+								if (response != null && response.trim().startsWith("<")) {
+									OMElement parsed_xml = Util.parse_xml(response);
+									if (!parsed_xml.getLocalName().equals(
+											"RetrieveDocumentSetResponse"))
+										rdsr = XmlUtil
+												.firstDecendentWithLocalName(
+														rdsr,
+														"RetrieveDocumentSetResponse");
+
+								}
+
 							} catch (Exception e) {
-
+								logger.info("Error while guessing for documents in the response." + e.toString());
 							}
-							if (response != null && response.trim().startsWith("<")) {
-								OMElement rdsr = Util.parse_xml(response);
-								if (!rdsr.getLocalName().equals(
-										"RetrieveDocumentSetResponse"))
-									rdsr = XmlUtil
-											.firstDecendentWithLocalName(
-													rdsr,
-													"RetrieveDocumentSetResponse");
-								if (rdsr != null) {
 
-									// Issue 103: We need to propagate the response status since the interpretation of a StepResult of "Pass" to "Success" is not detailed enough with the additional status of PartialSuccess. This fixes the issue of RetrieveDocs tool, displaying a "Success" when it is actually a PartialSuccess.
-									try {
-										String rrStatusValue = XmlUtil.firstDecendentWithLocalName(rdsr, "RegistryResponse").getAttributeValue(new QName("status"));
-										stepResult.setRegistryResponseStatus(rrStatusValue);
-									} catch (Throwable t) {
-										logger.error(t.toString());
-									}
+							if (rdsr != null) {
+								// Issue 103: We need to propagate the response status since the interpretation of a StepResult of "Pass" to "Success" is not detailed enough with the additional status of PartialSuccess. This fixes the issue of RetrieveDocs tool, displaying a "Success" when it is actually a PartialSuccess.
+								try {
+									String rrStatusValue = XmlUtil.firstDecendentWithLocalName(rdsr, "RegistryResponse").getAttributeValue(new QName("status"));
+									stepResult.setRegistryResponseStatus(rrStatusValue);
+								} catch (Throwable t) {
+									logger.error(t.toString());
+								}
 
-									RetrievedDocumentsModel rdm = new RetrieveResponseParser(rdsr).get();
+								RetrievedDocumentsModel rdm = new RetrieveResponseParser(rdsr).get();
 
-									Map<String, RetrievedDocumentModel> resMap = rdm.getMap();
-									for (String docUid : resMap.keySet()) {
-										RetrievedDocumentModel ri = resMap.get(docUid);
-										Document doc = new Document();
-										doc.uid = ri.getDocUid();
-										doc.repositoryUniqueId = ri
-												.getRepUid();
-										doc.newUid = ri.getNewDoc_uid();
-										doc.newRepositoryUniqueId = ri.getNewRep_uid();
-										doc.mimeType = ri.getContent_type();
-										doc.homeCommunityId = ri.getHome();
-										doc.cacheURL = getRepositoryCacheWebPrefix()
-												+ doc.uid
-												+ LogFileContentBuilder.getRepositoryCacheFileExtension(doc.mimeType);
+								Map<String, RetrievedDocumentModel> resMap = rdm.getMap();
+								for (String docUid : resMap.keySet()) {
+									RetrievedDocumentModel ri = resMap.get(docUid);
+									Document doc = new Document();
+									doc.uid = ri.getDocUid();
+									doc.repositoryUniqueId = ri
+											.getRepUid();
+									doc.newUid = ri.getNewDoc_uid();
+									doc.newRepositoryUniqueId = ri.getNewRep_uid();
+									doc.mimeType = ri.getContent_type();
+									doc.homeCommunityId = ri.getHome();
+									doc.cacheURL = getRepositoryCacheWebPrefix()
+											+ doc.uid
+											+ LogFileContentBuilder.getRepositoryCacheFileExtension(doc.mimeType);
 
-										if (stepResult.documents == null)
-											stepResult.documents = new ArrayList<Document>();
-										stepResult.documents.add(doc);
-									}
+									if (stepResult.documents == null)
+										stepResult.documents = new ArrayList<Document>();
+									stepResult.documents.add(doc);
 								}
 							}
 						}

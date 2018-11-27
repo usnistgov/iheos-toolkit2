@@ -8,6 +8,7 @@ import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.StepResult;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
@@ -80,13 +81,17 @@ public class StsSamlValidator extends AbstractMessageValidator {
                         String query = "samlassertion-validate";
 
                         XdsTestServiceManager xdsTestServiceManager = new XdsTestServiceManager(null);
-                        String stsActor = Installation.instance().propertyServiceManager().getStsActorName();
-                        List<Result> results = xdsTestServiceManager.querySts(stsActor, query, params, false, TestSession.DEFAULT_TEST_SESSION);
+                        String stsActor = Installation.instance().propertyServiceManager().getStsActorName(); // Actor xml system name
+                        SiteSpec stsSpec =  new SiteSpec(stsActor, TestSession.DEFAULT_TEST_SESSION);
+                        stsSpec.setGazelleXuaUsername("valid");
+                        List<Result> results = xdsTestServiceManager.querySts(stsSpec, query, params, false, TestSession.DEFAULT_TEST_SESSION);
 
                         if (results.size() == 1) {
                             if (!results.get(0).passed()) {
+                                boolean validateStepFound = true;
                                 for (StepResult stepResult : results.get(0).getStepResults()) {
                                     if ("validate".equals(stepResult.stepName)) {
+                                        validateStepFound = true;
                                         List<String> soapFaults = stepResult.getSoapFaults();
                                         if (soapFaults != null && soapFaults.size() > 0) {
                                             er.err(XdsErrorCode.Code.SoapFault, new ToolkitRuntimeException(soapFaults.get(0).toString()));
@@ -94,7 +99,10 @@ public class StsSamlValidator extends AbstractMessageValidator {
                                         }
                                     }
                                 }
-                                er.err(XdsErrorCode.Code.SoapFault, new ToolkitRuntimeException("STS: 'validate' step result not found."));
+                                if (!validateStepFound) {
+                                    er.err(XdsErrorCode.Code.SoapFault, new ToolkitRuntimeException("STS: Step named 'validate' was not found in the Result set."));
+                                }
+                                er.err(XdsErrorCode.Code.SoapFault, new ToolkitRuntimeException("STS: failed. Assertions: " + results.get(0).assertions.toString())); // XML Parse error? Is the patient Id ^^^[&] escaped?
                             }
                         } else {
                             er.err(XdsErrorCode.Code.SoapFault, new ToolkitRuntimeException("STS: No result."));

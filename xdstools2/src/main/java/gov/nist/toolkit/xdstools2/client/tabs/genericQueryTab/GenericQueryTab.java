@@ -715,6 +715,8 @@ public abstract class GenericQueryTab  extends ToolWindow implements StatusDispl
                             TestInstance testInstance = new TestInstance(stsTpName);
                             testInstance.setSection("samlassertion-issue");
                             SiteSpec stsSpec =  new SiteSpec(new TestSession(stsActorName));
+                            stsSpec.setSaml(true);
+                            stsSpec.setGazelleXuaUsername(selectedValue);
                             Map<String, String> params = new HashMap<>();
                             params.put("$saml-username$",selectedValue);
                             new GetStsSamlAssertionCommand(){

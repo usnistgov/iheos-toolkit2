@@ -76,7 +76,7 @@ class RunTestsClickHandler implements ClickHandler, TestIterator {
                 }
             } else {
                 // Get STS SAML Assertion once for the entire test collection
-                String xuaUsername = "Xuagood";
+                String xuaUsername = "valid";
                 params.put("$saml-username$", xuaUsername);
                 try {
                     new GetStsSamlAssertionCommand() {

@@ -1882,7 +1882,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         String step = "issue";
         String query = request.getTestInstance().getSection();
         String stsActor = Installation.instance().propertyServiceManager().getStsActorName();
-        List<Result> results = xtsm.querySts(stsActor,query,request.getParams(), false, request.getTestSession());
+        SiteSpec stsSpec = new SiteSpec(stsActor, request.getTestSession());
+        stsSpec.setGazelleXuaUsername(request.getUsername());
+        List<Result> results = xtsm.querySts(stsSpec,query,request.getParams(), false, request.getTestSession());
 
         if (results!=null) {
             if (results.size() == 1) {
