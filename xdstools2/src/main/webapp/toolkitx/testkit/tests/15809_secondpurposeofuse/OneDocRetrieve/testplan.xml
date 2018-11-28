@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>15809_secondpurposeofuse/OneDocRetrieve</Test>
+    <TestStep id="retrieve">
+        <ExpectedStatus>Fault</ExpectedStatus>
+        <IGRTransaction>
+
+            <MetadataFile>retrieve.xml</MetadataFile>
+            
+        </IGRTransaction>
+    </TestStep>
+
+</TestPlan>
