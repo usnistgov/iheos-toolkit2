@@ -4,6 +4,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.installation.shared.ToolkitUserMode;
@@ -189,20 +190,30 @@ class TestContextDialog extends DialogBox {
 
         @Override
         public void onClick(ClickEvent clickEvent) {
-            String selectedSite = getSelectedSite();
-            if (TestContext.NONE.equals(selectedSite))
-                selectedSite = null;
+            final String selectedSite = TestContext.NONE.equals(getSelectedSite())?null:getSelectedSite();
+            final SiteSpec siteSpec = new SiteSpec(selectedSite, new TestSession(toolWindow.getCurrentTestSession()));
             if (siteSelectionValidator != null)
-                siteSelectionValidator.validate(new SiteSpec(selectedSite, new TestSession(toolWindow.getCurrentTestSession())));
-            siteManager.setSiteName(selectedSite);
+                siteSelectionValidator.validate(siteSpec);
             toolWindow.setCurrentTestSession(getSelectedTestSession());
-            siteManager.update();
-            new SetAssignedSiteForTestSessionCommand(){
+            toolWindow.setCommonSiteSpec(siteSpec);
+            new Timer() {
                 @Override
-                public void onComplete(Void result) {
-                    removeFromParent();
+                public void run() {
+                    siteManager.setSiteName(selectedSite);
                 }
-            }.run(new SetAssignedSiteForTestSessionRequest(ClientUtils.INSTANCE.getCommandContext(),getSelectedTestSession(),selectedSite));
+            }.schedule(1); // Put this at the end of the async queue
+            new Timer() {
+                @Override
+                public void run() {
+                    new SetAssignedSiteForTestSessionCommand(){
+                        @Override
+                        public void onComplete(Void result) {
+                            siteManager.update();
+                            removeFromParent();
+                        }
+                    }.run(new SetAssignedSiteForTestSessionRequest(ClientUtils.INSTANCE.getCommandContext(),getSelectedTestSession(),selectedSite));
+                }
+            }.schedule(1); // Put this at the end of the async queue
         }
     }
 
