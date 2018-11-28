@@ -263,8 +263,10 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
     }
 
     public void setSamlAssertion(SiteSpec siteSpec) {
-        siteSpec.setSaml((isSaml()) && getSamlAssertion()!=null); // Does the SAML assertion really exist?
-        siteSpec.setStsAssertion(getSamlAssertion());
+        if (siteSpec!=null) {
+            siteSpec.setSaml((isSaml()) && getSamlAssertion() != null); // Does the SAML assertion really exist?
+            siteSpec.setStsAssertion(getSamlAssertion());
+        }
     }
 
     public boolean isXuaOption() {
