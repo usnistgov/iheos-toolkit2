@@ -73,9 +73,11 @@ public class BuildRecTestOrchestrationButton extends AbstractOrchestrationButton
 
         String msg = testContext.verifyTestContext(testingAClient);
         if (msg != null) {
+            testTab.getMainView().clearLoadingMessage();
             testContextView.launchDialog(msg);
             return;
         }
+
 
         initializationResultsPanel.clear();
         testTab.getMainView().showLoadingMessage("Initializing...");
