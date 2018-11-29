@@ -100,8 +100,6 @@ class RegOrchestrationBuilder extends AbstractOrchestrationBuilder {
             testInstanceManager.messageItem.params.put('$patientid$', orchProps.getProperty(pidId))
         }
 
-
-
         TestInstance testInstance12346_nopif = TestInstanceManager.initializeTestInstance(request.testSession, new TestInstance("12346", request.testSession))
         MessageItem item12346_nopif = response.addMessage(testInstance12346_nopif, true, "")
         item12346_nopif.params.put('$patientid$', sqPid.toString())

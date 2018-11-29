@@ -16,9 +16,6 @@ import gov.nist.toolkit.xdstools2.client.widgets.OrchestrationSupportTestsDispla
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 import gov.nist.toolkit.xdstools2.shared.command.request.BuildRegTestOrchestrationRequest;
 
-import java.util.ArrayList;
-import java.util.List;
-
 
 /**
  * Build Registry tests orchestration
@@ -30,35 +27,8 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
     private TestContextView testContextView;
     private FlowPanel initializationResultsPanel = new FlowPanel();
     private RadioButton noFeed = new RadioButton("pidFeedGroup", "No Patient Identity Feed");
-    private RadioButton v2Feed = new RadioButton("pidFeedGroup", "V2 Patient Identitfy Feed");
+    private RadioButton v2Feed = new RadioButton("pidFeedGroup", "V2 Patient Identity Feed");
     private PifType pifType;
-
-    static private final String XADPID_OPTION = "xadpid"; // corresponds to collection reg_xadpid in testkit collections.txt file
-    static private final String RM_OPTION = "rm"; // corresponds to collection reg_rm in testkit collections.txt file
-    static private final String MU_OPTION = "mu";  // corresponds to collection reg_mu in testkit collections.txt file
-    static private final String MPQ_OPTION = "mpq";
-    static private final String OD_OPTION = "od";
-    static private final String ISR_OPTION = "isr";
-    static private final String CAT_FOLDER_OPTION = "catfolder";   // run as part of Connectathon
-    static private final String CAT_LIFECYCLE_OPTION = "catlifecycle";   // run as part of Connectathon
-    /*
-    public static List<ActorAndOption> ACTOR_OPTIONS = new ArrayList<>();
-    static {
-        ACTOR_OPTIONS = java.util.Arrays.asList(
-                new ActorAndOption("reg", "", "Required", false),
-                new ActorAndOption("reg", MU_OPTION, "Metadata Update Option", false),
-                new ActorAndOption("reg", MPQ_OPTION, "MPQ Option", false),
-                new ActorAndOption("reg", OD_OPTION, "On Demand Option", false),
-                new ActorAndOption("reg", RM_OPTION, "Remote Registry Option", false),
-                new ActorAndOption("reg", ISR_OPTION, "Integrated Source Repository", true),
-                new ActorAndOption("reg", XUA_OPTION, "XUA Option", false),
-                new ActorAndOption("reg", CAT_FOLDER_OPTION, "CAT Folder", false),
-                new ActorAndOption("reg", CAT_LIFECYCLE_OPTION, "CAT Lifecycle", false),
-                new ActorAndOption("reg", XADPID_OPTION, "XAD-PID Required", false)
-                
-        );
-    }
-    */
 
     BuildRegTestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextView testContextView, Panel initializationPanel, String label, PifType pifType) {
         this.initializationPanel = initializationPanel;
@@ -75,7 +45,6 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
 
         // Restore pifType from Orchestration properties previously saved
         // 1.
-
         if (PifType.V2.equals(pifType)) {
             v2Feed.setChecked(true);
         } else { // Default to NoFeed otherwise.
@@ -101,6 +70,7 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
     public void orchestrate() {
         String msg = testContext.verifyTestContext();
         if (msg != null) {
+            testTab.getMainView().clearLoadingMessage();
             testContextView.launchDialog(msg);
             return;
         }
@@ -135,11 +105,11 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
                 testTab.setRegOrchestrationResponse(orchResponse);
 
                 if (PifType.V2.equals(request.getPifType())) {
-                    initializationResultsPanel.add(new HTML("Initialization Complete"));
+                    initializationResultsPanel.add(new HTML("<p>Initialization Complete</p>"));
                 } else if (PifType.NONE.equals(request.getPifType())) {
-                    initializationResultsPanel.add(new HTML("Initialization partially complete: there are two additional steps below for you to complete."));
+                    initializationResultsPanel.add(new HTML("<p style='color:orange'>Initialization partially complete: there are two additional steps below for you to complete.</p>"));
                 } else {
-                    initializationResultsPanel.add(new HTML("Initialization Error: Unknown pifType."));
+                    initializationResultsPanel.add(new HTML("<p style='color:red'>Initialization Error: Unknown pifType.</p>"));
                 }
 
                 if (testContext.getSiteUnderTest() != null) {
