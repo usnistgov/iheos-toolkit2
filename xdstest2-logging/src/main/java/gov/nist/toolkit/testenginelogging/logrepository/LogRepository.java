@@ -82,11 +82,18 @@ public class LogRepository  {
             return null;
         }
         try {
+            if (testInstance.getLocation() != null && testInstance.getTestSession() != null) {
+                File tiLocationDir = new File(testInstance.getLocation());
+                File logDir = new File(tiLocationDir, testInstance.getTestSession().toString());
+                if (!logDir.exists())
+                    throw new ToolkitRuntimeException("logIn: " + logDir.toString() + " does not exist");
+            }
             LogRepository repo = LogRepositoryFactory.getLogRepository(new File(testInstance.getLocation()),
                     testInstance.getTestSession(),
                     testInstance.getFormat(),
                     testInstance.getIdType(),
                     testInstance);
+
             File dir = repo.logDir(testInstance);
             log.debug(String.format("Loading LogMapDTO for test %s from %s", testInstance, dir));
             return repo.logger.logIn(testInstance, dir);
@@ -156,7 +163,7 @@ public class LogRepository  {
             File logDir = location; new File(location, testSession);
             if (id != null)  // if null then it cannot be used with logDir() call, must use logDir(String)
                 logDir = new File(logDir, id.getId());
-            logDir.mkdirs();
+            logDir.mkdirs(); // Should a Get LogDir method create this directory?
             if (!logDir.exists())
                 throw new ToolkitRuntimeException("Cannot create log directory " + logDir.toString());
             if (!logDir.isDirectory())
