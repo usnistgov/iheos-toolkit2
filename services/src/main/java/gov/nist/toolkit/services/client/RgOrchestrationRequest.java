@@ -44,4 +44,5 @@ public class RgOrchestrationRequest extends AbstractOrchestrationRequest {
     public void setOnDemand(boolean onDemand) {
         this.onDemand = onDemand;
     }
+
 }

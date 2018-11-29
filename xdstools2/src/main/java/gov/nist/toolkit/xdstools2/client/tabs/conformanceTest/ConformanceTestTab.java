@@ -806,7 +806,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 			initializationPanel.add(orchInit.panel());
 		}
 		else if (currentActorOption.isRg()) {
-			orchInit = new BuildRgTestOrchestrationButton(this, initializationPanel, label, testContext, testContextView, this);
+			orchInit = new BuildRgTestOrchestrationButton(this, initializationPanel, label, testContext, testContextView, this, pifType);
 			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
 			initializationPanel.add(orchInit.panel());
 		}

@@ -39,6 +39,150 @@ class RgOrchestrationBuilder extends AbstractOrchestrationBuilder {
     }
 
     RawResponse buildTestEnvironment() {
+        switch (request.getPifType()) {
+            case PifType.NONE:
+                buildTestEnvironment_NoPif()
+                break
+            case PifType.V2:
+                buildTestEnvironment_V2Pif()
+                break
+        }
+    }
+
+    RawResponse buildTestEnvironment_NoPif() {
+        RgOrchestrationResponse response = new RgOrchestrationResponse()
+
+        TestInstance testInstanceReadme = TestInstanceManager.initializeTestInstance(request.testSession, new TestInstance("RgManualPif-Readme", request.testSession))
+        MessageItem itemReadme = response.addMessage(testInstanceReadme, true, "")
+
+        boolean sutSaml = false
+        SimId sutSimId = null
+        SimulatorConfig sutSimConfig = null
+        SimulatorConfigElement stsSce = null
+        boolean forceNewPatientIds = !request.isUseExistingState()
+        try {
+            String home
+            Map<String, TestInstanceManager> pidNameMap
+
+            OrchestrationProperties orchProps
+            Pid simplePid
+
+            if (!request.isOnDemand()) {
+                pidNameMap = [
+                        simplePid:  new TestInstanceManager(request, response, '15823'),
+                ]
+                orchProps = new OrchestrationProperties(session, request.testSession, ActorType.RESPONDING_GATEWAY, pidNameMap.keySet(), forceNewPatientIds)
+                // Persist the PIF setting, so it will be restored to the same setting the next time
+                orchProps.setProperty("pifType", request.pifType.name())
+
+                simplePid = PidBuilder.createPid(orchProps.getProperty("simplePid"))
+
+                response.setSimplePid(simplePid)
+
+
+                // Setup PIF patientid param
+                pidNameMap.each { String key, TestInstanceManager value ->
+                    String pidId = key
+                    TestInstanceManager testInstanceManager = value
+                    testInstanceManager.messageItem.params.put('$patientid$', orchProps.getProperty(pidId))
+                }
+            } else {
+                pidNameMap = [:]
+            }
+
+            String supportIdName = 'rg_support'
+            SimId supportSimId
+            SimulatorConfig supportSimConfig
+            SiteSpec rrSite
+            boolean reuse = false  // updated as we progress
+
+            Site site = gov.nist.toolkit.results.server.SiteBuilder.siteFromSiteSpec(request.siteUnderTest, session.id)
+            if (site == null) return RawResponseBuilder.build(String.format("Responding Gateway under Test (%s) does not exist in site configurations.", request.siteUnderTest.toString()))
+            rrSite = request.siteUnderTest
+            response.siteUnderTest = rrSite
+            home = site.home
+
+            if (request.isOnDemand()) {
+
+            } else {
+
+                if (request.useExposedRR) {
+                    // RG and RR in same site - verify site contents
+
+                    // Momentarily turn off SAML if the SUT is a simulator. Need manual intervening for real systems.
+                    if (SimIdFactory.isSimId(request.siteUnderTest.name)) {
+                        sutSimId = SimDb.simIdBuilder(request.siteUnderTest.name)
+                        if (Installation.instance().propertyServiceManager().getPropertyManager().isEnableSaml()) {
+
+                            sutSimConfig = api.getConfig(sutSimId)
+                            if (sutSimConfig != null) {
+                                stsSce = sutSimConfig.get(SimulatorProperties.requiresStsSaml)
+
+                                if (stsSce != null && stsSce.hasBoolean() && stsSce.asBoolean()) {
+                                    sutSaml = true
+                                    stsSce.setBooleanValue(false) // Turn off SAML for orchestration
+                                    api.saveSimulator(sutSimConfig)
+                                }
+                            }
+                        }
+                    }
+
+                    if (!site.hasTransaction(TransactionType.PROVIDE_AND_REGISTER)) return RawResponseBuilder.build("Responding Gateway under test is not configured to accept a Provide and Register transaction.")
+                    request.registrySut = request.siteUnderTest  // PifSender expects this
+                    response.regrepSite = rrSite
+                    response.sameSite = true
+                } else {    // NOT REALLY USED YET - DISABLED ON UI
+                    // use external RR
+                    // build RR sim - pass back details for configuration of SUT
+                    // SUT and supporting RR are defined by different sites
+                }
+
+                TestInstance testInstance12318 = new TestInstance('12318', request.testSession)
+                MessageItem item12318 = response.addMessage(testInstance12318, true, "")
+                item12318.params.put('$patientid$', orchProps.getProperty('simplePid'))
+                item12318.params.put('$testdata_home$', home)
+                response.testParams.put(testInstance12318, item12318.params)
+
+                if (orchProps.updated() && !request.isUseExistingState()) {
+                    List<TestInstance> tILogToBeDeleted = new ArrayList<>()
+                    pidNameMap.each { String key, TestInstanceManager value ->
+                        String pidId = key
+                        TestInstanceManager testInstanceManager = value
+                        tILogToBeDeleted.add(testInstanceManager.messageItem.testInstance)
+                    }
+                    tILogToBeDeleted.add(testInstanceReadme)
+                    tILogToBeDeleted.add(testInstance12318)
+                    session.getXdsTestServiceManager().delTestResults(tILogToBeDeleted, request.getEnvironmentName(), request.getTestSession())
+
+                    // Instruct the user to manually Run PIF feed on their system and then run load the test data.
+
+                } else {
+                    pidNameMap.each { String key, TestInstanceManager value ->
+                        String pidId = key
+                        TestInstanceManager testInstanceManager = value
+                        testInstanceManager.messageItem.setSuccess(api.getTestLogs(testInstanceManager.messageItem.testInstance).isSuccess())
+                    }
+                    item12318.setSuccess(api.getTestLogs(testInstance12318).isSuccess())
+                }
+            }
+
+            if (orchProps)
+                orchProps.save()
+
+            return response
+        }
+        catch (Exception e) {
+            return RawResponseBuilder.build(e)
+        } finally {
+            if (sutSaml) {
+                stsSce.setBooleanValue(true)
+                api.saveSimulator(sutSimConfig)
+            }
+        }
+
+        }
+
+    RawResponse buildTestEnvironment_V2Pif() {
         boolean sutSaml = false
         SimId sutSimId = null
         SimulatorConfig sutSimConfig = null
@@ -47,9 +191,6 @@ class RgOrchestrationBuilder extends AbstractOrchestrationBuilder {
             String home
             RgOrchestrationResponse response = new RgOrchestrationResponse()
             Map<String, TestInstanceManager> pidNameMap
-//            = [
-//                    simplePid:  new TestInstanceManager(request, response, '15823'),
-//            ]
 
             OrchestrationProperties orchProps
             Pid simplePid
@@ -59,6 +200,8 @@ class RgOrchestrationBuilder extends AbstractOrchestrationBuilder {
                         simplePid:  new TestInstanceManager(request, response, '15823'),
                 ]
                 orchProps = new OrchestrationProperties(session, request.testSession, ActorType.RESPONDING_GATEWAY, pidNameMap.keySet(), !request.useExistingState)
+                // Persist the PIF setting, so it will be restored to the same setting the next time
+                orchProps.setProperty("pifType", request.pifType.name())
 
                 simplePid = PidBuilder.createPid(orchProps.getProperty("simplePid"))
 
@@ -75,7 +218,7 @@ class RgOrchestrationBuilder extends AbstractOrchestrationBuilder {
 
 
             Site site = gov.nist.toolkit.results.server.SiteBuilder.siteFromSiteSpec(request.siteUnderTest, session.id)
-            if (site == null) return RawResponseBuilder.build(String.format("Responding Gateway under Test (%s) does not exist in site configurations."))
+            if (site == null) return RawResponseBuilder.build(String.format("Responding Gateway under Test (%s) does not exist in site configurations.", request.siteUnderTest.toString()))
             rrSite = request.siteUnderTest
             response.siteUnderTest = rrSite
             home = site.home
@@ -161,18 +304,18 @@ class RgOrchestrationBuilder extends AbstractOrchestrationBuilder {
                     }
 
                 } else {
-                    item12318.setSuccess(api.getTestLogs(testInstance12318).isSuccess());
+                    item12318.setSuccess(api.getTestLogs(testInstance12318).isSuccess())
                 }
 
             }
 
             if (orchProps)
-                orchProps.save();
+                orchProps.save()
 
-            return response;
+            return response
         }
         catch (Exception e) {
-            return RawResponseBuilder.build(e);
+            return RawResponseBuilder.build(e)
         } finally {
             if (sutSaml) {
                 stsSce.setBooleanValue(true)
