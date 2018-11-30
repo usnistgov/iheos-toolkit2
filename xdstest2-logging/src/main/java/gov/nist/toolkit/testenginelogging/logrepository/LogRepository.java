@@ -84,7 +84,7 @@ public class LogRepository  {
         try {
             if (testInstance.getLocation() != null && testInstance.getTestSession() != null) {
                 File tiLocationDir = new File(testInstance.getLocation());
-                File logDir = new File(tiLocationDir, testInstance.getTestSession().toString());
+                File logDir = new File(tiLocationDir, testInstance.getId());
                 if (!logDir.exists())
                     throw new ToolkitRuntimeException("logIn: " + logDir.toString() + " does not exist");
             }
