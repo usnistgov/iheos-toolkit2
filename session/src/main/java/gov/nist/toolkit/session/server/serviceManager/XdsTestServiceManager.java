@@ -1078,59 +1078,56 @@ public class XdsTestServiceManager extends CommonService {
 						if (inRequest || inResponse)
 							result.includesMetadata = true;
 
-						// look for document contents (Not all responses will have this so catch exception)
+						// look for document contents
 						if (stepPass) {
-
 							String response = null;
-							OMElement rdsr = null;
 							try {
 								response = testStepLogContentDTO.getResult();  // throws exception on Direct messages (no response)
 								if (response != null && response.trim().startsWith("<")) {
-									OMElement parsed_xml = Util.parse_xml(response);
-									if (!parsed_xml.getLocalName().equals(
+									OMElement rdsr = Util.parse_xml(response);
+									if (!rdsr.getLocalName().equals(
 											"RetrieveDocumentSetResponse"))
 										rdsr = XmlUtil
 												.firstDecendentWithLocalName(
 														rdsr,
 														"RetrieveDocumentSetResponse");
+									if (rdsr != null) {
 
+										// Issue 103: We need to propagate the response status since the interpretation of a StepResult of "Pass" to "Success" is not detailed enough with the additional status of PartialSuccess. This fixes the issue of RetrieveDocs tool, displaying a "Success" when it is actually a PartialSuccess.
+										try {
+											String rrStatusValue = XmlUtil.firstDecendentWithLocalName(rdsr, "RegistryResponse").getAttributeValue(new QName("status"));
+											stepResult.setRegistryResponseStatus(rrStatusValue);
+										} catch (Throwable t) {
+											logger.error(t.toString());
+										}
+
+										RetrievedDocumentsModel rdm = new RetrieveResponseParser(rdsr).get();
+
+										Map<String, RetrievedDocumentModel> resMap = rdm.getMap();
+										for (String docUid : resMap.keySet()) {
+											RetrievedDocumentModel ri = resMap.get(docUid);
+											Document doc = new Document();
+											doc.uid = ri.getDocUid();
+											doc.repositoryUniqueId = ri
+													.getRepUid();
+											doc.newUid = ri.getNewDoc_uid();
+											doc.newRepositoryUniqueId = ri.getNewRep_uid();
+											doc.mimeType = ri.getContent_type();
+											doc.homeCommunityId = ri.getHome();
+											doc.cacheURL = getRepositoryCacheWebPrefix()
+													+ doc.uid
+													+ LogFileContentBuilder.getRepositoryCacheFileExtension(doc.mimeType);
+
+											if (stepResult.documents == null)
+												stepResult.documents = new ArrayList<Document>();
+											stepResult.documents.add(doc);
+										}
+									}
 								}
-
 							} catch (Exception e) {
-								logger.info("Error while guessing for documents in the response." + e.toString());
+
 							}
 
-							if (rdsr != null) {
-								// Issue 103: We need to propagate the response status since the interpretation of a StepResult of "Pass" to "Success" is not detailed enough with the additional status of PartialSuccess. This fixes the issue of RetrieveDocs tool, displaying a "Success" when it is actually a PartialSuccess.
-								try {
-									String rrStatusValue = XmlUtil.firstDecendentWithLocalName(rdsr, "RegistryResponse").getAttributeValue(new QName("status"));
-									stepResult.setRegistryResponseStatus(rrStatusValue);
-								} catch (Throwable t) {
-									logger.error(t.toString());
-								}
-
-								RetrievedDocumentsModel rdm = new RetrieveResponseParser(rdsr).get();
-
-								Map<String, RetrievedDocumentModel> resMap = rdm.getMap();
-								for (String docUid : resMap.keySet()) {
-									RetrievedDocumentModel ri = resMap.get(docUid);
-									Document doc = new Document();
-									doc.uid = ri.getDocUid();
-									doc.repositoryUniqueId = ri
-											.getRepUid();
-									doc.newUid = ri.getNewDoc_uid();
-									doc.newRepositoryUniqueId = ri.getNewRep_uid();
-									doc.mimeType = ri.getContent_type();
-									doc.homeCommunityId = ri.getHome();
-									doc.cacheURL = getRepositoryCacheWebPrefix()
-											+ doc.uid
-											+ LogFileContentBuilder.getRepositoryCacheFileExtension(doc.mimeType);
-
-									if (stepResult.documents == null)
-										stepResult.documents = new ArrayList<Document>();
-									stepResult.documents.add(doc);
-								}
-							}
 						}
 					} catch (Exception e) {
 						result.assertions.add(
