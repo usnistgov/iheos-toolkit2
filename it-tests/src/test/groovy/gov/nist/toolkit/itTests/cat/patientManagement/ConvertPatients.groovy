@@ -2,6 +2,9 @@ package gov.nist.toolkit.itTests.cat.patientManagement
 
 import org.apache.commons.csv.CSVParser
 import spock.lang.Specification
+
+import java.nio.file.Paths
+
 import static org.apache.commons.csv.CSVFormat.DEFAULT
 /**
  * This takes a spreadsheet from Lynn (csv) and generates the pids format needed for the
@@ -11,7 +14,8 @@ class ConvertPatients extends Specification {
     CSVParser parser
 
     def setup() {
-        String input = this.class.getResource('/testdata/patientManagement/2018.txt').text
+        // String input = this.class.getResource('/testdata/patientManagement/2018.txt').text
+        String input = Paths.get(getClass().getResource('/').toURI()).resolve('testdata/patientManagement/2018.txt').text
         assert input
         parser = CSVParser.parse(input, DEFAULT.withHeader())
     }

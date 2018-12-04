@@ -11,6 +11,9 @@ import gov.nist.toolkit.simcommon.client.Simulator
 import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException
 import spock.lang.Specification
+
+import java.nio.file.Paths
+
 /**
  *
  */
@@ -20,7 +23,7 @@ class SimulatorServiceManagerTest extends Specification {
     def environment = 'default'
 
     def setupSpec() {
-        ExternalCacheManager.initializeFromMarkerFile(new File(this.getClass().getResource('/external_cache/external_cache.txt').file))
+        ExternalCacheManager.initializeFromMarkerFile(Paths.get(this.getClass().getResource('/').toURI()).resolve('external_cache/external_cache.txt').toFile())
     }
 
     def setup() {

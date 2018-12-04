@@ -3,6 +3,8 @@ package gov.nist.toolkit.testengine.scripts
 import gov.nist.toolkit.installation.shared.TestSession
 import spock.lang.Specification
 
+import java.nio.file.Paths
+
 /**
  * Created by oherrmann on 2/24/16.
  */
@@ -12,10 +14,9 @@ class CodesUpdaterTest extends Specification{
     File testkitFile
 
     def setup(){
-        URL environmentMarker = getClass().getResource('/external_cache/environment/codeUpdateTest/codes.xml')
-        environmentFile = new File(environmentMarker.toURI().path).parentFile
-        URL testkitMarker= getClass().getResource('/war/war.txt')
-        testkitFile=new File(new File(new File(testkitMarker.toURI().path).parentFile,"toolkitx"),"testkit")
+        environmentFile = Paths.get(this.getClass().getResource('/').toURI()).resolve('external_cache/environment/codeUpdateTest/codes.xml').toFile().parentFile
+        File testkitMarkerParent = Paths.get(this.getClass().getResource('/').toURI()).resolve('war/war.txt').toFile().parentFile
+        testkitFile=new File(new File(testkitMarkerParent,"toolkitx"),"testkit")
         updater=new CodesUpdater()
     }
 

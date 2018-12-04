@@ -6,16 +6,19 @@ import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException
 import org.hl7.fhir.dstu3.model.DocumentReference
 import spock.lang.Specification
 
+import java.nio.file.Path
+import java.nio.file.Paths
+
 class ResourceToMetadataCollectionParserTest extends Specification {
     ResourceToMetadataCollectionParser parser = new ResourceToMetadataCollectionParser()
     DocumentReference documentReference
 
     def setup() {
-        URL externalCacheMarker = getClass().getResource('/external_cache/external_cache.txt')
+        Path externalCacheMarker = Paths.get(getClass().getResource('/').toURI()).resolve('external_cache/external_cache.txt')
         if (externalCacheMarker == null) {
             throw new ToolkitRuntimeException("Cannot locate external cache for test environment")
         }
-        File externalCache = new File(externalCacheMarker.toURI().path).parentFile
+        File externalCache = externalCacheMarker.toFile().parentFile
 
         // Important to set this before war home since it is overriding contents of toolkit.properties
         if (!externalCache || !externalCache.isDirectory())throw new ToolkitRuntimeException('External Cache not found')
@@ -23,7 +26,7 @@ class ResourceToMetadataCollectionParserTest extends Specification {
 
 
 
-        String dr = this.class.getResource('/DocumentReference1.xml').text
+        String dr = Paths.get(this.class.getResource('/').toURI()).resolve('DocumentReference1.xml').text
         documentReference = ToolkitFhirContext.get().newXmlParser().parseResource(dr)
     }
 

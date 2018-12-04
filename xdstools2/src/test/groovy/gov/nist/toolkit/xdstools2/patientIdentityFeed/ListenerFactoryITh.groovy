@@ -13,6 +13,8 @@ import gov.nist.toolkit.simcommon.server.SimDb
 import org.apache.log4j.Logger
 import spock.lang.Specification
 
+import java.nio.file.Paths
+
 /**
  * Created by bill on 9/2/15.
  */
@@ -71,7 +73,7 @@ class ListenerFactoryITh extends Specification {
 
         when: 'Send A01'
         def port = item.port
-        String templateFile = getClass().getResource('/adt/A01.txt').file
+        String templateFile = Paths.get(this.getClass().getResource('/').toURI()).resolve('adt/A01.txt').file
         AdtSender sender = new AdtSender(templateFile, 'localhost', port)
         sender.send(pid1.asString())
 
@@ -89,7 +91,7 @@ class ListenerFactoryITh extends Specification {
 
     def 'Listen and send 2'() {
         setup:
-        String templateFile = getClass().getResource('/adt/A01.txt').file
+        String templateFile = Paths.get(this.getClass().getResource('/').toURI()).resolve('adt/A01.txt').file
 
         when: 'Start patientIdentityFeed'
         logger.info("generate patientIdentityFeed")

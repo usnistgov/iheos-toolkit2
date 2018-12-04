@@ -16,6 +16,9 @@ import gov.nist.toolkit.transactionNotificationService.TransactionNotification
 import gov.nist.toolkit.utilities.xml.Util
 import org.apache.axiom.om.OMElement
 import spock.lang.Shared
+
+import java.nio.file.Paths
+
 /**
  *
  */
@@ -119,7 +122,7 @@ class XdrSrcSpec extends ToolkitSpecification implements TransactionNotification
         println 'STEP - SEND XDR'
         RawSendRequest req = documentSource.newRawSendRequest()
 
-        req.metadata = this.getClass().getResource('/testdata/PnR1Doc.xml').text
+        req.metadata = Paths.get(this.getClass().getResource('/').toURI()).resolve('testdata/PnR1Doc.xml').text
         req.addDocument('Document01', new DocumentResource('text/plain', 'Hello World!'.bytes))
 
         RawSendResponse response = documentSource.sendProvideAndRegister(req)

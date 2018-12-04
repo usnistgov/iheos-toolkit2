@@ -23,7 +23,7 @@ class SearchPathTest extends Specification {
         if (externalCacheMarker == null) {
             throw new ToolkitRuntimeException("Cannot locate external cache for test environment")
         }
-        File externalCache = new File(externalCacheMarker.toFile()).parentFile
+        File externalCache = externalCacheMarker.toFile().parentFile
 
         // Important to set this before war home since it is overriding contents of toolkit.properties
         if (!externalCache || !externalCache.isDirectory())throw new ToolkitRuntimeException('External Cache not found')

@@ -14,6 +14,9 @@ import org.hl7.fhir.dstu3.model.DocumentReference
 import org.hl7.fhir.dstu3.model.Patient
 import spock.lang.Shared
 import spock.lang.Specification
+
+import java.nio.file.Paths
+
 /**
  *
  */
@@ -51,7 +54,7 @@ class TranslateTest extends Specification {
 
     def 'relative reference in bundle' () {
         when:
-        def bundle = ctx.newXmlParser().parseResource(getClass().getResource('/resources/docrefrelativebundle1.xml').text)
+        def bundle = ctx.newXmlParser().parseResource(Paths.get(this.getClass().getResource('/').toURI()).resolve('resources/docrefrelativebundle1.xml').text)
         r = new ResourceMgr(bundle, null)
 
         then: // only one Resource with relative url Practitioner/a3
@@ -99,7 +102,7 @@ class TranslateTest extends Specification {
         u.clear()
         def writer = new StringWriter()
         def xml = new MarkupBuilder(writer)
-        def bundle = ctx.newXmlParser().parseResource(getClass().getResource('/resources/docrefabsolutebundle1.xml').text)
+        def bundle = ctx.newXmlParser().parseResource(Paths.get(this.getClass().getResource('/').toURI()).resolve('resources/docrefabsolutebundle1.xml').text)
 
         when:
         u.translateBundle(xml, bundle, true)
@@ -136,7 +139,7 @@ class TranslateTest extends Specification {
         u.clear()
         def writer = new StringWriter()
         def xml = new MarkupBuilder(writer)
-        def bundle = ctx.newXmlParser().parseResource(getClass().getResource('/resources/docrefrelativebundle1.xml').text)
+        def bundle = ctx.newXmlParser().parseResource(Paths.get(this.getClass().getResource('/').toURI()).resolve('resources/docrefrelativebundle1.xml').text)
 
         when:
         u.translateBundle(xml, bundle, true)
@@ -251,7 +254,7 @@ class TranslateTest extends Specification {
         u.clear()
         def writer = new StringWriter()
         def xml = new MarkupBuilder(writer)
-        def resource = ctx.newXmlParser().parseResource(getClass().getResource('/resources/docman1.xml').text)
+        def resource = ctx.newXmlParser().parseResource(Paths.get(this.getClass().getResource('/').toURI()).resolve('resources/docman1.xml').text)
 
         when:
         u.translateResource(xml, resource)
@@ -271,7 +274,7 @@ class TranslateTest extends Specification {
         u.clear()
         def writer = new StringWriter()
         def xml = new MarkupBuilder(writer)
-        def bundle = ctx.newXmlParser().parseResource(getClass().getResource('/resources/singledocsubmit.xml').text)
+        def bundle = ctx.newXmlParser().parseResource(Paths.get(this.getClass().getResource('/').toURI()).resolve('resources/singledocsubmit.xml').text)
 
         when:
         u.translateBundle(xml, bundle, true)

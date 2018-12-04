@@ -1,6 +1,8 @@
 import groovy.util.logging.Log4j
 import spock.lang.Specification
 
+import java.nio.file.Paths
+
 @Log4j
 class CodeValidationTestCase extends Specification{
     def m
@@ -13,7 +15,7 @@ class CodeValidationTestCase extends Specification{
     String metadata
 
     def setup(){
-        metadata = getClass().classLoader.getResource('PnR1Doc.xml').text
+        metadata = Paths.get(this.getClass().getResource('/').toURI()).resolve('PnR1Doc.xml').text
     }
 
 //    def 'Validate'(){
