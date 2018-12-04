@@ -28,7 +28,7 @@ public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton 
     private Panel initializationPanel;
     private FlowPanel initializationResultsPanel = new FlowPanel();
     private RadioButton noFeed = new RadioButton("rgpidFeedGroup", "No Patient Identity Feed");
-    private RadioButton v2Feed = new RadioButton("rgpidFeedGroup", "V2 Patient Identitfy Feed");
+    private RadioButton v2Feed = new RadioButton("rgpidFeedGroup", "V2 Patient Identity Feed");
 
     private String systemTypeGroup = "RG System Type Group";
     private RadioButton exposed = new RadioButton(systemTypeGroup, "Exposed Registry/Repository");
@@ -186,7 +186,7 @@ public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton 
                 testTab.setOrchestrationResponse(orchResponse);
 
                 if (PifType.V2.equals(request.getPifType())) {
-                    initializationResultsPanel.add(new HTML("<p>Initialization Complete</p>"));
+                    initializationResultsPanel.add(new HTML("<p>Initialization complete</p>"));
                 } else if (PifType.NONE.equals(request.getPifType())) {
                     initializationResultsPanel.add(new HTML("<p style='color:orange'>Initialization partially complete: there are two additional steps below for you to complete.</p>"));
                 } else {

@@ -72,7 +72,7 @@ public class BuildIsrTestOrchestrationButton extends AbstractOrchestrationButton
                 final IsrOrchestrationResponse orchResponse = (IsrOrchestrationResponse) rawResponse;
                 testTab.setOrchestrationResponse(orchResponse);
 
-                initializationResultsPanel.add(new HTML("Initialization Complete"));
+                initializationResultsPanel.add(new HTML("Initialization complete"));
 
                 initializationResultsPanel.add(new HTML("<h2>System Under Test</h2>"));
                 initializationResultsPanel.add(new HTML("<p>System under test is an Integrated Source/Repository so no endpoint or other configuration information is available."));

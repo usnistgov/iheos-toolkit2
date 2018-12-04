@@ -109,7 +109,7 @@ public class BuildRecTestOrchestrationButton extends AbstractOrchestrationButton
                 testTab.setOrchestrationResponse(orchResponse);
                 testTab.setRecOrchestrationResponse(orchResponse);
 
-                initializationResultsPanel.add(new HTML("Initialization Complete"));
+                initializationResultsPanel.add(new HTML("Initialization complete"));
 
                 initializationResultsPanel.add(new HTML("<h2>Format</h2>"));
 

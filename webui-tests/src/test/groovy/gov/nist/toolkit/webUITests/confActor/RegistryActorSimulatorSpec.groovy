@@ -5,6 +5,8 @@ import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput
 import com.gargoylesoftware.htmlunit.html.HtmlDivision
 import com.gargoylesoftware.htmlunit.html.HtmlImage
 import com.gargoylesoftware.htmlunit.html.HtmlLabel
+import com.gargoylesoftware.htmlunit.html.HtmlOption
+import com.gargoylesoftware.htmlunit.html.HtmlRadioButtonInput
 import gov.nist.toolkit.toolkitApi.DocumentRegRep
 import spock.lang.Shared
 import spock.lang.Stepwise
@@ -23,7 +25,7 @@ class RegistryActorSimulatorSpec extends ConformanceActor {
 
     @Override
     void setupSim() {
-        setActorPage(String.format("%s/#ConfActor:env=default;testSession=%s;actor=reg;",toolkitBaseUrl,simUser))
+        setActorPage(String.format("%s/#ConfActor:env=default;testSession=%s;actor=reg;systemId=%s",toolkitBaseUrl,testSessionName,simName))
         deleteOldRegSim()
         sleep(5000) // Why we need this -- Problem here is that the Delete request via REST could be still running before we execute the next Create REST command. The PIF Port release timing will be off causing a connection refused error.
         regRepSim = createNewRegSim()
@@ -31,15 +33,15 @@ class RegistryActorSimulatorSpec extends ConformanceActor {
 
     @Override
     String getSimId() {
-        return simUser + "__" + simName
+        return testSessionName + "__" + simName
     }
 
     void deleteOldRegSim() {
-        getSpi().delete(simName, simUser)
+        getSpi().delete(simName, testSessionName)
     }
 
     DocumentRegRep createNewRegSim() {
-        return getSpi().createDocumentRegRep(simName, simUser, "default")
+        return getSpi().createDocumentRegRep(simName, testSessionName, "default")
     }
 
 
@@ -60,13 +62,36 @@ class RegistryActorSimulatorSpec extends ConformanceActor {
             webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
         }
 
-        while(!page.asText().contains("Initialization Complete")){
+        while(!page.asText().contains("complete")){
             webClient.waitForBackgroundJavaScript(500)
         }
 
         then:
         "XDS Toolkit" == page.getTitleText()
-        page.asText().contains("Initialization Complete")
+        page.asText().contains("complete")
+    }
+
+    def 'Click V2 Pif Mode.'() {
+        when:
+        HtmlLabel v2PifLabel = null
+        NodeList labelNl = page.getElementsByTagName("label")
+        final Iterator<HtmlLabel> nodesIterator = labelNl.iterator()
+        for (HtmlLabel label : nodesIterator) {
+            if (label.getTextContent().contains("V2 Patient Identity Feed")) {
+                v2PifLabel = label
+            }
+        }
+
+        then:
+        v2PifLabel != null
+
+        when:
+        v2PifLabel.click()
+        webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
+        HtmlRadioButtonInput v2Option = page.getElementById(v2PifLabel.getForAttribute())
+
+        then:
+        v2Option.isChecked()
     }
 
     def 'Click Reset (or Initialize) Environment using defaults.'() {
@@ -111,12 +136,12 @@ class RegistryActorSimulatorSpec extends ConformanceActor {
         page = initializeBtn.click(false,false,false)
         webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
 
-        while(!page.asText().contains("Initialization Complete")){
+        while(!page.asText().contains("Initialization complete")){
             webClient.waitForBackgroundJavaScript(500)
         }
 
         then:
-        page.asText().contains("Initialization Complete")
+        page.asText().contains("Initialization complete")
 
         when:
         List<HtmlDivision> elementList = page.getByXPath("//div[contains(@class, 'orchestrationTestMc') and contains(@class, 'testOverviewHeaderFail')]")  // Substring match, other CSS class must not contain this string.

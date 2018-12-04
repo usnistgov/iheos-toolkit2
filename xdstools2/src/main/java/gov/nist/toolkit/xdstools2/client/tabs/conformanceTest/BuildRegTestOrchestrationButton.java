@@ -105,7 +105,7 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
                 testTab.setRegOrchestrationResponse(orchResponse);
 
                 if (PifType.V2.equals(request.getPifType())) {
-                    initializationResultsPanel.add(new HTML("<p>Initialization Complete</p>"));
+                    initializationResultsPanel.add(new HTML("<p>Initialization complete</p>"));
                 } else if (PifType.NONE.equals(request.getPifType())) {
                     initializationResultsPanel.add(new HTML("<p style='color:orange'>Initialization partially complete: there are two additional steps below for you to complete.</p>"));
                 } else {

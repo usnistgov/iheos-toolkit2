@@ -65,7 +65,7 @@ public class BuildFhirSupportOrchestrationButton extends AbstractOrchestrationBu
                 testTab.setOrchestrationResponse(response);
                 testTab.setFhirSupportOrchestrationResponse(response);
 
-                initializationResultsPanel.add(new HTML("Initialization Complete"));
+                initializationResultsPanel.add(new HTML("Initialization complete"));
 
                 supportingFhirServerConfigUI(initializationResultsPanel, response, false);
 
