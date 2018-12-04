@@ -73,7 +73,7 @@ class BuildRepTestOrchestrationButton extends AbstractOrchestrationButton {
                 RepOrchestrationResponse orchResponse = (RepOrchestrationResponse) rawResponse;
                 testTab.setRepOrchestrationResponse(orchResponse);
 
-                initializationResultsPanel.add(new HTML("Initialization Complete"));
+                initializationResultsPanel.add(new HTML("Initialization complete"));
 
                 if (testContext.getSiteUnderTest() != null) {
                     initializationResultsPanel.add(new SiteDisplay("System Under Test Configuration", testContext.getSiteUnderTest()));

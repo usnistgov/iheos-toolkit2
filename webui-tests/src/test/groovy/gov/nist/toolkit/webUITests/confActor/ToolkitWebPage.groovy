@@ -12,10 +12,13 @@ import com.gargoylesoftware.htmlunit.html.HtmlSelect
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.webUITests.confActor.exceptions.TkWtNotFoundEx
+import org.junit.Rule
+import org.junit.rules.TestName
 import spock.lang.Shared
 import spock.lang.Specification
 
 abstract class ToolkitWebPage extends Specification  {
+    @Rule TestName name = new TestName()
     @Shared WebClient webClient
     @Shared HtmlPage page
     @Shared int toolkitPort = 8888
@@ -23,7 +26,7 @@ abstract class ToolkitWebPage extends Specification  {
     @Shared String toolkitBaseUrl
     @Shared SimulatorBuilder spi
 
-    static final String simUser = "webuitest"
+    static final String testSessionName = "webuitest"
 
 
     static final int maxWaitTimeInMills = 60000* 5 // Keep this to accommodate slow computers. 5 minute (s).
@@ -42,16 +45,15 @@ abstract class ToolkitWebPage extends Specification  {
         if (webClient!=null) webClient.close()
 
         webClient = new WebClient(BrowserVersion.FIREFOX_52)
+        page = webClient.getPage(url)
+        webClient.getCache().clear()
+        webClient.getOptions().setJavaScriptEnabled(true)
 
         // 1. Load the Simulator Manager tool page
-        page = webClient.getPage(url)
-        webClient.getOptions().setJavaScriptEnabled(true)
         webClient.getOptions().setTimeout(maxWaitTimeInMills)
         webClient.setJavaScriptTimeout(maxWaitTimeInMills)
         webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
         webClient.getOptions().setPopupBlockerEnabled(false)
-
-        webClient.getCache().clear()
         webClient.setAjaxController(new AjaxController(){
             @Override
             public boolean processSynchron(HtmlPage page, WebRequest request, boolean async)
@@ -59,7 +61,7 @@ abstract class ToolkitWebPage extends Specification  {
                 return true
             }
         })
-        webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
+
     }
 
     def setupSpec() {
@@ -69,6 +71,7 @@ abstract class ToolkitWebPage extends Specification  {
     def cleanupSpec() {
     }
     def setup() {
+        println 'Running method: ' + name.methodName
     }
     def cleanup() {
     }

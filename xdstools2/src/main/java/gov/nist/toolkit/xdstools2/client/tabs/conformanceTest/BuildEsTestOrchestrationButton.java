@@ -81,7 +81,7 @@ public class BuildEsTestOrchestrationButton extends AbstractOrchestrationButton 
                 EsOrchestrationResponse orchResponse = (EsOrchestrationResponse) rawResponse;
                 testTab.setOrchestrationResponse(orchResponse);
 
-                initializationResultsPanel.add(new HTML("Initialization Complete"));
+                initializationResultsPanel.add(new HTML("Initialization complete"));
 
                 if (testContext.getSiteUnderTest() != null) {
                     initializationResultsPanel.add(new HTML("<h2>System Under Test Configuration</h2>"));

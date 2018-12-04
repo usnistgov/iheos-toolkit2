@@ -11,7 +11,7 @@ class A1_RunFirst_SimulatorManagerSpec extends ToolkitWebPage {
     def setupSpec() {
         // Load sim man page here.
         // http://127.0.0.1:8888/Xdstools2.html#Tool:toolId=Simulators
-        loadPage(String.format("%s/#Tool:toolId=Simulators",toolkitBaseUrl))
+        loadPage(String.format("%s/#Tool:toolId=Simulators;env=default;testSession=%s;",toolkitBaseUrl, testSessionName))
     }
 
     def 'No unexpected popup after initial page load'() {
@@ -22,9 +22,10 @@ class A1_RunFirst_SimulatorManagerSpec extends ToolkitWebPage {
         divList!=null && divList.size()==0
     }
 
+    /*
     def 'Use test session.'() {
         when:
-        HtmlOption newlySelectedSessionOption = useTestSession(simUser)
+        HtmlOption newlySelectedSessionOption = useTestSession(testSessionName)
 
         then:
         newlySelectedSessionOption !=null
@@ -38,6 +39,7 @@ class A1_RunFirst_SimulatorManagerSpec extends ToolkitWebPage {
         then:
         divList!=null && divList.size()==0
     }
+    */
 
 
     def 'Check sim man page title'() {
@@ -93,9 +95,9 @@ class A1_RunFirst_SimulatorManagerSpec extends ToolkitWebPage {
                         defectCt++
                         continue
                     }
-                    String simId = simUser + "__" + testSimActorShortName
+                    String simId = testSessionName + "__" + testSimActorShortName
 
-                    getSpi().delete(testSimActorShortName, simUser)
+                    getSpi().delete(testSimActorShortName, testSessionName)
                     sleep(2500) // Why we need this -- Problem here is that the Delete request via REST could be still running before we execute the next Create REST command. The PIF Port release timing will be off causing a connection refused error in the Jetty log.
 
                     actorInput.setValueAttribute(testSimActorShortName)
