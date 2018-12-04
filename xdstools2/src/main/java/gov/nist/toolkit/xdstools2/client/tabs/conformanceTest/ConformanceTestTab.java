@@ -262,10 +262,12 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 		ClientUtils.INSTANCE.getEventBus().addHandler(TestContextChangedEvent.TYPE, new TestContextChangedEventHandler() {
 			@Override
 			public void onTestContextChanged(TestContextChangedEvent event) {
-				testContextView.updateTestingContextDisplay();
+				siteToIssueTestAgainst = new SiteSpec(event.getValue(), getTestSession());
 				if (currentActorOption.getActorTypeId()==null) { // Menu mode has no actor
+				    // Update to test context is already handled in loadTestCollections
 					loadTestCollections();
 				} else {
+					testContextView.updateTestingContextDisplay();
 					updateDisplayedActorAndOptionType();
 				}
 			}
