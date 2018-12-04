@@ -1,0 +1,4 @@
+POST ${theService} HTTP/1.1
+User-Agent: Axis2
+Host: ${theHost}:${thePort}
+Content-Type: multipart/related; boundary="MIMEBoundary_494859fac46e21a68c012f8f4fe208a370fc32b6e07ae79f"; type="application/xop+xml"; start="<1.694859fac46e21a68c012f8f4fe208a370fc32b6e07ae79f@apache.org>"; start-info="application/soap+xml"; action="${theAction}"

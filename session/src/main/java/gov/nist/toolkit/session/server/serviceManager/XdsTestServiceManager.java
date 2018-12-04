@@ -61,7 +61,9 @@ import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.*;
 
 
@@ -206,15 +208,20 @@ public class XdsTestServiceManager extends CommonService {
 				System.getProperty("javax.net.ssl.trustStore");
 
 		if (tsSysProp == null) {
-			String tsFileName = "/gazelle/gazelle_sts_cert_truststore.jks";
-			URL tsURL = getClass().getResource(tsFileName); // Should this be a toolkit system property variable?
-			if (tsURL != null) {
-				File tsFile = new File(tsURL.getFile().replaceAll("%20"," "));
-				System.setProperty("javax.net.ssl.trustStore", tsFile.toString());
-				System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
-				System.setProperty("javax.net.ssl.trustStoreType", "JKS");
-			} else {
-				throw new ToolkitRuntimeException("Cannot find truststore by URL: " + tsURL);
+			String tsFileName = "gazelle/gazelle_sts_cert_truststore.jks";
+			try {
+				File tsFile = null;
+				tsFile = Paths.get(getClass().getResource("/").toURI()).resolve(tsFileName).toFile(); // Should this be a toolkit system property variable?
+				if (tsFile != null) {
+					tsFile = new File(tsFile.toString().replaceAll("%20", " "));
+					System.setProperty("javax.net.ssl.trustStore", tsFile.toString());
+					System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
+					System.setProperty("javax.net.ssl.trustStoreType", "JKS");
+				} else {
+					throw new ToolkitRuntimeException("Cannot find truststore by URL: " + tsFileName);
+				}
+			} catch (URISyntaxException urise) {
+				throw new ToolkitRuntimeException(urise.toString());
 			}
 
 		}

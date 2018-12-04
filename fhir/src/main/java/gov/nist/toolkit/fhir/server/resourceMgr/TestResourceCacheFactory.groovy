@@ -1,12 +1,14 @@
 package gov.nist.toolkit.fhir.server.resourceMgr
+
+import java.nio.file.Paths
+
 /**
  *
  */
 class TestResourceCacheFactory {
 
     static public ResourceCacheMgr getResourceCacheMgr() {
-        String path = new TestResourceCacheFactory().getClass().getResource('/resourceCache/unittestingresourcecache.txt').getFile()
-        File cacheCollectionFile = new File(path).parentFile
+        File cacheCollectionFile = Paths.get(new TestResourceCacheFactory().getClass().getResource('/').toURI()).resolve('resourceCache/unittestingresourcecache.txt').toFile().parentFile
         return new ResourceCacheMgr(cacheCollectionFile)
     }
 

@@ -8,6 +8,8 @@ import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
 import spock.lang.Specification
 
+import java.nio.file.Paths
+
 /**
  *
  */
@@ -15,7 +17,7 @@ class XdmTest extends Specification {
 
     def 'ccda'() {
         setup:
-        InputStream xdm = this.getClass().getResource('/xdm/Ccda.zip').openStream()
+        InputStream xdm = Paths.get(getClass().getResource('/').toURI()).resolve('xdm/Ccda.zip').openStream()
 
         when:
         ValidationContext vc = DefaultValidationContextFactory.validationContext();
