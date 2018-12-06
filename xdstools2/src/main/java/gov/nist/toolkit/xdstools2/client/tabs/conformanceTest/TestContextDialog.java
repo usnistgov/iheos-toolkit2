@@ -46,7 +46,6 @@ class TestContextDialog extends DialogBox {
     private FlowPanel sitesForTestSessionPanel = new FlowPanel();
     private SiteSelectionValidator siteSelectionValidator;
     private String selectedSite = null;
-    private static HandlerRegistration testContextChangedHReg = null;
 
     TestContextDialog(final ToolWindow toolWindow, final SiteManager siteManager, SiteSelectionValidator siteSelectionValidator, String message) {
         super(true, true);

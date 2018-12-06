@@ -202,4 +202,21 @@ class A2_Run_TestContextSpec extends ToolkitWebPage {
         pageText.contains("SUT: " + getSimId())
     }
 
+    def 'Make sure SUT was saved in site.txt by Getting again (x1) conformance page.'() {
+            when:
+            loadPage(String.format("%s/#ConfActor:env=default;testSession=%s;",toolkitBaseUrl,testSessionName))
+
+            then:
+            page != null
+    }
+
+    def 'Verify SUT selection again (x1)'() {
+        expect:
+        "XDS Toolkit" == page.getTitleText()
+        final String pageText = page.asText()
+        pageText.contains("Test Context")
+        pageText.contains("Environment: default")
+        pageText.contains("TestSession: " + ToolkitWebPage.testSessionName)
+        pageText.contains("SUT: " + getSimId())
+    }
 }

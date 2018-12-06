@@ -5,7 +5,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput
 import com.gargoylesoftware.htmlunit.html.HtmlDivision
 import com.gargoylesoftware.htmlunit.html.HtmlImage
 import com.gargoylesoftware.htmlunit.html.HtmlLabel
-import com.gargoylesoftware.htmlunit.html.HtmlOption
 import com.gargoylesoftware.htmlunit.html.HtmlRadioButtonInput
 import gov.nist.toolkit.toolkitApi.DocumentRegRep
 import spock.lang.Shared

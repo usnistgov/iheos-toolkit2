@@ -179,14 +179,21 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 	// if we dont arrange to remove the TestSession change handler then the TestSession
 	// manager will pop up even after the tab is deleted
 	private HandlerRegistration testSessionChangedHandler = null;
+	private HandlerRegistration testContextChangedHandler = null;
 
 	@Override
 	public void onDelete() {
 		// remove existing test session change handler
 		if (testSessionChangedHandler != null) {
 			GWT.log("Unregister TestSession change handler for Conformance Tool");
-			testSessionChangedHandler.removeHandler();
-			testSessionChangedHandler = null;
+			if (testSessionChangedHandler != null) {
+				testSessionChangedHandler.removeHandler();
+				testSessionChangedHandler = null;
+			}
+			if (testContextChangedHandler != null) {
+				testContextChangedHandler.removeHandler();
+				testContextChangedHandler = null;
+			}
 		}
 	}
 
@@ -259,23 +266,28 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 			}
 		});
 
-		ClientUtils.INSTANCE.getEventBus().addHandler(TestContextChangedEvent.TYPE, new TestContextChangedEventHandler() {
-			@Override
-			public void onTestContextChanged(TestContextChangedEvent event) {
-				siteToIssueTestAgainst = new SiteSpec(event.getValue(), getTestSession());
-				if (currentActorOption.getActorTypeId()==null) { // Menu mode has no actor
-				    // Update to test context is already handled in loadTestCollections
-					loadTestCollections();
-				} else {
-					testContextView.updateTestingContextDisplay();
-					updateDisplayedActorAndOptionType();
+		if (testContextChangedHandler == null) {
+			testContextChangedHandler = ClientUtils.INSTANCE.getEventBus().addHandler(TestContextChangedEvent.TYPE, new TestContextChangedEventHandler() {
+				@Override
+				public void onTestContextChanged(final TestContextChangedEvent event) {
+					new SetAssignedSiteForTestSessionCommand() {
+						@Override
+						public void onComplete(Void result) {
+							siteToIssueTestAgainst = new SiteSpec(event.getValue(), getTestSession());
+							testContext.setCurrentSiteSpec(event.getValue());
+							testContextView.updateTestingContextDisplay();
+							if (currentActorOption.getActorTypeId() == null) { // Menu mode has no actor
+								// Update to test context is already handled in loadTestCollections
+								loadTestCollections();
+							} else {
+								updateDisplayedActorAndOptionType();
+							}
+						}
+					}.run(new SetAssignedSiteForTestSessionRequest(ClientUtils.INSTANCE.getCommandContext(), getCurrentTestSession(), event.getValue()));
 				}
-			}
-		});
-
+			});
+		}
 	}
-
-
 
 	private List<TestOverviewDTO> testOverviews(Map<ActorOptionConfig, List<TestInstance>> testsPerActorOption, Map<TestInstance, TestOverviewDTO> testOverviewDTOs, ActorOptionConfig actorOption) {
 		List<TestInstance> testsForThisActorOption = testsPerActorOption.get(actorOption);
