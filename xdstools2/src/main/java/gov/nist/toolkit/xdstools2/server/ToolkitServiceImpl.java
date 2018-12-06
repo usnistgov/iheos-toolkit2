@@ -76,6 +76,7 @@ import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import gov.nist.toolkit.xdsexception.client.TkNotFoundException;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdstools2.client.GazelleXuaUsername;
 import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.ActorOptionConfig;
@@ -1184,11 +1185,12 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
            props.load(new FileInputStream(orchestrationPropFile));
            return PropertyManager.xformProperties2Map(props);
        }
-       throw new ToolkitRuntimeException("Error Property file does not exist: " + orchestrationPropFile.toString());
+       throw new TkNotFoundException("Error: Property file does not exist ", orchestrationPropFile.toString());
     }
 
     @Override
     public PifType getOrchestrationPifType(GetOrchestrationPifTypeRequest request) throws Exception {
+        installCommandContext(request);
             // It is possible SUT can be Null in the case it was not selected in Test Context
             if (request.getSite()==null) {
                return PifType.NONE;
@@ -1200,16 +1202,20 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
                     // If Orchestration Properties PifType is readily available, then return that value.
                     return PifType.valueOf(pifType);
                 } else {
-                    // On the first orchestration setup, if no previous pifType setting is not available from the property file,
-                    // make an assumption that if a Site definition simply exists, it probably does not support V2 PIF. If Site definition does not exist, we assume it is a simulator which supports V2 PIF.
-                    File siteDir  = new File(Installation.instance().actorsDir(request.getSite().getTestSession()), request.getSite().getSiteName());
-                    if (siteDir.exists()) {
+                    return PifType.V2;
+                    /* On the first orchestration setup, if no previous pifType setting is not available from the property file,
+                     make an assumption that if a Site definition simply exists, it probably does not support V2 PIF. If Site definition does not exist, we assume it is a simulator which supports V2 PIF.
+                    File siteXmlFile  = new File(Installation.instance().actorsDir(request.getSite().getTestSession()), request.getSite().getSiteName() + ".xml");
+                    if (siteXmlFile.exists()) {
                         return PifType.NONE;
                     } else {
                         return PifType.V2;
                     }
+                    */
                 }
-            } catch (ToolkitRuntimeException trex) {
+            } catch (TkNotFoundException tknfe) {
+               return PifType.V2;
+            } catch (Exception e) {
                return PifType.NONE;
             }
     }
