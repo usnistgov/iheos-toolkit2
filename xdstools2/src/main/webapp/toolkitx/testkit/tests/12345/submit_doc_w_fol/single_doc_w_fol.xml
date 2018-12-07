@@ -167,13 +167,13 @@
             </rim:Slot>
          </rim:Classification>
          <rim:Classification classifiedObject="Document01"
-               nodeRepresentation="Practice-E" classificationScheme="urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead">
+               nodeRepresentation="R-300E3" classificationScheme="urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead">
             <rim:Name>
-               <rim:LocalizedString value="Ophthalmology"/>
+               <rim:LocalizedString value="Accident and Emergency"/>
             </rim:Name>
             <rim:Slot name="codingScheme">
                <rim:ValueList>
-                  <rim:Value>1.3.6.1.4.1.21367.2017.3</rim:Value>
+                  <rim:Value>2.16.840.1.113883.6.96</rim:Value>
                </rim:ValueList>
             </rim:Slot>
          </rim:Classification>
