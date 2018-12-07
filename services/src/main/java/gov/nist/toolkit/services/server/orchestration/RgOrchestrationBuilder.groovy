@@ -65,6 +65,7 @@ class RgOrchestrationBuilder extends AbstractOrchestrationBuilder {
             Map<String, TestInstanceManager> pidNameMap
 
             OrchestrationProperties orchProps
+            boolean isPifTypeSameAsPersisted = true
             Pid simplePid
 
             if (!request.isOnDemand()) {
@@ -72,13 +73,19 @@ class RgOrchestrationBuilder extends AbstractOrchestrationBuilder {
                         simplePid:  new TestInstanceManager(request, response, '15823'),
                 ]
                 orchProps = new OrchestrationProperties(session, request.testSession, ActorType.RESPONDING_GATEWAY, pidNameMap.keySet(), forceNewPatientIds)
-                // Persist the PIF setting, so it will be restored to the same setting the next time
-                orchProps.setProperty("pifType", request.pifType.name())
+                isPifTypeSameAsPersisted = orchProps.getProperty("pifType") != null && request.pifType == PifType.valueOf(orchProps.getProperty("pifType"))
+
+                if (!isPifTypeSameAsPersisted) {
+                    // When PIF mode is switched, use a fresh set of PIDs
+                    forceNewPatientIds = true
+                    orchProps = new OrchestrationProperties(session, request.testSession, ActorType.RESPONDING_GATEWAY, pidNameMap.keySet(), forceNewPatientIds)
+                    // Save the PIF setting
+                    orchProps.setProperty("pifType", request.pifType.name())
+                }
 
                 simplePid = PidBuilder.createPid(orchProps.getProperty("simplePid"))
 
                 response.setSimplePid(simplePid)
-
 
                 // Setup PIF patientid param
                 pidNameMap.each { String key, TestInstanceManager value ->
@@ -94,7 +101,6 @@ class RgOrchestrationBuilder extends AbstractOrchestrationBuilder {
             SimId supportSimId
             SimulatorConfig supportSimConfig
             SiteSpec rrSite
-            boolean reuse = false  // updated as we progress
 
             Site site = gov.nist.toolkit.results.server.SiteBuilder.siteFromSiteSpec(request.siteUnderTest, session.id)
             if (site == null) return RawResponseBuilder.build(String.format("Responding Gateway under Test (%s) does not exist in site configurations.", request.siteUnderTest.toString()))
@@ -143,7 +149,7 @@ class RgOrchestrationBuilder extends AbstractOrchestrationBuilder {
                 item12318.params.put('$testdata_home$', home)
                 response.testParams.put(testInstance12318, item12318.params)
 
-                if (orchProps.updated() && !request.isUseExistingState()) {
+                if (orchProps.updated() || !isPifTypeSameAsPersisted) {
                     List<TestInstance> tILogToBeDeleted = new ArrayList<>()
                     pidNameMap.each { String key, TestInstanceManager value ->
                         String pidId = key
@@ -193,15 +199,24 @@ class RgOrchestrationBuilder extends AbstractOrchestrationBuilder {
             Map<String, TestInstanceManager> pidNameMap
 
             OrchestrationProperties orchProps
+            boolean isPifTypeSameAsPersisted = true
             Pid simplePid
+            boolean forceNewPatientIds = !request.isUseExistingState()
 
             if (!request.isOnDemand()) {
                 pidNameMap = [
                         simplePid:  new TestInstanceManager(request, response, '15823'),
                 ]
-                orchProps = new OrchestrationProperties(session, request.testSession, ActorType.RESPONDING_GATEWAY, pidNameMap.keySet(), !request.useExistingState)
-                // Persist the PIF setting, so it will be restored to the same setting the next time
-                orchProps.setProperty("pifType", request.pifType.name())
+                orchProps = new OrchestrationProperties(session, request.testSession, ActorType.RESPONDING_GATEWAY, pidNameMap.keySet(), forceNewPatientIds)
+                isPifTypeSameAsPersisted = orchProps.getProperty("pifType") != null && request.pifType == PifType.valueOf(orchProps.getProperty("pifType"))
+
+                if (!isPifTypeSameAsPersisted) {
+                    // When PIF mode is switched, use a fresh set of PIDs
+                    forceNewPatientIds = true
+                    orchProps = new OrchestrationProperties(session, request.testSession, ActorType.RESPONDING_GATEWAY, pidNameMap.keySet(), forceNewPatientIds)
+                    // Save the PIF setting
+                    orchProps.setProperty("pifType", request.pifType.name())
+                }
 
                 simplePid = PidBuilder.createPid(orchProps.getProperty("simplePid"))
 
@@ -290,7 +305,7 @@ class RgOrchestrationBuilder extends AbstractOrchestrationBuilder {
                 TestInstance testInstance12318 = new TestInstance('12318', request.testSession)
                 MessageItem item12318 = response.addMessage(testInstance12318, true, "")
 
-                if (orchProps.updated()) {
+                if (orchProps.updated() || !isPifTypeSameAsPersisted) {
                     // send necessary Patient ID Feed messages
                     new PifSender(api, request.testSession, rrSite, orchProps).send(PifType.V2, pidNameMap)
 
