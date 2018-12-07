@@ -1191,33 +1191,24 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public PifType getOrchestrationPifType(GetOrchestrationPifTypeRequest request) throws Exception {
         installCommandContext(request);
-            // It is possible SUT can be Null in the case it was not selected in Test Context
-            if (request.getSite()==null) {
-               return PifType.NONE;
+        Site site = request.getSite();
+        // It is possible SUT can be Null in the case it was not selected in Test Context
+        if (site == null) {
+            return PifType.NONE;
+        }
+
+        // Auto-decide which Pif mode is appropriate
+        if (site.isSimulator()) {
+            return PifType.V2;
+        } else {
+            // Site XML File
+            if ((site.pifHost!=null && "".equals(site.pifHost)) || site.pifHost == null || (site.pifPort!=null && "".equals(site.pifPort)) || site.pifPort == null) {
+                return PifType.NONE;
+            } else if (site.pifHost != null && site.pifPort != null) {
+                return PifType.V2;
             }
-            try {
-                Map<String,String> map = getOrchestrationProperties(new GetOrchestrationPropertiesRequest(request, request.getTestSession(), request.getActorShortName()));
-                String pifType = map.get("pifType");
-                if (pifType!=null) {
-                    // If Orchestration Properties PifType is readily available, then return that value.
-                    return PifType.valueOf(pifType);
-                } else {
-                    return PifType.V2;
-                    /* On the first orchestration setup, if no previous pifType setting is not available from the property file,
-                     make an assumption that if a Site definition simply exists, it probably does not support V2 PIF. If Site definition does not exist, we assume it is a simulator which supports V2 PIF.
-                    File siteXmlFile  = new File(Installation.instance().actorsDir(request.getSite().getTestSession()), request.getSite().getSiteName() + ".xml");
-                    if (siteXmlFile.exists()) {
-                        return PifType.NONE;
-                    } else {
-                        return PifType.V2;
-                    }
-                    */
-                }
-            } catch (TkNotFoundException tknfe) {
-               return PifType.V2;
-            } catch (Exception e) {
-               return PifType.NONE;
-            }
+        }
+        return PifType.NONE;
     }
 
     @Override
