@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!--
+    Update 12/7/2018 by Bill Majurski
+       added PracticeSetting Code Practice-E back in (from last year)
+       removed some null entries from PracticeSetting Code
     Update 11/20/2018 by Steve Moore and Lynn Felhofer (generated from spreadsheet)
     Update  4/11/2018 by Steve Moore (generated from spreadsheet)
     Update  4/06/2018 by Steve Moore and Lynn Felhofer (generated from spreadsheet)
@@ -45,10 +48,7 @@
         <Code code="R-3027B" display="Radiology" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
         <Code code="Practice-A" display="Radiology-Old" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
         <Code code="Practice-L" display="Other" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
-        <Code code="" display="" codingScheme="" system=""/>
-        <Code code="" display="" codingScheme="" system=""/>
-        <Code code="" display="" codingScheme="" system=""/>
-        <Code code="" display="" codingScheme="" system=""/>
+        <Code code="Practice-E" display="Ophthalmology-Old" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>        
     </CodeType>
     <CodeType name="eventCodeList" classScheme="urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4">
         <Code code="urn:connectathon:bppc:foundational:policy" display="Foundational Connectathon Read-Access Policy" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
