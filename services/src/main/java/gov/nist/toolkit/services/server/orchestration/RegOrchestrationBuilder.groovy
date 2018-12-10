@@ -66,8 +66,15 @@ class RegOrchestrationBuilder extends AbstractOrchestrationBuilder {
         // Step 1. Create Patient ID Strings if forceNewPatientIds is set to True
         OrchestrationProperties orchProps = new OrchestrationProperties(session, request.testSession, ActorType.REGISTRY, pidNameMap.keySet(), forceNewPatientIds)
 
-        // Persist the PIF setting, so it will be restored to the same setting the next time
-        orchProps.setProperty("pifType", request.pifType.name())
+        boolean isPifTypeSameAsPersisted = orchProps.getProperty("pifType") != null && request.pifType == PifType.valueOf(orchProps.getProperty("pifType"))
+
+        if (!isPifTypeSameAsPersisted) {
+            // When PIF mode is switched, use a fresh set of PIDs
+            forceNewPatientIds = true
+            orchProps = new OrchestrationProperties(session, request.testSession, ActorType.REGISTRY, pidNameMap.keySet(), forceNewPatientIds)
+            // Save the PIF setting
+            orchProps.setProperty("pifType", request.pifType.name())
+        }
 
         SiteSpec registrySut
         if (selfTestRegId) {
@@ -116,7 +123,7 @@ class RegOrchestrationBuilder extends AbstractOrchestrationBuilder {
         item12361.params.put('$patient_id2$', orchProps.getProperty('mpq2Pid'))
         response.testParams.put(testInstance12361, item12361.params)
 
-        if (orchProps.updated() && !request.isUseExistingState()) {
+        if (orchProps.updated() || !isPifTypeSameAsPersisted) {
                 List<TestInstance> tILogToBeDeleted = new ArrayList<>()
                 pidNameMap.each { String key, TestInstanceManager value ->
                     String pidId = key
@@ -170,8 +177,16 @@ class RegOrchestrationBuilder extends AbstractOrchestrationBuilder {
         // V2: Step 1. Create Patient ID Strings if forceNewPatientIds is set to True
         OrchestrationProperties orchProps = new OrchestrationProperties(session, request.testSession, ActorType.REGISTRY, pidNameMap.keySet(), forceNewPatientIds)
 
-        // V2: Persist the PIF setting, so it will be restored to the same setting the next time
-        orchProps.setProperty("pifType", request.pifType.name())
+        boolean isPifTypeSameAsPersisted = orchProps.getProperty("pifType") != null && request.pifType == PifType.valueOf(orchProps.getProperty("pifType"))
+
+        if (!isPifTypeSameAsPersisted) {
+            // When PIF mode is switched, use a fresh set of PIDs
+            forceNewPatientIds = true
+            orchProps = new OrchestrationProperties(session, request.testSession, ActorType.REGISTRY, pidNameMap.keySet(), forceNewPatientIds)
+            // V2: Save the PIF setting
+            orchProps.setProperty("pifType", request.pifType.name())
+        }
+
 
         SiteSpec registrySut
         if (selfTestRegId) {
@@ -213,7 +228,7 @@ class RegOrchestrationBuilder extends AbstractOrchestrationBuilder {
         item12361.params.put('$patient_id2$', orchProps.getProperty('mpq2Pid'))
         response.testParams.put(testInstance12361, item12361.params)
 
-        if (orchProps.updated() && !request.isUseExistingState()) {
+        if (orchProps.updated() || !isPifTypeSameAsPersisted) {
             // V2: Send Patient ID Feed messages based on values in pidNameMap
             new PifSender(api, request.testSession, request.registrySut, orchProps)
                 .send(PifType.V2, pidNameMap)
