@@ -22,6 +22,7 @@
     <TestStep id="pdb">
         <ExpectedStatus>Success</ExpectedStatus>
         <ProvideDocumentBundleTransaction>
+            <AddMasterIdentifier/>
             <ResourceFile>$ResourceFile$</ResourceFile>
             <UseReport step="PatientLookup" section="THIS" reportName="Url" useAs="$patient_reference$"/>
             <UrlExtension>$UrlExtension$</UrlExtension>

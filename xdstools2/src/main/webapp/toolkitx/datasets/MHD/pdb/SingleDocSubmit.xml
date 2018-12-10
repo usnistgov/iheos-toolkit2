@@ -138,7 +138,7 @@
                     </practiceSetting>
                     <facilityType>
                         <coding>
-                            <system value="http://www.snomed.org"/>
+                            <system value="http://snomed.info/sct"/>
                             <code value="35971002"/>
                             <display value="Ambulatory care site"/>
                         </coding>
@@ -176,12 +176,16 @@
                         </telecom>
                     </Practitioner>
                 </contained>
-                
-                
+
+		<masterIdentifier>
+                    <system value="urn:ietf:rfc:3986"/>
+                    <value value="urn:oid:1.2.129.6.58.92.88337"/>
+                </masterIdentifier>
+
                 <status value="current"/>
                 <type>
                     <coding>
-                        <system value="http://www.snomed.org"/>
+                        <system value="http://snomed.info/sct"/>
                         <code value="22232009"/>
                         <display value="Hospital"/>
                     </coding>
