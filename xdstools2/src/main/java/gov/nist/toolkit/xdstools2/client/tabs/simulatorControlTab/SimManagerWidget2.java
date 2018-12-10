@@ -68,7 +68,7 @@ import java.util.Set;
 public class SimManagerWidget2 extends Composite {
 
     protected static final int ROW_BUFFER = 38;
-    private static final int PAGE_SIZE = 25;
+    private static final int PAGE_SIZE = 50;
 
     CommandContext commandContext;
     private SimulatorControlTab hostTab;
