@@ -90,7 +90,21 @@ class A1_RunFirst_SimulatorManagerSpec extends ToolkitWebPage {
                     String testSimActorShortName = actorType.getShortName()
                     if (
 //                    testSimActorShortName.equals(ActorType.EDGE_SERVER.getShortName()) ||
-                            testSimActorShortName.equals(ActorType.ISR.getShortName())) {
+                            testSimActorShortName.equals(ActorType.ISR.getShortName())  ||
+                            testSimActorShortName.equals(ActorType.RSNA_EDGE_DEVICE.getShortName())
+                        /*
+                        We ignore certain actors because we get these types of errors on Toolkit 7:
+Cannot build simulator of type RSNA Image Sharing Source - cannot find Factory for ActorType
+Exception Exception
+	at gov.nist.toolkit.simcommon.server.AbstractActorFactory.buildNewSimulator(AbstractActorFactory.java:203)
+	at gov.nist.toolkit.simcommon.server.AbstractActorFactory.buildNewSimulator(AbstractActorFactory.java:183)
+	at gov.nist.toolkit.simcommon.server.GenericSimulatorFactory.buildNewSimulator(GenericSimulatorFactory.java:30)
+	at gov.nist.toolkit.services.server.SimulatorApi.create(SimulatorApi.java:39)
+	at gov.nist.toolkit.services.server.SimulatorServiceManager.getNewSimulator(SimulatorServiceManager.java:289)
+	at gov.nist.toolkit.xdstools2.server.ToolkitServiceImpl.getNewSimulator(ToolkitServiceImpl.java:1415)
+Error: This simulator type could not be created --> webuitest__ris
+                         */
+                    ) {
                         println("Skipping actor type (short name) due to known defect: " + testSimActorShortName)
                         defectCt++
                         continue
@@ -111,10 +125,11 @@ class A1_RunFirst_SimulatorManagerSpec extends ToolkitWebPage {
                         List<HtmlButton> okButtonList = page.getByXPath("//button[contains(@class,'gwt-Button') and text()='Ok']")
                         listHasOnlyOneItem(okButtonList)
                         page = okButtonList.get(0).click()
+                    } else {
+                        addedSims++
                     }
 
-//                    if (page.asText().contains(simId)) {
-                      addedSims++
+//                    if (page.asText().contains(simId)) { This method doesn't take into consideration that Simulator list can span multiple pages
 //                    }
                 }
             }
