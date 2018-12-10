@@ -647,6 +647,9 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 		if (currentActorOption==null || currentActorOption.getActorTypeId()==null) {
 			// Only display the menu when actor is not selected.
 			boolean result = conformanceToolMenu.displayMenu(mainView.getTestsPanel());
+			if (!result) {
+				mainView.clearLoadingMessage();
+			}
 			mainView.getActorpanel().setVisible(result);
 		}
 
@@ -888,8 +891,15 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 	}
 
 	private void displayActorsTabBar(TabBar actorTabBar) {
-		if (actorTabBar.getTabCount() == 0 && conformanceToolMenu.getTabConfigRoot()!=null) {
-			for (TabConfig tabConfig : conformanceToolMenu.getTabConfigRoot().getChildTabConfigs()) {
+		if (conformanceToolMenu.getTabConfigRoot()!=null) {
+			int existingTabs = actorTabBar.getTabCount();
+			if (existingTabs>0) {
+			    for (int idx=0; idx<existingTabs; idx++) {
+				actorTabBar.removeTab(0);
+				}
+			}
+			List<TabConfig> list = conformanceToolMenu.getTabConfigRoot().getChildTabConfigs();
+			for (TabConfig tabConfig : list) {
 				if (tabConfig.isVisible()) {
 					actorTabBar.addTab(tabConfig.getLabel());
 				}
