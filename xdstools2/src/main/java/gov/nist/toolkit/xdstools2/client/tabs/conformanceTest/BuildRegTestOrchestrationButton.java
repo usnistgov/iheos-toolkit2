@@ -122,7 +122,9 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
                 if (PifType.NONE.equals(request.getPifType())) {
                     initializationResultsPanel.add(new HTML("<h3>1. On your system, manually perform the Patient Identity Feed for these PIDs as shown below</h3>"));
                 }
-                initializationResultsPanel.add(new HTML("Patient ID for Register tests: " + orchResponse.getRegisterPid().toString()));
+                HTML patientIdForRegisterTests = new HTML("Patient ID for Register tests: " + orchResponse.getRegisterPid().toString());
+//                patientIdForRegisterTests.setStyleName("patientIdTextMc"); // CSS Marker class used only For UI testing purposes
+                initializationResultsPanel.add(patientIdForRegisterTests);
                 initializationResultsPanel.add(new HTML("Alternate Patient ID for Register tests: " + orchResponse.getRegisterAltPid().toString()));
                 initializationResultsPanel.add(new HTML("Patient ID for Stored Query tests: " + orchResponse.getSqPid().toString()));
                 initializationResultsPanel.add(new HTML("Patient ID for MPQ tests: " + orchResponse.getMpq1Pid().toString()));

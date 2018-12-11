@@ -336,6 +336,7 @@ h3 {
   width: 20px; height: 20px;
 }
 
+/* Marker classes are used only for UI testing purposes. It helps to locate a particular HTML element through this class. Otherwise, it does not offer any functional value. */
 .SupportingEnvironmentConfiguration {/* This marker class was generated using the ConfActor Table title (and automatically assigned) in Conformance actor. */}
 .orchestrationTestMc {/* Marker class */}
 .confActorTestSessionSelectorMc {/* Marker class */}
@@ -345,6 +346,7 @@ h3 {
 .selectActorTypeMc {/*Marker class */}
 .simulatorIdInputMc {/* Marker class */}
 .testCount {/* Marker class */}
+.patientIdInputMc {/* Marker class */}
 
 .orchestrationOption {
   margin-bottom: 7px;

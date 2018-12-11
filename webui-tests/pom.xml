@@ -60,11 +60,12 @@
                     <runOrder>alphabetical</runOrder>
                     <includes>
                         <include>**/A1_RunFirst_SimulatorManagerSpec.java</include> <!-- SimulatorManager deletes and recreates all simulators. If this is not the first test to run, Simulator logs (Not TestLogCache) created by other tests are gone! You can tell by the created timestamp of the Test run time and Simulator creation time -->
-                        <include>**/A2_Run_TestContextSpec.java</include>
-                        <include>**/RegistryActorSimulatorSpec.java</include>
-                        <include>**/RepositoryActorSimulatorSpec.java</include>
-                        <include>**/RecipientActorSimulatorSpec.java</include>
-                        <include>**/RespondingGatewayActorSimulatorSpec.java</include>
+                        <!--<include>**/A2_Run_TestContextSpec.java</include>-->
+                        <include>**/RegistryActorA1SimulatorSpec.java</include>
+                        <include>**/RegistryActorA2FindDocumentsSpec.java</include>
+                        <!--<include>**/RepositoryActorSimulatorSpec.java</include>-->
+                        <!--<include>**/RecipientActorSimulatorSpec.java</include>-->
+                        <!--<include>**/RespondingGatewayActorSimulatorSpec.java</include>-->
                     </includes>
                     <!-- Uncomment below to Run all tests -->
                     <!--<includes>-->

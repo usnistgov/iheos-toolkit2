@@ -1,3 +1,5 @@
+package gov.nist.toolkit.webUITests
+
 import com.gargoylesoftware.htmlunit.html.*
 import gov.nist.toolkit.actortransaction.shared.ActorType
 import gov.nist.toolkit.webUITests.confActor.ToolkitWebPage
@@ -11,7 +13,7 @@ class A1_RunFirst_SimulatorManagerSpec extends ToolkitWebPage {
     def setupSpec() {
         // Load sim man page here.
         // http://127.0.0.1:8888/Xdstools2.html#Tool:toolId=Simulators
-        loadPage(String.format("%s/#Tool:toolId=Simulators;env=default;testSession=%s;",toolkitBaseUrl, testSessionName))
+        loadPage(String.format("%s/#Tool:toolId=Simulators;env=default;testSession=%s;",toolkitBaseUrl, ToolkitWebPage.testSessionName))
     }
 
     def 'No unexpected popup after initial page load'() {
@@ -109,9 +111,9 @@ Error: This simulator type could not be created --> webuitest__ris
                         defectCt++
                         continue
                     }
-                    String simId = testSessionName + "__" + testSimActorShortName
+                    String simId = ToolkitWebPage.testSessionName + "__" + testSimActorShortName
 
-                    getSpi().delete(testSimActorShortName, testSessionName)
+                    getSpi().delete(testSimActorShortName, ToolkitWebPage.testSessionName)
                     sleep(2500) // Why we need this -- Problem here is that the Delete request via REST could be still running before we execute the next Create REST command. The PIF Port release timing will be off causing a connection refused error in the Jetty log.
 
                     actorInput.setValueAttribute(testSimActorShortName)

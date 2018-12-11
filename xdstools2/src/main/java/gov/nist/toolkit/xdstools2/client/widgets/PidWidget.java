@@ -18,6 +18,7 @@ public class PidWidget implements IsWidget{
 
     public PidWidget(){
         HorizontalPanel horizontalPanel=new HorizontalPanel();
+        pidInput.addStyleName("patientIdInputMc");
         horizontalPanel.add(pidInput);
         horizontalPanel.add(expandBtn);
 

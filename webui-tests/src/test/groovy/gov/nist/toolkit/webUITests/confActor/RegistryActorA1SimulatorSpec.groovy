@@ -16,9 +16,9 @@ import spock.lang.Timeout
  */
 @Stepwise
 @Timeout(500) // Keep this to accommodate slow computers (Sunil's Windows 10 laptop).
-class RegistryActorSimulatorSpec extends ConformanceActor {
+class RegistryActorA1SimulatorSpec extends ConformanceActor {
 
-    static final String simName = "reg" /* Sim names should be lowered cased */
+    public static final String simName = "reg" /* Sim names should be lowered cased */
 
     @Shared DocumentRegRep regRepSim
 
@@ -31,7 +31,7 @@ class RegistryActorSimulatorSpec extends ConformanceActor {
     }
 
     @Override
-    String getSimId() {
+    static String getSimId() {
         return testSessionName + "__" + simName
     }
 
