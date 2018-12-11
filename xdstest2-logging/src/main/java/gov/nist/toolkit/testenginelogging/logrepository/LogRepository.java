@@ -84,9 +84,16 @@ public class LogRepository  {
         try {
             if (testInstance.getLocation() != null && testInstance.getTestSession() != null) {
                 File tiLocationDir = new File(testInstance.getLocation());
-                File logDir = new File(tiLocationDir, testInstance.getId());
-                if (!logDir.exists())
-                    throw new ToolkitRuntimeException("logIn: " + logDir.toString() + " does not exist");
+                File logDir = null;
+                if (LogIdType.TIME_ID == testInstance.getIdType()) {
+                    logDir = new File(testInstance.getEventDir());
+                } else if (LogIdType.SPECIFIC_ID == testInstance.getIdType()) {
+                   logDir =  new File(tiLocationDir, testInstance.getId());
+                }
+               if (logDir != null) {
+                   if (!logDir.exists())
+                       throw new ToolkitRuntimeException("logIn: " + logDir.toString() + " does not exist");
+               }
             } else {
                 throw new ToolkitRuntimeException("logIn: testInstance has Null getLocation or getTestSession");
             }
