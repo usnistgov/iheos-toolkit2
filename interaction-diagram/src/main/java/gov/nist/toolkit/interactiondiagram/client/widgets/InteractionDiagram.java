@@ -732,9 +732,6 @@ public class InteractionDiagram extends Composite {
                 final List<String> messages = new ArrayList<String>();
                 String tooltipMessage = "(Click to inspect results)";
                 TransactionInstance tranInstance = entity.getTransactionInstance();
-                if (tranInstance!=null) {
-                    tooltipMessage = "#SimLog:"+ tranInstance.simId.toString() + "/" + tranInstance.actorType.getShortName() + "/" + tranInstance.trans + "/" + tranInstance.messageId;
-                }
 
                 List<String> lines = new ArrayList<>();
 
@@ -772,13 +769,15 @@ public class InteractionDiagram extends Composite {
                 group.appendChild(multiLineLabel(centerTextX, (textY - (4 + (LINE_HEIGHT * lines.size()))), lines.toArray(new String[0]), 10, MAX_LABEL_DISPLAY_LEN));
                 if (tranInstance!=null) {
                     // Anchors don't seem to work in a Group.
-                    final String url = tooltipMessage;
-                    group.addClickHandler(new ClickHandler() {
-                        @Override
-                        public void onClick(ClickEvent clickEvent) {
-                            Window.open(url, "_blank", "");
-                        }
-                    });
+                    if (tranInstance!=null) {
+                        final String url = "#SimMsgViewer:"+ tranInstance.simId.toString() + "/" + tranInstance.actorType.getShortName() + "/" + tranInstance.trans + "/" + tranInstance.messageId;
+                        group.addClickHandler(new ClickHandler() {
+                            @Override
+                            public void onClick(ClickEvent clickEvent) {
+                                Window.open(url, "_blank", "");
+                            }
+                        });
+                    }
                 } else if (isInspectableInteractionStatus(status)) {
                     group.addClickHandler(new ClickHandler() {
                         @Override

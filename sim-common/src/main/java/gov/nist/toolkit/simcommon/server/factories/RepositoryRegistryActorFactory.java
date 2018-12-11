@@ -15,13 +15,14 @@ import java.util.List;
 
 public class RepositoryRegistryActorFactory extends AbstractActorFactory implements IActorFactory {
 
-	protected Simulator buildNew(SimManager simm, SimId newID, boolean configureBase) throws Exception {
+	@Override
+	protected Simulator buildNew(SimManager simm, SimId newID, String environment, boolean configureBase) throws Exception {
 		RegistryActorFactory registryActorFactory;
 		RepositoryActorFactory repositoryActorFactory;
 		ActorType actorType = ActorType.REPOSITORY_REGISTRY;
 		SimulatorConfig sc;
 		if (configureBase)
-			sc = configureBaseElements(actorType, newID, newID.getTestSession());
+			sc = configureBaseElements(actorType, newID, newID.getTestSession(), environment);
 		else
 			sc = new SimulatorConfig();
 
@@ -29,11 +30,11 @@ public class RepositoryRegistryActorFactory extends AbstractActorFactory impleme
 		// This needs to be grouped with a Document Registry
 		registryActorFactory = new RegistryActorFactory();
 		registryActorFactory.setTransactionOnly(isTransactionOnly());
-		SimulatorConfig registryConfig = registryActorFactory.buildNew(simm, simId, true).getConfig(0);
+		SimulatorConfig registryConfig = registryActorFactory.buildNew(simm, simId, environment, true).getConfig(0);
 		
 		// This needs to be grouped with a Document Repository also
 		repositoryActorFactory = new RepositoryActorFactory();
-		SimulatorConfig repositoryConfig = repositoryActorFactory.buildNew(simm, simId, true).getConfig(0);
+		SimulatorConfig repositoryConfig = repositoryActorFactory.buildNew(simm, simId, environment,true).getConfig(0);
 
 		// two combined simulators do not have separate lives
 		sc.add(registryConfig);

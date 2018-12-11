@@ -9,7 +9,9 @@
             <Assertion>Single document submission supports RPLC</Assertion>
         </Rule>
         <RegisterTransaction>
+            <!--
 	    <UseReport reportName="$patientid$" test="15818" section="pif" step="step" useAs="$patientid$"/>
+	    -->
             <XDSb/>
             <AssignUuids/>
             <MetadataFile>single_doc_for_rplc.xml</MetadataFile>

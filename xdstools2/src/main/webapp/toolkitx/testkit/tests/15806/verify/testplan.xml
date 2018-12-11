@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>15806/verify</Test>
+  <Rule>Verify the original submission is returned</Rule>
+  <TestStep id="by_uid">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseId testdir="../submit" id="SubmissionSet01" symbol="$ssuid$" step="submit" section="AssignedUids"/>
+      <UseId testdir="../submit" id="Document01" symbol="$deid$" step="submit" section="AssignedUuids"/>
+      <MetadataFile>query.xml</MetadataFile>
+      <ExpectedContents>
+        <SSwithOneDoc/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="verify_original">
+    <NullTransaction>
+      <Assertions>
+        <DataRef file="THIS" as="output"/>
+        <Assert id="availabilityStatus">
+          //*[local-name()='ExtrinsicObject']//*[local-name()='Name']//*[local-name()='LocalizedString']/@value = 'Physical'
+        </Assert>
+      </Assertions>
+    </NullTransaction>
+  </TestStep>
+</TestPlan>

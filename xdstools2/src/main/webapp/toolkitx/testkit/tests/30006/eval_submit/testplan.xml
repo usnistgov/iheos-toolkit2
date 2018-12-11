@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>30006/eval_submit</Test>
+  <Rule>Evaluate all SS contents.</Rule>
+  <TestStep id="eval_orig">
+    <Goal>Confirm original submission.</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseId testdir="../submit" step="submit" section="AssignedUids" id="SubmissionSet01" symbol="$ssuid$" />
+      <MetadataFile>query_ss.xml</MetadataFile>
+      <ExpectedContents>
+        <SSwithOneDoc/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="eval_xfrm_rplc">
+    <Goal>Confirm replacement submission.</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseId testdir="../xfrm_rplc" step="xfrm_rplc" section="AssignedUids" id="SubmissionSet01" symbol="$ssuid$" />
+      <MetadataFile>query_ss.xml</MetadataFile>
+      <ExpectedContents>
+        <SSwithOneDoc/>
+		<DocApp/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>  
+  <TestStep id="eval_apnd_rplc">
+    <Goal>Confirm append submission.</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseId testdir="../apnd_rplc" step="apnd_rplc" section="AssignedUids" id="SubmissionSet01" symbol="$ssuid$" />
+      <MetadataFile>query_ss.xml</MetadataFile>
+      <ExpectedContents>
+        <SSwithOneDoc/>
+		<DocApp/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <!--TODO Add association query-->
+</TestPlan>

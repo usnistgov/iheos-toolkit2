@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>gov.nist.toolkit</groupId>
 		<artifactId>tk-deps</artifactId>
-		<version>7.0.0</version>
+		<version>6.6.0-SNAPSHOT</version>
 		<relativePath>../tk-deps/pom.xml</relativePath>
 	</parent>
 
@@ -65,13 +65,63 @@
 				<Default_Environment>xdsi</Default_Environment>
 				<Toolkit_TLS_Port>8643</Toolkit_TLS_Port>
 				<Toolkit_Port>9280</Toolkit_Port>
+				<Listener_Port_Range>5000,5020</Listener_Port_Range>
 				<Image_Cache>/opt/xdsi/xds-toolkit/01/ImageCache</Image_Cache>
+                <Enable_SAML>true</Enable_SAML>
 				<Cas_mode>false</Cas_mode>
 				<Multiuser_mode>false</Multiuser_mode>
 				<Client_Cipher_Suites>TLS_RSA_WITH_AES_128_CBC_SHA</Client_Cipher_Suites>
 				<Client_SSL_Protocols>TLSv1,TLSv1.1</Client_SSL_Protocols>
 			</properties>
 		</profile>
+
+		<!--<profile>-->
+			<!--<id>Diane</id>-->
+			<!--<properties>-->
+				<!--<build.profile.id>Diane</build.profile.id>-->
+			<!--</properties>-->
+
+			<!--<build>-->
+				<!--<plugins>-->
+					<!--<plugin>-->
+						<!--<groupId>org.apache.maven.plugins</groupId>-->
+						<!--<artifactId>maven-jar-plugin</artifactId>-->
+						<!--<executions>-->
+							<!--<execution>-->
+								<!--<id>make-a-jar</id>-->
+								<!--<phase>compile</phase>-->
+								<!--<goals>-->
+									<!--<goal>jar</goal>-->
+								<!--</goals>-->
+							<!--</execution>-->
+						<!--</executions>-->
+					<!--</plugin>-->
+
+					<!--<plugin>-->
+						<!--<groupId>org.apache.maven.plugins</groupId>-->
+						<!--<artifactId>maven-install-plugin</artifactId>-->
+						<!--<executions>-->
+							<!--<execution>-->
+								<!--<phase>install</phase>-->
+								<!--<goals>-->
+									<!--<goal>install-file</goal>-->
+								<!--</goals>-->
+								<!--<configuration>-->
+									<!--<packaging>jar</packaging>-->
+									<!--<artifactId>${project.artifactId}</artifactId>-->
+									<!--<groupId>${project.groupId}</groupId>-->
+									<!--<version>${project.version}</version>-->
+									<!--<file>-->
+										<!--${project.build.directory}/${project.artifactId}-${project.version}.jar-->
+									<!--</file>-->
+								<!--</configuration>-->
+							<!--</execution>-->
+						<!--</executions>-->
+					<!--</plugin>-->
+				<!--</plugins>-->
+			<!--</build>-->
+		<!--</profile>-->
+
 
 		<profile>
 			<id>site</id>
@@ -85,35 +135,6 @@
 			</properties>
 			<build>
 				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-site-plugin</artifactId>
-						<version>3.3</version>
-						<configuration>
-							<port>8181</port>
-						</configuration>
-						<dependencies>
-							<dependency>
-								<groupId>org.apache.maven.doxia</groupId>
-								<artifactId>doxia-module-markdown</artifactId>
-								<version>1.5</version>
-							</dependency>
-							<dependency>
-								<groupId>org.apache.maven.plugins</groupId>
-								<artifactId>maven-project-info-reports-plugin</artifactId>
-								<version>3.0.0</version>
-							</dependency>
-						</dependencies>
-						<executions>
-							<execution>
-								<id>attach-site</id>
-								<phase>prepare-package</phase>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-war-plugin</artifactId>
@@ -146,6 +167,12 @@
 			<id>SunilUbuntu</id>
 			<properties>
 				<build.profile.id>SunilUbuntu</build.profile.id>
+			</properties>
+		</profile>
+		<profile>
+			<id>SunilDocker</id>
+			<properties>
+				<build.profile.id>SunilDocker</build.profile.id>
 			</properties>
 		</profile>
 	</profiles>
@@ -529,7 +556,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
-				<version>${maven-site-plugin-version}</version>
+				<version>3.3</version>
 				<configuration>
 					<port>8181</port>
 				</configuration>
@@ -537,9 +564,14 @@
 					<dependency>
 						<groupId>org.apache.maven.doxia</groupId>
 						<artifactId>doxia-module-markdown</artifactId>
-						<version>1.8</version>
+						<version>1.5</version>
 					</dependency>
 				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>2.7</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -585,6 +617,15 @@
 		</resources>
 		<!-- End profile part 2/2 -->
 	</build>
+	<reporting>
+		<plugins>
+		    <plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>3.7.1</version>
+			</plugin>
+		</plugins>
+	</reporting>
 	<scm>
 		<tag>v3.0.2a</tag>
 	</scm>

@@ -4,10 +4,10 @@ import gov.nist.toolkit.common.datatypes.Hl7Date;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
-import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.fhir.simulators.sim.reg.store.*;
 import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegIndex.AssocType;
-import gov.nist.toolkit.fhir.simulators.sim.reg.store.StatusValue;
+import gov.nist.toolkit.registrymetadata.Metadata;
+import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
@@ -21,6 +21,7 @@ public class ProcessMetadataForDocumentEntryUpdate implements ProcessMetadataInt
 	MetadataCollection delta;
 	String now;
 
+
 	public ProcessMetadataForDocumentEntryUpdate(ErrorRecorder er, MetadataCollection mc, MetadataCollection delta) {
 		this.er = er;
 		this.mc = mc;
@@ -29,16 +30,20 @@ public class ProcessMetadataForDocumentEntryUpdate implements ProcessMetadataInt
 	}
 
 	// this check is part of the update process and follows different rules
+	// this is important for submission but does not apply to MU
+	@Override
 	public void checkUidUniqueness(Metadata m) {
 		
 	}
 	
 	// does not apply
+	@Override
 	public void setLidToId(Metadata m) {
 		
 	}
 	
 	// only initialize version on elements that we don't version
+	@Override
 	public void setInitialVersion(Metadata m) {
 		try {
 			m.setDefaultVersionOfUnversionedElements();
@@ -46,15 +51,17 @@ public class ProcessMetadataForDocumentEntryUpdate implements ProcessMetadataInt
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, e);
 		}
 	}
-	
+
+	@Override
 	public void setNewFolderTimes(Metadata m) {
 	}
 
+	@Override
 	public void updateExistingFolderTimes(Metadata m) {
 		for (OMElement eo : m.getExtrinsicObjects()) {
 			String eoLid = m.getLid(eo);
 			DocEntry de = delta.docEntryCollection.getLatestVersion(eoLid);
-			List<Assoc> assocs = delta.assocCollection.getBySourceDestAndType(null, de.getId(), AssocType.HASMEMBER);
+			List<Assoc> assocs = delta.assocCollection.getBySourceDestAndType(null, de.getId(), AssocType.HasMember);
 			for (Assoc a : assocs) {
 				String fid = a.getFrom();
 				Fol fol = delta.folCollection.getById(fid);
@@ -64,7 +71,8 @@ public class ProcessMetadataForDocumentEntryUpdate implements ProcessMetadataInt
 			}
 		}
 	}
-	
+
+	@Override
 	public  void doRPLCDeprecations(Metadata m) {
 		for (OMElement a : m.getAssociations()) {
 			try {
@@ -82,28 +90,26 @@ public class ProcessMetadataForDocumentEntryUpdate implements ProcessMetadataInt
 		}
 	}
 
+	// this implements 3.57.4.1.3.3.1.5 Association Propagation para 3
+	// replicate relationship associations
+	@Override
 	public void updateExistingFoldersWithReplacedDocs(Metadata m) {
-		for (OMElement a : m.getAssociations()) {
-			try {
-				if (!"RPLC".equals(m.getSimpleAssocType(a)))
-					continue;
-			} catch (Exception e) {
+		for (OMElement updatedDocEntryEle : m.getExtrinsicObjects()) {
+			String docEntryLid = Metadata.getLid(updatedDocEntryEle);
+			boolean associationPropagation = MuCommon.associationPropagation(m, updatedDocEntryEle, er);
+			if (!associationPropagation)
 				continue;
-			}
-			String docId = m.getAssocSource(a);
-			String origDocId = m.getAssocTarget(a);
-			DocEntry de = delta.docEntryCollection.getById(docId);
-			DocEntry origDE = delta.docEntryCollection.getById(origDocId);
-			
-			List<Fol> origDEFols = mc.getFoldersContaining(origDE);
-			for (Fol f : origDEFols) {
+			DocEntry lastestDocEntry  = delta.docEntryCollection.getLatestVersion(docEntryLid);
+			List<Assoc> assocs = delta.assocCollection.getBySourceOrDestAndType(lastestDocEntry.id, lastestDocEntry.id, null);
+			for (Assoc assoc : assocs) {
+				if (assoc.getAvailabilityStatus() != StatusValue.APPROVED)
+					continue;
 				try {
-					delta.addDocEntryToFolAssoc(de, f);
+					delta.addAssoc(assoc.from, Metadata.getId(updatedDocEntryEle), assoc.type);
 				} catch (Exception e) {
 					er.err(Code.XDSMetadataUpdateError, e);
 				}
 			}
-			
 		}
 	}
 
@@ -112,7 +118,7 @@ public class ProcessMetadataForDocumentEntryUpdate implements ProcessMetadataInt
 	//     link objects with different patient ids (except for special cases)
 	public void associationPatientIdRules() {
 
-		for (Assoc a : delta.assocCollection.assocs) {
+		for (Assoc a : delta.assocCollection.getAll()) {
 			String fromId = a.getFrom();
 			String toId = a.getTo();
 
@@ -144,7 +150,34 @@ public class ProcessMetadataForDocumentEntryUpdate implements ProcessMetadataInt
 		}
 	}
 
+	// this implements 3.57.4.1.3.3.1.5 Association Propagation para 2
+	// link update DEs to a Folder if previous version was so linked
+	@Override
+	public void addDocsToUpdatedFolders(Metadata m) {
+		for (OMElement updatedDocEntryEle : m.getExtrinsicObjects()) {
+			String docEntryLid = Metadata.getLid(updatedDocEntryEle);
+			boolean associationPropagation = MuCommon.associationPropagation(m, updatedDocEntryEle, er);
+			if (!associationPropagation)
+				continue;
+			DocEntry lastestDocEntry  = delta.docEntryCollection.getLatestVersion(docEntryLid);
+			List<Assoc> assocs = delta.assocCollection.getBySourceDestAndType(null, lastestDocEntry.id, AssocType.HasMember);
+			for (Assoc assoc : assocs) {
+				if (assoc.getAvailabilityStatus() != StatusValue.APPROVED)
+					continue;
+				String folId = assoc.from;
+				try {
+					delta.addDocEntryToFolAssoc(Metadata.getId(updatedDocEntryEle), folId);
+				} catch (Exception e) {
+					er.err(Code.XDSMetadataUpdateError, "Error with Association Propagation on DocumentEntry (lid) " + docEntryLid + " -\n" + ExceptionUtil.exception_details(e), "", "");
+					continue;
+				}
+			}
+		}
+
+	}
+
 	// use the default implementation
+	@Override
 	public void verifyAssocReferences(Metadata m) {
 		new ProcessMetadataForRegister(er, mc, delta).verifyAssocReferences(m);
 	}

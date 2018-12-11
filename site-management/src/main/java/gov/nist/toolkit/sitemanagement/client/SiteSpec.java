@@ -60,6 +60,8 @@ public class SiteSpec implements Serializable, IsSerializable {
 			isSaml = toClone.isSaml;
 			isAsync = toClone.isAsync;
 			this.testSession = toClone.testSession;
+			this.setGazelleXuaUsername(toClone.getGazelleXuaUsername());
+			this.setStsAssertion(toClone.getStsAssertion());
 		}
 	}
 
@@ -170,4 +172,16 @@ public class SiteSpec implements Serializable, IsSerializable {
 	public String toString() {
 		return testSession.getValue() + "/" + name;
 	}
+
+	public SiteSpec copy() {
+		SiteSpec siteSpec = new SiteSpec();
+		siteSpec.setSaml(isSaml);
+		siteSpec.setStsAssertion(stsAssertion);
+		siteSpec.setGazelleXuaUsername(getGazelleXuaUsername());
+		siteSpec.setName(name);
+		siteSpec.setActorType(actorType);
+		siteSpec.testSession = new TestSession(testSession.toString());
+		return siteSpec;
+	}
+
 }

@@ -1,6 +1,7 @@
 package gov.nist.toolkit.session.client.logtypes;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.testkitutilities.client.ConfTestPropertyName;
 import gov.nist.toolkit.testkitutilities.client.Gather;
 
 import java.io.Serializable;
@@ -24,6 +25,8 @@ public class SectionOverviewDTO implements BasicSectionOverview, Serializable, I
     private boolean sutInitiated = false;
     private List<Gather> gathers = null;
     private boolean tls = false;
+    // Section Level ConfTest properties
+    private Map<ConfTestPropertyName, String> confTestPropertyMap;
 
     public SectionOverviewDTO() {}
 
@@ -137,5 +140,13 @@ public class SectionOverviewDTO implements BasicSectionOverview, Serializable, I
 
     public void setSutInitiated(boolean sutInitiated) {
         this.sutInitiated = sutInitiated;
+    }
+
+    public Map<ConfTestPropertyName, String> getConfTestPropertyMap() {
+        return confTestPropertyMap;
+    }
+
+    public void setConfTestPropertyMap(Map<ConfTestPropertyName, String> confTestPropertyMap) {
+        this.confTestPropertyMap = confTestPropertyMap;
     }
 }

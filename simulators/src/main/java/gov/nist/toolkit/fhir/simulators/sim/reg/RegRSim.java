@@ -16,6 +16,7 @@ import gov.nist.toolkit.fhir.simulators.sim.reg.store.*;
 import gov.nist.toolkit.fhir.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simcommon.server.SimCommon;
 import gov.nist.toolkit.fhir.simulators.support.TransactionSimulator;
+import gov.nist.toolkit.valregmetadata.top.AbstractCustomMetadataValidator;
 import gov.nist.toolkit.valregmsg.message.MetadataContainer;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
@@ -35,6 +36,7 @@ public class RegRSim extends TransactionSimulator   {
 	public MetadataCollection delta;
 	protected MessageValidatorEngine mvc;
     protected DsSimCommon dsSimCommon;
+	private AbstractCustomMetadataValidator customMetadataValidator = null;
 
 	static Logger log = Logger.getLogger(RegRSim.class);
 
@@ -48,7 +50,7 @@ public class RegRSim extends TransactionSimulator   {
 	Map<String, String> symbolicToUUID = null;
 	List<String> submittedUUIDs;
 
-	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
+	public void run(ErrorRecorder er, MessageValidatorEngine mvc)  {
 		this.er = er;
 		this.mvc = mvc;
 
@@ -62,7 +64,8 @@ public class RegRSim extends TransactionSimulator   {
 			// this MetadataCollection is separate from delta and only used for PID validation
 			MetadataCollection submission = new MetadataCollection();
 			try {
-				RegistryFactory.buildMetadataIndex(m, submission);
+				boolean muEnabled = common.vc.updateEnabled;
+				RegistryFactory.buildMetadataIndex(m, submission, muEnabled);
 			} catch (MetadataException e) {
 				er.err(Code.XDSRegistryMetadataError, e);
 				return;
@@ -90,6 +93,12 @@ public class RegRSim extends TransactionSimulator   {
 		// if errors then don't commit registry update
 		if (hasErrors())
 			return;
+
+		if (customMetadataValidator != null) {
+			mvc.addMessageValidator("Register Transaction", customMetadataValidator, er);
+			if (hasErrors())
+				return;
+		}
 
 		// save metadata objects XML
 		saveMetadataXml();
@@ -138,14 +147,10 @@ public class RegRSim extends TransactionSimulator   {
 		// Are all UUIDs, submitted and generated, valid?
 		validateUUIDs();
 
-		// MU will change
 		pmi.checkUidUniqueness(m);
 
-		// set logicalId to id
 		pmi.setLidToId(m);
 
-		// install version attribute in SubmissionSet, DocumentEntry and Folder objects
-		// install default version in Association, Classification, ExternalIdentifier
 		pmi.setInitialVersion(m);
 
 		// build update to metadata index with new objects
@@ -153,29 +158,20 @@ public class RegRSim extends TransactionSimulator   {
 		// This is done now because the operations below need this index
 		buildMetadataIndex(m);
 
-		// verify model/patient id linking rules are observed
-		pmi.associationPatientIdRules();
-
-		// set folder lastUpdateTime on folders in the submission
-		// must be done after metadata index built
 		pmi.setNewFolderTimes(m);
 
-		// set folder lastUpdateTime on folders already in the registry
-		// that this submission adds documents to
-		// must be done after metadata index built
 		pmi.updateExistingFolderTimes(m);
 
-		// verify that no associations are being added that:
-		//     reference a non-existant model in submission or registry
-		//     reference a Deprecated model in registry
 		pmi.verifyAssocReferences(m);
 
-		// check for RPLC and RPLC_XFRM and do the deprecation
 		pmi.doRPLCDeprecations(m);
 
-		// if a replaced doc is in a Folder, then new doc is placed in folder
-		// and folder lastUpateTime is updated
 		pmi.updateExistingFoldersWithReplacedDocs(m);
+
+		pmi.addDocsToUpdatedFolders(m);
+
+		// moved to end of list since above changes should be checked as well
+		pmi.associationPatientIdRules();
 	}
 
 	void rmHome() {
@@ -196,7 +192,7 @@ public class RegRSim extends TransactionSimulator   {
 
 	public void buildMetadataIndex(Metadata m) {
 		try {
-			RegistryFactory.buildMetadataIndex(m, delta);
+			RegistryFactory.buildMetadataIndex(m, delta, common.vc.updateEnabled);
 		} catch (MetadataException e) {
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, e);
 		}
@@ -310,17 +306,23 @@ public class RegRSim extends TransactionSimulator   {
 			if (m.getSubmissionSet() != null)
 				log.debug("Save SubmissionSet(" + m.getSubmissionSetId() + ")");
 			for (OMElement ele : m.getExtrinsicObjects())
-				log.debug("Save DocEntry(" + m.getId(ele) + ")");
+				log.debug("Save DocEntry(" + Metadata.getId(ele) + ")");
 			for (OMElement ele : m.getFolders())
-				log.debug("Save Folder(" + m.getId(ele) + ")");
+				log.debug("Save Folder(" + Metadata.getId(ele) + ")");
 			for (OMElement ele : m.getAssociations())
-				log.debug("Save Assoc(" + m.getId(ele) + ")("+ m.getAssocSource(ele) + ", " + m.getAssocTarget(ele) + ", " + m.getSimpleAssocType(ele) + ")");
+				log.debug("Save Assoc(" + Metadata.getId(ele) + ")("+ Metadata.getAssocSource(ele) + ", " + Metadata.getAssocTarget(ele) + ", " + m.getSimpleAssocType(ele) + ")");
 		} catch (Exception e) {}
 
+		if (vc.isRMU) {
+			boolean ok = delta.docEntryCollection.okForRMU(mc, er);
+			if (!ok)
+				return;
+		}
 		if (buildIndex) {
 			// update index
 			try {
-				RegistryFactory.buildMetadataIndex(m, delta);
+				boolean muEnabled = common.vc.updateEnabled;
+				RegistryFactory.buildMetadataIndex(m, delta, muEnabled);
 			} catch (MetadataException e) {
 				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, e);
 			}
@@ -328,9 +330,18 @@ public class RegRSim extends TransactionSimulator   {
 
 		// save metadata objects XML
 		try {
-			delta.storeMetadata(m);
+			delta.storeMetadata(m, true);  // overwrite is experimental for ME
 		} catch (Exception e1) {
 			er.err(XdsErrorCode.Code.XDSRegistryError, e1);
 		}
 	}
+
+	public AbstractCustomMetadataValidator getCustomMetadataValidator() {
+		return customMetadataValidator;
+	}
+
+	public void setCustomMetadataValidator(AbstractCustomMetadataValidator customMetadataValidator) {
+		this.customMetadataValidator = customMetadataValidator;
+	}
+
 }

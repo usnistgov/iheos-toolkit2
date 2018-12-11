@@ -14,6 +14,7 @@ import javax.servlet.ServletContext;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Paths;
 import java.util.*;
 
 
@@ -68,7 +69,7 @@ public class Installation {
         // This works for unit tests if warhome.txt is installed as part of a unit test environment
         String warhomeTxt = null;
         try {
-            warhomeTxt = instance().getClass().getResource("/warhome/warhome.txt").getFile();
+            //warhomeTxt = instance().getClass().getResource("/warhome/warhome.txt").getFile();
         } catch (Throwable t) {}
         if (warhomeTxt != null) {
             instance().warHome(new File(warhomeTxt).getParentFile());
@@ -95,12 +96,12 @@ public class Installation {
 
     public File warHome() {
         if (warHome == null) {
-            String warTxt = null;
+            File warMarkerFile = null;
             try {
-                warTxt = instance().getClass().getResource("/war/war.txt").getFile();
+                warMarkerFile = Paths.get(instance().getClass().getResource("/").toURI()).resolve("war/war.txt").toFile();
             } catch (Throwable t) {}
-            if (warTxt != null) {
-                instance().warHome(new File(warTxt).getParentFile());
+            if (warMarkerFile != null) {
+                instance().warHome(warMarkerFile.getParentFile());
             }
         }
         return warHome;

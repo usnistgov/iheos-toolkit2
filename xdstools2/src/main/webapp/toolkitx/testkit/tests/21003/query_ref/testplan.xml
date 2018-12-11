@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>21003/query_ref</Test>
+  <TestStep id="query">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetFolders</SQ>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+      <UseId testdir="../original" step="submit" section="AssignedUuids" id="Folder01" symbol="$lid$"/>
+	  <ExpectedContents>
+		<ObjectRefs count="2"/>
+	  </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

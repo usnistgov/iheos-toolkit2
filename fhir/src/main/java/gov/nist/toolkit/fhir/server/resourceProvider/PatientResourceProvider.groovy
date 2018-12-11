@@ -170,7 +170,8 @@ public class PatientResourceProvider implements IToolkitResourceProvider {
                List<Patient> patients = tk.searchResults(bq.execute())
                 return patients;
         } finally {
-            bq.close()
+            if (bq)
+                bq.close()
         }
     }
 

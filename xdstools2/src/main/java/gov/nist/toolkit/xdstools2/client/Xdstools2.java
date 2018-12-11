@@ -26,6 +26,7 @@ import gov.nist.toolkit.xdstools2.client.tabs.QueryState;
 import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientFactory;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.util.SimpleCallback;
 import gov.nist.toolkit.xdstools2.client.util.TabWatcher;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
@@ -339,13 +340,14 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 			}
 		});
 
-
-//		testSessionManager.load();
-//		loadServletContext();
-		reloadTransactionOfferings();
-
-		// Fire event to signal init complete status
-		ClientUtils.INSTANCE.getEventBus().fireEvent(new ToolkitInitializationCompleteEvent());
+		reloadTransactionOfferings(new SimpleCallback() {
+			@Override
+			public void run() {
+				// Issue #426
+				// Fire event to signal init complete status
+				ClientUtils.INSTANCE.getEventBus().fireEvent(new ToolkitInitializationCompleteEvent());
+			}
+		});
 	}
 
 	public String toolkitName;
@@ -368,12 +370,16 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 	 * request must be attached to a tab so use home tab
 	 * since it's available
 	 */
-	private void reloadTransactionOfferings() {
+	private void reloadTransactionOfferings(final SimpleCallback callback) {
 		new GetTransactionOfferingsCommand() {
 
 			@Override
 			public void onComplete(TransactionOfferings var1) {
 				transactionOfferings = var1;
+				if (callback!=null) {
+					callback.run();
+				}
+
 			}
 		}.run(getHomeTab().getCommandContext());
 	}

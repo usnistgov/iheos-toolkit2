@@ -78,7 +78,8 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 	
 	public boolean hasErrors() {
 		for (ValidatorErrorItem vei : errMsgs) {
-			if (vei.isError()) return true;
+			if (vei.isError())
+				return true;
 		}
 		return false;
 	}
@@ -229,7 +230,7 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 		if (msg == null || msg.trim().equals(""))
 			return;
 		logger.debug(ExceptionUtil.here("err - " + msg));
-		if (severity.indexOf("Error") != -1)
+		if (severity != null && severity.indexOf("Error") != -1)
 			logger.info("Got Error");
 		boolean isWarning = (severity == null) ? false : ((severity.indexOf("Warning") != -1));
 		ReportingCompletionType ctype = (isWarning) ? ValidatorErrorItem.ReportingCompletionType.WARNING : ValidatorErrorItem.ReportingCompletionType.ERROR;

@@ -5,7 +5,6 @@ import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
-import gov.nist.toolkit.errorrecording.factories.TextErrorRecorderBuilder;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.Util;
@@ -14,7 +13,6 @@ import gov.nist.toolkit.valregmsg.xdm.XdmDecoder;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.valsupport.engine.ValidationStep;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.axiom.om.OMElement;
@@ -380,15 +378,15 @@ public class CommonMessageValidatorFactory implements MessageValidatorFactory2I 
 	}
 
 
-	public static void main(String[] args) {
-		MessageValidatorEngine mvc = getValidator(new TextErrorRecorderBuilder(), new File(args[0]), null);
-		mvc.run();
-
-		for (int i=0; i< mvc.getValidationStepCount(); i++) {
-			ValidationStep vs = mvc.getValidationStep(i);
-			System.out.println("========== " + vs.getStepName() + " =============");
-			vs.getErrorRecorder().showErrorInfo();
-		}
-	}
+//	public static void main(String[] args) {
+//		MessageValidatorEngine mvc = getValidator(new TextErrorRecorderBuilder(), new File(args[0]), null);
+//		mvc.run();
+//
+//		for (int i=0; i< mvc.getValidationStepCount(); i++) {
+//			ValidationStep vs = mvc.getValidationStep(i);
+//			System.out.println("========== " + vs.getStepName() + " =============");
+//			vs.getErrorRecorder().showErrorInfo();
+//		}
+//	}
 
 }

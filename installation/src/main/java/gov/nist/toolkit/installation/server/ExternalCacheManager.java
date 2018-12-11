@@ -7,6 +7,7 @@ import gov.nist.toolkit.installation.shared.TestSession;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * Initialize External Cache
@@ -81,10 +82,13 @@ public class ExternalCacheManager {
 
     private static void initializeDefaultSites() throws XdsException {
         try {
+            logger.info("Initializing default sites for default test session");
             File internalActorsDir = Installation.instance().internalActorsDir();
             String[] list = internalActorsDir.list();
             if (list == null) return;
+            logger.info("...Internally defined actors are " + Arrays.asList(list));
             File externalDir = Installation.instance().actorsDir(TestSession.DEFAULT_TEST_SESSION);
+            logger.info("...Copy to " + externalDir);
             for (String internalName : list) {
                 if (!internalName.endsWith("xml")) continue;
                 File internalFile = new File(internalActorsDir, internalName);

@@ -5,6 +5,8 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil
 import groovy.transform.TypeChecked
 import org.apache.log4j.Logger
 
+import java.nio.file.Paths
+
 @TypeChecked
 public class PropertyServiceManager {
 	PropertyManager propertyManager = null;
@@ -200,8 +202,7 @@ public class PropertyServiceManager {
 		File propPath = null;
 		String location;
 		try {
-			URL url = getClass().getResource("/toolkit.properties");
-			location = url.getFile();
+			location = Paths.get(getClass().getResource('/').toURI()).resolve('toolkit.properties').toFile()
 			location = location.replaceAll("%20", " ");
 			logger.debug("*** getting toolkit.properties file:" + location);
 

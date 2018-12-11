@@ -19,6 +19,7 @@ import java.util.List;
 
 import gov.nist.toolkit.testkitutilities.ReadMe;
 import gov.nist.toolkit.testkitutilities.TestDefinition;
+import gov.nist.toolkit.testkitutilities.client.ConfTestPropertyName;
 import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
@@ -55,7 +56,7 @@ public class QuickScanLog {
     }
 
     /**
-     * Quickly scan test log (essentially comprises every section log under the test folder) and return test status/other top-level test log attributes
+     * Quickly scan a Test log (a log essentially comprises every section log under the test folder) and return test status/other top-level Test log attributes
      * @param testSession
      * @param testInstance
      * @return
@@ -67,13 +68,23 @@ public class QuickScanLog {
         testInstance.setTestSession(testSession);
         File testDir = XdsTestServiceManager.getTestLogCache().getTestDir(testSession, testInstance);
         List<String> testPlanSections = xdsTestServiceManager.getTestSections(testInstance.getId());
+
+
         TestOverviewDTO testOverviewDTO = new TestOverviewDTO(testInstance);
+
+        for (QuickScanLogAttribute qsa : quickScanAttributes) {
+           if (qsa.equals(QuickScanLogAttribute.CONFTEST_PROPERTIES)) {
+                testOverviewDTO.setConfTestPropertyMap(testDefinition.getConfTestProperties());
+               break;
+           }
+        }
+
+        setDTOAttributes(testOverviewDTO, testDefinition);
         testOverviewDTO.setDependencies(new HashSet<String>());
         File logFile;
 
-        setDTOAttributes(testOverviewDTO, testDefinition);
-
         if (testPlanSections == null || testPlanSections.isEmpty()) {
+            // No Test Sections
             // See XdsTestServiceManager Line 743 if (testDir == null) dto.setRun(false)
             // See TestOverviewBuilder Line 48  testOverview.setPass(true);   will be updated by addSections()
             testOverviewDTO.setPass(true);
@@ -92,24 +103,25 @@ public class QuickScanLog {
             }
             return testOverviewDTO;
         } else {
+            // has Test Sections
             boolean scanTestDependencies = Arrays.asList(quickScanAttributes).contains(QuickScanLogAttribute.TEST_DEPENDENCIES);
             boolean atLeastOneFailed = false;
             boolean atLeastOneNotRun = false;
             int passCt = 0;
             for (String sectionName : testPlanSections) {
                 SectionOverviewDTO sectionOverviewDTO = new SectionOverviewDTO();
-                logFile = new File(new File(testDir, sectionName), "log.xml");
                 try {
                     if (scanTestDependencies) {
                         // Section details
                         sectionOverviewDTO.setRun(false); // Need to set False because default is True!
                         sectionOverviewDTO.setName(sectionName);
                         SectionDefinitionDAO sectionDef = testDefinition.getSection(sectionName);
+                        // Skip loading Section Level ConTest.properties here. (It is not used by ConfTest lazy loading feature.)
                         sectionOverviewDTO.setSutInitiated(sectionDef.isSutInitiated());
                         testOverviewDTO.getDependencies().addAll(sectionDef.getSectionDependencies());
                         testOverviewDTO.addSection(sectionOverviewDTO);
                     }
-
+                    logFile = new File(new File(testDir, sectionName), "log.xml");
                     // Log details
                     SectionOverviewDTO resultDTO = quickScanSectionLog(logFile,quickScanAttributes);
                     copyAttributes(quickScanAttributes, resultDTO, sectionOverviewDTO);
@@ -124,11 +136,19 @@ public class QuickScanLog {
                     atLeastOneNotRun = true;
                 }
             }
+            /* See TestDisplay#display for color coding logic */
             if (atLeastOneFailed) {
                 testOverviewDTO.setRun(true);
                 testOverviewDTO.setPass(false);
             } else if (atLeastOneNotRun) {
-                testOverviewDTO.setRun(false);
+                if (passCt == 0) {
+                    // No section logs at all
+                    testOverviewDTO.setRun(false);
+                } else {
+                    // Incomplete status (some run, some not, none failed.) Mark as failed since this is how it was represented before and we don't really have an Incomplete status. In the test overview only three Status exists: not run, pass, fail.
+                    testOverviewDTO.setRun(true);
+                    testOverviewDTO.setPass(false);
+                }
             } else if (passCt == testPlanSections.size()) {
                 testOverviewDTO.setRun(true);
                 testOverviewDTO.setPass(true);
@@ -141,14 +161,13 @@ public class QuickScanLog {
         String testId = testOverview.getTestInstance().getId();
         testOverview.setTestKitSource(testDefinition.detectSource().toString());
         testOverview.setTestKitSection(testDefinition.getTestKitSection());
-        testOverview.setName(testId);
+        // Do not call setName, it is not need if the constructor with testInstance is already called. Calling setName overwrites testInstance!
+        //  testOverview.setName(testId);
         ReadMe readme = testDefinition.getTestReadme();
         if (readme != null) {
             testOverview.setTitle(stripHeaderMarkup(readme.line1));
             testOverview.setDescription(Markdown.toHtml(readme.rest));
         }
-
-
     }
 
     private void copyAttributes(QuickScanLogAttribute[] attributes, SectionOverviewDTO src, SectionOverviewDTO dst) {

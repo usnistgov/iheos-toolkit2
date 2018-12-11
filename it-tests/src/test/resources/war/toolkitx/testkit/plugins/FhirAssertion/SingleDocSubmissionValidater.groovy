@@ -1,8 +1,9 @@
 package war.toolkitx.testkit.plugins.FhirAssertion
 
 import gov.nist.toolkit.testengine.engine.FhirSimulatorTransaction
-import gov.nist.toolkit.testengine.engine.fhirValidations.AbstractFhirValidater
-import gov.nist.toolkit.testengine.engine.fhirValidations.ValidaterResult
+import gov.nist.toolkit.testengine.engine.validations.fhir.AbstractFhirValidater
+import gov.nist.toolkit.testengine.engine.validations.ValidaterResult
+import gov.nist.toolkit.testengine.transactions.BasicTransaction
 import org.hl7.fhir.dstu3.model.Bundle
 import org.hl7.fhir.dstu3.model.DocumentManifest
 import org.hl7.fhir.dstu3.model.DocumentReference
@@ -11,9 +12,9 @@ import org.hl7.fhir.dstu3.model.Resource
 class SingleDocSubmissionValidater extends AbstractFhirValidater {
 
     @Override
-    ValidaterResult validate(FhirSimulatorTransaction transaction) {
-        boolean match = transaction.request instanceof Bundle && isSingleDocSubmission(transaction.request) && !isErrors()
-        new ValidaterResult(transaction, this, match)
+    ValidaterResult validate(FhirSimulatorTransaction transactionInstance) {
+        boolean match = transactionInstance.request instanceof Bundle && isSingleDocSubmission(transactionInstance.request) && !isErrors()
+        new ValidaterResult(transactionInstance, this, match)
     }
 
     private boolean isSingleDocSubmission(Bundle bundle) {

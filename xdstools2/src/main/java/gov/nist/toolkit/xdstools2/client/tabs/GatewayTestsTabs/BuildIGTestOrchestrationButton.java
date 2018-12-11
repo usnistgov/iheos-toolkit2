@@ -99,7 +99,7 @@ public class BuildIGTestOrchestrationButton extends AbstractOrchestrationButton 
                 if (OptionType.AFFINITY_DOMAIN.equals(actorOption.getOptionId()))
                     orchResponse.setExternalStart(true);
 
-                initializationResultsPanel.add(new HTML("Initialization Complete"));
+                initializationResultsPanel.add(new HTML("Initialization complete"));
 
                 if (testContext.getSiteUnderTest() != null) {
                     initializationResultsPanel.add(new SiteDisplay("System Under Test Configuration", testContext.getSiteUnderTest()));

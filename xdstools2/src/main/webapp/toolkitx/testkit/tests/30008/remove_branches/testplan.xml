@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>30008/remove_branches</Test>
+  <TestStep id="remove_APND_assoc_only">
+	<Goal>Remove only the APND association.</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+<!--	<ExpectedErrorCode>XDSMetadataModelException</ExpectedErrorCode>  -->
+    <RemoveMetadataTransaction>
+      <XDSb/>
+      <NoPatientId/>
+	  <ParseMetadata>False</ParseMetadata>
+	  <UseId testdir="../apnd" step="apnd" section="AssignedUuids" id="APNDAssoc01" symbol="$Association$"/>
+      <MetadataFile>remove_assoc_only.xml</MetadataFile>
+    </RemoveMetadataTransaction>
+  </TestStep>
+  <TestStep id="remove_XFRM_RPLC_assoc_only">
+	<Goal>Fail to remove only the XFRM_RPLC association.</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+	<!--<ExpectedErrorCode>XDSMetadataModelException</ExpectedErrorCode> -->
+    <RemoveMetadataTransaction>
+      <XDSb/>
+      <NoPatientId/>
+	  <ParseMetadata>False</ParseMetadata>
+	  <UseId testdir="../xfrm_rplc" step="xfrm_rplc" section="AssignedUuids" id="XFRMRPLCAssociation" symbol="$Association$"/>
+      <MetadataFile>remove_assoc_only.xml</MetadataFile>
+    </RemoveMetadataTransaction>
+  </TestStep>
+  <TestStep id="remove_orig_set">
+	<Goal>Fail to remove the original document.</Goal>
+    <ExpectedStatus>Failure</ExpectedStatus>
+	<ExpectedErrorCode>ReferencesExistException</ExpectedErrorCode>
+    <RemoveMetadataTransaction>
+      <XDSb/>
+      <NoPatientId/>
+	  <ParseMetadata>False</ParseMetadata>
+	  <UseId testdir="../xfrm_rplc" step="xfrm_rplc" section="AssignedUuids" id="XFRMRPLCAssociation" symbol="$XFRM_RPLCAssociation$"/>
+	  <UseId testdir="../submit" step="submit" section="AssignedUuids" id="Document01" symbol="$Document01$"/>
+	  <UseId testdir="../submit" step="submit" section="AssignedUuids" id="SSHMAssoc01" symbol="$SSHM01Association$"/>
+	  <UseId testdir="../submit" step="submit" section="AssignedUuids" id="SubmissionSet01" symbol="$SubmissionSet01$"/>
+      <MetadataFile>remove_orig_set_only.xml</MetadataFile>
+    </RemoveMetadataTransaction>
+  </TestStep> 
+  <TestStep id="remove_apnd_set">
+	<Goal>Fail to removing the appended documents.</Goal>
+    <ExpectedStatus>Failure</ExpectedStatus>
+	<ExpectedErrorCode>ReferencesExistException</ExpectedErrorCode>
+	<RemoveMetadataTransaction>
+      <XDSb/>
+      <NoPatientId/>
+	  <ParseMetadata>False</ParseMetadata>
+	  <UseId testdir="../apnd" step="apnd" section="AssignedUuids" id="APNDAssoc01" symbol="$APNDAssociation$"/>
+	  <UseId testdir="../apnd" step="apnd" section="AssignedUuids" id="Document01" symbol="$Document01$"/>
+	  <UseId testdir="../apnd" step="apnd" section="AssignedUuids" id="SSHMAssoc01" symbol="$SSHM01Association$"/>
+	  <UseId testdir="../apnd" step="apnd" section="AssignedUuids" id="SubmissionSet01" symbol="$SubmissionSet01$"/>
+      <MetadataFile>remove_apnd_set_only.xml</MetadataFile>
+    </RemoveMetadataTransaction>
+  </TestStep>  
+  <TestStep id="remove_rplc_set">
+	<Goal>Fail to remove the replacement document. Replaced DE is deprecated.???</Goal>
+    <ExpectedStatus>Failure</ExpectedStatus>
+	<ExpectedErrorCode>XDSMetadataModelException</ExpectedErrorCode>
+	<RemoveMetadataTransaction>
+      <XDSb/>
+      <NoPatientId/>
+	  <ParseMetadata>False</ParseMetadata>
+	  <UseId testdir="../xfrm_rplc" step="xfrm_rplc" section="AssignedUuids" id="XFRMRPLCAssociation" symbol="$XFRM_RPLCAssociation$"/>
+	  <UseId testdir="../xfrm_rplc" step="xfrm_rplc" section="AssignedUuids" id="Document01" symbol="$Document01$"/>
+	  <UseId testdir="../xfrm_rplc" step="xfrm_rplc" section="AssignedUuids" id="SSHM01Association" symbol="$SSHM01Association$"/>
+	  <UseId testdir="../xfrm_rplc" step="xfrm_rplc" section="AssignedUuids" id="SubmissionSet01" symbol="$SubmissionSet01$"/>
+      <MetadataFile>remove_rplc_set_only.xml</MetadataFile>
+    </RemoveMetadataTransaction>
+  </TestStep> 
+</TestPlan>

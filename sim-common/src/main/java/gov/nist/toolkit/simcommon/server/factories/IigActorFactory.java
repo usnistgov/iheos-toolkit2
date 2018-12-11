@@ -32,12 +32,12 @@ public class IigActorFactory extends AbstractActorFactory implements IActorFacto
    static final List <TransactionType> incomingTransactions =
       Arrays.asList(TransactionType.RET_IMG_DOC_SET_GW);
 
-   public Simulator buildNew(SimManager simm, SimId newID, boolean configureBase) throws Exception {
+   public Simulator buildNew(SimManager simm, SimId newID, String environment, boolean configureBase) throws Exception {
       this.newID = newID;
 
       ActorType actorType = ActorType.INITIATING_IMAGING_GATEWAY;
       SimulatorConfig sc;
-      if (configureBase) sc = configureBaseElements(actorType, newID, newID.getTestSession());
+      if (configureBase) sc = configureBaseElements(actorType, newID, newID.getTestSession(), environment);
       else sc = new SimulatorConfig();
       
       SimId simId = sc.getId();

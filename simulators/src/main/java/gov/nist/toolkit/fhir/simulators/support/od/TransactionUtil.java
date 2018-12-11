@@ -58,7 +58,7 @@ public class TransactionUtil {
             if (session.getTestSession() == null) session.setTestSession(testSession);
             session.setSiteSpec(registry);
 
-            results = XdsTestServiceManager.runTestplan(session.getCurrentEnvironment(), testSession, registry, testInstance, sections, params, stopOnFirstError, session, xdsTestServiceManager, true);
+            results = XdsTestServiceManager.runTestInstance(xdsTestServiceManager, session.getCurrentEnvironment(), testSession, registry, testInstance, sections, params, stopOnFirstError, true);
 
             printResult(results);
             return results.get(0);
@@ -318,7 +318,7 @@ public class TransactionUtil {
                 // Ret 2: ODD has 1, Snapshot has -1
                 // Ret 3: ODD has 1, Snapshot has -1 to indicate end of documents
                 if (ded.getSnapshot() == null /* first retrieve attempt */ || ALL_OD_DOCS_SUPPLIED != ded.getSnapshot().getSupplyStateIndex() /* subsequent attempt until the last */ ) {
-                    results = XdsTestServiceManager.runTestplan(session.getCurrentEnvName(), testSession, repository, testInstance, sections, params, stopOnFirstError, session, xdsTestServiceManager, true);
+                    results = XdsTestServiceManager.runTestInstance(xdsTestServiceManager, session.getCurrentEnvName(), testSession, repository, testInstance, sections, params, stopOnFirstError, true);
 
                     printResult(results);
 

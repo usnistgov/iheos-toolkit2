@@ -15,10 +15,12 @@ import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.client.logtypes.SectionOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.StepOverviewDTO;
+import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
 import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
 import gov.nist.toolkit.testenginelogging.client.ReportDTO;
 import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
+import gov.nist.toolkit.testkitutilities.client.ConfTestPropertyName;
 import gov.nist.toolkit.testkitutilities.client.Gather;
 import gov.nist.toolkit.xdstools2.client.command.command.GetSectionTestPartFileCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTestLogDetailsCommand;
@@ -40,21 +42,24 @@ import java.util.Map;
 class TestSectionDisplay implements IsWidget {
     private final String sessionName;
     private final TestInstance testInstance;
-    private TestInstance fullTestInstance;
-    private SectionOverviewDTO sectionOverview;
     private TestSectionView view = new TestSectionView();
     private TestRunner testRunner;
     private TestSectionDisplay me;
+    private boolean allowRun;
+    private OnTestRunComplete onRunCompleteParent;
 
 
-    TestSectionDisplay(String sessionName, TestInstance testInstance, SectionOverviewDTO sectionOverview, TestRunner testRunner, boolean allowRun, InteractionDiagramDisplay diagramDisplay) {
+    TestSectionDisplay(String sessionName, TestInstance testInstance, TestRunner testRunner, boolean allowRun, OnTestRunComplete onRunComplete) {
         me = this;
         this.sessionName = sessionName;
         this.testInstance = testInstance;
         this.testRunner = testRunner;
-        this.sectionOverview = sectionOverview;
-        fullTestInstance = new TestInstance(testInstance.getId(), sectionOverview.getName());
+        this.allowRun = allowRun;
+        this.onRunCompleteParent = onRunComplete;
+    }
 
+    public void display(SectionOverviewDTO sectionOverview, InteractionDiagramDisplay diagramDisplay) {
+        TestInstance fullTestInstance = new TestInstance(testInstance.getId(), sectionOverview.getName());
         if (sectionOverview.isRun()) {
             if (sectionOverview.isPass()) view.labelSuccess();
             else view.labelFailure();
@@ -65,25 +70,38 @@ class TestSectionDisplay implements IsWidget {
         view.setTime(sectionOverview.getDisplayableTime());
 
         if (sectionOverview.isRun()) {
-            view.addOpenHandler(new SectionAlreadyRunOpenHandler(new TestInstance(testInstance.getId(), sectionOverview.getName()), sessionName, sectionOverview.getName()));
+            view.addOpenHandler(new SectionAlreadyRunOpenHandler(new TestInstance(testInstance.getId(), sectionOverview.getName()), sessionName, sectionOverview.getName(), sectionOverview));
         } else {
             view.addOpenHandler(new SectionNotRunOpenHandler(sessionName, testInstance, sectionOverview.getName()));
         }
 
-        if (allowRun && !sectionOverview.isSutInitiated()) {
-            view.setPlay("Run", "Play button", new RunSection(fullTestInstance));
+        if (sectionOverview.getConfTestPropertyMap()!=null && sectionOverview.getConfTestPropertyMap().containsKey(ConfTestPropertyName.EXTERNAL_START)) {
+            String externalStartVal =  sectionOverview.getConfTestPropertyMap().get(ConfTestPropertyName.EXTERNAL_START);
+            if ("false".equals(externalStartVal)) {
+               // Override
+                view.setPlay("Run", "Play button", new RunSection(fullTestInstance, onRunCompleteParent));
+            } else if ("true".equals(externalStartVal)) {
+                // Normally, Validation is only available at the Test Bar but not at the Test Section level.
+                // If externalStart is True, then a Validate Option is available at the Test Section level.
+                view.setValidate("Validate", new RunSection(fullTestInstance, onRunCompleteParent));
+            }
+
+        } else {
+           // Default behavior
+            if (allowRun && !sectionOverview.isSutInitiated()) {
+                view.setPlay("Run", "Play button", new RunSection(fullTestInstance, onRunCompleteParent));
+            }
         }
 
         if (sectionOverview.isSutInitiated()) {
             view.setDone("Manual operation", "Manual operation", null);
         }
+
         view.setDescription(sectionOverview.getDescription());
         if (diagramDisplay!=null)
             view.setDiagram(diagramDisplay.render());
         view.build();
     }
-
-
 
     private void addGathers(TestPartFileDTO sectionTp, List<ReportDTO> reports) {
         if (sectionTp.getGathers() != null) {
@@ -142,7 +160,14 @@ class TestSectionDisplay implements IsWidget {
                 sectionParms.put(name, value);
             }
             testInstance.setSection(section);
-            testRunner.runTest(testInstance, sectionParms, null);
+            testRunner.runTest(testInstance, sectionParms, null, new OnTestRunComplete() {
+                @Override
+                void updateDisplay(TestOverviewDTO testOverviewDTO, InteractionDiagramDisplay diagramDisplay) {
+                   SectionOverviewDTO sectionOverviewDTO = testOverviewDTO.getSectionOverview(section);
+                   display(sectionOverviewDTO, diagramDisplay);
+                   TestSectionDisplay.this.onRunCompleteParent.updateDisplay(testOverviewDTO, diagramDisplay);
+                }
+            });
         }
     }
 
@@ -212,11 +237,13 @@ class TestSectionDisplay implements IsWidget {
         TestInstance testInstance; // must include section name
         String testSession;
         String section;
+        SectionOverviewDTO sectionOverview;
 
-        SectionAlreadyRunOpenHandler(TestInstance testInstance, String testSession, String section) {
+        SectionAlreadyRunOpenHandler(TestInstance testInstance, String testSession, String section, SectionOverviewDTO sectionOverview) {
             this.testInstance = testInstance;
             this.testSession = testSession;
             this.section = section;
+            this.sectionOverview = sectionOverview;
         }
 
         @Override
@@ -265,11 +292,15 @@ class TestSectionDisplay implements IsWidget {
         }
     }
 
+
+
     private class RunSection implements ClickHandler {
         TestInstance testInstance;
+        OnTestRunComplete onRunComplete;
 
-        RunSection(TestInstance testInstance) {
+        RunSection(TestInstance testInstance, OnTestRunComplete onRunComplete) {
             this.testInstance = testInstance;
+            this.onRunComplete = onRunComplete;
         }
 
         @Override
@@ -277,7 +308,19 @@ class TestSectionDisplay implements IsWidget {
             clickEvent.preventDefault();
             clickEvent.stopPropagation();
 
-            me.testRunner.runTest(testInstance, null,null);
+            me.testRunner.runTest(testInstance, null, null, new OnTestRunComplete() {
+                @Override
+                void updateDisplay(TestOverviewDTO testOverviewDTO, InteractionDiagramDisplay diagramDisplay) {
+//                    SectionOverviewDTO sectionOverviewDTO = testOverviewDTO.getSectionOverview(testInstance.getSection());
+                    try {
+                        if (onRunComplete != null) {
+                            onRunComplete.updateDisplay(testOverviewDTO, diagramDisplay);
+                        }
+                    } catch (Exception ex) {
+//                        Window.alert(ex.toString());
+                    }
+                }
+            });
         }
     }
 

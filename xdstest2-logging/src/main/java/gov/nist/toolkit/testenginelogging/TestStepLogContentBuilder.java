@@ -184,7 +184,7 @@ public class TestStepLogContentBuilder {
                 String text = result.getText();
                 if (text != null) {
                     text = text.trim();
-                    if (text.startsWith("{"))
+                    if (text.startsWith("{") || text.startsWith("<"))
                         c.setResult(text);
                 }
                 else

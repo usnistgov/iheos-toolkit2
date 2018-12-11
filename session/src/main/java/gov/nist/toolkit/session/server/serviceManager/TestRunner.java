@@ -23,7 +23,7 @@ import java.util.Map;
 
 public class TestRunner {
     private final XdsTestServiceManager xdsTestServiceManager;
-    static Logger logger = Logger.getLogger(TestRunner.class);
+    private static Logger logger = Logger.getLogger(TestRunner.class);
 
     public TestRunner(XdsTestServiceManager xdsTestServiceManager) {
         this.xdsTestServiceManager = xdsTestServiceManager;
@@ -37,7 +37,7 @@ public class TestRunner {
             if (session.getEnvironment() == null)
                 throw new EnvironmentNotSelectedException("");
 
-            if ((mesaTestSession == null || mesaTestSession.equals("")))
+            if ((mesaTestSession == null || mesaTestSession.toString().equals("")))
                 throw new TestSessionNotSelectedException("Must choose test session");
             session.setSiteSpec(siteSpec);
             session.transactionSettings.testSession = session.getTestSession();

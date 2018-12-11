@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>20002b/eval</Test>
+  <!-- -->
+  <TestStep id="invalid_slot">
+	<Goal>Update DocumentEntry Metadata: Slot, OriginalStatus, not used in this operation.</Goal>
+    <ExpectedStatus>Failure</ExpectedStatus>
+	<!--
+	<ExpectedErrorCode>XDSMetadataUpdateOperationError</ExpectedErrorCode>
+	-->
+    <MuTransaction>
+      <XDSb/>
+      <NoPatientId/>
+	  <NoAssignUids id="Document01"/>
+      <UseReport reportName="$patientid$" test="15817" section="pif" step="step" useAs="$patientid$"/>
+	  <UseId testdir="../original" step="submit" section="AssignedUuids" id="Document01" symbol="$orig_docentry_uuid$"/>
+	  <UseId testdir="../original" step="submit" section="AssignedUids" id="Document01" symbol="$orig_docentry_uid$"/>
+      <AssignUuids/>
+      <MetadataFile>invalid_slot.xml</MetadataFile>
+    </MuTransaction>
+  </TestStep>
+  <TestStep id="missing_slot_previousversion">
+	<Goal>Update DocumentEntry Metadata: Slot, PreviousVersion, not included.</Goal>
+    <ExpectedStatus>Failure</ExpectedStatus>
+	<!--
+	<ExpectedErrorCode>XDSMetadataUpdateOperationError</ExpectedErrorCode>
+	-->
+    <MuTransaction>
+      <XDSb/>
+      <NoPatientId/>
+	  <NoAssignUids id="Document01"/>
+      <UseReport reportName="$patientid$" test="15817" section="pif" step="step" useAs="$patientid$"/>
+	  <UseId testdir="../original" step="submit" section="AssignedUuids" id="Document01" symbol="$orig_docentry_uuid$"/>
+	  <UseId testdir="../original" step="submit" section="AssignedUids" id="Document01" symbol="$orig_docentry_uid$"/>
+      <AssignUuids/>
+      <MetadataFile>missing_slot_previousversion.xml</MetadataFile>
+    </MuTransaction>
+  </TestStep> 
+  <!-- --> 
+  <TestStep id="slot_previousversion_invalid_value">
+	<Goal>Update DocumentEntry Metadata: Slot, PreviousVersion, has an invalid value.</Goal>
+    <ExpectedStatus>Failure</ExpectedStatus>
+	<!--
+	<ExpectedErrorCode>XDSMetadataUpdateOperationError</ExpectedErrorCode>
+	-->
+    <MuTransaction>
+      <XDSb/>
+      <NoPatientId/>
+	  <NoAssignUids id="Document01"/>
+      <UseReport reportName="$patientid$" test="15817" section="pif" step="step" useAs="$patientid$"/>
+	  <UseId testdir="../original" step="submit" section="AssignedUuids" id="Document01" symbol="$orig_docentry_uuid$"/>
+	  <UseId testdir="../original" step="submit" section="AssignedUids" id="Document01" symbol="$orig_docentry_uid$"/>
+      <AssignUuids/>
+      <MetadataFile>slot_previousversion_invalid_value.xml</MetadataFile>
+    </MuTransaction>
+  </TestStep>
+  <!-- --> 
+  <TestStep id="slot_submissionsetstatus_invalid_value">
+	<Goal>Update DocumentEntry Metadata: Slot, SubmissionSetStatus, has an invalid value.</Goal>
+    <ExpectedStatus>Failure</ExpectedStatus>
+	<!--
+	<ExpectedErrorCode>XDSMetadataUpdateOperationError</ExpectedErrorCode>
+	-->
+    <MuTransaction>
+      <XDSb/>
+      <NoPatientId/>
+	  <NoAssignUids id="Document01"/>
+      <UseReport reportName="$patientid$" test="15817" section="pif" step="step" useAs="$patientid$"/>
+	  <UseId testdir="../original" step="submit" section="AssignedUuids" id="Document01" symbol="$orig_docentry_uuid$"/>
+	  <UseId testdir="../original" step="submit" section="AssignedUids" id="Document01" symbol="$orig_docentry_uid$"/>
+      <AssignUuids/>
+      <MetadataFile>slot_submissionsetstatus_invalid_value.xml</MetadataFile>
+    </MuTransaction>
+  </TestStep>
+  <!-- -->
+  <TestStep id="slot_associationpropagation_invalid_value">
+	<Goal>Update DocumentEntry Metadata: Slot, AssociationPropagation, has an invalid value.</Goal>
+    <ExpectedStatus>Failure</ExpectedStatus>
+	<!--
+	<ExpectedErrorCode>XDSMetadataUpdateOperationError</ExpectedErrorCode>
+	-->
+    <MuTransaction>
+      <XDSb/>
+      <NoPatientId/>
+	  <NoAssignUids id="Document01"/>
+      <UseReport reportName="$patientid$" test="15817" section="pif" step="step" useAs="$patientid$"/>
+	  <UseId testdir="../original" step="submit" section="AssignedUuids" id="Document01" symbol="$orig_docentry_uuid$"/>
+	  <UseId testdir="../original" step="submit" section="AssignedUids" id="Document01" symbol="$orig_docentry_uid$"/>
+      <AssignUuids/>
+      <MetadataFile>slot_associationpropogation_invalid_value.xml</MetadataFile>
+    </MuTransaction>
+  </TestStep>
+  <!-- -->
+  <TestStep id="missing_slot_submissionsetstatus">
+	<Goal>Update DocumentEntry Metadata: Slot, SubmissionSetStatus, not included.</Goal>
+    <ExpectedStatus>Failure</ExpectedStatus>
+	<!--
+	<ExpectedErrorCode>XDSMetadataUpdateOperationError</ExpectedErrorCode>
+	-->
+    <MuTransaction>
+      <XDSb/>
+      <NoPatientId/>
+	  <NoAssignUids id="Document01"/>
+      <UseReport reportName="$patientid$" test="15817" section="pif" step="step" useAs="$patientid$"/>
+	  <UseId testdir="../original" step="submit" section="AssignedUuids" id="Document01" symbol="$orig_docentry_uuid$"/>
+	  <UseId testdir="../original" step="submit" section="AssignedUids" id="Document01" symbol="$orig_docentry_uid$"/>
+      <AssignUuids/>
+      <MetadataFile>missing_slot_submissionsetstatus.xml</MetadataFile>
+    </MuTransaction>
+  </TestStep>
+</TestPlan>

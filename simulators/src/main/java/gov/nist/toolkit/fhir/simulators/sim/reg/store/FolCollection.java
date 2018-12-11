@@ -10,13 +10,65 @@ import java.util.List;
 public class FolCollection extends RegObCollection implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
-	List<Fol> fols;
+	private List<Fol> fols;
 	
 	transient public FolCollection parent = null;
 
+	public List<Fol> getAll() {
+		List<Fol> all = new ArrayList<>();
+
+		all.addAll(fols);
+		FolCollection theParent = parent;
+		while (theParent != null) {
+			all.addAll(theParent.getAll2(idsBeingDeleted()));
+			theParent = theParent.parent;
+		}
+		List<String> deletedIds = idsBeingDeleted();
+
+		List<Fol> deleted = new ArrayList<>();
+		for (Fol f : fols) {
+			if (deletedIds.contains(f.id))
+				deleted.add(f);
+		}
+
+		all.removeAll(deleted);
+
+		return all;
+	}
+
+	private List<Fol> getAll2(List<String> deletedIds) {
+		List<Fol> all = new ArrayList<>();
+
+		all.addAll(fols);
+		FolCollection theParent = parent;
+		while (theParent != null) {
+			all.addAll(theParent.getAll());
+			theParent = theParent.parent;
+		}
+
+		List<Fol> deleted = new ArrayList<>();
+		for (Fol f : fols) {
+			if (deletedIds.contains(f.id))
+				deleted.add(f);
+		}
+
+		all.removeAll(deleted);
+
+		return all;
+	}
+
+	List<Fol> getAllForUpdate() {
+		return fols;
+	}
+
+	private List<Fol> getAllForDelete() {
+		if (parent == null)
+			return new ArrayList<>();
+		return parent.fols;
+	}
 	
 	public String toString() {
-		return fols.size() + " Folders";
+		return getAll().size() + " Folders";
 	}
 	
 	
@@ -25,25 +77,29 @@ public class FolCollection extends RegObCollection implements Serializable {
 	}
 	
 	// caller handles synchronization
-	public void delete(String id) {
+	public boolean delete(String id) {
+		boolean deleted = false;
 		Fol toDelete = null;
-		for (Fol a : fols) {
+		for (Fol a : getAllForDelete()) {
 			if (a.id.equals(id)) {
 				toDelete = a;
 				break;
 			}
 		}
-		if (toDelete != null)
-			fols.remove(toDelete);
+		if (toDelete != null) {
+			getAllForDelete().remove(toDelete);
+			deleted = true;
+		}
+		return deleted;
 	}
 
-	public int size() { return fols.size(); }
+	public int size() { return getAll().size(); }
 	
 	public List<Fol> getByLid(String lid) {
 		List<Fol> flist = new ArrayList<Fol>();
 		if (lid == null)
-			return fols;
-		for (Fol fol : fols) {
+			return getAll();
+		for (Fol fol : getAll()) {
 			if (lid.equals(fol.lid))
 				flist.add(fol);
 		}
@@ -69,9 +125,22 @@ public class FolCollection extends RegObCollection implements Serializable {
 		return latest;
 	}
 
+	public Fol getPreviousVersion(Fol fol) {
+		int thisVersion = fol.version;
+		if (thisVersion == 1)
+			return null;
+		int targetVersion = thisVersion - 1;
+		List<Fol> allVersions = getByLid(fol.lid);
+		for (Fol f : allVersions) {
+			if (f.version == targetVersion)
+				return f;
+		}
+		return null;
+	}
+
 	
 	public Ro getRo(String id) {
-		for (Fol de : fols) {
+		for (Fol de : getAll()) {
 			if (de.id.equals(id))
 				return de;
 		}
@@ -83,7 +152,7 @@ public class FolCollection extends RegObCollection implements Serializable {
 	public Fol getById(String id) {
 		if (id == null)
 			return null;
-		for (Fol f : fols) {
+		for (Fol f : getAll()) {
 			if (id.equals(f.id))
 				return f;
 		}
@@ -92,16 +161,17 @@ public class FolCollection extends RegObCollection implements Serializable {
 		return parent.getById(id);
 	}
 	
-	public Fol getByUid(String uid) {
+	public List<Fol> getByUid(String uid) {
+		List<Fol> des = new ArrayList<>();
 		if (uid == null)
-			return null;
-		for (Fol f : fols) {
+			return des;
+		for (Fol f : getAll()) {
 			if (uid.equals(f.uid))
-				return f;
+				des.add(f);
 		}
-		if (parent == null)
-			return null;
-		return parent.getByUid(uid);
+		if (parent != null)
+			des.addAll(parent.getByUid(uid));
+		return des;
 	}
 	
 
@@ -109,14 +179,14 @@ public class FolCollection extends RegObCollection implements Serializable {
 	public String statsToString() {
 		int siz = 0;
 		if (parent != null)
-			siz = parent.fols.size();
-		return (siz + fols.size()) + " Folders";
+			siz = parent.getAll().size();
+		return (siz + getAll().size()) + " Folders";
 	}
 
 	public boolean hasObject(String id) {
 		if (id == null)
 			return false;
-		for (Fol a : fols) {
+		for (Fol a : getAll()) {
 			if (a.id.equals(id))
 				return true;
 		}
@@ -126,7 +196,7 @@ public class FolCollection extends RegObCollection implements Serializable {
 	}
 
 	public Ro getRoByUid(String uid) {
-		for (Fol f : fols) {
+		for (Fol f : getAll()) {
 			if (f.uid.equals(uid))
 				return f;
 		}
@@ -138,8 +208,8 @@ public class FolCollection extends RegObCollection implements Serializable {
 	public List<Fol> findByPid(String pid) {
 		List<Fol> results = new ArrayList<Fol>();
 		
-		for (int i=0; i<fols.size(); i++) {
-			Fol f = fols.get(i);
+		for (int i=0; i<getAll().size(); i++) {
+			Fol f = getAll().get(i);
 			if (pid.equals(f.pid))
 				results.add(f);
 		}
@@ -202,19 +272,26 @@ public class FolCollection extends RegObCollection implements Serializable {
 	}
 
 	public List<?> getAllRo() {
-		if (parent == null)
-			return fols;
-		List<Fol> fs = new ArrayList<Fol>();
-		fs.addAll(fols);
-		fs.addAll(parent.fols);
-		return fs;
+			return getAll();
 	}
 
 	@Override
 	public List<String> getIds() {
 		List<String> ids = new ArrayList<>();
-		for (Fol a : fols) ids.add(a.getId());
+		for (Fol a : getAll()) ids.add(a.getId());
 		return ids;
+	}
+
+	@Override
+	public List<?> getNonDeprecated() {
+		List<Fol> nonDep = new ArrayList<>();
+		for (Fol a : getAll()) {
+			if (!a.isDeprecated())
+				nonDep.add(a);
+		}
+		if (parent != null)
+			return parent.getNonDeprecated();
+		return nonDep;
 	}
 
 

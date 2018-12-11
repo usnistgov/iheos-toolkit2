@@ -28,10 +28,10 @@ import java.util.List;
 public class CrgActorFactory extends AbstractActorFactory implements IActorFactory {
    
    @Override
-   protected Simulator buildNew(SimManager simm, SimId newID, boolean configureBase) throws Exception {
+   protected Simulator buildNew(SimManager simm, SimId newID, String environment, boolean configureBase) throws Exception {
       ActorType actorType = ActorType.COMBINED_RESPONDING_GATEWAY;
       SimulatorConfig sc;
-      if (configureBase) sc = configureBaseElements(actorType, newID, newID.getTestSession());
+      if (configureBase) sc = configureBaseElements(actorType, newID, newID.getTestSession(), environment);
       else sc = new SimulatorConfig();
       
       SimId simId = sc.getId();
@@ -39,12 +39,12 @@ public class CrgActorFactory extends AbstractActorFactory implements IActorFacto
       // Group with a Responding Gateway
       RGActorFactory rg = new RGActorFactory();
       rg.setTransactionOnly(isTransactionOnly());
-      SimulatorConfig rgConfig = rg.buildNew(simm, simId, true).getConfig(0);
+      SimulatorConfig rgConfig = rg.buildNew(simm, simId, environment, true).getConfig(0);
       sc.add(rgConfig);
       
       // Group with a Responding Imaging Gateway
       RigActorFactory rig = new RigActorFactory();
-      SimulatorConfig rigConfig = rig.buildNew(simm, simId, true).getConfig(0);
+      SimulatorConfig rigConfig = rig.buildNew(simm, simId, environment,true).getConfig(0);
       sc.add(rigConfig);
       
       return new Simulator(sc);

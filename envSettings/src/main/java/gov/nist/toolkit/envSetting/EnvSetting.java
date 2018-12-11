@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class EnvSetting {
 	// SessionID ==> Environment Setting
-	static Map<String, EnvSetting> settings = new HashMap<String, EnvSetting>();
+	private static Map<String, EnvSetting> settings = new HashMap<String, EnvSetting>();
     static public final String DEFAULTSESSIONID = "DEFAULT";
     static public final String DEFAULTENVIRONMENTNAME = "default";
 	String envName;
@@ -32,6 +32,12 @@ public class EnvSetting {
         return String.format("ENV %s => %s", envName, envDir);
     }
 
+    private static void addSetting(String sessionId, EnvSetting envSetting) {
+	    settings.put(sessionId, envSetting);
+        if (settings.keySet().size() == 3)
+            logger.info("third setting");
+    }
+
     static public EnvSetting getEnvSettingForSession(String sessionId) {
         EnvSetting s = settings.get(sessionId);
         if (s == null) {
@@ -45,7 +51,7 @@ public class EnvSetting {
     }
 
     public static void installDefaultEnvironment() {
-        File envFile = Installation.instance().internalEnvironmentFile(DEFAULTENVIRONMENTNAME);
+        File envFile = Installation.instance()./*internal*/environmentFile(DEFAULTENVIRONMENTNAME);
         if (envFile == null || !envFile.exists()) throw new EnvironmentNotSelectedException("Default Environment not configured - file " + envFile + " not found.");
         new EnvSetting(DEFAULTSESSIONID, DEFAULTENVIRONMENTNAME, envFile);
 //        new EnvSetting(Installation.defaultSessionName(), DEFAULTENVIRONMENTNAME, envFile);
@@ -60,13 +66,13 @@ public class EnvSetting {
 
 	public EnvSetting(String sessionId, String name, File dir) {
 //		logger.info(sessionId + ": EnvSetting -  uses environment " + name + " ==> " + dir);
-		settings.put(sessionId, new EnvSetting(name, dir));
+		addSetting(sessionId, new EnvSetting(name, dir));
 	}
 	
 	public EnvSetting(String sessionId, String name) {
 		File dir = Installation.instance().environmentFile(name);
 //		logger.info("Session " + sessionId + " environment " + name + " ==> " + dir);
-        settings.put(sessionId, new EnvSetting(name, dir));
+        addSetting(sessionId, new EnvSetting(name, dir));
 	}
 
     public EnvSetting(String envName) {

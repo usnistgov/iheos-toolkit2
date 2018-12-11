@@ -20,6 +20,16 @@ import org.apache.commons.io.comparator.NameFileComparator
 import org.apache.commons.io.filefilter.PrefixFileFilter
 import org.apache.http.annotation.Obsolete
 import org.apache.log4j.Logger
+import org.dcm4che3.hl7.HL7Parser
+
+import javax.xml.transform.OutputKeys
+import javax.xml.transform.TransformerFactory
+import javax.xml.transform.sax.SAXTransformerFactory
+import javax.xml.transform.sax.TransformerHandler
+import javax.xml.transform.stream.StreamResult
+import java.nio.file.Files
+import java.nio.file.Paths
+
 import org.apache.lucene.store.FSDirectory
 /**
  * Each simulator has an on-disk presence that keeps track of its long
@@ -43,136 +53,13 @@ public class SimDb {
 	static private final Logger logger = Logger.getLogger(SimDb.class);
 	static String luceneIndexDirectoryName = 'simindex'
 	private TestSession testSession = null;
+	static String simTypeFilename = 'sim_type.txt'
 
 	static final String MARKER = 'MARKER';
-
-	SimDb mkSim(SimId simid, String actor) throws IOException, NoSimException {
-		assert simid?.testSession?.value
-
-		// if this is a FHIR sim there is a different factory method to use
-		ActorType actorType = ActorType.findActor(actor);
-		if (actorType == ActorType.FHIR_SERVER)
-			simid.forFhir()
-		if (simid.isFhir()) {
-			return mkfSim(simid)
-		}
-
-		File dbRoot = getSimDbFile(simid.testSession);
-		validateSimId(simid);
-		if (!dbRoot.exists())
-			dbRoot.mkdir();
-		if (!dbRoot.canWrite() || !dbRoot.isDirectory())
-			throw new IOException("Simulator database location, " + dbRoot.toString() + " is not a directory or cannot be written to");
-
-		File simActorDir = new File(dbRoot.getAbsolutePath() + File.separatorChar + simid + File.separatorChar + actor);
-		simActorDir.mkdirs();
-		if (!simActorDir.exists()) {
-			logger.error("Simulator " + simid + ", " + actor + " cannot be created");
-			throw new IOException("Simulator " + simid + ", " + actor + " cannot be created");
-		}
-
-		SimDb db = new SimDb(simid, actor, null, true);
-		db.setSimulatorType(actor);
-		return db;
-	}
-
 	/**
-	 * Given partial information (testSession and id) build the full simId
-	 * @param simId1
-	 * @return
-	 */
-	static SimId getFullSimId(SimId simId) {
-		assert simId?.testSession?.value
-		SimId ssimId = new SimId(simId.getTestSession(), simId.getId())
-		if (exists(ssimId)) {
-			// soap based sim
-			SimDb simDb = new SimDb(ssimId)
-			return simIdBuilder(simDb.getSimDir(), simId.testSession)
-		} else {
-			ssimId = ssimId.forFhir()
-			if (exists(ssimId)) {
-				// FHIR based sim
-				SimDb simDb = new SimDb(ssimId)
-				return simIdBuilder(simDb.getSimDir(), simId.testSession)
-			}
-		}
-		throw new BadSimIdException("Simulator " + simId.toString() + " does not exist.")
-	}
-
-
-	/**
-	 * Return base dir of SimDb storage
-	 * or its FHIR equivalent if the SimId is from a FHIR sim
-	 * @return
-	 */
-	static public File getSimDbFile(SimId simId) {
-		assert simId?.testSession?.value
-		if (simId.isFhir())
-			return Installation.instance().fhirSimDbFile(simId.testSession);
-		return Installation.instance().simDbFile(simId.testSession);
-	}
-
-	static public File getSimDbFile(TestSession testSession) {
-		return Installation.instance().simDbFile(testSession)
-	}
-
-	static public File getFSimDbFile(TestSession testSession) {
-		return Installation.instance().fhirSimDbFile(testSession)
-	}
-
-	static boolean isSim(File simRoot) {
-		//isPrefix(simRoot, getSimDbFile())
-		!ActorType.findActor(new File(simRoot, 'sim_type.txt').text).isFhir()
-	}
-
-	static boolean isFSim(SimId simId) {
-		File base = getSimBase(simId)
-		return isFSim(base)
-	}
-
-	static boolean isFSim(File simRoot) {
-		//isPrefix(simRoot, getFSimDbFile())
-		ActorType.findActor(new File(simRoot, 'sim_type.txt').text).isFhir()
-	}
-
-	static boolean isPrefix(File file, File possiblePrefix) {
-		file.getCanonicalPath().startsWith(possiblePrefix.getCanonicalPath())
-	}
-
-//	List getAllResources(SimDbEvent event) {
-//		setEvent(event)
-//		getEventDir().listFiles().findAll { File f ->
-//			f.isDirectory()
-//		}.collect { File dir ->
-//			String resourceType = dir.name
-//			dir.listFiles().findAll { File rf ->
-//				rf.name.endsWith('json')
-//			}
-//		}
-//	}
-
-	/**
-	 * Does simulator exist?
-	 * Checks for existence of simdb directory for passed id.
-	 * @param simId id of simulator to check
-	 * @return boolean true if a simulator directory for this id exists in the
-	 * simdb directory, false otherwise.
-	 */
-	static public boolean exists(SimId simId) {
-		File f = new File(getSimDbFile(simId), simId.toString())
-        // Lucene walkaround
-        if (countFoldersByName(luceneIndexDirectoryName,f)>0) {
-			return (isSimDir(f)) // Safety file should not exist when it is deleted minus the simindex folder(s)
-		}
-		// end
-		return f.exists();
-	}
-
-	/**
-	 * Base constructor Loads the simulator db directory 
+	 * Base constructor Loads the simulator db directory
 	 */
 	SimDb() {}
-
 	/**
 	 * open existing sim
 	 * @param simId
@@ -206,6 +93,164 @@ public class SimDb {
 
 		createSimSafetyFile()
 	}
+	SimDb(SimId simId, ActorType actor, TransactionType transaction, boolean openToLastTransaction) {
+		this(simId, actor.shortName, transaction.shortName, openToLastTransaction)
+	}
+
+	SimDb(SimId simId, String actor, String transaction, boolean openToLastTransaction) {
+		this(simId);
+		assert actor
+		this.actor = actor;
+		this.transaction = transaction;
+
+		if (actor != null && transaction != null) {
+			transactionDir = transactionDirectory(actor, transaction)
+		} else
+			return;
+
+		if (openToLastTransaction) {
+			openMostRecentEvent(actor, transaction)
+		} else {
+			eventDate = new Date();
+			File eventDir = mkEventDir(eventDate);
+			eventDir.mkdirs();
+			Serialize.out(new File(eventDir, "date.ser"), eventDate);
+		}
+	}
+
+
+
+	SimDb mkSim(SimId simid, String actor) throws IOException, NoSimException {
+		assert simid?.testSession?.value
+
+		// if this is a FHIR sim there is a different factory method to use
+		ActorType actorType = ActorType.findActor(actor);
+		if (actorType == ActorType.FHIR_SERVER)
+			simid.forFhir()
+		if (simid.isFhir()) {
+			return mkfSim(simid)
+		}
+
+		File dbRoot = getSimDbFile(simid.testSession);
+		validateSimId(simid);
+		if (!dbRoot.exists())
+			dbRoot.mkdir();
+		if (!dbRoot.canWrite() || !dbRoot.isDirectory())
+			throw new IOException("Simulator database location, " + dbRoot.toString() + " is not a directory or cannot be written to");
+
+		File simActorDir = new File(dbRoot.getAbsolutePath() + File.separatorChar + simid + File.separatorChar + actor);
+		simActorDir.mkdirs();
+		if (!simActorDir.exists()) {
+			logger.error("Simulator " + simid + ", " + actor + " cannot be created");
+			throw new IOException("Simulator " + simid + ", " + actor + " cannot be created");
+		}
+
+		SimDb db = new SimDb(simid, actor, null, true);
+//		db.setSimulatorType(actor);
+		return db;
+	}
+
+	/**
+	 * Given partial information (testSession and id) build the full simId
+	 * @param simId1
+	 * @return
+	 */
+	static SimId getFullSimId(SimId simId) {
+		assert simId?.testSession?.value
+		SimId ssimId = new SimId(simId.getTestSession(), simId.getId())
+		if (exists(ssimId)) {
+			// soap based sim
+			SimDb simDb = new SimDb(ssimId)
+			return internalSimIdBuilder(simDb.getSimDir(), simId.testSession)
+		} else {
+			ssimId = ssimId.forFhir()
+			if (exists(ssimId)) {
+				// FHIR based sim
+				SimDb simDb = new SimDb(ssimId)
+				return internalSimIdBuilder(simDb.getSimDir(), simId.testSession)
+			}
+		}
+		throw new BadSimIdException("Simulator " + simId.toString() + " does not exist.")
+	}
+
+
+	/**
+	 * Return base dir of SimDb storage
+	 * or its FHIR equivalent if the SimId is from a FHIR sim
+	 * @return
+	 */
+	static public File getSimDbFile(SimId simId) {
+		assert simId?.testSession?.value
+		if (simId.isFhir())
+			return Installation.instance().fhirSimDbFile(simId.testSession);
+		return Installation.instance().simDbFile(simId.testSession);
+	}
+
+	static public File getSimDbFile(TestSession testSession) {
+		return Installation.instance().simDbFile(testSession)
+	}
+
+	static public File getFSimDbFile(TestSession testSession) {
+		return Installation.instance().fhirSimDbFile(testSession)
+	}
+
+//	static boolean isSim(File simRoot) {
+//		//isPrefix(simRoot, getSimDbFile())
+//		!ActorType.findActor(new File(simRoot, simTypeFilename).text).isFhir()
+//	}
+//
+//	static boolean isFSim(SimId simId) {
+//		File base = getSimBase(simId)
+//		return isFSim(base)
+//	}
+
+	static boolean isFSim(SimId simId) {
+		//isPrefix(simRoot, getFSimDbFile())
+
+		SimulatorConfig config
+		try {
+			config = AbstractActorFactory.getSimConfig(simId)
+		} catch (Exception e) {
+			return false
+		}
+		ActorType.findActor(config.actorType).isFhir()
+
+		//ActorType.findActor(new File(simRoot, simTypeFilename).text).isFhir()
+	}
+
+//	static boolean isPrefix(File file, File possiblePrefix) {
+//		file.getCanonicalPath().startsWith(possiblePrefix.getCanonicalPath())
+//	}
+
+//	List getAllResources(SimDbEvent event) {
+//		setEvent(event)
+//		getEventDir().listFiles().findAll { File f ->
+//			f.isDirectory()
+//		}.collect { File dir ->
+//			String resourceType = dir.name
+//			dir.listFiles().findAll { File rf ->
+//				rf.name.endsWith('json')
+//			}
+//		}
+//	}
+
+	/**
+	 * Does simulator exist?
+	 * Checks for existence of simdb directory for passed id.
+	 * @param simId id of simulator to check
+	 * @return boolean true if a simulator directory for this id exists in the
+	 * simdb directory, false otherwise.
+	 */
+	static public boolean exists(SimId simId) {
+		File f = new File(getSimDbFile(simId), simId.toString())
+        // Lucene walkaround
+        if (countFoldersByName(luceneIndexDirectoryName,f)>0) {
+			return (isSimDir(f)) // Safety file should not exist when it is deleted minus the simindex folder(s)
+		}
+		// end
+		return f.exists();
+	}
+
 
 	void createSimSafetyFile() {
 		// add this for safety when deleting simulators -
@@ -278,30 +323,6 @@ public class SimDb {
 		return eventDate;
 	}
 
-	SimDb(SimId simId, ActorType actor, TransactionType transaction, boolean openToLastTransaction) {
-		this(simId, actor.shortName, transaction.shortName, openToLastTransaction)
-	}
-
-	SimDb(SimId simId, String actor, String transaction, boolean openToLastTransaction) {
-		this(simId);
-		assert actor
-		this.actor = actor;
-		this.transaction = transaction;
-
-		if (actor != null && transaction != null) {
-			transactionDir = transactionDirectory(actor, transaction)
-		} else
-			return;
-
-		if (openToLastTransaction) {
-			openMostRecentEvent(actor, transaction)
-		} else {
-			eventDate = new Date();
-			File eventDir = mkEventDir(eventDate);
-			eventDir.mkdirs();
-			Serialize.out(new File(eventDir, "date.ser"), eventDate);
-		}
-	}
 
 	static SimDb createMarker(SimId simId) {
 		return new SimDb(simId, MARKER, MARKER, false)
@@ -309,11 +330,16 @@ public class SimDb {
 
 	/**
 	 * Events returned most recent first
-	 * If no marker then return all events
+	 * If no marker then return all events.
+	 * (I think this method assumes there is only one actor type and transaction type within the scope of a simulator because getAllEvents returns all events for all actors and all transactions.)
 	 * @return
 	 */
 	List<SimDbEvent> getEventsSinceMarker() {
-		List<SimDbEvent> events = getAllEvents()
+		getEventsSinceMarker(null, null)
+	}
+
+	List<SimDbEvent> getEventsSinceMarker(String actor, String tran) {
+		List<SimDbEvent> events = getAllEvents(actor, tran)
 		Map<String, SimDbEvent> eventMap = [:]
 		events.each { SimDbEvent event -> eventMap[event.eventId] = event }
 		def ordered = eventMap.keySet().sort().reverse()
@@ -561,10 +587,14 @@ public class SimDb {
 		}
 	}
 
-	static SimId simIdBuilder(File simDefDir, TestSession testSession) {
+	static private SimId internalSimIdBuilder(File simDefDir, TestSession testSession) {
 		SimId simId = SimIdFactory.simIdBuilder(simDefDir.name)//new SimId(testSession, simDefDir.name)
-		if (isFSim(simDefDir)) simId.forFhir()
-		simId.actorType = new SimDb(simId).getSimulatorType()
+		if (isFSim(simId)) simId.forFhir()
+		try {
+			simId.actorType = new SimDb(simId).getSimulatorType()
+		} catch (Exception e) {
+
+		}
 		simId
 	}
 
@@ -572,18 +602,42 @@ public class SimDb {
 		SimIdFactory.simIdBuilder(rawId)
 	}
 
+	// is this sim valid - does it have the necessary parts
+	static boolean isValid(SimId simId) {
+		File d = getSimDbFile(simId)
+		File f = new File(d, simId.toString())
+		if (! new File(f, 'simId.txt').exists())
+			return false
+//		if (! new File(f, simTypeFilename).exists())
+//			return false
+		if (! new File(f, 'simctl.json').exists())
+			return false
+		return true;
+	}
+
+	static void scanAllSims() {
+		List<TestSession> testSessions = Installation.instance().getTestSessions()
+		testSessions.each { TestSession testSession ->
+			List<SimId> simIds = getAllSimIds(testSession)
+			simIds.each { SimId simId ->
+				if (!isValid(simId))
+					throw new ToolkitRuntimeException("Invalid SIM ${simId} found")
+			}
+		}
+	}
+
 	static List<SimId> getAllSimIds(TestSession testSession) throws BadSimIdException {
 
 		List soapSimIds = getSimDbFile(testSession).listFiles().findAll { File file ->
 			isSimDir(file)
 		}.collect { File dir ->
-			simIdBuilder (dir, testSession)
+			internalSimIdBuilder (dir, testSession)
 		}
 
 		List fhirSimIds = getFSimDbFile(testSession).listFiles().findAll { File file ->
 			isSimDir(file)
 		}.collect { File dir ->
-			simIdBuilder(dir, testSession)
+			internalSimIdBuilder(dir, testSession)
 		}
 
 		Set defaultSims = []
@@ -591,7 +645,7 @@ public class SimDb {
 			defaultSims = getSimDbFile(TestSession.DEFAULT_TEST_SESSION).listFiles().findAll { File file ->
 				isSimDir(file)
 			}.collect { File dir ->
-				simIdBuilder (dir, TestSession.DEFAULT_TEST_SESSION)
+				internalSimIdBuilder (dir, TestSession.DEFAULT_TEST_SESSION)
 			} as Set
 		}
 
@@ -738,6 +792,18 @@ public class SimDb {
 		pidDb.addPatientId(patientId);
 	}
 
+	public void addhl7v2Msg(String hl7msg, String msh9, String dateDir, boolean inboundMsg) {
+		if (hl7msg == null || hl7msg.isEmpty()) hl7msg="null or empty hl7 msg";
+		String xmlmsg = hl7v2ToXml(hl7msg);
+		if (msh9 == null || msh9.isEmpty()) msh9 = "none";
+		String hl7fn = inboundMsg ? "Request.txt" : "Response.txt";
+		String xmlfn = inboundMsg ? "Request.xml" : "Response.xml";
+		File dir = Paths.get(simDir.getPath(),"hl7v2", msh9, dateDir).toFile();
+		dir.mkdirs();
+		Files.write(dir.toPath().resolve(hl7fn), hl7msg.getBytes("UTF-8"));
+		Files.write(dir.toPath().resolve(xmlfn), xmlmsg.getBytes("UTF-8"));
+	}
+
 	public boolean deletePatientIds(List<Pid> toDelete) {
 		return pidDb.deletePatientIds(toDelete);
 	}
@@ -747,14 +813,16 @@ public class SimDb {
 	}
 
 	public ActorType getSimulatorActorType() {
-		File typeFile = new File(simDir, "sim_type.txt");
-		String name = null;
-		try {
-			name = Io.stringFromFile(typeFile).trim();
-		} catch (IOException e) {
-			return null;
-		}
-		return ActorType.findActor(name);
+		SimulatorConfig config = AbstractActorFactory.getSimConfig(simId)
+		ActorType.findActor(config.actorType)
+//		File typeFile = new File(simDir, simTypeFilename);
+//		String name = null;
+//		try {
+//			name = Io.stringFromFile(typeFile).trim();
+//		} catch (IOException e) {
+//			return null;
+//		}
+//		return ActorType.findActor(name);
 	}
 
 	public List<SimId> getSimulatorIdsforActorType(ActorType actorType, TestSession testSession) throws IOException, NoSimException {
@@ -789,14 +857,16 @@ public class SimDb {
 	}
 
 	public String getSimulatorType() throws IOException {
-		File simType = new File(simDir, "sim_type.txt");
-		return Io.stringFromFile(simType).trim();
+		SimulatorConfig config = AbstractActorFactory.getSimConfig(simId)
+		config.actorType
+//		File simType = new File(simDir, simTypeFilename);
+//		return Io.stringFromFile(simType).trim();
 	}
 
-	public void setSimulatorType(String type) throws IOException {
-		File simType = new File(simDir, "sim_type.txt");
-		Io.stringToFile(simType, type);
-	}
+//	public void setSimulatorType(String type) throws IOException {
+//		File simType = new File(simDir, simTypeFilename);
+//		Io.stringToFile(simType, type);
+//	}
 
 	public File getRepositoryDocumentFile(String documentId) {
 		File repDirFile = new File(getDBFilePrefix(event), "Repository");
@@ -897,7 +967,7 @@ public class SimDb {
 		} catch (ClassNotFoundException e) {
 		}
 //					if (date == null) continue;  // only interested in transactions that have dates
-		t.labelInterpretedAsDate = (date == null) ? "" : date.toString();
+		t.labelInterpretedAsDate = (date == null) ? event?:"" : date.toString();
 		t.nameInterpretedAsTransactionType = TransactionType.find(t.trans);
 
 		String ipAddr = null;
@@ -1107,13 +1177,27 @@ public class SimDb {
 	}
 
 	List<SimDbEvent> getAllEvents() {
+		getAllEvents(null, null);
+	}
+
+	/**
+	 *
+	 * @param actor Optional.
+	 * @param tran Optional.
+	 * @return
+	 */
+	List<SimDbEvent> getAllEvents(String actor, String tran) {
 		List<SimDbEvent> eventDirs = []
 		for (File actorDir : simDir.listFiles()) {
 			if (!actorDir.isDirectory()) continue
-			for (File transDir : actorDir.listFiles()) {
-				if (!transDir.isDirectory()) continue
-				for (File eventDir : transDir.listFiles()) {
-					eventDirs << new SimDbEvent(simId, actorDir.name, transDir.name, eventDir.name)
+			if (actor?actorDir.getName().equals(actor):true) {
+				for (File transDir : actorDir.listFiles()) {
+					if (!transDir.isDirectory()) continue
+                    if ((tran?transDir.getName().equals(tran):true)) {
+						for (File eventDir : transDir.listFiles()) {
+							eventDirs << new SimDbEvent(simId, actorDir.name, transDir.name, eventDir.name)
+						}
+					}
 				}
 			}
 		}
@@ -1369,10 +1453,32 @@ public class SimDb {
 		}
 
 		SimDb db = new SimDb(simid, BASE_TYPE, null, openToLastEvent);
-		db.setSimulatorType(actor);
+//		db.setSimulatorType(actor);
 		return db;
 	}
 
+	/**
+	 * Converts hl7 V2 message to XML
+	 * @param inMsg hl7 v2 message.
+	 * @return XML equivalent. On error, returns error message and original hl7 msg.
+	 */
+	public String hl7v2ToXml(String inMsg) {
+		try {
+			Reader reader = new StringReader(inMsg);
+			SAXTransformerFactory tf = (SAXTransformerFactory) TransformerFactory.newInstance();
+			TransformerHandler th = tf.newTransformerHandler();
+			th.getTransformer().setOutputProperty(OutputKeys.INDENT, "yes");
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			th.setResult(new StreamResult(baos));
+			HL7Parser hl7Parser = new HL7Parser(th);
+			hl7Parser.setIncludeNamespaceDeclaration(false);
+			hl7Parser.parse(reader);
+			return baos.toString("UTF-8");
+		} catch (Exception e) {
+			return "Error converting to XML: " + e.getMessage() +
+				System.getProperty("line.separator") + inMsg;
+		}
+	}
 	void setActor(String actor) {
 		this.actor = actor
 	}

@@ -54,6 +54,7 @@ public class TestSectionView implements IsWidget {
         Image statusIcon = null;
         HTML time = new HTML();
         Image play = null;
+        Image validate = null;
         Image done = null;
         HTML tls = new HTML();
 
@@ -74,6 +75,12 @@ public class TestSectionView implements IsWidget {
         void setPlay(String label, String title, ClickHandler clickHandler) {
             play = getImg("icons2/play-16.png", label, title);
             play.addClickHandler(clickHandler);
+        }
+        void setValidate(String title, ClickHandler clickHandler) {
+            validate = new Image("icons2/validate-16.png");
+            validate.addStyleName("iconStyle");
+            validate.addClickHandler(clickHandler);
+            validate.setTitle(title);
         }
         void setDone(String label, String title, ClickHandler clickHandler) {
             done = getImg("icons2/ic_forward_black_24dp_1x.png", title, label);
@@ -107,6 +114,7 @@ public class TestSectionView implements IsWidget {
             add(title);
             add(time);
             if (play != null) add(play);
+            if (validate != null) add(validate);
             if (done != null) add(done);
             add(tls);
 
@@ -119,6 +127,7 @@ public class TestSectionView implements IsWidget {
     void setSectionTitle(String text, String title) { header.setSectionTitle(text, title);}
     void setTime(String text) { header.setTime(text); }
     void setPlay(String label, String title, ClickHandler clickHandler) { header.setPlay(label, title, clickHandler); }
+    void setValidate(String title, ClickHandler clickHandler) { header.setValidate(title, clickHandler); }
     void setDone(String label, String title, ClickHandler clickHandler) { header.setDone(label, title, clickHandler); }
     void labelSuccess() { header.labelSuccess(); }
     void labelFailure() { header.labelFailure(); }

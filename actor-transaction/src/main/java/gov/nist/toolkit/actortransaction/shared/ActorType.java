@@ -5,7 +5,6 @@ import gov.nist.toolkit.actortransaction.client.ProxyTransformConfig;
 import gov.nist.toolkit.actortransaction.client.TransactionDirection;
 import gov.nist.toolkit.configDatatypes.client.FhirVerb;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.xdsexception.client.TkActorNotFoundException;
 import org.apache.http.annotation.Obsolete;
 
 import java.io.Serializable;
@@ -37,9 +36,7 @@ public enum ActorType implements IsSerializable, Serializable {
             false,
             null,
             false,
-            Constants.USE_SHORTNAME,
-            IheItiProfile.XDS,
-            Arrays.asList(OptionType.REQUIRED)
+            Constants.USE_SHORTNAME
     ),
     FIXED_REPLY(
             "Fixed Reply",
@@ -55,9 +52,7 @@ public enum ActorType implements IsSerializable, Serializable {
             true,
             null,
             false,
-            Constants.USE_SHORTNAME,
-            null,
-            null
+            Constants.USE_SHORTNAME
     ),
     REGISTRY(
             "Document Registry",
@@ -65,14 +60,41 @@ public enum ActorType implements IsSerializable, Serializable {
             "reg",
             "gov.nist.toolkit.simcommon.server.factories.RegistryActorFactory",
             "gov.nist.toolkit.fhir.simulators.sim.reg.RegistryActorSimulator",
-            Arrays.asList(TransactionType.REGISTER, TransactionType.REGISTER_ODDE, TransactionType.STORED_QUERY, TransactionType.UPDATE, TransactionType.MPQ),
+//            "gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator",
+            Arrays.asList(TransactionType.REGISTER, TransactionType.REGISTER_ODDE, TransactionType.STORED_QUERY, TransactionType.UPDATE, TransactionType.RMU, TransactionType.MPQ, TransactionType.REMOVE_METADATA, TransactionType.XAD_PID),
             true,
             null,
             false,
-            Constants.USE_SHORTNAME,
-            IheItiProfile.XDS,
-            Arrays.asList(OptionType.REQUIRED, OptionType.METADATA_UPDATE, OptionType.MULTI_PATIENT_QUERY, OptionType.XUA, OptionType.CAT_FOLDER, OptionType.CAT_LIFECYCLE,OptionType.ISR,OptionType.ON_DEMAND)
+            Constants.USE_SHORTNAME
     ),
+//    REGISTRY_RMD(
+//            "REMOVE Metadata",
+//            Arrays.asList(""),
+//            "reg_rm",
+//            "",
+//            "",
+//            Arrays.asList(TransactionType.REMOVE_METADATA),
+//            false,
+//            null,
+//            false,
+//            null,
+//            IheItiProfile.RMD,
+//            Arrays.asList(OptionType.REMOVE)
+//    ),
+//    REGISTRY_XADPID(
+//            "XAD_PID",
+//            Arrays.asList(""),
+//            "reg_xadpid",
+//            "",
+//            "",
+//            Arrays.asList(TransactionType.XAD_PID),
+//            false,
+//            null,
+//            false,
+//            null,
+//            null,
+//            null
+//    ),
     // Update option on Document Registry
     // this should be removed once implications are re-discovered
 //		UPDATE (
@@ -89,13 +111,11 @@ public enum ActorType implements IsSerializable, Serializable {
             "rep",
             "gov.nist.toolkit.simcommon.server.factories.RepositoryActorFactory",
             "gov.nist.toolkit.fhir.simulators.sim.rep.RepositoryActorSimulator",
-            Arrays.asList(TransactionType.PROVIDE_AND_REGISTER, TransactionType.RETRIEVE),
+            Arrays.asList(TransactionType.PROVIDE_AND_REGISTER, TransactionType.RETRIEVE, TransactionType.REMOVE_DOCUMENTS),
             true,
             "repository",
             false,
-            Constants.USE_SHORTNAME,
-            IheItiProfile.XDS,
-            Arrays.asList(OptionType.REQUIRED, OptionType.XUA)
+            Constants.USE_SHORTNAME
     ),
     ONDEMAND_DOCUMENT_SOURCE(
             "On-Demand Document Source",
@@ -108,9 +128,7 @@ public enum ActorType implements IsSerializable, Serializable {
             true,
             "odds",
             false,
-            Constants.USE_SHORTNAME,
-            IheItiProfile.XDS,
-            Arrays.asList(OptionType.REQUIRED)
+            Constants.USE_SHORTNAME
     ),
     ISR(
             "Integrated Source/Repository",
@@ -122,9 +140,7 @@ public enum ActorType implements IsSerializable, Serializable {
             true,
             "isr",
             false,
-            Constants.USE_SHORTNAME,
-            IheItiProfile.XDS,
-            Arrays.asList(OptionType.REQUIRED)
+            Constants.USE_SHORTNAME
     ),
     REPOSITORY_REGISTRY(
             "Document Repository/Registry",
@@ -136,9 +152,7 @@ public enum ActorType implements IsSerializable, Serializable {
             true,
             null,
             false,
-            Constants.USE_SHORTNAME,
-            IheItiProfile.XDS,
-            Arrays.asList(OptionType.REQUIRED)
+            Constants.USE_SHORTNAME
     ),
     DOCUMENT_RECIPIENT(
             "Document Recipient",
@@ -150,9 +164,7 @@ public enum ActorType implements IsSerializable, Serializable {
             true,
             null,
             false,
-            Constants.USE_SHORTNAME,
-            IheItiProfile.XDS,
-            Arrays.asList(OptionType.REQUIRED,OptionType.XUA)
+            Constants.USE_SHORTNAME
     ),
     MHD_DOC_RECIPIENT(    // needs to be split into responder and recipient
             "MHD Document Recipient",
@@ -226,9 +238,7 @@ public enum ActorType implements IsSerializable, Serializable {
                             "gov.nist.toolkit.fhir.simulators.proxy.transforms.RetrieveResponseToFhirTransform").toString()
 
             ),
-            "rec",   // must match rec from rec(mhd) in collections.txt
-            IheItiProfile.MHD,
-            Arrays.asList(OptionType.REQUIRED, OptionType.DOC_RECIP_RESPNDR, OptionType.MHD_DOC_RECIP, OptionType.XDS_ON_FHIR)
+            "rec"   // must match rec from rec(mhd) in collections.txt
     ),
 
     INITIATING_GATEWAY(
@@ -241,9 +251,7 @@ public enum ActorType implements IsSerializable, Serializable {
             true,
             null,
             false,
-            Constants.USE_SHORTNAME,
-            IheItiProfile.XDS,
-            Arrays.asList(OptionType.REQUIRED,OptionType.AFFINITY_DOMAIN,OptionType.XUA)
+            Constants.USE_SHORTNAME
     ),
     INITIATING_IMAGING_GATEWAY(
        "Initiating Imaging Gateway",
@@ -255,9 +263,7 @@ public enum ActorType implements IsSerializable, Serializable {
        true,
        null,
        false,
-       Constants.USE_SHORTNAME,
-       IheItiProfile.XCA_I,
-       Arrays.asList(OptionType.REQUIRED)
+       Constants.USE_SHORTNAME
     ),
 
     COMBINED_INITIATING_GATEWAY(
@@ -270,9 +276,7 @@ public enum ActorType implements IsSerializable, Serializable {
        true,
        null,
        false,
-       Constants.USE_SHORTNAME,
-       IheItiProfile.XCA_I, // TODO: Is this right?
-       Arrays.asList(OptionType.REQUIRED)
+       Constants.USE_SHORTNAME
        ),
     RESPONDING_GATEWAY(
             "Responding Gateway",
@@ -284,9 +288,7 @@ public enum ActorType implements IsSerializable, Serializable {
             true,
             null,
             false,
-            Constants.USE_SHORTNAME,
-            IheItiProfile.XDS,
-            Arrays.asList(OptionType.REQUIRED,OptionType.ON_DEMAND,OptionType.XUA)
+            Constants.USE_SHORTNAME
     ),
     OD_RESPONDING_GATEWAY(
             "Responding Gateway - On Demand",
@@ -298,9 +300,7 @@ public enum ActorType implements IsSerializable, Serializable {
             true,
             null,
             false,
-            Constants.USE_SHORTNAME,
-            IheItiProfile.XDS,
-            Arrays.asList(OptionType.REQUIRED)
+            Constants.USE_SHORTNAME
     ),
     RESPONDING_IMAGING_GATEWAY(
             "Responding Imaging Gateway",
@@ -312,9 +312,7 @@ public enum ActorType implements IsSerializable, Serializable {
             true,
             null,
             false,
-            Constants.USE_SHORTNAME,
-            IheItiProfile.XCA_I,
-            Arrays.asList(OptionType.REQUIRED)
+            Constants.USE_SHORTNAME
     ),
     COMBINED_RESPONDING_GATEWAY(
             "Combined Responding Gateway",
@@ -326,23 +324,19 @@ public enum ActorType implements IsSerializable, Serializable {
             true,
             null,
             false,
-            Constants.USE_SHORTNAME,
-            IheItiProfile.XCA_I, // Is this right?
-            Arrays.asList(OptionType.REQUIRED)
+            Constants.USE_SHORTNAME
     ),
     RSNA_EDGE_DEVICE(
             "RSNA Image Sharing Source",
             Arrays.asList("RSNA_EDGE"),
             "ris",
             null,
-            "gov.nist.toolkit.fhir.simulators.sim.ris.RisActorSimulator", //TODO: Change to correct domainß
+            "gov.nist.toolkit.fhir.simulators.sim.ris.RisActorSimulator", //TODO: Change to correct domain
             Arrays.asList(TransactionType.RET_IMG_DOC_SET_GW), //TODO: Change to correct Transaction Type
             true,
             null,
             false,
-            Constants.USE_SHORTNAME,
-            IheItiProfile.XDS, // TODO: This is right?
-            Arrays.asList(OptionType.REQUIRED)
+            Constants.USE_SHORTNAME
     ),
     INITIALIZE_FOR_STORED_QUERY (  // this is an artificial type used by test indexer
             "Initialize for Stored Query",
@@ -354,9 +348,7 @@ public enum ActorType implements IsSerializable, Serializable {
             false,
             null,
             false,
-            Constants.USE_SHORTNAME,
-            IheItiProfile.XDS,
-            Arrays.asList(OptionType.REQUIRED)
+            Constants.USE_SHORTNAME
     ),
 
     // Is this comment obsolete after the implementing the boolean logic in Site#determineActorTypeByTransactionsInSite ?
@@ -377,9 +369,7 @@ public enum ActorType implements IsSerializable, Serializable {
             false,
             null,
             false,
-            Constants.USE_SHORTNAME,
-            IheItiProfile.XDS,
-            Arrays.asList(OptionType.REQUIRED)
+            Constants.USE_SHORTNAME
     ),
     IMAGING_DOC_SOURCE(
             "Imaging Document Source",
@@ -394,9 +384,7 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList(TransactionType.WADO_RETRIEVE),
             false,
             null,
-            Constants.USE_SHORTNAME,
-            IheItiProfile.XDS_I,
-            Arrays.asList(OptionType.REQUIRED)
+            Constants.USE_SHORTNAME
         ),
     IMAGING_DOC_CONSUMER(
             "Imaging Document Consumer",
@@ -408,9 +396,7 @@ public enum ActorType implements IsSerializable, Serializable {
             false,
             null,
             false,
-            Constants.USE_SHORTNAME,
-            IheItiProfile.XDS_I,
-            Arrays.asList(OptionType.REQUIRED)
+            Constants.USE_SHORTNAME
     ),
     FHIR_SERVER(
             "FHIR Server",
@@ -422,9 +408,7 @@ public enum ActorType implements IsSerializable, Serializable {
             true,
             null,
             true,
-            Constants.USE_SHORTNAME,
-            IheItiProfile.XDS, // TODO: which profile?
-            Arrays.asList(OptionType.REQUIRED)
+            Constants.USE_SHORTNAME
     ),
     DOC_SOURCE(
             "Document Source",
@@ -440,9 +424,23 @@ public enum ActorType implements IsSerializable, Serializable {
             true,    // is fhir
             // request transform classes
             null,
-            "src",   // must match src from src(mhd) in collections.txt
-            IheItiProfile.MHD,
-            Arrays.asList(OptionType.REQUIRED)
+            "src"   // must match src from src(mhd) in collections.txt
+    ),
+    DOC_ADMIN(
+            "Document Administrator",
+            Arrays.asList("docadmin"),
+            "docadmin",
+            "", // no factory
+            "", // no simulator
+            Arrays.asList(TransactionType.STORED_QUERY, TransactionType.UPDATE),
+            false,  // show in config - only partially configured
+            null,  // actorsFileLabel
+            null,   // httpSimulatorClassName
+            null,    // http transaction types
+            false,    // is fhir
+            // proxy transform classes
+            null,
+            Constants.USE_SHORTNAME   // must match docadmin in collections.txt
     ),
     FHIR_SUPPORT(
             "FHIR Support",
@@ -458,9 +456,7 @@ public enum ActorType implements IsSerializable, Serializable {
             true,    // is fhir
             // proxy transform classes
             null,
-            Constants.USE_SHORTNAME,   // must match src from src(mhd) in collections.txt
-            IheItiProfile.FHIRINIT,
-            Arrays.asList(OptionType.REQUIRED)
+            Constants.USE_SHORTNAME   // must match src from src(mhd) in collections.txt
     ),
     SIM_PROXY(   // this is really an abstract type - offers no transactions in configuration, PIF is only placeholder
             "Sim Proxy",
@@ -475,9 +471,7 @@ public enum ActorType implements IsSerializable, Serializable {
             null,    // http transaction types
             false,    // is fhir
             null,
-            Constants.USE_SHORTNAME,
-            IheItiProfile.XDS,
-            Arrays.asList(OptionType.REQUIRED)
+            Constants.USE_SHORTNAME
     ),
 //    @Obsolete
 //    XDS_on_FHIR_Recipient(   //
@@ -579,9 +573,7 @@ public enum ActorType implements IsSerializable, Serializable {
             false,
             null,
             false,
-            Constants.USE_SHORTNAME,
-            IheItiProfile.XDS,
-            Arrays.asList(OptionType.REQUIRED)
+            Constants.USE_SHORTNAME
     );
 
     private static final long serialVersionUID = 1L;
@@ -608,7 +600,7 @@ public enum ActorType implements IsSerializable, Serializable {
     } // for GWT
 
     // Basic constructor for "older" simulator types
-    ActorType(String name, List<String> altNames, String shortName, String simulatorFactoryName, String simulatorClassName, List<TransactionType> tt, boolean showInConfig, String actorsFileLabel, boolean isFhir, String actorCode, IheItiProfile profile, List<OptionType> options) {
+    ActorType(String name, List<String> altNames, String shortName, String simulatorFactoryName, String simulatorClassName, List<TransactionType> tt, boolean showInConfig, String actorsFileLabel, boolean isFhir, String actorCode) {
         this.name = name;
         this.altNames = altNames;
         this.shortName = shortName;
@@ -622,8 +614,6 @@ public enum ActorType implements IsSerializable, Serializable {
         this.isFhir = isFhir;
         this.proxyTransforms = null;
         this.actorCode = actorCode;
-        this.profile = profile;
-        this.options = options;
     }
 
     // All growth happens here
@@ -632,8 +622,8 @@ public enum ActorType implements IsSerializable, Serializable {
        String actorsFileLabel, String httpSimulatorClassName, List<TransactionType> httpTt,
               boolean isFhir,
               List<String> proxyTransforms,
-              String actorCode, IheItiProfile profile, List<OptionType> options) {
-       this(name, altNames, shortName, simulatorFactoryName, simulatorClassName, tt, showInConfig, actorsFileLabel, false, actorCode, profile, options);
+              String actorCode) {
+       this(name, altNames, shortName, simulatorFactoryName, simulatorClassName, tt, showInConfig, actorsFileLabel, false, actorCode);
        if (httpTt == null)
            httpTt = new ArrayList<>();
        this.httpTransactionTypes = httpTt;
@@ -763,30 +753,6 @@ public enum ActorType implements IsSerializable, Serializable {
         return types;
     }
 
-    static public ActorType findActor(ActorOption actorOption) throws TkActorNotFoundException {
-       if (actorOption == null)  throw new TkActorNotFoundException("actorOption is null",null);
-
-        for (ActorType actor : values()) {
-           if (actorOption.actorTypeId!=null && actorOption.actorTypeId.equalsIgnoreCase(actor.shortName))  {
-               if (actorOption.profileId!=null) {
-                   if (actor.profile.equals(actorOption.profileId)) {
-                        if (actorOption.optionId!=null) {
-                            if (actor.options.contains(actorOption.optionId))
-                                return actor;
-                            else
-                                throw new TkActorNotFoundException(actorOption.toString(),null);
-                        } else
-                            return actor;
-                    } else
-                      throw new TkActorNotFoundException(actorOption.toString(),null);
-               } else
-                   return actor;
-           }
-        }
-
-        throw new TkActorNotFoundException(actorOption.toString(),null);
-    }
-
     static public ActorType findActor(String name) {
         if (name == null)
             return null;
@@ -896,21 +862,14 @@ public enum ActorType implements IsSerializable, Serializable {
     }
 
     public String getActorCode() {
-       if (actorCode==null)
+       if (Constants.USE_SHORTNAME == actorCode)
            return shortName;
        else
             return actorCode;
     }
 
-    public IheItiProfile getProfile() {
-        return profile;
-    }
-
-    public List<OptionType> getOptions() {
-        return options;
-    }
 
     private static class Constants {
-        public static final String USE_SHORTNAME = null;
+        static final String USE_SHORTNAME = null;
     }
 }

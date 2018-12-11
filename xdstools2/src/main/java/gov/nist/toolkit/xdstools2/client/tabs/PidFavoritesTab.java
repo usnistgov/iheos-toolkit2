@@ -10,6 +10,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
@@ -62,6 +63,7 @@ public class PidFavoritesTab extends GenericQueryTab {
 
     private Button copyBtn;
     private Button deleteButton;
+    private static final int PAGE_SIZE = 1000;
 
     public PidFavoritesTab(String tabName) {
         super(new GetDocumentsSiteActorManager());
@@ -125,13 +127,19 @@ public class PidFavoritesTab extends GenericQueryTab {
         favoritesListBox.setColumnWidth(name, 35.0, Unit.PCT);
         favoritesListBox.addColumn(name, "Name");
 
-        favoritesListBox.setRowCount(10);
         favoritesListBox.setWidth("600px");
 
         // this handle selection change in the grid (MultiSelectionModel<Pid>)
         favoritesListBox.setSelectionModel(selectionModel);
 
         favoritesListPanel.add(new HTML("Favorite Patient IDs"));
+
+        SimplePager favListSimplePagerTop = new SimplePager();
+        favListSimplePagerTop.setDisplay(favoritesListBox);
+        favListSimplePagerTop.setPageSize(PAGE_SIZE);
+        favListSimplePagerTop.setRangeLimited(true);
+        favoritesListPanel.add(favListSimplePagerTop);
+
         ScrollingPager p = new ScrollingPager();
         p.setSize("600px","380px");
         p.setDisplay(favoritesListBox);

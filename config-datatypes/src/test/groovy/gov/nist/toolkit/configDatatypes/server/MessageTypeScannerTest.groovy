@@ -6,6 +6,8 @@ import gov.nist.toolkit.configDatatypes.server.datatypes.MessageType
 import gov.nist.toolkit.configDatatypes.server.datatypes.Multipart
 import spock.lang.Specification
 
+import java.nio.file.Paths
+
 
 /**
  *
@@ -14,7 +16,8 @@ class MessageTypeScannerTest extends Specification {
 
     def 'xml test'() {
         when:
-        String xmlText = getClass().getResource('/soap.xml').text
+        String xmlText = Paths.get(getClass().getResource('/').toURI()).resolve('soap.xml').toFile().text
+        // String xmlText = getClass().getResource('/soap.xml').text
         assert xmlText
         MessageType type = new MessageTypeScanner('Content-Type: application/xop+xml; charset=UTF-8; type="application/soap+xml"',  xmlText).scan()
 
@@ -79,8 +82,10 @@ My Content
 
     def 'multipart test'() {
         when:
-        String messageHeader = getClass().getResource('/multipart.header.txt').text
-        String messageBody = getClass().getResource('/multipart.body.txt').text
+        String messageHeader = Paths.get(getClass().getResource('/').toURI()).resolve('multipart.header.txt').text
+        //String messageHeader = getClass().getResource('/multipart.header.txt').text
+        String messageBody = Paths.get(getClass().getResource('/').toURI()).resolve('multipart.body.txt').text
+        //String messageBody = getClass().getResource('/multipart.body.txt').text
         assert messageHeader
         assert messageBody
         MessageType type = new MessageTypeScanner(messageHeader, messageBody).scan()
@@ -93,8 +98,10 @@ My Content
 
     def 'simple test'() {
         when:
-        String messageHeader = getClass().getResource('/simple.header.txt').text
-        String messageBody = getClass().getResource('/simple.body.txt').text
+        String messageHeader = Paths.get(getClass().getResource('/').toURI()).resolve('simple.header.txt').text
+        String messageBody = Paths.get(getClass().getResource('/').toURI()).resolve('simple.body.txt').text
+        // String messageHeader = getClass().getResource('/simple.header.txt').text
+        // String messageBody = getClass().getResource('/simple.body.txt').text
         assert messageHeader
         assert messageBody
         MessageType type = new MessageTypeScanner(messageHeader, messageBody).scan()

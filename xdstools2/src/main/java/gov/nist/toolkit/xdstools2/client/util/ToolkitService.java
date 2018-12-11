@@ -16,6 +16,7 @@ import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest;
 import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
+import gov.nist.toolkit.services.client.PifType;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.session.client.TestSessionStats;
@@ -109,6 +110,9 @@ public interface ToolkitService extends RemoteService  {
 	Map<String, String> getToolkitProperties(CommandContext context) throws Exception;
 	boolean reloadPropertyFile() throws NoServletSessionException;
 
+	Map<String, String> getOrchestrationProperties(GetOrchestrationPropertiesRequest request) throws Exception;
+	PifType getOrchestrationPifType(GetOrchestrationPifTypeRequest request) throws Exception;
+
 	Message getTransactionRequest(GetTransactionRequest request) throws Exception;
 	Message getTransactionResponse(GetTransactionRequest request) throws Exception;
 	String getTransactionLog(GetTransactionRequest request)  throws Exception;
@@ -136,7 +140,7 @@ public interface ToolkitService extends RemoteService  {
 
     Result updateDocumentEntry(UpdateDocumentEntryRequest request) throws Exception;
     MessageValidationResults validateDocumentEntry(ValidateDocumentEntryRequest request) throws Exception;
-    
+
     MessageValidationResults validateMessage(ValidateMessageRequest request) throws Exception;
 
 	List<String> getSiteNames(GetSiteNamesRequest request) throws Exception;
@@ -226,7 +230,8 @@ public interface ToolkitService extends RemoteService  {
 	RawResponse buildRepTestOrchestration(BuildRepTestOrchestrationRequest request) throws Exception;
 	RawResponse buildRegTestOrchestration(BuildRegTestOrchestrationRequest request) throws Exception;
 	RawResponse buildRSNAEdgeTestOrchestration(BuildRSNAEdgeTestOrchestrationRequest request) throws Exception;
-   RawResponse buildIdcTestOrchestration(IdcOrchestrationRequest request);
+    RawResponse buildIdcTestOrchestration(IdcOrchestrationRequest request);
+	RawResponse buildEsTestOrchestration(BuildEsTestOrchestrationRequest request);
 
 	Map<String, String> getSessionProperties() throws NoServletSessionException;
 	void setSessionProperties(Map<String, String> props) throws NoServletSessionException;
@@ -324,7 +329,9 @@ public interface ToolkitService extends RemoteService  {
 
     String getDatasetContent(GetDatasetElementContentRequest var1);
 
+	RawResponse buildDocAdminTestOrchestration(BuildDocAdminTestOrchestrationRequest request) throws Exception;
     RawResponse buildSrcTestOrchestration(BuildSrcTestOrchestrationRequest request) throws Exception;
+	RawResponse buildIsrTestOrchestration(BuildIsrTestOrchestrationRequest request) throws Exception;
 
     RawResponse buildFhirSupportOrchestration(FhirSupportOrchestrationRequest var1) throws Exception;
 

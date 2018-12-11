@@ -43,13 +43,13 @@ public class RigActorFactory extends AbstractActorFactory implements IActorFacto
       Arrays.asList(TransactionType.XC_RET_IMG_DOC_SET);
 
    @Override
-   public Simulator buildNew(SimManager simm, @SuppressWarnings("hiding") SimId newID,
+   public Simulator buildNew(SimManager simm, @SuppressWarnings("hiding") SimId newID, String environment,
                              boolean configureBase)
            throws Exception {
       this.newID = newID;
       ActorType actorType = ActorType.RESPONDING_IMAGING_GATEWAY;
       SimulatorConfig sc;
-      if (configureBase) sc = configureBaseElements(actorType, newID, newID.getTestSession());
+      if (configureBase) sc = configureBaseElements(actorType, newID, newID.getTestSession(), environment);
       else sc = new SimulatorConfig();
 
       addEditableConfig(sc, SimulatorProperties.homeCommunityId, ParamType.TEXT,

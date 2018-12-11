@@ -6,6 +6,9 @@ import gov.nist.toolkit.fhir.simulators.sim.reg.store.MetadataCollection
 import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegIndex
 import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegistryFactory
 import spock.lang.Specification
+
+import java.nio.file.Paths
+
 /**
  * Created by bill on 8/24/15.
  */
@@ -13,7 +16,8 @@ class CreateIndexTest extends Specification {
     File resourcesDir
 
     def setup() {
-        resourcesDir = new File(getClass().getResource('/root.txt').file).parentFile
+//        resourcesDir = new File(getClass().getResource('/root.txt').file).parentFile
+        resourcesDir = Paths.get(getClass().getResource('/').toURI()).resolve('root.txt').toFile().parentFile
     }
 
     def 'Build index of submission1'() {
@@ -29,7 +33,7 @@ class CreateIndexTest extends Specification {
         sub1Dir.listFiles().each { File f ->
             metadata.addMetadata(MetadataParser.parseNonSubmission(f))
         }
-        RegistryFactory.buildMetadataIndex(metadata, metadataCollection)
+        RegistryFactory.buildMetadataIndex(metadata, metadataCollection, false)
 
         then:
         metadataCollection.docEntryCollection.allRo.size() == 1

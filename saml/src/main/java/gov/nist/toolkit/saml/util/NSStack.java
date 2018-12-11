@@ -54,7 +54,7 @@ public class NSStack {
     }
 
     /**
-     * Remove the top frame from the stack.
+     * REMOVE the top frame from the stack.
      */
     public void pop() {
         clearFrame();
@@ -95,7 +95,7 @@ public class NSStack {
     }
 
     /**
-     * Remove all mappings from the current frame.
+     * REMOVE all mappings from the current frame.
      */
     private void clearFrame() {
         while (stack[top] != null) top--;

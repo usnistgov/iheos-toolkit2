@@ -1,0 +1,19 @@
+<TestPlan>
+    <Test>XdsIsrSubmissionTest-1113/SubmitFolder</Test>
+    <TestStep id="validate">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <NullTransaction>
+            <Assertions>
+                <Assert id="folderCheck">
+                    <SimReference id="isr_support" actorType="reg" transaction="rb"/> <!-- This sim is created by the conformance actor's orchestration -->
+                    <Validations type="SOAP">
+			            <ExpectedContentsValidater requestMsgExpectedContent="SSwithOneFol" responseMsgExpectedContent="RegistryResponseIsValid" />
+                        <!--
+                        We could be asserting a Submission, to a Supporting Sim, without a SubmissionSet status so cannot call ssApproved in this case.
+                        -->
+                    </Validations>
+                </Assert>
+            </Assertions>
+        </NullTransaction>
+    </TestStep>
+</TestPlan>

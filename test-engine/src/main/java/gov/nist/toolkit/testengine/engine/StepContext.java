@@ -321,6 +321,9 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
                case "PatientIdentityFeedTransaction":
                   transaction = new PatientIdentityFeedTransaction(this, instruction, instruction_output);
                   break;
+               case "PatientMoveTransaction":
+                   transaction = new PatientMoveTransaction(this, instruction, instruction_output);
+                   break;
                case "IGQTransaction":
                   transaction = new IGQTransaction(this, instruction, instruction_output);
                   break;
@@ -342,6 +345,9 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
                case "RetrieveTransaction":
                   transaction = new RetrieveTransaction(this, instruction, instruction_output);
                   break;
+               case "RemoveMetadataTransaction":
+                   transaction = new RemoveMetadataTransaction(this, instruction, instruction_output);
+                   break; 
                case "NullTransaction":
                   transaction = new NullTransaction(this, instruction, instruction_output);
                   break;
@@ -367,6 +373,15 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
                case "MuTransaction":
                   transaction = new MuTransaction(this, instruction, instruction_output);
                   break;
+				case "RmuTransaction":
+					transaction = new RmuTransaction(this, instruction, instruction_output);
+					break;
+				case "RdTransaction":
+					transaction = new RdTransaction(this, instruction, instruction_output);
+					break;
+				case "RmdTransaction":
+					transaction = new RemoveMetadataTransaction(this, instruction, instruction_output);
+					break;
                case "PublishTransaction":
                   transaction = new DsubPublishTransaction(this, instruction, instruction_output);
                   break;
@@ -451,6 +466,9 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 					GatherTransaction gatherTransaction = new GatherTransaction(this, instruction, instruction_output);
 					transaction = gatherTransaction;
 					break;
+				case "EdgeServerTransaction":
+					EdgeServerTransaction edgeServerTransaction = new EdgeServerTransaction(this, step, instruction, instruction_output);
+					transaction = edgeServerTransaction;
                default:
                   dumpContextIntoOutput(test_step_output);
                   throw new XdsInternalException(

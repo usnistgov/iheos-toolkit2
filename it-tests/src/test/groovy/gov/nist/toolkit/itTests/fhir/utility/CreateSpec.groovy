@@ -45,6 +45,10 @@ class CreateSpec extends FhirSpecification {
         spi.createFhirServer(simId.id, simId.testSession.value, 'default')
     }
 
+    def cleanupSpec() {
+        SimDb.scanAllSims()
+    }
+
     def 'do create'() {
         when:
         Session session = new Session(Installation.instance().warHome())

@@ -1,9 +1,4 @@
-R.b Accept document replace with transformation
+Document Replace with Transformation (XFRM_RPLC)
 
-submit - Submit a document
-
-rplc - Submit a replacement document
-
-eval - Verify the original document is deprecated, the replacement 
-document exists, and the RPLC association is in place.
+Test submission of XFRM_RPLC
 

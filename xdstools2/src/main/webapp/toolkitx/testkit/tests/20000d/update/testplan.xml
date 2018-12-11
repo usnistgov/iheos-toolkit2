@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>20000d/update</Test>
+  <Rule>Update new version of original Folder</Rule>
+  <TestStep id="update">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <MuTransaction>
+	  <NoAssignUids id="Folder01"/>
+      <XDSb/>
+      <NoPatientId/>
+      <UseReport reportName="$patientid$" test="15818" section="pif" step="step" useAs="$patientid$"/>
+      <AssignUuids/>
+      <MetadataFile>single_fd.xml</MetadataFile>
+      <UseId testdir="../two_doc_w_fol" section="AssignedUuids" step="submit_2doc_w_fol" id="Folder" symbol="$lid$" />
+      <UseId testdir="../two_doc_w_fol" section="AssignedUids" step="submit_2doc_w_fol" id="Folder" symbol="$Folder01_uid$" />
+	  <Report name="folid" section="InputMetadata">
+                //*[local-name()='RegistryPackage' and descendant::*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:f64ffdf0-4b97-4e06-b79f-a52b38ec2f8a']]/@id</Report>
+    </MuTransaction>
+  </TestStep>
+</TestPlan>

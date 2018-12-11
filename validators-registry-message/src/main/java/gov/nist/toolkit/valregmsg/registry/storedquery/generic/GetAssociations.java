@@ -50,7 +50,8 @@ abstract public class GetAssociations extends StoredQuery {
 
 	protected List<String> uuids;
 
-	void parseParameters() throws XdsInternalException, XdsException, LoggerException {
+	protected void parseParameters() throws XdsInternalException, XdsException, LoggerException {
+		super.parseParameters();
 		uuids = sqs.params.getListParm("$uuid");
 	}
 

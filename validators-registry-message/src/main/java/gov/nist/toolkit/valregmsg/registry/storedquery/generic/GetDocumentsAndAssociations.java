@@ -51,7 +51,8 @@ abstract public class GetDocumentsAndAssociations extends StoredQuery {
 	protected List<String> uids;
 	protected List<String> uuids;
 
-	void parseParameters() throws XdsInternalException, XdsException, LoggerException {
+	protected void parseParameters() throws XdsInternalException, XdsException, LoggerException {
+		super.parseParameters();
 		uids = sqs.params.getListParm("$XDSDocumentEntryUniqueId");
 		uuids = sqs.params.getListParm("$XDSDocumentEntryEntryUUID");
 	}

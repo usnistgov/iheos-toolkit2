@@ -19,6 +19,9 @@ import gov.nist.toolkit.utilities.xml.OMFormatter
 import gov.nist.toolkit.utilities.xml.Util
 import org.apache.axiom.om.OMElement
 import spock.lang.Shared
+
+import java.nio.file.Paths
+
 /**
  * This is not named *Spec on purpose.  The recipient must be created manually in
  * a separate copy of toolkit so this must be run by hand.
@@ -108,7 +111,7 @@ class XdrSrcTls extends ToolkitSpecification {
         println 'STEP - SEND XDR'
         RawSendRequest req = documentSource.newRawSendRequest()
 
-        String submission = this.getClass().getResource('/testdata/PnR1Doc.xml').text
+        String submission = Paths.get(this.getClass().getResource('/').toURI()).resolve('testdata/PnR1Doc.xml').text
         Metadata metadata = MetadataParser.parse(submission)
         UniqueIdFactory.assign(metadata)
         req.metadata = new OMFormatter(metadata.asProvideAndRegister()).toString()

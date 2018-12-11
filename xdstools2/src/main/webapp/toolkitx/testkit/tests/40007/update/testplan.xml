@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>40007/update</Test>
+  <Rule>Update Metadata Operation containing two updates for the original DocumentEntry</Rule>
+  <TestStep id="update">
+    <ExpectedStatus>Failure</ExpectedStatus>
+	<!--TBD: Code could vary depending on system-->
+	<!--
+	<ExpectedErrorCode>XDSRegistryDuplicateUniqueIdInMessage</ExpectedErrorCode>
+	<ExpectedErrorCode>XDSMetadataUpdateOperationError</ExpectedErrorCode>
+	-->
+    <RmuTransaction>
+      <XDSb/>
+      <NoPatientId/>
+      <UseReport reportName="$patientid$" test="15817" section="pif" step="step" useAs="$patientid$"/>
+      <AssignUuids/>
+	  <NoAssignUids/>
+      <MetadataFile>two_metadata_updates_doc.xml</MetadataFile>
+      <UseId testdir="../original" id="Document01" symbol="$lid$" step="original" section="AssignedUuids"/>
+      <UseId testdir="../original" id="Document01" symbol="$Document01_uid$" step="original" section="AssignedUids"/>
+	  <UseId testdir="../original" id="Document01" symbol="$Document02_uid$" step="original" section="AssignedUids"/>
+	  <UseId testdir="../original" id="SubmissionSet01" symbol="$SubmissionSet01_uid$" step="original" section="AssignedUids"/>
+      <Report name="update_doc_uuid" section="InputMetadata">
+                //*[local-name()='ExtrinsicObject'][1]/@id
+      </Report>
+    </RmuTransaction>
+  </TestStep>
+</TestPlan>

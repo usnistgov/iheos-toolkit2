@@ -24,9 +24,9 @@ import java.util.List;
  *
  */
 public class PidDateFilenameFilter implements FilenameFilter {
+   public static String DATE_DIR_FORMAT = "yyyy_MM_dd_HH_mm_ss_SSS";
    private static Logger log = null;
-   private static String DATE_DIR_FORMAT = "yyyy_MM_dd_HH_mm_ss_SSS";
-   private static QName[] metaDataQnames = 
+   private static QName[] metaDataQnames =
          { new QName("urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1", "dummy", "rim"),
             new QName("urn:oasis:names:tc:ebxml-regrep:registry:xsd:2.1", "dummy", "rs") };
    private String pid;

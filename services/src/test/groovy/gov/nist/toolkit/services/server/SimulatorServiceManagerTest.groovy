@@ -11,15 +11,19 @@ import gov.nist.toolkit.simcommon.client.Simulator
 import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException
 import spock.lang.Specification
+
+import java.nio.file.Paths
+
 /**
  *
  */
 class SimulatorServiceManagerTest extends Specification {
     Session session = new Session(Installation.instance().warHome(), Installation.defaultSessionName())
     SimulatorServiceManager mgr = new SimulatorServiceManager(session)
+    def environment = 'default'
 
     def setupSpec() {
-        ExternalCacheManager.initializeFromMarkerFile(new File(this.getClass().getResource('/external_cache/external_cache.txt').file))
+        ExternalCacheManager.initializeFromMarkerFile(Paths.get(this.getClass().getResource('/').toURI()).resolve('external_cache/external_cache.txt').toFile())
     }
 
     def setup() {
@@ -131,7 +135,7 @@ class SimulatorServiceManagerTest extends Specification {
         when:
         SimId simId = SimIdFactory.simIdBuilder('bill__aa')
         mgr.delete(simId)
-        Simulator sim = mgr.getNewSimulator(ActorType.REPOSITORY.name, simId)
+        Simulator sim = mgr.getNewSimulator(ActorType.REPOSITORY.name, simId, environment)
 
         then:
         true
@@ -146,7 +150,7 @@ class SimulatorServiceManagerTest extends Specification {
         when:
         SimId simId = SimIdFactory.simIdBuilder('bill__AA')
         mgr.delete(simId)
-        Simulator sim = mgr.getNewSimulator(ActorType.REPOSITORY.name, simId)
+        Simulator sim = mgr.getNewSimulator(ActorType.REPOSITORY.name, simId, environment)
 
         then:
         sim.ids.size() == 1

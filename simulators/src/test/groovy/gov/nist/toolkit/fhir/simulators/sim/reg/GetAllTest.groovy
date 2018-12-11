@@ -8,6 +8,9 @@ import gov.nist.toolkit.valregmsg.registry.storedquery.support.SqParams
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.StoredQuerySupport
 import gov.nist.toolkit.xdsexception.client.MetadataValidationException
 import spock.lang.Specification
+
+import java.nio.file.Paths
+
 /**
  * Created by bill on 8/24/15.
  */
@@ -18,7 +21,8 @@ class GetAllTest extends Specification {
     SqParams parms
 
     def setup() {
-        resourcesDir = new File(getClass().getResource('/root.txt').file).parentFile
+        resourcesDir = Paths.get(getClass().getResource('/').toURI()).resolve('root.txt').toFile().parentFile
+//        resourcesDir = new File(getClass().getResource('/root.txt').file).parentFile
         er = new TextErrorRecorder()
         parms = new SqParams()
     }

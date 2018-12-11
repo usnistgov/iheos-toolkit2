@@ -34,7 +34,7 @@ public class GetAssociationsSim extends GetAssociations {
 		HashSet<String> returnIds = new HashSet<String>();
 
 		for (String uuid : uuids) {
-			List<Assoc> as = mc.assocCollection.getBySourceOrDest(uuid, uuid);
+			List<Assoc> as = mc.assocCollection.getBySourceOrDestAndType(uuid, uuid, null);
 			for (Assoc a : as) {
 				returnIds.add(a.getId());
 			}

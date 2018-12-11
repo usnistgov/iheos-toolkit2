@@ -4,7 +4,8 @@
 
 # Do the whole build including installing the toolkit.properties file
 
-function usage() {
+usage()
+{
 	echo "Usage: $SCRIPTNAME configuration-name"
 	echo "Where configuration-name is a directory under properties/"
 	echo "that holds a toolkit.properties file to incorporate."

@@ -27,11 +27,11 @@ class FhirActorFactory extends AbstractActorFactory implements IActorFactory {
 
 
     @Override
-    protected Simulator buildNew(SimManager simm, SimId simId, boolean configureBase) throws Exception {
+    protected Simulator buildNew(SimManager simm, SimId simId, String environment, boolean configureBase) throws Exception {
         ActorType actorType = ActorType.FHIR_SERVER
         SimulatorConfig sc
         if (configureBase)
-            sc = configureBaseElements(actorType, simId, simId.testSession)
+            sc = configureBaseElements(actorType, simId, simId.testSession, environment)
         else
             sc = new SimulatorConfig()
 

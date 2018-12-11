@@ -25,13 +25,7 @@ class BuildRepTestOrchestrationButton extends AbstractOrchestrationButton {
     private TestContext testContext;
     private TestContextView testContextView;
     private FlowPanel initializationResultsPanel = new FlowPanel();
-    public static List<ActorAndOption> ACTOR_OPTIONS = new ArrayList<>();
-    static {
-        ACTOR_OPTIONS = java.util.Arrays.asList(
-                new ActorAndOption("rep", "", "Required", false),
-                new ActorAndOption("rep", XUA_OPTION, "XUA Option", false)
-        );
-    }
+
 
     BuildRepTestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextView testContextView, Panel initializationPanel, String label) {
         this.initializationPanel = initializationPanel;
@@ -79,7 +73,7 @@ class BuildRepTestOrchestrationButton extends AbstractOrchestrationButton {
                 RepOrchestrationResponse orchResponse = (RepOrchestrationResponse) rawResponse;
                 testTab.setRepOrchestrationResponse(orchResponse);
 
-                initializationResultsPanel.add(new HTML("Initialization Complete"));
+                initializationResultsPanel.add(new HTML("Initialization complete"));
 
                 if (testContext.getSiteUnderTest() != null) {
                     initializationResultsPanel.add(new SiteDisplay("System Under Test Configuration", testContext.getSiteUnderTest()));

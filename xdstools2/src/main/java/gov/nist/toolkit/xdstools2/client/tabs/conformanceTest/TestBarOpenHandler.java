@@ -44,10 +44,9 @@ public class TestBarOpenHandler implements OpenHandler<DisclosurePanel> {
                     }
                     if (diagramDisplay!=null) {
                         diagramDisplay.setTestOverviewDTO(toDTO);
-                        testDisplay.setDiagramDisplay(diagramDisplay);
                     }
 
-                    testDisplay.display(toDTO);
+                    testDisplay.display(toDTO, diagramDisplay);
                     testDisplay.getView().autoOpenIfOnlyOneSection();
                 }
 

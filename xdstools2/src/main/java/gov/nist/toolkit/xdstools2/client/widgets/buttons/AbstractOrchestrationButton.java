@@ -170,7 +170,7 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
     public void handleClick(ClickEvent event) {
         if (isSaml() || isXuaOption()) {
             // Get STS SAML Assertion
-            String xuaUsername = "Xuagood";
+            String xuaUsername = "valid";
             getSamlParams().put("$saml-username$",xuaUsername);
             try {
 
@@ -263,8 +263,10 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
     }
 
     public void setSamlAssertion(SiteSpec siteSpec) {
-        siteSpec.setSaml((isSaml()) && getSamlAssertion()!=null); // Does the SAML assertion really exist?
-        siteSpec.setStsAssertion(getSamlAssertion());
+        if (siteSpec!=null) {
+            siteSpec.setSaml((isSaml()) && getSamlAssertion() != null); // Does the SAML assertion really exist?
+            siteSpec.setStsAssertion(getSamlAssertion());
+        }
     }
 
     public boolean isXuaOption() {

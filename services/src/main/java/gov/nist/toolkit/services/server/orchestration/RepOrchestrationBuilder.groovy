@@ -54,6 +54,7 @@ class RepOrchestrationBuilder extends AbstractOrchestrationBuilder {
             Pid pid
 
             Site sutSite = SimCache.getSite(request.sutSite.name, request.testSession)
+            if (!sutSite) throw new Exception("No site selected or selected site unacceptable")
             response.repSite = sutSite
             if (!request.isUseExistingSimulator()) {
                 api.deleteSimulatorIfItExists(supportSimId)

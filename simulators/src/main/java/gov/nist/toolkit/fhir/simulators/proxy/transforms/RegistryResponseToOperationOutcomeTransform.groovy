@@ -102,7 +102,7 @@ class RegistryResponseToOperationOutcomeTransform implements ContentResponseTran
                 if (fullUriReturnableResourceTypes.contains(resource.class.simpleName))
                     comp.response.location = makeLocalFullUrl(base.config.getEndpoint(TransactionType.FHIR),resource)
 //                comp.resource = resource
-                rcomp.status = '200'
+                rcomp.status = '201'
                 bundle.addEntry(comp)
                 logger.info("...${resource.class.simpleName} ${resource.id} ==> ${comp.fullUrl}")
             }

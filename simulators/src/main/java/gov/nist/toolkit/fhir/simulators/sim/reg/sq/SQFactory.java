@@ -7,6 +7,7 @@ import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.registrysupport.logging.LogMessage;
 import gov.nist.toolkit.registrysupport.logging.LoggerException;
 import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegIndex;
+import gov.nist.toolkit.valregmsg.registry.storedquery.generic.FindDocumentsByReferenceId;
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.StoredQueryFactory;
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.StoredQuerySupport;
 import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
@@ -33,7 +34,13 @@ public class SQFactory extends StoredQueryFactory {
 			FindDocumentsSim sim = new FindDocumentsSim(sqs);
 			sim.setRegIndex(ri);
 			storedQueryImpl = sim;
-		} 
+		}
+		else if (query_id.equals(MetadataSupport.SQ_FindDocumentsByRefId)) {
+			setTestMessage("FindDocumentsByRefId");
+			FindDocumentsByReferenceIdSim sim = new FindDocumentsByReferenceIdSim(sqs);
+			sim.setRegIndex(ri);
+			storedQueryImpl = sim;
+		}
 		else if (query_id.equals(MetadataSupport.SQ_GetDocuments)) {
 			setTestMessage("GetDocuments");
 			GetDocumentsSim sim = new GetDocumentsSim(sqs);

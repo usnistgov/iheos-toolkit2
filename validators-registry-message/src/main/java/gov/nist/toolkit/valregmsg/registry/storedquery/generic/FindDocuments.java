@@ -41,7 +41,7 @@ abstract public class FindDocuments extends StoredQuery {
 	 * @param sqs
 	 * @throws MetadataValidationException
 	 */
-	public FindDocuments(StoredQuerySupport sqs) throws MetadataValidationException {
+	public FindDocuments(StoredQuerySupport sqs)  {
 		super(sqs);
 	}
 
@@ -162,7 +162,8 @@ abstract public class FindDocuments extends StoredQuery {
 		return buf.toString();
 	}
 
-	void parseParameters() throws XdsException {
+	protected void parseParameters() throws XdsException {
+		super.parseParameters();
 
 		patient_id                        = sqs.params.getStringParm   ("$XDSDocumentEntryPatientId");
 		class_codes                       = sqs.params.getCodedParm("$XDSDocumentEntryClassCode");

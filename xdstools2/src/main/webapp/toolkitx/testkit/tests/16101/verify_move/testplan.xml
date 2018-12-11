@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>16101/verify_move</Test>
+  <Rule>Find Documents Stored Query for initial XAD-PID</Rule>
+  <TestStep id="initial_XAD-PID">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>FindDocuments</SQ>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>SQfindDoc.xml</MetadataFile>
+ 	  <UseReport reportName="basePatientId" test="16101" section="submit" step="loadDE" useAs="$pid$"/> 
+	  <ExpectedContents>
+        <Documents count="0"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="new_XAD-PID">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>FindDocuments</SQ>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>SQfindDoc.xml</MetadataFile>
+ 	  <UseReport reportName="$patientid$" test="16101" section="add_new_XADPID" step="register" useAs="$pid$"/>
+      <ExpectedContents>
+        <Documents count="1"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

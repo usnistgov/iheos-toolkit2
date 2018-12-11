@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urn:RemoveObjectsRequest xmlns:urn="urn:oasis:names:tc:ebxml-regrep:xsd:lcm:3.0" xmlns:urn2="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0">
+	<urn2:ObjectRefList>
+		<!--RPLC-->
+		<urn2:ObjectRef id="$RPLCAssociation$"/>	
+		<!--DE-->
+		<urn2:ObjectRef id="$Document01$"/>
+		<!--SS-DE HM-->
+		<urn2:ObjectRef id="$SSHM01Association$"/>
+		<!--SS-->
+        <urn2:ObjectRef id="$SubmissionSet01$"/>
+	</urn2:ObjectRefList>
+</urn:RemoveObjectsRequest>

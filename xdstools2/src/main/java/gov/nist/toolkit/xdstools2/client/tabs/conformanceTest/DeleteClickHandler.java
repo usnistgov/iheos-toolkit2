@@ -16,10 +16,10 @@ public class DeleteClickHandler implements ClickHandler {
     private TestInstance testInstance;
     private TestContext testContext;
     private TestRunner testRunner;
-    private TestDisplayGroup testDisplayGroup;
+    private TestDisplay testDisplay;
 
-    public DeleteClickHandler(TestDisplayGroup testDisplayGroup, TestContext testContext, TestRunner testRunner, TestInstance testInstance) {
-        this.testDisplayGroup = testDisplayGroup;
+    public DeleteClickHandler(TestDisplay testDisplay, TestContext testContext, TestRunner testRunner, TestInstance testInstance) {
+        this.testDisplay = testDisplay;
         this.testContext = testContext;
         this.testRunner = testRunner;
         this.testInstance = testInstance;
@@ -40,11 +40,11 @@ public class DeleteClickHandler implements ClickHandler {
                 InteractionDiagramDisplay diagramDisplay = new InteractionDiagramDisplay(
                         testOverviewDTO,
                         testContext.getTestSession(),
-                        testRunner.getSiteToIssueTestAgainst(),
+                        testRunner.getSiteToIssueTestAgainst(testInstance),
                         siteName,
                         testRunner.getCurrentActorOption(),
                         null);
-                testDisplayGroup.display(testOverviewDTO,diagramDisplay);
+                testDisplay.display(testOverviewDTO, diagramDisplay);
             }
         }.run(new DeleteSingleTestRequest(ClientUtils.INSTANCE.getCommandContext(),testInstance));
     }

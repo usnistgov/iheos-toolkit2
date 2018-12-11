@@ -85,7 +85,7 @@ public class ValidationContextValidationFactory {
                 mvc.addMessageValidator("RegistryResponse", new RegistryResponseValidator(vc, xml), erBuilder.buildNewErrorRecorder());
                 return mvc;
             }
-        } else if (vc.isMU) {
+        } else if (vc.isMU || vc.isRMU) {
             if (vc.isRequest) {
                 CommonMessageValidatorFactory.validateToplevelElement(erBuilder, mvc, "SubmitObjectsRequest", rootElementName);
                 mvc.addMessageValidator("SubmitObjectsRequest", new MetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
@@ -137,6 +137,26 @@ public class ValidationContextValidationFactory {
             CommonMessageValidatorFactory.validateToplevelElement(erBuilder, mvc, "SubmitObjectsRequest", rootElementName);
             mvc.addMessageValidator("SubmitObjectsRequest", new MetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
             return mvc;
+        }
+        else if (vc.isRM) {
+            if (vc.isRequest) {
+                mvc.addMessageValidator("Contained ObjectRefList", new MetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+                return mvc;
+            } else {
+                CommonMessageValidatorFactory.validateToplevelElement(erBuilder, mvc, "RegistryResponse", rootElementName);
+                mvc.addMessageValidator("RegistryResponse", new RegistryResponseValidator(vc, xml), erBuilder.buildNewErrorRecorder());
+                return mvc;
+            }
+        }
+        else if (vc.isRD) {
+            if (vc.isRequest) {
+                // no further validation required
+                return mvc;
+            } else {
+                CommonMessageValidatorFactory.validateToplevelElement(erBuilder, mvc, "RegistryResponse", rootElementName);
+                mvc.addMessageValidator("RegistryResponse", new RegistryResponseValidator(vc, xml), erBuilder.buildNewErrorRecorder());
+                return mvc;
+            }
         }
         else {
             ValUtil.reportError(erBuilder, mvc, "ValidationContext", "Don't know how to parse this: " + vc.toString());

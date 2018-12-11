@@ -9,7 +9,17 @@
       <ExpectedContents>
         <SSwithOneDoc/>
         <DocDep/>
-        <HasRPLC/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="validate_xfrm_rplc">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseId testdir="../rplc" id="Document01" symbol="$uuid$" step="rplc" section="AssignedUuids"/>
+      <MetadataFile>queryAssoc.xml</MetadataFile>
+      <ExpectedContents>
+        <HasXFRM_RPLC/>
       </ExpectedContents>
     </StoredQueryTransaction>
   </TestStep>

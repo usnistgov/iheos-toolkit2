@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>30006/eval_remove</Test>
+  <Rule>Evaluate removal of all contents after Remove Metadata transaction.</Rule>
+  <TestStep id="eval_orig_contents">
+    <Goal>Confirm original SubmissionSet does not exist.</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseId testdir="../submit" step="submit" section="AssignedUids" id="SubmissionSet01" symbol="$ssuid$" />
+      <MetadataFile>query_ss.xml</MetadataFile>
+      <ExpectedContents>
+        <SubmissionSets count="0"/>
+        <Associations count="0"/>
+        <Documents count="0"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="eval_apnd_contents">
+    <Goal>Confirm the appended SubmissionSet does not exist.</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseId testdir="../apnd_rplc" step="apnd_rplc" section="AssignedUids" id="SubmissionSet01" symbol="$ssuid$" />
+      <MetadataFile>query_ss.xml</MetadataFile>
+      <ExpectedContents>
+        <SubmissionSets count="0"/>
+        <Associations count="0"/>
+        <Documents count="0"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="eval_rplc_contents">
+    <Goal>Confirm replacement SubmissionSet content no longer exists.</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseId testdir="../xfrm_rplc" step="xfrm_rplc" section="AssignedUids" id="SubmissionSet01" symbol="$ssuid$"/>
+      <MetadataFile>query_ss.xml</MetadataFile>
+      <ExpectedContents>
+        <SubmissionSets count="0"/>
+        <Associations count="0"/>
+        <Documents count="0"/>
+		<DocApp/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>  
+</TestPlan>

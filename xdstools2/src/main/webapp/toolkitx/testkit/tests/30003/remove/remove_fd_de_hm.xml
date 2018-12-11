@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urn:RemoveObjectsRequest xmlns:urn="urn:oasis:names:tc:ebxml-regrep:xsd:lcm:3.0" xmlns:urn2="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0">
+	<urn2:ObjectRefList >
+		<!--FD-DE HM-->
+		<urn2:ObjectRef id="$Fol2DocAssoc$"/>
+		<!--SS-HM for FD-DE-->
+		<urn2:ObjectRef id="$SS2FDDEHMAssoc$"/>
+	</urn2:ObjectRefList>
+</urn:RemoveObjectsRequest>

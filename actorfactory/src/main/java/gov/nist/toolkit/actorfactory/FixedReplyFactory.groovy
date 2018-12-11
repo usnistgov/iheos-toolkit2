@@ -26,10 +26,10 @@ class FixedReplyFactory extends AbstractActorFactory {
 
 
     @Override
-    protected Simulator buildNew(SimManager simm, SimId simId, boolean configureBase) throws Exception {
+    protected Simulator buildNew(SimManager simm, SimId simId, String environment, boolean configureBase) throws Exception {
         ActorType actorType = ActorType.FIXED_REPLY;
         SimulatorConfig sc;
-        sc = configureBaseElements(actorType, simId, simId.getTestSession())
+        sc = configureBaseElements(actorType, simId, simId.getTestSession(), environment)
         addFixedEndpoint(sc, SimulatorProperties.pnrEndpoint,       actorType, TransactionType.PROVIDE_AND_REGISTER,     false);
         addFixedEndpoint(sc, SimulatorProperties.pnrTlsEndpoint,       actorType, TransactionType.PROVIDE_AND_REGISTER,     true);
 

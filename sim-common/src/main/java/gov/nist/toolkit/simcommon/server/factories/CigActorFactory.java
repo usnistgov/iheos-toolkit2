@@ -28,22 +28,22 @@ import java.util.List;
 public class CigActorFactory extends AbstractActorFactory implements IActorFactory {
    
    @Override
-   protected Simulator buildNew(SimManager simm, SimId newID, boolean configureBase) throws Exception {
+   protected Simulator buildNew(SimManager simm, SimId newID, String environment, boolean configureBase) throws Exception {
    ActorType actorType = ActorType.COMBINED_INITIATING_GATEWAY;
    SimulatorConfig sc;
-   if (configureBase) sc = configureBaseElements(actorType, newID, newID.getTestSession());
+   if (configureBase) sc = configureBaseElements(actorType, newID, newID.getTestSession(), environment);
    else sc = new SimulatorConfig();
    
    SimId simId = sc.getId();
    
    // Group with an Initiating Gateway
    IGActorFactory ig = new IGActorFactory();
-   SimulatorConfig igConfig = ig.buildNew(simm, simId, true).getConfig(0);
+   SimulatorConfig igConfig = ig.buildNew(simm, simId, environment, true).getConfig(0);
    sc.add(igConfig);
    
    // Group with an Initiating Imaging Gateway
    IigActorFactory iig = new IigActorFactory();
-   SimulatorConfig iigConfig = iig.buildNew(simm, simId, true).getConfig(0);
+   SimulatorConfig iigConfig = iig.buildNew(simm, simId, environment, true).getConfig(0);
    sc.add(iigConfig);
    
    return new Simulator(sc);

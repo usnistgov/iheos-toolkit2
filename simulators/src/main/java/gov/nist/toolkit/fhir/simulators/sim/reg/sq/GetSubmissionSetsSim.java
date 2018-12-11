@@ -34,7 +34,7 @@ public class GetSubmissionSetsSim extends GetSubmissionSets {
 		HashSet<String> returnIds = new HashSet<String>();
 		
 		for (String id : uuids) {
-			List<Assoc> assocs = mc.assocCollection.getBySourceDestAndType(null, id, RegIndex.AssocType.HASMEMBER);
+			List<Assoc> assocs = mc.assocCollection.getBySourceDestAndType(null, id, RegIndex.AssocType.HasMember);
 			for (Assoc assoc : assocs) {
 				String sourceId = assoc.getFrom();
 				SubSet s = mc.subSetCollection.getById(sourceId);

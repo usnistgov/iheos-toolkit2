@@ -28,15 +28,15 @@ public class OrchestrationSupportTestsDisplay extends FlowPanel {
                 boolean hasTests = false;
                 for (TestOverviewDTO testOverview : testOverviews) {
                     if (testOverview.getName() != null && !testOverview.getName().equals("")) {
-                        final TestDisplay testDisplay = orchGroup.display(testOverview, null);
+                        final TestDisplay testDisplay = orchGroup.add(testOverview);
                         testDisplay.addExtraStyle("orchestrationTestMc");
                         // Lazy loading of TestOverviewDTO until it is opened.
-                        HandlerRegistration openTestBarHReg = testDisplay.getView().addOpenHandler(new TestBarOpenHandler(testDisplay, testOverview, ClientUtils.INSTANCE.getCommandContext(), null
-                                ,
-                                null
+                        HandlerRegistration openTestBarHReg = testDisplay.getView().addOpenHandler(new TestBarOpenHandler(testDisplay, testOverview, ClientUtils.INSTANCE.getCommandContext(), null,null
                         ));
                         testDisplay.getView().setOpenTestBarHReg(openTestBarHReg);
                         add(testDisplay.asWidget());
+                        testDisplay.setParams(orchResponse.getTestParams().get(testOverview.getTestInstance()));
+                        testDisplay.display(testOverview, null);
                         hasTests = true;
                     }
                 }

@@ -14,7 +14,7 @@ import spock.lang.Timeout
  * Created by skb1 on 6/22/2017.
  */
 @Stepwise
-@Timeout(90)
+@Timeout(100)
 class RecipientActorSimulatorSpec extends ConformanceActor {
 
     static final String simName = "recip" /* Sim names should be lowered cased */
@@ -23,7 +23,7 @@ class RecipientActorSimulatorSpec extends ConformanceActor {
 
     @Override
     void setupSim() {
-        setActorPage(String.format("%s/#ConfActor:env=default;testSession=%s;actor=rec", toolkitBaseUrl, simUser))
+        setActorPage(String.format("%s/#ConfActor:env=default;testSession=%s;actor=rec;systemId=%s", toolkitBaseUrl, testSessionName, simName))
         deleteOldRecipSim()
         sleep(5000) // Why we need this -- Problem here is that the Delete request via REST could be still running before we execute the next Create REST command. The PIF Port release timing will be off causing a connection refused error in the Jetty log.
         recipSim = createNewRecipSim()
@@ -32,15 +32,15 @@ class RecipientActorSimulatorSpec extends ConformanceActor {
 
    @Override
     String getSimId()     {
-       return simUser + "__" + simName
+       return testSessionName + "__" + simName
     }
 
     void deleteOldRecipSim() {
-        getSpi().delete(simName, simUser)
+        getSpi().delete(simName, testSessionName)
     }
 
     DocumentRecipient createNewRecipSim() {
-        return getSpi().createDocumentRecipient(simName, simUser, "default")
+        return getSpi().createDocumentRecipient(simName, testSessionName, "default")
     }
 
     // Recipient actor specific
@@ -60,13 +60,13 @@ class RecipientActorSimulatorSpec extends ConformanceActor {
             webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
         }
 
-        while(!page.asText().contains("Initialization Complete")){
+        while(!page.asText().contains("Initialization complete")){
             webClient.waitForBackgroundJavaScript(500)
         }
 
         then:
         "XDS Toolkit" == page.getTitleText()
-        page.asText().contains("Initialization Complete")
+        page.asText().contains("Initialization complete")
     }
 
     def 'Click Reset (or Initialize) Environment using defaults.'() {
@@ -111,12 +111,12 @@ class RecipientActorSimulatorSpec extends ConformanceActor {
         page = initializeBtn.click(false,false,false)
         webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
 
-        while(!page.asText().contains("Initialization Complete")){
+        while(!page.asText().contains("Initialization complete")){
             webClient.waitForBackgroundJavaScript(500)
         }
 
         then:
-        page.asText().contains("Initialization Complete")
+        page.asText().contains("Initialization complete")
 
         when:
         List<HtmlDivision> elementList = page.getByXPath("//div[contains(@class, 'orchestrationTestMc') and contains(@class, 'testOverviewHeaderFail')]")  // Substring match, other CSS class must not contain this string.

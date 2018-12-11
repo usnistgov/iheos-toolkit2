@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>XdsDocAdminTest-1111/Query</Test>
+  <Rule>GetDocuments Stored Query by logical Id</Rule>
+  <TestStep id="lid_query">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetDocuments</SQ>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+      <UseReport reportName="lid" section="Init" step="init" useAs="$lid$"/>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="verify_confidentialityCode">
+    <NullTransaction>
+      <UseReport reportName="lid" section="Init" step="init" useAs="$lid$"/>
+      <Assertions>
+        <DataRef
+                file="THIS"
+                as="output"/>
+        <Assert
+                id="validation">//*[local-name()='ExtrinsicObject'][@lid="$lid$"]//*[local-name()='Classification'][@classificationScheme='urn:uuid:f4f85eac-e6cb-4883-b524-f2705394840f']/@nodeRepresentation = 'R'</Assert>
+      </Assertions>
+    </NullTransaction>
+  </TestStep>
+
+</TestPlan>

@@ -13,5 +13,6 @@ public enum MessageTransaction {
     XDM,
     SQ,
     MU,
+    RM,
     DIRECT
 }

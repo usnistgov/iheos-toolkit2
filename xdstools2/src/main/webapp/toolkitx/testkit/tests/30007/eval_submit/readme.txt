@@ -1,0 +1,1 @@
+Use the stored query, GetSubmissionSetAndContents, to verify all metadata objects.

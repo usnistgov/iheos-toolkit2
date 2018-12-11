@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import java.io.*;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -95,6 +96,10 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 		return StatusValue.UNKNOWN;
 	}
 
+	public static List<String> statusValues =
+			Arrays.asList("urn:oasis:names:tc:ebxml-regrep:StatusType:Approved",
+					"urn:oasis:names:tc:ebxml-regrep:StatusType:Deprecated");
+
 	public static  String getStatusString(StatusValue status) {
 		switch(status) {
 		case APPROVED: 
@@ -108,6 +113,10 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 		}
 	}
 
+	public static String getStatusString(boolean isDeprecated) {
+		return getStatusString(StatusValue.DEPRECATED);
+	}
+
 	public List<StatusValue> translateStatusValues(List<String> strings) {
 		List<StatusValue> values = new ArrayList<StatusValue>();
 
@@ -117,7 +126,20 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 		return values;
 	}
 
-	public enum AssocType { UNKNOWN, HASMEMBER, RPLC, RPLC_XFRM, XFRM, APND };
+	public enum AssocType { UNKNOWN, HasMember, RPLC, RPLC_XFRM, XFRM, APND, SIGNS, SubmitAssociation, UpdateAvailabilityStatus };
+
+	public enum RelationshipAssocType { RPLC, RPLC_XFRM, XFRM, APND, SIGNS}
+
+	public enum MuAssocType {SubmitAssociation, UpdateAvailabilityStatus};
+
+	public static boolean isRelationshipAssoc(String value) {
+		try {
+			RelationshipAssocType.valueOf(value);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
 
 	static public AssocType getAssocType(Metadata m, OMElement ele) {
 		String typ = Metadata.getAssocType(ele);
@@ -128,7 +150,7 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 		if (typ == null)
 			return AssocType.UNKNOWN;
 		if (typ.endsWith("HasMember"))
-			return AssocType.HASMEMBER;
+			return AssocType.HasMember;
 		if (typ.endsWith("RPLC"))
 			return AssocType.RPLC;
 		if (typ.endsWith("RPLC_XFRM"))
@@ -137,12 +159,19 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 			return AssocType.XFRM;
 		if (typ.endsWith("APND"))
 			return AssocType.APND;
+		if (typ.endsWith("SIGNS"))
+			return AssocType.SIGNS;
+		if (typ.endsWith("SubmitAssociation"))
+			return AssocType.SubmitAssociation;
+		if (typ.endsWith("UpdateAvailabilityStatus"))
+			return AssocType.UpdateAvailabilityStatus;
+
 		return AssocType.UNKNOWN;
 	}
 	
 	 public static String getAssocString(AssocType type) {
 		switch (type) {
-		case HASMEMBER: return "HasMember";
+		case HasMember: return "HasMember";
 		default: return type.toString();
 		}
 	}
@@ -219,5 +248,10 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 		stats.put(SimulatorStats.PATIENT_ID_COUNT, (db!=null&&db.getAllPatientIds()!=null)?db.getAllPatientIds().size():0);
 
 		return stats;
+	}
+
+	@Override
+	public boolean hasRegistryIndex() {
+        return db.getRegistryIndexFile().exists();
 	}
 }

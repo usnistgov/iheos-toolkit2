@@ -1,0 +1,4 @@
+MSH|^~\&|$MSH3$|$MSH4$|$MSH5$|$MSH6$|$MSH7$||ADT^A43^ADT_A43|103132|P|2.5||||||||
+EVN|A43|$EVN2$|
+PID|||$NewXADPID$~$NewLocalPID$
+MRG|$OldXADPID$~$OldLocalPID$

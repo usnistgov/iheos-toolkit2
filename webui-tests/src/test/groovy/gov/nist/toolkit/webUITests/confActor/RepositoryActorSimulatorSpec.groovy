@@ -11,7 +11,7 @@ import spock.lang.Timeout
  * Created by skb1 on 6/5/2017.
  */
 @Stepwise
-@Timeout(90)
+@Timeout(100)
 class RepositoryActorSimulatorSpec extends ConformanceActor {
 
     static final String simName = "rep" /* Sim names should be lowered cased */
@@ -20,7 +20,7 @@ class RepositoryActorSimulatorSpec extends ConformanceActor {
 
     @Override
     void setupSim() {
-        setActorPage(String.format("%s/#ConfActor:env=default;testSession=%s;actor=rep", toolkitBaseUrl, simUser))
+        setActorPage(String.format("%s/#ConfActor:env=default;testSession=%s;actor=rep;systemId=%s", toolkitBaseUrl, testSessionName, simName))
         deleteOldRepSim()
         sleep(5000) // Why we need this -- Problem here is that the Delete request via REST could be still running before we execute the next Create REST command. The PIF Port release timing will be off causing a connection refused error in the Jetty log.
         repSim = createNewRepSim()
@@ -29,15 +29,15 @@ class RepositoryActorSimulatorSpec extends ConformanceActor {
 
     @Override
     String getSimId() {
-        return simUser + "__" + simName
+        return testSessionName + "__" + simName
     }
 
     void deleteOldRepSim() {
-        getSpi().delete(simName, simUser)
+        getSpi().delete(simName, testSessionName)
     }
 
     DocumentRepository createNewRepSim() {
-        return getSpi().createDocumentRepository(simName, simUser, "default")
+        return getSpi().createDocumentRepository(simName, testSessionName, "default")
     }
 
     // Repository actor specific
@@ -58,13 +58,13 @@ class RepositoryActorSimulatorSpec extends ConformanceActor {
             webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
         }
 
-        while(!page.asText().contains("Initialization Complete")){
+        while(!page.asText().contains("Initialization complete")){
             webClient.waitForBackgroundJavaScript(500)
         }
 
         then:
         "XDS Toolkit" == page.getTitleText()
-        page.asText().contains("Initialization Complete")
+        page.asText().contains("Initialization complete")
     }
 
     def 'Click Reset (or Initialize) Environment using defaults.'() {
@@ -109,12 +109,12 @@ class RepositoryActorSimulatorSpec extends ConformanceActor {
         page = initializeBtn.click(false, false, false)
         webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
 
-        while (!page.asText().contains("Initialization Complete")) {
+        while (!page.asText().contains("Initialization complete")) {
             webClient.waitForBackgroundJavaScript(500)
         }
 
         then:
-        page.asText().contains("Initialization Complete")
+        page.asText().contains("Initialization complete")
 
         // There are no tests for repository orchestration tests to look for.
     }
@@ -219,7 +219,7 @@ class RepositoryActorSimulatorSpec extends ConformanceActor {
         webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
 
         then:
-        page.asText().contains("Initialization Complete")
+        page.asText().contains("Initialization complete")
 
         // There are no tests for repository orchestration tests to look for.
     }

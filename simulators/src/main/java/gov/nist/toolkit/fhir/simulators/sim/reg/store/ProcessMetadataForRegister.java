@@ -20,6 +20,7 @@ public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 	ErrorRecorder er;
 	MetadataCollection mc;
 	MetadataCollection delta;
+	private boolean associationPropogationEnabled = true;
 
 	public ProcessMetadataForRegister(ErrorRecorder er, MetadataCollection mc, MetadataCollection delta) {
 		this.er = er;
@@ -255,8 +256,8 @@ public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 	// verify that no associations are being added that:
 	//     link objects with different patient ids (except for special cases)
 	public void associationPatientIdRules() {
-		log.debug("Checking Association PID rules for " + delta.assocCollection.assocs);
-		for (Assoc a : delta.assocCollection.assocs) {
+		log.debug("Checking Association PID rules for " + delta.assocCollection.getAll());
+		for (Assoc a : delta.assocCollection.getAll()) {
 			String fromId = a.getFrom();
 			String toId = a.getTo();
 
@@ -286,6 +287,11 @@ public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 					tgt.getType() + "(" + tgt.getId() + ") "
 					, this, null);
 		}
+	}
+
+	@Override
+	public void addDocsToUpdatedFolders(Metadata m) {
+
 	}
 
 
@@ -334,7 +340,7 @@ public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 				// add source doc to these folders
 				for (Fol f : foldersHoldingTarget) {
 					try {
-						delta.addAssoc(f.getId(), sourceId, AssocType.HASMEMBER);
+						delta.addAssoc(f.getId(), sourceId, AssocType.HasMember);
 						delta.labelFolderUpdated(f, new Hl7Date().now());
 					} catch (Exception e) {
 						er.err(Code.XDSRegistryError, e.getMessage(), this, null);
@@ -343,8 +349,6 @@ public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 			}
 		}
 	}
-
-
 
 
 }

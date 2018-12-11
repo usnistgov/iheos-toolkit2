@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>21003/query_original</Test>
+  <Rule>GetFolders SQ Original Folder</Rule>
+  <TestStep id="query">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetFolders</SQ>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+      <UseId testdir="../original" step="submit" section="AssignedUuids" id="Folder01" symbol="$uuid$"/>
+      <ExpectedContents>
+        <Folders count="1"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="validate">
+    <NullTransaction>
+      <UseReport reportName="Folder01_uuid" section="original" step="submit" useAs="orig_uuid"/>
+      <Assertions>
+        <DataRef file="THIS" as="output"/>
+        <Assert id="version">
+               //*[local-name()='RegistryPackage'][@id="orig_uuid"]/*[local-name()='VersionInfo']/@versionName = '1'
+               </Assert>
+        <Assert id="lid">
+               'orig_uuid' = //*[local-name()='RegistryPackage'][@id="orig_uuid"]/@lid
+               </Assert>
+        <Assert id="status">
+               //*[local-name()='RegistryPackage'][@id="orig_uuid"]/@status = 'urn:oasis:names:tc:ebxml-regrep:StatusType:Deprecated'
+               </Assert>
+      </Assertions>
+    </NullTransaction>
+  </TestStep>
+</TestPlan>

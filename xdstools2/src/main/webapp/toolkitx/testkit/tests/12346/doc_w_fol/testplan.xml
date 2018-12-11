@@ -11,7 +11,9 @@
         </Rule>
         <RegisterTransaction>
             <XDSb/>
+            <!--
 	    <UseReport reportName="$patientid$" test="15818" section="pif" step="step" useAs="$patientid$"/>
+            -->
             <AssignUuids/>
             <MetadataFile>single_doc_w_fol.xml</MetadataFile>
         </RegisterTransaction>

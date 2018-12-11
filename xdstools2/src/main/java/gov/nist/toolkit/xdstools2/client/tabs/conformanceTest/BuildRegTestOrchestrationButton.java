@@ -16,9 +16,6 @@ import gov.nist.toolkit.xdstools2.client.widgets.OrchestrationSupportTestsDispla
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 import gov.nist.toolkit.xdstools2.shared.command.request.BuildRegTestOrchestrationRequest;
 
-import java.util.ArrayList;
-import java.util.List;
-
 
 /**
  * Build Registry tests orchestration
@@ -30,55 +27,50 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
     private TestContextView testContextView;
     private FlowPanel initializationResultsPanel = new FlowPanel();
     private RadioButton noFeed = new RadioButton("pidFeedGroup", "No Patient Identity Feed");
-    private RadioButton v2Feed = new RadioButton("pidFeedGroup", "V2 Patient Identitfy Feed");
+    private RadioButton v2Feed = new RadioButton("pidFeedGroup", "V2 Patient Identity Feed");
+    private PifType pifType;
 
-    static private final String MU_OPTION = "mu";  // corresponds to collection reg_mu in testkit collections.txt file
-    static private final String MPQ_OPTION = "mpq";
-    static private final String OD_OPTION = "od";
-    static private final String ISR_OPTION = "isr";
-    static private final String CAT_FOLDER_OPTION = "catfolder";   // run as part of Connectathon
-    static private final String CAT_LIFECYCLE_OPTION = "catlifecycle";   // run as part of Connectathon
-    public static List<ActorAndOption> ACTOR_OPTIONS = new ArrayList<>();
-    static {
-        ACTOR_OPTIONS = java.util.Arrays.asList(
-                new ActorAndOption("reg", "", "Required", false),
-                new ActorAndOption("reg", MU_OPTION, "Metadata Update Option", false),
-                new ActorAndOption("reg", MPQ_OPTION, "MPQ Option", false),
-                new ActorAndOption("reg", OD_OPTION, "On Demand Option", false),
-                new ActorAndOption("reg", ISR_OPTION, "Integrated Source Repository", true),
-                new ActorAndOption("reg", XUA_OPTION, "XUA Option", false),
-                new ActorAndOption("reg", CAT_FOLDER_OPTION, "CAT Folder", false),
-                new ActorAndOption("reg", CAT_LIFECYCLE_OPTION, "CAT Lifecycle", false)
-        );
-    }
-
-    BuildRegTestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextView testContextView, Panel initializationPanel, String label) {
+    BuildRegTestOrchestrationButton(ConformanceTestTab testTab, TestContext testContext, TestContextView testContextView, Panel initializationPanel, String label, PifType pifType) {
         this.initializationPanel = initializationPanel;
         this.testTab = testTab;
         this.testContext = testContext;
         this.testContextView = testContextView;
-
-        //
-        // Disable selections that are not yet supported
-        //
-//        noFeed.setEnabled(false);
+        this.pifType = pifType;
 
         setParentPanel(initializationPanel);
 
         FlowPanel pidFeedPanel = new FlowPanel();
         pidFeedPanel.add(noFeed);
         pidFeedPanel.add(v2Feed);
-        v2Feed.setChecked(true);
+
+        // Restore pifType from Orchestration properties previously saved
+        // 1.
+        if (PifType.V2.equals(pifType)) {
+            v2Feed.setChecked(true);
+        } else { // Default to NoFeed otherwise.
+            noFeed.setChecked(true);
+        }
 
         setCustomPanel(pidFeedPanel);
         build();
         panel().add(initializationResultsPanel);
+        
+        /** TODO - KM turned off**/
+        //setCustomPanel(pidFeedPanel);
+        /** TODO - End KM turned off**/
+        /** TODO - KM turned off**/
+        //build();
+        /** TODO - End KM turned off**/
+        /** TODO - KM turned off**/
+        //panel().add(initializationResultsPanel);
+        /** TODO - End KM turned off**/
 
     }
 
     public void orchestrate() {
         String msg = testContext.verifyTestContext();
         if (msg != null) {
+            testTab.getMainView().clearLoadingMessage();
             testContextView.launchDialog(msg);
             return;
         }
@@ -87,7 +79,7 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
         testTab.getMainView().showLoadingMessage("Initializing...");
 
         TestSession testSession = new TestSession(testTab.getCurrentTestSession());
-        RegOrchestrationRequest request = new RegOrchestrationRequest();
+        final RegOrchestrationRequest request = new RegOrchestrationRequest();
         request.selfTest(isSelfTest());
         request.setPifType((v2Feed.isChecked()) ? PifType.V2 : PifType.NONE);
         request.setUseTls(isTls());
@@ -112,26 +104,38 @@ public class BuildRegTestOrchestrationButton extends AbstractOrchestrationButton
                 final RegOrchestrationResponse orchResponse = (RegOrchestrationResponse) rawResponse;
                 testTab.setRegOrchestrationResponse(orchResponse);
 
-                initializationResultsPanel.add(new HTML("Initialization Complete"));
+                if (PifType.V2.equals(request.getPifType())) {
+                    initializationResultsPanel.add(new HTML("<p>Initialization complete</p>"));
+                } else if (PifType.NONE.equals(request.getPifType())) {
+                    initializationResultsPanel.add(new HTML("<p style='color:orange'>Initialization partially complete: there are two additional steps below for you to complete.</p>"));
+                } else {
+                    initializationResultsPanel.add(new HTML("<p style='color:red'>Initialization Error: Unknown pifType.</p>"));
+                }
 
                 if (testContext.getSiteUnderTest() != null) {
                     initializationResultsPanel.add(new SiteDisplay("System Under Test Configuration", testContext.getSiteUnderTest()));
                 }
 
                 initializationResultsPanel.add(new HTML("<h2>Supporting Environment Configuration</h2>"));
-
                 handleMessages(initializationResultsPanel, orchResponse);
 
-                // Display tests run as part of orchestration - so links to their logs are available
-                initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testContext, testContextView, testTab, testTab ));
-
-                initializationResultsPanel.add(new HTML("<br />"));
-
+                if (PifType.NONE.equals(request.getPifType())) {
+                    initializationResultsPanel.add(new HTML("<h3>1. On your system, manually perform the Patient Identity Feed for these PIDs as shown below</h3>"));
+                }
                 initializationResultsPanel.add(new HTML("Patient ID for Register tests: " + orchResponse.getRegisterPid().toString()));
                 initializationResultsPanel.add(new HTML("Alternate Patient ID for Register tests: " + orchResponse.getRegisterAltPid().toString()));
                 initializationResultsPanel.add(new HTML("Patient ID for Stored Query tests: " + orchResponse.getSqPid().toString()));
                 initializationResultsPanel.add(new HTML("Patient ID for MPQ tests: " + orchResponse.getMpq1Pid().toString()));
                 initializationResultsPanel.add(new HTML("Patient ID for MPQ tests: " + orchResponse.getMpq2Pid().toString()));
+
+                if (PifType.NONE.equals(request.getPifType())) {
+                    initializationResultsPanel.add(new HTML("<h3>2. Run these utility tests manually to fully initialize the Testing Environment</h3>"));
+                }
+
+                // Display tests run as part of orchestration - so links to their logs are available
+                initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testContext, testContextView, testTab, testTab ));
+
+
                 initializationResultsPanel.add(new HTML("<br />"));
 
                 testTab.displayTestCollection(testTab.getMainView().getTestsPanel());

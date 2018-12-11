@@ -16,6 +16,9 @@ import gov.nist.toolkit.toolkitServicesCommon.resource.DocumentResource
 import gov.nist.toolkit.utilities.xml.Util
 import org.apache.axiom.om.OMElement
 import spock.lang.Shared
+
+import java.nio.file.Paths
+
 /**
  *
  */
@@ -82,7 +85,7 @@ class MinimalMetadataSpec extends ToolkitSpecification {
         String minimalMetadataHeader = '<direct:metadata-level xmlns:direct="urn:direct:addressing">minimal</direct:metadata-level>'
 
         req.addExtraHeader(minimalMetadataHeader)
-        req.metadata = this.getClass().getResource('/xdr/XdrMinimal.xml').text
+        req.metadata = Paths.get(this.getClass().getResource('/').toURI()).resolve('xdr/XdrMinimal.xml').text
         req.addDocument('Document01', new DocumentResource('text/plain', 'Hello World!'.bytes))
 
         when:
@@ -106,7 +109,7 @@ class MinimalMetadataSpec extends ToolkitSpecification {
         String minimalMetadataHeader = '<direct:metadata-level xmlns:direct="urn:direct:addressing">minimal</direct:metadata-level>'
 
         req.addExtraHeader(minimalMetadataHeader)
-        req.metadata = this.getClass().getResource('/xdr/XdrMinimalBad.xml').text
+        req.metadata = Paths.get(this.getClass().getResource('/').toURI()).resolve('xdr/XdrMinimalBad.xml').text
         req.addDocument('Document01', new DocumentResource('text/plain', 'Hello World!'.bytes))
 
         when:

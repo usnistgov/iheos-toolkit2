@@ -8,12 +8,14 @@ import gov.nist.toolkit.session.client.logtypes.SectionOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.xdstools2.client.widgets.LaunchInspectorClickHandler;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Display of a single test including its sections.
  * This is the View and Presentation.
  */
 public class TestDisplay  implements IsWidget {
-    private TestDisplayGroup testDisplayGroup;
     private TestContext testContext;
     private TestRunner testRunner;
     private TestContextView testContextView;
@@ -22,13 +24,12 @@ public class TestDisplay  implements IsWidget {
     private boolean allowRun = true;
     private boolean allowValidate = false;
     private TestDisplayView view = new TestDisplayView();
-    private InteractionDiagramDisplay diagramDisplay;
     private Controller controller;
+    private Map<String,String> params;
 
-    public TestDisplay(TestInstance testInstance, TestDisplayGroup testDisplayGroup, TestRunner testRunner, TestContext testContext, TestContextView testContextView, Controller controller) {
+    public TestDisplay(TestInstance testInstance, TestRunner testRunner, TestContext testContext, TestContextView testContextView, Controller controller) {
         this.testInstance = testInstance;
         this.testRunner = testRunner;
-        this.testDisplayGroup = testDisplayGroup;
         this.testContext = testContext;
         this.testContextView = testContextView;
         this.controller = controller;
@@ -47,8 +48,7 @@ public class TestDisplay  implements IsWidget {
         this.allowValidate = allowValidate;
     }
 
-    public void display(TestOverviewDTO testOverview) {
-
+    public void display(TestOverviewDTO testOverview, InteractionDiagramDisplay diagramDisplay) {
         if (testOverview.isRun()) {
             if (testOverview.isPass()) view.labelSuccess();
             else view.labelFailure();
@@ -60,11 +60,26 @@ public class TestDisplay  implements IsWidget {
         view.setTestTitle("Test: " + testOverview.getName() + " - " +testOverview.getTitle());
         view.setTime(testOverview.getLatestSectionTime());
 
-        if (allowRun) view.setPlay("Run", new RunClickHandler(testRunner, testInstance, testContext, testContextView, controller));
-        if (allowValidate) view.setValidate("Validate", new RunClickHandler(testRunner, testInstance, testContext, testContextView, controller, true));
+        if (allowRun) {
+            RunClickHandler runClickHandler = new RunClickHandler(testRunner, testInstance, testContext, testContextView, controller, new OnTestRunComplete() {
+                @Override
+                void updateDisplay(TestOverviewDTO testOverviewDTO, InteractionDiagramDisplay diagramDisplay) {
+                    TestDisplay.this.display(testOverviewDTO, diagramDisplay);
+                }
+            });
+            runClickHandler.setParams(params);
+            view.setPlay("Run", runClickHandler);
+        }
+        if (allowValidate) view.setValidate("Validate", new RunClickHandler(testRunner, testInstance, testContext, testContextView, controller,
+                true, new OnTestRunComplete() {
+            @Override
+            void updateDisplay(TestOverviewDTO testOverviewDTO, InteractionDiagramDisplay diagramDisplay) {
+                TestDisplay.this.display(testOverviewDTO, diagramDisplay);
+            }
+        }));
 
         if (testOverview.isRun()) {
-            if (allowDelete) view.setDelete("Delete Log", new DeleteClickHandler(testDisplayGroup, testContext, testRunner, testInstance));
+            if (allowDelete) view.setDelete("Delete Log", new DeleteClickHandler(this, testContext, testRunner, testInstance));
             view.setInspect("Inspect results", new LaunchInspectorClickHandler(testOverview.getTestInstance(), testContext.getTestSession(), testContext.getCurrentSiteSpec()));
         }
 
@@ -72,11 +87,11 @@ public class TestDisplay  implements IsWidget {
 
         // Test level diagram -- normally comes from the TestDisplayView InteractionDiagram member
         boolean firstTransactionRepeatingTooManyTimes = false;
-        if (getDiagramDisplay()!=null) {
+        if (diagramDisplay!=null) {
             firstTransactionRepeatingTooManyTimes = InteractionDiagram.isFirstTransactionRepeatingTooManyTimes(testOverview);
-            if (getDiagramDisplay() != null && !firstTransactionRepeatingTooManyTimes) {
+            if (diagramDisplay != null && !firstTransactionRepeatingTooManyTimes) {
                 // Display all sections in the diagram at once
-                view.setInteractionDiagram(getDiagramDisplay().render());
+                view.setInteractionDiagram(diagramDisplay.render());
             }
         }
 
@@ -84,16 +99,28 @@ public class TestDisplay  implements IsWidget {
         view.clearSections();
         for (String sectionName : testOverview.getSectionNames()) {
             SectionOverviewDTO sectionOverview = testOverview.getSectionOverview(sectionName);
-            if (getDiagramDisplay()!=null && firstTransactionRepeatingTooManyTimes) {
-               InteractionDiagramDisplay sectionDiagramDisplay = getDiagramDisplay().copy();
+            if (diagramDisplay!=null && firstTransactionRepeatingTooManyTimes) {
+               InteractionDiagramDisplay sectionDiagramDisplay = diagramDisplay.copy();
                sectionDiagramDisplay.getTestOverviewDTO().getSectionNames().add(sectionName);
                sectionDiagramDisplay.getTestOverviewDTO().getSections().put(sectionName,sectionOverview);
                 // Display individual section level diagram instead of one big diagram
-                TestSectionDisplay sectionComponent = new TestSectionDisplay(testContext.getTestSession(), testOverview.getTestInstance(), sectionOverview, testRunner, allowRun, sectionDiagramDisplay);
+                TestSectionDisplay sectionComponent = new TestSectionDisplay(testContext.getTestSession(), testOverview.getTestInstance(), testRunner, allowRun, new OnTestRunComplete() {
+                    @Override
+                    void updateDisplay(TestOverviewDTO testOverviewDTO, InteractionDiagramDisplay diagramDisplay) {
+                       TestDisplay.this.display(testOverviewDTO, diagramDisplay);
+                    }
+                });
+                sectionComponent.display(sectionOverview, sectionDiagramDisplay);
                 view.addSection(sectionComponent);
             } else {
                 // Cumulative diagram already displayed at the Test level assuming if firstTransactionRepeatingTooManyTimes is false
-                TestSectionDisplay sectionComponent = new TestSectionDisplay(testContext.getTestSession(), testOverview.getTestInstance(), sectionOverview, testRunner, allowRun, null);
+                TestSectionDisplay sectionComponent = new TestSectionDisplay(testContext.getTestSession(), testOverview.getTestInstance(), testRunner, allowRun, new OnTestRunComplete() {
+                    @Override
+                    void updateDisplay(TestOverviewDTO testOverviewDTO, InteractionDiagramDisplay diagramDisplay) {
+                        TestDisplay.this.display(testOverviewDTO, diagramDisplay);
+                    }
+                });
+                sectionComponent.display(sectionOverview,  null);
                 view.addSection(sectionComponent);
             }
 
@@ -119,11 +146,11 @@ public class TestDisplay  implements IsWidget {
         view.removeExtraStyle(name);
     }
 
-    public InteractionDiagramDisplay getDiagramDisplay() {
-        return diagramDisplay;
+    public Map<String, String> getParams() {
+        return params;
     }
 
-    public void setDiagramDisplay(InteractionDiagramDisplay diagramDisplay) {
-        this.diagramDisplay = diagramDisplay;
+    public void setParams(Map<String, String> params) {
+        this.params = params;
     }
 }

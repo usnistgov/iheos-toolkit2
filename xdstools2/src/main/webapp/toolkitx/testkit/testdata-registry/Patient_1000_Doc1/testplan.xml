@@ -1,0 +1,19 @@
+
+<TestPlan>
+  <Test>RMU/Patient_1000_Doc1</Test>
+  <TestStep id="submit_doc">
+    <Goal>
+      This transaction contains a single DocumentEntry with title "RMU Title - Charles Hon - Id 1000 - Doc 1".
+      The primary Patient ID is used.  A Patient Identity Feed is NOT sent to the 
+      Registry.  You must do this on your own.
+    </Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+  <RegisterTransaction>
+    <XDSb/>
+    <AssignUuids/>
+    <NoPatientId/>
+    <MetadataFile>metadata.xml</MetadataFile>
+  </RegisterTransaction>
+</TestStep>
+
+</TestPlan>

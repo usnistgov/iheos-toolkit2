@@ -1,0 +1,1 @@
+Use the stored query, GetSubmissionSetAndContents, to verify the correct metadata objects were removed.

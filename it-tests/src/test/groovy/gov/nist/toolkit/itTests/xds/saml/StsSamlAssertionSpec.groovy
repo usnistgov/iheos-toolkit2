@@ -19,6 +19,8 @@ import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import spock.lang.Ignore
 import spock.lang.Shared
 
+import java.nio.file.Paths
+
 /**
  * Test the STS as provided by Gazelle using Toolkit's HttpTransaction step instruction
  * References:
@@ -102,8 +104,7 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
 
     def 'set Truststore'() {
         when:
-        URL trustStoreURL = getClass().getResource("/war/toolkitx/environment/default/gazelle_sts_cert_truststore.jks")
-        File trustStoreFile = new File(trustStoreURL.getFile())
+        File trustStoreFile = Paths.get(this.getClass().getResource('/').toURI()).resolve('war/toolkitx/environment/default/gazelle_sts_cert_truststore.jks').toFile()
 
         System.out.println(trustStoreFile)
 

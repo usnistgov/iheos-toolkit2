@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client.inspector;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.TreeItem;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.registrymetadata.client.*;
 import gov.nist.toolkit.results.client.Result;
 
@@ -95,7 +96,7 @@ public class ListingDisplay {
 			root.addItem(ti);
 
 			for (ObjectRef o : data.combinedMetadata.objectRefs) {
-				Hyperlink h = HyperlinkFactory.link(tab, o);
+				Widget h = HyperlinkFactory.link(tab, o);
 				TreeItem item = new TreeItem(h);
 				item.setUserObject(new MetadataObjectWrapper(MetadataObjectType.ObjectRefs,o));
 				ti.addItem(item);
@@ -125,7 +126,7 @@ public class ListingDisplay {
 			root.addItem(ti);
 
 			for (ResourceItem ri : data.combinedMetadata.resources) {
-				Hyperlink h = HyperlinkFactory.link(tab, ri);
+				Widget h = HyperlinkFactory.link(tab, ri);
 				TreeItem item = new TreeItem(h);
 				item.setUserObject(new MetadataObjectWrapper(MetadataObjectType.Resources,ri));
 				ti.addItem(item);
@@ -135,7 +136,7 @@ public class ListingDisplay {
 
 	void associations() {
 		for (Association a : data.combinedMetadata.assocs) {
-			Hyperlink h = HyperlinkFactory.link(tab, a);
+			Widget h = HyperlinkFactory.link(tab, a, data.combinedMetadata);
 			TreeItem item = new TreeItem(h);
 			item.setUserObject(new MetadataObjectWrapper(MetadataObjectType.Assocs,a));
 			root.addItem(item);
@@ -149,7 +150,7 @@ public class ListingDisplay {
 	}
 
 	void addDe(TreeThing treeThing, DocumentEntry de) {
-		Hyperlink h = HyperlinkFactory.link(tab, de);
+		Widget h = HyperlinkFactory.link(tab, de);
 		TreeItem item = new TreeItem(h);
 		item.setUserObject(new MetadataObjectWrapper(MetadataObjectType.DocEntries,de));
 
@@ -199,7 +200,7 @@ public class ListingDisplay {
 
 	void folders() {
 		for (Folder fol : data.combinedMetadata.folders) {
-			Hyperlink h = HyperlinkFactory.link(tab, fol);
+			Widget h = HyperlinkFactory.link(tab, fol);
 			TreeItem item = new TreeItem(h);
 			item.setUserObject(new MetadataObjectWrapper(MetadataObjectType.Folders,fol));
 
@@ -220,7 +221,7 @@ public class ListingDisplay {
 
 	void submissionSets() {
 		for (SubmissionSet ss : data.combinedMetadata.submissionSets) {
-			Hyperlink h = HyperlinkFactory.link(tab, ss);
+			Widget h = HyperlinkFactory.link(tab, ss);
 			TreeItem item = new TreeItem(h);
 			item.setUserObject(new MetadataObjectWrapper(MetadataObjectType.SubmissionSets,ss));
 			root.addItem(item);

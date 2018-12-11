@@ -69,7 +69,9 @@ public class TestKit {
 	}
 
 	public enum PluginType  {
-		FHIR_ASSERTION("FhirAssertion", "FHIR");
+		FHIR_ASSERTION("FhirAssertion", "FHIR"),
+		SOAP_ASSERTION("SoapAssertion", "SOAP"),
+		REGISTRY_VALIDATOR("RegistryValidator", "REGISTRY");
 
 		private String pathName;
 		private String assertionName;

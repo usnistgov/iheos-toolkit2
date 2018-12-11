@@ -1,0 +1,1 @@
+Use the stored query, GetDocumentsAndAssociations, to verify all metadata objects remain unchanged.

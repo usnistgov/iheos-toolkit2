@@ -63,7 +63,8 @@ abstract public class GetSubmissionSetAndContents extends StoredQuery {
 	protected SQCodedTerm conf_code;
 	protected List<String> entry_type;
 
-	void parseParameters() throws XdsInternalException, XdsException, LoggerException {
+	protected void parseParameters() throws XdsInternalException, XdsException, LoggerException {
+		super.parseParameters();
 		ss_uuid = sqs.params.getStringParm("$XDSSubmissionSetEntryUUID");
 		ss_uid = sqs.params.getStringParm("$XDSSubmissionSetUniqueId");
 		format_code = sqs.params.getCodedParm("$XDSDocumentEntryFormatCode");

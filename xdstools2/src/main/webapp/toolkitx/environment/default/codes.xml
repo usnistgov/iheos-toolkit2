@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<!-- 
-    Update 4/11/2018 by Steve Moore (generated from spreadsheet)
-    Update 4/06/2018 by Steve Moore and Lynn Felhofer (generated from spreadsheet)
-    Update 3/21/2018 by Steve Moore and Lynn Felhofer (generated from spreadsheet)
+<!--
+    Update 12/7/2018 by Bill Majurski
+       added PracticeSetting Code Practice-E back in (from last year)
+       removed some null entries from PracticeSetting Code
+    Update 11/20/2018 by Steve Moore and Lynn Felhofer (generated from spreadsheet)
+    Update  4/11/2018 by Steve Moore (generated from spreadsheet)
+    Update  4/06/2018 by Steve Moore and Lynn Felhofer (generated from spreadsheet)
+    Update  3/21/2018 by Steve Moore and Lynn Felhofer (generated from spreadsheet)
 -->
+
 <Codes>
     <CodeType name="confidentialityCode" classScheme="urn:uuid:f4f85eac-e6cb-4883-b524-f2705394840f">
         <Code code="L" display="low" codingScheme="2.16.840.1.113883.5.25" system="http://hl7.org/fhir/v3/Confidentiality"/>
@@ -14,31 +19,36 @@
         <Code code="V" display="very restricted" codingScheme="2.16.840.1.113883.5.25" system="http://hl7.org/fhir/v3/Confidentiality"/>
     </CodeType>
     <CodeType name="healthcareFacilityTypeCode" classScheme="urn:uuid:f33fb8ac-18af-42cc-ae0e-ed0b0bdb91e1">
-        <Code code="225728007" display="Accident and Emergency department" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="394747008" display="Health Authority" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="66280005" display="Private home-based care" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="22232009" display="Hospital" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="42665001" display="Nursing home" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="264372000" display="Pharmacy" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="35971002" display="Ambulatory care site" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="44860005" display="Free-standing rehabilitation clinic" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="419955002" display="Residential institution" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
+        <Code code="225728007" display="Accident and Emergency department" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="394747008" display="Health Authority" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="66280005" display="Private home-based care" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="22232009" display="Hospital" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="42665001" display="Nursing home" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="264372000" display="Pharmacy" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="35971002" display="Ambulatory care site" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="44860005" display="Free-standing rehabilitation clinic" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="419955002" display="Residential institution" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
         <Code code="MPQ-hcftcode-1" display="MPQ Healthcare Facility Code 1" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
         <Code code="MPQ-hcftcode-2" display="MPQ Healthcare Facility Code 2" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
     </CodeType>
     <CodeType name="practiceSettingCode" classScheme="urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead">
-        <Code code="Practice-A" display="Radiology" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
-        <Code code="Practice-B" display="Cardiology" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
-        <Code code="Practice-C" display="Laboratory" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
-        <Code code="Practice-D" display="Pathology" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
-        <Code code="Practice-E" display="Ophthalmology" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
+        <Code code="R-300E3" display="Accident and Emergency" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="R-20348" display="Cardiology" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="Practice-B" display="Cardiology-Old" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
         <Code code="Practice-F" display="Family Practice" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
-        <Code code="Practice-G" display="General Medicine" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
-        <Code code="Practice-H" display="Emergency" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
-        <Code code="Practice-I" display="Labor and Delivery" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
+        <Code code="R-30254" display="General Medicine" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="Practice-G" display="General Medicine-Old" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
         <Code code="Practice-J" display="Home" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
+        <Code code="Practice-C" display="Laboratory" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
+        <Code code="R-30263" display="Obstetrics and Gynecology" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="R-3025C" display="Ophthalmology" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="R-3026B" display="Pathology" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="Practice-D" display="Pathology-Old" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
         <Code code="Practice-K" display="Pharmacy" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
+        <Code code="R-3027B" display="Radiology" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="Practice-A" display="Radiology-Old" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
         <Code code="Practice-L" display="Other" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
+        <Code code="Practice-E" display="Ophthalmology-Old" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>        
     </CodeType>
     <CodeType name="eventCodeList" classScheme="urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4">
         <Code code="urn:connectathon:bppc:foundational:policy" display="Foundational Connectathon Read-Access Policy" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
@@ -117,221 +127,221 @@
         <Code code="VA" display="Visual Acuity" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
         <Code code="XA" display="X-Ray Angiography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
         <Code code="XC" display="External-camera Photography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="T-42500" display="Abdominal aorta" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-B3000" display="Adrenal gland" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-42300" display="Aortic arch" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-A0100" display="Brain" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-45010" display="Carotid Artery" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-A6000" display="Cerebellum" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-45520" display="Circle of Willis" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-43000" display="Coronary artery" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-A0191" display="Cranial venous system" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-41068" display="Iliac and/or femoral artery" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-71000" display="Kidney" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-62000" display="Liver" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-65000" display="Pancreas" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-B7000" display="Parathyroid" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-44000" display="Pulmonary artery" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-46600" display="Renal artery" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-C3000" display="Spleen" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-94000" display="Testis" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-42070" display="Thoracic aorta" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-C8000" display="Thymus" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-B6000" display="Thyroid" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-83000" display="Uterus" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D4000" display="Abdomen" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-59490" display="Anus" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-60610" display="Bile duct" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-74000" display="Bladder" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-DD123" display="Bladder and urethra" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-26000" display="Bronchus" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-83200" display="Cervix" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D3000" display="Chest" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-DD163" display="Esophagus" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-AB200" display="External auditory canal" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-63000" display="Gallbladder" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D7000" display="Inguinal region" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-15001" display="Joint" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D9200" display="Knee" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-59000" display="Large intestine" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-24100" display="Larynx" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-40230" display="Lumen of blood vessel" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D3300" display="Mediastinum" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-2300C" display="Nasopharynx" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-22000" display="Paranasal sinus" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-55000" display="Pharynx" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-20101" display="Pharynx and larynx" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-59600" display="Rectum" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D2220" display="Shoulder" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-59470" display="Sigmoid colon" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D04FF" display="Spine" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-DD006" display="Trachea and bronchus" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-7000B" display="Upper urinary tract" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-73000" display="Ureter" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-88920" display="Uterus and fallopian tubes" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-48503" display="Anomalous pulmonary vein" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-49215" display="Antecubital vein" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-48403" display="Anterior cardiac vein" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-45530" display="Anterior communicating artery" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="R-FAB57" display="Abdomen and Pelvis" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-15420" display="Acromioclavicular joint" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-15750" display="Ankle joint" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-59900" display="Anus" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-280A0" display="Apex of Lung" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-12700" display="Bone of lower limb" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D0821" display="Bone of upper limb" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-04000" display="Breast" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-12770" display="Calcaneus" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-11501" display="Cervical spine" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D00F7" display="Cervico-thoracic spine" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="R-FAB55" display="Chest and Abdomen" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="R-FAB56" display="Chest" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-12310" display="Clavicle" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-11BF0" display="Coccyx" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-59300" display="Colon" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-58200" display="Duodenum" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-15430" display="Elbow joint" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D0010" display="Entire body" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-56000" display="Esophagus" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D0300" display="Extremity" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-AA000" display="Eye" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D0801" display="Eye region" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-11196" display="Facial bones" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-12710" display="Femur" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-12750" display="Fibula" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D8800" display="Finger" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D9700" display="Foot" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D8500" display="Forearm" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D8700" display="Hand" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D1100" display="Head" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D1000" display="Head and Neck" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-32000" display="Heart" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-15710" display="Hip joint" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-12410" display="Humerus" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-58600" display="Ileum" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-12340" display="Ilium" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-AB959" display="Internal Auditory Canal" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D1213" display="Jaw region" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-58400" display="Jejunum" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D9400" display="Lower leg" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D9000" display="Lower limb" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-11503" display="Lumbar spine" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D00F9" display="Lumbo-sacral spine" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-11180" display="Mandible" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-11133" display="Mastoid bone" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-11170" display="Maxilla" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-14668" display="Muscle of lower limb" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-13600" display="Muscle of upper limb" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-11149" display="Nasal bone" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D1600" display="Neck" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="R-FAB52" display="Neck and Chest" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="R-FAB53" display="Neck, Chest and Abdomen" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="R-FAB54" display="Neck, Chest, Abdomen and Pelvis" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-11102" display="Optic canal" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D14AE" display="Orbital structure" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-65600" display="Pancreatic duct and bile duct systems" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-61100" display="Parotid gland" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-12730" display="Patella" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D6000" display="Pelvis" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="R-FAB58" display="Pelvis and lower extremities" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
+        <Code code="T-42500" display="Abdominal aorta" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-B3000" display="Adrenal gland" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-42300" display="Aortic arch" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-A0100" display="Brain" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-45010" display="Carotid Artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-A6000" display="Cerebellum" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-45520" display="Circle of Willis" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-43000" display="Coronary artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-A0191" display="Cranial venous system" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-41068" display="Iliac and/or femoral artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-71000" display="Kidney" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-62000" display="Liver" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-65000" display="Pancreas" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-B7000" display="Parathyroid" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-44000" display="Pulmonary artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-46600" display="Renal artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-C3000" display="Spleen" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-94000" display="Testis" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-42070" display="Thoracic aorta" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-C8000" display="Thymus" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-B6000" display="Thyroid" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-83000" display="Uterus" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D4000" display="Abdomen" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-59490" display="Anus" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-60610" display="Bile duct" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-74000" display="Bladder" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-DD123" display="Bladder and urethra" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-26000" display="Bronchus" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-83200" display="Cervix" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D3000" display="Chest" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-DD163" display="Esophagus" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-AB200" display="External auditory canal" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-63000" display="Gallbladder" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D7000" display="Inguinal region" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-15001" display="Joint" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D9200" display="Knee" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-59000" display="Large intestine" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-24100" display="Larynx" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-40230" display="Lumen of blood vessel" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D3300" display="Mediastinum" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-2300C" display="Nasopharynx" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-22000" display="Paranasal sinus" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-55000" display="Pharynx" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-20101" display="Pharynx and larynx" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-59600" display="Rectum" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D2220" display="Shoulder" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-59470" display="Sigmoid colon" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D04FF" display="Spine" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-DD006" display="Trachea and bronchus" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-7000B" display="Upper urinary tract" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-73000" display="Ureter" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-88920" display="Uterus and fallopian tubes" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-48503" display="Anomalous pulmonary vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-49215" display="Antecubital vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-48403" display="Anterior cardiac vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-45530" display="Anterior communicating artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="R-FAB57" display="Abdomen and Pelvis" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-15420" display="Acromioclavicular joint" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-15750" display="Ankle joint" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-59900" display="Anus" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-280A0" display="Apex of Lung" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-12700" display="Bone of lower limb" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D0821" display="Bone of upper limb" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-04000" display="Breast" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-12770" display="Calcaneus" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-11501" display="Cervical spine" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D00F7" display="Cervico-thoracic spine" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="R-FAB55" display="Chest and Abdomen" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="R-FAB56" display="Chest" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-12310" display="Clavicle" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-11BF0" display="Coccyx" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-59300" display="Colon" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-58200" display="Duodenum" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-15430" display="Elbow joint" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D0010" display="Entire body" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-56000" display="Esophagus" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D0300" display="Extremity" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-AA000" display="Eye" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D0801" display="Eye region" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-11196" display="Facial bones" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-12710" display="Femur" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-12750" display="Fibula" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D8800" display="Finger" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D9700" display="Foot" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D8500" display="Forearm" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D8700" display="Hand" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D1100" display="Head" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D1000" display="Head and Neck" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-32000" display="Heart" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-15710" display="Hip joint" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-12410" display="Humerus" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-58600" display="Ileum" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-12340" display="Ilium" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-AB959" display="Internal Auditory Canal" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D1213" display="Jaw region" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-58400" display="Jejunum" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D9400" display="Lower leg" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D9000" display="Lower limb" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-11503" display="Lumbar spine" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D00F9" display="Lumbo-sacral spine" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-11180" display="Mandible" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-11133" display="Mastoid bone" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-11170" display="Maxilla" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-14668" display="Muscle of lower limb" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-13600" display="Muscle of upper limb" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-11149" display="Nasal bone" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D1600" display="Neck" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="R-FAB52" display="Neck and Chest" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="R-FAB53" display="Neck, Chest and Abdomen" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="R-FAB54" display="Neck, Chest, Abdomen and Pelvis" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-11102" display="Optic canal" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D14AE" display="Orbital structure" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-65600" display="Pancreatic duct and bile duct systems" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-61100" display="Parotid gland" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-12730" display="Patella" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D6000" display="Pelvis" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="R-FAB58" display="Pelvis and lower extremities" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
         <Code code="113681" display="Phantom" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="T-92000" display="Prostate" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-11300" display="Rib" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-15680" display="Sacroiliac joint" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-11AD0" display="Sacrum" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-12280" display="Scapula" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D1460" display="Sella turcica" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-12980" display="Sesamoid bones of foot" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-11100" display="Skull" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-58000" display="Small intestine" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-15610" display="Sternoclavicular joint" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-11210" display="Sternum" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-57000" display="Stomach" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-61300" display="Submandibular gland" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-15770" display="Tarsal joint" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-15290" display="Temporomandibular joint" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D9100" display="Thigh" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-11502" display="Thoracic spine" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D00F8" display="Thoraco-lumbar spine" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D8810" display="Thumb" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D9800" display="Toe" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-25000" display="Trachea" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D8200" display="Upper arm" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D8000" display="Upper limb" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-75000" display="Urethra" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-11011" display="Vertebral column and cranium" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-15460" display="Wrist joint" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-11166" display="Zygoma" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-32100" display="Atrium" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D8104" display="Axilla" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D2100" display="Back" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D6500" display="Broad ligament" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D1206" display="Buccal region of face" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D2600" display="Buttock" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-72100" display="Calyx" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-AA200" display="Cornea" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-AB001" display="Ear" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-41000" display="Endo-arterial" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-21300" display="Endo-nasal" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-23050" display="Endo-nasopharyngeal" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-82000" display="Endo-vaginal" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-40000" display="Endo-vascular" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-48000" display="Endo-venous" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-74250" display="Endo-vesical" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D4200" display="Epigastric region" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-AA810" display="Eyelid" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D1200" display="Face" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D2310" display="Flank" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-15200" display="Fontanel of skull" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D4240" display="Hypogastric region" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D161E" display="Submental" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-55300" display="Hypopharynx" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D4010" display="Intra-abdominal" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="G-A15A" display="Intra-articular" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D1400" display="Intracranial" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D6221" display="Intra-pelvic" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D4211" display="Left hypochondriac region" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D7020" display="Left inguinal region" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D4140" display="Left lower quadrant of abdomen" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D2340" display="Left lumbar region" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D4130" display="Left upper quadrant of abdomen" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-04003" display="Lower inner quadrant of breast" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-04005" display="Lower outer quadrant of breast" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D2300" display="Lumbar region" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-28000" display="Lung" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D0662" display="Mouth" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-21000" display="Nose" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D4450" display="Omental bursa" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D4600" display="Omentum" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-87000" display="Ovary" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-65010" display="Pancreatic duct" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D3136" display="Parasternal" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-91000" display="Penis" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D2700" display="Perineum" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D9310" display="Popliteal fossa" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-72000" display="Renal pelvis" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D4900" display="Retroperitoneum" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D4212" display="Right hypochondriac region" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D7010" display="Right inguinal region" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D4120" display="Right lower quadrant of abdomen" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D2342" display="Right lumbar region" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D4110" display="Right upper quadrant of abdomen" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D1160" display="Scalp" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-AA110" display="Sclera" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-98000" display="Scrotum" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-A7010" display="Spinal cord" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D4210" display="Subcostal" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D1603" display="Submandibular area" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D3213" display="Subxiphoid" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D1620" display="Supraclavicular region of neck" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-11218" display="Suprasternal notch" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-53000" display="Tongue" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-D4230" display="Umbilical region" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-04002" display="Upper inner quadrant of breast" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-04004" display="Upper outer quadrant of breast" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="A-04140" display="Vascular graft" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-32400" display="Ventricle" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="T-81000" display="Vulva" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
+        <Code code="T-92000" display="Prostate" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-11300" display="Rib" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-15680" display="Sacroiliac joint" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-11AD0" display="Sacrum" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-12280" display="Scapula" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D1460" display="Sella turcica" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-12980" display="Sesamoid bones of foot" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-11100" display="Skull" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-58000" display="Small intestine" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-15610" display="Sternoclavicular joint" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-11210" display="Sternum" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-57000" display="Stomach" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-61300" display="Submandibular gland" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-15770" display="Tarsal joint" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-15290" display="Temporomandibular joint" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D9100" display="Thigh" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-11502" display="Thoracic spine" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D00F8" display="Thoraco-lumbar spine" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D8810" display="Thumb" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D9800" display="Toe" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-25000" display="Trachea" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D8200" display="Upper arm" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D8000" display="Upper limb" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-75000" display="Urethra" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-11011" display="Vertebral column and cranium" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-15460" display="Wrist joint" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-11166" display="Zygoma" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-32100" display="Atrium" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D8104" display="Axilla" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D2100" display="Back" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D6500" display="Broad ligament" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D1206" display="Buccal region of face" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D2600" display="Buttock" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-72100" display="Calyx" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-AA200" display="Cornea" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-AB001" display="Ear" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-41000" display="Endo-arterial" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-21300" display="Endo-nasal" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-23050" display="Endo-nasopharyngeal" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-82000" display="Endo-vaginal" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-40000" display="Endo-vascular" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-48000" display="Endo-venous" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-74250" display="Endo-vesical" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D4200" display="Epigastric region" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-AA810" display="Eyelid" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D1200" display="Face" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D2310" display="Flank" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-15200" display="Fontanel of skull" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D4240" display="Hypogastric region" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D161E" display="Submental" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-55300" display="Hypopharynx" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D4010" display="Intra-abdominal" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="G-A15A" display="Intra-articular" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D1400" display="Intracranial" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D6221" display="Intra-pelvic" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D4211" display="Left hypochondriac region" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D7020" display="Left inguinal region" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D4140" display="Left lower quadrant of abdomen" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D2340" display="Left lumbar region" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D4130" display="Left upper quadrant of abdomen" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-04003" display="Lower inner quadrant of breast" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-04005" display="Lower outer quadrant of breast" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D2300" display="Lumbar region" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-28000" display="Lung" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D0662" display="Mouth" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-21000" display="Nose" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D4450" display="Omental bursa" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D4600" display="Omentum" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-87000" display="Ovary" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-65010" display="Pancreatic duct" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D3136" display="Parasternal" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-91000" display="Penis" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D2700" display="Perineum" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D9310" display="Popliteal fossa" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-72000" display="Renal pelvis" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D4900" display="Retroperitoneum" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D4212" display="Right hypochondriac region" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D7010" display="Right inguinal region" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D4120" display="Right lower quadrant of abdomen" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D2342" display="Right lumbar region" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D4110" display="Right upper quadrant of abdomen" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D1160" display="Scalp" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-AA110" display="Sclera" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-98000" display="Scrotum" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-A7010" display="Spinal cord" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D4210" display="Subcostal" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D1603" display="Submandibular area" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D3213" display="Subxiphoid" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D1620" display="Supraclavicular region of neck" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-11218" display="Suprasternal notch" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-53000" display="Tongue" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-D4230" display="Umbilical region" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-04002" display="Upper inner quadrant of breast" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-04004" display="Upper outer quadrant of breast" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="A-04140" display="Vascular graft" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-32400" display="Ventricle" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="T-81000" display="Vulva" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
     </CodeType>
     <CodeType name="mimeType">
         <Code code="application/pdf" ext="pdf"/>
@@ -394,22 +404,23 @@
         <Code code="36643-5" display="XR Chest 2V" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
         <Code code="42274-1" display="CT Abd+Pelvis WO+W contr IV" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
         <Code code="72554-6" display="CT Chest+Abd+Pelvis W contr IV" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
+        <Code code="60568-3" display="Pathology Synoptic Report" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
         <Code code="XBeR-WD" display="XBeR-WD Type Code" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
         <Code code="XX-Document" display="Unspecified Document Type. Use If Nothing Else Fits" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
     </CodeType>
     <CodeType name="contentTypeCode" classScheme="urn:uuid:aa543740-bdda-424e-8c96-df4873be8500">
-        <Code code="225728007" display="Accident and Emergency department" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="394747008" display="Health Authority" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="66280005" display="Private home-based care" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="22232009" display="Hospital" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="42665001" display="Nursing home" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="264372000" display="Pharmacy" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="35971002" display="Ambulatory care site" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="44860005" display="Free-standing rehabilitation clinic" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
-        <Code code="419955002" display="Residential institution" codingScheme="2.16.840.1.113883.6.96" system="http://www.snomed.org"/>
+        <Code code="225728007" display="Accident and Emergency department" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="394747008" display="Health Authority" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="66280005" display="Private home-based care" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="22232009" display="Hospital" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="42665001" display="Nursing home" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="264372000" display="Pharmacy" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="35971002" display="Ambulatory care site" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="44860005" display="Free-standing rehabilitation clinic" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="419955002" display="Residential institution" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
         <Code code="UNSPECIFIED-CONTENT-TYPE" display="Unspecified Clinical Activity" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
     </CodeType>
-    <CodeType name="classCode" classScheme="urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a">
+    <CodeType name="SUMMARY" classScheme="urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a">
         <Code code="REPORTS" display="Reports" codingScheme="1.3.6.1.4.1.19376.1.2.6.1" system="urn:oid:1.3.6.1.4.1.19376.1.2.6.1"/>
         <Code code="SUMMARY" display="Summary" codingScheme="1.3.6.1.4.1.19376.1.2.6.1" system="urn:oid:1.3.6.1.4.1.19376.1.2.6.1"/>
         <Code code="IMAGES" display="Images" codingScheme="1.3.6.1.4.1.19376.1.2.6.1" system="urn:oid:1.3.6.1.4.1.19376.1.2.6.1"/>
@@ -422,7 +433,7 @@
         <Code code="57016-8" display="Privacy Policy Acknowledgement Document" codingScheme="2.16.840.1.113883.6.1" system="http://loinc.org"/>
         <Code code="Consent" display="Consent" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
         <Code code="urn:oid:1.3.6.1.4.1.19376.1.2.1.1.1" display="Digital Signature" codingScheme="1.3.6.1.4.1.19376.1.2.6.1" system="urn:oid:1.3.6.1.4.1.19376.1.2.6.1"/>
-        <Code code="MPQ-classcode-1" display="MPQ Class Code 1" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
+        <Code code="MPQ-classcode-1" display="MPQ Class Code 1&#xA;" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
     </CodeType>
     <CodeType name="formatCode" classScheme="urn:uuid:a09d5840-386c-46f2-b5ad-9c3699a4309d">
         <Code code="urn:ihe:pcc:handp:2008" display="History and Physical Specification" codingScheme="1.3.6.1.4.1.19376.1.2.3" system="urn:oid:1.3.6.1.4.1.19376.1.2.3"/>
@@ -471,6 +482,7 @@
         <Code code="urn:ihe:dent:TEXT" display="Dental Text" codingScheme="1.3.6.1.4.1.19376.1.2.3" system="urn:oid:1.3.6.1.4.1.19376.1.2.3"/>
         <Code code="urn:ihe:dent:PDF" display="Dental PDF" codingScheme="1.3.6.1.4.1.19376.1.2.3" system="urn:oid:1.3.6.1.4.1.19376.1.2.3"/>
         <Code code="urn:ihe:dent:CDA:ImagingReportStructuredHeadings:2013" display="Dental CDA" codingScheme="1.3.6.1.4.1.19376.1.2.3" system="urn:oid:1.3.6.1.4.1.19376.1.2.3"/>
+        <Code code="urn:ihe:palm:aspr:2016" display="Anatomic Pathology Structured Report " codingScheme="1.3.6.1.4.1.19376.1.2.3" system="urn:oid:1.3.6.1.4.1.19376.1.2.3"/>
         <Code code="urn:ihe:pat:apsr:all:2010" display="Anatomic Pathology Structured Report All" codingScheme="1.3.6.1.4.1.19376.1.2.3" system="urn:oid:1.3.6.1.4.1.19376.1.2.3"/>
         <Code code="urn:ihe:pat:apsr:cancer:all:2010" display="Anatomic Pathology Structured Report Cancer All" codingScheme="1.3.6.1.4.1.19376.1.2.3" system="urn:oid:1.3.6.1.4.1.19376.1.2.3"/>
         <Code code="urn:ihe:pat:apsr:cancer:breast:2010" display="Anatomic Pathology Structured Report Cancer Breast" codingScheme="1.3.6.1.4.1.19376.1.2.3" system="urn:oid:1.3.6.1.4.1.19376.1.2.3"/>

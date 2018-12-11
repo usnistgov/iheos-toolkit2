@@ -1,0 +1,13 @@
+<TestPlan>
+    <Test>ReposAcceptanceTest-1113/SubmitTwoDocs</Test>
+    <TestStep id="submit">
+        <ExpectedStatus>Success</ExpectedStatus>
+	<ProvideAndRegisterTransaction>
+	    <XDSb/>
+	    <AssignUuids/>
+	    <MetadataFile>two_doc.xml</MetadataFile>
+	    <Document id="myDocId1">my_document.txt</Document>
+	    <Document id="myDocId2">my_document2.txt</Document>
+	</ProvideAndRegisterTransaction>
+    </TestStep>
+</TestPlan>

@@ -68,7 +68,8 @@ abstract public class GetSubmissionSets extends StoredQuery {
 	
 	public List<String> uuids;
 
-	void parseParameters() throws XdsInternalException, XdsException, LoggerException {
+	protected void parseParameters() throws XdsInternalException, XdsException, LoggerException {
+		super.parseParameters();
 		uuids = sqs.params.getListParm("$uuid");
 	}
 

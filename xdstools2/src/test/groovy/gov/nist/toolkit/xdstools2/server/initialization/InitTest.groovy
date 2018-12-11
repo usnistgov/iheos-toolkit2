@@ -5,6 +5,8 @@ import gov.nist.toolkit.installation.server.Installation
 import org.apache.commons.io.FileUtils
 import spock.lang.Specification
 
+import java.nio.file.Paths
+
 /**
  *
  */
@@ -12,8 +14,10 @@ class InitTest extends Specification {
 
     def 'Basic test'() {
         when:
-        File initMarker = new File(getClass().getResource('/inittest/init.txt').file)
-        File warMarker = new File(getClass().getResource('/war/war.txt').file)
+//        File initMarker = new File(getClass().getResource('/inittest/init.txt').file)
+//        File warMarker = new File(getClass().getResource('/war/war.txt').file)
+        File initMarker = Paths.get(getClass().getResource('/').toURI()).resolve('inittest/init.txt').toFile()
+        File warMarker = Paths.get(getClass().getResource('/').toURI()).resolve('war/war.txt').toFile()
 
         then:
         initMarker.exists()

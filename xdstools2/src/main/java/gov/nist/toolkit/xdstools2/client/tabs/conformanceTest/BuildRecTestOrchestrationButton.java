@@ -73,9 +73,11 @@ public class BuildRecTestOrchestrationButton extends AbstractOrchestrationButton
 
         String msg = testContext.verifyTestContext(testingAClient);
         if (msg != null) {
+            testTab.getMainView().clearLoadingMessage();
             testContextView.launchDialog(msg);
             return;
         }
+
 
         initializationResultsPanel.clear();
         testTab.getMainView().showLoadingMessage("Initializing...");
@@ -107,7 +109,7 @@ public class BuildRecTestOrchestrationButton extends AbstractOrchestrationButton
                 testTab.setOrchestrationResponse(orchResponse);
                 testTab.setRecOrchestrationResponse(orchResponse);
 
-                initializationResultsPanel.add(new HTML("Initialization Complete"));
+                initializationResultsPanel.add(new HTML("Initialization complete"));
 
                 initializationResultsPanel.add(new HTML("<h2>Format</h2>"));
 

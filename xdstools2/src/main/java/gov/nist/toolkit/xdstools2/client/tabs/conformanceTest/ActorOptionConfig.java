@@ -44,6 +44,38 @@ public class ActorOptionConfig extends ActorOption {
         this.profileId = profileId;
     }
 
+    public ActorOptionConfig(TabConfig actorTabConfig) {
+        TabConfig lastVisibleProfileTabConfig = null;
+        TabConfig lastVisibleOptionTabConfig = null;
+        if (actorTabConfig!=null && actorTabConfig.hasChildren() ) {
+            TabConfig profiles = actorTabConfig.getFirstChildTabConfig();
+            if ("Profiles".equals(profiles.getLabel())) {
+                for (TabConfig tc : profiles.getChildTabConfigs()) {
+                    if (!tc.isVisible()) {
+                        continue;
+                    }
+                    lastVisibleProfileTabConfig = tc;
+                }
+            }
+        }
+        if (lastVisibleProfileTabConfig!=null && lastVisibleProfileTabConfig.hasChildren()) {
+            TabConfig options = lastVisibleProfileTabConfig.getFirstChildTabConfig();
+            if ("Options".equals(options.getLabel())) {
+                for (TabConfig tc : options.getChildTabConfigs()) {
+                    if (!tc.isVisible()) {
+                        continue;
+                    }
+                    lastVisibleOptionTabConfig = tc;
+                }
+            }
+        }
+        if (lastVisibleOptionTabConfig!=null) {
+            this.actorTypeId = actorTabConfig.getTcCode();
+            this.profileId = IheItiProfile.find(lastVisibleProfileTabConfig.getTcCode());
+            this.optionId = lastVisibleOptionTabConfig.getTcCode();
+        }
+    }
+
     /**
      * Tests for options are listed in collections as
      * actor
@@ -70,8 +102,20 @@ public class ActorOptionConfig extends ActorOption {
         return actorTypeId != null && ActorType.FHIR_SUPPORT.getActorCode().equals(actorTypeId);
     }
 
+    public boolean isDocAdmin() {
+        return actorTypeId != null && ActorType.DOC_ADMIN.getActorCode().equals(actorTypeId);
+    }
+
     public boolean isSrc() {
         return actorTypeId != null && ActorType.DOC_SOURCE.getActorCode().equals(actorTypeId);
+    }
+
+    public boolean isIsr() {
+       return actorTypeId != null && ActorType.ISR.getActorCode().equals(actorTypeId);
+    }
+
+    public boolean isXds() {
+        return profileId != null && IheItiProfile.XDS.equals(profileId);
     }
 
     public boolean isMhd() {
@@ -108,8 +152,8 @@ public class ActorOptionConfig extends ActorOption {
                 && ActorType.RESPONDING_IMAGING_GATEWAY.getActorCode().equals(actorTypeId);
     }
 
-    public boolean isEdgeServerSut() {
-        return false;
+    public boolean isEs() {
+        return actorTypeId != null && ActorType.RSNA_EDGE_DEVICE.getShortName().equals(actorTypeId);
     }
 
     public boolean isOnDemand() {

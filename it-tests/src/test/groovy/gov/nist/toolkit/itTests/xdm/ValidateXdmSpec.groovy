@@ -7,6 +7,9 @@ import gov.nist.toolkit.toolkitServicesCommon.resource.xdm.XdmItem
 import gov.nist.toolkit.toolkitServicesCommon.resource.xdm.XdmReport
 import gov.nist.toolkit.toolkitServicesCommon.resource.xdm.XdmRequestResource
 import spock.lang.Shared
+
+import java.nio.file.Paths
+
 /**
  *
  */
@@ -33,7 +36,7 @@ class ValidateXdmSpec extends ToolkitSpecification {
 
     def 'validate ccda xdm'() {
         when:
-        byte[] bytes = this.getClass().getResource('/testdata/xdm/Ccda.zip').bytes
+        byte[] bytes = Paths.get(this.getClass().getResource('/').toURI()).resolve('testdata/xdm/Ccda.zip').bytes
         XdmRequestResource request = new XdmRequestResource()
         request.zip = bytes
         XdmValidator validator = spi.createXdmValidator()

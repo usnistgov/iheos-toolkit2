@@ -418,11 +418,13 @@ class MhdGenerator {
                     if (dr.context?.event)
                         addClassificationFromCodeableConcept(builder, dr.context.event?.first(), 'urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4', entryUUID)
 
+                    assert dr.masterIdentifier, 'DocumentReference.masterIdentifier not present - declared by IHE to be [1..1]'
+                    assert dr.masterIdentifier.value, 'DocumentReference.masterIdentifier has no value - declared by IHE to be [1..1]'
                     String masterId
                     if (dr.masterIdentifier?.value) {
                         masterId = unURN(dr.masterIdentifier.value)
-                    } else {
-                        masterId = UniqueIdAllocator.getInstance().allocate()
+//                    } else {
+//                        masterId = UniqueIdAllocator.getInstance().allocate()
                     }
                     addExternalIdentifier(builder, 'urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab', masterId, rMgr.newId(), entryUUID, 'XDSDocumentEntry.uniqueId')
 
@@ -569,11 +571,14 @@ class MhdGenerator {
             if (dm.type)
                 addClassificationFromCodeableConcept(builder, dm.type, 'urn:uuid:aa543740-bdda-424e-8c96-df4873be8500', entryUUID)
 
+            assert dm.masterIdentifier, 'DocumentManifest.masterIdentifier not present - declared by IHE to be [1..1]'
+            assert dm.masterIdentifier.value, 'DocumentManifest.masterIdentifier has no value - declared by IHE to be [1..1]'
+
             String masterId
             if (dm.masterIdentifier?.value)
                 masterId = dm.masterIdentifier.value
-            else
-                masterId = UniqueIdAllocator.getInstance().allocate()
+//            else
+//                masterId = UniqueIdAllocator.getInstance().allocate()
             addExternalIdentifier(builder, 'urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8', unURN(masterId), rMgr.newId(), entryUUID, 'XDSSubmissionSet.uniqueId')
 
             if (dm.source?.value) {

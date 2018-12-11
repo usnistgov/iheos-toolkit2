@@ -214,7 +214,7 @@ public class SubmissionStructure {
 
 		if (!m.getFolderIds().contains(source)) {
 			if (isUUID(source)) {
-				if (rvi != null && !rvi.isFolder(source))
+				if (rvi != null && rvi.hasRegistryIndex() && !rvi.isFolder(source))
 					return false;
 			} else {
 				return false;
@@ -223,7 +223,7 @@ public class SubmissionStructure {
 
 		if (!m.getExtrinsicObjectIds().contains(target)) {
 			if (isUUID(target)) {
-				if (rvi != null && !rvi.isDocumentEntry(target))
+				if (rvi != null && rvi.hasRegistryIndex() && !rvi.isDocumentEntry(target))
 					return false;
 			} else {
 				return false;
@@ -317,7 +317,7 @@ public class SubmissionStructure {
 		} else {
 			// in registry?
 			if (isUUID(tsource)) {
-				if (rvi != null && !rvi.isFolder(tsource))
+				if (rvi != null && rvi.hasRegistryIndex() && !rvi.isFolder(tsource))
 					return false;
 			} else {
 				return false;
@@ -331,7 +331,7 @@ public class SubmissionStructure {
 		} else {
 			// in registry?
 			if (isUUID(ttarget)) {
-				if (rvi != null && !rvi.isDocumentEntry(ttarget))
+				if (rvi != null && rvi.hasRegistryIndex() && !rvi.isDocumentEntry(ttarget))
 					return false;
 			} else {
 				return false;
@@ -400,6 +400,9 @@ public class SubmissionStructure {
 		}
 	}
 
+	List<String> muAssocTypes =  Arrays.asList("urn:ihe:iti:2010:AssociationType:SubmitAssociation", "urn:ihe:iti:2010:AssociationType:UpdateAvailabilityStatus");
+
+
 	void evalRelationship(ErrorRecorder er, OMElement assoc, ValidationContext vc) {
 		String source = m.getAssocSource(assoc);
 		String target = m.getAssocTarget(assoc);
@@ -411,8 +414,22 @@ public class SubmissionStructure {
 		if (!isDocumentEntry(source) && !vc.isMU)
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, objectDescription(assoc) + ": with type " + simpleAssocType(type) + " must reference a DocumentEntry in submission with its sourceObject attribute, it references " + objectDescription(source), this, "ITI TF-3: 4.1.6.1");
 
+		if (type.equals("urn:ihe:iti:2010:AssociationType:SubmitAssociation")) {
+			if (!vc.isMU)
+				er.err(XdsErrorCode.Code.XDSMetadataUpdateError, "Metadata Update feature disabled", null, null);
+			if (!source.equals(m.getSubmissionSetId()))
+				er.err(XdsErrorCode.Code.XDSMetadataUpdateError, "SubmitAssociation Association Type must reference the SubmissionSet with its sourceObject attribute", null, null);
+			if (!m.isAssociation(target))
+				er.err(XdsErrorCode.Code.XDSMetadataUpdateError, "SubmitAssociation Association Type must reference an Association in the submission with its targetObject attribute", null, null);
+			return;
+		}
+
+
 		if (containsObject(target)) { // This only checks for a circular reference but not the registry collection
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, objectDescription(assoc) + ": with type " + simpleAssocType(type) + " must reference a DocumentEntry in the registry with its targetObject attribute, it references " + objectDescription(target) + " which is in the submission", this, "ITI TF-3: 4.1.6.1");
+			XdsErrorCode.Code err = XdsErrorCode.Code.XDSRegistryMetadataError;
+			if (muAssocTypes.contains(type))
+				err = XdsErrorCode.Code.XDSMetadataUpdateError;
+			er.err(err, objectDescription(assoc) + ": with type " + simpleAssocType(type) + " must reference a DocumentEntry in the registry with its targetObject attribute, it references " + objectDescription(target) + " which is in the submission", this, "ITI TF-3: 4.1.6.1");
 		}
 
 		if (!isUUID(target)) {
@@ -935,4 +952,5 @@ public class SubmissionStructure {
 	//	void err(String msg) {
 	//		rel.add_error(MetadataSupport.XDSRegistryMetadataError, msg, "Structure.java", null);
 	//	}
+
 }

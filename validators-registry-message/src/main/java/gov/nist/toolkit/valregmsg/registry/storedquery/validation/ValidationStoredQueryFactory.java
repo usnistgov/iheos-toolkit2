@@ -114,6 +114,10 @@ public class ValidationStoredQueryFactory extends StoredQueryFactory {
 			setTestMessage("FindDocuments");
 			storedQueryImpl = new ValidationFindDocuments(sqs);
 		}
+		else if (query_id.equals(MetadataSupport.SQ_FindDocumentsByRefId)) {
+			setTestMessage("FindDocumentsByRefId");
+			storedQueryImpl = new ValidationFindDocumentsByRefId(sqs);
+		}
 		else if (query_id.equals(MetadataSupport.SQ_FindSubmissionSets)) {
 			setTestMessage("FindSubmissionSets");
 			storedQueryImpl = new ValidationFindSubmissionSets(sqs);

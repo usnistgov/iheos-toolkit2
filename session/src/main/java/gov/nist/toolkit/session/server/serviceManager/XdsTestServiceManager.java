@@ -61,7 +61,9 @@ import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.*;
 
 
@@ -156,7 +158,21 @@ public class XdsTestServiceManager extends CommonService {
 		return getTestOverview(mesaTestSession, testInstance);
 	}
 
-	static public List<Result> runTestplan(String environment, TestSession testSession, SiteSpec siteSpec, TestInstance testId, List<String> sections, Map<String, String> params, boolean stopOnFirstError, Session myTestSession, XdsTestServiceManager xdsTestServiceManager, boolean persistResult) {
+	/**
+	 * Wrapper to TestRunner#run
+	 * Expects an instance of XdsTestServiceManager
+	 * @param xdsTestServiceManager
+	 * @param environment
+	 * @param testSession
+	 * @param siteSpec
+	 * @param testId
+	 * @param sections
+	 * @param params
+	 * @param stopOnFirstError
+	 * @param persistResult
+	 * @return
+	 */
+	static public List<Result> runTestInstance(XdsTestServiceManager xdsTestServiceManager, String environment, TestSession testSession, SiteSpec siteSpec, TestInstance testId, List<String> sections, Map<String, String> params, boolean stopOnFirstError, boolean persistResult) {
 
 		List<Result> results; // This wrapper does two important things of interest: 1) Set patient id if it is available in the Params map and 2) Eventually calls the UtilityRunner
 		try {
@@ -192,21 +208,26 @@ public class XdsTestServiceManager extends CommonService {
 				System.getProperty("javax.net.ssl.trustStore");
 
 		if (tsSysProp == null) {
-			String tsFileName = "/gazelle/gazelle_sts_cert_truststore.jks";
-			URL tsURL = getClass().getResource(tsFileName); // Should this be a toolkit system property variable?
-			if (tsURL != null) {
-				File tsFile = new File(tsURL.getFile().replaceAll("%20"," "));
-				System.setProperty("javax.net.ssl.trustStore", tsFile.toString());
-				System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
-				System.setProperty("javax.net.ssl.trustStoreType", "JKS");
-			} else {
-				throw new ToolkitRuntimeException("Cannot find truststore by URL: " + tsURL);
+			String tsFileName = "gazelle/gazelle_sts_cert_truststore.jks";
+			try {
+				File tsFile = null;
+				tsFile = Paths.get(getClass().getResource("/").toURI()).resolve(tsFileName).toFile(); // Should this be a toolkit system property variable?
+				if (tsFile != null) {
+					tsFile = new File(tsFile.toString().replaceAll("%20", " "));
+					System.setProperty("javax.net.ssl.trustStore", tsFile.toString());
+					System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
+					System.setProperty("javax.net.ssl.trustStoreType", "JKS");
+				} else {
+					throw new ToolkitRuntimeException("Cannot find truststore by URL: " + tsFileName);
+				}
+			} catch (URISyntaxException urise) {
+				throw new ToolkitRuntimeException(urise.toString());
 			}
 
 		}
 	}
 
-	public List<Result> querySts(String siteName, String query, Map<String, String> params, boolean persistResult, TestSession testSession) {
+	public List<Result> querySts(SiteSpec siteSpec, String query, Map<String, String> params, boolean persistResult, TestSession testSession) {
 		setGazelleTruststore();
 
 		String environmentName = "default";
@@ -214,10 +235,9 @@ public class XdsTestServiceManager extends CommonService {
 		mySession.setEnvironment(environmentName);
 
 		// Site must exist
-		SiteSpec stsSpec =  new SiteSpec(siteName, testSession);
 		if (mySession.getTestSession() == null)
 			mySession.setTestSession(testSession);
-		mySession.setSiteSpec(stsSpec);
+		mySession.setSiteSpec(siteSpec);
 		mySession.setTls(true); // Required for STS
 
 		String stsTpName = Installation.instance().propertyServiceManager().getStsTpName();
@@ -228,7 +248,7 @@ public class XdsTestServiceManager extends CommonService {
 		sections.add(query);
 
 		XdsTestServiceManager xtsm = new XdsTestServiceManager(mySession);
-		List<Result> results =  runTestplan(environmentName,testSession,stsSpec,testInstance,sections,params,true,mySession,xtsm, persistResult);
+		List<Result> results =  runTestInstance(xtsm, environmentName,testSession,siteSpec,testInstance,sections,params,true, persistResult);
 
 		return results;
 	}
@@ -1070,50 +1090,51 @@ public class XdsTestServiceManager extends CommonService {
 							String response = null;
 							try {
 								response = testStepLogContentDTO.getResult();  // throws exception on Direct messages (no response)
+								if (response != null && response.trim().startsWith("<")) {
+									OMElement rdsr = Util.parse_xml(response);
+									if (!rdsr.getLocalName().equals(
+											"RetrieveDocumentSetResponse"))
+										rdsr = XmlUtil
+												.firstDecendentWithLocalName(
+														rdsr,
+														"RetrieveDocumentSetResponse");
+									if (rdsr != null) {
+
+										// Issue 103: We need to propagate the response status since the interpretation of a StepResult of "Pass" to "Success" is not detailed enough with the additional status of PartialSuccess. This fixes the issue of RetrieveDocs tool, displaying a "Success" when it is actually a PartialSuccess.
+										try {
+											String rrStatusValue = XmlUtil.firstDecendentWithLocalName(rdsr, "RegistryResponse").getAttributeValue(new QName("status"));
+											stepResult.setRegistryResponseStatus(rrStatusValue);
+										} catch (Throwable t) {
+											logger.error(t.toString());
+										}
+
+										RetrievedDocumentsModel rdm = new RetrieveResponseParser(rdsr).get();
+
+										Map<String, RetrievedDocumentModel> resMap = rdm.getMap();
+										for (String docUid : resMap.keySet()) {
+											RetrievedDocumentModel ri = resMap.get(docUid);
+											Document doc = new Document();
+											doc.uid = ri.getDocUid();
+											doc.repositoryUniqueId = ri
+													.getRepUid();
+											doc.newUid = ri.getNewDoc_uid();
+											doc.newRepositoryUniqueId = ri.getNewRep_uid();
+											doc.mimeType = ri.getContent_type();
+											doc.homeCommunityId = ri.getHome();
+											doc.cacheURL = getRepositoryCacheWebPrefix()
+													+ doc.uid
+													+ LogFileContentBuilder.getRepositoryCacheFileExtension(doc.mimeType);
+
+											if (stepResult.documents == null)
+												stepResult.documents = new ArrayList<Document>();
+											stepResult.documents.add(doc);
+										}
+									}
+								}
 							} catch (Exception e) {
 
 							}
-							if (response != null && response.trim().startsWith("<")) {
-								OMElement rdsr = Util.parse_xml(response);
-								if (!rdsr.getLocalName().equals(
-										"RetrieveDocumentSetResponse"))
-									rdsr = XmlUtil
-											.firstDecendentWithLocalName(
-													rdsr,
-													"RetrieveDocumentSetResponse");
-								if (rdsr != null) {
 
-									// Issue 103: We need to propagate the response status since the interpretation of a StepResult of "Pass" to "Success" is not detailed enough with the additional status of PartialSuccess. This fixes the issue of RetrieveDocs tool, displaying a "Success" when it is actually a PartialSuccess.
-									try {
-										String rrStatusValue = XmlUtil.firstDecendentWithLocalName(rdsr, "RegistryResponse").getAttributeValue(new QName("status"));
-										stepResult.setRegistryResponseStatus(rrStatusValue);
-									} catch (Throwable t) {
-										logger.error(t.toString());
-									}
-
-									RetrievedDocumentsModel rdm = new RetrieveResponseParser(rdsr).get();
-
-									Map<String, RetrievedDocumentModel> resMap = rdm.getMap();
-									for (String docUid : resMap.keySet()) {
-										RetrievedDocumentModel ri = resMap.get(docUid);
-										Document doc = new Document();
-										doc.uid = ri.getDocUid();
-										doc.repositoryUniqueId = ri
-												.getRepUid();
-										doc.newUid = ri.getNewDoc_uid();
-										doc.newRepositoryUniqueId = ri.getNewRep_uid();
-										doc.mimeType = ri.getContent_type();
-										doc.homeCommunityId = ri.getHome();
-										doc.cacheURL = getRepositoryCacheWebPrefix()
-												+ doc.uid
-												+ LogFileContentBuilder.getRepositoryCacheFileExtension(doc.mimeType);
-
-										if (stepResult.documents == null)
-											stepResult.documents = new ArrayList<Document>();
-										stepResult.documents.add(doc);
-									}
-								}
-							}
 						}
 					} catch (Exception e) {
 						result.assertions.add(

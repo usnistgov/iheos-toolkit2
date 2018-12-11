@@ -16,14 +16,15 @@ import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
  */
 public class ConformanceTestMainView {
     private final FlowPanel toolPanel = new FlowPanel();   // Outer-most panel for the tool
+
+    private final Anchor indexAnchor = new Anchor("Overview");
     private final FlowPanel initializationPanel = new FlowPanel();
-    private final FlowPanel testsPanel = new FlowPanel();  // panel for displaying tests
     private final FlowPanel tabBarPanel = new FlowPanel();
     private final TabBar actorTabBar = new TabBar();            // tab bar at the top for selecting actor types
     private final UserDefinedTabBar profileTabBar = new UserDefinedTabBar();
     private final UserDefinedTabBar optionsTabBar = new UserDefinedTabBar();
-    private final Anchor indexAnchor = new Anchor("Overview");
 
+    private final FlowPanel testsPanel = new FlowPanel();  // panel for displaying tests
     private HTML testSessionDescription = new HTML();
     private FlowPanel testSessionDescriptionPanel = new FlowPanel();
     private HTML loadingMessage = new HTML();

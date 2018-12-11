@@ -102,7 +102,7 @@ class ProxyHandler implements HttpRequestHandler {
 
         System.out.println(">> Request URI: " + request.getRequestLine().getUri());
 
-        // Remove hop-by-hop headers
+        // REMOVE hop-by-hop headers
         request.removeHeaders(HTTP.TARGET_HOST);
         request.removeHeaders(HTTP.CONTENT_LEN);
         request.removeHeaders(HTTP.TRANSFER_ENCODING);
@@ -166,7 +166,7 @@ class ProxyHandler implements HttpRequestHandler {
 
             this.httpexecutor.postProcess(response, this.httpproc, context);
 
-            // Remove hop-by-hop headers
+            // REMOVE hop-by-hop headers
             targetResponse.removeHeaders(HTTP.CONTENT_LEN);
             targetResponse.removeHeaders(HTTP.TRANSFER_ENCODING);
             targetResponse.removeHeaders(HTTP.CONN_DIRECTIVE);

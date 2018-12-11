@@ -3,7 +3,9 @@ package gov.nist.toolkit.fhir.simulators.proxy.transforms
 import ca.uhn.fhir.context.FhirContext
 import gov.nist.toolkit.fhir.server.resourceMgr.FileSystemResourceCache
 import gov.nist.toolkit.fhir.server.utility.WrapResourceInHttpResponse
+import gov.nist.toolkit.fhir.simulators.proxy.util.BinaryPartSpec
 import gov.nist.toolkit.fhir.simulators.proxy.util.ContentResponseTransform
+import gov.nist.toolkit.fhir.simulators.proxy.util.MultipartParser2
 import gov.nist.toolkit.fhir.simulators.proxy.util.RetrieveResponseParser
 import gov.nist.toolkit.simcoresupport.proxy.exceptions.SimProxyTransformException
 import gov.nist.toolkit.simcoresupport.proxy.util.SimProxyBase
@@ -11,6 +13,7 @@ import gov.nist.toolkit.testengine.fhir.FhirSupport
 import gov.nist.toolkit.utilities.io.Io
 import org.apache.commons.httpclient.HttpStatus
 import org.apache.http.Header
+import org.apache.http.HttpEntity
 import org.apache.http.HttpResponse
 import org.apache.http.ProtocolVersion
 import org.apache.http.entity.ByteArrayEntity
@@ -33,7 +36,10 @@ class RetrieveResponseToFhirTransform implements ContentResponseTransform {
             Header contentTypeHeader = response.getHeaders('Content-Type')[0]
             if (!contentTypeHeader.value.startsWith('multipart'))
                 throw new SimProxyTransformException('Not Implemented')
-            String partContent = Io.getStringFromInputStream(response.getEntity().content)
+            HttpEntity entity = response.getEntity();
+            byte[] partContent = Io.getBytesFromInputStream(entity.content)
+            String partString = new String(partContent)
+            List<BinaryPartSpec> parts = MultipartParser2.parse(partContent)
             List<RetrieveResponseParser.RetrieveContent> contents = new RetrieveResponseParser().parse(partContent)
             if (contents.size() == 0) {
                 response.statusCode = HttpStatus.SC_NOT_FOUND

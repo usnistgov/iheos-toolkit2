@@ -8,6 +8,9 @@ import gov.nist.toolkit.valregmetadata.top.MetadataValidator
 import gov.nist.toolkit.valsupport.client.ValidationContext
 import org.apache.log4j.BasicConfigurator
 import spock.lang.Specification
+
+import java.nio.file.Paths
+
 /**
  *
  */
@@ -25,7 +28,7 @@ class SimpleMetadataValidatorTest extends Specification {
         ValidationContext vc = new ValidationContext()
         vc.isRequest = true
         vc.isPnR = true
-        vc.codesFilename = getClass().getResource('/codes.xml').file
+        vc.codesFilename = Paths.get(this.getClass().getResource('/').toURI()).resolve('codes.xml').toFile()
 
         ErrorRecorder er = new GwtErrorRecorder()
 //        ErrorRecorder er = new TextErrorRecorder()

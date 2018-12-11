@@ -14,6 +14,7 @@ import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest;
 import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
+import gov.nist.toolkit.services.client.PifType;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.session.client.TestSessionStats;
@@ -170,6 +171,9 @@ public interface ToolkitServiceAsync {
     void setToolkitProperties(SetToolkitPropertiesRequest request, AsyncCallback<String> callback);
     void reloadPropertyFile(AsyncCallback<Boolean> callback);
 
+    void getOrchestrationProperties(GetOrchestrationPropertiesRequest request, AsyncCallback<Map<String, String>> callback);
+    void getOrchestrationPifType(GetOrchestrationPifTypeRequest request, AsyncCallback<PifType> callback);
+
     void getActorTypeNames(CommandContext context,AsyncCallback<List<String>> callback);
     void getNewSimulator(GetNewSimulatorRequest request, AsyncCallback<Simulator> callback);
     void getSimConfigs(GetSimConfigsRequest request,AsyncCallback<List<SimulatorConfig>> callback);
@@ -248,6 +252,7 @@ public interface ToolkitServiceAsync {
 	void buildRecTestOrchestration(BuildRecTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 	void buildRSNAEdgeTestOrchestration(BuildRSNAEdgeTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
     void buildIdcTestOrchestration(IdcOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+    void buildEsTestOrchestration(BuildEsTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 	void getSiteNamesWithRIG(CommandContext context, AsyncCallback<List<String>> callback);
 	void getSiteNamesWithIDS(CommandContext context, AsyncCallback<List<String>> callback);
     void getSiteNamesWithRepository(CommandContext context, AsyncCallback<List<String>> callback);
@@ -281,7 +286,9 @@ public interface ToolkitServiceAsync {
 
     void getDatasetContent(GetDatasetElementContentRequest var1, AsyncCallback<String> callback);
 
+    void buildDocAdminTestOrchestration(BuildDocAdminTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
     void buildSrcTestOrchestration(BuildSrcTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+    void buildIsrTestOrchestration(BuildIsrTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 
     void buildFhirSupportOrchestration(FhirSupportOrchestrationRequest var1, AsyncCallback<RawResponse> callback);
 

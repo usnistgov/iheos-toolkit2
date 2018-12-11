@@ -39,12 +39,12 @@ public class RepositoryActorFactory extends AbstractActorFactory implements IAct
 		isRecipient = true;
 	}
 
-	public Simulator buildNew(SimManager simm, SimId simId, boolean configureBase) throws Exception {
+	public Simulator buildNew(SimManager simm, SimId simId, String environment, boolean configureBase) throws Exception {
 		ActorType actorType = ActorType.REPOSITORY;
 //		logger.debug("Creating " + actorType.getName() + " with id " + simId);
 		SimulatorConfig sc;
 		if (configureBase)
-			sc = configureBaseElements(actorType, simId, simId.getTestSession());
+			sc = configureBaseElements(actorType, simId, simId.getTestSession(), environment);
 		else
 			sc = new SimulatorConfig();
 
@@ -57,8 +57,12 @@ public class RepositoryActorFactory extends AbstractActorFactory implements IAct
 			addFixedEndpoint(sc, SimulatorProperties.pnrTlsEndpoint, actorType, TransactionType.PROVIDE_AND_REGISTER, true);
 			addFixedEndpoint(sc, SimulatorProperties.retrieveEndpoint, actorType, TransactionType.RETRIEVE, false);
 			addFixedEndpoint(sc, SimulatorProperties.retrieveTlsEndpoint, actorType, TransactionType.RETRIEVE, true);
+			addFixedEndpoint(sc, SimulatorProperties.removeDocumentsEndpoint, actorType, TransactionType.REMOVE_DOCUMENTS, false);
+			addFixedEndpoint(sc, SimulatorProperties.removeDocumentsTlsEndpoint, actorType, TransactionType.REMOVE_DOCUMENTS, true);
 			addEditableNullEndpoint(sc, SimulatorProperties.registerEndpoint, actorType, TransactionType.REGISTER, false);
 			addEditableNullEndpoint(sc, SimulatorProperties.registerTlsEndpoint, actorType, TransactionType.REGISTER, true);
+			addEditableConfig(sc, SimulatorProperties.REMOVE_DOCUMENTS, ParamType.BOOLEAN, false);
+
 		}
 
 		return new Simulator(sc);
@@ -108,6 +112,19 @@ public class RepositoryActorFactory extends AbstractActorFactory implements IAct
 				RepositoryType.NONE,
 				asc.get(SimulatorProperties.pnrTlsEndpoint).asString(),
 				true, 
+				isAsync));
+
+		site.addTransaction(new TransactionBean(
+				TransactionType.REMOVE_DOCUMENTS.getCode(),
+				RepositoryType.NONE,
+				asc.get(SimulatorProperties.removeDocumentsEndpoint).asString(),
+				false,
+				isAsync));
+		site.addTransaction(new TransactionBean(
+				TransactionType.REMOVE_DOCUMENTS.getCode(),
+				RepositoryType.NONE,
+				asc.get(SimulatorProperties.removeDocumentsTlsEndpoint).asString(),
+				true,
 				isAsync));
 
 		site.addRepository(new TransactionBean(

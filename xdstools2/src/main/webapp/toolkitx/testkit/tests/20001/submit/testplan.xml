@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>20001/submit</Test>
+  <TestStep id="submit">
+	<Goal>Successfull submit two approved documents to the Document Registry.</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <RegisterTransaction>
+      <XDSb/>
+      <UseReport reportName="$patientid$" test="15817" section="pif" step="step" useAs="$patientid$"/>
+	  <NoPatientId/>
+      <MetadataFile>two_doc.xml</MetadataFile>
+    </RegisterTransaction>
+  </TestStep>
+</TestPlan>

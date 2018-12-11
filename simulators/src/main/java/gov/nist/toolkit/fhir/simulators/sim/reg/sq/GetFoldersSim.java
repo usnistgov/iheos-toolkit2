@@ -43,11 +43,26 @@ public class GetFoldersSim extends GetFolders {
 		} else if (fol_uid != null) {
 			List<Fol> des = new ArrayList<Fol>();
 			for (String uid : fol_uid) {
-				Fol f = mc.folCollection.getByUid(uid);
-				if (f != null)
-					des.add(f);
+				List<Fol> fs = mc.folCollection.getByUid(uid);
+				des.addAll(fs);
 			}
 			
+			List<String> uuidList = new ArrayList<String>();
+			for (Fol f : des) {
+				uuidList.add(f.getId());
+			}
+			if (sqs.returnType == QueryReturnType.LEAFCLASS || sqs.returnType == QueryReturnType.LEAFCLASSWITHDOCUMENT) {
+				m = mc.loadRo(uuidList);
+			} else {
+				m.mkObjectRefs(uuidList);
+			}
+		} else if (fol_lid != null) {
+			List<Fol> des = new ArrayList<Fol>();
+			for (String lid : fol_lid) {
+				List<Fol> fs = mc.folCollection.getByLid(lid);
+				des.addAll(fs);
+			}
+
 			List<String> uuidList = new ArrayList<String>();
 			for (Fol f : des) {
 				uuidList.add(f.getId());

@@ -18,6 +18,7 @@ import gov.nist.toolkit.fhir.simulators.support.StoredDocument;
 import gov.nist.toolkit.fhir.simulators.support.od.TransactionUtil;
 import gov.nist.toolkit.installation.server.ExternalCacheManager;
 import gov.nist.toolkit.installation.server.Installation;
+import gov.nist.toolkit.installation.server.PropertyManager;
 import gov.nist.toolkit.installation.server.PropertyServiceManager;
 import gov.nist.toolkit.installation.shared.TestCollectionCode;
 import gov.nist.toolkit.installation.shared.TestSession;
@@ -27,15 +28,11 @@ import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
 import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
-import gov.nist.toolkit.results.client.CodesResult;
-import gov.nist.toolkit.results.client.DocumentEntryDetail;
-import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.Test;
-import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.results.client.TestLogs;
+import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest;
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationResponse;
 import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
+import gov.nist.toolkit.services.client.PifType;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.server.RawResponseBuilder;
 import gov.nist.toolkit.services.server.SimulatorServiceManager;
@@ -79,6 +76,7 @@ import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import gov.nist.toolkit.xdsexception.client.TkNotFoundException;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdstools2.client.GazelleXuaUsername;
 import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.ActorOptionConfig;
@@ -100,17 +98,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class ToolkitServiceImpl extends RemoteServiceServlet implements
@@ -653,6 +646,12 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return new OrchestrationManager().buildIdcTestEnvironment(s, request);
     }
     @Override
+    public RawResponse buildEsTestOrchestration(BuildEsTestOrchestrationRequest request) {
+        Session s = getSession();
+        if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+        return new OrchestrationManager().buildEstTestEnvironment(s, request.getEsOrchestrationRequest());
+    }
+    @Override
     public RawResponse buildRSNAEdgeTestOrchestration(BuildRSNAEdgeTestOrchestrationRequest request) throws Exception{
         installCommandContext(request);
         Session s = getSession();
@@ -661,11 +660,27 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
 
     @Override
+    public RawResponse buildDocAdminTestOrchestration(BuildDocAdminTestOrchestrationRequest request) throws Exception {
+        installCommandContext(request);
+        Session s = getSession();
+        if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+        return new OrchestrationManager().buildDocAdminTestEnvironment(s, request.getDocAdminOrchestrationRequest());
+    }
+
+    @Override
     public RawResponse buildSrcTestOrchestration(BuildSrcTestOrchestrationRequest request) throws Exception {
         installCommandContext(request);
         Session s = getSession();
         if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
         return new OrchestrationManager().buildSrcTestEnvironment(s, request.getSrcOrchestrationRequest());
+    }
+
+    @Override
+    public RawResponse buildIsrTestOrchestration(BuildIsrTestOrchestrationRequest request) throws Exception {
+        installCommandContext(request);
+        Session s = getSession();
+        if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+        return new OrchestrationManager().buildIsrTestEnvironment(s, request.getIsrOrchestrationRequest());
     }
 
 
@@ -1160,6 +1175,42 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
             throw new Exception(t.getMessage());
         }
     }
+
+    @Override
+    public Map<String, String> getOrchestrationProperties(GetOrchestrationPropertiesRequest request) throws Exception {
+       installCommandContext(request);
+       File orchestrationPropFile = Installation.instance().orchestrationPropertiesFile(request.getTestSession(), request.getActorTypeShortName());
+       if (orchestrationPropFile.exists()) {
+           Properties props = new Properties();
+           props.load(new FileInputStream(orchestrationPropFile));
+           return PropertyManager.xformProperties2Map(props);
+       }
+       throw new TkNotFoundException("Error: Property file does not exist ", orchestrationPropFile.toString());
+    }
+
+    @Override
+    public PifType getOrchestrationPifType(GetOrchestrationPifTypeRequest request) throws Exception {
+        installCommandContext(request);
+        Site site = request.getSite();
+        // It is possible SUT can be Null in the case it was not selected in Test Context
+        if (site == null) {
+            return PifType.NONE;
+        }
+
+        // Auto-decide which Pif mode is appropriate
+        if (site.isSimulator()) {
+            return PifType.V2;
+        } else {
+            // Site XML File
+            if ((site.pifHost!=null && "".equals(site.pifHost)) || site.pifHost == null || (site.pifPort!=null && "".equals(site.pifPort)) || site.pifPort == null) {
+                return PifType.NONE;
+            } else if (site.pifHost != null && site.pifPort != null) {
+                return PifType.V2;
+            }
+        }
+        return PifType.NONE;
+    }
+
     @Override
     public boolean isGazelleConfigFeedEnabled(CommandContext context) throws Exception {
         installCommandContext(context);
@@ -1361,7 +1412,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public Simulator getNewSimulator(GetNewSimulatorRequest request) throws Exception {
         installCommandContext(request);
-        return new SimulatorServiceManager(session()).getNewSimulator(request.getActorTypeName(), request.getSimId());
+        return new SimulatorServiceManager(session()).getNewSimulator(request.getActorTypeName(), request.getSimId(), getDefaultEnvironment(request));
     }
     @Override
     public void deleteSimFile(DeleteSimFileRequest request) throws Exception {
@@ -1828,7 +1879,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         String step = "issue";
         String query = request.getTestInstance().getSection();
         String stsActor = Installation.instance().propertyServiceManager().getStsActorName();
-        List<Result> results = xtsm.querySts(stsActor,query,request.getParams(), false, request.getTestSession());
+        SiteSpec stsSpec = new SiteSpec(stsActor, request.getTestSession());
+        stsSpec.setGazelleXuaUsername(request.getUsername());
+        List<Result> results = xtsm.querySts(stsSpec,query,request.getParams(), false, request.getTestSession());
 
         if (results!=null) {
             if (results.size() == 1) {

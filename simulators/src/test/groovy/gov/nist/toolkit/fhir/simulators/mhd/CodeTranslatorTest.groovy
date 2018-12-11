@@ -5,14 +5,16 @@ import gov.nist.toolkit.simcoresupport.mhd.CodeTranslator
 import gov.nist.toolkit.valsupport.client.ValidationContext
 import spock.lang.Specification
 
+import java.nio.file.Paths
+
 class CodeTranslatorTest extends Specification {
-    URL codesFile
+    File codesFile
     ValidationContext vc = new ValidationContext()
 
     def setup() {
-        codesFile = this.class.getResource('/codes.xml')
-        assert new File(codesFile.file).exists()
-        vc.codesFilename = codesFile.file
+        codesFile = Paths.get(this.getClass().getResource('/').toURI()).resolve('codes.xml').toFile()
+        assert codesFile.exists()
+        vc.codesFilename = codesFile
     }
 
     def 'load test'() {

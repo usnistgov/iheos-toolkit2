@@ -5,6 +5,8 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import gov.nist.toolkit.results.client.TestInstance;
 
+import java.util.Map;
+
 /**
  *
  */
@@ -15,30 +17,27 @@ public class RunClickHandler implements ClickHandler {
     private TestContextView testContextView;
     private boolean ignoreSiteSelection = false;
     private Controller controller = null;
+    private OnTestRunComplete onRunComplete;
+    private Map<String,String> params;
 
-    RunClickHandler(TestRunner testRunner, TestInstance testInstance, TestContext testContext, TestContextView testContextView, Controller controller, boolean ignoreSiteSelection) {
+    RunClickHandler(TestRunner testRunner, TestInstance testInstance, TestContext testContext, TestContextView testContextView, Controller controller, boolean ignoreSiteSelection, OnTestRunComplete onRunComplete) {
         this.testRunner = testRunner;
         this.testInstance = testInstance;
         this.testContext = testContext;
         this.testContextView = testContextView;
         this.controller = controller;
         this.ignoreSiteSelection = ignoreSiteSelection;
+        this.onRunComplete = onRunComplete;
     }
 
-    RunClickHandler(TestRunner testRunner, TestInstance testInstance, TestContext testContext, TestContextView testContextView, Controller controller) {
+    RunClickHandler(TestRunner testRunner, TestInstance testInstance, TestContext testContext, TestContextView testContextView, Controller controller, OnTestRunComplete onRunComplete) {
         this.testRunner = testRunner;
         this.testInstance = testInstance;
         this.testContext = testContext;
         this.controller = controller;
         this.testContextView = testContextView;
+        this.onRunComplete = onRunComplete;
     }
-
-//    RunClickHandler(TestRunner testRunner, TestInstance testInstance, TestContext testContext) {
-//        this.testRunner = testRunner;
-//        this.testInstance = testInstance;
-//        this.testContext = testContext;
-//        this.testContextView = null;
-//    }
 
     @Override
     public void onClick(ClickEvent clickEvent) {
@@ -47,7 +46,7 @@ public class RunClickHandler implements ClickHandler {
 
         String msg = testContext.verifyTestContext(ignoreSiteSelection);
         if (msg == null)
-            testRunner.runTest(testInstance, null, null);
+            testRunner.runTest(testInstance, params, null, onRunComplete);
         else {
             if (testContextView != null)
                 testContextView.launchDialog(msg);
@@ -57,5 +56,13 @@ public class RunClickHandler implements ClickHandler {
 //        if (controller != null) {
 //            controller.getRefreshTestCollectionClickHandler().onClick(null);
 //        }
+    }
+
+    public Map<String, String> getParams() {
+        return params;
+    }
+
+    public void setParams(Map<String, String> params) {
+        this.params = params;
     }
 }

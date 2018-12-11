@@ -4,6 +4,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.installation.shared.ToolkitUserMode;
@@ -13,6 +14,8 @@ import gov.nist.toolkit.xdstools2.client.ErrorHandler;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.command.command.*;
+import gov.nist.toolkit.xdstools2.client.event.testContext.TestContextChangedEvent;
+import gov.nist.toolkit.xdstools2.client.event.testContext.TestContextChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
@@ -42,9 +45,9 @@ class TestContextDialog extends DialogBox {
     private Button clearTestSessionButton = new Button("Clear Test Session");
     private FlowPanel sitesForTestSessionPanel = new FlowPanel();
     private SiteSelectionValidator siteSelectionValidator;
+    private String selectedSite = null;
 
-
-    TestContextDialog(final ToolWindow toolWindow, SiteManager siteManager, SiteSelectionValidator siteSelectionValidator, String message) {
+    TestContextDialog(final ToolWindow toolWindow, final SiteManager siteManager, SiteSelectionValidator siteSelectionValidator, String message) {
         super(true, true);
         this.toolWindow = toolWindow;
         this.siteManager = siteManager;
@@ -141,6 +144,23 @@ class TestContextDialog extends DialogBox {
             }
         });
 
+        /*
+        Conformance tab has a separate handler for the TestContextChangedEvent.
+        if (testContextChangedHReg == null) {
+            testContextChangedHReg = ClientUtils.INSTANCE.getEventBus().addHandler(TestContextChangedEvent.TYPE, new TestContextChangedEventHandler() {
+                @Override
+                public void onTestContextChanged(TestContextChangedEvent event) {
+                    new SetAssignedSiteForTestSessionCommand() {
+                        @Override
+                        public void onComplete(Void result) {
+                            siteManager.update();
+                            removeFromParent();
+                        }
+                    }.run(new SetAssignedSiteForTestSessionRequest(ClientUtils.INSTANCE.getCommandContext(), getSelectedTestSession(), selectedSite));
+                }
+            });
+        }
+        */
         this.add(panel);
     }
 
@@ -189,20 +209,14 @@ class TestContextDialog extends DialogBox {
 
         @Override
         public void onClick(ClickEvent clickEvent) {
-            String selectedSite = getSelectedSite();
-            if (TestContext.NONE.equals(selectedSite))
-                selectedSite = null;
+            selectedSite = TestContext.NONE.equals(getSelectedSite())?null:getSelectedSite();
+            final SiteSpec siteSpec = new SiteSpec(selectedSite, new TestSession(toolWindow.getCurrentTestSession()));
             if (siteSelectionValidator != null)
-                siteSelectionValidator.validate(new SiteSpec(selectedSite, new TestSession(toolWindow.getCurrentTestSession())));
-            siteManager.setSiteName(selectedSite);
+                siteSelectionValidator.validate(siteSpec);
             toolWindow.setCurrentTestSession(getSelectedTestSession());
-            siteManager.update();
-            new SetAssignedSiteForTestSessionCommand(){
-                @Override
-                public void onComplete(Void result) {
-                    removeFromParent();
-                }
-            }.run(new SetAssignedSiteForTestSessionRequest(ClientUtils.INSTANCE.getCommandContext(),getSelectedTestSession(),selectedSite));
+            toolWindow.setCommonSiteSpec(siteSpec);
+            siteManager.setSiteName(selectedSite);
+            removeFromParent();
         }
     }
 
@@ -218,7 +232,6 @@ class TestContextDialog extends DialogBox {
             loadSitesForTestSession(newTestSession);
 
             new GetAssignedSiteForTestSessionCommand(){
-
                 @Override
                 public void onComplete(String result) {
                     siteManager.setSiteName(result);

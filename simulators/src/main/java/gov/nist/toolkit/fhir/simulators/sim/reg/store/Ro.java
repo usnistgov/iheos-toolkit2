@@ -30,6 +30,10 @@ public class Ro  implements Serializable  {
 	public StatusValue getAvailabilityStatus() {
 		return availabilityStatus;
 	}
+
+	public boolean isDeprecated() {
+		return availabilityStatus == StatusValue.DEPRECATED;
+	}
 		
 	public String getType() {
 		return "RegistryObject";
@@ -70,7 +74,7 @@ public class Ro  implements Serializable  {
 		return ro.getId() == id;
 	}
 
-	public String toString() { return id; }
+	public String toString() { return this.getClass().getSimpleName() + ": " + id; }
 
     static public List<String> getIds(List<Ro> ros) {
         List<String> ids = new ArrayList<>();

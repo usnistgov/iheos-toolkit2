@@ -69,7 +69,8 @@ abstract public class FindFoldersForMultiplePatients extends StoredQuery {
 	protected List<String> code_schemes;
 	protected List<String> status;
 
-	void parseParameters() throws XdsInternalException, MetadataException, XdsException, LoggerException {
+	protected void parseParameters() throws XdsInternalException, MetadataException, XdsException, LoggerException {
+		super.parseParameters();
 		patient_id              = sqs.params.getListParm("$XDSFolderPatientId");
 		update_time_from        = sqs.params.getIntParm("$XDSFolderLastUpdateTimeFrom");
 		update_time_to          = sqs.params.getIntParm("$XDSFolderLastUpdateTimeTo");

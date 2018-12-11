@@ -1,7 +1,14 @@
 package gov.nist.toolkit.testengine.transactions;
 
 import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
+import gov.nist.toolkit.simcommon.server.SimDb;
+import gov.nist.toolkit.testengine.assertionEngine.Assertion;
+import gov.nist.toolkit.testengine.assertionEngine.AssertionEngine;
+import gov.nist.toolkit.testengine.engine.ILogger;
+import gov.nist.toolkit.testengine.engine.SimReference;
+import gov.nist.toolkit.testengine.engine.SimulatorTransaction;
 import gov.nist.toolkit.testengine.engine.StepContext;
+import gov.nist.toolkit.testengine.engine.TestLogFactory;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.XdsException;
@@ -13,7 +20,9 @@ import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.jaxen.JaxenException;
 
 import javax.xml.parsers.FactoryConfigurationError;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 
 public class StoredQueryTransaction extends QueryTransaction {

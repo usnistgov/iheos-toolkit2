@@ -142,12 +142,14 @@ public class ReconfigureSimulators extends HttpServlet {
                 }
             }
 
+            /* Fix Issue #436: This block is not needed since simulators cannot be renamed.
             if (!ep.getSimId().equals(simIdString)) {
                 ep.setSimId(simIdString);
                 logger.info("...to " + ep.getEndpoint());
                 ele.setStringValue(ep.getEndpoint());
                 updated = true;
             }
+            */
         }
 
         try {

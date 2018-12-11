@@ -36,9 +36,13 @@ public class SoapActionFactory {
 				put(epsos_xcqr_action, "urn:epsos:xcqrResponse");
 
 		    	 put(pnr_b_action,                                       "urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-bResponse");
+
+				 put("urn:ihe:iti:2018:RestrictedUpdateDocumentSet",      "urn:ihe:iti:2018:RestrictedUpdateDocumentSetResponse");
+				put("urn:ihe:iti:2017:RemoveDocuments",                   "urn:ihe:iti:2017:RemoveDocumentsResponse");
 		    	 put("urn:ihe:iti:2010:UpdateDocumentSet",               "urn:ihe:iti:2010:UpdateDocumentSetResponse");
+				put("urn:ihe:iti:2010:DeleteDocumentSet",               "urn:ihe:iti:2010:DeleteDocumentSetResponse");
 		    	 put(r_b_action,                                         "urn:ihe:iti:2007:RegisterDocumentSet-bResponse");
-		    	 put(ret_b_action,                                       "urn:ihe:iti:2007:RetrieveDocumentSetResponse");
+		    	 put(ret_b_action,                                        "urn:ihe:iti:2007:RetrieveDocumentSetResponse");
 		    	 put(rad_69_action,                                      "urn:ihe:iti:2007:RetrieveDocumentSetResponse");
 		    	 put(rad_75_action,                                      "urn:ihe:rad:2011:CrossGatewayRetrieveImagingDocumentSetResponse");
 		    	 put(MetadataSupport.SQ_action,                          MetadataSupport.SQ_response_action);

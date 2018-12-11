@@ -9,36 +9,94 @@ import java.util.List;
 public class SubSetCollection extends RegObCollection implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
-	List<SubSet> subSets;
+	private List<SubSet> subSets;
 	
 	transient public SubSetCollection parent = null;
 
+	public List<SubSet> getAll() {
+		List<SubSet> all = new ArrayList<>();
+
+		all.addAll(subSets);
+		SubSetCollection theParent = parent;
+		while (theParent != null) {
+			all.addAll(theParent.getAll2(idsBeingDeleted()));
+			theParent = theParent.parent;
+		}
+		List<String> deletedIds = idsBeingDeleted();
+
+		List<SubSet> deleted = new ArrayList<>();
+		for (SubSet ss : subSets) {
+			if (deletedIds.contains(ss.id))
+				deleted.add(ss);
+		}
+
+		all.removeAll(deleted);
+
+		return all;
+	}
+
+	private List<SubSet> getAll2(List<String> deletedIds) {
+		List<SubSet> all = new ArrayList<>();
+
+		all.addAll(subSets);
+		SubSetCollection theParent = parent;
+		while (theParent != null) {
+			all.addAll(theParent.getAll());
+			theParent = theParent.parent;
+		}
+
+		List<SubSet> deleted = new ArrayList<>();
+		for (SubSet ss : subSets) {
+			if (deletedIds.contains(ss.id))
+				deleted.add(ss);
+		}
+
+		all.removeAll(deleted);
+
+		return all;
+	}
+
+	List<SubSet> getAllForUpdate() {
+		return subSets;
+	}
+
+	private List<SubSet> getAllForDelete() {
+		if (parent == null)
+			return new ArrayList<>();
+		return parent.subSets;
+	}
+
 	public String toString() {
-		return subSets.size() + " Submission Sets";
+		return getAll().size() + " Submission Sets";
 	}
 	
 	public void init() {
-		subSets = new ArrayList<SubSet>();
+		subSets = new ArrayList<>();
 	}
 	
 	// caller handles synchronization
-	public void delete(String id) {
+	public boolean delete(String id) {
+		boolean deleted = false;
+
 		SubSet toDelete = null;
-		for (SubSet a : subSets) {
+		for (SubSet a : getAllForDelete()) {
 			if (a.id.equals(id)) {
 				toDelete = a;
 				break;
 			}
 		}
-		if (toDelete != null)
-			subSets.remove(toDelete);
+		if (toDelete != null) {
+			getAllForDelete().remove(toDelete);
+			deleted = true;
+		}
+		return deleted;
 	}
 
-	public int size() { return subSets.size(); }
+	public int size() { return getAll().size(); }
 
 	
 	public Ro getRo(String id) {
-		for (SubSet de : subSets) {
+		for (SubSet de : getAll()) {
 			if (de.id.equals(id))
 				return de;
 		}
@@ -50,7 +108,7 @@ public class SubSetCollection extends RegObCollection implements Serializable {
 	public SubSet getById(String id) {
 		if (id == null)
 			return null;
-		for (SubSet s : subSets) {
+		for (SubSet s : getAll()) {
 			if (id.equals(s.id))
 				return s;
 		}
@@ -64,14 +122,14 @@ public class SubSetCollection extends RegObCollection implements Serializable {
 	public String statsToString() {
 		int parentStats = 0;
 		if (parent != null)
-			parentStats = parent.subSets.size();
-		return (parentStats + subSets.size()) + " SubmissionSets";
+			parentStats = parent.getAll().size();
+		return (parentStats + getAll().size()) + " SubmissionSets";
 	}
 
 	public boolean hasObject(String id) {
 		if (id == null)
 			return false;
-		for (SubSet a : subSets) {
+		for (SubSet a : getAll()) {
 			if (a.id.equals(id))
 				return true;
 		}
@@ -81,7 +139,7 @@ public class SubSetCollection extends RegObCollection implements Serializable {
 	}
 
 	public Ro getRoByUid(String uid) {
-		for (SubSet s : subSets) {
+		for (SubSet s : getAll()) {
 			if (s.uid.equals(uid))
 				return s;
 		}
@@ -91,7 +149,7 @@ public class SubSetCollection extends RegObCollection implements Serializable {
 	}
 
 	public SubSet getByUid(String uid) {
-		for (SubSet s : subSets) {
+		for (SubSet s : getAll()) {
 			if (s.uid.equals(uid))
 				return s;
 		}
@@ -103,8 +161,8 @@ public class SubSetCollection extends RegObCollection implements Serializable {
 	public List<SubSet> findByPid(String pid) {
 		List<SubSet> results = new ArrayList<SubSet>();
 		
-		for (int i=0; i<subSets.size(); i++) {
-			SubSet s = subSets.get(i);
+		for (int i=0; i<getAll().size(); i++) {
+			SubSet s = getAll().get(i);
 			if (pid.equals(s.pid))
 				results.add(s);
 		}
@@ -189,21 +247,27 @@ public class SubSetCollection extends RegObCollection implements Serializable {
 	}
 
 	public List<?> getAllRo() {
-		if (parent == null) 
-			return subSets;
-		List<SubSet> l = new ArrayList<SubSet>();
-		l.addAll(subSets);
-		l.addAll(parent.subSets);
-		return l;
+			return getAll();
 	}
 
 	@Override
 	public List<String> getIds() {
 		List<String> ids = new ArrayList<>();
-		for (SubSet a : subSets) ids.add(a.getId());
+		for (SubSet a : getAll()) ids.add(a.getId());
 		return ids;
 	}
 
+	@Override
+	public List<?> getNonDeprecated() {
+		List<SubSet> nonDep = new ArrayList<>();
+		for (SubSet a : getAll()) {
+			if (!a.isDeprecated())
+				nonDep.add(a);
+		}
+		if (parent != null)
+			return parent.getNonDeprecated();
+		return nonDep;
+	}
 
 
 }

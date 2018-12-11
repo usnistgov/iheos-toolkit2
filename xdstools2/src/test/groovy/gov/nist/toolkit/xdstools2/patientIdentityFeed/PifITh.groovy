@@ -15,6 +15,8 @@ import gov.nist.toolkit.simcommon.server.SimManager
 import org.apache.log4j.Logger
 import spock.lang.Specification
 
+import java.nio.file.Paths
+
 /**
  * Created by bill on 9/9/15.
  */
@@ -30,7 +32,7 @@ class PifITh extends Specification {
     int lastPort = 5005
     Session session
     SimManager simManager
-    String templateFile = getClass().getResource('/adt/A01.txt').file
+    String templateFile = Paths.get(this.getClass().getResource('/').toURI()).resolve('adt/A01.txt').file
 
     def setup() {
         session = UnitTestEnvironmentManager.setupLocalToolkit()

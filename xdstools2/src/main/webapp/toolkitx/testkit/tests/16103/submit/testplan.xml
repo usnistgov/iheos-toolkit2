@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>16103/submit</Test>
+  <TestStep id="loadDE">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <RegisterTransaction>
+      <AssignUuids/>
+      <XDSb/>
+      <NoPatientId/>
+      <UseReport reportName="$patientid$" test="16103" section="add_initial_XADPID" step="register" useAs="$basePatientId$"/>
+      <UseReport reportName="$patientid$" test="16103" section="add_initial_XADPID" step="register" useAs="$baseSourcePatientId$"/>
+      <MetadataFile>single_doc.xml</MetadataFile>
+      <Report name="baseSourcePatientId" section="InputMetadata">
+          //*[local-name()='ExtrinsicObject'][1]/*[local-name()='Slot'][@name="sourcePatientId"]/*[local-name()='ValueList']/*[local-name()='Value']
+      </Report>
+      <Report name="basePatientId" section="InputMetadata">
+          //*[local-name()='ExtrinsicObject'][1]/*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427']/@value
+      </Report>      
+    </RegisterTransaction>
+  </TestStep>
+</TestPlan>

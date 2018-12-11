@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>11966_secondrole/submit</Test>
+  <TestStep id="submit">
+    <Goal>
+      Transaction - Provide and Register to Repository under test
+
+      Metadata pattern - Single Document submission
+
+      Metadata contents - simple
+
+      Evaluation - Transaction is successful
+    </Goal>
+    <ExpectedStatus>Fault</ExpectedStatus>
+    <ProvideAndRegisterTransaction>
+      <XDSb/>
+      <MetadataFile>single_doc.xml</MetadataFile>
+      <Document id="Document01">my_document.txt</Document>
+    </ProvideAndRegisterTransaction>
+  </TestStep>
+</TestPlan>

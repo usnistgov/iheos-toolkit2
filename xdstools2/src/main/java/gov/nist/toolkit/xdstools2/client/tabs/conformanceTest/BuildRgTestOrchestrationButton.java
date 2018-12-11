@@ -28,7 +28,7 @@ public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton 
     private Panel initializationPanel;
     private FlowPanel initializationResultsPanel = new FlowPanel();
     private RadioButton noFeed = new RadioButton("rgpidFeedGroup", "No Patient Identity Feed");
-    private RadioButton v2Feed = new RadioButton("rgpidFeedGroup", "V2 Patient Identitfy Feed");
+    private RadioButton v2Feed = new RadioButton("rgpidFeedGroup", "V2 Patient Identity Feed");
 
     private String systemTypeGroup = "RG System Type Group";
     private RadioButton exposed = new RadioButton(systemTypeGroup, "Exposed Registry/Repository");
@@ -37,14 +37,25 @@ public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton 
     boolean isExternal() { return external.getValue(); }
     private boolean usingExposedRR() { return exposed.getValue(); }
     private boolean isOnDemand;
+    private PifType pifType;
 
-
-    BuildRgTestOrchestrationButton(ConformanceTestTab testTab, Panel initializationPanel, String label, TestContext testContext, TestContextView testContextView, TestRunner testRunner) {
+    BuildRgTestOrchestrationButton(ConformanceTestTab testTab, Panel initializationPanel, String label, TestContext testContext, TestContextView testContextView, TestRunner testRunner, PifType pifType) {
         this.initializationPanel = initializationPanel;
         this.testTab = testTab;
         this.testContext = testContext;
         this.testContextView = testContextView;
         this.testRunner = testRunner;
+        this.pifType = pifType;
+
+
+        // Restore pifType from Orchestration properties previously saved
+        // 1.
+        if (PifType.V2.equals(pifType)) {
+            v2Feed.setChecked(true);
+        } else { // Default to NoFeed otherwise.
+            noFeed.setChecked(true);
+        }
+
 
         isOnDemand = testTab.getCurrentActorOption().isOnDemand();
 
@@ -52,7 +63,6 @@ public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton 
         // Disable selections that are not yet supported
         //
         external.setEnabled(false);
-        noFeed.setEnabled(false);
 
         setParentPanel(initializationPanel);
 
@@ -120,7 +130,6 @@ public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton 
             // Patient Identity feed to registry
             customPanel.add(noFeed);
             customPanel.add(v2Feed);
-            v2Feed.setChecked(true);
             customPanel.add(new HTML("<br />"));
         }
         setCustomPanel(customPanel);
@@ -131,19 +140,25 @@ public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton 
     }
 
     public void orchestrate() {
+        String msg = testContext.verifyTestContext();
+        if (msg != null) {
+            testTab.getMainView().clearLoadingMessage();
+            testContextView.launchDialog(msg);
+            return;
+        }
+
         if (!isExposed() && !isExternal() && !isOnDemand) {
             new PopupMessage("Must select Exposed or External Registry/Repository");
             return;
         }
 
         testTab.getMainView().showLoadingMessage("Initializing...");
-        RgOrchestrationRequest request = new RgOrchestrationRequest();
+        final RgOrchestrationRequest request = new RgOrchestrationRequest();
         request.setOnDemand(isOnDemand);  // much of the rest is ignored if this is true
         request.setTestSession(new TestSession(testTab.getCurrentTestSession()));
         request.setUseTls(isTls());
         request.setUseExposedRR(usingExposedRR());
         request.setUseSimAsSUT(false);
-
         request.setPifType((v2Feed.isChecked()) ? PifType.V2 : PifType.NONE);
         request.setTestSession(new TestSession(testTab.getCurrentTestSession()));
         request.setEnvironmentName(testTab.getEnvironmentSelection());
@@ -170,28 +185,40 @@ public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton 
                 RgOrchestrationResponse orchResponse = (RgOrchestrationResponse) rawResponse;
                 testTab.setOrchestrationResponse(orchResponse);
 
-                initializationResultsPanel.add(new HTML("Initialization Complete"));
+                if (PifType.V2.equals(request.getPifType())) {
+                    initializationResultsPanel.add(new HTML("<p>Initialization complete</p>"));
+                } else if (PifType.NONE.equals(request.getPifType())) {
+                    initializationResultsPanel.add(new HTML("<p style='color:orange'>Initialization partially complete: there are two additional steps below for you to complete.</p>"));
+                } else {
+                    initializationResultsPanel.add(new HTML("<p style='color:red'>Initialization Error: Unknown pifType.</p>"));
+                }
 
                 if (testContext.getSiteUnderTest() != null) {
                     initializationResultsPanel.add(new SiteDisplay("System Under Test Configuration", testContext.getSiteUnderTest()));
                 }
 
                 initializationResultsPanel.add(new HTML("<h2>Supporting Environment Configuration</h2>"));
-
                 initializationResultsPanel.add(new HTML("System: None"));
-
                 handleMessages(initializationResultsPanel, orchResponse);
 
-                initializationResultsPanel.add(new HTML("<br />"));
 
-                initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testContext, testContextView, testRunner, testTab ));
-
-                initializationResultsPanel.add(new HTML("<br />"));
+                if (PifType.NONE.equals(request.getPifType())) {
+                    initializationResultsPanel.add(new HTML("<h3>1. On your system, manually perform the Patient Identity Feed for these PIDs as shown below</h3>"));
+                }
 
                 FlexTable table = new FlexTable();
-
                 displayPIDs(table, orchResponse, 0);
                 initializationResultsPanel.add(table);
+
+
+                if (PifType.NONE.equals(request.getPifType())) {
+                    initializationResultsPanel.add(new HTML("<h3>2. Run these utility tests manually to fully initialize the Testing Environment</h3>"));
+                } else {
+                    initializationPanel.add(new HTML("<br/>"));
+                }
+
+                initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testContext, testContextView, testRunner, testTab ));
+                initializationResultsPanel.add(new HTML("<br />"));
 
                 testTab.displayTestCollection(testTab.getMainView().getTestsPanel());
             }

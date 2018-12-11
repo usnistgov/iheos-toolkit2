@@ -78,4 +78,8 @@ public abstract class BaseDsActorSimulator extends BaseActorSimulator {
 	}
 
 	public DsSimCommon getDsSimCommon() { return dsSimCommon; }
+
+	public void setDsSimCommon(DsSimCommon dsSimCommon) {
+		this.dsSimCommon = dsSimCommon;
+	}
 }

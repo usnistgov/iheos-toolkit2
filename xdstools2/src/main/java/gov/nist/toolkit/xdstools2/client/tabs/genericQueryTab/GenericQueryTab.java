@@ -47,7 +47,6 @@ import gov.nist.toolkit.xdstools2.client.toolLauncher.NewToolLauncher;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.util.InformationLink;
 import gov.nist.toolkit.xdstools2.client.widgets.PidWidget;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.StatusDisplay;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetStsSamlAssertionRequest;
 
@@ -376,7 +375,6 @@ public abstract class GenericQueryTab  extends ToolWindow implements StatusDispl
         }.run(getCommandContext());
 
 
-
         if (tlsEnabled) {
             doTls = new CheckBox("use TLS");
             doTls.setEnabled(tlsOptionEnabled);
@@ -703,7 +701,6 @@ public abstract class GenericQueryTab  extends ToolWindow implements StatusDispl
                 getGoButton().addClickHandler(new ClickHandler() {
                     @Override
                     public void onClick(final ClickEvent clickEvent) {
-
                         String selectedValue = samlListBox.getSelectedValue();
                         if (samlEnabled && !"NoSaml".equals(selectedValue)) {
                             Map<String,String> tkPropMap = ClientUtils.INSTANCE.getTkPropMap();
@@ -718,6 +715,8 @@ public abstract class GenericQueryTab  extends ToolWindow implements StatusDispl
                             TestInstance testInstance = new TestInstance(stsTpName);
                             testInstance.setSection("samlassertion-issue");
                             SiteSpec stsSpec =  new SiteSpec(new TestSession(stsActorName));
+                            stsSpec.setSaml(true);
+                            stsSpec.setGazelleXuaUsername(selectedValue);
                             Map<String, String> params = new HashMap<>();
                             params.put("$saml-username$",selectedValue);
                             new GetStsSamlAssertionCommand(){

@@ -10,6 +10,7 @@ import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
 import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
+import gov.nist.toolkit.saml.util.UUIDGenerator;
 import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.soap.axis2.Soap;
 import gov.nist.toolkit.testengine.assertionEngine.Assertion;
@@ -28,6 +29,7 @@ import gov.nist.toolkit.xdsexception.NoMetadataException;
 import gov.nist.toolkit.xdsexception.SchemaValidationException;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
@@ -197,7 +199,7 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 			if (async)
 				xds_version = BasicTransaction.xds_b;
 
-			if (trans.equals("sq") || trans.equals("pr") || trans.equals("r")) {
+			if (trans.equals("sq") || trans.equals("pr") || trans.equals("r") ||  trans.equals("xadpid")) {
 				//			if (async)
 				//				trans = trans + ".as";
 				//			else
@@ -223,7 +225,10 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 
 			//		reportManagerPreRun(request_element);  // must run before prepareMetadata (assign uuids)
 
-			run(request_element);
+			if (getExternalLinkage()!=null && !getExternalLinkage().containsKey("PifTypeNONE_BypassAllTransactions")) {
+					run(request_element);
+			} else
+				run(request_element);
 
 			if (s_ctx.getExpectedStatus().size()>0 && !s_ctx.getExpectedStatus().get(0).isFault())
 				reportManagerPostRun();
@@ -645,7 +650,16 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 		}
 	}
 
-
+	private void addToLinkage(String name, String value) throws XdsInternalException, MetadataException {
+		Linkage l = new Linkage(testConfig, instruction_output);
+		l.addLinkage(name, value);
+		try {
+			addToLinkage(l.compile());
+		}
+		catch (XdsInternalException e) {
+			throw new XdsInternalException(s_ctx.get("step_id") + ": " + e.getMessage(),e);
+		}
+	}
 
 	protected void compileUseIdLinkage(Metadata m, ArrayList use_id) throws XdsInternalException, MetadataException, FactoryConfigurationError {
 		Linkage l = new Linkage(testConfig, instruction_output, m, use_id);
@@ -1087,6 +1101,16 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 			use_id.add(part);
 			testLog.add_name_value(instruction_output, "UseId", part);
 		}
+		else if (part_name.equals("AssignNewUuid")) {
+			String symbol = part.getAttributeValue(new QName("symbol"));
+//			testLog.add_name_value(instruction_output, "UseId", );
+			try {
+				addToLinkage(symbol, UUIDGenerator.getUUID());
+			} catch (MetadataException e) {
+				throw new XdsInternalException("AssignNewUuid failed", e);
+			}
+
+		}
 		else if (part_name.equals("UseRepositoryUniqueId")) {
 			use_repository_unique_id.add(part);
 			testLog.add_name_value(instruction_output, "UseRepositoryUniqueId", part);
@@ -1376,8 +1400,6 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 		}
 		*/
 
-
-
 		try {
 			testLog.add_name_value(instruction_output, "InputMetadata", requestBody);
 
@@ -1499,13 +1521,12 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 	protected String validate_assertions(OMElement result, int metadata_type, OMElement test_assertions)
 	throws XdsInternalException, MetadataException,
 	MetadataValidationException {
-
 		Metadata m = MetadataParser.parseNonSubmission(result);
-
-		Validator v = new Validator(test_assertions);
-		v.setInstruction_output(instruction_output);
-		v.setTestConfig(testConfig);
-		v.run_test_assertions(m);
+		Validator v = new Validator()
+			.setTest_assertions(test_assertions)
+			.setM(m)
+			.setTestConfig(testConfig);
+		v.run_test_assertions(instruction_output);
 
       return v.getErrors();
    }
@@ -1541,5 +1562,15 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 
 	public void setNoMetadataProcessing(boolean noMetadataProcessing) {
 		this.noMetadataProcessing = noMetadataProcessing;
+	}
+
+	public SimReference getSimReference(List<String> errs, Assertion a) {
+		try {
+			OMElement simTransactionElement = XmlUtil.firstChildWithLocalName(a.assertElement, "SimReference");
+			return a.getSimReference(simTransactionElement);
+		} catch (ToolkitRuntimeException ie) {
+			errs.add("Error decoding reference to simulator transaction from testplan assertion: " + ie.getMessage());
+			throw ie;
+		}
 	}
 }

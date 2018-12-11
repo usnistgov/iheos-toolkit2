@@ -1,0 +1,12 @@
+<TestPlan>
+    <Test>ReposAcceptanceTest-1113/AssociateNewDEwithExistingFolder</Test>
+    <TestStep id="submit">
+        <ExpectedStatus>Success</ExpectedStatus>
+	<ProvideAndRegisterTransaction>
+	    <XDSb/>
+	    <UseReport reportName="myFolderId1_uuid" section="SubmitFolder" step="submit" useAs="$fol_uuid$"/>
+	    <MetadataFile>associate_fol.xml</MetadataFile>
+	    <Document id="myDocId1">my_document.txt</Document>
+	</ProvideAndRegisterTransaction>
+    </TestStep>
+</TestPlan>

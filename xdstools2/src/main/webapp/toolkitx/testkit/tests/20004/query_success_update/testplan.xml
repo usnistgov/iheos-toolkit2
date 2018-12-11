@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>20004/query_success_update</Test>
+  <Rule>GetFolders SQ - Confirm No Change</Rule>
+  <TestStep id="uniqueid_query">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetFolders</SQ>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+      <UseId testdir="../original" id="Folder01" symbol="$uid$" step="original" section="AssignedUids"/>
+	  <!--[Testing for Approved - Level 1 regardless? May not know about deprecated? FolApp?]-->
+      <ExpectedContents>
+        <Folders count="2"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="validate">
+    <NullTransaction>
+      <UseReport section="original" step="original" reportName="folid" useAs="orig_uuid"/>
+	  <!--
+	  <UseReport section="success_update" step="update" reportName="update_doc_uuid" useAs="update_uuid"/>
+	  -->
+      <Assertions>
+        <DataRef file="THIS" as="output"/>
+		<Assert id="same_logicalId">
+               count(//*[local-name()='RegistryPackage'][@lid="orig_uuid"]) = 2
+               </Assert>
+        <Assert id="different_id">
+               count(//*[local-name()='RegistryPackage'][@id="orig_uuid"]) = 1
+               </Assert>
+        <Assert id="orig_is_version_1">
+               count(//*[local-name()='RegistryPackage'][@lid="orig_uuid"]/*[local-name()='VersionInfo'][@versionName = '1']) = '1'
+               </Assert>
+        <Assert id="update_is_version_2">
+               count(//*[local-name()='RegistryPackage'][@lid="orig_uuid"]/*[local-name()='VersionInfo'][@versionName = '2']) = '1'
+               </Assert>
+        <Assert id="both_are_deprecated">
+count(//*[local-name()='RegistryPackage'][@status = 'urn:oasis:names:tc:ebxml-regrep:StatusType:Deprecated']) = 2
+               </Assert>
+      </Assertions>
+    </NullTransaction>
+  </TestStep>
+</TestPlan>
