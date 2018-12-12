@@ -1,6 +1,5 @@
-package gov.nist.toolkit.webUITests.confActor
+package gov.nist.toolkit.webUITests
 
-import com.gargoylesoftware.htmlunit.html.*
 import spock.lang.Shared
 import spock.lang.Stepwise
 

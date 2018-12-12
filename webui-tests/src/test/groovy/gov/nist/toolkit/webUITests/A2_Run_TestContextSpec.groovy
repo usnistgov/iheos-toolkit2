@@ -1,4 +1,4 @@
-package gov.nist.toolkit.webUITests.confActor
+package gov.nist.toolkit.webUITests
 
 import com.gargoylesoftware.htmlunit.html.*
 import spock.lang.Stepwise
@@ -22,7 +22,7 @@ class A2_Run_TestContextSpec extends ToolkitWebPage {
     }
 
     String getSimId() {
-        return testSessionName + '__reg' // Should have been created by the A1 RunFirst SimulatorManager Spec
+        return ToolkitWebPage.testSessionName + '__reg' // Should have been created by the A1 RunFirst SimulatorManager Spec
     }
 
     def 'Load the Simulators page with a test session.'() {
@@ -204,7 +204,7 @@ class A2_Run_TestContextSpec extends ToolkitWebPage {
 
     def 'Make sure SUT was saved in site.txt by Getting again (x1) conformance page.'() {
             when:
-            loadPage(String.format("%s/#ConfActor:env=default;testSession=%s;",toolkitBaseUrl,testSessionName))
+            loadPage(String.format("%s/#ConfActor:env=default;testSession=%s;",toolkitBaseUrl,ToolkitWebPage.testSessionName))
 
             then:
             page != null

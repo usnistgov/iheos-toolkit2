@@ -1,4 +1,4 @@
-package gov.nist.toolkit.webUITests.confActor
+package gov.nist.toolkit.webUITests
 
 import com.gargoylesoftware.htmlunit.html.HtmlButton
 import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput
@@ -6,45 +6,47 @@ import com.gargoylesoftware.htmlunit.html.HtmlDivision
 import com.gargoylesoftware.htmlunit.html.HtmlImage
 import com.gargoylesoftware.htmlunit.html.HtmlLabel
 import com.gargoylesoftware.htmlunit.html.HtmlRadioButtonInput
-import gov.nist.toolkit.toolkitApi.RespondingGateway
+import gov.nist.toolkit.toolkitApi.DocumentRegRep
 import spock.lang.Shared
 import spock.lang.Stepwise
 import spock.lang.Timeout
+
 /**
- * Created by skb1 on 6/28/2017.
+ * Created by skb1 on 6/5/2017.
  */
 @Stepwise
-@Timeout(100)
-class RespondingGatewayActorSimulatorSpec extends ConformanceActor {
+@Timeout(612) // Keep this to accommodate slow computers (Sunil's Windows 10 laptop).
+class RegistryActorA1SimulatorSpec extends ConformanceActor {
 
-    static final String simName = "rg" /* Sim names should be lowered cased */
+    public static final String simName = "reg" /* Sim names should be lowered cased */
 
-    @Shared RespondingGateway rgSim
+    @Shared DocumentRegRep regRepSim
 
     @Override
     void setupSim() {
-        setActorPage(String.format("%s/#ConfActor:env=default;testSession=%s;actor=rg;profile=xca;systemId=%s", toolkitBaseUrl, testSessionName, simName))
-        deleteOldRgSim()
-        sleep(5000) // Why we need this -- Problem here is that the Delete request via REST could be still running before we execute the next Create REST command. The PIF Port release timing will be off causing a connection refused error in the Jetty log.
-        rgSim = createNewRgSim()
-        sleep(5000) // Why we need this -- Problem here is that the Delete request via REST could be still running before we execute the next Create REST command. The PIF Port release timing will be off causing a connection refused error in the Jetty log.
+        setActorPage(String.format("%s/#ConfActor:env=default;testSession=%s;actor=reg;systemId=%s",toolkitBaseUrl,ToolkitWebPage.testSessionName,simName))
+        deleteOldRegSim()
+        sleep(5000) // Why we need this -- Problem here is that the Delete request via REST could be still running before we execute the next Create REST command. The PIF Port release timing will be off causing a connection refused error.
+        regRepSim = createNewRegSim()
     }
 
-   @Override
-    String getSimId()     {
-       return testSessionName + "__" + simName
+    @Override
+    String getSimId() {
+        return ToolkitWebPage.testSessionName + "__" + simName
     }
 
-    void deleteOldRgSim() {
-        getSpi().delete(simName, testSessionName)
+    void deleteOldRegSim() {
+        getSpi().delete(simName, ToolkitWebPage.testSessionName)
     }
 
-    RespondingGateway createNewRgSim() {
-        return getSpi().createRespondingGateway(simName, testSessionName, "default")
+    DocumentRegRep createNewRegSim() {
+        return getSpi().createDocumentRegRep(simName, ToolkitWebPage.testSessionName, "default")
     }
 
-    // Rg actor specific
 
+    // Registry actor specific
+
+    // Was there a previous SUT selected but doesn't exist now?
     def 'No unexpected popup or error message presented in a dialog box.'() {
         when:
         List<HtmlDivision> elementList = page.getByXPath("//div[contains(@class,'gwt-DialogBox')]")
@@ -56,16 +58,16 @@ class RespondingGatewayActorSimulatorSpec extends ConformanceActor {
     def 'Check Conformance page loading status and its title.'() {
         when:
         while(page.asText().contains("Initializing...")){
-            webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
+            webClient.waitForBackgroundJavaScript(ToolkitWebPage.maxWaitTimeInMills)
         }
 
-        while(!page.asText().contains("Initialization complete")){
+        while(!page.asText().contains("complete")){
             webClient.waitForBackgroundJavaScript(500)
         }
 
         then:
         "XDS Toolkit" == page.getTitleText()
-        page.asText().contains("Initialization complete")
+        page.asText().contains("complete")
     }
 
     def 'Click V2 Pif Mode.'() {
@@ -84,13 +86,12 @@ class RespondingGatewayActorSimulatorSpec extends ConformanceActor {
 
         when:
         v2PifLabel.click()
-        webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
+        webClient.waitForBackgroundJavaScript(ToolkitWebPage.maxWaitTimeInMills)
         HtmlRadioButtonInput v2Option = page.getElementById(v2PifLabel.getForAttribute())
 
         then:
         v2Option.isChecked()
     }
-
 
     def 'Click Reset (or Initialize) Environment using defaults.'() {
         when:
@@ -108,14 +109,14 @@ class RespondingGatewayActorSimulatorSpec extends ConformanceActor {
 
         when:
         resetLabel.click()
-        webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
+        webClient.waitForBackgroundJavaScript(ToolkitWebPage.maxWaitTimeInMills)
         HtmlCheckBoxInput resetCkbx = page.getElementById(resetLabel.getForAttribute())
 
         then:
         resetCkbx.isChecked()
     }
 
-    def 'Click Initialize and check for passed orchestration tests.'() {
+    def 'Click Initialize.'() {
         when:
         HtmlButton initializeBtn = null
 
@@ -132,7 +133,7 @@ class RespondingGatewayActorSimulatorSpec extends ConformanceActor {
 
         when:
         page = initializeBtn.click(false,false,false)
-        webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
+        webClient.waitForBackgroundJavaScript(ToolkitWebPage.maxWaitTimeInMills)
 
         while(!page.asText().contains("Initialization complete")){
             webClient.waitForBackgroundJavaScript(500)
@@ -151,7 +152,7 @@ class RespondingGatewayActorSimulatorSpec extends ConformanceActor {
             - Is there a java.net.ConnectException: Connection refused: connect message in the jetty log? Try a different port number range in toolkit.properties.
         2. Check SUT URLs for the two stored query orchestration tests.
          */
-        then:
+        then: 'There should be no orchestration test failures'
         elementList!=null && elementList.size()==0
 
         when:
@@ -164,7 +165,7 @@ class RespondingGatewayActorSimulatorSpec extends ConformanceActor {
         elementList = page.getByXPath("//div[contains(@class, 'orchestrationTestMc') and contains(@class, 'testOverviewHeaderSuccess')]")
 
         then:
-        elementList!=null && elementList.size()==2
+        elementList!=null && elementList.size()==8 // Orchestration tests
     }
 
     def 'Count tests to verify later'() { // A complete run Jetty Log should have about 46K lines.
@@ -180,7 +181,7 @@ class RespondingGatewayActorSimulatorSpec extends ConformanceActor {
         testCount > -1
     }
 
-    def 'Find and Click the RunAll Test Rg Conformance Actor image button.'() {
+    def 'Find and Click the RunAll Test Registry Conformance Actor image button.'() {
 
         when:
         List<HtmlDivision> elementList = page.getByXPath("//div[contains(@class,'gwt-DialogBox')]")
@@ -204,6 +205,8 @@ class RespondingGatewayActorSimulatorSpec extends ConformanceActor {
             }
             print "done."
         }
+
+
 
         // now iterate
 
@@ -235,7 +238,6 @@ class RespondingGatewayActorSimulatorSpec extends ConformanceActor {
         runAllButtonWasFound
         runAllButtonWasClicked
         page != null
-
     }
 
     def 'Number of failed tests count should be zero.'() { // A complete run Jetty Log should have about 46K lines.
@@ -272,4 +274,6 @@ class RespondingGatewayActorSimulatorSpec extends ConformanceActor {
         testCountToVerify == testCount
         println ("Total tests: " + testCount)
     }
+
+
 }

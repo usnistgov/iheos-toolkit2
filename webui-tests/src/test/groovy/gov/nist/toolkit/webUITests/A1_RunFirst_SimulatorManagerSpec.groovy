@@ -2,12 +2,11 @@ package gov.nist.toolkit.webUITests
 
 import com.gargoylesoftware.htmlunit.html.*
 import gov.nist.toolkit.actortransaction.shared.ActorType
-import gov.nist.toolkit.webUITests.confActor.ToolkitWebPage
 import spock.lang.Stepwise
 import spock.lang.Timeout
 
 @Stepwise
-@Timeout(360)
+@Timeout(612)
 class A1_RunFirst_SimulatorManagerSpec extends ToolkitWebPage {
 
     def setupSpec() {

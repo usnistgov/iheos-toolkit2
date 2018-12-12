@@ -1,15 +1,13 @@
 package gov.nist.toolkit.webUITests
 
 import com.gargoylesoftware.htmlunit.html.*
-import gov.nist.toolkit.webUITests.confActor.RegistryActorA1SimulatorSpec
-import gov.nist.toolkit.webUITests.confActor.ToolkitWebPage
 import spock.lang.Shared
 import spock.lang.Stepwise
 import spock.lang.Timeout
 
 @Stepwise
 @Timeout(360)
-class RegistryActorA2FindDocumentsSpec extends ToolkitWebPage {
+class RegistryActorA2FindDocumentswInspectResultSpec extends ToolkitWebPage {
 
     @Shared String patientId
 
@@ -45,10 +43,12 @@ class RegistryActorA2FindDocumentsSpec extends ToolkitWebPage {
         when:
         List<HtmlDivision> divList = page.getByXPath("//div[contains(@class, 'gwt-HTML') and starts-with(., 'Patient ID for Register tests:')]")  // Substring CSS match. No other CSS class must contain this string.
 
+        then:
+        divList!=null
         listHasOnlyOneItem(divList)
 
+        when:
         HtmlDivision patientIdDiv = divList.get(0)
-
         String[] strings = patientIdDiv.getTextContent().split(":")
 
         then:
@@ -83,30 +83,31 @@ class RegistryActorA2FindDocumentsSpec extends ToolkitWebPage {
 
     def 'Find and select registry site'() {
         when:
-        List<HtmlLabel> labelList = page.getByXPath(String.format("//label[text()='%s']", RegistryActorA1SimulatorSpec.getSimId()))
+        List<HtmlLabel> labelList = page.getByXPath(String.format("//label[text()='%s']", new RegistryActorA1SimulatorSpec().getSimId()))
 
         then:
         listHasOnlyOneItem(labelList)
 
         when:
-        HtmlLabel label = labelList.get(0)
-        String forOptionId = label.getForAttribute()
+        HtmlLabel siteLabel = labelList.get(0)
+        siteLabel.click()
+        HtmlRadioButtonInput siteRadioInput = page.getElementById(siteLabel.getForAttribute())
+
 
         then:
-        forOptionId != null
+        siteRadioInput.isChecked()
 
-        when:
-        HtmlOption siteOption = page.getElementById(forOptionId)
-
-        then:
-        siteOption.setSelected(true)
     }
 
     def 'Find and click Run button'() {
         when:
         List<HtmlButton> addButtonList = page.getByXPath("//button[contains(@class,'gwt-Button') and text()='Run']")
+
+        then:
+        addButtonList != null
         listHasOnlyOneItem(addButtonList)
 
+        when:
         HtmlButton runButton = addButtonList.get(0)
         webClient.waitForBackgroundJavaScript(1000)
         page = runButton.click()
@@ -120,6 +121,62 @@ class RegistryActorA2FindDocumentsSpec extends ToolkitWebPage {
         page.asText().contains("Status: Pass")
     }
 
+    def 'Find and click Inspect Results button'() {
+        when:
+        List<HtmlButton> addButtonList = page.getByXPath("//button[contains(@class,'gwt-Button') and text()='Inspect Results']")
+
+        then:
+        addButtonList != null
+        listHasOnlyOneItem(addButtonList)
+
+        when:
+        HtmlButton inspectButton = addButtonList.get(0)
+        webClient.waitForBackgroundJavaScript(1000)
+        page = inspectButton.click()
+        webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
+
+
+        then:
+        page.asText().contains("ResultInspector") // Tab name
+
+    }
+    def 'Click load logs link and load full log'() {
+        when:
+        List<HtmlAnchor> anchorList = page.getByXPath("//a[text()='load logs']")
+
+        then:
+        anchorList != null
+        listHasOnlyOneItem(anchorList)
+
+        when:
+        page = anchorList.get(0).click()
+        webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
+
+        List<HtmlDivision> divList = page.getByXPath("//div[contains(@class, 'gwt-TreeItem') and text()='status : pass']")  // Substring CSS match. No other CSS class must contain this string.
+
+        then:
+        divList !=null
+        listHasOnlyOneItem(divList)
+
+        when:
+        page = anchorList.get(0).click()
+        webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
+
+        anchorList = null
+        anchorList = page.getByXPath("//a[text()='full log']")
+
+        then:
+        anchorList != null
+        listHasOnlyOneItem(anchorList)
+
+        when:
+        page = anchorList.get(0).click()
+        webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
+
+        then:
+        page.asText().contains("<TestStep id=\"FindDocumentsbyObjectRef\" status=\"Pass\">")
+
+    }
 
 
 }

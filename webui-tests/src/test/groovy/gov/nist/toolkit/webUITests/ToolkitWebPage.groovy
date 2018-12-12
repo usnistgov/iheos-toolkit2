@@ -1,4 +1,4 @@
-package gov.nist.toolkit.webUITests.confActor
+package gov.nist.toolkit.webUITests
 
 import com.gargoylesoftware.htmlunit.AjaxController
 import com.gargoylesoftware.htmlunit.BrowserVersion
@@ -11,7 +11,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage
 import com.gargoylesoftware.htmlunit.html.HtmlSelect
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
-import gov.nist.toolkit.webUITests.confActor.exceptions.TkWtNotFoundEx
+import gov.nist.toolkit.webUITests.exceptions.TkWtNotFoundEx
 import org.junit.Rule
 import org.junit.rules.TestName
 import spock.lang.Shared

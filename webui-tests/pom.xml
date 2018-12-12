@@ -53,19 +53,20 @@
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>2.19.1</version>
                 <configuration>
+                    <!-- Note: HTTP port number must be the same in Toolkit.properties and the jetty-http.xml files. Otherwise, Toolkit will fail to start in Jetty. -->
                     <!-- Note: Clear your External Cache's SimDb & TestLogCache folders if simulators are obsolete or incompatible with the current code. WebUI-Tests will not function properly with old-format simulators. -->
                     <!-- Note: These tests were only tested in Single user mode. This translates to Toolkit.Properties setting Multiuser_mode=false and Cas_mode=false. -->
                     <!-- Uncomment below to debug individual tests -->
                     <!-- While running these tests, keep an eye on projectdir/webui-tests/target/yyyy_mm_dd.stderrout.log to view server for output,errors, or javascript wait timeout issues. -->
-                    <runOrder>alphabetical</runOrder>
+                    <runOrder>alphabetical</runOrder> <!-- alphabetical: This means that all classes in the Include block will be sorted by their Package name + Class name. Thus, all classes exist only in one package so only the Class name part is used for sorting. The moment classes are shifted out of the single-package structure, alphabetical sorting will not work. -->
                     <includes>
                         <include>**/A1_RunFirst_SimulatorManagerSpec.java</include> <!-- SimulatorManager deletes and recreates all simulators. If this is not the first test to run, Simulator logs (Not TestLogCache) created by other tests are gone! You can tell by the created timestamp of the Test run time and Simulator creation time -->
-                        <!--<include>**/A2_Run_TestContextSpec.java</include>-->
+                        <include>**/A2_Run_TestContextSpec.java</include>
                         <include>**/RegistryActorA1SimulatorSpec.java</include>
-                        <include>**/RegistryActorA2FindDocumentsSpec.java</include>
-                        <!--<include>**/RepositoryActorSimulatorSpec.java</include>-->
-                        <!--<include>**/RecipientActorSimulatorSpec.java</include>-->
-                        <!--<include>**/RespondingGatewayActorSimulatorSpec.java</include>-->
+                        <include>**/RegistryActorA2FindDocumentswInspectResultSpec.java</include>
+                        <include>**/RepositoryActorSimulatorSpec.java</include>
+                        <include>**/RecipientActorSimulatorSpec.java</include>
+                        <include>**/RespondingGatewayActorSimulatorSpec.java</include>
                     </includes>
                     <!-- Uncomment below to Run all tests -->
                     <!--<includes>-->

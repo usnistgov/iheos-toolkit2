@@ -1,50 +1,49 @@
-package gov.nist.toolkit.webUITests.confActor
+package gov.nist.toolkit.webUITests
 
 import com.gargoylesoftware.htmlunit.html.HtmlButton
 import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput
 import com.gargoylesoftware.htmlunit.html.HtmlDivision
 import com.gargoylesoftware.htmlunit.html.HtmlImage
 import com.gargoylesoftware.htmlunit.html.HtmlLabel
-import gov.nist.toolkit.toolkitApi.DocumentRecipient
+import com.gargoylesoftware.htmlunit.html.HtmlRadioButtonInput
+import gov.nist.toolkit.toolkitApi.RespondingGateway
 import spock.lang.Shared
 import spock.lang.Stepwise
 import spock.lang.Timeout
-
 /**
- * Created by skb1 on 6/22/2017.
+ * Created by skb1 on 6/28/2017.
  */
 @Stepwise
 @Timeout(100)
-class RecipientActorSimulatorSpec extends ConformanceActor {
+class RespondingGatewayActorSimulatorSpec extends ConformanceActor {
 
-    static final String simName = "recip" /* Sim names should be lowered cased */
+    static final String simName = "rg" /* Sim names should be lowered cased */
 
-    @Shared DocumentRecipient recipSim
+    @Shared RespondingGateway rgSim
 
     @Override
     void setupSim() {
-        setActorPage(String.format("%s/#ConfActor:env=default;testSession=%s;actor=rec;systemId=%s", toolkitBaseUrl, testSessionName, simName))
-        deleteOldRecipSim()
+        setActorPage(String.format("%s/#ConfActor:env=default;testSession=%s;actor=rg;profile=xca;systemId=%s", toolkitBaseUrl, ToolkitWebPage.testSessionName, simName))
+        deleteOldRgSim()
         sleep(5000) // Why we need this -- Problem here is that the Delete request via REST could be still running before we execute the next Create REST command. The PIF Port release timing will be off causing a connection refused error in the Jetty log.
-        recipSim = createNewRecipSim()
+        rgSim = createNewRgSim()
         sleep(5000) // Why we need this -- Problem here is that the Delete request via REST could be still running before we execute the next Create REST command. The PIF Port release timing will be off causing a connection refused error in the Jetty log.
     }
 
    @Override
     String getSimId()     {
-       return testSessionName + "__" + simName
+       return ToolkitWebPage.testSessionName + "__" + simName
     }
 
-    void deleteOldRecipSim() {
-        getSpi().delete(simName, testSessionName)
+    void deleteOldRgSim() {
+        getSpi().delete(simName, ToolkitWebPage.testSessionName)
     }
 
-    DocumentRecipient createNewRecipSim() {
-        return getSpi().createDocumentRecipient(simName, testSessionName, "default")
+    RespondingGateway createNewRgSim() {
+        return getSpi().createRespondingGateway(simName, ToolkitWebPage.testSessionName, "default")
     }
 
-    // Recipient actor specific
-
+    // Rg actor specific
 
     def 'No unexpected popup or error message presented in a dialog box.'() {
         when:
@@ -57,7 +56,7 @@ class RecipientActorSimulatorSpec extends ConformanceActor {
     def 'Check Conformance page loading status and its title.'() {
         when:
         while(page.asText().contains("Initializing...")){
-            webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
+            webClient.waitForBackgroundJavaScript(ToolkitWebPage.maxWaitTimeInMills)
         }
 
         while(!page.asText().contains("Initialization complete")){
@@ -68,6 +67,30 @@ class RecipientActorSimulatorSpec extends ConformanceActor {
         "XDS Toolkit" == page.getTitleText()
         page.asText().contains("Initialization complete")
     }
+
+    def 'Click V2 Pif Mode.'() {
+        when:
+        HtmlLabel v2PifLabel = null
+        NodeList labelNl = page.getElementsByTagName("label")
+        final Iterator<HtmlLabel> nodesIterator = labelNl.iterator()
+        for (HtmlLabel label : nodesIterator) {
+            if (label.getTextContent().contains("V2 Patient Identity Feed")) {
+                v2PifLabel = label
+            }
+        }
+
+        then:
+        v2PifLabel != null
+
+        when:
+        v2PifLabel.click()
+        webClient.waitForBackgroundJavaScript(ToolkitWebPage.maxWaitTimeInMills)
+        HtmlRadioButtonInput v2Option = page.getElementById(v2PifLabel.getForAttribute())
+
+        then:
+        v2Option.isChecked()
+    }
+
 
     def 'Click Reset (or Initialize) Environment using defaults.'() {
         when:
@@ -85,14 +108,14 @@ class RecipientActorSimulatorSpec extends ConformanceActor {
 
         when:
         resetLabel.click()
-        webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
+        webClient.waitForBackgroundJavaScript(ToolkitWebPage.maxWaitTimeInMills)
         HtmlCheckBoxInput resetCkbx = page.getElementById(resetLabel.getForAttribute())
 
         then:
         resetCkbx.isChecked()
     }
 
-    def 'Click Initialize.'() {
+    def 'Click Initialize and check for passed orchestration tests.'() {
         when:
         HtmlButton initializeBtn = null
 
@@ -109,7 +132,7 @@ class RecipientActorSimulatorSpec extends ConformanceActor {
 
         when:
         page = initializeBtn.click(false,false,false)
-        webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
+        webClient.waitForBackgroundJavaScript(ToolkitWebPage.maxWaitTimeInMills)
 
         while(!page.asText().contains("Initialization complete")){
             webClient.waitForBackgroundJavaScript(500)
@@ -135,14 +158,13 @@ class RecipientActorSimulatorSpec extends ConformanceActor {
         elementList = page.getByXPath("//div[contains(@class, 'orchestrationTestMc') and contains(@class, 'testOverviewHeaderNotRun')]")
 
         then:
-        elementList!=null && elementList.size()==1
-        /* Special case: The Patient Identity Feed is not sent (so this is never displayed as run (green color in UI). */
+        elementList!=null && elementList.size()==0
 
         when:
         elementList = page.getByXPath("//div[contains(@class, 'orchestrationTestMc') and contains(@class, 'testOverviewHeaderSuccess')]")
 
         then:
-        elementList!=null && elementList.size()==0
+        elementList!=null && elementList.size()==2
     }
 
     def 'Count tests to verify later'() { // A complete run Jetty Log should have about 46K lines.
@@ -158,7 +180,7 @@ class RecipientActorSimulatorSpec extends ConformanceActor {
         testCount > -1
     }
 
-    def 'Find and Click the RunAll Test Recipient Conformance Actor image button.'() {
+    def 'Find and Click the RunAll Test Rg Conformance Actor image button.'() {
 
         when:
         List<HtmlDivision> elementList = page.getByXPath("//div[contains(@class,'gwt-DialogBox')]")
@@ -229,7 +251,6 @@ class RecipientActorSimulatorSpec extends ConformanceActor {
         testFail == 0
     }
 
-
     def 'Reload page'() {
         when:
         loadPage(actorPage)
@@ -251,5 +272,4 @@ class RecipientActorSimulatorSpec extends ConformanceActor {
         testCountToVerify == testCount
         println ("Total tests: " + testCount)
     }
-
 }

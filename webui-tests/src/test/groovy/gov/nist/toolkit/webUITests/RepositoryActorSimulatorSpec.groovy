@@ -1,4 +1,4 @@
-package gov.nist.toolkit.webUITests.confActor
+package gov.nist.toolkit.webUITests
 
 import com.gargoylesoftware.htmlunit.html.*
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
@@ -20,7 +20,7 @@ class RepositoryActorSimulatorSpec extends ConformanceActor {
 
     @Override
     void setupSim() {
-        setActorPage(String.format("%s/#ConfActor:env=default;testSession=%s;actor=rep;systemId=%s", toolkitBaseUrl, testSessionName, simName))
+        setActorPage(String.format("%s/#ConfActor:env=default;testSession=%s;actor=rep;systemId=%s", toolkitBaseUrl, ToolkitWebPage.testSessionName, simName))
         deleteOldRepSim()
         sleep(5000) // Why we need this -- Problem here is that the Delete request via REST could be still running before we execute the next Create REST command. The PIF Port release timing will be off causing a connection refused error in the Jetty log.
         repSim = createNewRepSim()
@@ -29,15 +29,15 @@ class RepositoryActorSimulatorSpec extends ConformanceActor {
 
     @Override
     String getSimId() {
-        return testSessionName + "__" + simName
+        return ToolkitWebPage.testSessionName + "__" + simName
     }
 
     void deleteOldRepSim() {
-        getSpi().delete(simName, testSessionName)
+        getSpi().delete(simName, ToolkitWebPage.testSessionName)
     }
 
     DocumentRepository createNewRepSim() {
-        return getSpi().createDocumentRepository(simName, testSessionName, "default")
+        return getSpi().createDocumentRepository(simName, ToolkitWebPage.testSessionName, "default")
     }
 
     // Repository actor specific
@@ -55,7 +55,7 @@ class RepositoryActorSimulatorSpec extends ConformanceActor {
     def 'Check Conformance page loading status and its title.'() {
         when:
         while(page.asText().contains("Initializing...")){
-            webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
+            webClient.waitForBackgroundJavaScript(ToolkitWebPage.maxWaitTimeInMills)
         }
 
         while(!page.asText().contains("Initialization complete")){
@@ -83,7 +83,7 @@ class RepositoryActorSimulatorSpec extends ConformanceActor {
 
         when:
         resetLabel.click()
-        webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
+        webClient.waitForBackgroundJavaScript(ToolkitWebPage.maxWaitTimeInMills)
         HtmlCheckBoxInput resetCkbx = page.getElementById(resetLabel.getForAttribute())
 
         then:
@@ -107,7 +107,7 @@ class RepositoryActorSimulatorSpec extends ConformanceActor {
 
         when:
         page = initializeBtn.click(false, false, false)
-        webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
+        webClient.waitForBackgroundJavaScript(ToolkitWebPage.maxWaitTimeInMills)
 
         while (!page.asText().contains("Initialization complete")) {
             webClient.waitForBackgroundJavaScript(500)
@@ -192,7 +192,7 @@ class RepositoryActorSimulatorSpec extends ConformanceActor {
 
         when:
         resetLabel.click()
-        webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
+        webClient.waitForBackgroundJavaScript(ToolkitWebPage.maxWaitTimeInMills)
         HtmlCheckBoxInput resetCkbx = page.getElementById(resetLabel.getForAttribute())
 
         then:
@@ -216,7 +216,7 @@ class RepositoryActorSimulatorSpec extends ConformanceActor {
 
         when:
         page = initializeBtn.click(false, false, false)
-        webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
+        webClient.waitForBackgroundJavaScript(ToolkitWebPage.maxWaitTimeInMills)
 
         then:
         page.asText().contains("Initialization complete")
