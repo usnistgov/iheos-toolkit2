@@ -568,6 +568,13 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         request.getTestInstance().setTestSession(request.getTestSession());
         return session().xdsTestServiceManager().deleteSingleTestResult(request.getEnvironmentName(), session().getTestSession(),request.getTestInstance());
     }
+
+    @Override
+    public List<TestOverviewDTO> deleteMultipleTestLogs(DeleteMultipleTestLogsRequest request) throws Exception {
+       installCommandContext(request);
+       return session().xdsTestServiceManager().delTestResults(request.getTestInstances(), request.getEnvironmentName(), request.getTestSession());
+    }
+
     @Override
     public List<Test> runAllTests(AllTestRequest request) throws Exception {
         installCommandContext(request);

@@ -943,30 +943,36 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 	}
 
 	private class DeleteAllClickHandler implements ClickHandler {
-		ActorOptionConfig actorOption;
+		ActorOptionConfig actorOptionConfig;
 
-		DeleteAllClickHandler(ActorOptionConfig actorOption) {
-			this.actorOption = actorOption;
+		DeleteAllClickHandler(ActorOptionConfig actorOptionConfig) {
+			this.actorOptionConfig = actorOptionConfig;
 		}
 
 		@Override
 		public void onClick(ClickEvent clickEvent) {
 			clickEvent.preventDefault();
 			clickEvent.stopPropagation();
-			List <TestInstance> tests = testsPerActorOption.get(actorOption);
+			List <TestInstance> tests = testsPerActorOption.get(actorOptionConfig);
 			for (final TestInstance testInstance : tests) {
 				new DeleteSingleTestCommand(){
 					@Override
 					public void onComplete(TestOverviewDTO testOverviewDTO) {
-						updateTestOverview(testOverviewDTO);
-						InteractionDiagramDisplay diagramDisplay = new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), getSiteToIssueTestAgainst(testInstance), testContext.getSiteUnderTestName(),actorOption,null);
-						TestDisplay testDisplay = testDisplayGroup.add(testOverviewDTO);
-						testDisplay.display(testOverviewDTO, diagramDisplay);
-						updateTestsOverviewHeader(testsPerActorOption, testOverviewDTOs, testStatistics, actorOption);
+					    updateTestOverviewDTOForDelete(testInstance, testOverviewDTO, actorOptionConfig);
 					}
 				}.run(new DeleteSingleTestRequest(getCommandContext(),testInstance));
 			}
 		}
+
+
+	}
+
+	public void updateTestOverviewDTOForDelete(TestInstance testInstance, TestOverviewDTO testOverviewDTO, ActorOptionConfig actorOptionConfig) {
+		updateTestOverview(testOverviewDTO);
+		InteractionDiagramDisplay diagramDisplay = new InteractionDiagramDisplay(testOverviewDTO, testContext.getTestSession(), getSiteToIssueTestAgainst(testInstance), testContext.getSiteUnderTestName(),actorOptionConfig,null);
+		TestDisplay testDisplay = testDisplayGroup.add(testOverviewDTO);
+		testDisplay.display(testOverviewDTO, diagramDisplay);
+		updateTestsOverviewHeader(testsPerActorOption, testOverviewDTOs, testStatistics, actorOptionConfig);
 	}
 
 	ClickHandler getInspectClickHandler(TestInstance testInstance) {

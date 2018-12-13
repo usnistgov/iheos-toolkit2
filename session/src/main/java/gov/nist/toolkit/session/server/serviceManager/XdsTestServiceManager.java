@@ -282,7 +282,15 @@ public class XdsTestServiceManager extends CommonService {
 		return map;
 	}
 
-	public void delTestResults(List<TestInstance> testInstances, String environmentName, TestSession testSession) {
+	/**
+	 * For every successful testInstance log delete, an empty TestOverviewDTO for it is returned.
+	 * @param testInstances
+	 * @param environmentName
+	 * @param testSession
+	 * @return
+	 */
+	public List<TestOverviewDTO> delTestResults(List<TestInstance> testInstances, String environmentName, TestSession testSession) {
+		List<TestOverviewDTO> testOverviewDTOs = new ArrayList<>();
 		if (session != null)
 			logger.debug(session.id() + ": " + "delTestResults() ids=" + testInstances + " testSession=" + testSession);
 		TestKitSearchPath testKitSearchPath = new TestKitSearchPath(environmentName, testSession);
@@ -292,10 +300,11 @@ public class XdsTestServiceManager extends CommonService {
 				TestDefinition testDefinition = testKitSearchPath.getTestDefinition(testInstance.getId());
 				List<String> sectionNames = testDefinition.getSectionIndex();
 				rp.delete(testInstance, testSession, sectionNames);
+				testOverviewDTOs.add(getTestOverview(testInstance.getTestSession(), testInstance));
 			}
 			catch (Exception e) {}
 		}
-
+		return testOverviewDTOs;
 	}
 
 	// this translates from the xds-common version of AssertionResults

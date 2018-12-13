@@ -6,11 +6,13 @@ import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.xdstools2.client.command.command.DeleteMultipleTestLogsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetStsSamlAssertionCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetStsSamlAssertionMapCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
+import gov.nist.toolkit.xdstools2.shared.command.request.DeleteMultipleTestLogsRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetStsSamlAssertionMapRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetStsSamlAssertionRequest;
 
@@ -37,11 +39,7 @@ class RunTestsClickHandler implements ClickHandler, TestIterator {
         this.tests.addAll(tests);
     }
 
-    @Override
-    public void onClick(ClickEvent clickEvent) {
-        clickEvent.preventDefault();
-        clickEvent.stopPropagation();
-
+    void doRunAll() {
         conformanceTestTab.getSiteToIssueTestAgainst().setTls(orchInit.isTls());
 
         if (orchInit.isSaml()) {
@@ -49,8 +47,8 @@ class RunTestsClickHandler implements ClickHandler, TestIterator {
             String stsActorName = null;
             String stsTpName = null;
             if (tkPropMap!=null) {
-               stsActorName = tkPropMap.get("Sts_ActorName");
-               stsTpName = tkPropMap.get("Sts_TpName");
+                stsActorName = tkPropMap.get("Sts_ActorName");
+                stsTpName = tkPropMap.get("Sts_TpName");
             } else {
                 new PopupMessage("Error reading tkPropMap cache.");
             }
@@ -98,6 +96,24 @@ class RunTestsClickHandler implements ClickHandler, TestIterator {
             conformanceTestTab.getSiteToIssueTestAgainst().setSaml(false);
             onDone(null);
         }
+    }
+
+    @Override
+    public void onClick(ClickEvent clickEvent) {
+        clickEvent.preventDefault();
+        clickEvent.stopPropagation();
+
+        new DeleteMultipleTestLogsCommand() {
+            @Override
+            public void onComplete(List<TestOverviewDTO> result) {
+                for (TestOverviewDTO testOverviewDTO : result) {
+                    conformanceTestTab.updateTestOverviewDTOForDelete(testOverviewDTO.getTestInstance(), testOverviewDTO, conformanceTestTab.getCurrentActorOption());
+                }
+               doRunAll();
+            }
+        }.run(new DeleteMultipleTestLogsRequest(conformanceTestTab.getCommandContext(), tests));
+
+
 
     }
 
