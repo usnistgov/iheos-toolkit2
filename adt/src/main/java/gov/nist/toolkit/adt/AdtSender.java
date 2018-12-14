@@ -13,6 +13,7 @@ import java.net.UnknownHostException;
 public class AdtSender {
     private static Logger logger = Logger.getLogger(AdtSender.class);
     private static String HL7_ACK_ACCEPTED = "AA";
+    private static int MLLP_END_BLOCK = (char) 0x1c; //28
     
     private String server;
     private int port;
@@ -90,7 +91,7 @@ public class AdtSender {
 	 * @return
 	 * @throws IOException
 	 */
-	private static String getStringFromBufferedReader(BufferedReader br) throws IOException {
+	private String getStringFromBufferedReader(BufferedReader br) throws IOException {
 
 		StringBuilder sb = new StringBuilder();
 
@@ -99,6 +100,9 @@ public class AdtSender {
 			while ((line = br.readLine()) != null) {
 				sb.append(line);
 				sb.append(System.lineSeparator());
+				if(line.indexOf(MLLP_END_BLOCK) > -1) {
+	                  break;
+	            }
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -112,17 +116,19 @@ public class AdtSender {
 				}
 			}
 		}
+		
+		logger.debug(sb.toString());
 
 		return sb.toString();
 	}
     
 	/**
-	 * Reads EVN Segment to determine if message was accepted.
+	 * Reads MSA Segment to determine if message was accepted.
 	 * 
 	 * @param message
 	 * @throws AdtMessageParseException
 	 */
-	private static void isSuccessful(String message) throws AdtMessageRejectedException, AdtMessageParseException {
+	private void isSuccessful(String message) throws AdtMessageRejectedException, AdtMessageParseException {
 
 		AdtMessage adtMessage = new AdtMessage(message);
 		String ackCode = adtMessage.getACKCode();
