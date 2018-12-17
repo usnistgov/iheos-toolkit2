@@ -225,7 +225,8 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 
 			//		reportManagerPreRun(request_element);  // must run before prepareMetadata (assign uuids)
 
-			if (getExternalLinkage()!=null && !getExternalLinkage().containsKey("PifTypeNONE_BypassAllTransactions")) {
+			if (getExternalLinkage()!=null) {
+				if (!getExternalLinkage().containsKey("PifTypeNONE_BypassAllTransactions"))
 					run(request_element);
 			} else
 				run(request_element);
