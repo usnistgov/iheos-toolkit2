@@ -8,6 +8,10 @@
             <XDSb/>
             <CleanParams/>
             <MetadataFile>query.xml</MetadataFile>
+            <ExpectedContents>
+                <Folders count="0"/>
+                <SubmissionSets count="0"/>
+            </ExpectedContents>
         </StoredQueryTransaction>
     </TestStep>
 </TestPlan>

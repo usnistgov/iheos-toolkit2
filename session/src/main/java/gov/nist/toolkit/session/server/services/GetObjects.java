@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 public class GetObjects extends CommonService {
-	String returnType = "LeafClass";
+	static final String returnType = "LeafClass"; // This cannot be changed because of some test plan assertions, such as the GetDocuments utility test, that depend on LeafClass return type
 	Session session;
 	
 	public GetObjects(Session session) throws XdsException {

@@ -139,6 +139,6 @@ Error: This simulator type could not be created --> webuitest__ris
             println page.asText()
 
         then:
-        addedSims == actorCt - defectCt
+        addedSims == actorCt - defectCt // If this failed, a good place to check is the log for "ThreadPoolExhaustedException". In this case, increase your Listener_Port_Range setting in Toolkit.properties.
     }
 }
