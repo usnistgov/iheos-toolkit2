@@ -1,14 +1,18 @@
 package gov.nist.toolkit.xdstools2.client.selectors;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.command.command.AddTestSessionCommand;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.widgets.AdminMenuItem;
 import gov.nist.toolkit.xdstools2.client.widgets.AdminPasswordDialogBox;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 
@@ -54,7 +58,16 @@ public class SignInSelector implements IsWidget {
         });
     }
 
-    private void updateDisplay() {
+    public void updateDisplay() {
+
+        if (PasswordManagement.adminMenuItemSet!=null && !PasswordManagement.adminMenuItemSet.isEmpty()) {
+            for (AdminMenuItem ami : PasswordManagement.adminMenuItemSet) {
+//                GWT.log("sis ami lockimg isAttached? " + ami.getLockImg().isAttached());
+//                   ami.getPanel().remove(ami.getLockImg());
+                ami.displayLockedFeature(!PasswordManagement.isSignedIn);
+            }
+        }
+
         if (PasswordManagement.isSignedIn) {
             signInStatus.setText(signedIn);
             signOut.setVisible(true);
@@ -71,6 +84,15 @@ public class SignInSelector implements IsWidget {
     private void switchTestSession(String testSession) {
         ClientUtils.INSTANCE.getTestSessionManager().setCurrentTestSession(testSession);
         ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, testSession, "SignInSelector"));
+    }
+
+    @Override
+    public String toString() {
+        return "SignInSelector{" +
+                "signInStatus isAttached=" + signInStatus.isAttached() +
+                ", signIn isAttached=" + signIn.isAttached() +
+                ", signOut isAttached=" + signOut.isAttached() +
+                '}';
     }
 
     @Override

@@ -1,9 +1,13 @@
 package gov.nist.toolkit.xdstools2.client;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import gov.nist.toolkit.xdstools2.client.selectors.SignInSelector;
+import gov.nist.toolkit.xdstools2.client.widgets.AdminMenuItem;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Manage details of user's password and authentication into the server. This is initialized 
@@ -16,6 +20,8 @@ public class PasswordManagement {
 	static public String adminPassword = "";  // loaded when this tab is created (at launch)
 	static public boolean isSignedIn = false;
 	static private List<AsyncCallback<Boolean>> signInCallbacks = new ArrayList<AsyncCallback<Boolean>>();
+	static public SignInSelector signInSelector;
+	static public Set<AdminMenuItem> adminMenuItemSet = new HashSet<>();
 	
 	public static void addSignInCallback(AsyncCallback<Boolean> callback) {
 		signInCallbacks.add(callback);
@@ -37,7 +43,7 @@ public class PasswordManagement {
 			else
 				callback.onFailure(null);
 		}
-		signInCallbacks.clear();
+		clearSignInCallbacks();
 	}
 	
 	static public void comparePassword(String password) {
@@ -45,5 +51,8 @@ public class PasswordManagement {
 //		return isSignedIn;
 	}
 
+	public static void clearSignInCallbacks() {
+		signInCallbacks.clear();
+	}
 
 }

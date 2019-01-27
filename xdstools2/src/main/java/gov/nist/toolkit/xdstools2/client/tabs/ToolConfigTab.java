@@ -164,12 +164,16 @@ public class ToolConfigTab extends GenericQueryTab {
     }
 
     void savePropertyFile() {
-        new SetToolkitPropertiesCommand(){
-            @Override
-            public void onComplete(String result) {
-                new PopupMessage("Properties saved");
-            }
-        }.run(new SetToolkitPropertiesRequest(getCommandContext(),props));
+        if (PasswordManagement.isSignedIn) {
+            new SetToolkitPropertiesCommand() {
+                @Override
+                public void onComplete(String result) {
+                    new PopupMessage("Properties saved");
+                }
+            }.run(new SetToolkitPropertiesRequest(getCommandContext(), props));
+        } else {
+            new PopupMessage("You must be signed in as admin");
+        }
     }
 
 	int getIndex(ListBox lb, String value) {
