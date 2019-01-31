@@ -79,7 +79,8 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
 			testSessionChangedHandler = null;
 		}
 		if (amiSaveButton!=null) {
-			PasswordManagement.adminMenuItemList.remove(amiSaveButton);
+		    // TODO: fixme. tab icons not working after this remove.
+//			PasswordManagement.adminMenuItemList.remove(amiSaveButton);
 		}
 	}
 

@@ -23,6 +23,11 @@ class SaveButtonClickHandler implements ClickHandler {
 	}
 
 	public boolean save() {
+		// CurrentEditSite can be null if nothing is selected
+		if (actorConfigTab.currentEditSite == null) {
+			new PopupMessage("Site was not selected or nothing to save.");
+			return false;
+		}
 		if (actorConfigTab.currentEditSite.getName().equals(actorConfigTab.newSiteName)) {
 			new PopupMessage("You must give site a real name before saving");
 			return false;

@@ -70,11 +70,10 @@ public class SignInSelector implements IsWidget {
                     if (ami.isAttached()) {
                         ami.displayLockedFeature(!PasswordManagement.isSignedIn);
                     } else {
-                        GWT.log("ami is not attached.");
-//                    PasswordManagement.adminMenuItemList.remove(ami);
+//                        GWT.log("ami is not attached.");
                     }
                 } catch (Exception ex) {
-                    GWT.log("Error accessing ami");
+//                    GWT.log("Error accessing ami");
                 }
             }
         }
