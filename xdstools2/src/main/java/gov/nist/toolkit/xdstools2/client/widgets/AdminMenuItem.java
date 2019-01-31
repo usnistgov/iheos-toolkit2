@@ -77,21 +77,6 @@ public class AdminMenuItem<T extends FocusWidget>  extends Composite  {
         return fp;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        AdminMenuItem that = (AdminMenuItem) o;
-        if (title!=null)
-            return title.equals(that.title);
-        else
-            return false;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(title);
-    }
 
     @Override
     public String toString() {
