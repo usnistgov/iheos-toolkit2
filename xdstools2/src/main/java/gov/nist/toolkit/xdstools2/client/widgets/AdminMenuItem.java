@@ -1,6 +1,5 @@
 package gov.nist.toolkit.xdstools2.client.widgets;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -54,7 +53,7 @@ public class AdminMenuItem<T extends FocusWidget>  extends Composite  {
 
         fp.add(fw);
         fp.add(lockImg);
-        GWT.log("Ami initWidget was called.");
+//        GWT.log("Ami initWidget was called.");
         initWidget(fp);
     }
 
@@ -63,7 +62,7 @@ public class AdminMenuItem<T extends FocusWidget>  extends Composite  {
         try {
             lockImg.setVisible(isLocked);
         } catch (Exception ex) {
-            GWT.log("display lock feature failed");
+//            GWT.log("display lock feature failed");
         }
     }
 
@@ -91,7 +90,7 @@ public class AdminMenuItem<T extends FocusWidget>  extends Composite  {
 
     @Override
     public int hashCode() {
-        return Objects.hash(fw.getTitle());
+        return Objects.hash(title);
     }
 
     @Override
@@ -105,7 +104,7 @@ public class AdminMenuItem<T extends FocusWidget>  extends Composite  {
 //                "pm sis widget isAttached='" + PasswordManagement.signInSelector.asWidget().isAttached() +
                     '}';
         } catch (Exception ex) {
-            return "toString Exception";
+            return "ami toString Exception";
         }
     }
 
@@ -113,14 +112,14 @@ public class AdminMenuItem<T extends FocusWidget>  extends Composite  {
     @Override
     protected void doAttachChildren() {
         super.doAttachChildren();
-        GWT.log("lock is shown: " + !PasswordManagement.isSignedIn);
+//        GWT.log("lock is shown: " + !PasswordManagement.isSignedIn);
         displayLockedFeature(!PasswordManagement.isSignedIn);
-        GWT.log("doAttachChildren was called.");
+//        GWT.log("doAttachChildren was called.");
         // Register this AMI Lock Image in PasswordManagement so that on SignIn, all locks are hidden
         if (PasswordManagement.adminMenuItemList != null /* && !PasswordManagement.adminMenuItemList.contains(AdminMenuItem.this)*/) {
             PasswordManagement.adminMenuItemList.add(AdminMenuItem.this);
         } else {
-            GWT.log("Pm adminset is null.");
+//            GWT.log("Pm adminset is null.");
         }
     }
 

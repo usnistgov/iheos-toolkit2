@@ -46,7 +46,7 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
 	private Button reloadFromGazelleButton;
 	private Button promoteButton;
 	private CheckBox showSims = new CheckBox();
-	
+	private AdminMenuItem<Button> amiSaveButton;
 	Site currentEditSite = null;
 
 
@@ -77,6 +77,9 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
 		if (testSessionChangedHandler != null) {
 			testSessionChangedHandler.removeHandler();
 			testSessionChangedHandler = null;
+		}
+		if (amiSaveButton!=null) {
+			PasswordManagement.adminMenuItemList.remove(amiSaveButton);
 		}
 	}
 
@@ -180,7 +183,7 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
 
 		sitesPanel.add(new HTML("<br />"));
 		Button saveButton = new Button("Save Changes");
-		AdminMenuItem<Button> amiSaveButton = new AdminMenuItem<>(saveButton, new SaveButtonClickHandler(this));
+		amiSaveButton = new AdminMenuItem<>(saveButton, new SaveButtonClickHandler(this));
 //		saveButton.addClickHandler();
 //		sitesPanel.add(saveButton);
         sitesPanel.add(amiSaveButton);

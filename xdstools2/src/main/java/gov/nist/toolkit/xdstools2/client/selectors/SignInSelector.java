@@ -62,6 +62,7 @@ public class SignInSelector implements IsWidget {
     public void updateDisplay() {
 
         if (PasswordManagement.adminMenuItemList !=null && !PasswordManagement.adminMenuItemList.isEmpty()) {
+            GWT.log("signinselector ami list size is: " + PasswordManagement.adminMenuItemList.size());
             for (AdminMenuItem ami : PasswordManagement.adminMenuItemList) {
 //                GWT.log("sis ami lockimg isAttached? " + ami.getLockImg().isAttached());
 //                   ami.getPanel().remove(ami.getLockImg());
