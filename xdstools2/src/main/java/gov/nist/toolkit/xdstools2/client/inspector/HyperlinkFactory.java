@@ -1,7 +1,9 @@
 package gov.nist.toolkit.xdstools2.client.inspector;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Hyperlink;
@@ -255,7 +257,11 @@ public class HyperlinkFactory {
 	}
 
 	public static AdminMenuItem launchAdminTool(String html, final ClickHandler clickHandler) {
-		return new AdminMenuItem(html, clickHandler);
+		Anchor a = new Anchor(false);
+		a.setText(html);
+		a.setTitle("Launch this tool in a separate tab");
+		a.getElement().getStyle().setCursor(Style.Cursor.POINTER);
+		return new AdminMenuItem<Anchor>(a, clickHandler);
 	}
 
 

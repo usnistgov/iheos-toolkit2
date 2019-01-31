@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.selectors;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
@@ -60,11 +61,20 @@ public class SignInSelector implements IsWidget {
 
     public void updateDisplay() {
 
-        if (PasswordManagement.adminMenuItemSet!=null && !PasswordManagement.adminMenuItemSet.isEmpty()) {
-            for (AdminMenuItem ami : PasswordManagement.adminMenuItemSet) {
+        if (PasswordManagement.adminMenuItemList !=null && !PasswordManagement.adminMenuItemList.isEmpty()) {
+            for (AdminMenuItem ami : PasswordManagement.adminMenuItemList) {
 //                GWT.log("sis ami lockimg isAttached? " + ami.getLockImg().isAttached());
 //                   ami.getPanel().remove(ami.getLockImg());
-                ami.displayLockedFeature(!PasswordManagement.isSignedIn);
+                try {
+                    if (ami.isAttached()) {
+                        ami.displayLockedFeature(!PasswordManagement.isSignedIn);
+                    } else {
+                        GWT.log("ami is not attached.");
+//                    PasswordManagement.adminMenuItemList.remove(ami);
+                    }
+                } catch (Exception ex) {
+                    GWT.log("Error accessing ami");
+                }
             }
         }
 

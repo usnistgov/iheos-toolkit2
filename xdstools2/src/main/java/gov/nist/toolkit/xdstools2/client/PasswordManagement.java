@@ -5,9 +5,7 @@ import gov.nist.toolkit.xdstools2.client.selectors.SignInSelector;
 import gov.nist.toolkit.xdstools2.client.widgets.AdminMenuItem;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Manage details of user's password and authentication into the server. This is initialized 
@@ -21,7 +19,7 @@ public class PasswordManagement {
 	static public boolean isSignedIn = false;
 	static private List<AsyncCallback<Boolean>> signInCallbacks = new ArrayList<AsyncCallback<Boolean>>();
 	static public SignInSelector signInSelector;
-	static public Set<AdminMenuItem> adminMenuItemSet = new HashSet<>();
+	static public List<AdminMenuItem> adminMenuItemList = new ArrayList<>();
 	
 	public static void addSignInCallback(AsyncCallback<Boolean> callback) {
 		signInCallbacks.add(callback);

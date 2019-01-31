@@ -27,6 +27,7 @@ import gov.nist.toolkit.xdstools2.client.siteActorManagers.NullSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.util.InformationLink;
+import gov.nist.toolkit.xdstools2.client.widgets.AdminMenuItem;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteNamesRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.SaveSiteRequest;
@@ -179,8 +180,10 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
 
 		sitesPanel.add(new HTML("<br />"));
 		Button saveButton = new Button("Save Changes");
-		saveButton.addClickHandler(new SaveButtonClickHandler(this));
-		sitesPanel.add(saveButton);
+		AdminMenuItem<Button> amiSaveButton = new AdminMenuItem<>(saveButton, new SaveButtonClickHandler(this));
+//		saveButton.addClickHandler();
+//		sitesPanel.add(saveButton);
+        sitesPanel.add(amiSaveButton);
 
 		sitesPanel.add(new HTML("<br />"));
 		Button forgetButton = new Button("Forget Changes");
