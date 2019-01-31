@@ -33,7 +33,7 @@ class SaveButtonClickHandler implements ClickHandler {
 			return false;
 		}
 		if (!Xdstools2.getInstance().isSystemSaveEnabled()) {
-			new PopupMessage("You don't have permission to create a save/update a System in this Test Session");
+			new PopupMessage("You don't have permission to save/update a System in this Test Session");
 			return false;
 		}
 //		if (actorConfigTab.currentEditSite.getOwner().equals(TestSession.GAZELLE_TEST_SESSION.getValue())) {

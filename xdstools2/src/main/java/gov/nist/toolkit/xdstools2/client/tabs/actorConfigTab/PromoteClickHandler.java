@@ -26,7 +26,7 @@ public class PromoteClickHandler implements ClickHandler {
             return;
 
         if (!Xdstools2.getInstance().isSystemSaveEnabled()) {
-            new PopupMessage("You don't have permission to create a promote a System in this Test Session");
+            new PopupMessage("You don't have permission to promote a System in this Test Session");
             return;
         }
 
