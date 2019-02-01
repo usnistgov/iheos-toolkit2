@@ -28,7 +28,7 @@ import gov.nist.toolkit.xdstools2.client.util.ClientFactory;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.util.SimpleCallback;
 import gov.nist.toolkit.xdstools2.client.util.TabWatcher;
-import gov.nist.toolkit.xdstools2.client.widgets.AdminMenuItem;
+import gov.nist.toolkit.xdstools2.client.widgets.AccessControlledMenuItem;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.InitializationResponse;
@@ -220,7 +220,7 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget, RequiresResize, P
 
 	static public void addtoMainMenu(Widget w) { ME.mainMenuPanel.add(w); }
 
-	static public void addtoMainMenu(AdminMenuItem ami) {
+	static public void addtoMainMenu(AccessControlledMenuItem ami) {
 		ME.mainMenuPanel.add(ami);
 	}
 

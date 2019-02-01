@@ -2,7 +2,7 @@ package gov.nist.toolkit.xdstools2.client;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.xdstools2.client.selectors.SignInSelector;
-import gov.nist.toolkit.xdstools2.client.widgets.AdminMenuItem;
+import gov.nist.toolkit.xdstools2.client.widgets.AccessControlledMenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,7 @@ public class PasswordManagement {
 	static public boolean isSignedIn = false;
 	static private List<AsyncCallback<Boolean>> signInCallbacks = new ArrayList<AsyncCallback<Boolean>>();
 	static public SignInSelector signInSelector;
-	static public List<AdminMenuItem> adminMenuItemList = new ArrayList<>();
+	static public List<AccessControlledMenuItem> adminMenuItemList = new ArrayList<>();
 	
 	public static void addSignInCallback(AsyncCallback<Boolean> callback) {
 		signInCallbacks.add(callback);

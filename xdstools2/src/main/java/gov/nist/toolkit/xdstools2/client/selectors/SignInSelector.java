@@ -1,6 +1,5 @@
 package gov.nist.toolkit.xdstools2.client.selectors;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
@@ -13,7 +12,7 @@ import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.command.command.AddTestSessionCommand;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
-import gov.nist.toolkit.xdstools2.client.widgets.AdminMenuItem;
+import gov.nist.toolkit.xdstools2.client.widgets.AccessControlledMenuItem;
 import gov.nist.toolkit.xdstools2.client.widgets.AdminPasswordDialogBox;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 
@@ -63,10 +62,10 @@ public class SignInSelector implements IsWidget {
 
         if (PasswordManagement.adminMenuItemList !=null && !PasswordManagement.adminMenuItemList.isEmpty()) {
 //            GWT.log("signinselector ami list size is: " + PasswordManagement.adminMenuItemList.size());
-            for (AdminMenuItem ami : PasswordManagement.adminMenuItemList) {
+            for (AccessControlledMenuItem ami : PasswordManagement.adminMenuItemList) {
                 try {
                     if (ami != null && ami.isAttached()) {
-                        ami.displayLockedFeature(!PasswordManagement.isSignedIn);
+                        ami.updateIndicatorStatus();
                     } else {
 //                        GWT.log("ami is not attached.");
                     }

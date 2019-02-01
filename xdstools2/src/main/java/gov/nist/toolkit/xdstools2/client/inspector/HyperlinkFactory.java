@@ -19,9 +19,10 @@ import gov.nist.toolkit.registrymetadata.client.Uid;
 import gov.nist.toolkit.results.client.AssertionResults;
 import gov.nist.toolkit.results.client.StepResult;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.TestDocumentation;
 import gov.nist.toolkit.xdstools2.client.tabs.GetRelatedTab;
-import gov.nist.toolkit.xdstools2.client.widgets.AdminMenuItem;
+import gov.nist.toolkit.xdstools2.client.widgets.AccessControlledMenuItem;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
@@ -256,12 +257,17 @@ public class HyperlinkFactory {
 		return h;
 	}
 
-	public static AdminMenuItem launchAdminTool(String html, final ClickHandler clickHandler) {
+	public static AccessControlledMenuItem launchAdminTool(String html, final ClickHandler clickHandler) {
 		Anchor a = new Anchor(false);
 		a.setText(html);
 		a.setTitle("Launch this tool in a separate tab");
 		a.getElement().getStyle().setCursor(Style.Cursor.POINTER);
-		return new AdminMenuItem<Anchor>(a, clickHandler);
+		return new AccessControlledMenuItem<Anchor>(a, clickHandler, AccessControlledMenuItem.IndicatorType.LOCK_ICON) {
+			@Override
+			public boolean isAccessible() {
+				return  PasswordManagement.isSignedIn;
+			}
+		};
 	}
 
 

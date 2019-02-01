@@ -282,14 +282,15 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
             @Override
             public void onComplete(String result) {
                 // reload simulators to getRetrievedDocumentsModel updates
-                if (simulatorControlTab != null)
+                if (simulatorControlTab != null) {
                     new LoadSimulatorsClickHandler(simulatorControlTab, testSession).onClick(null);
-                new Timer() {
-                    @Override
-                    public void run() {
-                        new PopupMessage("SimConfig saved");
-                    }
-                }.schedule(1); // Put this at the end of the async queue
+                    new Timer() {
+                        @Override
+                        public void run() {
+                            new PopupMessage("SimConfig saved");
+                        }
+                    }.schedule(1); // Put this at the end of the async queue
+                }
             }
         }.run(new SimConfigRequest(ClientUtils.INSTANCE.getCommandContext(),config));
     }
