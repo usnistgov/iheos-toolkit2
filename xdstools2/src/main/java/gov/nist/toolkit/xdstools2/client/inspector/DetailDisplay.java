@@ -152,7 +152,7 @@ public class DetailDisplay extends CommonDisplay {
 		if (diff!=null) {
 			diffs = new DocumentEntryDiff().compare(de, diff);
 			if (diffs!=null) {
-				diffsLabel = " (" + diffs.size() + " difference(s))";
+				diffsLabel = " (At least " + diffs.size() + " difference(s) found. Please note: trial version only highlights some diffs.)";
 			}
 		} else {
 			diffs = new ArrayList<>();

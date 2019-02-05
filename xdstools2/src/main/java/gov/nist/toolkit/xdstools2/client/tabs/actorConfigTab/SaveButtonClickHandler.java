@@ -53,7 +53,7 @@ class SaveButtonClickHandler implements ClickHandler {
 			return false;
 		}
 
-		if (PasswordManagement.isSignedIn) {
+		if (Xdstools2.getInstance().isSystemSaveEnabled()) {
 			if (!actorConfigTab.currentEditSite.hasOwner())
 				actorConfigTab.currentEditSite.setOwner(actorConfigTab.currentEditSite.getTestSession().getValue());
 			actorConfigTab.saveSignedInCallback.onSuccess(true);
@@ -61,7 +61,8 @@ class SaveButtonClickHandler implements ClickHandler {
 			actorConfigTab.loadExternalSites();
 		}
 		else {
-			if (Xdstools2.getInstance().multiUserModeEnabled && !Xdstools2.getInstance().casModeEnabled) {
+			if (Xdstools2.getInstance().multiUserModeEnabled
+					&& !Xdstools2.getInstance().casModeEnabled) {
 				if (!actorConfigTab.currentEditSite.hasOwner())
 					actorConfigTab.currentEditSite.setOwner(actorConfigTab.currentEditSite.getTestSession().getValue());
 				actorConfigTab.saveSignedInCallback.onSuccess(true);
