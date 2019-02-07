@@ -33,7 +33,8 @@ public class OrchestrationProperties {
         orchestrationPropFile = Installation.instance().orchestrationPropertiesFile(testSession, actorType.getShortName());
         if (orchestrationPropFile.exists())
             orchProps.load(new FileInputStream(orchestrationPropFile));
-        allocatePids();
+        if (pidPropNames != null)
+            allocatePids();
     }
 
     private void allocatePids() throws Exception {
