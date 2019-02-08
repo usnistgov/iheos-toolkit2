@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!--
-    Update  1/19/2019 by Steve Moore (generated from spreadsheet)
     Update 12/7/2018 by Bill Majurski
        added PracticeSetting Code Practice-E back in (from last year)
        removed some null entries from PracticeSetting Code
@@ -9,13 +8,14 @@
     Update  4/06/2018 by Steve Moore and Lynn Felhofer (generated from spreadsheet)
     Update  3/21/2018 by Steve Moore and Lynn Felhofer (generated from spreadsheet)
 -->
+
 <Codes>
     <CodeType name="confidentialityCode" classScheme="urn:uuid:f4f85eac-e6cb-4883-b524-f2705394840f">
         <Code code="L" display="low" codingScheme="2.16.840.1.113883.5.25" system="http://hl7.org/fhir/v3/Confidentiality"/>
         <Code code="M" display="moderate" codingScheme="2.16.840.1.113883.5.25" system="http://hl7.org/fhir/v3/Confidentiality"/>
         <Code code="N" display="normal" codingScheme="2.16.840.1.113883.5.25" system="http://hl7.org/fhir/v3/Confidentiality"/>
         <Code code="R" display="restricted" codingScheme="2.16.840.1.113883.5.25" system="http://hl7.org/fhir/v3/Confidentiality"/>
-        <Code code="U" display="unrestricted" codingScheme="2.16.840.1.113883.5.25" system="http://hl7.org/fhir/v3/Confidentiality"/>
+        <Code code="U" display="unrestriced" codingScheme="2.16.840.1.113883.5.25" system="http://hl7.org/fhir/v3/Confidentiality"/>
         <Code code="V" display="very restricted" codingScheme="2.16.840.1.113883.5.25" system="http://hl7.org/fhir/v3/Confidentiality"/>
     </CodeType>
     <CodeType name="healthcareFacilityTypeCode" classScheme="urn:uuid:f33fb8ac-18af-42cc-ae0e-ed0b0bdb91e1">
@@ -30,6 +30,25 @@
         <Code code="419955002" display="Residential institution" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
         <Code code="MPQ-hcftcode-1" display="MPQ Healthcare Facility Code 1" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
         <Code code="MPQ-hcftcode-2" display="MPQ Healthcare Facility Code 2" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
+    </CodeType>
+    <CodeType name="practiceSettingCode" classScheme="urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead">
+        <Code code="R-300E3" display="Accident and Emergency" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="R-20348" display="Cardiology" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="Practice-B" display="Cardiology-Old" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
+        <Code code="Practice-F" display="Family Practice" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
+        <Code code="R-30254" display="General Medicine" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="Practice-G" display="General Medicine-Old" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
+        <Code code="Practice-J" display="Home" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
+        <Code code="Practice-C" display="Laboratory" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
+        <Code code="R-30263" display="Obstetrics and Gynecology" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="R-3025C" display="Ophthalmology" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="R-3026B" display="Pathology" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="Practice-D" display="Pathology-Old" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
+        <Code code="Practice-K" display="Pharmacy" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
+        <Code code="R-3027B" display="Radiology" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="Practice-A" display="Radiology-Old" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
+        <Code code="Practice-L" display="Other" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
+        <Code code="Practice-E" display="Ophthalmology-Old" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
     </CodeType>
     <CodeType name="eventCodeList" classScheme="urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4">
         <Code code="urn:connectathon:bppc:foundational:policy" display="Foundational Connectathon Read-Access Policy" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
@@ -323,25 +342,6 @@
         <Code code="A-04140" display="Vascular graft" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
         <Code code="T-32400" display="Ventricle" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
         <Code code="T-81000" display="Vulva" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
-    </CodeType>
-    <CodeType name="practiceSettingCode" classScheme="urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead">
-        <Code code="R-300E3" display="Accident and Emergency" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
-        <Code code="R-20348" display="Cardiology" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
-        <Code code="Practice-B" display="Cardiology-Old" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
-        <Code code="Practice-F" display="Family Practice" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
-        <Code code="R-30254" display="General Medicine" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
-        <Code code="Practice-G" display="General Medicine-Old" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
-        <Code code="Practice-J" display="Home" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
-        <Code code="Practice-C" display="Laboratory" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
-        <Code code="R-30263" display="Obstetrics and Gynecology" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
-        <Code code="R-3025C" display="Ophthalmology" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
-        <Code code="Practice-E" display="Ophthalmology-Old" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
-        <Code code="R-3026B" display="Pathology" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
-        <Code code="Practice-D" display="Pathology-Old" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
-        <Code code="Practice-K" display="Pharmacy" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
-        <Code code="R-3027B" display="Radiology" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
-        <Code code="Practice-A" display="Radiology-Old" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
-        <Code code="Practice-L" display="Other" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
     </CodeType>
     <CodeType name="mimeType">
         <Code code="application/pdf" ext="pdf"/>
