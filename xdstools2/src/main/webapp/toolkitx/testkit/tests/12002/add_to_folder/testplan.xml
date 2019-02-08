@@ -1,22 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?><TestPlan>
   <Test>12002/add_to_folder</Test>
+  <!--
+  Use the alt patientid from the orchestration.
   <TestStep id="register_new_patient_id">
-    <Rule>
-      <Transaction>Patient Identity Feed</Transaction>
-      <Assertion>Send to Registry</Assertion>
-    </Rule>
-    <ExpectedStatus>Success</ExpectedStatus>
-    <PatientIdentityFeedTransaction>
-      <XDSb/>
-      <NoMetadata/>
-      <CreateNewPatientId/>
-    </PatientIdentityFeedTransaction>
+  <Rule>
+    <Transaction>Patient Identity Feed</Transaction>
+    <Assertion>Send to Registry</Assertion>
+  </Rule>
+  <ExpectedStatus>Success</ExpectedStatus>
+  <PatientIdentityFeedTransaction>
+    <XDSb/>
+    <NoMetadata/>
+    <CreateNewPatientId/>
+  </PatientIdentityFeedTransaction>
   </TestStep>
+  -->
   <TestStep id="add">
     <ExpectedStatus>Failure</ExpectedStatus>
     <ExpectedErrorMessage>XDSPatientIdDoesNotMatch</ExpectedErrorMessage>
     <RegisterTransaction>
       <XDSb/>
+      <NoPatientId/>
+      <UseReport
+              reportName="$patientid$"
+              test="15817b"
+              section="pif"
+              step="step"
+              useAs="$altpatientid$"/>
       <MetadataFile>single_doc.xml</MetadataFile>
       <UseId testdir="../create_folder" id="Folder" symbol="$Folder$" step="submit_fol" section="AssignedUuids"/>
     </RegisterTransaction>
