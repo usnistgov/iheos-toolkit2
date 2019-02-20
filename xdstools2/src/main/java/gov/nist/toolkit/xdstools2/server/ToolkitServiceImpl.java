@@ -152,6 +152,12 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 
     @Override
     public InitializationResponse getInitialization(CommandContext context) throws Exception {
+        /**
+         *
+         * NOTE
+         * When this code is NOT commented out AND the external cache is bogus or not yet configured to a real value, THEN the UI is blank.
+         * There is no opportunity to fix the external cache through the Toolkit Configuration tool.
+         *
         if (Installation.instance().externalCache() == null) {
             throw new Exception("External Cache does not exist at " + Installation.instance().propertyServiceManager().getPropertyManager().getExternalCache());
         }
@@ -159,6 +165,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
             throw new Exception("Configured External Cache location " + Installation.instance().externalCache() + " does not exist");
         }
         installCommandContext(context);
+         **/
         InitializationResponse response = new InitializationResponse();
         String defaultEnv = Installation.instance().defaultEnvironmentName();
         if (defaultEnv == null || defaultEnv.equals(""))
