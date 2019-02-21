@@ -3,6 +3,7 @@ package gov.nist.toolkit.valregmetadata.validators;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.valregmetadata.model.Association;
 import gov.nist.toolkit.valregmetadata.model.ClassAndIdDescription;
 import gov.nist.toolkit.valregmetadata.model.Classification;
@@ -137,8 +138,6 @@ public class AssociationValidator implements ObjectValidator {
 
         else if (!assocTypes.contains(mo.getType()))
             er.err(XdsErrorCode.Code.XDSRegistryMetadataError, mo.identifyingString() + ": associationType " + mo.getType() + " unknown. Known assocationTypes are " + assocTypes, this, "ITI TF-3 Table 4.1-2.1");
-
-
     }
 
     public void validateRequiredSlotsPresent(ErrorRecorder er,
