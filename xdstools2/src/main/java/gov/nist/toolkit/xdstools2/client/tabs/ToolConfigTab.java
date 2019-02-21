@@ -2,8 +2,20 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.session.client.TestSessionStats;
 import gov.nist.toolkit.session.client.TestSessionStatsTool;
 import gov.nist.toolkit.xdstools2.client.LoadGazelleConfigsClickHandler;
@@ -15,6 +27,7 @@ import gov.nist.toolkit.xdstools2.client.command.command.SetToolkitPropertiesCom
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.NullSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.util.InformationLink;
+import gov.nist.toolkit.xdstools2.client.util.SimpleCallbackT;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.TestkitConfigTool;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTestSessionStatsRequest;
@@ -168,7 +181,40 @@ public class ToolConfigTab extends GenericQueryTab {
             new SetToolkitPropertiesCommand() {
                 @Override
                 public void onComplete(String result) {
-                    new PopupMessage("Properties saved");
+                    Timer t = new Timer() {
+                        @Override
+                        public void run() {
+                            fhirSupportServerStatus("isDeferred", new SimpleCallbackT<Response>() {
+                                @Override
+                                public void run(Response response) {
+                                    if (response!=null) {
+                                        if (response.getStatusCode()==Response.SC_OK) {
+                                            if (response.getText()!=null) {
+                                                if ("true".equals(response.getText())) {
+                                                    fhirSupportServerStatus("start", new SimpleCallbackT<Response>() {
+                                                        @Override
+                                                        public void run(Response response) {
+                                                            if (response!=null) {
+                                                                if (response.getStatusCode()==Response.SC_OK) {
+                                                                    new PopupMessage("Please refresh your browser for the settings to take effect!");
+                                                                } else {
+                                                                    new PopupMessage("FHIR init returned HTTP status code: " + response.getStatusCode());
+                                                                }
+                                                            }
+                                                        }
+                                                    });
+                                                } else {
+                                                    new PopupMessage("Properties saved");
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    };
+                    t.schedule(1);
+
                 }
             }.run(new SetToolkitPropertiesRequest(getCommandContext(), props));
         } else {
@@ -224,7 +270,23 @@ public class ToolConfigTab extends GenericQueryTab {
             }
             savePropertyFile();
         }
+    }
 
+    private void fhirSupportServerStatus(String cmd, final SimpleCallbackT<Response> callback) {
+        String url = "/init?cmd="+cmd;
+
+        RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
+        try {
+            @SuppressWarnings("unused")
+            Request response = builder.sendRequest(null, new RequestCallback() {
+                public void onError(Request request, Throwable exception) {
+                }
+                public void onResponseReceived(Request request, Response response) {
+                    callback.run(response);
+                }
+            });
+        } catch (RequestException e) {
+        }
     }
 
 	class RmOldSimsClickHandler implements ClickHandler {
