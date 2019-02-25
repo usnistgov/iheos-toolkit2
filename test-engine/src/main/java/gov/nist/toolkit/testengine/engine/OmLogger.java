@@ -134,14 +134,19 @@ public class OmLogger implements ILogger {
 //					System.out.println("InputMetadata:\n" + new OMFormatter(value).toString());
 //				}
 				val = Util.deep_copy(value);
-			} catch (Exception e) {}
+			} catch (Exception e) {
+				// added to understand Undeclared namespace prefix "wsu" (for attribute "Id") issue
+				Util.mkElement("Exception", value.toString(), ele);
+				return ele;
+			}
 		}
 		try {
 			ele.addChild(val);
 		}
 		catch (OMException e) {
+			// updated to understand Undeclared namespace prefix "wsu" (for attribute "Id") issue
 			Util.mkElement("Exception", "Exception writing log content\n" + OMFormatter.encodeAmp(ExceptionUtil.exception_details(e))
-					+ "\n" + new OMFormatter(value).toString(), ele);
+					+ "\n" + value.toString(), ele);
 		}
 		parent.addChild(ele);
 		return ele;
