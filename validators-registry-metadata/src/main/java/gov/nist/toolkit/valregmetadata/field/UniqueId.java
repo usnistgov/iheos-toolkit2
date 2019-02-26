@@ -83,12 +83,12 @@ public class UniqueId {
 				rel.add_error(MetadataSupport.XDSRegistryMetadataError,
 						"UniqueId " + uid + ": should not have ^ since no EXT is coded",
 						"validation/UniqueId.java:validate_format_for_documents", "ITI TF-3: Table 4.1-3", null);
-			if ( ! Attribute.is_oid(oid, xds_b))
+//			if ( ! Attribute.is_oid(oid, xds_b))
 //			for (int i=0; i<oid.length(); i++) {
 //				if ("0123456789.".indexOf(oid.charAt(i)) == -1) {
-					rel.add_error(MetadataSupport.XDSRegistryMetadataError,
-							"The OID part of UniqueId, " + oid + " is not formatted as an OID (uid = " + uid + " oid = " + oid + " ext = " + ext + ")",
-							"validation/UniqueId.java:validate_format_for_documents", "ITI TF-3: Table 4.1-3", null);
+//					rel.add_error(MetadataSupport.XDSRegistryMetadataError,
+//							"The OID part of UniqueId, " + oid + " is not formatted as an OID (uid = " + uid + " oid = " + oid + " ext = " + ext + ")",
+//							"validation/UniqueId.java:validate_format_for_documents", "ITI TF-3: Table 4.1-3", null);
 //					return;
 //				}
 //
