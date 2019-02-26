@@ -42,7 +42,7 @@ public class MetadataDiffBase {
 
 	protected static boolean difa(List<Author> x, List<Author> y) {
 		if (x.size() == 0 && y.size() == 0) return false;
-		if (x.size() == 1 && y.size() == 1) return dif(x.get(0), x.get(0));
+		if (x.size() == 1 && y.size() == 1) return dif(x.get(0), y.get(0));
 		if (x.size() != y.size()) return true;
 		
 		for (int i=0; i<x.size(); i++) // This method is order dependent
@@ -52,7 +52,7 @@ public class MetadataDiffBase {
 
 	protected static boolean dif(List<String> x, List<String> y) {
 		if (x.size() == 0 && y.size() == 0) return false;
-		if (x.size() == 1 && y.size() == 1) return dif(x.get(0), x.get(0));
+		if (x.size() == 1 && y.size() == 1) return dif(x.get(0), y.get(0));
 		if (x.size() != y.size()) return true;
 		
 		for (int i=0; i<x.size(); i++)

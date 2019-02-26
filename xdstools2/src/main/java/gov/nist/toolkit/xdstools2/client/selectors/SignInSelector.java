@@ -1,14 +1,18 @@
 package gov.nist.toolkit.xdstools2.client.selectors;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.command.command.AddTestSessionCommand;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.client.widgets.AccessControlledMenuItem;
 import gov.nist.toolkit.xdstools2.client.widgets.AdminPasswordDialogBox;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 
@@ -54,7 +58,23 @@ public class SignInSelector implements IsWidget {
         });
     }
 
-    private void updateDisplay() {
+    public void updateDisplay() {
+
+        if (PasswordManagement.adminMenuItemList !=null && !PasswordManagement.adminMenuItemList.isEmpty()) {
+//            GWT.log("signinselector ami list size is: " + PasswordManagement.adminMenuItemList.size());
+            for (AccessControlledMenuItem ami : PasswordManagement.adminMenuItemList) {
+                try {
+                    if (ami != null && ami.isAttached()) {
+                        ami.updateIndicatorStatus();
+                    } else {
+//                        GWT.log("ami is not attached.");
+                    }
+                } catch (Exception ex) {
+//                    GWT.log("Error accessing ami");
+                }
+            }
+        }
+
         if (PasswordManagement.isSignedIn) {
             signInStatus.setText(signedIn);
             signOut.setVisible(true);
@@ -71,6 +91,15 @@ public class SignInSelector implements IsWidget {
     private void switchTestSession(String testSession) {
         ClientUtils.INSTANCE.getTestSessionManager().setCurrentTestSession(testSession);
         ClientUtils.INSTANCE.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, testSession, "SignInSelector"));
+    }
+
+    @Override
+    public String toString() {
+        return "SignInSelector{" +
+                "signInStatus isAttached=" + signInStatus.isAttached() +
+                ", signIn isAttached=" + signIn.isAttached() +
+                ", signOut isAttached=" + signOut.isAttached() +
+                '}';
     }
 
     @Override

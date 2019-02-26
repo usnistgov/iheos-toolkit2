@@ -67,7 +67,6 @@ List<SimInfo> simInfoList;
                             public void onSuccess(Boolean ignored) {
                                 doDelete();
                             }
-
                         }
                 );
 

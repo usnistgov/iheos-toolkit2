@@ -8,12 +8,13 @@
       Registry.  You must do this on your own.
     </Goal>
     <ExpectedStatus>Success</ExpectedStatus>
-  <RegisterTransaction>
+  <ProvideAndRegisterTransaction>
     <XDSb/>
     <AssignUuids/>
     <NoPatientId/>
     <MetadataFile>metadata.xml</MetadataFile>
-  </RegisterTransaction>
+    <Document id="Document01">readme.txt</Document>
+  </ProvideAndRegisterTransaction>
 </TestStep>
 
 </TestPlan>

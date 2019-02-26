@@ -496,8 +496,14 @@ public class Session implements SecurityParams {
 	
 	public void setEnvironment(String name, String externalCache) {
 		File k = Installation.instance().environmentFile(name);
-		if (!k.exists() || !k.isDirectory())
-			throw new ToolkitRuntimeException("Environment " + name + " does not exist");
+		if (!k.exists() || !k.isDirectory()) {
+			String error = "";
+			if (!Installation.instance().externalCache()) {
+				error += "External cache is not configured or an invalid directory. "
+			}
+			error += "Environment " + name + " does not exist."
+			throw new ToolkitRuntimeException(error);
+		}
 		if (currentEnvName != null && currentEnvName != name)
 			logger.debug(getId() + ": " + "Environment set to " + k);
 		currentEnvName = name;

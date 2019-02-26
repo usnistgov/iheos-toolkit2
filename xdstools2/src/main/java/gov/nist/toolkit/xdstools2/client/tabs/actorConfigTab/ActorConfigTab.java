@@ -17,6 +17,7 @@ import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
 import gov.nist.toolkit.sitemanagement.client.TransactionCollection;
 import gov.nist.toolkit.xdstools2.client.NotifyOnDelete;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
+import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.command.command.GetSiteNamesCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.IsGazelleConfigFeedEnabledCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.SaveSiteCommand;
@@ -27,6 +28,7 @@ import gov.nist.toolkit.xdstools2.client.siteActorManagers.NullSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.util.InformationLink;
+import gov.nist.toolkit.xdstools2.client.widgets.AccessControlledMenuItem;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSiteNamesRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.SaveSiteRequest;
@@ -43,9 +45,11 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
 //	private Hyperlink signIn = new Hyperlink();
 	private boolean enableGazelleReload = false;
 	private Button reloadFromGazelleButton;
-	private Button promoteButton;
 	private CheckBox showSims = new CheckBox();
-	
+	private AccessControlledMenuItem<Button> acmiSaveButton;
+	private AccessControlledMenuItem<Button> acmiPromoteSite;
+	private AccessControlledMenuItem<Button> acmiDeleteSite;
+	private AccessControlledMenuItem<Button> acmiCreateSite;
 	Site currentEditSite = null;
 
 
@@ -72,10 +76,27 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
 
 	@Override
 	public void onDelete() {
-		// remove existing test session change handler
+		// Remove existing test session change handler
 		if (testSessionChangedHandler != null) {
 			testSessionChangedHandler.removeHandler();
 			testSessionChangedHandler = null;
+		}
+		// Release the acmi
+		if (acmiSaveButton !=null) {
+			if (PasswordManagement.adminMenuItemList.contains(acmiSaveButton))
+				PasswordManagement.adminMenuItemList.remove(acmiSaveButton);
+		}
+		if (acmiPromoteSite!=null) {
+			if (PasswordManagement.adminMenuItemList.contains(acmiPromoteSite))
+				PasswordManagement.adminMenuItemList.remove(acmiPromoteSite);
+		}
+		if (acmiDeleteSite!=null) {
+			if (PasswordManagement.adminMenuItemList.contains(acmiDeleteSite))
+				PasswordManagement.adminMenuItemList.remove(acmiDeleteSite);
+		}
+		if (acmiCreateSite!=null) {
+			if (PasswordManagement.adminMenuItemList.contains(acmiCreateSite))
+				PasswordManagement.adminMenuItemList.remove(acmiCreateSite);
 		}
 	}
 
@@ -128,12 +149,22 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
 		HorizontalPanel actionButtons = new HorizontalPanel();
 
 		Button newSiteButton = new Button("+");
-		newSiteButton.addClickHandler(new CreateNewSite(this));
-		actionButtons.add(newSiteButton);
+		acmiCreateSite = new AccessControlledMenuItem<Button>(newSiteButton, new CreateNewSite(this), AccessControlledMenuItem.IndicatorType.DISABLE_FEATURE) {
+			@Override
+			public boolean isAccessible() {
+				return Xdstools2.getInstance().isSystemSaveEnabled();
+			}
+		};
+		actionButtons.add(acmiCreateSite);
 
 		Button rmSiteButton = new Button("-");
-		rmSiteButton.addClickHandler(new DeleteSite(this));
-		actionButtons.add(rmSiteButton);
+		acmiDeleteSite = new AccessControlledMenuItem<Button>(rmSiteButton, new DeleteSite(this), AccessControlledMenuItem.IndicatorType.DISABLE_FEATURE) {
+			@Override
+			public boolean isAccessible() {
+				return Xdstools2.getInstance().isSystemSaveEnabled();
+			}
+		};
+		actionButtons.add(acmiDeleteSite);
 
 		sitesPanel.add(actionButtons);
 
@@ -179,8 +210,15 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
 
 		sitesPanel.add(new HTML("<br />"));
 		Button saveButton = new Button("Save Changes");
-		saveButton.addClickHandler(new SaveButtonClickHandler(this));
-		sitesPanel.add(saveButton);
+		acmiSaveButton = new AccessControlledMenuItem<Button>(saveButton, new SaveButtonClickHandler(this), AccessControlledMenuItem.IndicatorType.DISABLE_FEATURE) {
+			@Override
+			public boolean isAccessible() {
+				return Xdstools2.getInstance().isSystemSaveEnabled();
+			}
+		};
+//		saveButton.addClickHandler();
+//		sitesPanel.add(saveButton);
+        sitesPanel.add(acmiSaveButton);
 
 		sitesPanel.add(new HTML("<br />"));
 		Button forgetButton = new Button("Forget Changes");
@@ -199,9 +237,14 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
 		sitesPanel.add(reloadSitesBtn);
 
 		sitesPanel.add(new HTML("<br />"));
-		promoteButton = new Button("Promote");
-		promoteButton.addClickHandler(new PromoteClickHandler(this));
-		sitesPanel.add(promoteButton);
+		Button promoteButton = new Button("Promote");
+		acmiPromoteSite = new AccessControlledMenuItem<Button>(promoteButton, new PromoteClickHandler(this), AccessControlledMenuItem.IndicatorType.DISABLE_FEATURE)  {
+			@Override
+			public boolean isAccessible() {
+				return  Xdstools2.getInstance().isSystemSaveEnabled();
+			}
+		};
+		sitesPanel.add(acmiPromoteSite);
 
 		sitesPanel.add(new HTML("<br />"));
 		reloadFromGazelleButton = new Button("Reload from Gazelle");

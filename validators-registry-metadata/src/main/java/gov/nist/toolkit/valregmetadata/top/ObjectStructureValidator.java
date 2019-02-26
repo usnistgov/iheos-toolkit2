@@ -43,9 +43,10 @@ public class ObjectStructureValidator {
 
         Set<String> knownIds = new HashSet<String>();
 
+        SubmissionSet s = null;
+
         for (OMElement ssEle : m.getSubmissionSets()) {
             er.sectionHeading("SubmissionSet(" + ssEle.getAttributeValue(MetadataSupport.id_qname) + ")");
-            SubmissionSet s = null;
             try {
                 s = new SubmissionSet(m, ssEle);
             } catch (XdsInternalException e) {
@@ -89,6 +90,12 @@ public class ObjectStructureValidator {
                 continue;
             }
             new AssociationValidator(a).validate(er, vc, knownIds);
+
+            String targetUuid = a.getTarget();
+            if (s != null) {
+                if (targetUuid.equals(s.getId()))
+                    er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "Association(" + a.identifyingString() + ") : references a SubmissionSet as a target.", this, "ITI TF-3: 4.1.9.1");
+            }
         }
 
         er.sectionHeading("Other metadata objects");

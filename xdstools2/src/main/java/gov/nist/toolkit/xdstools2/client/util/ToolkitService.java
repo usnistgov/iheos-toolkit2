@@ -273,6 +273,7 @@ public interface ToolkitService extends RemoteService  {
 	List<Test> deleteAllTestResults(AllTestRequest request) throws Exception;
 	Test runSingleTest(RunSingleTestRequest request) throws Exception;
 	TestOverviewDTO deleteSingleTestResult(DeleteSingleTestRequest request) throws Exception;
+	List<TestOverviewDTO> deleteMultipleTestLogs(DeleteMultipleTestLogsRequest request) throws Exception;
 
 	String setTestSession(String sessionName) throws NoServletSessionException ;
 	List<String> getTransactionErrorCodeRefs(GetTransactionErrorCodeRefsRequest refsRequest) throws Exception;

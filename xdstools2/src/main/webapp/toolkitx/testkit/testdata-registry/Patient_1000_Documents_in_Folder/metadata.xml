@@ -13,21 +13,6 @@
             <LocalizedString value="RMU Comments - Charles Hon - Id 1000 - Prescription in Folder"
                   xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>   
           </Description>
-         <Slot name="hash" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-            <ValueList xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">20181126</Value>
-            </ValueList>
-         </Slot>
-         <Slot name="size" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-            <ValueList xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">20181126</Value>
-            </ValueList>
-         </Slot>
-         <Slot name="repositoryUniqueId" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-            <ValueList xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">1.2.456.67.8</Value>
-            </ValueList>
-         </Slot>
          <Slot name="creationTime" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <ValueList xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
                <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">20181126</Value>
@@ -201,21 +186,6 @@
             <LocalizedString value="RMU Comments - Charles Hon - Id 1000 - Privacy Consent Doc in Folder"
                   xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>   
           </Description>
-         <Slot name="hash" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-            <ValueList xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">20181126</Value>
-            </ValueList>
-         </Slot>
-         <Slot name="size" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-            <ValueList xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">20181126</Value>
-            </ValueList>
-         </Slot>
-         <Slot name="repositoryUniqueId" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-            <ValueList xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">1.2.456.67.8</Value>
-            </ValueList>
-         </Slot>
          <Slot name="creationTime" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <ValueList xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
                <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">20181126</Value>

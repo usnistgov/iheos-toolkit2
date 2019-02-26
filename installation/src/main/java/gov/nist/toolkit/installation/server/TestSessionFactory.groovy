@@ -75,9 +75,13 @@ class TestSessionFactory {
     static final String TIMESTAMEFILE = 'timestamp'
 
     static void updateTimestanp(TestSession testSession) {
-        Io.stringToFile(
-                new File(Installation.instance().testSessionMgmtDir(testSession), TIMESTAMEFILE)
-                , 'X')
+        File f = new File(Installation.instance().testSessionMgmtDir(testSession), TIMESTAMEFILE)
+        if (!f.exists()) {
+            f.getParentFile().mkdirs()
+            f.createNewFile()
+        } else {
+            Io.stringToFile(f, 'X')
+        }
     }
 
     static long sinceModification(TestSession testSession) {

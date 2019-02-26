@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12000.1a/getDocumentsSq</Test>
+  <TestStep id="testForDEUsingSsUuid">
+    <Goal>Negative Test Case: GetDocuments query using Submission Set UUID. System under test should not return any contents.</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+      <UseId testdir="../submit" id="SubmissionSet01" symbol="$uuid$" step="submit_doc_w_fol" section="AssignedUuids"/>
+      <ExpectedContents>
+        <None/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="testForDEUsingFolUuid">
+    <Goal>Negative Test Case: GetDocuments query using Folder UUID. System under test should not return any contents.</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+      <UseId testdir="../submit" id="Folder" symbol="$uuid$" step="submit_doc_w_fol" section="AssignedUuids"/>
+      <ExpectedContents>
+        <None/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="testForDEUsingDEUuid">
+    <Goal>GetDocuments query using Document Entry UUID. System under test should return exactly one Document Entry, the same one that was previously submitted in the Submit step.</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+      <UseId testdir="../submit" id="Document01" symbol="$uuid$" step="submit_doc_w_fol" section="AssignedUuids"/>
+
+
+      <ExpectedContents>
+	   <Folders count="0"/>
+           <SubmissionSets count="0"/>
+	   <DocumentEntries>
+	   <MustOnlyInclude>
+		<DocumentEntry>
+		<UseId testdir="../submit" id="Document01" symbol="$uuid$" step="submit_doc_w_fol" section="AssignedUuids"/> 
+		 <DocumentEntryType>urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1</DocumentEntryType>
+		</DocumentEntry>
+	   </MustOnlyInclude>
+	   </DocumentEntries>
+      </ExpectedContents>
+
+    </StoredQueryTransaction>
+  </TestStep>
+
+</TestPlan>

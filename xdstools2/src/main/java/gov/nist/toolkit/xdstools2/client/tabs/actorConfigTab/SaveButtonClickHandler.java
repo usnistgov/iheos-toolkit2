@@ -23,12 +23,17 @@ class SaveButtonClickHandler implements ClickHandler {
 	}
 
 	public boolean save() {
+		// CurrentEditSite can be null if nothing is selected
+		if (actorConfigTab.currentEditSite == null) {
+			new PopupMessage("Site was not selected or nothing to save.");
+			return false;
+		}
 		if (actorConfigTab.currentEditSite.getName().equals(actorConfigTab.newSiteName)) {
 			new PopupMessage("You must give site a real name before saving");
 			return false;
 		}
 		if (!Xdstools2.getInstance().isSystemSaveEnabled()) {
-			new PopupMessage("You don't have permission to create a save/update a System in this Test Session");
+			new PopupMessage("You don't have permission to save/update a System in this Test Session");
 			return false;
 		}
 //		if (actorConfigTab.currentEditSite.getOwner().equals(TestSession.GAZELLE_TEST_SESSION.getValue())) {
@@ -48,7 +53,7 @@ class SaveButtonClickHandler implements ClickHandler {
 			return false;
 		}
 
-		if (PasswordManagement.isSignedIn) {
+		if (Xdstools2.getInstance().isSystemSaveEnabled()) {
 			if (!actorConfigTab.currentEditSite.hasOwner())
 				actorConfigTab.currentEditSite.setOwner(actorConfigTab.currentEditSite.getTestSession().getValue());
 			actorConfigTab.saveSignedInCallback.onSuccess(true);
@@ -56,7 +61,8 @@ class SaveButtonClickHandler implements ClickHandler {
 			actorConfigTab.loadExternalSites();
 		}
 		else {
-			if (Xdstools2.getInstance().multiUserModeEnabled && !Xdstools2.getInstance().casModeEnabled) {
+			if (Xdstools2.getInstance().multiUserModeEnabled
+					&& !Xdstools2.getInstance().casModeEnabled) {
 				if (!actorConfigTab.currentEditSite.hasOwner())
 					actorConfigTab.currentEditSite.setOwner(actorConfigTab.currentEditSite.getTestSession().getValue());
 				actorConfigTab.saveSignedInCallback.onSuccess(true);

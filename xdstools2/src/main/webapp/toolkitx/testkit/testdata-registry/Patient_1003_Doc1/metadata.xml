@@ -51,22 +51,6 @@
             <LocalizedString value="RMU Comments - Albert Smith - Id 1003 - Doc1"
                   xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
          </Description>
-	          <Slot name="hash" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-            <ValueList xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">20181126</Value>
-            </ValueList>
-         </Slot>
-         <Slot name="size" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-            <ValueList xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">20181126</Value>
-            </ValueList>
-         </Slot>
-         <Slot name="repositoryUniqueId" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-            <ValueList xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">1.2.456.67.8</Value>
-            </ValueList>
-         </Slot>
-
          <Slot name="urn:ihe:iti:xds:2013:referenceIdList"
                xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <ValueList xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">

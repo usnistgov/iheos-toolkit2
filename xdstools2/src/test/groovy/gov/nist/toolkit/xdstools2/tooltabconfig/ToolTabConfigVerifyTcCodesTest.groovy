@@ -19,7 +19,6 @@ class ToolTabConfigVerifyTcCodesTest extends Specification {
     }
 
     def 'Verify if TestCollection codes in ToolTabConfig match values in ActorType'() {
-
         when:
         String toolId = "ConfTests"
         TabConfigLoader.init(new File(System.getProperty("confTestsTabsConfigFile")))  // property set in POM file
@@ -30,10 +29,11 @@ class ToolTabConfigVerifyTcCodesTest extends Specification {
 
         when:
         "Actors".equals(confTestsTabConfig.getLabel())
+        print "Note: ActorType is disconnected from Profile and OptionType. It allows for test collection flexibility without hard-coding such combinations in ActorType. This test only checks each Actor/Profile/Option type independently."
 
         then:
         for (TabConfig actorTabConfig : confTestsTabConfig.getChildTabConfigs()) {
-            print "Checking actor " + actorTabConfig.getLabel() + "... "
+            print "Checking actor " + actorTabConfig.getLabel() + "..."
 
             // Both the collections.txt and the actorCode must be lower-cased
             String actorTypeCode = actorTabConfig.getTcCode()
@@ -87,7 +87,7 @@ class ToolTabConfigVerifyTcCodesTest extends Specification {
 
                     optionCt++
                 }
-                println optionCt + " " + profileTypeCode + " option(s) verified using ActorType enum."
+                println optionCt + " " + profileTypeCode + " option(s) - Ok."
             }
 
 

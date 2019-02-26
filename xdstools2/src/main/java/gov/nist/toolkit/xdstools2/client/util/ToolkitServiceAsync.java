@@ -238,6 +238,7 @@ public interface ToolkitServiceAsync {
 	void getTestSessionNames(CommandContext request, AsyncCallback<List<String>> callback);
 	void deleteAllTestResults(AllTestRequest request, AsyncCallback<List<Test>> callback);
 	void deleteSingleTestResult(DeleteSingleTestRequest request, AsyncCallback<TestOverviewDTO> callback);
+	void deleteMultipleTestLogs(DeleteMultipleTestLogsRequest request, AsyncCallback<List<TestOverviewDTO>> callback);
 	void runAllTests(AllTestRequest request, AsyncCallback<List<Test>> callback);
 	void runSingleTest(RunSingleTestRequest request, AsyncCallback<Test> callback);
 	void getTransactionErrorCodeRefs(GetTransactionErrorCodeRefsRequest request, AsyncCallback<List<String>> callback);

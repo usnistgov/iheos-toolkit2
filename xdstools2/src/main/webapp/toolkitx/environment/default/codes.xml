@@ -15,7 +15,7 @@
         <Code code="M" display="moderate" codingScheme="2.16.840.1.113883.5.25" system="http://hl7.org/fhir/v3/Confidentiality"/>
         <Code code="N" display="normal" codingScheme="2.16.840.1.113883.5.25" system="http://hl7.org/fhir/v3/Confidentiality"/>
         <Code code="R" display="restricted" codingScheme="2.16.840.1.113883.5.25" system="http://hl7.org/fhir/v3/Confidentiality"/>
-        <Code code="U" display="unrestriced" codingScheme="2.16.840.1.113883.5.25" system="http://hl7.org/fhir/v3/Confidentiality"/>
+        <Code code="U" display="unrestricted" codingScheme="2.16.840.1.113883.5.25" system="http://hl7.org/fhir/v3/Confidentiality"/>
         <Code code="V" display="very restricted" codingScheme="2.16.840.1.113883.5.25" system="http://hl7.org/fhir/v3/Confidentiality"/>
     </CodeType>
     <CodeType name="healthcareFacilityTypeCode" classScheme="urn:uuid:f33fb8ac-18af-42cc-ae0e-ed0b0bdb91e1">

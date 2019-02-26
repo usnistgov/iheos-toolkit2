@@ -1,4 +1,3 @@
-
 <rs:SubmitObjectsRequest xmlns:rs="urn:oasis:names:tc:ebxml-regrep:registry:xsd:2.1">
    <rim:LeafRegistryObjectList xmlns:rim="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
       <rim:ExtrinsicObject id="Document01" objectType="urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1"
@@ -176,7 +175,7 @@
                </rim:ValueList>
             </rim:Slot>
          </rim:Classification>
-         <rim:ExternalIdentifier value="$AlternatePatientId$"
+         <rim:ExternalIdentifier value="$altpatientid$"
                identificationScheme="urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427">
             <rim:Name>
                <rim:LocalizedString value="XDSDocumentEntry.patientId"/>
@@ -248,7 +247,7 @@
                <rim:LocalizedString value="XDSSubmissionSet.sourceId"/>
             </rim:Name>
          </rim:ExternalIdentifier>
-         <rim:ExternalIdentifier value="$AlternatePatientId$"
+         <rim:ExternalIdentifier value="$altpatientid$"
                identificationScheme="urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446">
             <rim:Name>
                <rim:LocalizedString value="XDSSubmissionSet.patientId"/>

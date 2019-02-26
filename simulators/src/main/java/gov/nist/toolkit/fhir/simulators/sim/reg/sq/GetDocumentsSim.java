@@ -41,10 +41,25 @@ public class GetDocumentsSim extends GetDocuments {
 		} 
 
 		if (uuids != null) {
-			if (sqs.returnType == QueryReturnType.LEAFCLASS || sqs.returnType == QueryReturnType.LEAFCLASSWITHDOCUMENT) {
-				m = mc.loadRo(uuids);
-			} else {
-				m.mkObjectRefs(uuids);
+			List<DocEntry> des = new ArrayList<>();
+			for (String uuid : uuids) {
+				DocEntry de = mc.docEntryCollection.getById(uuid);
+				if (de != null) {
+					des.add(de);
+				}
+			}
+
+			List<String> filteredUuidList = new ArrayList<>();
+			for (DocEntry de : des) {
+				filteredUuidList.add(de.getId());
+			}
+
+			if (!filteredUuidList.isEmpty()) {
+				if (sqs.returnType == QueryReturnType.LEAFCLASS || sqs.returnType == QueryReturnType.LEAFCLASSWITHDOCUMENT) {
+					m = mc.loadRo(filteredUuidList);
+				} else {
+					m.mkObjectRefs(filteredUuidList);
+				}
 			}
 		} else if (uids != null) {
 			List<DocEntry> des = new ArrayList<DocEntry>();

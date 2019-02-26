@@ -1,15 +1,28 @@
 package gov.nist.toolkit.xdstools2.client.inspector;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.*;
-import gov.nist.toolkit.registrymetadata.client.*;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Hyperlink;
+import com.google.gwt.user.client.ui.Widget;
+import gov.nist.toolkit.registrymetadata.client.Association;
+import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
+import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
+import gov.nist.toolkit.registrymetadata.client.MetadataObject;
+import gov.nist.toolkit.registrymetadata.client.ObjectRef;
+import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
+import gov.nist.toolkit.registrymetadata.client.ResourceItem;
+import gov.nist.toolkit.registrymetadata.client.Uid;
 import gov.nist.toolkit.results.client.AssertionResults;
 import gov.nist.toolkit.results.client.StepResult;
-import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.TestDocumentation;
 import gov.nist.toolkit.xdstools2.client.tabs.GetRelatedTab;
+import gov.nist.toolkit.xdstools2.client.widgets.AccessControlledMenuItem;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
@@ -238,11 +251,26 @@ public class HyperlinkFactory {
 	public static Hyperlink launchTool(String html, ClickHandler clickHandler) {
 		Hyperlink h = new Hyperlink();
 		h.setHTML(html);
-		h.addClickHandler(clickHandler);
+		if (clickHandler != null)
+			h.addClickHandler(clickHandler);
 		h.setTitle("Launch this tool in a separate tab");
 		return h;
 	}
-	
+
+	public static AccessControlledMenuItem launchAdminTool(String html, final ClickHandler clickHandler) {
+		Anchor a = new Anchor(false);
+		a.setText(html);
+		a.setTitle("Launch this tool in a separate tab");
+		a.getElement().getStyle().setCursor(Style.Cursor.POINTER);
+		return new AccessControlledMenuItem<Anchor>(a, clickHandler, AccessControlledMenuItem.IndicatorType.LOCK_ICON) {
+			@Override
+			public boolean isAccessible() {
+				return  PasswordManagement.isSignedIn;
+			}
+		};
+	}
+
+
 	public static Hyperlink documentation(String html, String testname) {
 		Hyperlink h = new Hyperlink();
 		h.setHTML(html);

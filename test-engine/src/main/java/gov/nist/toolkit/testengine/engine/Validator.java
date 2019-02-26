@@ -765,12 +765,15 @@ public class Validator {
                         Linkage l = new Linkage(testConfig, instruction_output, m, use_id);
                         HashMap<String, String> myMap = l.compile();
 
-                        if (myMap!=null && myMap.containsKey("$docid$")) {
-                            // Iterate the registry response to see if this docid, the one that was previously submitted, exists in the collection!
-                            String submittedIdValue = myMap.get("$docid$");
+                        if (myMap!=null) {
+                        	String submittedIdValue = null;
+							// Iterate the registry response to see if this docid, the one that was previously submitted, exists in the collection!
+                        	if (myMap.size()==1) {
+                        		submittedIdValue = myMap.get(myMap.keySet().iterator().next()); // grab the first entry
+							}
 
                             if (submittedIdValue==null || "".equals(submittedIdValue)) {
-								err("ExtrinsicObject " + "Submitted Id value cannot be null.");
+								err("UseId ExtrinsicObject " + " Id value cannot be null.");
 								return false;
                             }
 
@@ -791,7 +794,9 @@ public class Validator {
 								err("This id ["+ submittedIdValue +"] is not supposed to included in the registry response but it was found.");
 								return false;
 							}
-                        }
+                        } else {
+							err("Missing UseId: This instruction is required to extract the Document Entry UUID.");
+						}
                     } else if ("DocumentEntryType".equals(instructionLocalName)) {
 						String documentEntryType = dePartInstruction.getText();
 						if (eoInResponse!=null) {

@@ -37,6 +37,7 @@ import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.server.RawResponseBuilder;
 import gov.nist.toolkit.services.server.SimulatorServiceManager;
 import gov.nist.toolkit.services.server.orchestration.OrchestrationManager;
+import gov.nist.toolkit.services.server.orchestration.OrchestrationProperties;
 import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.session.client.TestSessionStats;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
@@ -151,6 +152,12 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 
     @Override
     public InitializationResponse getInitialization(CommandContext context) throws Exception {
+        /**
+         *
+         * NOTE
+         * When this code is NOT commented out AND the external cache is bogus or not yet configured to a real value, THEN the UI is blank.
+         * There is no opportunity to fix the external cache through the Toolkit Configuration tool.
+         *
         if (Installation.instance().externalCache() == null) {
             throw new Exception("External Cache does not exist at " + Installation.instance().propertyServiceManager().getPropertyManager().getExternalCache());
         }
@@ -158,6 +165,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
             throw new Exception("Configured External Cache location " + Installation.instance().externalCache() + " does not exist");
         }
         installCommandContext(context);
+         **/
         InitializationResponse response = new InitializationResponse();
         String defaultEnv = Installation.instance().defaultEnvironmentName();
         if (defaultEnv == null || defaultEnv.equals(""))
@@ -568,6 +576,13 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         request.getTestInstance().setTestSession(request.getTestSession());
         return session().xdsTestServiceManager().deleteSingleTestResult(request.getEnvironmentName(), session().getTestSession(),request.getTestInstance());
     }
+
+    @Override
+    public List<TestOverviewDTO> deleteMultipleTestLogs(DeleteMultipleTestLogsRequest request) throws Exception {
+       installCommandContext(request);
+       return session().xdsTestServiceManager().delTestResults(request.getTestInstances(), request.getEnvironmentName(), request.getTestSession());
+    }
+
     @Override
     public List<Test> runAllTests(AllTestRequest request) throws Exception {
         installCommandContext(request);
@@ -1191,24 +1206,40 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public PifType getOrchestrationPifType(GetOrchestrationPifTypeRequest request) throws Exception {
         installCommandContext(request);
-        Site site = request.getSite();
-        // It is possible SUT can be Null in the case it was not selected in Test Context
-        if (site == null) {
+
+        if (request.getTestSessionName()==null)
+            throw new IllegalArgumentException("Test session cannot be null");
+
+        // Check property to see if previous pifType was persisted
+        OrchestrationProperties orchProps = new OrchestrationProperties(getSession(), request.getTestSession(), ActorType.findActor(request.getActorShortName()), null, false);
+        PifType existingPifType = null;
+        if (orchProps.getProperty("pifType")!=null) {
+            existingPifType = PifType.valueOf(orchProps.getProperty("pifType"));
+            return existingPifType;
+        } else {
+            // Auto-detect if no previous pifType was used before.
+            Site site = request.getSite();
+            // It is possible SUT can be Null in the case it was not selected in Test Context
+            if (site == null) {
+                return PifType.NONE;
+            }
+
+            // Auto-decide which Pif mode is appropriate
+            if (site.isSimulator()) {
+                return PifType.V2;
+            } else {
+                // Site XML File
+                if ((site.pifHost!=null && "".equals(site.pifHost)) || site.pifHost == null || (site.pifPort!=null && "".equals(site.pifPort)) || site.pifPort == null) {
+                    return PifType.NONE;
+                } else if (site.pifHost != null && site.pifPort != null) {
+                    return PifType.V2;
+                }
+            }
             return PifType.NONE;
         }
 
-        // Auto-decide which Pif mode is appropriate
-        if (site.isSimulator()) {
-            return PifType.V2;
-        } else {
-            // Site XML File
-            if ((site.pifHost!=null && "".equals(site.pifHost)) || site.pifHost == null || (site.pifPort!=null && "".equals(site.pifPort)) || site.pifPort == null) {
-                return PifType.NONE;
-            } else if (site.pifHost != null && site.pifPort != null) {
-                return PifType.V2;
-            }
-        }
-        return PifType.NONE;
+
+
     }
 
     @Override
