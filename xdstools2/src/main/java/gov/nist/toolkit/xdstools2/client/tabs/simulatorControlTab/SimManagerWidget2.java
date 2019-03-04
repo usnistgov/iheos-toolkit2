@@ -542,6 +542,8 @@ public class SimManagerWidget2 extends Composite {
 
 
         TextColumn<SimInfo> docsCtColumn = new TextColumn<SimInfo>() {
+
+
             @Override
             public String getValue(SimInfo simInfo) {
                 if (simInfo.getSimulatorStats()!=null) {
@@ -595,7 +597,6 @@ public class SimManagerWidget2 extends Composite {
 //        logIconImgHtml.appendHtmlConstant("<img style=\"width: 24px; height: 24px;\" title=\"View Transaction Logs\" src=\"icons2/log-file-format-symbol.png\">");
         Column<SimInfo, SimInfo> logActionCol =
                 new Column<SimInfo, SimInfo>(new ActionCell<SimInfo>("", new ActionCell.Delegate<SimInfo>() {
-
                     @Override
                     public void execute(SimInfo simInfo) {
                         SimulatorConfig config = simInfo.getSimulatorConfig();
@@ -606,7 +607,7 @@ public class SimManagerWidget2 extends Composite {
                     @Override
                     public void render(Cell.Context context, SimInfo object, SafeHtmlBuilder sb) {
 //                        super.render(context, object, sb);
-                        sb.append(getImgHtml("icons2/log-file-format-symbol.png", "View Transaction Logs", false));
+                        sb.append(getImgHtml("icons2/log-file-format-symbol.png", "View Transaction Logs", false, false));
                     }
 
                     @Override
@@ -628,7 +629,18 @@ public class SimManagerWidget2 extends Composite {
                 })) {
                     @Override
                     public void render(Cell.Context context, SimInfo object, SafeHtmlBuilder sb) {
-                        sb.append(getImgHtml("icons2/id.png", "Edit Patient Ids", false));
+                        if (object!=null) {
+//                            ActorType actorType = ActorType.findActor(object.getSimulatorConfig().getActorType());
+                            SimulatorConfigElement sce = object.getSimulatorConfig().getConfigEle(SimulatorProperties.PIF_PORT);
+                            if (sce!=null) {
+                                String pifPort = sce.asString();
+                                if (pifPort != null && !"".equals(pifPort)) {
+                                    sb.append(getImgHtml("icons2/id.png", "Edit Patient Ids", false, false));
+                                }
+                            } else {
+                                sb.append(getImgHtml("icons2/id.png", "Edit Patient Ids", false, true));
+                            }
+                        }
                     }
 
                     @Override
@@ -682,7 +694,7 @@ public class SimManagerWidget2 extends Composite {
 
                     @Override
                     public void render(Cell.Context context, SimInfo object, SafeHtmlBuilder sb) {
-                        sb.append(getImgHtml("icons2/garbage.png","Delete", true));
+                        sb.append(getImgHtml("icons2/garbage.png","Delete", true, false));
                     }
 
                     @Override
@@ -704,7 +716,7 @@ public class SimManagerWidget2 extends Composite {
                 })) {
                     @Override
                     public void render(Cell.Context context, SimInfo object, SafeHtmlBuilder sb) {
-                        sb.append(getImgHtml("icons2/download.png", "Download configuration", false));
+                        sb.append(getImgHtml("icons2/download.png", "Download configuration", false, false));
                     }
 
                     @Override
@@ -827,15 +839,14 @@ public class SimManagerWidget2 extends Composite {
 //        actionDataProvider.addDataDisplay(actionTableBottom);
     }
 
-    SafeHtml getImgHtml(String iconFilePath, String title, boolean supportsMultiple) {
+    SafeHtml getImgHtml(String iconFilePath, String title, boolean supportsMultiple, boolean isDisabled) {
 //        Set<SimInfo> mySelection = ((MultiSelectionModel) newSimTable.getSelectionModel()).getSelectedSet();
         Set<SimInfo> mySelection = null;
         if (getSelectionModel() instanceof MultiSelectionModel) {
              mySelection = ((MultiSelectionModel) getSelectionModel()).getSelectedSet();
 //        Window.alert("selection size is " + mySelection.size() + "; icon is " + iconFilePath + "; supportsMultiple " + supportsMultiple);
          if (mySelection!=null) {
-
-            if (mySelection.size() == 1 || (mySelection.size() > 1 && supportsMultiple))
+            if (mySelection.size() == 1 || (mySelection.size() > 1 && supportsMultiple) && !isDisabled)
                 return new SafeHtmlBuilder().appendHtmlConstant("<img style=\"width: 24px; height: 24px;\" title=\"" + title + "\" src=\"" + iconFilePath + "\">").toSafeHtml();
             else
                 return new SafeHtmlBuilder().appendHtmlConstant("<input type=\"image\" style=\"width: 24px; height: 24px; opacity:0.5\" src=\"" + iconFilePath + "\" border=0 disabled/>").toSafeHtml();
@@ -845,7 +856,7 @@ public class SimManagerWidget2 extends Composite {
 //            final List<SimInfo> list =
                     // actionDataProvider.getList();
              SimInfo selectedObj =  (SimInfo)((SingleSelectionModel) getSelectionModel()).getSelectedObject();
-            if (selectedObj==null) {
+            if (selectedObj==null || isDisabled) {
                 return new SafeHtmlBuilder().appendHtmlConstant("<input type=\"image\" style=\"width: 24px; height: 24px; opacity:0.5\" src=\"" + iconFilePath + "\" border=0 disabled/>").toSafeHtml();
             } else {
                 return new SafeHtmlBuilder().appendHtmlConstant("<img style=\"width: 24px; height: 24px;\" title=\"" + title +"\" src=\"" + iconFilePath + "\">").toSafeHtml();
@@ -884,10 +895,10 @@ public class SimManagerWidget2 extends Composite {
                 //
                 if (data.getSimulatorConfig()!=null) {
                     if (!ActorType.OD_RESPONDING_GATEWAY.getShortName().equals(data.getSimulatorConfig().getActorType())) {
-                        sb.append(getImgHtml("icons2/edit.png", "Edit", false));
+                        sb.append(getImgHtml("icons2/edit.png", "Edit", false, false));
                     }
                 } else
-                    sb.append(getImgHtml("icons2/edit.png", "", false));
+                    sb.append(getImgHtml("icons2/edit.png", "", false, false));
             }
         };
 
@@ -912,7 +923,7 @@ public class SimManagerWidget2 extends Composite {
                 if (data.getSimulatorConfig()!=null) {
                     if (ActorType.OD_RESPONDING_GATEWAY.getShortName().equals(data.getSimulatorConfig().getActorType())) {
 //                    mySb.appendHtmlConstant("<img style=\"width: 24px; height: 24px;\" title=\"Edit RG config\"  src=\"icons2/edit-rg.png\">");
-                        sb.append(getImgHtml("icons2/edit-rg.png", "Edit RG configuration", false));
+                        sb.append(getImgHtml("icons2/edit-rg.png", "Edit RG configuration", false, false));
                     }
                 }
             }
@@ -941,7 +952,7 @@ public class SimManagerWidget2 extends Composite {
                 if (data.getSimulatorConfig()!=null) {
                     if (ActorType.OD_RESPONDING_GATEWAY.getShortName().equals(data.getSimulatorConfig().getActorType())) {
 //                    mySb.appendHtmlConstant("<img style=\"width: 24px; height: 24px;\" title=\"Edit OD config\" src=\"icons2/edit-od.png\">");
-                        sb.append(getImgHtml("icons2/edit-od.png", "Edit OD configuration", false));
+                        sb.append(getImgHtml("icons2/edit-od.png", "Edit OD configuration", false, false));
                     }
                 }
             }
