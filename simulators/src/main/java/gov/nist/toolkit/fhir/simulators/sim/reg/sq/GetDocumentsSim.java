@@ -11,6 +11,7 @@ import gov.nist.toolkit.valregmsg.registry.storedquery.generic.QueryReturnType;
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.StoredQuerySupport;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.XdsException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,16 +67,11 @@ public class GetDocumentsSim extends GetDocuments {
 			for (String uid : uids) {
 				des.addAll(mc.docEntryCollection.getByUid(uid));
 			}
-			
-			List<String> uuidList = new ArrayList<String>();
-			for (DocEntry de : des) {
-				uuidList.add(de.getId());
-			}
-			if (sqs.returnType == QueryReturnType.LEAFCLASS || sqs.returnType == QueryReturnType.LEAFCLASSWITHDOCUMENT) {
-				m = mc.loadRo(uuidList);
-			} else {
-				m.mkObjectRefs(uuidList);
-			}
+
+			if (!isMetadataLevel2())
+				des = mc.docEntryCollection.filterByLatestVersion(des);
+
+			m = asUuids(mc, m, des);
 		} else if (lids != null) {
 			if (!mc.vc.updateEnabled) {
 				sqs.er.err(Code.XDSRegistryError, "Do not understand parameter $XDSDocumentEntryLogicalID", this, "ITI TF-2b: 3.18.4.1.2.3.7.5");
@@ -90,18 +86,23 @@ public class GetDocumentsSim extends GetDocuments {
 			for (String lid : lids) {
 				des.addAll(mc.docEntryCollection.getByLid(lid));
 			}
-			List<String> uuidList = new ArrayList<String>();
-			for (DocEntry de : des) {
-				uuidList.add(de.getId());
-			}
-			if (sqs.returnType == QueryReturnType.LEAFCLASS || sqs.returnType == QueryReturnType.LEAFCLASSWITHDOCUMENT) {
-				m = mc.loadRo(uuidList);
-			} else {
-				m.mkObjectRefs(uuidList);
-			}
-			
+			m = asUuids(mc, m, des);
+
 		}
 
+		return m;
+	}
+
+	private Metadata asUuids(MetadataCollection mc, Metadata m, List<DocEntry> des) throws MetadataException, XdsInternalException {
+		List<String> uuidList = new ArrayList<String>();
+		for (DocEntry de : des) {
+			uuidList.add(de.getId());
+		}
+		if (sqs.returnType == QueryReturnType.LEAFCLASS || sqs.returnType == QueryReturnType.LEAFCLASSWITHDOCUMENT) {
+			m = mc.loadRo(uuidList);
+		} else {
+			m.mkObjectRefs(uuidList);
+		}
 		return m;
 	}
 

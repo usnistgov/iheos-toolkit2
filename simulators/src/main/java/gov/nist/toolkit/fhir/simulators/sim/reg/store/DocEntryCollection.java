@@ -224,6 +224,17 @@ public class DocEntryCollection extends RegObCollection implements Serializable 
 		return null;
 	}
 
+	public boolean isMostRecentVersion(DocEntry de) {
+		int ver = de.version;
+		String lid = de.lid;
+		List<DocEntry> des = getByLid(lid);
+		for (DocEntry d : des) {
+			if (d.version > ver)
+				return false;
+		}
+		return true;
+	}
+
 	public List<DocEntry> findByPid(String pid) {
 		List<DocEntry> results = new ArrayList<DocEntry>();
 		
@@ -237,7 +248,19 @@ public class DocEntryCollection extends RegObCollection implements Serializable 
 			results.addAll(parent.findByPid(pid));
 		return results;
 	}
-	
+
+	public List<DocEntry> filterByLatestVersion(List<DocEntry> des) {
+		if (des.isEmpty()) return des;
+		for (int i=0; i<des.size(); i++) {
+			DocEntry d = des.get(i);
+			if (isMostRecentVersion(d))
+				continue;
+			des.remove(i);
+			i--;
+		}
+		return des;
+	}
+
 	public List<DocEntry> filterByStatus(List<StatusValue> statuses, List<DocEntry> docs) {
 		if (docs.isEmpty()) return docs;
 		if (statuses == null || statuses.isEmpty()) return docs;
