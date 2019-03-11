@@ -21,6 +21,7 @@ import com.google.gwt.user.cellview.client.AbstractCellTable;
 import com.google.gwt.user.cellview.client.AbstractHeaderOrFooterBuilder;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent;
+import com.google.gwt.user.cellview.client.ColumnSortList;
 import com.google.gwt.user.cellview.client.DataGrid;
 import com.google.gwt.user.cellview.client.Header;
 import com.google.gwt.user.cellview.client.SimplePager;
@@ -185,6 +186,7 @@ public class SimManagerWidget2 extends Composite {
         // widget.
         final List<SimInfo> list = dataProvider.getList();
 
+
         setTestSession(testSession);
         list.clear();
         rows = 0;
@@ -218,27 +220,15 @@ public class SimManagerWidget2 extends Composite {
 
             }
 
-            /*
-
-             */
-
             try {
 
                 new GetTransactionInstancesCommand() {
                     @Override
                     public void onComplete(List<TransactionInstance> result) {
                         if (result != null && result.size() > 0) {
-
-
                             for (int idx = 0; idx < SimInfo.TOP_TRANSACTION_CT; idx++) {
                                 if (result.size() > idx) {
                                     simInfo.getTopThreeTransInstances().add(TransactionInstance.copy(result.get(idx)));
-//                                        try {
-                                        // xx
-//                                            newSimTable.redraw();
-//                                            actionTable.redraw();
-//                                        } catch (Exception ex) {
-//                                        }
                                 }
                             }
                         }
@@ -258,8 +248,21 @@ public class SimManagerWidget2 extends Composite {
         }
 
         multiSelect.setEnabled(rows>1);
-        return rows;
 
+        Timer t = new Timer() {
+            @Override
+            public void run() {
+                ColumnSortList columnSortList = newSimTable.getColumnSortList();
+                if (columnSortList!=null && columnSortList.size()>0) {
+                    ColumnSortEvent.fire(newSimTable, columnSortList);
+                }
+                newSimTable.redraw();
+            }
+        };
+        t.schedule(1);
+
+
+        return rows;
     }
 
 
@@ -631,11 +634,15 @@ public class SimManagerWidget2 extends Composite {
                     public void render(Cell.Context context, SimInfo object, SafeHtmlBuilder sb) {
                         if (object!=null) {
 //                            ActorType actorType = ActorType.findActor(object.getSimulatorConfig().getActorType());
-                            SimulatorConfigElement sce = object.getSimulatorConfig().getConfigEle(SimulatorProperties.PIF_PORT);
-                            if (sce!=null) {
-                                String pifPort = sce.asString();
-                                if (pifPort != null && !"".equals(pifPort)) {
-                                    sb.append(getImgHtml("icons2/id.png", "Edit Patient Ids", false, false));
+                            if (object.getSimulatorConfig()!=null) {
+                                SimulatorConfigElement sce = object.getSimulatorConfig().getConfigEle(SimulatorProperties.PIF_PORT);
+                                if (sce!=null) {
+                                    String pifPort = sce.asString();
+                                    if (pifPort != null && !"".equals(pifPort)) {
+                                        sb.append(getImgHtml("icons2/id.png", "Edit Patient Ids", false, false));
+                                    }
+                                } else {
+                                    sb.append(getImgHtml("icons2/id.png", "Edit Patient Ids", false, true));
                                 }
                             } else {
                                 sb.append(getImgHtml("icons2/id.png", "Edit Patient Ids", false, true));
