@@ -52,7 +52,7 @@ public class EditDisplay extends CommonDisplay {
     CodeFilterBank codeFilterBank;
     HTML statusBox = new HTML();
     VerticalPanel resultPanel = new VerticalPanel();
-    private Button addAuthorBtn = new Button("add author");
+    private Image addAuthorImg = new Image("icons2/add.png");
     private List<EditFieldsForAuthor> editFieldsForAuthorList = new ArrayList<>();
     private int authorRow; // This approach can be used as long as no other fields, except author, are changing.
     final static private int authorRowsUsedPerRecord = 6; // This approach can be used as long as no other fields, except author, are changing.
@@ -371,8 +371,10 @@ public class EditDisplay extends CommonDisplay {
         sourcePatientInfoLBox.setVisibleItemCount(codeFilterBank.codeBoxSize);
         validateMuBtn.setTitle("Validate codes as configured in Toolkit");
         resultPanel.setStyleName("HP");
-
-//        editDetail();
+        addAuthorImg.setTitle("ADD Author");
+        addAuthorImg.setAltText("Plus symbol");
+        addAuthorImg.addStyleName("iconStyle");
+        addAuthorImg.addStyleName("iconStyle_20x20");
     }
 
    public void editDetail() {
@@ -663,7 +665,7 @@ public class EditDisplay extends CommonDisplay {
 
         // Header (none)
 
-        addAuthorBtn.addClickHandler(new ClickHandler() {
+        addAuthorImg.addClickHandler(new ClickHandler() {
                  @Override
                  public void onClick(ClickEvent clickEvent) {
                      // Seeks up to the last Author
@@ -686,14 +688,16 @@ public class EditDisplay extends CommonDisplay {
          // Footer
         row = addAuthorFooter(row, ft);
 
-
         return row;
     }
 
     private int addAuthorFooter(int beginRow, FlexTable ft) {
         int row = beginRow;
         ft.setHTML(row, 0, "&nbsp;");
-        ft.setWidget(row, 1, addAuthorBtn);
+        FlowPanel fp = new FlowPanel();
+        fp.add(new HTML("Add Author&nbsp;"));
+        fp.add(addAuthorImg);
+        ft.setWidget(row, 1, fp);
         return row+1;
     }
 
@@ -710,17 +714,18 @@ public class EditDisplay extends CommonDisplay {
         editFieldsForAuthor.personTxt.setText(author.person);
         FlowPanel personPanel = new FlowPanel();
         personPanel.add(editFieldsForAuthor.personTxt);
-        Image removeAuthorImg = new Image("icons/exclude-button-red.png");
+        Image removeAuthorImg = new Image("icons2/remove.png");
         removeAuthorImg.setTitle("REMOVE Author");
         removeAuthorImg.setAltText("Minus symbol");
-        removeAuthorImg.setStyleName("copyBtn"); // reuse
+        removeAuthorImg.addStyleName("iconStyle");
+        removeAuthorImg.addStyleName("iconStyle_20x20");
         personPanel.add(removeAuthorImg);
         removeAuthorImg.addClickHandler(
                 new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent clickEvent) {
                     SafeHtmlBuilder safeHtmlBuilder = new SafeHtmlBuilder();
-                    safeHtmlBuilder.appendHtmlConstant("<img src=\"icons/exclude-button-red.png\" title=\"REMOVE Author\" />");
+                    safeHtmlBuilder.appendHtmlConstant("<img src=\"icons2/remove.png\" title=\"REMOVE Author\" height=20 width=20 />");
                     safeHtmlBuilder.appendHtmlConstant("Confirm remove author " + (author.person!=null?author.person:""));
 
                     VerticalPanel body = new VerticalPanel();
