@@ -56,6 +56,10 @@ abstract public class GetDocuments extends StoredQuery {
 	protected List<String> lids;
 	protected String metadataLevel;
 
+	protected boolean isMetadataLevel2() {
+		return metadataLevel!=null  && metadataLevel.equals("2");
+	}
+
 	protected void parseParameters() throws XdsInternalException, XdsException, LoggerException {
 		super.parseParameters();
 		uids = sqs.params.getListParm("$XDSDocumentEntryUniqueId");

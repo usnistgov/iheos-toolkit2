@@ -36,6 +36,17 @@ public class FolCollection extends RegObCollection implements Serializable {
 		return all;
 	}
 
+	public boolean isMostRecentVersion(Fol fol) {
+		int ver = fol.version;
+		String lid = fol.lid;
+		List<Fol> fes = getByLid(lid);
+		for (Fol f : fes) {
+			if (f.version > ver)
+				return false;
+		}
+		return true;
+	}
+
 	private List<Fol> getAll2(List<String> deletedIds) {
 		List<Fol> all = new ArrayList<>();
 
@@ -225,6 +236,18 @@ public class FolCollection extends RegObCollection implements Serializable {
 		for (int i=0; i<fs.size(); i++) {
 			Fol f = fs.get(i);
 			if (statuses.contains(f.getAvailabilityStatus()))
+				continue;
+			fs.remove(i);
+			i--;
+		}
+		return fs;
+	}
+
+	public List<Fol> filterByLatestVersion(List<Fol> fs) {
+		if (fs.isEmpty()) return fs;
+		for (int i=0; i<fs.size(); i++) {
+			Fol f = fs.get(i);
+			if (isMostRecentVersion(f))
 				continue;
 			fs.remove(i);
 			i--;
