@@ -3,7 +3,7 @@
   <Rule>an update is submitted but no original DocumentEntry exists</Rule>
   <TestStep id="update_to_no_orig">
     <ExpectedStatus>Failure</ExpectedStatus>
-    <ExpectedErrorCode>UnresolvedReferenceException</ExpectedErrorCode>
+    <ExpectedErrorCode>XDSMetadataUpdateError</ExpectedErrorCode>
     <MuTransaction>
       <XDSb/>
       <NoPatientId/>
