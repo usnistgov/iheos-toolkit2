@@ -1,0 +1,25 @@
+Use of new MU area error codes
+
+MU
+XDSMetadataUpdateError
+XDSPatientIDReconciliationError
+XDSMetadataUpdateOperationError
+XDSMetadataVersionError
+
+Remove Metadata and Documents
+XDSRemoveDocumentsError
+UnresolvedReferenceException
+ReferencesExistException for remove metadata
+XDSUnreferencedObjectException for remove metadata
+
+Restricted Metadata Update
+XDSMetadataUpdateError
+XDSPatientIDReconciliationError
+XDSMetadataVersionError
+XDSObjectTypeError
+XDSMetadataIdentifierError
+XDSInvalidRequestException - original version received in RMU
+UnmodifiableMetadataError
+LocalPolicyRestrictionError
+XDSMetadataAnnotationError
+UnresolvedReferenceException - conflict with MU
