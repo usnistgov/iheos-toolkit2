@@ -275,7 +275,7 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
 
         advancedOptionCtl.addStyleName("iconStyle");
         advancedOptionCtl.addStyleName("inlineLink");
-        advancedOptionCtl.addStyleName("outsetBorder");
+//        advancedOptionCtl.addStyleName("outsetBorder");
         advancedOptionCtl.addStyleName("roundedButton1");
         advancedOptionPanel.addStyleName("with-border");
 

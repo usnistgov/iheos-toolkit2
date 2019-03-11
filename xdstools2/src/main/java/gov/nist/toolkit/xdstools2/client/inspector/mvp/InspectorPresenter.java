@@ -573,10 +573,10 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
         boolean isPanelVisible = panel.isVisible();
         if (isPanelVisible) {
             ctl.removeStyleName("insetBorder");
-            ctl.addStyleName("outsetBorder");
+//            ctl.addStyleName("outsetBorder");
             doSingleMode();
         } else {
-            ctl.removeStyleName("outsetBorder");
+//            ctl.removeStyleName("outsetBorder");
             ctl.addStyleName("insetBorder");
             if (view.metadataObjectSelector.getCurrentSelection()==null) {
                 MetadataObjectType objectType = autoSelectObjectType();
