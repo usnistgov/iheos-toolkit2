@@ -95,6 +95,10 @@ public class DsSimCommon {
         this.er = simCommon.getCommonErrorRecorder();
     }
 
+    public ValidationContext getValidationContext() {
+        return simCommon.vc;
+    }
+
     /**
      * Get the collection of error/statuses/messages for the validation steps
      * recorded so far.
@@ -209,10 +213,10 @@ public class DsSimCommon {
     }
 
     /**
-     * Starts the validation/simulator process by pulling the HTTP wrapper from 
-     * the db, creating a validation engine if necessary, and starting an HTTP 
-     * validator. It returns the validation engine. Remember that the basic 
-     * abstract Simulator class inherits directly from the abstract 
+     * Starts the validation/simulator process by pulling the HTTP wrapper from
+     * the db, creating a validation engine if necessary, and starting an HTTP
+     * validator. It returns the validation engine. Remember that the basic
+     * abstract Simulator class inherits directly from the abstract
      * MessageValidator class.
      * @param vc
      * @param db
@@ -220,7 +224,7 @@ public class DsSimCommon {
      * @return
      * @throws IOException
      */
-    public MessageValidatorEngine runValidation(ValidationContext vc, SimDb db, 
+    public MessageValidatorEngine runValidation(ValidationContext vc, SimDb db,
        MessageValidatorEngine mvc, ErrorRecorderBuilder gerb) throws IOException {
        ValidateMessageService vms = new ValidateMessageService(regIndex);
        MessageValidatorEngine mve = vms.runValidation(vc,

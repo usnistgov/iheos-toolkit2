@@ -39,18 +39,18 @@ public class MuSim extends RegRSim {
 		// these two check should never fail, but just in case
 		OMElement ssEle = m.getSubmissionSet();
 		if (ssEle == null) {
-			er.err(Code.XDSMetadataUpdateError, 
+			er.err(Code.XDSMetadataUpdateError,
 					"Update does not contain a SubmissionSet model",
-					this, 
+					this,
 			"ITI TF-2b:3.57.4.1.3.1");
 			return;
 		}
 
 		ssId = m.getId(ssEle);
 		if (ssId == null || ssId.equals("")) {
-			er.err(Code.XDSMetadataUpdateError, 
+			er.err(Code.XDSMetadataUpdateError,
 					"Update's SubmissionSet model has no id",
-					this, 
+					this,
 			"ITI TF-2b:3.57.4.1.3.1");
 			return;
 		}
@@ -79,14 +79,14 @@ public class MuSim extends RegRSim {
 
 		Metadata operation = new Metadata();
 		operation.addSubmissionSet(ssClone);
-		
+
 		allocateUUIDs(operation);
-		
+
 		ProcessMetadataInterface pmi = new ProcessMetadataForRegister(er, mc, delta);
-		
+
 		pmi.checkUidUniqueness(operation);
 
-		// set logicalId to id 
+		// set logicalId to id
 		pmi.setLidToId(operation);
 
 		// install version attribute in SubmissionSet, DocumentEntry and Folder objects
@@ -158,7 +158,7 @@ public class MuSim extends RegRSim {
 			Ro sourceObject = mc.getObjectById(assoc.from);
 			Ro targetObject = mc.getObjectById(assoc.to);
 			if (assoc.type == RegIndex.AssocType.HasMember && !(sourceObject instanceof Fol)) {
-				er.err(Code.XDSMetadataUpdateError, "UpdateAvailabilityStatus - HasMember Association attached to SubmissionSet cannot bne updated", null, null);
+				er.err(Code.XDSMetadataUpdateError, "UpdateAvailabilityStatus - HasMember Association attached to SubmissionSet cannot be updated", null, null);
 				continue;
 			}
 			if (!RegIndex.isRelationshipAssoc(assoc.type.name())) {
@@ -246,7 +246,10 @@ public class MuSim extends RegRSim {
 				String srcPid = ((PatientObject) srcObject).pid;
 				String tgtPid = ((PatientObject) tgtObject).pid;
 				if (!srcPid.equals(tgtPid)) {
-					er.err(Code.XDSMetadataUpdateError, "Attempting to submit Association linking two objects with different Patient IDs", null, null);
+					Code code = Code.XDSMetadataUpdateError;
+					if (getCommon().vc.isRMU)
+						code = Code.XDSPatientIDReconciliationError;
+					er.err(code, "Attempting to submit Association linking two objects with different Patient IDs", null, null);
 				}
 			}
 
@@ -275,9 +278,9 @@ public class MuSim extends RegRSim {
 
 	void docEntryUpdateStatusTrigger(Metadata m) {
 		List<OMElement> updateDocStatusAssocs = new ArrayList<OMElement>();
-		
+
 		List<OMElement> assocs = m.getAssociations();
-		
+
 		// find all updateDocStatus Associations
 		for (OMElement assoc : assocs) {
 
@@ -286,9 +289,9 @@ public class MuSim extends RegRSim {
 					continue;
 			}
 			catch (MetadataException e) {
-				er.err(Code.XDSMetadataUpdateError, 
-						"Error processing Association(" + UUIDToSymbolic.get(m.getId(assoc)) + "): " + e.getMessage(), 
-						this, 
+				er.err(Code.XDSMetadataUpdateError,
+						"Error processing Association(" + UUIDToSymbolic.get(m.getId(assoc)) + "): " + e.getMessage(),
+						this,
 						null);
 				assocs.remove(assoc);  // already recorded error - don't process again
 				continue;
@@ -301,13 +304,13 @@ public class MuSim extends RegRSim {
 				// not a DocEntry
 				continue;
 			}
-			
+
 			updateDocStatusAssocs.add(assoc);
 		}
-		
+
 		// remove updateDocStatus Associations from main metadata
 		assocs.removeAll(updateDocStatusAssocs);
-		
+
 		// process updateDocStatus associations
 		for (OMElement assoc : updateDocStatusAssocs) {
 			String sourceId = Metadata.getAssocSource(assoc);
@@ -317,34 +320,38 @@ public class MuSim extends RegRSim {
 			String prefix = "Update (trigger=Assoc(" + UUIDToSymbolic.get(id) +")) - cannot process - ";
 			String updateDocEntryAvailStatusRef = "ITI TF-2b:3.57.4.1.3.3.2.2";
 
-			
+
 			// Association sourceObject must be the SubmissionSet
 			if (!ssId.equals(sourceId)) {
-				er.err(Code.XDSMetadataUpdateError, 
-						prefix + "Association("  + getIdSubmittedValue(id) + "): sourceId does not reference the SubmissionSet", 
-						this, 
+				Code code = Code.XDSMetadataUpdateError;
+				if (getCommon().vc.isRMU) {
+					code = Code.XDSMetadataAnnotationError;
+				}
+				er.err(code,
+						prefix + "Association("  + getIdSubmittedValue(id) + "): sourceId does not reference the SubmissionSet",
+						this,
 						updateDocEntryAvailStatusRef);
 			}
 
 			// Association contains OriginalStatus Slot
-			
+
 			String originalStatus = verifySlotSingleValue(m, assoc,  "OriginalStatus",  prefix,  updateDocEntryAvailStatusRef);
 
 			// Association contains NewStatus Slot
 			String newStatus = verifySlotSingleValue(m, assoc,  "NewStatus",  prefix,  updateDocEntryAvailStatusRef);
-			
+
 			// newStatus is legal for DocumentEntry
 			if (!RegIndex.docEntryLegalStatusValues.contains(RegIndex.getStatusValue(newStatus))) {
-				er.err(Code.XDSMetadataUpdateError, 
-						prefix + "New availabilityStatus for DocumentEntry, " + newStatus + " is not a legal status for a DocumentEntry: Association("  + getIdSubmittedValue(id) + ")", 
-						this, 
+				er.err(Code.XDSMetadataUpdateError,
+						prefix + "New availabilityStatus for DocumentEntry, " + newStatus + " is not a legal status for a DocumentEntry: Association("  + getIdSubmittedValue(id) + ")",
+						this,
 						updateDocEntryAvailStatusRef);
 			}
-			
+
 			Metadata operation = new Metadata();
 			operation.add_association(assoc);
-			
-			
+
+
 			new DocumentEntryStatusUpdate(common, dsSimCommon, er, simulatorConfig).run(this, operation, assoc, delta.docEntryCollection.getById(targetId), originalStatus, newStatus);
 
 			m.rmObject(assoc);
@@ -374,7 +381,10 @@ public class MuSim extends RegRSim {
 			boolean process = true;
 
 			if (ssAssoc == null) {
-				er.err(Code.XDSMetadataUpdateError, prefix + "no SubmissionSet HasMember Association found", this, updateDocEntryRef);
+				Code code = Code.XDSMetadataUpdateError;
+				if (getCommon().vc.isRMU)
+					code = Code.XDSMetadataAnnotationError;
+				er.err(code, prefix + "no SubmissionSet HasMember Association found", this, updateDocEntryRef);
 				process = false;
 			}
 
@@ -385,7 +395,10 @@ public class MuSim extends RegRSim {
 			}
 
 			if (id.equals(lid)) {
-				er.err(Code.XDSMetadataUpdateError, prefix + "logicalId is same as id, this cannot be an update (id=" + id + " lid=" + lid + ")", this, updateDocEntryRef);
+				Code code = Code.XDSMetadataUpdateError;
+				if (getCommon().vc.isRMU)
+					code = Code.XDSInvalidRequestException;
+				er.err(code, prefix + "logicalId is same as id, this cannot be an update (id=" + id + " lid=" + lid + ")", this, updateDocEntryRef);
 				process = false;
 			}
 
@@ -433,18 +446,27 @@ public class MuSim extends RegRSim {
 			boolean process = true;
 
 			if (ssAssoc == null) {
-				er.err(Code.XDSMetadataUpdateError, prefix + "no SubmissionSet HasMember Association found", this, updateDocEntryRef);
+				Code code = Code.XDSMetadataUpdateError;
+				if (getCommon().vc.isRMU)
+					code  = Code.XDSMetadataAnnotationError;
+				er.err(code, prefix + "no SubmissionSet HasMember Association found", this, updateDocEntryRef);
 				process = false;
 			}
 
 
 			if (lid == null) {
-				er.err(Code.XDSMetadataUpdateError, prefix + "logicalId not found, this cannot be an update (id=" + id + " lid=" + lid + ")", this, updateDocEntryRef);
+				Code code = Code.XDSMetadataUpdateError;
+				if (getCommon().vc.isRMU)
+					code  = Code.XDSInvalidRequestException;
+				er.err(code, prefix + "logicalId not found, this cannot be an update (id=" + id + " lid=" + lid + ")", this, updateDocEntryRef);
 				process = false;
 			}
 
 			if (id.equals(lid)) {
-				er.err(Code.XDSMetadataUpdateError, prefix + "logicalId is same as id, this cannot be an update (id=" + id + " lid=" + lid + ")", this, updateDocEntryRef);
+				Code code = Code.XDSMetadataUpdateError;
+				if (getCommon().vc.isRMU)
+					code  = Code.XDSInvalidRequestException;
+				er.err(code, prefix + "logicalId is same as id, this cannot be an update (id=" + id + " lid=" + lid + ")", this, updateDocEntryRef);
 				process = false;
 			}
 
@@ -454,12 +476,15 @@ public class MuSim extends RegRSim {
 			}
 
 			if (prevVer == null) {
-				er.err(Code.XDSMetadataUpdateError, prefix + "PreviousVersion Slot not found on SubmissionSet to DocumentEntry HasMember Association", this, updateDocEntryRef);
+				Code code = Code.XDSMetadataUpdateError;
+				if (getCommon().vc.isRMU)
+					code  = Code.XDSMetadataAnnotationError;
+				er.err(code, prefix + "PreviousVersion Slot not found on SubmissionSet to DocumentEntry HasMember Association", this, updateDocEntryRef);
 				process = false;
 			}
 
 
-			if (process) 
+			if (process)
 				new DocumentEntryUpdate().run(this, m, docEle, ssAssoc, prevVer);
 
 			// so we don't process these again
@@ -477,20 +502,20 @@ public class MuSim extends RegRSim {
 	String verifySlotSingleValue(Metadata m, OMElement ele, String slotName, String prefix, String docRef) {
 		OMElement slotEle = m.getSlot(ele, slotName);
 		if (slotEle == null) {
-			er.err(Code.XDSMetadataUpdateError, 
-					prefix + "Association("  + getIdSubmittedValue(m.getId(ele)) + "): " + slotName + " Slot not present", 
-					this, 
+			er.err(Code.XDSMetadataUpdateError,
+					prefix + "Association("  + getIdSubmittedValue(m.getId(ele)) + "): " + slotName + " Slot not present",
+					this,
 					docRef);
 			return null;
-		} 
+		}
 		// must contain single value
 		List<String> values = m.getSlotValues(ele, slotName);
 		if (values.size() != 1) {
-			er.err(Code.XDSMetadataUpdateError, 
-					prefix + "Association("  + getIdSubmittedValue(m.getId(ele)) + "): " + slotName + " Slot must have one value", 
-					this, 
+			er.err(Code.XDSMetadataUpdateError,
+					prefix + "Association("  + getIdSubmittedValue(m.getId(ele)) + "): " + slotName + " Slot must have one value",
+					this,
 					docRef);
-		} 
+		}
 		if (values.size() > 0)
 			return values.get(0);
 		return null;

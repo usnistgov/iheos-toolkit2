@@ -9,6 +9,7 @@ import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegIndex.AssocType;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
@@ -57,7 +58,7 @@ public class ProcessMetadataForDocumentEntryUpdate implements ProcessMetadataInt
 	}
 
 	@Override
-	public void updateExistingFolderTimes(Metadata m) {
+	public void updateExistingFolderTimes(Metadata m) throws XdsException {
 		for (OMElement eo : m.getExtrinsicObjects()) {
 			String eoLid = m.getLid(eo);
 			DocEntry de = delta.docEntryCollection.getLatestVersion(eoLid);

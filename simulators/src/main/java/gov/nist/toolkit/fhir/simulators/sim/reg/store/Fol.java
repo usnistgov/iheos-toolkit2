@@ -1,6 +1,8 @@
 package gov.nist.toolkit.fhir.simulators.sim.reg.store;
 
 
+import gov.nist.toolkit.xdsexception.client.XdsException;
+
 import java.io.Serializable;
 
 public class Fol extends PatientObject implements Serializable {
@@ -40,8 +42,16 @@ public class Fol extends PatientObject implements Serializable {
 		return lastUpdateTime;
 	}
 	
-	public void setLastUpdateTime(String time) {
+	public void setLastUpdateTime(String time) throws XdsException {
+		if (!hasSecondResolution(time))
+			throw new XdsException("Folder.lastUpdateTime must include second resolution - received value " + time, null);
 		lastUpdateTime = time;
+	}
+
+	private boolean hasSecondResolution(String time) {
+		int minSize = 14; // seconds included
+		if (time == null) return false;
+		return time.length() >= minSize;
 	}
 	
 }

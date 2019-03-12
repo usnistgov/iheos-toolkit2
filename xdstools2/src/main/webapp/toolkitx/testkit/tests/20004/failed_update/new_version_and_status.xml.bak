@@ -29,7 +29,7 @@
 			</tag0:Description>
 			<tag0:Slot name="lastUpdateTime">
 				<tag0:ValueList>
-					<tag0:Value>20041225</tag0:Value>
+					<tag0:Value>20041224000000</tag0:Value>
 				</tag0:ValueList>
 			</tag0:Slot>
 			<tag0:Classification classifiedObject="Folder01" nodeRepresentation="Alergy Treatments" classificationScheme="urn:uuid:1ba97051-7806-41a8-a48b-8fce7af683c5">

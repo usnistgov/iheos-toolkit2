@@ -24,30 +24,44 @@ public class FolderUpdate {
         Fol latest = muSim.delta.folCollection.getLatestVersion(lid);
 
         if (latest == null) {
-            er.err(XdsErrorCode.Code.XDSMetadataUpdateError, prefix + "existing Folder not present in Registry", this, "ITI TF-2b:3.57.4.1.3.3.3.2");
+            XdsErrorCode.Code code = XdsErrorCode.Code.XDSMetadataUpdateError;
+            if (muSim.getCommon().vc.isRMU)
+                code = XdsErrorCode.Code.XDSInvalidRequestException;
+            er.err(code, prefix + "existing Folder not present in Registry", this, "ITI TF-2b:3.57.4.1.3.3.3.2");
             return;
         }
 
-        if (latest.getAvailabilityStatus() != StatusValue.APPROVED)
-            er.err(XdsErrorCode.Code.XDSMetadataUpdateError,
+        if (latest.getAvailabilityStatus() != StatusValue.APPROVED) {
+            XdsErrorCode.Code code = XdsErrorCode.Code.XDSMetadataUpdateError;
+            if (muSim.getCommon().vc.isRMU)
+                code = XdsErrorCode.Code.XDSMetadataVersionError;
+            er.err(code,
                     prefix + "previous version does not have availabilityStatus of Approved, " + latest.getAvailabilityStatus() + " found instead",
                     this, "ITI TF-2b:3.57.4.1.3.3.3.2");
+        }
 
         String submittedUid = "";
         try {
             submittedUid = m.getUniqueIdValue(folEle);
         } catch (MetadataException e) {
-            er.err(XdsErrorCode.Code.XDSMetadataUpdateError,
+            XdsErrorCode.Code code = XdsErrorCode.Code.XDSMetadataUpdateError;
+            if (muSim.getCommon().vc.isRMU)
+                code = XdsErrorCode.Code.XDSMetadataIdentifierError;
+            er.err(code,
                     prefix + "cannot extract uniqueId from submitted metadata",
                     this, "ITI TF-2b:3.57.4.1.3.3.3.2");
         }
 
-        if (!latest.getUid().equals(submittedUid))
-            er.err(XdsErrorCode.Code.XDSMetadataUpdateError,
+        if (!latest.getUid().equals(submittedUid)) {
+            XdsErrorCode.Code code = XdsErrorCode.Code.XDSMetadataUpdateError;
+            if (muSim.getCommon().vc.isRMU)
+                code = XdsErrorCode.Code.XDSMetadataIdentifierError;
+            er.err(code,
                     prefix + "previous version does not have same value for uniqueId: " +
                             " previous version has " + latest.getUid() +
                             " update has " + submittedUid,
                     this, "ITI TF-2b:3.57.4.1.3.3.3.2");
+        }
         String latestVerStr = String.valueOf(latest.version);
         if (!latestVerStr.equals(prevVer))
             er.err(XdsErrorCode.Code.XDSMetadataVersionError,
@@ -80,7 +94,11 @@ public class FolderUpdate {
         // control the processing. (That's why this class inherits
         // from RegRSim).
         ProcessMetadataInterface pmi = new ProcessMetadataForFolderUpdate(er, muSim.mc, muSim.delta);
-        muSim.processMetadata(operation, pmi);
+        try {
+            muSim.processMetadata(operation, pmi);
+        } catch (Exception e) {
+            er.err(XdsErrorCode.Code.XDSRegistryMetadataError, e);
+        }
 
         if (!muSim.hasErrors()) {
             muSim.save(operation, false);

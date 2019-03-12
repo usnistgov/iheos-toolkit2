@@ -381,7 +381,7 @@
          </rim:Description>
          <rim:Slot name="lastUpdateTime">
             <rim:ValueList>
-               <rim:Value>20051224</rim:Value>
+               <rim:Value>20041224000000</rim:Value>
             </rim:ValueList>
          </rim:Slot>
          <rim:Classification classifiedObject="Folder"
