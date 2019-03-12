@@ -43,6 +43,14 @@ public class XdsErrorCode implements IsSerializable  {
 		XDSIUnknownIdsUid,
 		ReferencesExistException,
 		XDSUnreferencedObjectException,
+		XDSPatientIDReconciliationError,
+		XDSRemoveDocumentsError,
+		XDSObjectTypeError,
+		XDSMetadataIdentifierError,
+		XDSInvalidRequestException,
+		UnmodifiableMetadataError,
+		LocalPolicyRestrictionError,
+		XDSMetadataAnnotationError,
 		UnresolvedReferenceException;
     };
 
@@ -54,5 +62,5 @@ public class XdsErrorCode implements IsSerializable  {
 		}
 		return null;
 	}
-	
+
 }

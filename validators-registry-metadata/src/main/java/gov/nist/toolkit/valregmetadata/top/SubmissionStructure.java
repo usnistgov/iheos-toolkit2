@@ -415,7 +415,7 @@ public class SubmissionStructure {
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, objectDescription(assoc) + ": with type " + simpleAssocType(type) + " must reference a DocumentEntry in submission with its sourceObject attribute, it references " + objectDescription(source), this, "ITI TF-3: 4.1.6.1");
 
 		if (type.equals("urn:ihe:iti:2010:AssociationType:SubmitAssociation")) {
-			if (!vc.isMU)
+			if (!vc.isMU && !vc.isRMU)
 				er.err(XdsErrorCode.Code.XDSMetadataUpdateError, "Metadata Update feature disabled", null, null);
 			if (!source.equals(m.getSubmissionSetId()))
 				er.err(XdsErrorCode.Code.XDSMetadataUpdateError, "SubmitAssociation Association Type must reference the SubmissionSet with its sourceObject attribute", null, null);

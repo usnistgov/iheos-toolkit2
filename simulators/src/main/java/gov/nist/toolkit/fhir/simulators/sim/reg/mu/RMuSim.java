@@ -22,8 +22,11 @@ public class RMuSim extends MuSim {
         List<OMElement> assocs = m.getAssociations();
 
         // find all updateDocStatus Associations
+        XdsErrorCode.Code code = XdsErrorCode.Code.XDSMetadataUpdateError;
+        if (getCommon().vc.isRMU)
+            code = XdsErrorCode.Code.UnmodifiableMetadataError;
         for (OMElement assoc : assocs) {
-            er.err(XdsErrorCode.Code.XDSMetadataUpdateError,
+            er.err(code,
                     "Error processing Association(" + UUIDToSymbolic.get(m.getId(assoc)) + ") - not updatable through RMU",
                     this,
                     null);

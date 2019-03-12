@@ -43,12 +43,16 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	public boolean isXDRMinimal = false;   // Direct version
 	public boolean isXDM     = false;
 	public boolean isSQ      = false;
-	public boolean isMU      = false;
-	public boolean isRMU      = false;
 	public boolean isRM       = false;
 	public boolean isDIRECT  = false;
 	public boolean isCCDA	 = false;
 	public boolean isRD      = false;
+
+	// only one
+	public boolean isMU      = false;
+	public boolean isRMU      = false;
+	public boolean isRMD	= false;
+
 	/**
 	 * Is this a Retrieve Imaging Document Set (RAD-69) transaction? Also set for
 	 * Cross Gateway Retrieve Imaging Document Set (RAD-75) transaction. In that
@@ -120,7 +124,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	public boolean updateEnabled = false;
 
 	public boolean leafClassWithDocumentOk = false;
-	
+
 	public String ccdaType = null;
 	public byte[] privKey = null;
 	public String privKeyPassword = "";
@@ -170,17 +174,17 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	public void addInnerContext(ValidationContext ivc) {
 		innerContexts.add(ivc);
 	}
-	
-	public int getInnerContextCount() { 
+
+	public int getInnerContextCount() {
 		return innerContexts.size();
 	}
-	
+
 	public ValidationContext getInnerContext(int i) {
 		if (i < innerContexts.size())
 			return innerContexts.get(i);
 		return null;
 	}
-	
+
 	//
 	// End state maintained by various validators
 	//
@@ -191,7 +195,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 
 	public boolean hasMetadataPattern(String patternString) {
 		for (MetadataPattern pat : metadataPatterns) {
-			if (patternString.equalsIgnoreCase(pat.toString())) 
+			if (patternString.equalsIgnoreCase(pat.toString()))
 				return true;
 		}
 		return false;
@@ -250,7 +254,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 				leafClassWithDocumentOk == v.leafClassWithDocumentOk &&
 				isNcpdp == v.isNcpdp &&
                         forceMtom == v.forceMtom &&
-				((ccdaType == null) ?  v.ccdaType == null   :  ccdaType.equals(v.ccdaType))   
+				((ccdaType == null) ?  v.ccdaType == null   :  ccdaType.equals(v.ccdaType))
 				;
 	}
 
@@ -364,7 +368,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 			if (isResponse) {
 				if (isXC)
 					return "Cross Gateway Retrieve Response";
-				else	
+				else
 					return "Retrieve Response";
 			}
 		}
@@ -378,18 +382,18 @@ public class ValidationContext  implements Serializable, IsSerializable {
 		if (isSQ) {
 			if (isXC) {
 				if (isEpsos) {
-					if (isRequest) 
+					if (isRequest)
 						return "Epsos Cross Gateway Query Request";
 					if (isResponse)
 						return "Epsos Cross Gateway Query Response";
 				} else {
-					if (isRequest) 
+					if (isRequest)
 						return "Cross Gateway Query Request";
 					if (isResponse)
 						return "Cross Gateway Query Response";
 				}
 			} else {
-				if (isRequest) 
+				if (isRequest)
 					return "Stored Query Request";
 				if (isResponse)
 					return "Stored Query Response";
@@ -407,18 +411,18 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	// NwNIN transactions
 	public int getSchematronValidationType() {
 		if (isXcpd) {
-			if (isRequest) 
+			if (isRequest)
 				return SchematronMetadataTypes.IHE_XCPD_305;
-			if (isResponse) 
+			if (isResponse)
 				return SchematronMetadataTypes.IHE_XCPD_306;
 		}
 		if(isNcpdp) {
 			return SchematronMetadataTypes.NCPDP;
 		}
 		if (isNwHINxcpd) {
-			if (isRequest) 
+			if (isRequest)
 				return SchematronMetadataTypes.NwHINPD_305;
-			if (isResponse) 
+			if (isResponse)
 				return SchematronMetadataTypes.NwHINPD_306;
 		}
 		if (isC32) {
@@ -517,11 +521,11 @@ public class ValidationContext  implements Serializable, IsSerializable {
 //			buf.append(";Updateable");
 //		else
 //			buf.append(";NotUpdateable");
-		if (!metadataPatterns.isEmpty()) 
+		if (!metadataPatterns.isEmpty())
 			buf.append(";MetadataPatterns:").append(metadataPatterns);
 		if (ccdaType != null)
 			buf.append(";CCDA type is " + ccdaType);
-		
+
 		if (innerContexts != null) {
 			for (ValidationContext v : innerContexts) {
 				buf.append("[").append(v.toString()).append("]");
@@ -541,9 +545,9 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	}
 
 	public boolean isMessageTypeKnown() {
-		return 
+		return
 				(isTransactionKnown() && (isRequest || isResponse))
-				|| isXDM || isXcpd || isNwHINxcpd || isC32 || isNcpdp || isDIRECT 
+				|| isXDM || isXcpd || isNwHINxcpd || isC32 || isNcpdp || isDIRECT
 				|| isCCDA
 				;
 	}
@@ -576,7 +580,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 		return hashRequired();
 	}
 	public boolean homeRequired() {
-		return isXC && (isSQ || isRet) && isResponse 
+		return isXC && (isSQ || isRet) && isResponse
 				//			&& !minMeta
 				;
 	}

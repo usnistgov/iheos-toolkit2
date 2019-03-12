@@ -28,6 +28,18 @@ public class RMSim extends TransactionSimulator {
         this.dsSimCommon = dsSimCommon;
     }
 
+    private boolean isRMU() {
+        return dsSimCommon.getValidationContext().isRMU;
+    }
+
+    private boolean isMU() {
+        return dsSimCommon.getValidationContext().isMU;
+    }
+
+    private boolean isRMD() {
+        return dsSimCommon.getValidationContext().isRMD;
+    }
+
     @Override
     public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
         this.er = er;
@@ -43,8 +55,9 @@ public class RMSim extends TransactionSimulator {
 
         // good references?
         for (String id : m.getObjectRefIds()) {
-            if (!delta.hasObject(id))
-                er.err(XdsErrorCode.Code.UnresolvedReferenceException, id, null, null);
+            if (!delta.hasObject(id)) {
+                    er.err(XdsErrorCode.Code.XDSMetadataUpdateError, id, null, null);
+            }
         }
 
         if(er.hasErrors())

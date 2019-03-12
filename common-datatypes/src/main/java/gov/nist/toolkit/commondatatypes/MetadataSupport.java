@@ -363,8 +363,19 @@ public class MetadataSupport {
 	public static String XDSFolder_limitedMetadata_uuid = "urn:uuid:2c144a76-29a9-4b7c-af54-b25409fe7d03";
 
 	// XDS error codes
+	public static String XDSMetadataUpdateError = "XDSMetadataUpdateError";
+	public static String XDSPatientIDReconciliationError = "XDSPatientIDReconciliationError";
+	public static String XDSMetadataUpdateOperationError = "XDSMetadataUpdateOperationError";
+	public static String XDSMetadataVersionError = "XDSMetadataVersionError";
+	public static String XDSObjectTypeError = "XDSObjectTypeError";
 	public static String XDSMissingDocument = "XDSMissingDocument";
 	public static String XDSMissingDocumentMetadata = "XDSMissingDocumentMetadata";
+	public static String XDSInvalidRequestException = "XDSInvalidRequestException";
+	public static String XDSMetadataIdentifierError = "XDSMetadataIdentifierError";
+	public static String UnmodifiableMetadataError = "UnmodifiableMetadataError";
+	public static String LocalPolicyRestrictionError = "LocalPolicyRestrictionError";
+	public static String XDSMetadataAnnotationError = "XDSMetadataAnnotationError";
+
 	public static String XDSRegistryNotAvailable = "XDSRegistryNotAvailable";
 	public static String XDSRegistryError = "XDSRegistryError";
 	public static String XDSRepositoryError = "XDSRepositoryError";
@@ -387,6 +398,10 @@ public class MetadataSupport {
 	public static String XDSStoredQueryMissingParam = "XDSStoredQueryMissingParam";
 	public static String XDSStoredQueryParamNumber = "XDSStoredQueryParamNumber";
 	public static String XDSSqlError = "XDSSqlError";
+	public static String XDSRemoveDocumentsError = "XDSRemoveDocumentsError";
+	public static String UnresolvedReferenceException = "UnresolvedReferenceException";
+	public static String ReferencesExistException = "ReferencesExistException";
+	public static String XDSUnreferencedObjectException = "XDSUnreferencedObjectException";
 
 	public static String XDSUnknownRepositoryId = "XDSUnknownRepositoryId";
 
@@ -402,13 +417,7 @@ public class MetadataSupport {
 
 	public static String documentAvailability_online = "urn:ihe:iti:2010:DocumentAvailability:Online";
 	public static String documentAvailability_offline = "urn:ihe:iti:2010:DocumentAvailability:Offline";
-	
-	//RMD
-	
-	public static String XDSRemoveDocumentsError = "XDSRemoveDocumentsError";
-	public static String UnresolvedReferenceException = "UnresolvedReferenceException";
-	public static String ReferencesExistException = "ReferencesExistException";
-	public static String XDSUnreferencedObjectException = "XDSUnreferencedObjectException";
+
 
 	// DSUB stuff
 

@@ -13,7 +13,7 @@ import org.apache.axiom.om.OMElement;
 
 public class DocumentEntryUpdate  {
 	ErrorRecorder er;
-	
+
 	public void run(MuSim muSim, Metadata m, OMElement docEle, OMElement ssAssoc, String prevVer) {
 		er = muSim.er;
 		String lid = m.getLid(docEle);
@@ -21,70 +21,84 @@ public class DocumentEntryUpdate  {
 		String prefix = "Update (trigger=" + muSim.UUIDToSymbolic.get(id) +") - ";
 
 		muSim.getCommon().vc.addMetadataPattern(MetadataPattern.UpdateDocumentEntry);
-		
+
 		DocEntry latest = muSim.delta.docEntryCollection.getLatestVersion(lid);
-		
-		if (latest == null) { 
-			er.err(Code.XDSMetadataUpdateError, prefix + "existing DocumentEntry not present in Registry", this, "ITI TF-2b:3.57.4.1.3.3.1.3");
+
+		if (latest == null) {
+			Code code = Code.XDSMetadataUpdateError;
+			if (muSim.getCommon().vc.isRMU)
+				code = Code.UnresolvedReferenceException;
+			er.err(code, prefix + "existing DocumentEntry not present in Registry", this, "ITI TF-2b:3.57.4.1.3.3.1.3");
 			return;
 		}
-		
-		if (latest.getAvailabilityStatus() != StatusValue.APPROVED) 
-			er.err(Code.XDSMetadataUpdateError, 
-					prefix + "previous version does not have availabilityStatus of Approved, " + latest.getAvailabilityStatus() + " found instead", 
+
+		if (latest.getAvailabilityStatus() != StatusValue.APPROVED)
+			er.err(Code.XDSMetadataUpdateError,
+					prefix + "previous version does not have availabilityStatus of Approved, " + latest.getAvailabilityStatus() + " found instead",
 					this, "ITI TF-2b:3.57.4.1.3.3.1.3");
-		
+
 		String submittedUid = "";
 		try {
 			submittedUid = m.getUniqueIdValue(docEle);
 		} catch (MetadataException e) {
-			er.err(Code.XDSMetadataUpdateError, 
-					prefix + "cannot extract uniqueId from submitted metadata", 
+			er.err(Code.XDSMetadataUpdateError,
+					prefix + "cannot extract uniqueId from submitted metadata",
 					this, "ITI TF-2b:3.57.4.1.3.3.1.3");
 		}
-		
-		if (!latest.getUid().equals(submittedUid)) 
-			er.err(Code.XDSMetadataUpdateError, 
-					prefix + "previous version does not have same value for uniqueId: " + 
-					" previous version has " + latest.getUid() + 
-					" update has " + submittedUid, 
+
+		if (!latest.getUid().equals(submittedUid)) {
+			Code code = Code.XDSMetadataUpdateError;
+			if (muSim.getCommon().vc.isRMU)
+				code = Code.UnmodifiableMetadataError;
+			er.err(code,
+					prefix + "previous version does not have same value for uniqueId: " +
+							" previous version has " + latest.getUid() +
+							" update has " + submittedUid,
 					this, "ITI TF-2b:3.57.4.1.3.3.1.3");
-		
+		}
+
 		String objectType = "";
 		try {
 			objectType = m.getObjectTypeById(id);
 		} catch (MetadataException e) {
-			er.err(Code.XDSMetadataUpdateError, 
-					prefix + "cannot extract objectType from submitted metadata", 
+			Code code = Code.XDSMetadataUpdateError;
+			if (muSim.getCommon().vc.isRMU)
+				code = Code.XDSObjectTypeError;
+			er.err(code,
+					prefix + "cannot extract objectType from submitted metadata",
 					this, "ITI TF-2b:3.57.4.1.3.3.1.3");
 		}
-		
-		if (!latest.objecttype.equals(objectType))
-			er.err(Code.XDSMetadataUpdateError, 
-					prefix + "previous version does not have same value for objectType: " + 
-					" previous version has " + latest.objecttype + 
-					" update has " + objectType, 
+
+		if (!latest.objecttype.equals(objectType)) {
+			Code code = Code.XDSMetadataUpdateError;
+			if (muSim.getCommon().vc.isRMU)
+				code = Code.XDSObjectTypeError;
+			er.err(code,
+					prefix + "previous version does not have same value for objectType: " +
+							" previous version has " + latest.objecttype +
+							" update has " + objectType,
 					this, "ITI TF-2b:3.57.4.1.3.3.1.3");
-		
+		}
+
 		String latestVerStr = String.valueOf(latest.version);
 		if (!latestVerStr.equals(prevVer))
-			er.err(Code.XDSMetadataVersionError, 
-					prefix + "PreviousVersion from submission and latest Registry version do not match - " + 
-					" PreviousVersion is " + prevVer + 
-					" and latest version in Registry is " + latestVerStr, 
+			er.err(Code.XDSMetadataVersionError,
+					prefix + "PreviousVersion from submission and latest Registry version do not match - " +
+					" PreviousVersion is " + prevVer +
+					" and latest version in Registry is " + latestVerStr,
 					this, "ITI TF-2b:3.57.4.1.3.3.1.3");
-		
+
 		m.setVersion(docEle, String.valueOf(latest.version + 1));
-		
+
 		// install default version in Association, Classification, ExternalIdentifier
 		try {
 			m.setDefaultVersionOfUnversionedElements();
 		} catch (MetadataException e) {
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, e);
 		}
-		
+
 		Metadata operation = new Metadata();
-		
+
 		operation.addExtrinsicObject(docEle);
 		operation.add_association(ssAssoc);
 		if (m.getSubmissionSet() == null) {
@@ -108,6 +122,6 @@ public class DocumentEntryUpdate  {
 		}
 
 	}
-	
-	
+
+
 }

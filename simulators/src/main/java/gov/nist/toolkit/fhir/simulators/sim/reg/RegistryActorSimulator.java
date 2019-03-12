@@ -140,7 +140,7 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 		}
 
 		common.getValidationContext().updateEnabled = updateEnabled;
-		
+
 		if (transactionType.equals(TransactionType.REGISTER)) {
 			common.vc.isR = true;
 
@@ -217,7 +217,7 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 			// commit updates (delta) to registry database
 			if (!dsSimCommon.hasErrors())
 				commit(mvc, common, rsim.delta);
-			
+
 			return !dsSimCommon.hasErrors();
 
 		}
@@ -291,7 +291,7 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 
 			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
 				return false;
-			
+
 			SqSim sqsim = new SqSim(common, dsSimCommon);
 			mvc.addMessageValidator("SqSim", sqsim, er);
 
@@ -307,7 +307,7 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 
 			// this will only run the new validators
 			mvc.run();
-			
+
 			return !mvc.hasErrors(); // no updates anyway
 
 		}
@@ -332,14 +332,14 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 
 			MuSim musim = new MuSim(common, dsSimCommon, getSimulatorConfig());
 			mvc.addMessageValidator("MuSim", musim, er);
-			
+
 			mvc.run();
 
 			MetadataPatternValidator mpv = new MetadataPatternValidator(common, validation);
 			mvc.addMessageValidator("MetadataPatternValidator", mpv, er);
-			
+
 			mvc.run();
-			
+
 
 			registryResponseGenerator = new RegistryResponseGeneratorSim(common, dsSimCommon);
 			mvc.addMessageValidator("Attach Errors", registryResponseGenerator, er);
@@ -360,10 +360,12 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 
 		}
 		else if (transactionType.equals(TransactionType.RMU)) {
+			common.vc.isRMU = true;
 			return processRMU(mvc, validation);
 
 		}
 		else if (transactionType.equals(TransactionType.REMOVE_METADATA)) {
+			common.vc.isRMD = true;
 			return processRMD(mvc, validation);
 
 		}
