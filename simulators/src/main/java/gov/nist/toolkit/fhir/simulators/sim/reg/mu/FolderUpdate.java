@@ -94,7 +94,11 @@ public class FolderUpdate {
         // control the processing. (That's why this class inherits
         // from RegRSim).
         ProcessMetadataInterface pmi = new ProcessMetadataForFolderUpdate(er, muSim.mc, muSim.delta);
-        muSim.processMetadata(operation, pmi);
+        try {
+            muSim.processMetadata(operation, pmi);
+        } catch (Exception e) {
+            er.err(XdsErrorCode.Code.XDSRegistryMetadataError, e);
+        }
 
         if (!muSim.hasErrors()) {
             muSim.save(operation, false);

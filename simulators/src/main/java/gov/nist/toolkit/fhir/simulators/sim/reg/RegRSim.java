@@ -20,6 +20,7 @@ import gov.nist.toolkit.valregmetadata.top.AbstractCustomMetadataValidator;
 import gov.nist.toolkit.valregmsg.message.MetadataContainer;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
@@ -88,7 +89,11 @@ public class RegRSim extends TransactionSimulator   {
 		extraMetadataCheck(m);
 
 		//  - some of the checks here can be done independent of the registry - move to validator
-		processMetadata(m, new ProcessMetadataForRegister(er, mc, delta));
+		try {
+			processMetadata(m, new ProcessMetadataForRegister(er, mc, delta));
+		} catch (Exception e) {
+			er.err(Code.XDSRegistryMetadataError, e);
+		}
 
 		// if errors then don't commit registry update
 		if (hasErrors())
@@ -142,7 +147,7 @@ public class RegRSim extends TransactionSimulator   {
 	// These steps are run on the entire metadata collection
 	// for the Register transaction but only on an operation
 	// for the Update transaction.
-	public void processMetadata(Metadata m, ProcessMetadataInterface pmi) {
+	public void processMetadata(Metadata m, ProcessMetadataInterface pmi) throws XdsException {
 
 		// Are all UUIDs, submitted and generated, valid?
 		validateUUIDs();

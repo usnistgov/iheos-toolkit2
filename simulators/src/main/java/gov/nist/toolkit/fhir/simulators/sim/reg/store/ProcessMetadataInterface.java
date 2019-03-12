@@ -1,6 +1,7 @@
 package gov.nist.toolkit.fhir.simulators.sim.reg.store;
 
 import gov.nist.toolkit.registrymetadata.Metadata;
+import gov.nist.toolkit.xdsexception.client.XdsException;
 
 public interface ProcessMetadataInterface {
 
@@ -21,7 +22,7 @@ public interface ProcessMetadataInterface {
 	// set folder lastUpdateTime on folders already in the registry
 	// that this submission adds documents to
 	// must be done after metadata index built
-	void updateExistingFolderTimes(Metadata m);
+	void updateExistingFolderTimes(Metadata m) throws XdsException;
 
 	// verify that no associations are being added that:
 	//     reference a non-existant model in submission or registry

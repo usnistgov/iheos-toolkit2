@@ -113,7 +113,11 @@ public class DocumentEntryUpdate  {
 		// control the processing. (That's why this class inherits
 		// from RegRSim).
 		ProcessMetadataInterface pmi = new ProcessMetadataForDocumentEntryUpdate(er, muSim.mc, muSim.delta);
-		muSim.processMetadata(operation, pmi);
+		try {
+			muSim.processMetadata(operation, pmi);
+		} catch (Exception e) {
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, e);
+		}
 
 		if (!muSim.hasErrors()) {
 			muSim.save(operation, false);
