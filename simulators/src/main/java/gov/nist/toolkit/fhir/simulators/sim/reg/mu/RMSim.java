@@ -55,8 +55,11 @@ public class RMSim extends TransactionSimulator {
 
         // good references?
         for (String id : m.getObjectRefIds()) {
+            XdsErrorCode.Code code = XdsErrorCode.Code.XDSMetadataUpdateError;
+            if (getCommon().vc.isRMU || getCommon().vc.isRM)
+                code = XdsErrorCode.Code.UnresolvedReferenceException;
             if (!delta.hasObject(id)) {
-                    er.err(XdsErrorCode.Code.XDSMetadataUpdateError, id, null, null);
+                    er.err(code, id, null, null);
             }
         }
 
