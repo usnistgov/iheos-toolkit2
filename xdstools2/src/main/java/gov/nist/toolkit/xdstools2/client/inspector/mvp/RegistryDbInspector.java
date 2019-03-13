@@ -3,39 +3,38 @@ package gov.nist.toolkit.xdstools2.client.inspector.mvp;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
-import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 
-import java.util.Collection;
 
 /**
  *
  */
-public class ResultInspector extends Place {
-    private String placeName = null;
-    private Collection<Result> results;
+public class RegistryDbInspector extends Place {
+    private String paramString;
+    private MetadataCollection metadataCollection;
     private SiteSpec siteSpec;
 
-    public ResultInspector() {
+    public RegistryDbInspector(MetadataCollection mc, SiteSpec siteSpec) {
         super();
-        GWT.log("Build Inspector Place");
+        GWT.log("Build Registry Browser Place");
+        this.metadataCollection = mc;
+        this.siteSpec = siteSpec;
     }
 
-    public ResultInspector(String placeName) {
-        super();
-        GWT.log("Build Inspector Place: " + placeName);
-        this.placeName = placeName;
+    public RegistryDbInspector(String paramString) {
+        this.paramString = paramString;
     }
 
-    public static class Tokenizer implements PlaceTokenizer<ResultInspector> {
+    public static class Tokenizer implements PlaceTokenizer<RegistryDbInspector> {
         @Override
-        public ResultInspector getPlace(String s) {
-            return new ResultInspector(s);
+        public RegistryDbInspector getPlace(String paramString) {
+            return new RegistryDbInspector(paramString);
         }
 
         @Override
-        public String getToken(ResultInspector place) {
-            return place.placeName;
+        public String getToken(RegistryDbInspector place) {
+            return place.paramString;
         }
     }
     // This is necessary!
@@ -50,25 +49,14 @@ public class ResultInspector extends Place {
     }
 
     public String getName() {
-        return placeName;
+        return paramString;
     }
 
-
-
-    public Collection<Result> getResults() {
-        return results;
-    }
-
-    public void setResults(Collection<Result> results) {
-        this.results = results;
+    public MetadataCollection getMetadataCollection() {
+        return metadataCollection;
     }
 
     public SiteSpec getSiteSpec() {
         return siteSpec;
     }
-
-    public void setSiteSpec(SiteSpec siteSpec) {
-        this.siteSpec = siteSpec;
-    }
-
 }

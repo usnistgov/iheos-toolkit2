@@ -44,13 +44,6 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
         GWT.log("Init InspectorPresenter");
 
         setData();
-
-        // The provided EventBus doesn't seem to work ?
-
-
-//        doResizeTable();
-
-
     }
 
     public void setupResizeTableTimer(final MetadataObjectType objectType) {
@@ -84,7 +77,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
         },200);
     }
 
-    private void    setData() {
+    private void setData() {
         GWT.log("In setData");
 
         GWT.log("result list size is: " + results.size());
@@ -200,7 +193,10 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
             }
         });
         setupInspectorWidget(view.metadataInspectorRight);
-        metadataCollection = setupInspectorWidget(view.metadataInspectorLeft);
+        MetadataCollection mc = setupInspectorWidget(view.metadataInspectorLeft);
+        if (results==null) {
+            mc.add(metadataCollection);
+        }
         setDataMap(metadataCollection);
         annotatedItems = getMetadataObjectAnnotatedItems(metadataCollection);
         view.metadataObjectSelector.setNames(annotatedItems); // This will create the button list
@@ -258,6 +254,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
 
     private MetadataCollection setupInspectorWidget(MetadataInspectorTab inspector) {
         inspector.setResults(results);
+        inspector.setMetadataCollection(metadataCollection);
         inspector.setSiteSpec(siteSpec);
         inspector.preInit();
         return inspector.init();
@@ -342,6 +339,9 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
         return annotatedItems;
     }
 
+    public void setDataModel(MetadataCollection mc) {
+
+    }
 
     public void setDataModel(Collection<Result> results) {
         this.results = results;
@@ -593,4 +593,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
         panel.setVisible(!isPanelVisible);
     }
 
+    public void setMetadataCollection(MetadataCollection metadataCollection) {
+        this.metadataCollection = metadataCollection;
+    }
 }

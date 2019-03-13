@@ -6,6 +6,8 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
 import gov.nist.toolkit.xdstools2.client.injector.Injector;
 import gov.nist.toolkit.xdstools2.client.inspector.mvp.InspectorActivity;
+import gov.nist.toolkit.xdstools2.client.inspector.mvp.RegistryDbInspector;
+import gov.nist.toolkit.xdstools2.client.inspector.mvp.RegistryDbInspectorActivity;
 import gov.nist.toolkit.xdstools2.client.inspector.mvp.ResultInspector;
 import gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab.SubmitResourceActivity;
 import gov.nist.toolkit.xdstools2.client.tabs.fhirSearchTab.FhirSearchActivity;
@@ -82,5 +84,10 @@ public class ClientFactoryImpl implements ClientFactory {
     @Override
     public InspectorActivity getInspectorActivity(ResultInspector place) {
         return new InspectorActivity(place);
+    }
+
+    @Override
+    public RegistryDbInspectorActivity getRegistryBrowserActivity(RegistryDbInspector place) {
+       return new RegistryDbInspectorActivity(place);
     }
 }

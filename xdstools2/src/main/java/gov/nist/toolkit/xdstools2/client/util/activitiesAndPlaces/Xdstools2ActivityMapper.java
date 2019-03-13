@@ -5,6 +5,7 @@ import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
+import gov.nist.toolkit.xdstools2.client.inspector.mvp.RegistryDbInspector;
 import gov.nist.toolkit.xdstools2.client.inspector.mvp.ResultInspector;
 import gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab.SubmitResource;
 import gov.nist.toolkit.xdstools2.client.tabs.fhirSearchTab.FhirSearch;
@@ -49,7 +50,7 @@ public class Xdstools2ActivityMapper implements ActivityMapper {
         if (place instanceof  Tool) {
             Tool tool = (Tool)place;
             ToolActivity toolActivity = clientFactory.getToolActivity();
-            toolActivity.setState(tool.getState());
+            toolActivity.setTpm(tool.getTpm());
             System.out.println("Go to " + ((Tool) place).getToolId());
             pushHomeTabToBackground();
             return toolActivity;
@@ -58,7 +59,7 @@ public class Xdstools2ActivityMapper implements ActivityMapper {
         if (place instanceof ConfActor) {
             ConfActor confActor = (ConfActor) place;
             ConfActorActivity confActorActivity = clientFactory.getConfActorActivity();
-            confActorActivity.setState(confActor.getState());
+            confActorActivity.setTpm(confActor.getTpm());
             confActorActivity.setConfActor(confActor);
             pushHomeTabToBackground();
             return confActorActivity;
@@ -93,6 +94,11 @@ public class Xdstools2ActivityMapper implements ActivityMapper {
             GWT.log("Launch ResultInspector");
             pushHomeTabToBackground();
             return clientFactory.getInspectorActivity((ResultInspector)place);
+        }
+        if (place instanceof RegistryDbInspector) {
+            GWT.log("Launch RegistryDbInspector");
+            pushHomeTabToBackground();
+            return clientFactory.getRegistryBrowserActivity((RegistryDbInspector)place);
         }
         return null;
     }

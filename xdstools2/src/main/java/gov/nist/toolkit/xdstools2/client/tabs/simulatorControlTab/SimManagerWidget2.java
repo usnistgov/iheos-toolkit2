@@ -407,7 +407,7 @@ public class SimManagerWidget2 extends Composite {
             }
         };
         lastAccessedDtColumn.setSortable(true);
-        lastAccessedDtColumn.setDefaultSortAscending(false);
+        lastAccessedDtColumn.setDefaultSortAscending(false);  // Most recent event on top
         columnSortHandler.setComparator(lastAccessedDtColumn,
                 new Comparator<SimInfo>() {
                     public int compare(SimInfo o1, SimInfo o2) {
@@ -481,8 +481,6 @@ public class SimManagerWidget2 extends Composite {
                 if (o1pif==o2pif)
                     return 0;
 
-
-
                 if (o1pif != null) {
                     return (o2pif != null) ? new Integer(o1pif.asString()).compareTo(new Integer(o2pif.asString())) : 1;
                 }
@@ -507,7 +505,7 @@ public class SimManagerWidget2 extends Composite {
             }
         });
 
-        TextColumn<SimInfo> desCtColumn = new TextColumn<SimInfo>() {
+        TextColumn<SimInfo> deCtColumn = new TextColumn<SimInfo>() {
             @Override
             public String getValue(SimInfo simInfo) {
                 if (simInfo.getSimulatorStats()!=null) {
@@ -516,15 +514,15 @@ public class SimManagerWidget2 extends Composite {
                 return null;
             }
         };
-        desCtColumn.setSortable(true);
-        desCtColumn.setDefaultSortAscending(false);
-        columnSortHandler.setComparator(desCtColumn, new Comparator<SimInfo>() {
+        deCtColumn.setSortable(true);
+        deCtColumn.setDefaultSortAscending(false);
+        columnSortHandler.setComparator(deCtColumn, new Comparator<SimInfo>() {
             public int compare(SimInfo o1, SimInfo o2) {
                 return compareStats(SimulatorStats.DOCUMENT_ENTRY_COUNT,o1,o2);
             }
         });
 
-        TextColumn<SimInfo> foldersCtColumn = new TextColumn<SimInfo>() {
+        TextColumn<SimInfo> folderCtColumn = new TextColumn<SimInfo>() {
             @Override
             public String getValue(SimInfo simInfo) {
                 if (simInfo.getSimulatorStats()!=null) {
@@ -533,19 +531,16 @@ public class SimManagerWidget2 extends Composite {
                 return null;
             }
         };
-        foldersCtColumn.setSortable(true);
-        foldersCtColumn.setDefaultSortAscending(false);
-        columnSortHandler.setComparator(foldersCtColumn, new Comparator<SimInfo>() {
+        folderCtColumn.setSortable(true);
+        folderCtColumn.setDefaultSortAscending(false);
+        columnSortHandler.setComparator(folderCtColumn, new Comparator<SimInfo>() {
             public int compare(SimInfo o1, SimInfo o2) {
                 return compareStats(SimulatorStats.FOLDER_COUNT,o1,o2);
             }
         });
 
 
-
-
-        TextColumn<SimInfo> docsCtColumn = new TextColumn<SimInfo>() {
-
+        TextColumn<SimInfo> docCtColumn = new TextColumn<SimInfo>() {
 
             @Override
             public String getValue(SimInfo simInfo) {
@@ -555,17 +550,16 @@ public class SimManagerWidget2 extends Composite {
                 return null;
             }
         };
-        docsCtColumn.setSortable(true);
-        docsCtColumn.setDefaultSortAscending(false);
-        columnSortHandler.setComparator(docsCtColumn, new Comparator<SimInfo>() {
+        docCtColumn.setSortable(true);
+        docCtColumn.setDefaultSortAscending(false);
+        columnSortHandler.setComparator(docCtColumn, new Comparator<SimInfo>() {
             public int compare(SimInfo o1, SimInfo o2) {
                 return compareStats(SimulatorStats.DOCUMENT_COUNT,o1,o2);
             }
         });
 
 
-
-        TextColumn<SimInfo> pidsCtColumn = new TextColumn<SimInfo>() {
+        TextColumn<SimInfo> pidCtColumn = new TextColumn<SimInfo>() {
             @Override
             public String getValue(SimInfo simInfo) {
                 if (simInfo.getSimulatorStats()!=null) {
@@ -574,9 +568,9 @@ public class SimManagerWidget2 extends Composite {
                 return null;
             }
         };
-        pidsCtColumn.setSortable(true);
-        pidsCtColumn.setDefaultSortAscending(false);
-        columnSortHandler.setComparator(pidsCtColumn, new Comparator<SimInfo>() {
+        pidCtColumn.setSortable(true);
+        pidCtColumn.setDefaultSortAscending(false);
+        columnSortHandler.setComparator(pidCtColumn, new Comparator<SimInfo>() {
             public int compare(SimInfo o1, SimInfo o2) {
                 return compareStats(SimulatorStats.PATIENT_ID_COUNT,o1,o2);
             }
@@ -795,10 +789,10 @@ public class SimManagerWidget2 extends Composite {
         newSimTable.addColumn(lastAccessedDtColumn, "Last Tran Date");
         newSimTable.addColumn(pifPortColumn, "Patient Feed Port");
         newSimTable.addColumn(ssCtColumn, "Submission Sets");
-        newSimTable.addColumn(desCtColumn, "Doc Entries");
-        newSimTable.addColumn(foldersCtColumn, "Folders");
-        newSimTable.addColumn(docsCtColumn, "Docs");
-        newSimTable.addColumn(pidsCtColumn, "PIds");
+        newSimTable.addColumn(deCtColumn, "Doc Entries");
+        newSimTable.addColumn(folderCtColumn, "Folders");
+        newSimTable.addColumn(docCtColumn, "Docs");
+        newSimTable.addColumn(pidCtColumn, "PIds");
 
         // Sim info
 //        newSimTable.setColumnWidth(checkColumn, "4%");

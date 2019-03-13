@@ -16,25 +16,20 @@ import gov.nist.toolkit.xdstools2.client.util.ClientFactoryImpl;
 /**
  *
  */
-public class InspectorActivity extends AbstractToolkitActivity {
+public class RegistryDbInspectorActivity extends AbstractToolkitActivity {
 
     private InspectorView view;
     private InspectorPresenter presenter;
     private ActivityDisplayer displayer;
-    private ResultInspector place;
+    private RegistryDbInspector place;
 
-    private String name;
-
-    public InspectorActivity(ResultInspector place) {
+    public RegistryDbInspectorActivity(RegistryDbInspector place) {
         super();
         this.place = place;
         GWT.log("Start activity ");
         if (place != null) {
-            this.name = place.getName();
-            GWT.log("simName is " + name);
+            GWT.log("Build InspectorActivity for Place: " + place.getName());
         }
-
-        GWT.log("Build InspectorActivity for Place: " + name);
     }
 
     private GenericMVP<Result,InspectorView,InspectorPresenter> mvp;
@@ -52,15 +47,15 @@ public class InspectorActivity extends AbstractToolkitActivity {
 
     @Override
     public void start(final AcceptsOneWidget acceptsOneWidget, final EventBus eventBus) {
-        GWT.log("Starting Inspector Activity - name is " + name);
+        GWT.log("Starting RegistryDbInspector Activity - name is " + place.getName());
         presenter = Injector.INSTANCE.getInspectorPresenter();
         view =      Injector.INSTANCE.getInspectorView();
         displayer = Injector.INSTANCE.getToolkitAppDisplayer();
         assert(presenter != null);
         assert(displayer != null);
 
-        presenter.setTitle("ResultInspector");
-        presenter.setDataModel(place.getResults());
+        presenter.setTitle("RegistryDbInspector");
+        presenter.setDataModel(place.getMetadataCollection());
         presenter.setSiteSpec(place.getSiteSpec());
         finish(acceptsOneWidget, eventBus);
     }

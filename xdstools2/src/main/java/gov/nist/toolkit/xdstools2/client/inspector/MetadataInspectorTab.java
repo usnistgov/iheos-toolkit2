@@ -71,6 +71,7 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 	// main panel
 	HorizontalPanel hpanel = new HorizontalPanel();
 	Collection<Result> results;
+	MetadataCollection metadataCollection;
 	private SiteSpec siteSpec;
 
 
@@ -108,7 +109,7 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 				data.results = new ArrayList<Result>();
 			data.results.add(result);
 		}
-		data.buildCombined();
+		data.buildCombined(null);
 		showHistoryOrContents();
 		if (dataNotification!=null) {
 			dataNotification.onAddToHistory(data.combinedMetadata);
@@ -116,6 +117,11 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 	}
 
 	public void setResults(Collection<Result> results) { this.results = results; }
+
+	public void setMetadataCollection(MetadataCollection metadataCollection) {
+		this.metadataCollection = metadataCollection;
+	}
+
 	public void setSiteSpec(SiteSpec ss) { siteSpec = ss; }
 
 	@Override
@@ -622,7 +628,7 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 		if (results!=null) {
 			addToHistory(results);
 		} else {
-			data.buildCombined();
+			data.buildCombined(metadataCollection);
 			showHistoryOrContents();
 		}
 
@@ -634,7 +640,7 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 
 			if (results.size() == 1 && !hasContents(results))
 				showAssertions(results.iterator().next());
-			else
+        else
 				showHistory();
 		}
 

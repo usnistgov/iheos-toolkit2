@@ -24,9 +24,8 @@ import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.SimConfigEdito
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.SimulatorControlTab;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.TestsOverviewTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
-import gov.nist.toolkit.xdstools2.client.util.SimpleCallback;
-import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.toolContext.State;
-import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.toolContext.Token;
+import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.toolContext.ToolParameter;
+import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.toolContext.ToolParameterMap;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 import java.util.ArrayList;
@@ -34,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ToolLauncher implements ClickHandler {
-	private State state;
+	private ToolParameterMap tpm;
 	private String tabType;
 
 	final static public String findDocumentsTabLabel = "FindDocuments";
@@ -96,14 +95,14 @@ public class ToolLauncher implements ClickHandler {
 		private final String requestedTestSession;
 		private final String requestedEnvironment;
 
-		public ToolUserProperties(State state, Map<String,String> tkPropMap) {
+		public ToolUserProperties(ToolParameterMap tpm, Map<String,String> tkPropMap) {
 			multiUserModeEnabled = Boolean.parseBoolean(tkPropMap.get("Multiuser_mode"));
 			casModeEnabled = Boolean.parseBoolean(tkPropMap.get("Cas_mode"));
 			userMode = (multiUserModeEnabled) ? (casModeEnabled ? ToolkitUserMode.CAS_USER : ToolkitUserMode.MULTI_USER) : ToolkitUserMode.SINGLE_USER;
 			currentEnvironment = tkPropMap.get("Default_Environment");
-			if (state!=null) {
-				requestedEnvironment = state.getValue(Token.ENVIRONMENT);
-				requestedTestSession = state.getValue(Token.TEST_SESSION);
+			if (tpm!=null) {
+				requestedEnvironment = tpm.getValue(ToolParameter.ENVIRONMENT);
+				requestedTestSession = tpm.getValue(ToolParameter.TEST_SESSION);
 			} else {
 				requestedEnvironment = null;
 				requestedTestSession = null;
@@ -271,25 +270,25 @@ public class ToolLauncher implements ClickHandler {
 			return new SimulatorControlTab();
 		}
 		if (menuName.equals(simulatorConfigEditTabLabel)) {
-		    if (state!=null) {
+		    if (tpm!=null) {
 				// Environment
-                String requestedEnvironment = state.getValue(Token.ENVIRONMENT);
+                String requestedEnvironment = tpm.getValue(ToolParameter.ENVIRONMENT);
 				if (requestedEnvironment == null || "".equals(requestedEnvironment)) {
 					throw new ToolkitRuntimeException("env parameter is required.");
 				}
 				// Test session
-				String requestedTestSession = state.getValue(Token.TEST_SESSION);
+				String requestedTestSession = tpm.getValue(ToolParameter.TEST_SESSION);
 				if (requestedTestSession == null || "".equals(requestedTestSession)) {
 					throw new ToolkitRuntimeException("testSession parameter is required.");
 				}
 				// systemId
-				String systemId = state.getValue(Token.SYSTEM_ID);
+				String systemId = tpm.getValue(ToolParameter.SYSTEM_ID);
 				if (systemId == null || "".equals(systemId)) {
 					throw new ToolkitRuntimeException("systemId parameter is required.");
 
 				}
 				SimConfigEditorTabLoader tabLoader = new SimConfigEditorTabLoader();
-				tabLoader.load(state);
+				tabLoader.load(tpm);
 				return tabLoader.getTab();
 			}
 		}
@@ -302,19 +301,19 @@ public class ToolLauncher implements ClickHandler {
 		if (menuName.equals(conformanceTestsLabel)) {
 			ConformanceTestTab conformanceTestTab = new ConformanceTestTab();
 
-			if (state == null) {
+			if (tpm == null) {
 				// No state, so just present bare tool with an overview to manually select actor/profile/option
 				return conformanceTestTab;
 			}
 
 
-			setupEnvironment(state, toolUserProperties.userMode, toolUserProperties.requestedEnvironment, toolUserProperties.currentEnvironment);
+			setupEnvironment(toolUserProperties.userMode, toolUserProperties.requestedEnvironment, toolUserProperties.currentEnvironment);
 			setupTestSession(toolUserProperties.userMode, toolUserProperties.requestedTestSession, conformanceTestTab);
 
-			conformanceTestTab.getCurrentActorOption().setActorTypeId(state.getValue(Token.ACTOR));
-			conformanceTestTab.getCurrentActorOption().setProfileId(IheItiProfile.find(state.getValue(Token.PROFILE)));
-			conformanceTestTab.getCurrentActorOption().setOptionId(state.getValue(Token.OPTION));
-			SiteSpec site = new SiteSpec(state.getValue(Token.SYSTEM_ID), new TestSession(toolUserProperties.requestedTestSession));
+			conformanceTestTab.getCurrentActorOption().setActorTypeId(tpm.getValue(ToolParameter.ACTOR));
+			conformanceTestTab.getCurrentActorOption().setProfileId(IheItiProfile.find(tpm.getValue(ToolParameter.PROFILE)));
+			conformanceTestTab.getCurrentActorOption().setOptionId(tpm.getValue(ToolParameter.OPTION));
+			SiteSpec site = new SiteSpec(tpm.getValue(ToolParameter.SYSTEM_ID), new TestSession(toolUserProperties.requestedTestSession));
 			conformanceTestTab.setCommonSiteSpec(site);
 			conformanceTestTab.setSiteToIssueTestAgainst(site);
 
@@ -358,12 +357,11 @@ public class ToolLauncher implements ClickHandler {
 
 	/**
 	 *  NOTE: CAS user mode will be automatically considered for setupEnvironment, and will be silently ignored if it does not apply.
-	 * @param state
 	 * @param userMode
 	 * @param requestedEnvironment
 	 * @param currentEnvironment
 	 */
-	private void setupEnvironment(State state, ToolkitUserMode userMode, String requestedEnvironment, String currentEnvironment) {
+	private void setupEnvironment(ToolkitUserMode userMode, String requestedEnvironment, String currentEnvironment) {
 		if (!ToolkitUserMode.CAS_USER.equals(userMode)
 				&& requestedEnvironment!=null && !"".equals(requestedEnvironment)
 				&& !requestedEnvironment.equalsIgnoreCase(currentEnvironment)) {
@@ -395,7 +393,7 @@ public class ToolLauncher implements ClickHandler {
 	}
 
 	private ToolWindow launch(String requestedName) {
-		toolUserProperties = new ToolUserProperties(state, ClientUtils.INSTANCE.getTkPropMap());
+		toolUserProperties = new ToolUserProperties(tpm, ClientUtils.INSTANCE.getTkPropMap());
 
 
 		ToolDef def = getToolDef(requestedName);
@@ -413,8 +411,8 @@ public class ToolLauncher implements ClickHandler {
 			Timer timer = new Timer() {
 				@Override
 				public void run() {
-					if (state != null) {
-						setupEnvironment(state, toolUserProperties.userMode, toolUserProperties.requestedEnvironment, toolUserProperties.currentEnvironment);
+					if (tpm != null) {
+						setupEnvironment(toolUserProperties.userMode, toolUserProperties.requestedEnvironment, toolUserProperties.currentEnvironment);
 						setupTestSession(toolUserProperties.userMode, toolUserProperties.requestedTestSession, tool);
 					}
 				}
@@ -438,9 +436,7 @@ public class ToolLauncher implements ClickHandler {
 		this.tabType = tabType;
 	}
 
-
-	public void setState(State state) {
-		this.state = state;
+	public void setTpm(ToolParameterMap tpm) {
+		this.tpm = tpm;
 	}
-
 }

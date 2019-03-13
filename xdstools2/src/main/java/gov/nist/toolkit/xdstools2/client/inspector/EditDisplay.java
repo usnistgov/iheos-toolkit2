@@ -380,7 +380,7 @@ public class EditDisplay extends CommonDisplay {
    public void editDetail() {
        detailPanel.clear();
 //		detailPanel.add(HyperlinkFactory.addHTML("<h4>Document Entry</h4>"));
-        String title = (de.isFhir) ? "<h4>Document Entry (translated from DocumentReference)</h4>" : "<h4>Metadata Update (Trial Version) - Document Entry</h4>";
+        String title = (de.isFhir) ? "<h4>Document Entry (translated from DocumentReference)</h4>" : "<h4>Trial Version Metadata Update  - Document Entry</h4>";
         addTitle(HyperlinkFactory.addHTML(title));
         FlexTable ft = new FlexTable();
         int row=0;
