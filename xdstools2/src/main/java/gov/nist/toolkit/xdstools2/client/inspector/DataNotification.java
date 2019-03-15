@@ -10,5 +10,5 @@ public interface DataNotification {
     boolean inCompare();
     MetadataObject getComparable();
     void onCloseOffDetail(TreeItem currentTreeItem);
-    void onHistoryContentModeChanged(MetadataObjectWrapper objectWrapper);
+    void onViewModeChanged(MetadataInspectorTab.SelectedViewMode viewMode, MetadataObjectWrapper objectWrapper);
 }

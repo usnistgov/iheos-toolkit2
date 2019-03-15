@@ -58,6 +58,7 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 //	RadioButton selectDiff = null;
 //	ListBox groupByListBox;
 //	HorizontalPanel groupByPanel = new HorizontalPanel();
+	public enum SelectedViewMode { HISTORY, CONTENT }
 
 	// Data for test being displayed.
 	DataModel data;
@@ -282,8 +283,8 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 		selectContents = new RadioButton("historyContents", "Contents");
 //		selectDiff = new RadioButton("historyContents", "Diff");
 
-		selectHistory.addClickHandler(new HistorySelectChange());
-		selectContents.addClickHandler(new HistorySelectChange());
+		selectHistory.addClickHandler(new HistorySelectChange(SelectedViewMode.HISTORY));
+		selectContents.addClickHandler(new HistorySelectChange(SelectedViewMode.CONTENT));
 //		selectDiff.addClickHandler(new HistorySelectChange());
 
 		ft.setWidget(0, 0, selectHistory);
@@ -304,13 +305,18 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 	}
 
 	class HistorySelectChange implements ClickHandler {
+		SelectedViewMode viewMode;
+
+		public HistorySelectChange(SelectedViewMode viewMode) {
+			this.viewMode = viewMode;
+		}
 
 		public void onClick(ClickEvent event) {
 //			groupByPanel.setVisible(selectHistory.getValue().booleanValue());
 			showHistoryOrContents();
 			if (dataNotification!=null) {
 				if (currentSelectedTreeItem!=null && currentSelectedTreeItem.getUserObject()!=null && (currentSelectedTreeItem.getUserObject() instanceof  MetadataObjectWrapper))
-				dataNotification.onHistoryContentModeChanged((MetadataObjectWrapper)currentSelectedTreeItem.getUserObject());
+				dataNotification.onViewModeChanged(viewMode, (MetadataObjectWrapper)currentSelectedTreeItem.getUserObject());
 			}
 		}
 	}

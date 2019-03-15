@@ -22,6 +22,7 @@ import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataObjectType;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataObjectWrapper;
 import gov.nist.toolkit.xdstools2.client.util.AnnotatedItem;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -140,7 +141,18 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
             }
 
             @Override
-            public void onHistoryContentModeChanged(MetadataObjectWrapper objectWrapper) {
+            public void onViewModeChanged(MetadataInspectorTab.SelectedViewMode viewMode, MetadataObjectWrapper objectWrapper) {
+                if (MetadataInspectorTab.SelectedViewMode.CONTENT.equals(viewMode)) {
+                    try {
+                        if (MetadataObjectType.DocEntries.equals(getCurrentSelectedType())) {
+                            // TODO:
+                            // Show the filter tab/page
+                            new PopupMessage("New feature coming soon!");
+                        }
+                    } catch (ToolkitRuntimeException tre) {
+                        // No object type selected
+                    }
+                }
                 if (objectWrapper==null) return;
               TreeItem treeItem = doFocusTreeItem(objectWrapper.getType(), view.metadataInspectorLeft.getTreeList(), null, objectWrapper.getObject(), null /* Passing a Null will select/focus even if it is the same node */);
               if (treeItem!=null)
@@ -177,7 +189,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
             }
 
             @Override
-            public void onHistoryContentModeChanged(MetadataObjectWrapper objectWrapper) {}
+            public void onViewModeChanged(MetadataInspectorTab.SelectedViewMode viewMode, MetadataObjectWrapper objectWrapper) {}
 
             /**
              *

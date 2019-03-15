@@ -13,6 +13,8 @@ import gov.nist.toolkit.configDatatypes.client.PidSet;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.datasets.server.DatasetFactory;
 import gov.nist.toolkit.datasets.shared.DatasetModel;
+import gov.nist.toolkit.fhir.simulators.servlet.SimServlet;
+import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.fhir.simulators.sim.rep.RepIndex;
 import gov.nist.toolkit.fhir.simulators.support.StoredDocument;
 import gov.nist.toolkit.fhir.simulators.support.od.TransactionUtil;
@@ -25,6 +27,7 @@ import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.interactionmapper.InteractionMapper;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.registrymetadata.Metadata;
+import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
 import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
@@ -35,6 +38,7 @@ import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
 import gov.nist.toolkit.services.client.PifType;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.server.RawResponseBuilder;
+import gov.nist.toolkit.services.server.RegistrySimApi;
 import gov.nist.toolkit.services.server.SimulatorServiceManager;
 import gov.nist.toolkit.services.server.orchestration.OrchestrationManager;
 import gov.nist.toolkit.services.server.orchestration.OrchestrationProperties;
@@ -49,6 +53,7 @@ import gov.nist.toolkit.session.server.serviceManager.TestSessionServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
 import gov.nist.toolkit.session.server.testlog.QuickScanLog;
 import gov.nist.toolkit.session.shared.Message;
+import gov.nist.toolkit.simcommon.client.NoSimException;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.Simulator;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
@@ -2052,6 +2057,65 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
             return e.getMessage();
         }
         return null;
+    }
+
+    public MetadataCollection getMetadataCollectionFromIndex(GetMetadataFromRegIndexRequest request) {
+        // The registry index store.metadatacollection needs to copied into client.metadatacollection
+        // The target will not have the full metadata XML equivalent property available on hand because it is not necessary to build a BST
+       try {
+           RegIndex regIndex = SimServlet.getRegIndex(request.getSimId());
+           return copyMetadataCollection(regIndex.mc);
+       } catch (NoSimException nse) {
+           throw new Exception(ExceptionUtil.exception_details(nse));
+       }
+
+    }
+
+    private static MetadataCollection copyMetadataCollection(gov.nist.toolkit.fhir.simulators.sim.reg.store.MetadataCollection mcOrig) {
+        MetadataCollection mc = new MetadataCollection();
+        if (mcOrig.docEntryCollection != null && mcOrig.docEntryCollection.size()>0) {
+           for (gov.nist.toolkit.fhir.simulators.sim.reg.store.DocEntry deOrig : mcOrig.docEntryCollection.getAll()) {
+               DocumentEntry de = new DocumentEntry();
+               de.id = deOrig.id;
+               de.lid = deOrig.lid;
+               de.uniqueId = deOrig.uid;
+               de.patientId = deOrig.pid;
+               de.hash = deOrig.hash;
+               de.size = deOrig.size;
+               de.objectType = deOrig.objecttype;
+               de.sourcePatientId = deOrig.sourcePatientId;
+               // no document availablility in DE?
+               de.repositoryUniqueId = deOrig.repositoryUniqueId;
+               // no document reference Id List in DE?
+               de.version = Integer.toString(deOrig.version);
+               de.creationTime = deOrig.creationTime;
+               de.serviceStartTime = deOrig.serviceStartTime;
+               de.serviceStopTime = deOrig.serviceStopTime;
+               if (deOrig.classCode!=null) {
+                   de.classCode = new ArrayList<>();
+                   de.classCode.add(deOrig.classCode);
+               }
+               if (deOrig.typeCode!=null) {
+                   de.typeCode = new ArrayList<>();
+                   de.typeCode.add(deOrig.typeCode);
+               }
+               if (deOrig.practiceSettingCode!=null)
+                    de.pracSetCode = new ArrayList<>(deOrig.practiceSettingCode);
+               if (deOrig.healthcareFacilityTypeCode!=null)
+                   de.hcftc = new ArrayList<>(deOrig.healthcareFacilityTypeCode);
+               if (deOrig.formatCode!=null)
+                    de.formatCode = new ArrayList<>(deOrig.formatCode);
+               if (deOrig.eventCode!=null)
+                    de.eventCodeList = new ArrayList<>(deOrig.eventCode);
+
+
+
+
+
+
+
+           }
+        }
     }
 
 }
