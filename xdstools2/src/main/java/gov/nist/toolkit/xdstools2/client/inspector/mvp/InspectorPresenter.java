@@ -17,7 +17,9 @@ import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractPresenter;
+import gov.nist.toolkit.xdstools2.client.inspector.ContentsModeDocumentEntriesFilterDisplay;
 import gov.nist.toolkit.xdstools2.client.inspector.DataNotification;
+import gov.nist.toolkit.xdstools2.client.inspector.FilterFeature;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataObjectType;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataObjectWrapper;
@@ -39,6 +41,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
     private MetadataCollection metadataCollection;
     List<AnnotatedItem> annotatedItems;
     Map<MetadataObjectType, List<? extends MetadataObject>> dataMap = new HashMap<>();
+    ContentsModeDocumentEntriesFilterDisplay filterDisplay;
 
     @Override
     public void init() {
@@ -82,6 +85,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
         GWT.log("In setData");
 
         GWT.log("result list size is: " + results.size());
+
         view.metadataInspectorLeft.setDataNotification(new DataNotification() {
             @Override
         public boolean inCompare() {
@@ -142,18 +146,23 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
 
             @Override
             public void onViewModeChanged(MetadataInspectorTab.SelectedViewMode viewMode, MetadataObjectWrapper objectWrapper) {
+                // ToDO: Make a separate method for filter enabling & call it also from doSwitchTable if metadatatype is DocEntries
+                MetadataObjectType currentObjectTypeSelection = getCurrentSelectedType();
+                boolean isFilterApplicable = false;
                 if (MetadataInspectorTab.SelectedViewMode.CONTENT.equals(viewMode)) {
                     try {
-                        if (MetadataObjectType.DocEntries.equals(getCurrentSelectedType())) {
-                            // TODO:
-                            // Show the filter tab/page
-                            new PopupMessage("New feature coming soon!");
+                        if (MetadataObjectType.DocEntries.equals(currentObjectTypeSelection)) {
+                            isFilterApplicable = true;
                         }
                     } catch (ToolkitRuntimeException tre) {
                         // No object type selected
                     }
                 }
+                view.getTableMap().get(currentObjectTypeSelection).filterContents.setVisible(isFilterApplicable);
+                view.getTableMap().get(currentObjectTypeSelection).filterContents.setEnabled(isFilterApplicable);
+
                 if (objectWrapper==null) return;
+
               TreeItem treeItem = doFocusTreeItem(objectWrapper.getType(), view.metadataInspectorLeft.getTreeList(), null, objectWrapper.getObject(), null /* Passing a Null will select/focus even if it is the same node */);
               if (treeItem!=null)
                 view.metadataInspectorLeft.setCurrentSelectedTreeItem(treeItem);
@@ -212,6 +221,11 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
         setDataMap(metadataCollection);
         annotatedItems = getMetadataObjectAnnotatedItems(metadataCollection);
         view.metadataObjectSelector.setNames(annotatedItems); // This will create the button list
+        DataTable docEntriesDataTable = view.getTableMap().get(MetadataObjectType.DocEntries);
+        if (docEntriesDataTable!=null) {
+            filterDisplay = new ContentsModeDocumentEntriesFilterDisplay(view.metadataInspectorLeft);
+            docEntriesDataTable.setFilterFeature(filterDisplay);
+        }
     }
 
     void setDataMap(MetadataCollection metadataCollection) {

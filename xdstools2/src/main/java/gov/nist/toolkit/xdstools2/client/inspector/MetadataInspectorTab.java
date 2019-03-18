@@ -244,11 +244,14 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 
 	ListingDisplay.QueryOriginFinder qoFinder = new ListingDisplay.QueryOriginFinder() {
 		@Override
-		public QueryOrigin get(String id) {
+		public QueryOrigin get(String uuid) {
+			if (data.results==null)
+				return null;
+			// Assuming this path is reached when initially coming from History View to Content View. In this case, data.results should be available, otherwise it is possible to be viewing just the Content without any History context.
 			// Lookup QueryOrigin if no queryOrigin was provided.
 			for (Result result : data.results) {
 				for (StepResult stepResult : result.stepResults) {
-					MetadataObject mo = stepResult.getMetadata().findObject(id);
+					MetadataObject mo = stepResult.getMetadata().findObject(uuid);
 					if (mo instanceof DocumentEntry) {
 						return new QueryOrigin(result.logId, stepResult.section, stepResult.stepName);
 					}
@@ -316,7 +319,9 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 			showHistoryOrContents();
 			if (dataNotification!=null) {
 				if (currentSelectedTreeItem!=null && currentSelectedTreeItem.getUserObject()!=null && (currentSelectedTreeItem.getUserObject() instanceof  MetadataObjectWrapper))
-				dataNotification.onViewModeChanged(viewMode, (MetadataObjectWrapper)currentSelectedTreeItem.getUserObject());
+					dataNotification.onViewModeChanged(viewMode, (MetadataObjectWrapper)currentSelectedTreeItem.getUserObject());
+				else
+					dataNotification.onViewModeChanged(viewMode, null);
 			}
 		}
 	}
