@@ -8,6 +8,7 @@ import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.datasets.shared.DatasetModel;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
+import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
 import gov.nist.toolkit.results.client.CodesResult;
 import gov.nist.toolkit.results.client.DocumentEntryDetail;
 import gov.nist.toolkit.results.client.Result;
@@ -341,4 +342,6 @@ public interface ToolkitService extends RemoteService  {
     List<Result> fhirRead(FhirReadRequest request) throws Exception;
 
     String promote(PromoteRequest request);
+
+    MetadataCollection getMetadataFromRegIndex(GetMetadataFromRegIndexRequest request) throws Exception;
 }

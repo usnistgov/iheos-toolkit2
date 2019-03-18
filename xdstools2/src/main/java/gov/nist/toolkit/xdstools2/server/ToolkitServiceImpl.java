@@ -4,10 +4,10 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import edu.wustl.mir.erl.ihe.xdsi.util.PrsSimLogs;
 import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
 import gov.nist.toolkit.actortransaction.TransactionErrorCodeDbLoader;
+import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.actortransaction.shared.ActorOption;
 import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.actortransaction.shared.IheItiProfile;
-import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.PidSet;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
@@ -27,18 +27,23 @@ import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.interactionmapper.InteractionMapper;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.registrymetadata.Metadata;
+import gov.nist.toolkit.registrymetadata.client.Author;
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
 import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
-import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.results.client.CodesResult;
+import gov.nist.toolkit.results.client.DocumentEntryDetail;
+import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.Test;
+import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest;
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationResponse;
 import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
 import gov.nist.toolkit.services.client.PifType;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.server.RawResponseBuilder;
-import gov.nist.toolkit.services.server.RegistrySimApi;
 import gov.nist.toolkit.services.server.SimulatorServiceManager;
 import gov.nist.toolkit.services.server.orchestration.OrchestrationManager;
 import gov.nist.toolkit.services.server.orchestration.OrchestrationProperties;
@@ -53,7 +58,6 @@ import gov.nist.toolkit.session.server.serviceManager.TestSessionServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
 import gov.nist.toolkit.session.server.testlog.QuickScanLog;
 import gov.nist.toolkit.session.shared.Message;
-import gov.nist.toolkit.simcommon.client.NoSimException;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.Simulator;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
@@ -109,7 +113,14 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Scanner;
 
 @SuppressWarnings("serial")
 public class ToolkitServiceImpl extends RemoteServiceServlet implements
@@ -2059,63 +2070,87 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return null;
     }
 
-    public MetadataCollection getMetadataCollectionFromIndex(GetMetadataFromRegIndexRequest request) {
+    public MetadataCollection getMetadataFromRegIndex(GetMetadataFromRegIndexRequest request) throws Exception {
         // The registry index store.metadatacollection needs to copied into client.metadatacollection
         // The target will not have the full metadata XML equivalent property available on hand because it is not necessary to build a BST
-       try {
            RegIndex regIndex = SimServlet.getRegIndex(request.getSimId());
            return copyMetadataCollection(regIndex.mc);
-       } catch (NoSimException nse) {
-           throw new Exception(ExceptionUtil.exception_details(nse));
-       }
-
     }
 
-    private static MetadataCollection copyMetadataCollection(gov.nist.toolkit.fhir.simulators.sim.reg.store.MetadataCollection mcOrig) {
-        MetadataCollection mc = new MetadataCollection();
-        if (mcOrig.docEntryCollection != null && mcOrig.docEntryCollection.size()>0) {
-           for (gov.nist.toolkit.fhir.simulators.sim.reg.store.DocEntry deOrig : mcOrig.docEntryCollection.getAll()) {
-               DocumentEntry de = new DocumentEntry();
-               de.id = deOrig.id;
-               de.lid = deOrig.lid;
-               de.uniqueId = deOrig.uid;
-               de.patientId = deOrig.pid;
-               de.hash = deOrig.hash;
-               de.size = deOrig.size;
-               de.objectType = deOrig.objecttype;
-               de.sourcePatientId = deOrig.sourcePatientId;
-               // no document availablility in DE?
-               de.repositoryUniqueId = deOrig.repositoryUniqueId;
-               // no document reference Id List in DE?
-               de.version = Integer.toString(deOrig.version);
-               de.creationTime = deOrig.creationTime;
-               de.serviceStartTime = deOrig.serviceStartTime;
-               de.serviceStopTime = deOrig.serviceStopTime;
-               if (deOrig.classCode!=null) {
-                   de.classCode = new ArrayList<>();
-                   de.classCode.add(deOrig.classCode);
+    private MetadataCollection copyMetadataCollection(gov.nist.toolkit.fhir.simulators.sim.reg.store.MetadataCollection storeMc) {
+        MetadataCollection clientMc = new MetadataCollection();
+        if (storeMc.docEntryCollection != null && storeMc.docEntryCollection.size()>0) {
+           for (gov.nist.toolkit.fhir.simulators.sim.reg.store.DocEntry storeDe : storeMc.docEntryCollection.getAll()) {
+               DocumentEntry clientDe = new DocumentEntry();
+               clientDe.id = storeDe.id;
+               clientDe.lid = storeDe.lid;
+               clientDe.version = Integer.toString(storeDe.version);
+               clientDe.uniqueId = storeDe.uid;
+               clientDe.patientId = storeDe.pid;
+               clientDe.status = storeDe.documentAvailability;
+               clientDe.hash = storeDe.hash;
+               clientDe.size = storeDe.size;
+
+               // no mimeType in storeDe??
+               // clientDe.mimeType = storeDe.xxx
+
+               clientDe.objectType = storeDe.objecttype;
+
+               clientDe.repositoryUniqueId = storeDe.repositoryUniqueId;
+
+               // no document reference Id List in clientDe?
+               // - clientDe.xxx = storeDe.referenceIdList
+
+               // no lang in storeDe
+               // clientDe.lang = storeDe.xxx
+
+               clientDe.creationTime = storeDe.creationTime;
+               clientDe.serviceStartTime = storeDe.serviceStartTime;
+               clientDe.serviceStopTime = storeDe.serviceStopTime;
+
+               clientDe.sourcePatientId = storeDe.sourcePatientId;
+
+               // no source patient info in storeDe
+               // clientDe.sourcePatientInfo = new ArrayList<>(storeDe.xxx)
+
+               if (storeDe.classCode != null && !"".equals(storeDe.classCode)) {
+                   clientDe.classCode = new ArrayList<>();
+                   clientDe.classCode.add(storeDe.classCode);
                }
-               if (deOrig.typeCode!=null) {
-                   de.typeCode = new ArrayList<>();
-                   de.typeCode.add(deOrig.typeCode);
+
+               if (storeDe.formatCode !=null && !"".equals(storeDe.formatCode)) {
+                   clientDe.formatCode = new ArrayList<>();
+                   clientDe.formatCode.add(storeDe.formatCode);
                }
-               if (deOrig.practiceSettingCode!=null)
-                    de.pracSetCode = new ArrayList<>(deOrig.practiceSettingCode);
-               if (deOrig.healthcareFacilityTypeCode!=null)
-                   de.hcftc = new ArrayList<>(deOrig.healthcareFacilityTypeCode);
-               if (deOrig.formatCode!=null)
-                    de.formatCode = new ArrayList<>(deOrig.formatCode);
-               if (deOrig.eventCode!=null)
-                    de.eventCodeList = new ArrayList<>(deOrig.eventCode);
 
+               if (storeDe.healthcareFacilityTypeCode != null && !"".equals(storeDe.healthcareFacilityTypeCode)) {
+                   clientDe.hcftc = new ArrayList<>();
+                   clientDe.hcftc.add(storeDe.healthcareFacilityTypeCode);
+               }
 
+               if (storeDe.practiceSettingCode != null) {
+                  clientDe.pracSetCode = new ArrayList<>();
+                  clientDe.pracSetCode.add(storeDe.practiceSettingCode);
+               }
 
+               if (storeDe.typeCode != null) {
+                   clientDe.typeCode = new ArrayList<>();
+                   clientDe.typeCode.add(storeDe.typeCode);
+               }
 
+               if (storeDe.authorNames!=null && storeDe.authorNames.length > 0) {
+                   clientDe.authors = new ArrayList<>();
+                   for (String storeAuthor : storeDe.authorNames) {
+                       Author clientAuthor = new Author();
+                       clientAuthor.person = storeAuthor;
+                       clientDe.authors.add(clientAuthor);
+                   }
+               }
 
-
-
+               clientMc.docEntries.add(clientDe);
            }
         }
+        return clientMc;
     }
 
 }
