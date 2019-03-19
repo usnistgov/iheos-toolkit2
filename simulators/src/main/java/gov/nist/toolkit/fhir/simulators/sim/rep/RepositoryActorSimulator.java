@@ -43,8 +43,10 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 	static List<TransactionType> transactions = new ArrayList<>();
 
 	static {
+		transactions.add(TransactionType.XDR_PROVIDE_AND_REGISTER);
 		transactions.add(TransactionType.PROVIDE_AND_REGISTER);
 		transactions.add(TransactionType.RETRIEVE);
+		transactions.add(TransactionType.REMOVE_DOCUMENTS);
 	}
 
 	public boolean supports(TransactionType transactionType) {
