@@ -121,8 +121,8 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
         initSingleSelectionMode();
 //        assignSingleSelectionModel();
         dataTable.setSelectionModel(selectionModel);
-        diffModeSelectionHandler();
-        filterContentsSelectionHandler();
+        setDiffModeSelectionHandler();
+        setFilterContentsSelectionHandler();
 
         if (displayAction)
             addActionTable();
@@ -144,29 +144,27 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
         containerPanel.add(filterContents);
     }
 
-    private void filterContentsSelectionHandler() {
-        filterContents.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
-            @Override
-            public void onValueChange(ValueChangeEvent<Boolean> valueChangeEvent) {
-                if (filterContents.getValue()) {
-                    compareSelect.setEnabled(false);
-                    // Display the filter screen
+    private void setFilterContentsSelectionHandler() {
+            filterContents.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+                @Override
+                public void onValueChange(ValueChangeEvent<Boolean> valueChangeEvent) {
                     if (filterFeature!=null) {
-                        filterFeature.displayFilter(true);
-                    }
-                } else {
-                    compareSelect.setEnabled(true);
-                    // Remove any filters that might have been applied
-                    if (filterFeature!=null) {
-                        filterFeature.displayFilter(false);
-                        filterFeature.removeFilter();
+                        if (filterContents.getValue()) {
+                             compareSelect.setEnabled(false);
+                            // Display the filter screen
+                            filterFeature.displayFilter(true);
+                        } else {
+                             compareSelect.setEnabled(true);
+                            // Remove any filters that might have been applied
+                            filterFeature.displayFilter(false);
+                            filterFeature.removeFilter();
+                        }
                     }
                 }
-            }
-        });
+            });
     }
 
-    private void diffModeSelectionHandler() {
+    private void setDiffModeSelectionHandler() {
         if (compareSelect.isVisible()) {
             compareSelect.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
                 @Override
@@ -707,5 +705,9 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
 
     public void setFilterFeature(FilterFeature filterFeature) {
         this.filterFeature = filterFeature;
+    }
+
+    public FilterFeature getFilterFeature() {
+        return filterFeature;
     }
 }

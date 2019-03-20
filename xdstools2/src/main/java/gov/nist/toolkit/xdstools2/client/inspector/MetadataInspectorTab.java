@@ -741,4 +741,10 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 	public Widget asWidget() {
 	    return hpanel;
 	}
+
+	public SelectedViewMode getViewMode() {
+		if (selectContents.getValue())
+			return SelectedViewMode.CONTENT;
+		return SelectedViewMode.HISTORY; // default
+	}
 }

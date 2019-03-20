@@ -111,6 +111,7 @@ public class ContentsModeDocumentEntriesFilterDisplay extends CommonDisplay impl
 
     @Override
     public boolean displayFilter(boolean isVisible) {
+        // skb TODO: handle hidden view
         detailPanel.clear();
         String title = "<h4>Trial Version Document Entries Filter</h4>";
         addTitle(HyperlinkFactory.addHTML(title));

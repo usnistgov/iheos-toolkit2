@@ -19,12 +19,10 @@ import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractPresenter;
 import gov.nist.toolkit.xdstools2.client.inspector.ContentsModeDocumentEntriesFilterDisplay;
 import gov.nist.toolkit.xdstools2.client.inspector.DataNotification;
-import gov.nist.toolkit.xdstools2.client.inspector.FilterFeature;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataObjectType;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataObjectWrapper;
 import gov.nist.toolkit.xdstools2.client.util.AnnotatedItem;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -146,26 +144,15 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
 
             @Override
             public void onViewModeChanged(MetadataInspectorTab.SelectedViewMode viewMode, MetadataObjectWrapper objectWrapper) {
-                // ToDO: Make a separate method for filter enabling & call it also from doSwitchTable if metadatatype is DocEntries
                 MetadataObjectType currentObjectTypeSelection = getCurrentSelectedType();
-                boolean isFilterApplicable = false;
-                if (MetadataInspectorTab.SelectedViewMode.CONTENT.equals(viewMode)) {
-                    try {
-                        if (MetadataObjectType.DocEntries.equals(currentObjectTypeSelection)) {
-                            isFilterApplicable = true;
-                        }
-                    } catch (ToolkitRuntimeException tre) {
-                        // No object type selected
-                    }
-                }
-                view.getTableMap().get(currentObjectTypeSelection).filterContents.setVisible(isFilterApplicable);
-                view.getTableMap().get(currentObjectTypeSelection).filterContents.setEnabled(isFilterApplicable);
+                boolean isFilterApplicable = isFilterApplicable(viewMode, currentObjectTypeSelection);
+                setFilterFeature(currentObjectTypeSelection, isFilterApplicable);
 
                 if (objectWrapper==null) return;
 
               TreeItem treeItem = doFocusTreeItem(objectWrapper.getType(), view.metadataInspectorLeft.getTreeList(), null, objectWrapper.getObject(), null /* Passing a Null will select/focus even if it is the same node */);
               if (treeItem!=null)
-                view.metadataInspectorLeft.setCurrentSelectedTreeItem(treeItem);
+                  view.metadataInspectorLeft.setCurrentSelectedTreeItem(treeItem);
             }
 
             @Override
@@ -221,11 +208,6 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
         setDataMap(metadataCollection);
         annotatedItems = getMetadataObjectAnnotatedItems(metadataCollection);
         view.metadataObjectSelector.setNames(annotatedItems); // This will create the button list
-        DataTable docEntriesDataTable = view.getTableMap().get(MetadataObjectType.DocEntries);
-        if (docEntriesDataTable!=null) {
-            filterDisplay = new ContentsModeDocumentEntriesFilterDisplay(view.metadataInspectorLeft);
-            docEntriesDataTable.setFilterFeature(filterDisplay);
-        }
     }
 
     void setDataMap(MetadataCollection metadataCollection) {
@@ -403,6 +385,39 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
         doSwitchTable(metadataObjectType);
     }
 
+    boolean isFilterApplicable(MetadataInspectorTab.SelectedViewMode viewMode, MetadataObjectType metadataObjectType) {
+        boolean isFilterApplicable = false;
+        if (MetadataInspectorTab.SelectedViewMode.CONTENT.equals(viewMode)) {
+            try {
+                if (MetadataObjectType.DocEntries.equals(metadataObjectType)) {
+                    isFilterApplicable = true;
+                }
+            } catch (ToolkitRuntimeException tre) {
+                // No object type selected
+            }
+        }
+        return isFilterApplicable;
+    }
+
+    void setFilterFeature(MetadataObjectType metadataObjectType, boolean isVisible) {
+        DataTable dt = view.getTableMap().get(metadataObjectType);
+        if (dt!=null && dt.filterContents!=null) {
+            if (isVisible && dt.filterFeature==null) {
+                filterDisplay = new ContentsModeDocumentEntriesFilterDisplay(view.metadataInspectorLeft);
+                dt.setFilterFeature(filterDisplay);
+            }
+            // Do we need to clear the filter when filter control display is hidden?
+//            if (!isActive) {
+//               dt.filterContents.setValue(false);
+//            }
+            dt.filterContents.setVisible(isVisible);
+            dt.filterContents.setEnabled(isVisible);
+            // skb TODO: clear current DE selection when filter is activated
+            // skb TODO: clear the lastItemSelected or currentItemSelected to nothing?
+            // skb TODO: hide the structure panel!
+        }
+    }
+
     public void doSwitchTable(MetadataObjectType targetObjectType) {
         for (MetadataObjectType key : view.tableMap.keySet()) {
             DataTable dataTable = view.tableMap.get(key);
@@ -431,13 +446,14 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
                         doSetupDiffMode(true);
                         doDiffAction(key, (MetadataObject)dataTable.lastSelectedObject, (MetadataObject)dataTable.compareObject);
                     }
+                    MetadataInspectorTab.SelectedViewMode viewMode = view.metadataInspectorLeft.getViewMode();
+                    boolean isFilterApplicable = isFilterApplicable(viewMode, key);
+                    setFilterFeature(key, isFilterApplicable);
                     setupResizeTableTimer(key);
                 }
-
             } else {
                 dataTable.asWidget().setVisible(false);
             }
-//            dataTable.diffSelect.setValue(false,true);
         }
 
     }
