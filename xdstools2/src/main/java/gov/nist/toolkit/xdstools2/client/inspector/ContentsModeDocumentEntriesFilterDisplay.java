@@ -1,38 +1,19 @@
 package gov.nist.toolkit.xdstools2.client.inspector;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.http.client.HtmlMarkup;
-import gov.nist.toolkit.registrymetadata.client.Author;
-import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
-import gov.nist.toolkit.results.client.CodesConfiguration;
 import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.valsupport.client.MessageValidationResults;
-import gov.nist.toolkit.xdsexception.client.NoDifferencesException;
-import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
-import gov.nist.toolkit.xdstools2.client.command.command.UpdateDocumentEntryCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.ValidateDocumentEntryCommand;
 import gov.nist.toolkit.xdstools2.client.tabs.findDocuments2Tab.FindDocuments2Params;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
-import gov.nist.toolkit.xdstools2.client.widgets.AuthorPicker;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.widgets.SimpleValuePicker;
-import gov.nist.toolkit.xdstools2.client.widgets.SourcePatientInfoPicker;
-import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.CodeFilter;
 import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.CodeFilterBank;
 import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.StatusDisplay;
-import gov.nist.toolkit.xdstools2.shared.command.request.UpdateDocumentEntryRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.ValidateDocumentEntryRequest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,10 +23,14 @@ import java.util.Map;
 import static gov.nist.toolkit.http.client.HtmlMarkup.red;
 
 public class ContentsModeDocumentEntriesFilterDisplay extends CommonDisplay implements FilterFeature {
-    private Button applyFlterBtn = new Button("Apply Filter");
+    private Button applyFilterBtn = new Button("Apply Filter");
     private Button cancelBtn = new Button("Cancel");
     Map<String, List<String>> codeSpecMap = new HashMap<String, List<String>>();
 
+    // Main body
+    boolean isFilterApplied = false;
+    private FlowPanel featurePanel = new FlowPanel();
+    private VerticalPanel previousPanel;
     // controls
     private TextBox pidTxt = new TextBox();
     private TextBox titleTxt = new TextBox();
@@ -109,12 +94,26 @@ public class ContentsModeDocumentEntriesFilterDisplay extends CommonDisplay impl
         // TODO add click handlers
     }
 
+    // skb TODO: when filter is selected, hide the column selection, hide the table, tree panel and structure panel
+    // skb TODO: when filter is unchecked/deselected, warn user to remove filter
+    // skb TODO: on cancel filter, restore last selected item, and restore the normal view.
+    /** skb TODO: when filter is applied
+          a) show rounded label with an X to remove filter. Place this label next to Contents.
+          b) show an edit label, which will restore the filter view
+     **/
+    // skb TODO: when view mode is changed to History, warn user that filter will be cleared.
+
+    // skb TODO: handle show hidden view
     @Override
-    public boolean displayFilter(boolean isVisible) {
-        // skb TODO: handle hidden view
-        detailPanel.clear();
+    public void hideFilter() {
+    }
+
+    @Override
+    public void displayFilter() {
+        // skb TODO: Clear tree selection because the selected item may not be in the filtered result set.
+
         String title = "<h4>Trial Version Document Entries Filter</h4>";
-        addTitle(HyperlinkFactory.addHTML(title));
+        featurePanel.add(createTitle(HyperlinkFactory.addHTML(title)));
         FlexTable ft = new FlexTable();
         int row=0;
         boolean b = false;
@@ -122,29 +121,37 @@ public class ContentsModeDocumentEntriesFilterDisplay extends CommonDisplay impl
 
 
         try {
+            // skb TODO: Count the documents with codes for which we do not have a mapping in our codes.xml
             queryParams = new FindDocuments2Params(statusDisplay);
-            detailPanel.add(queryParams.asWidget());
+            featurePanel.add(queryParams.asWidget());
 
-            ft.setWidget(row, 0, applyFlterBtn);
+            ft.setWidget(row, 0, applyFilterBtn);
             ft.setWidget(row, 1, cancelBtn);
             row++;
 //            ft.setHTML(row, 0, bold("objectType", b));
 //            ft.setWidget(row, 1, );
 //            row++;
 
-            // TODO: Count the documents with codes for which we do not have a mapping in our codes.xml
 
-
-        } catch (Exception ex) {
-            new PopupMessage(ex.toString());
-        } finally {
             ft.setWidget(row, 0, statusBox);
             row++;
             ft.setWidget(row, 0, resultPanel);
             ft.getFlexCellFormatter().setColSpan(row, 0, 3);
             row++;
-            detailPanel.add(ft);
+            featurePanel.add(ft);
+
+            previousPanel = detailPanel; // problem display is lost due to clear
+            detailPanel.clear();
+            detailPanel.add(featurePanel);
+
+        } catch (Exception ex) {
+            new PopupMessage(ex.toString());
+        } finally {
+
         }
+
+
+
         return false;
     }
 
@@ -155,7 +162,7 @@ public class ContentsModeDocumentEntriesFilterDisplay extends CommonDisplay impl
 
     @Override
     public boolean removeFilter() {
-        return false;
+
     }
 
 

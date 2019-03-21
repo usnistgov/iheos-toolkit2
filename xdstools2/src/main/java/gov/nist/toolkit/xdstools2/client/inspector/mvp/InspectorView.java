@@ -4,14 +4,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ProvidesResize;
-import com.google.gwt.user.client.ui.RequiresResize;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.TreeItem;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.registrymetadata.client.*;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractView;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
@@ -25,6 +18,8 @@ import java.util.Map;
 public class InspectorView extends AbstractView<InspectorPresenter> implements ProvidesResize, RequiresResize {
     FlowPanel mainHeaderPanel = new FlowPanel();
 
+    final HTML contentFilterCtl = new HTML("Content Filter");
+    final FlowPanel contentFilterPanel = new FlowPanel();
     final HTML advancedOptionCtl = new HTML("Advanced Options");
     final FlowPanel advancedOptionPanel = new FlowPanel();
 
@@ -273,15 +268,26 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         title.setHTML("<h2>Inspector</h2>");
         topNavPanel.add(title);
 
+        contentFilterCtl.setTitle("This feature is only available in the Inspector Contents View Mode.");
+        contentFilterCtl.addStyleName("iconStyle");
+        contentFilterCtl.addStyleName("inlineLinkDisabled");
+        contentFilterCtl.addStyleName("roundedButton1");
+        contentFilterPanel.addStyleName("with-border");
+        contentFilterPanel.setVisible(false);
+
         advancedOptionCtl.addStyleName("iconStyle");
         advancedOptionCtl.addStyleName("inlineLink");
-//        advancedOptionCtl.addStyleName("outsetBorder");
         advancedOptionCtl.addStyleName("roundedButton1");
         advancedOptionPanel.addStyleName("with-border");
-
         advancedOptionPanel.setVisible(false);
+
+        topNavPanel.add(contentFilterCtl);
+        topNavPanel.add(contentFilterPanel);
         topNavPanel.add(advancedOptionCtl);
         topNavPanel.add(advancedOptionPanel);
+
+        FlowPanel contentFilter
+                // skb TODO: pickup here
 
         FlowPanel advancedOptionWrapper = new FlowPanel();
         metadataObjectSelector.displayShowAll(false);
@@ -300,7 +306,6 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         assocDataTable.asWidget().setVisible(false);
         advancedOptionPanel.add(advancedOptionWrapper);
         advancedOptionPanel.addStyleName("paddedHorizontalPanel");
-
 
         mainHeaderPanel.add(topNavPanel);
 

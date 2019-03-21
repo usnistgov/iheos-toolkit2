@@ -72,8 +72,7 @@ public class DetailDisplay extends CommonDisplay {
 
 
 	void displayDetail(SubmissionSet ss, SubmissionSet diff) {
-//		detailPanel.add(HyperlinkFactory.addHTML("<h4>Submission Set</h4>"));
-        addTitle(HyperlinkFactory.addHTML("<h4>Submission Set</h4>"));
+        detailPanel.add(createTitle(HyperlinkFactory.addHTML("<h4>Submission Set</h4>")));
 		FlexTable ft = new FlexTable();
 		int row=0;
 		boolean b;
@@ -142,7 +141,7 @@ public class DetailDisplay extends CommonDisplay {
 
 	private void displayDetail(ResourceItem ri) {
 		String title = "<h4>" + ri.getType() + "</h4>";
-		addTitle(HyperlinkFactory.addHTML(title));
+		detailPanel.add(createTitle(HyperlinkFactory.addHTML(title)));
 		detailPanel.add(new HTML(ri.getHtmlizedJson()));
 	}
 
@@ -160,7 +159,7 @@ public class DetailDisplay extends CommonDisplay {
 
 //		detailPanel.add(HyperlinkFactory.addHTML("<h4>Document Entry</h4>"));
 		String title = (de.isFhir) ? "<h4>Document Entry (translated from DocumentReference)</h4>" : "<h4>Document Entry" + diffsLabel + "</h4>";
-		addTitle(HyperlinkFactory.addHTML(title));
+		detailPanel.add(createTitle(HyperlinkFactory.addHTML(title)));
 		FlexTable ft = new FlexTable();
 		int row=0;
 		boolean b = false;
@@ -285,7 +284,7 @@ public class DetailDisplay extends CommonDisplay {
 
 	void displayDetail(Folder fol, Folder diff) {
 //		detailPanel.add(HyperlinkFactory.addHTML("<h4>Folder</h4>"));
-        addTitle(HyperlinkFactory.addHTML("<h4>Folder</h4>"));
+        detailPanel.add(createTitle(HyperlinkFactory.addHTML("<h4>Folder</h4>")));
 		FlexTable ft = new FlexTable();
 		int row=0;
 		boolean b;
@@ -354,8 +353,7 @@ public class DetailDisplay extends CommonDisplay {
 	}
 
 	void displayDetail(Association assoc) {
-//		detailPanel.add(HyperlinkFactory.addHTML("<h4>Association</h4>"));
-        addTitle(HyperlinkFactory.addHTML("<h4>Association</h4>"));
+        detailPanel.add(createTitle(HyperlinkFactory.addHTML("<h4>Association</h4>")));
 		FlexTable ft = new FlexTable();
 		int row=0;
 
@@ -414,8 +412,7 @@ public class DetailDisplay extends CommonDisplay {
 	}
 
 	void displayDetail(ObjectRef o) {
-//		detailPanel.add(HyperlinkFactory.addHTML("<h4>ObjectRef</h4>"));
-		addTitle(HyperlinkFactory.addHTML("<h4>ObjectRef</h4>"));
+		detailPanel.add(createTitle(HyperlinkFactory.addHTML("<h4>ObjectRef</h4>")));
 
 		detailPanel.add(HyperlinkFactory.addHTML("id = " + o.id));
 		detailPanel.add(HyperlinkFactory.addHTML("home = " + o.home));

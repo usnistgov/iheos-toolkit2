@@ -3,6 +3,8 @@ package gov.nist.toolkit.xdstools2.client.inspector.mvp;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -19,6 +21,7 @@ import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractPresenter;
 import gov.nist.toolkit.xdstools2.client.inspector.ContentsModeDocumentEntriesFilterDisplay;
 import gov.nist.toolkit.xdstools2.client.inspector.DataNotification;
+import gov.nist.toolkit.xdstools2.client.inspector.FilterFeature;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataObjectType;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataObjectWrapper;
@@ -405,6 +408,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
             if (isVisible && dt.filterFeature==null) {
                 filterDisplay = new ContentsModeDocumentEntriesFilterDisplay(view.metadataInspectorLeft);
                 dt.setFilterFeature(filterDisplay);
+                setFilterContentsSelectionHandler(dt, filterDisplay);
             }
             // Do we need to clear the filter when filter control display is hidden?
 //            if (!isActive) {
@@ -416,6 +420,38 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
             // skb TODO: clear the lastItemSelected or currentItemSelected to nothing?
             // skb TODO: hide the structure panel!
         }
+    }
+
+    /**
+     * This Filter feature is mutually exclusive with the Compare feature. If Filter is selected, the Compare feature is disabled and vice versa.
+     */
+    private void setFilterContentsSelectionHandler(DataTable dt, FilterFeature filterFeature) {
+        CheckBox filterContents = dt.filterContents;
+        CheckBox compareSelect = dt.compareSelect;
+        filterContents.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Boolean> valueChangeEvent) {
+                if (filterFeature!=null) {
+                    if (filterContents.getValue()) {
+                        compareSelect.setValue(false);
+                        compareSelect.setEnabled(false);
+                        // Display the filter screen
+                        filterFeature.displayFilter();
+                        // Hide History & Structure panels
+                        view.metadataInspectorLeft.showHistory(false);
+                        view.metadataInspectorLeft.showStructure(false);
+                    } else {
+                        compareSelect.setEnabled(true);
+                        // Remove any filters that might have been applied
+                        filterFeature.hideFilter();
+                        filterFeature.removeFilter();
+                        // Restore History & Structure panels
+                        view.metadataInspectorLeft.showHistory(true);
+                        view.metadataInspectorLeft.showStructure(true);
+                    }
+                }
+            }
+        });
     }
 
     public void doSwitchTable(MetadataObjectType targetObjectType) {

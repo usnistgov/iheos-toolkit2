@@ -19,7 +19,7 @@ public abstract class CommonDisplay {
     MetadataCollection metadataCollection;
     MetadataInspectorTab it;
 
-    void addTitle(HTML title) {
+    FlowPanel createTitle(HTML title) {
         FlowPanel flowPanel = new FlowPanel();
         title.addStyleName("left");
         flowPanel.add(title);
@@ -38,9 +38,8 @@ public abstract class CommonDisplay {
                 });
                 flowPanel.add(closeX);
             }
-
         }
-        detailPanel.add(flowPanel);
+        return flowPanel;
     }
 
     int displayDetail(FlexTable ft, int row, boolean bold, String label, List<String> values, String xml) {
@@ -170,7 +169,7 @@ public abstract class CommonDisplay {
     }
 
     void displayText(String title, String html) {
-        addTitle(HyperlinkFactory.addHTML("<h4>" + title + "</h4>"));
+        detailPanel.add(createTitle(HyperlinkFactory.addHTML("<h4>" + title + "</h4>")));
         detailPanel.add(new HTML(html));
     }
 

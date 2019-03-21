@@ -68,6 +68,7 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
     CheckBox compareSelect = new CheckBox("Trial Version Compare");
     CheckBox highlightDifferences = new CheckBox("Highlight differences");
     CheckBox filterContents = new CheckBox("Trial Version Contents Filter");
+    FilterFeature filterFeature;
 
     ColumnSortEvent.ListHandler<T> columnSortHandler = new ColumnSortEvent.ListHandler<T>(
             dataProvider.getList());
@@ -92,7 +93,6 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
     abstract int getWidthInPx();
     abstract void setData(List<T> metadataObjectList);
 
-    FilterFeature filterFeature;
 
     public DataTable(List<AnnotatedItem> columnList, int pageSize, T placeHolderRow, boolean displayDiff, boolean displayAction) {
         this.columnList = columnList;
@@ -100,10 +100,10 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
         this.placeHolderRow = placeHolderRow;
         this.keyProvider = keyProvider;
 
-        // Begin adding to the containerPanel
+        // Begin adding controls to the containerPanel
+        addFilterContentsCheckbox();
         addColumnSelectionCheckboxes();
         addDiffModeCheckbox();
-        addFilterContentsCheckbox();
 
         addDataTable();
 
@@ -144,25 +144,7 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
         containerPanel.add(filterContents);
     }
 
-    private void setFilterContentsSelectionHandler() {
-            filterContents.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
-                @Override
-                public void onValueChange(ValueChangeEvent<Boolean> valueChangeEvent) {
-                    if (filterFeature!=null) {
-                        if (filterContents.getValue()) {
-                             compareSelect.setEnabled(false);
-                            // Display the filter screen
-                            filterFeature.displayFilter(true);
-                        } else {
-                             compareSelect.setEnabled(true);
-                            // Remove any filters that might have been applied
-                            filterFeature.displayFilter(false);
-                            filterFeature.removeFilter();
-                        }
-                    }
-                }
-            });
-    }
+
 
     private void setDiffModeSelectionHandler() {
         if (compareSelect.isVisible()) {

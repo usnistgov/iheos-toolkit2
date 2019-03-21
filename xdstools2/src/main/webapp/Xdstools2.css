@@ -357,6 +357,10 @@ h3 {
  color: #0000ad;
 }
 
+.inlineLinkDisabled {
+  color: dimgray;
+}
+
 .queryBoilerPlate {
   color: #4a4e51;
   background-color: #f9f9f9;

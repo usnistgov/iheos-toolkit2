@@ -9,7 +9,6 @@ import gov.nist.toolkit.registrymetadata.client.Author;
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
 import gov.nist.toolkit.results.client.CodesConfiguration;
 import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.xdsexception.client.NoDifferencesException;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
@@ -378,10 +377,9 @@ public class EditDisplay extends CommonDisplay {
     }
 
    public void editDetail() {
-       detailPanel.clear();
-//		detailPanel.add(HyperlinkFactory.addHTML("<h4>Document Entry</h4>"));
+        detailPanel.clear();
         String title = (de.isFhir) ? "<h4>Document Entry (translated from DocumentReference)</h4>" : "<h4>Trial Version Metadata Update  - Document Entry</h4>";
-        addTitle(HyperlinkFactory.addHTML(title));
+        detailPanel.add(createTitle(HyperlinkFactory.addHTML(title)));
         FlexTable ft = new FlexTable();
         int row=0;
         boolean b = false;
