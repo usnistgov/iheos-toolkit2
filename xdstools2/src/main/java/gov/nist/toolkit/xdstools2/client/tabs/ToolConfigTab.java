@@ -20,6 +20,7 @@ import gov.nist.toolkit.session.client.TestSessionStats;
 import gov.nist.toolkit.session.client.TestSessionStatsTool;
 import gov.nist.toolkit.xdstools2.client.LoadGazelleConfigsClickHandler;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
+import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTestSessionStatsCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetToolkitPropertiesCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.RemoveOldSimulatorsCommand;
@@ -180,6 +181,11 @@ public class ToolConfigTab extends GenericQueryTab {
         if (PasswordManagement.isSignedIn) {
             new SetToolkitPropertiesCommand() {
                 @Override
+                public void onFailure(Throwable throwable) {
+                    new PopupMessage("Failed!" + throwable.toString());
+                }
+
+                @Override
                 public void onComplete(String result) {
                     Timer t = new Timer() {
                         @Override
@@ -273,7 +279,7 @@ public class ToolConfigTab extends GenericQueryTab {
     }
 
     private void fhirSupportServerStatus(String cmd, final SimpleCallbackT<Response> callback) {
-        String url = "/init?cmd="+cmd;
+        String url = Xdstools2.servletContextName + "/init?cmd="+cmd;
 
         RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
         try {

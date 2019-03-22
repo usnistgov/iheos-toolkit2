@@ -335,18 +335,12 @@ public class PropertyManager {
 			throw new ToolkitRuntimeException("In toolkit.properties: Multiuser_mode is true therefore Default_Test_Session must be set.");
 	}
 
-	public void saveProperties() {
+	public void saveProperties() throws Exception {
 		validateProperties();
-		try {
 			FileOutputStream fos = new FileOutputStream(propFile);
 			toolkitProperties.store(fos, "");
 			fos.flush();
 			fos.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	public Map<String, String> getPropertyMap() {
