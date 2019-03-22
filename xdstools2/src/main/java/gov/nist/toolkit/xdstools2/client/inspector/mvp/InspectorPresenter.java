@@ -19,7 +19,7 @@ import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractPresenter;
-import gov.nist.toolkit.xdstools2.client.inspector.ContentsModeDocumentEntriesFilterDisplay;
+import gov.nist.toolkit.xdstools2.client.inspector.DocumentEntryContentFilter;
 import gov.nist.toolkit.xdstools2.client.inspector.DataNotification;
 import gov.nist.toolkit.xdstools2.client.inspector.FilterFeature;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
@@ -40,9 +40,10 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
     private Collection<Result> results;
     private SiteSpec siteSpec;
     private MetadataCollection metadataCollection;
-    List<AnnotatedItem> annotatedItems;
+    List<AnnotatedItem> metadataObjectTypeSelectionItems;
     Map<MetadataObjectType, List<? extends MetadataObject>> dataMap = new HashMap<>();
-    ContentsModeDocumentEntriesFilterDisplay filterDisplay;
+    List<AnnotatedItem> filterSelectionItems;
+    DocumentEntryContentFilter filterDisplay;
 
     @Override
     public void init() {
@@ -89,16 +90,16 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
 
         view.metadataInspectorLeft.setDataNotification(new DataNotification() {
             @Override
-        public boolean inCompare() {
-            return false;
-        }
+            public boolean inCompare() {
+                return false;
+            }
 
             @Override
             public void onAddToHistory(MetadataCollection metadataCollection) {
                 InspectorPresenter.this.metadataCollection = metadataCollection;
                 setDataMap(metadataCollection);
-                annotatedItems = getMetadataObjectAnnotatedItems(metadataCollection);
-                view.metadataObjectSelector.refreshEnabledStatus(annotatedItems);
+                metadataObjectTypeSelectionItems = getMetadataObjectSelectionItems(metadataCollection);
+                view.metadataObjectSelector.refreshEnabledStatus(metadataObjectTypeSelectionItems);
                 doRefreshTable();
             }
 
@@ -130,7 +131,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
                 MetadataObjectType objectType = MetadataObjectType.valueOf(view.metadataObjectSelector.getCurrentSelection());
                 MetadataObject toClose = ((MetadataObjectWrapper)currentTreeItem.getUserObject()).getObject();
                 MetadataObject toFocus = null;
-                DataTable dataTable = view.tableMap.get(objectType);
+                DataTable dataTable = view.getTableMap().get(objectType);
                 if (dataTable.lastSelectedObject.equals(toClose)) {
                     toFocus = (MetadataObject)dataTable.compareObject;
                 } else {
@@ -147,6 +148,18 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
 
             @Override
             public void onViewModeChanged(MetadataInspectorTab.SelectedViewMode viewMode, MetadataObjectWrapper objectWrapper) {
+                if (MetadataInspectorTab.SelectedViewMode.CONTENT.equals(viewMode)) {
+                    filterSelectionItems = getFilterObjectSelectionItems();
+                    view.filterObjectSelector.refreshEnabledStatus(filterSelectionItems);
+                    // enable the filter ctl
+                   view.contentFilterCtl.removeStyleName("inlineLinkDisabled");
+                } else {
+                    // close panel if open
+                    doFilterOptionToggle(view.contentFilterCtl, view.contentFilterPanel);
+                    // disable the filter ctl
+                    view.contentFilterCtl.addStyleName("inlineLinkDisabled");
+
+                }
                 MetadataObjectType currentObjectTypeSelection = getCurrentSelectedType();
                 boolean isFilterApplicable = isFilterApplicable(viewMode, currentObjectTypeSelection);
                 setFilterFeature(currentObjectTypeSelection, isFilterApplicable);
@@ -209,8 +222,8 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
             mc.add(metadataCollection);
         }
         setDataMap(metadataCollection);
-        annotatedItems = getMetadataObjectAnnotatedItems(metadataCollection);
-        view.metadataObjectSelector.setNames(annotatedItems); // This will create the button list
+        metadataObjectTypeSelectionItems = getMetadataObjectSelectionItems(metadataCollection);
+        view.metadataObjectSelector.setNames(metadataObjectTypeSelectionItems); // This will create the button list
     }
 
     void setDataMap(MetadataCollection metadataCollection) {
@@ -225,7 +238,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
     public MetadataObjectType autoSelectObjectType() {
         AnnotatedItem defaultItem = null;
         // Make DocEntry the default object type selection when more than one are available at loading time.
-        for (AnnotatedItem annotatedItem : annotatedItems) {
+        for (AnnotatedItem annotatedItem : metadataObjectTypeSelectionItems) {
            if (annotatedItem.isEnabled()) {
                if (MetadataObjectType.DocEntries.equals(MetadataObjectType.valueOf(annotatedItem.getName()))) {
                    defaultItem = annotatedItem;
@@ -327,8 +340,8 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
         if (metadataObjectType==null)
             metadataObjectType = getCurrentSelectedType();
 
-        if (view.tableMap.containsKey(metadataObjectType))
-            return view.tableMap.get(metadataObjectType);
+        if (view.getTableMap().containsKey(metadataObjectType))
+            return view.getTableMap().get(metadataObjectType);
         throw new ToolkitRuntimeException("DataTable for " + metadataObjectType.name() + " does not exist.");
     }
 
@@ -339,7 +352,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
     }
     */
 
-    List<AnnotatedItem> getMetadataObjectAnnotatedItems(MetadataCollection metadataCollection) {
+    List<AnnotatedItem> getMetadataObjectSelectionItems() {
         List<AnnotatedItem> annotatedItems = new ArrayList<>();
 
         for (MetadataObjectType type : MetadataObjectType.values()) {
@@ -348,6 +361,28 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
         }
 
         return annotatedItems;
+    }
+    List<AnnotatedItem> getFilterObjectSelectionItems() {
+       List<AnnotatedItem> annotatedItems = new ArrayList<>();
+
+        for (MetadataObjectType type : MetadataObjectType.values()) {
+            List<? extends MetadataObject> metadataObject = dataMap.get(type);
+            annotatedItems.add(new AnnotatedItem(metadataObject!=null && metadataObject.size()>0 && isFilterApplicable(type), type.name()));
+        }
+
+        return annotatedItems;
+    }
+
+    boolean isFilterApplicable(MetadataObjectType metadataObjectType) {
+        boolean isFilterApplicable = false;
+            try {
+                if (MetadataObjectType.DocEntries.equals(metadataObjectType)) {
+                    isFilterApplicable = true;
+                }
+            } catch (ToolkitRuntimeException tre) {
+                // No object type selected
+            }
+        return isFilterApplicable;
     }
 
     public void setDataModel(MetadataCollection mc) {
@@ -388,25 +423,18 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
         doSwitchTable(metadataObjectType);
     }
 
-    boolean isFilterApplicable(MetadataInspectorTab.SelectedViewMode viewMode, MetadataObjectType metadataObjectType) {
-        boolean isFilterApplicable = false;
-        if (MetadataInspectorTab.SelectedViewMode.CONTENT.equals(viewMode)) {
-            try {
-                if (MetadataObjectType.DocEntries.equals(metadataObjectType)) {
-                    isFilterApplicable = true;
-                }
-            } catch (ToolkitRuntimeException tre) {
-                // No object type selected
-            }
-        }
-        return isFilterApplicable;
+    void doUpdateChosenFilterObjectType(String type) {
+        MetadataObjectType metadataObjectType = MetadataObjectType.valueOf(type);
+        doSwitchFilter(metadataObjectType);
     }
 
+
+    // skb TODO: remove this
     void setFilterFeature(MetadataObjectType metadataObjectType, boolean isVisible) {
         DataTable dt = view.getTableMap().get(metadataObjectType);
         if (dt!=null && dt.filterContents!=null) {
             if (isVisible && dt.filterFeature==null) {
-                filterDisplay = new ContentsModeDocumentEntriesFilterDisplay(view.metadataInspectorLeft);
+                filterDisplay = new DocumentEntryContentFilter(view.metadataInspectorLeft);
                 dt.setFilterFeature(filterDisplay);
                 setFilterContentsSelectionHandler(dt, filterDisplay);
             }
@@ -454,9 +482,24 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
         });
     }
 
+    public void doSwitchFilter(MetadataObjectType targetObjectType) {
+        // if filter not active then
+        // skb TODO: do indexing here
+        // display the filter
+       for (MetadataObjectType key : view.getFilterFeatureMap().keySet()) {
+           FilterFeature filterFeature = view.getFilterFeatureMap().get(key);
+           if (key.equals(targetObjectType)) {
+                if (!filterFeature.isActive()) {
+                   filterFeature.setData(dataMap.get(key));
+                }
+                filterFeature.displayFilter();
+           }
+       }
+    }
+
     public void doSwitchTable(MetadataObjectType targetObjectType) {
-        for (MetadataObjectType key : view.tableMap.keySet()) {
-            DataTable dataTable = view.tableMap.get(key);
+        for (MetadataObjectType key : view.getTableMap().keySet()) {
+            DataTable dataTable = view.getTableMap().get(key);
             if (key.equals(targetObjectType)) {
                 // Redisplay current selection in table selection. Without this there is no data display.
                 if (dataTable!=null) {
@@ -482,6 +525,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
                         doSetupDiffMode(true);
                         doDiffAction(key, (MetadataObject)dataTable.lastSelectedObject, (MetadataObject)dataTable.compareObject);
                     }
+                    // skb TODO: clean up this
                     MetadataInspectorTab.SelectedViewMode viewMode = view.metadataInspectorLeft.getViewMode();
                     boolean isFilterApplicable = isFilterApplicable(viewMode, key);
                     setFilterFeature(key, isFilterApplicable);
@@ -647,14 +691,24 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
 
     }
 
+    public void doFilterOptionToggle(HTML ctl, FlowPanel panel) {
+        if (!ctl.getStyleName().contains("inlineLinkDisabled")) {
+            boolean isPanelVisible = panel.isVisible();
+            if (isPanelVisible) {
+                ctl.removeStyleName("insetBorder");
+            } else {
+                ctl.addStyleName("insetBorder");
+            }
+            panel.setVisible(!isPanelVisible);
+        }
+    }
+
     public void doAdvancedOptionToggle(HTML ctl, FlowPanel panel) {
         boolean isPanelVisible = panel.isVisible();
         if (isPanelVisible) {
             ctl.removeStyleName("insetBorder");
-//            ctl.addStyleName("outsetBorder");
             doSingleMode();
         } else {
-//            ctl.removeStyleName("outsetBorder");
             ctl.addStyleName("insetBorder");
             if (view.metadataObjectSelector.getCurrentSelection()==null) {
                 MetadataObjectType objectType = autoSelectObjectType();

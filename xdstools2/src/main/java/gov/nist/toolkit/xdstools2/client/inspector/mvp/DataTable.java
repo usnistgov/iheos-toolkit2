@@ -38,7 +38,6 @@ import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SelectionModel;
 import com.google.gwt.view.client.SingleSelectionModel;
-import gov.nist.toolkit.xdstools2.client.inspector.FilterFeature;
 import gov.nist.toolkit.xdstools2.client.util.AnnotatedItem;
 
 import java.util.ArrayList;
@@ -67,8 +66,6 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
      */
     CheckBox compareSelect = new CheckBox("Trial Version Compare");
     CheckBox highlightDifferences = new CheckBox("Highlight differences");
-    CheckBox filterContents = new CheckBox("Trial Version Contents Filter");
-    FilterFeature filterFeature;
 
     ColumnSortEvent.ListHandler<T> columnSortHandler = new ColumnSortEvent.ListHandler<T>(
             dataProvider.getList());
@@ -101,7 +98,6 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
         this.keyProvider = keyProvider;
 
         // Begin adding controls to the containerPanel
-        addFilterContentsCheckbox();
         addColumnSelectionCheckboxes();
         addDiffModeCheckbox();
 
@@ -122,7 +118,6 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
 //        assignSingleSelectionModel();
         dataTable.setSelectionModel(selectionModel);
         setDiffModeSelectionHandler();
-        setFilterContentsSelectionHandler();
 
         if (displayAction)
             addActionTable();
@@ -138,14 +133,6 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
         containerPanel.add(multiSelect);
     }
 
-    protected void addFilterContentsCheckbox() {
-        filterContents.setVisible(false);
-        filterContents.setEnabled(false); // Initially false
-        containerPanel.add(filterContents);
-    }
-
-
-
     private void setDiffModeSelectionHandler() {
         if (compareSelect.isVisible()) {
             compareSelect.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
@@ -153,9 +140,6 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
                 public void onValueChange(ValueChangeEvent<Boolean> valueChangeEvent) {
                     setupDiffMode(compareSelect.getValue());
                     if (compareSelect.getValue()) {
-                        if (filterContents.isVisible()) {
-                            filterContents.setEnabled(false);
-                        }
                         clearActionDataList();
                         removeTableColumns();
                         addTableColumns();
@@ -166,9 +150,6 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
                             selectionModel.setSelected(lastSelectedObject,true);
                         }
                     } else {
-                        if (filterContents.isVisible()) {
-                           filterContents.setEnabled(true);
-                        }
                        clearActionDataList();
                       removeTableColumns();
                       addTableColumns();
@@ -685,11 +666,4 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
         }
     }
 
-    public void setFilterFeature(FilterFeature filterFeature) {
-        this.filterFeature = filterFeature;
-    }
-
-    public FilterFeature getFilterFeature() {
-        return filterFeature;
-    }
 }

@@ -4,11 +4,15 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.http.client.HtmlMarkup;
+import gov.nist.toolkit.registrymetadata.client.Document;
+import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
+import gov.nist.toolkit.registrymetadata.client.MetadataObject;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.xdstools2.client.tabs.findDocuments2Tab.FindDocuments2Params;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
@@ -22,7 +26,7 @@ import java.util.Map;
 
 import static gov.nist.toolkit.http.client.HtmlMarkup.red;
 
-public class ContentsModeDocumentEntriesFilterDisplay extends CommonDisplay implements FilterFeature {
+public class DocumentEntryContentFilter extends CommonDisplay implements FilterFeature, IsWidget {
     private Button applyFilterBtn = new Button("Apply Filter");
     private Button cancelBtn = new Button("Cancel");
     Map<String, List<String>> codeSpecMap = new HashMap<String, List<String>>();
@@ -58,10 +62,35 @@ public class ContentsModeDocumentEntriesFilterDisplay extends CommonDisplay impl
         }
     };
 
+
+   // skb TODO: map here
+    // doIndex(list<de>):
+    //      from list<de> this map is created: map[field, map[field-value,list<de>]
+    // iM = initial map
+    //
+    // fM = filtered map
+    // initially fM is a deep copy of iM
+    // on search field S selected:
+    // fmTemp: list<de> = new temporary storage
+    //      get fM map by field
+    //         for each selected-value
+    //          get value-map by the field-value
+    //              add to fMTemp(list<de>)
+    //          count fMTemp, if > 0, fM = doIndex(fMTemp), lock the search field S so it cannot be changed until it is cleared.  When a search field is cleared, the iM map must be used!
+    // locking the search field:
+    //      field becomes read-only with a count and an X to clear search term.
+    // map[field, map[code,list<de>]
+
+    public DocumentEntryContentFilter() {
+    }
+
+    @Override
+    public Widget asWidget() {
+        return featurePanel;
+    }
     public void addToCodeSpec(Map<String, List<String>> codeSpec) {
         codeFilterBank.addToCodeSpec(codeSpec);
     }
-
 
     private String displayResult(Result result) {
         StringBuffer buf = new StringBuffer();
@@ -83,29 +112,32 @@ public class ContentsModeDocumentEntriesFilterDisplay extends CommonDisplay impl
 
     private void displayResult(Widget widget) {
         clearResult();
-       resultPanel.add(widget);
+        resultPanel.add(widget);
     }
 
-
-    public ContentsModeDocumentEntriesFilterDisplay(MetadataInspectorTab it) {
-        this.detailPanel = it.detailPanel;
-        this.metadataCollection = it.data.combinedMetadata;
-        this.it = it;
-        // TODO add click handlers
-    }
-
-    // skb TODO: when filter is selected, hide the column selection, hide the table, tree panel and structure panel
-    // skb TODO: when filter is unchecked/deselected, warn user to remove filter
     // skb TODO: on cancel filter, restore last selected item, and restore the normal view.
     /** skb TODO: when filter is applied
           a) show rounded label with an X to remove filter. Place this label next to Contents.
           b) show an edit label, which will restore the filter view
+        run advanced mode in single mode
+        clear current table selection
      **/
     // skb TODO: when view mode is changed to History, warn user that filter will be cleared.
 
     // skb TODO: handle show hidden view
     @Override
     public void hideFilter() {
+    }
+
+    @Override
+    public void setData(List<? extends MetadataObject> metadataObjects) {
+        List<DocumentEntry> documentEntries = (List<DocumentEntry>)metadataObjects;
+
+    }
+
+    @Override
+    public boolean isActive() {
+        return false;
     }
 
     @Override
@@ -117,8 +149,6 @@ public class ContentsModeDocumentEntriesFilterDisplay extends CommonDisplay impl
         FlexTable ft = new FlexTable();
         int row=0;
         boolean b = false;
-
-
 
         try {
             // skb TODO: Count the documents with codes for which we do not have a mapping in our codes.xml
@@ -139,20 +169,11 @@ public class ContentsModeDocumentEntriesFilterDisplay extends CommonDisplay impl
             ft.getFlexCellFormatter().setColSpan(row, 0, 3);
             row++;
             featurePanel.add(ft);
-
-            previousPanel = detailPanel; // problem display is lost due to clear
-            detailPanel.clear();
-            detailPanel.add(featurePanel);
-
         } catch (Exception ex) {
             new PopupMessage(ex.toString());
         } finally {
 
         }
-
-
-
-        return false;
     }
 
     @Override
@@ -162,7 +183,7 @@ public class ContentsModeDocumentEntriesFilterDisplay extends CommonDisplay impl
 
     @Override
     public boolean removeFilter() {
-
+        return false;
     }
 
 

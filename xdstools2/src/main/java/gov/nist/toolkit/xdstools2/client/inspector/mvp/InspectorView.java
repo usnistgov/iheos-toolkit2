@@ -7,6 +7,8 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.registrymetadata.client.*;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractView;
+import gov.nist.toolkit.xdstools2.client.inspector.DocumentEntryContentFilter;
+import gov.nist.toolkit.xdstools2.client.inspector.FilterFeature;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataObjectType;
 import gov.nist.toolkit.xdstools2.client.widgets.ButtonListSelector;
@@ -23,7 +25,8 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
     final HTML advancedOptionCtl = new HTML("Advanced Options");
     final FlowPanel advancedOptionPanel = new FlowPanel();
 
-    Map<MetadataObjectType, DataTable> tableMap = new HashMap<>();
+    private Map<MetadataObjectType, FilterFeature> filterFeatureMap = new HashMap<>();
+    private Map<MetadataObjectType, DataTable> tableMap = new HashMap<>();
 
     ActivityItem activityItem;
     int rowsPerPage = 10;
@@ -36,6 +39,14 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         @Override
         public void doSelected(String label) {
             getPresenter().doUpdateChosenMetadataObjectType(label);
+        }
+    };
+
+    FilterFeature deFilterFeature;
+    ButtonListSelector filterObjectSelector = new ButtonListSelector() {
+        @Override
+        public void doSelected(String label) {
+            getPresenter().doUpdateChosenFilterObjectType(label);
         }
     };
 
@@ -286,8 +297,14 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         topNavPanel.add(advancedOptionCtl);
         topNavPanel.add(advancedOptionPanel);
 
-        FlowPanel contentFilter
-                // skb TODO: pickup here
+        // skb TODO: pickup here
+        FlowPanel contentFilterWrapper = new FlowPanel();
+        filterObjectSelector.displayShowAll(false);
+        contentFilterWrapper.add(filterObjectSelector);
+        contentFilterWrapper.add(new HTML("<br/>"));
+        // The filter panel
+        deFilterFeature = new DocumentEntryContentFilter();
+
 
         FlowPanel advancedOptionWrapper = new FlowPanel();
         metadataObjectSelector.displayShowAll(false);
@@ -320,7 +337,6 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
 
     @Override
     protected void bindUI() {
-
         tableMap.put(MetadataObjectType.ObjectRefs, objectRefTable);
         tableMap.put(MetadataObjectType.DocEntries, docEntryDataTable);
         tableMap.put(MetadataObjectType.SubmissionSets, submissionSetDataTable);
@@ -332,6 +348,12 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
             @Override
             public void onClick(ClickEvent clickEvent) {
                 getPresenter().doAdvancedOptionToggle(advancedOptionCtl, advancedOptionPanel);
+            }
+        });
+        contentFilterCtl.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent clickEvent) {
+                getPresenter().doFilterOptionToggle(contentFilterCtl, contentFilterPanel);
             }
         });
     }
@@ -352,6 +374,20 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
 
     public Map<MetadataObjectType,DataTable> getTableMap() {
         return tableMap;
+    }
+
+    public Map<MetadataObjectType, FilterFeature> getFilterFeatureMap() {
+        return filterFeatureMap;
+    }
+
+    void showFilterCtl(boolean isEnabled) {
+        if (isEnabled) {
+            contentFilterCtl.removeStyleName("inlineLinkDisabled");
+            contentFilterCtl.addStyleName("inlineLink");
+        } else {
+            contentFilterCtl.removeStyleName("inlineLink");
+            contentFilterCtl.addStyleName("inlineLinkDisabled");
+        }
     }
 
 }
