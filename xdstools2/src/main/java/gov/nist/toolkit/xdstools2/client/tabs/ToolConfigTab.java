@@ -181,11 +181,6 @@ public class ToolConfigTab extends GenericQueryTab {
         if (PasswordManagement.isSignedIn) {
             new SetToolkitPropertiesCommand() {
                 @Override
-                public void onFailure(Throwable throwable) {
-                    new PopupMessage("Failed!" + throwable.toString());
-                }
-
-                @Override
                 public void onComplete(String result) {
                     Timer t = new Timer() {
                         @Override
