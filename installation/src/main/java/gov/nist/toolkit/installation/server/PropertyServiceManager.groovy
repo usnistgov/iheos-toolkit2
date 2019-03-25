@@ -197,12 +197,21 @@ public class PropertyServiceManager {
 		if (propertyManager != null)
 			return;
 
+		String toolkitPropertiesPath = System.getProperty("TOOLKIT_PROPERTIES");
+		if (toolkitPropertiesPath == null) {
+			toolkitPropertiesPath = "/etc/toolkit/toolkit.properties";
+		}
+
 		// Create a File from the properties file in order to pass it to v3
 //		assert Installation.instance().warHome()
-		File propPath = null;
+		File externalPropertiesFile = new File(toolkitPropertiesPath);
 		String location;
 		try {
-			location = Paths.get(getClass().getResource('/').toURI()).resolve('toolkit.properties').toFile()
+			if (externalPropertiesFile.exists()) {
+				location = toolkitPropertiesPath;
+			} else {
+				location = Paths.get(getClass().getResource('/').toURI()).resolve('toolkit.properties').toFile()
+			}
 			location = location.replaceAll("%20", " ");
 			logger.debug("*** getting toolkit.properties file:" + location);
 

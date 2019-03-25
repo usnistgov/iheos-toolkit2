@@ -1631,6 +1631,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 
             }
         } catch (Exception e) {
+            e.printStackTrace();
             throw new Exception(ExceptionUtil.exception_details(e));
         }
         return "";

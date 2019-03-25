@@ -8,6 +8,7 @@ package gov.nist.toolkit.utilities.io;
 
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import org.apache.axiom.om.OMElement;
+import org.apache.commons.io.IOUtils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -39,17 +40,19 @@ public class Io {
 	 * @return The String containing the contents of the InputStream.
 	 */
 	static public String getStringFromInputStream(InputStream in) throws java.io.IOException {
-		int count;
-		byte[] by = new byte[256];
 
-		StringBuffer buf = new StringBuffer();
-		while ( (count=in.read(by)) > 0 ) {
-			for (int i=0; i<count; i++) {
-				by[i] &= 0x7f;
-			}
-			buf.append(new String(by,0,count));
-		}
-		return new String(buf);
+		return IOUtils.toString(in);
+//		int count;
+//		byte[] by = new byte[256];
+//
+//		StringBuffer buf = new StringBuffer();
+//		while ( (count=in.read(by)) > 0 ) {
+//			for (int i=0; i<count; i++) {
+//				by[i] &= 0x7f;
+//			}
+//			buf.append(new String(by,0,count));
+//		}
+//		return new String(buf);
 	}
 
 	static byte[] resize(byte[] in, int size, int new_size) {
@@ -64,30 +67,34 @@ public class Io {
 
 
 	static public byte[] getBytesFromInputStream(InputStream in) throws java.io.IOException {
-		int count=0;
-		int allocation = 4096;
-		byte[] by = new byte[allocation];
-		int read_size = allocation;
 
-		int current_size = allocation;
-		int offset = 0;
+		return IOUtils.toByteArray(in);
 
-		count = in.read(by, offset, read_size);
-		while ( true ) {
-			if (count <= 0)
-				return resize(by, offset, offset);
-			if (count == read_size) {
-				by = resize(by, offset+count, offset+count+allocation);
-				offset = offset+count;
-				read_size = by.length - offset; 
-				current_size = by.length;
-			} else {
-				offset = offset+count;
-				read_size = by.length - offset; 
-				current_size = by.length;
-			}
-			count = in.read(by, offset, read_size);
-		}
+
+//		int count=0;
+//		int allocation = 4096;
+//		byte[] by = new byte[allocation];
+//		int read_size = allocation;
+//
+//		int current_size = allocation;
+//		int offset = 0;
+//
+//		count = in.read(by, offset, read_size);
+//		while ( true ) {
+//			if (count <= 0)
+//				return resize(by, offset, offset);
+//			if (count == read_size) {
+//				by = resize(by, offset+count, offset+count+allocation);
+//				offset = offset+count;
+//				read_size = by.length - offset;
+//				current_size = by.length;
+//			} else {
+//				offset = offset+count;
+//				read_size = by.length - offset;
+//				current_size = by.length;
+//			}
+//			count = in.read(by, offset, read_size);
+//		}
 	}
 
 	//	static public byte[] getBytesFromInputStream(InputStream in) throws java.io.IOException {
@@ -106,7 +113,7 @@ public class Io {
 	//	by = resize(by, count, current_size * 2);
 
 	//	offset = current_size;
-	//	read_size = by.length - offset; 
+	//	read_size = by.length - offset;
 	//	current_size = by.length;
 	//	count = in.read(by, offset, read_size);
 	//	}
@@ -134,7 +141,7 @@ public class Io {
 		}
 
 	}
-	
+
 	static public InputStream getInputStreamFromFile(File file) throws FileNotFoundException {
 		if ( !file.exists())
 			throw new FileNotFoundException(file + " cannot be read");
@@ -199,7 +206,7 @@ public class Io {
 				fw.close();
 		}
 	}
-	
+
 	static public void xmlToFile(File file, OMElement xml) throws IOException {
 		stringToFile(file, new OMFormatter(xml).toString());
 	}
@@ -212,15 +219,15 @@ public class Io {
 			out.close();
 		}
 	}
-	
+
 	static public InputStream bytesToInputStream(byte[] in) {
 		return new ByteArrayInputStream(in);
 	}
 
 	static public InputStream stringToInputStream(String in) {
-		return new ByteArrayInputStream(in.getBytes()); 
+		return new ByteArrayInputStream(in.getBytes());
 	}
-	
+
 	/**
 	 * Delete file, recursively if file represents a directory.
 	 * @param f File or folder to delete.

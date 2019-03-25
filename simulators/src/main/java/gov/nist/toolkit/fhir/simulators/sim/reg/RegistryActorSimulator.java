@@ -44,6 +44,7 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 		transactions.add(TransactionType.REGISTER);
 		transactions.add(TransactionType.REGISTER_ODDE);
 		transactions.add(TransactionType.STORED_QUERY);
+		transactions.add(TransactionType.MPQ);
 		transactions.add(TransactionType.UPDATE);
 		transactions.add(TransactionType.RMU);
 		transactions.add(TransactionType.REMOVE_METADATA);

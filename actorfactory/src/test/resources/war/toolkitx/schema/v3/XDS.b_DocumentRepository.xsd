@@ -92,4 +92,5 @@
 		</xs:sequence>
 	</xs:complexType>
 	<xs:element name="ProvideAndRegisterDocumentSetRequest" type="ProvideAndRegisterDocumentSetRequestType"/>
+    <xs:element name="RetrieveDocumentSetRequestType"></xs:element>
 </xs:schema>
