@@ -5,7 +5,7 @@
     <parent>
         <groupId>gov.nist.toolkit</groupId>
         <artifactId>tk-deps</artifactId>
-		<version>7.1.1</version>
+		<version>7.1.2</version>
         <relativePath>../tk-deps/pom.xml</relativePath>
     </parent>
 
@@ -66,6 +66,10 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons.io</groupId>
+            <artifactId>commons-io</artifactId>
         </dependency>
     </dependencies>
 
