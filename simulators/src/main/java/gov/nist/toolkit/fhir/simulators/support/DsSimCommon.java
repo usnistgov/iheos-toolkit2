@@ -892,10 +892,7 @@ public class DsSimCommon {
        * The image cache is in the IDS Simulator config, absolute, or relative
        * to the image cache in the toolkit properties.
        */
-        //Path imageCacheRoot = Paths.get(getImageCache());
         String simCache = simulatorConfig.get(SimulatorProperties.idsImageCache).asString();
-        //Path idsRepositoryPath = imageCacheRoot.resolve(simCache);
-        //File idsRepositoryDir = idsRepositoryPath.toFile();
         File idsRepositoryDir = Installation.instance().imageCache("sim" + File.separator + simCache);
         Path idsRepositoryPath = idsRepositoryDir.toPath();
         if (!idsRepositoryDir.exists() || !idsRepositoryDir.isDirectory()) {
@@ -918,8 +915,10 @@ public class DsSimCommon {
         boolean found = false;
         Iterator<String> it = transferSyntaxUids.iterator();
         Path finalPath = Paths.get("");
+        String xferSyntax = "";
         while (it.hasNext() && !found) {
-            finalPath = folderPath.resolve(it.next().trim());
+            xferSyntax = it.next().trim();
+            finalPath = folderPath.resolve(xferSyntax);
             if (finalPath.toFile().exists()) {
                 found = true;
             } else {
@@ -933,7 +932,7 @@ public class DsSimCommon {
             sdi.pathToDocument = finalPath.toString();
             sdi.uid = uids[2];
             logger.debug(" Instance UID: " + sdi.uid);
-            sdi.mimeType = "application/dicom";
+            sdi.mimeType = (xferSyntax.equals("export.jpg")) ? "image/jpeg" : "application/dicom";
             sdi.charset = "UTF-8";
             sdi.content = null;
             sd = new StoredDocument(repIndex, sdi);
