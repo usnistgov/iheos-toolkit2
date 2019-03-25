@@ -19,7 +19,7 @@ import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractPresenter;
-import gov.nist.toolkit.xdstools2.client.inspector.DocumentEntryContentFilter;
+import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.DocumentEntryContentFilter;
 import gov.nist.toolkit.xdstools2.client.inspector.DataNotification;
 import gov.nist.toolkit.xdstools2.client.inspector.FilterFeature;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
@@ -444,7 +444,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
 //            }
             dt.filterContents.setVisible(isVisible);
             dt.filterContents.setEnabled(isVisible);
-            // skb TODO: clear current DE selection when filter is activated
+            // skb TODO: clear current DE selection when filter is activated and if the current selection doesn't exist in the applied filter. Notify the user when this happens.
             // skb TODO: clear the lastItemSelected or currentItemSelected to nothing?
             // skb TODO: hide the structure panel!
         }
@@ -486,9 +486,13 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
         // if filter not active then
         // skb TODO: do indexing here
         // display the filter
+        // display the initial count
+        // skb TODO: pickup here 3/25/19
+        // skb TODO: how to update existing filters to accommodate Size labels and Clear labels?
        for (MetadataObjectType key : view.getFilterFeatureMap().keySet()) {
            FilterFeature filterFeature = view.getFilterFeatureMap().get(key);
            if (key.equals(targetObjectType)) {
+               // set visibility true
                 if (!filterFeature.isActive()) {
                    filterFeature.setData(dataMap.get(key));
                 }

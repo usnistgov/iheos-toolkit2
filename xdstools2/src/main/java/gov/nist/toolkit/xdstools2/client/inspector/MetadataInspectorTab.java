@@ -202,7 +202,7 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 		
 	}
 
-	void assertionsToSb(Result result, StringBuffer buf) {
+	public static void assertionsToSb(Result result, StringBuffer buf) {
 		for (AssertionResult ar : result.assertions.assertions) {
 			if (!isEmpty(ar.assertion))
 				buf.append(redAsText(htmlize(ar.assertion), ar.status)).append("<br />");
@@ -211,7 +211,7 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 		}
 	}
 	
-	String htmlize(String s) {
+	public static String htmlize(String s) {
 		return s.replaceAll("\\n", "<br />");
 	}
 	
@@ -331,7 +331,7 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
     * @param in text
     * @return HTML, with color="#FF0000"
     */
-	HTML redAsHTML(String in) {
+	public static HTML redAsHTML(String in) {
 		HTML h = new HTML();
 		h.setHTML("<font color=\"#FF0000\">" + in + "</font>");
 		return h;
@@ -342,7 +342,7 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 	 * @param in text to process
 	 * @return String {@code <font color="#FF0000">in</font>}
 	 */
-	String redAsText(String in) {
+	public static String redAsText(String in) {
 		return "<font color=\"#FF0000\">" + in + "</font>";
 	}
 	/**
@@ -353,7 +353,7 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
     * @return HTML with color="#FF0000" if condition is false otherwise with
     * no color attribute.
     */
-	HTML redAsHTML(String in, boolean condition) {
+	public static HTML redAsHTML(String in, boolean condition) {
 		if (!condition)
 			return redAsHTML(in);
 		HTML h = new HTML();
@@ -361,7 +361,7 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 		return h;
 	}
 	
-	String redAsText(String in, boolean condition) {
+	public static String redAsText(String in, boolean condition) {
 		if (!condition)
 			return redAsText(in);
 		return in;
@@ -586,7 +586,7 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 
 
 
-	boolean isEmpty(String b) { return b == null || b.equals(""); }
+	public static boolean isEmpty(String b) { return b == null || b.equals(""); }
 
 
 	public SiteSpec getSiteSpec() {

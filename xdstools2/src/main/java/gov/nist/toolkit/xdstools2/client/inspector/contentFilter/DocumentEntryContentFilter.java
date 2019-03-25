@@ -1,4 +1,4 @@
-package gov.nist.toolkit.xdstools2.client.inspector;
+package gov.nist.toolkit.xdstools2.client.inspector.contentFilter;
 
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -14,6 +14,9 @@ import gov.nist.toolkit.registrymetadata.client.Document;
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
 import gov.nist.toolkit.registrymetadata.client.MetadataObject;
 import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.xdstools2.client.inspector.CommonDisplay;
+import gov.nist.toolkit.xdstools2.client.inspector.FilterFeature;
+import gov.nist.toolkit.xdstools2.client.inspector.HyperlinkFactory;
 import gov.nist.toolkit.xdstools2.client.tabs.findDocuments2Tab.FindDocuments2Params;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.CodeFilterBank;
@@ -26,7 +29,7 @@ import java.util.Map;
 
 import static gov.nist.toolkit.http.client.HtmlMarkup.red;
 
-public class DocumentEntryContentFilter extends CommonDisplay implements FilterFeature, IsWidget {
+public class DocumentEntryContentFilter extends CommonDisplay implements FilterFeature {
     private Button applyFilterBtn = new Button("Apply Filter");
     private Button cancelBtn = new Button("Cancel");
     Map<String, List<String>> codeSpecMap = new HashMap<String, List<String>>();
@@ -62,10 +65,27 @@ public class DocumentEntryContentFilter extends CommonDisplay implements FilterF
         }
     };
 
+    // enum of fields
+
+    // index field:
+    //  type:Enum
+    // search widgets
+    // doubly linked list of
+    //  enum
+    //  widget, call the constructor with the enum type and a callback to doIndex.
+    //  mc:list<de>
+
+    // fill the search screen in the order of the linked list
 
    // skb TODO: map here
-    // doIndex(list<de>):
-    //      from list<de> this map is created: map[field, map[field-value,list<de>]
+    // initial state just shows independent count for each field-value.
+    // when a field value is selected, changed:
+    // doIndex(searchField:Enum, list<de>):
+    //      skip all previous fields and doIndex for the field that changed and if other field values are present after this one.
+    //          Use the list<de> from the previous field if exists else use the main Mc.
+    //      from list<de> this map is created: map[field:Enum, map[field-value:String,list<de>]
+    //          example:                       DocEntryStatus, [stable=list,ondemand=list,both=list]
+    //      Sort the map.keySet for Time fields
     // iM = initial map
     //
     // fM = filtered map

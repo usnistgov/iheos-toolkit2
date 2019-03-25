@@ -17,9 +17,9 @@ import java.util.Map;
 public abstract class CommonDisplay {
     VerticalPanel detailPanel;
     MetadataCollection metadataCollection;
-    MetadataInspectorTab it;
+    protected MetadataInspectorTab it;
 
-    FlowPanel createTitle(HTML title) {
+    protected FlowPanel createTitle(HTML title) {
         FlowPanel flowPanel = new FlowPanel();
         title.addStyleName("left");
         flowPanel.add(title);
@@ -162,7 +162,7 @@ public abstract class CommonDisplay {
         return row;
     }
 
-    String bold(String msg, boolean condition) {
+    protected String bold(String msg, boolean condition) {
         if (condition)
             return "<b>" + msg + "</b>";
         return msg;

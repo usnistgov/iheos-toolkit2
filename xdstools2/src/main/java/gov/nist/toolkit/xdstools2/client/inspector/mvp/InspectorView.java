@@ -7,7 +7,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.registrymetadata.client.*;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractView;
-import gov.nist.toolkit.xdstools2.client.inspector.DocumentEntryContentFilter;
+import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.DocumentEntryContentFilter;
 import gov.nist.toolkit.xdstools2.client.inspector.FilterFeature;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataObjectType;
@@ -35,7 +35,7 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
     MetadataInspectorTab metadataInspectorLeft = new MetadataInspectorTab(true);
     MetadataInspectorTab metadataInspectorRight = new MetadataInspectorTab(true);
 
-    ButtonListSelector metadataObjectSelector = new ButtonListSelector("Select a Metadata Object") {
+    ButtonListSelector metadataObjectSelector = new ButtonListSelector("Select Metadata Type") {
         @Override
         public void doSelected(String label) {
             getPresenter().doUpdateChosenMetadataObjectType(label);
@@ -43,7 +43,7 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
     };
 
     FilterFeature deFilterFeature;
-    ButtonListSelector filterObjectSelector = new ButtonListSelector() {
+    ButtonListSelector filterObjectSelector = new ButtonListSelector("Select Metadata Type") {
         @Override
         public void doSelected(String label) {
             getPresenter().doUpdateChosenFilterObjectType(label);
@@ -304,6 +304,8 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         contentFilterWrapper.add(new HTML("<br/>"));
         // The filter panel
         deFilterFeature = new DocumentEntryContentFilter();
+        contentFilterWrapper.add(deFilterFeature.asWidget());
+        // set visible false
 
 
         FlowPanel advancedOptionWrapper = new FlowPanel();
