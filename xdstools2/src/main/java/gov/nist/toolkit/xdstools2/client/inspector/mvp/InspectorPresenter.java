@@ -19,9 +19,9 @@ import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractPresenter;
-import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.DocumentEntryContentFilter;
+import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.DocumentEntryContentFilter;
 import gov.nist.toolkit.xdstools2.client.inspector.DataNotification;
-import gov.nist.toolkit.xdstools2.client.inspector.FilterFeature;
+import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.FilterFeature;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataObjectType;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataObjectWrapper;
@@ -494,7 +494,8 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
            if (key.equals(targetObjectType)) {
                // set visibility true
                 if (!filterFeature.isActive()) {
-                   filterFeature.setData(dataMap.get(key));
+//                   filterFeature.setData(dataMap.get(key));
+//                    filterFeature.setData(new HashMap<>(
                 }
                 filterFeature.displayFilter();
            }

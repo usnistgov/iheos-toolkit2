@@ -27,10 +27,6 @@ public class StatusFilter extends Widget implements QueryFilter {
         hp.add(all);
     }
 
-    // skb TODO: create a constructor(label:string, impl:changeNotificationInterface)
-    // store impl in local variable
-    // on value change, return getValues(). This will be used to count the matching items.
-
     public Widget asWidget() { return hp; }
 
     @Override

@@ -1,22 +1,21 @@
-package gov.nist.toolkit.xdstools2.client.inspector.contentFilter;
+package gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de;
 
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.http.client.HtmlMarkup;
-import gov.nist.toolkit.registrymetadata.client.Document;
-import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
 import gov.nist.toolkit.registrymetadata.client.MetadataObject;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.xdstools2.client.inspector.CommonDisplay;
-import gov.nist.toolkit.xdstools2.client.inspector.FilterFeature;
+import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.FilterFeature;
 import gov.nist.toolkit.xdstools2.client.inspector.HyperlinkFactory;
+import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.IndexField;
+import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.IndexFieldValue;
 import gov.nist.toolkit.xdstools2.client.tabs.findDocuments2Tab.FindDocuments2Params;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.CodeFilterBank;
@@ -69,11 +68,13 @@ public class DocumentEntryContentFilter extends CommonDisplay implements FilterF
 
     // index field:
     //  type:Enum
-    // search widgets
-    // doubly linked list of
+    // search widgets:
+    // a doubly linked list of
     //  enum
-    //  widget, call the constructor with the enum type and a callback to doIndex.
-    //  mc:list<de>
+    //  widget, call the constructor with the enum type and a callback to doIndex(indexField:enum,selectedFieldValues:list<String>).
+    //  result of doIndex:list<de>. This is an aggregate list.
+    // refresh widget result count:
+    // for each fieldValue code result, call widget.updateCount(fieldValue:String,count:Int)
 
     // fill the search screen in the order of the linked list
 
@@ -149,9 +150,16 @@ public class DocumentEntryContentFilter extends CommonDisplay implements FilterF
     public void hideFilter() {
     }
 
+//    void setData(List<? extends MetadataObject> metadataObjects);
+//    @Override
+//    public void setData(List<? extends MetadataObject> metadataObjects) {
+//        List<DocumentEntry> documentEntries = (List<DocumentEntry>)metadataObjects;
+//
+//    }
+
+
     @Override
-    public void setData(List<? extends MetadataObject> metadataObjects) {
-        List<DocumentEntry> documentEntries = (List<DocumentEntry>)metadataObjects;
+    public void setData(Map<IndexField, Map<IndexFieldValue, List<? extends MetadataObject>>> data) {
 
     }
 

@@ -1,6 +1,9 @@
-package gov.nist.toolkit.xdstools2.client.inspector.contentFilter;
+package gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de;
 
-public enum DocumentEntryIndexField {
+import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.IndexField;
+
+
+public enum DocumentEntryIndexField implements IndexField {
    STATUS,
    OBJECT_TYPE,
    CREATION_TIME,
