@@ -80,6 +80,7 @@ public class IdsHttpActorSimulator extends BaseHttpActorSimulator {
          case WADO_RETRIEVE:
             simCommon.vc.isRad55 = true;
             simCommon.vc.isRequest = true;
+            String httpResponseString = "";
             
             logger.debug("dsSimCommon.runInitialValidationsAndFaultIfNecessary()");
             if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary()) {
@@ -95,36 +96,63 @@ public class IdsHttpActorSimulator extends BaseHttpActorSimulator {
             HttpMessageBa httpMsg = hparser.getHttpMessage();
 
             String accept = httpMsg.getHeaderValue("Accept");
-            if (StringUtils.isBlank(accept)) err("Required header 'Accept' absent or empty");
+            if (StringUtils.isBlank(accept)) {
+               String headerAcceptError = "Required header 'Accept' absent or empty";
+               err(headerAcceptError);
+               httpResponseString += "(" + headerAcceptError + ") ";
+            }
             String [] types = accept.split(",");
             boolean foundOne = false;
+
             for (String type : types) {
                if (StringUtils.startsWithAny(type, validTypes)) {
                   foundOne = true;
                   break;
                }
             }
-            if (!foundOne) err("Accept header must contain one of " + validTypes);
+
+            if (!foundOne) {
+               String unrecognizedAccept = "Unrecognized Accept Header (" + accept + "); must be one of: " + validTypesAsOneString();
+               err(unrecognizedAccept);
+               httpResponseString += "(" + unrecognizedAccept + ")";
+            }
             
-            if (!"WADO".equals(httpMsg.getQueryParameterValue("requestType")))
-               err("Required Request parameter 'requestType=WADO' not found.");
+            if (!"WADO".equals(httpMsg.getQueryParameterValue("requestType"))) {
+               String wadoNotFound = "Required Request parameter 'requestType=WADO' not found.";
+               err(wadoNotFound);
+               httpResponseString += "(" + wadoNotFound + ")";
+            }
 
             String studyUID = httpMsg.getQueryParameterValue("studyUID");
-            if (!isOid(studyUID, false)) 
-               err("Required Request parameter 'studyUID' not found.");
+            if (!isOid(studyUID, false)) {
+               String missingStudyUID = "Required Request parameter 'studyUID' not found.";
+               err(missingStudyUID);
+               httpResponseString += "(" + missingStudyUID + ")";
+            }
+
             String seriesUID = httpMsg.getQueryParameterValue("seriesUID");
-            if (!isOid(seriesUID, false)) 
-               err("Required Request parameter 'seriesUID' not found.");
+            if (!isOid(seriesUID, false)) {
+               String missingSeriesUID = "Required Request parameter 'seriesUID' not found.";
+               err(missingSeriesUID);
+               httpResponseString += "(" + missingSeriesUID + ")";
+            }
+
             String objectUID = httpMsg.getQueryParameterValue("objectUID");
-            if (!isOid(objectUID, false)) 
-               err("Required Request parameter 'objectUID' not found.");
+            if (!isOid(objectUID, false)) {
+               String missingObjectUID = "Required Request parameter 'objectUID' not found.";
+               err(missingObjectUID);
+               httpResponseString += "(" + missingObjectUID + ")";
+            }
             
             String contentType = httpMsg.getQueryParameterValue("contentType");
-            if (StringUtils.isBlank(contentType))
-               err("Required Request parameter 'contentType' not found.");
+            if (StringUtils.isBlank(contentType)) {
+               String missingContentType = "Required Request parameter 'contentType' not found.";
+               err(missingContentType);
+               httpResponseString += "(" + missingContentType + ")";
+            }
             
             if (mvc.hasErrors()) {
-               returnError(mvc, 400, "Invalid WADO (RAD-55) transaction.");
+               returnError(mvc, 400, "Invalid WADO (RAD-55) transaction. " + httpResponseString);
                return false;
             }
             
@@ -173,6 +201,16 @@ public class IdsHttpActorSimulator extends BaseHttpActorSimulator {
    private boolean isOid(String value, boolean blankOk) {
       if (value == null || value.length() == 0) return blankOk;
       return value.matches("\\d(?=\\d*\\.)(?:\\.(?=\\d)|\\d){0,255}");
+   }
+
+   private String validTypesAsOneString() {
+      String rtnString = "";
+      String delimiter = "";
+      for (String s: validTypes) {
+         rtnString += (delimiter + s);
+         delimiter = ", ";
+      }
+      return rtnString;
    }
 
 } // EO class

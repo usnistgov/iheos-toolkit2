@@ -38,7 +38,8 @@ public class WadoRetrieveResponseSim extends TransactionSimulator {
    
    static {
       typesMap = new HashMap<>();
-      typesMap.put("application/dicom", "1.2.840.10008.1.2.1");
+      typesMap.put("application/dicom", "1.2.840.10008.1.2.1:1.2.840.10008.1.2.4.51:1.2.840.10008.1.2.4.70");
+      typesMap.put("image/jpeg", "export.jpg");
    }
    
    HttpMessageBa httpMsg;
@@ -73,7 +74,8 @@ public class WadoRetrieveResponseSim extends TransactionSimulator {
          err("contentType [" + contentType + "] not supported.");
       String transferSyntaxUid = typesMap.get(contentType);
       String x = httpMsg.getQueryParameterValue("transferSyntax");
-      if (StringUtils.isNotBlank(x)) transferSyntaxUid = x;
+      if (StringUtils.isNotBlank(x))
+         transferSyntaxUid = x;
       /*
        * Look for unsupported http request parameters
        */
@@ -87,12 +89,17 @@ public class WadoRetrieveResponseSim extends TransactionSimulator {
          returnError(mvc, 406, "Not Acceptable");
          return;
       }
-      List<String> transferSyntaxUids = new ArrayList<>();
-      transferSyntaxUids.add(transferSyntaxUid);
+      List<String> transferSyntaxUids = splitStringToList(transferSyntaxUid, ":");
+//      transferSyntaxUids.add(transferSyntaxUid);
       StoredDocument doc = dsSimCommon.getStoredImagingDocument(compositeUID, transferSyntaxUids);
       if (doc == null) {
          returnError(mvc, 404, "Not Found");
          return;
+      }
+      if (!doc.getMimeType().equals(contentType)) {
+         err("The mimeType for the document we found (" + doc.getMimeType() + ") does not equal the contentType we would return (" + contentType + ")");
+         err("This is some kind of internal error you will find in WadoRetrieveResponseSim.java");
+         returnError(mvc, 500, "Server error: " + "The mimeType for the document we found (" + doc.getMimeType() + ") does not equal the contentType we would return (" + contentType + ")");
       }
       byte[] content = doc.getContent();
       common.response.setContentType(contentType);
@@ -127,5 +134,14 @@ public class WadoRetrieveResponseSim extends TransactionSimulator {
    
    private void err(String msg) {
       er.err(Code.XDSIRequestError, msg, "", "");
+   }
+
+   private List<String> splitStringToList(String s, String delimiter) {
+      String[] tokens = s.split(delimiter);
+      List<String> rtn = new ArrayList<>();
+      for (String t: tokens) {
+         rtn.add(t);
+      }
+      return rtn;
    }
 }
