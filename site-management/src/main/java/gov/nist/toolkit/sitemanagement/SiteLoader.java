@@ -96,6 +96,9 @@ public abstract class SiteLoader {
 
 				s.pifHost = host;
 				s.pifPort = port;
+			} else if ("useTimestampProxy".equals(ele_name)) {
+				String tsValue = ele.getText();
+				s.useTimestampProxy = tsValue.equals("true");
 			} else {
 				for (ActorType actorType : ATFactory.RetrieveActorTypes) {
 					String label = actorType.getActorsFileLabel();
@@ -153,6 +156,10 @@ public abstract class SiteLoader {
 			pida_ele.setText(s.pidAllocateURI);
 			site_ele.addChild(pida_ele);
 		}
+
+		OMElement useProxy_ele = MetadataSupport.om_factory.createOMElement("useTimestampProxy", null);
+		useProxy_ele.setText((s.useTimestampProxy) ? "true" : "false");
+		site_ele.addChild(useProxy_ele);
 
 		return site_ele;
 	}

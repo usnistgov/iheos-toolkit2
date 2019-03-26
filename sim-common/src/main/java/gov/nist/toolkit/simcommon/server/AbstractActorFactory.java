@@ -304,18 +304,18 @@ public abstract class AbstractActorFactory {
 
 		return "http"
 		+ ((isTLS) ? "s" : "")
-		+ "://" 
+		+ "://"
 		+ Installation.instance().propertyServiceManager().getToolkitHost()
 		+ ":"
 				+ getEndpointPort(isTLS, isProxy)
 //		+ ((isTLS) ? Installation.instance().propertyServiceManager().getToolkitTlsPort() : Installation.instance().propertyServiceManager().getToolkitPort())
 //		+ "/"  context name includes preceding /
-		+ contextName  
+		+ contextName
 		+ (ele.transType.isHttpOnly() ? "/httpsim/" : "/sim/" )
-		+ asc.getId() 
+		+ asc.getId()
 		+ "/" +
 		actor           //asc.getActorType().toLowerCase()
-		+ "/" 
+		+ "/"
 		+ transtype;
 	}
 
@@ -378,7 +378,7 @@ public abstract class AbstractActorFactory {
 			simdb = new SimDb(simId);
 			simdb.delete();
         } catch (NoSimException e) {
-			return;		
+			return;
 		} catch (ClassNotFoundException e) {
 			logger.error(ExceptionUtil.exception_details(e));
 		} catch (InvocationTargetException e) {
@@ -459,7 +459,7 @@ public abstract class AbstractActorFactory {
 	 * @return
 	 * @throws IOException
 	 * @throws ClassNotFoundException
-	 * @throws NoSimException 
+	 * @throws NoSimException
 	 */
 	static public List<SimulatorConfig> loadSimulators(List<SimId> ids) throws Exception {
 		List<SimulatorConfig> configs = new ArrayList<SimulatorConfig>();
@@ -529,7 +529,7 @@ public abstract class AbstractActorFactory {
 			throw e;
 		}
 
-	}	
+	}
 
 	static public SimulatorConfig getSimConfig(SimId simulatorId) throws Exception {
 		if (SimDb.exists(simulatorId)) {

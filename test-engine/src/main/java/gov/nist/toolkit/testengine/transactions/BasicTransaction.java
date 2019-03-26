@@ -1413,7 +1413,9 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 					useAddressing,  // WS-Addressing
 					soap_1_2,  // SOAP 1.2
 					getRequestAction(),
-					getResponseAction(), this.planContext.getExtraLinkage()
+					getResponseAction(),
+					this.planContext.getExtraLinkage(),
+					testConfig.site.useTimestampProxy
 			);
 			logger.info("back from making soap call");
 		}

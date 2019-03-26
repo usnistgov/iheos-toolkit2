@@ -37,6 +37,7 @@ import org.apache.axis2.description.AxisService;
 import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.axis2.engine.Phase;
 import org.apache.axis2.transport.http.HTTPConstants;
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
@@ -86,6 +87,7 @@ public class Soap implements SoapInterface {
 	boolean addressing = true;
 	boolean soap12 = true;
 	List<OMElement> additionalHeaders = null;
+	boolean useTimestampProxy = false;
 
 	// This doesn't seem to be no longer used for the original purpose of conveying a home brewed saml
 	boolean useWSSEC = false;
@@ -471,6 +473,13 @@ public class Soap implements SoapInterface {
 				Boolean.TRUE);// vbeera:
 								// modified
 
+		if (useTimestampProxy) {
+			List<Header> headers = new ArrayList<>();
+			Header header = new Header();
+			header.setName("Host");
+			header.setValue(timestampProxyString());
+		}
+
 		// This creates an HTTPClient using the requested keystore and
 		// truststore
 		// so that different users can get what they need
@@ -622,6 +631,16 @@ public class Soap implements SoapInterface {
 			serviceClient.cleanup();
             logger.info("soapCallWithWSSEC done");
 		}
+	}
+
+	private String timestampProxyString() {
+		boolean isTls = endpoint.startsWith("https");
+		String parts[] = endpoint.split("/");
+		String hostAndPort = parts[2];
+		String partx[] = hostAndPort.split(":");
+		String host = partx[0];
+		String port = partx[1];
+		return host + " " + port + " " + ((isTls) ? "tls" : "");
 	}
 
 	// This code is used to bypass the use of javax.net.ssl.keyStore and similar
@@ -894,12 +913,12 @@ public class Soap implements SoapInterface {
 			LoadKeystoreException {
 		installDefaultSecurityParamsIfNeeded();
 		return soapCall(body, endpoint, mtom, addressing, soap12,
-				action, expected_return_action, null);
+				action, expected_return_action, null, false);
 	}
 
 	public OMElement soapCall(OMElement body, String endpoint, boolean mtom,
 			boolean addressing, boolean soap12, String action,
-			String expected_return_action, Map<String, String> linkage)
+			String expected_return_action, Map<String, String> linkage, boolean useTimestampProxy)
 			throws XdsInternalException, AxisFault, XdsFormatException,
 			EnvironmentNotSelectedException, LoadKeystoreException {
 
@@ -918,6 +937,7 @@ public class Soap implements SoapInterface {
 		if (endpoint == null || endpoint.equals(""))
 			throw new XdsInternalException("No endpoint configured for SOAP action " + action);
 
+		this.useTimestampProxy = useTimestampProxy;
 		return soapCall();
 	}
 

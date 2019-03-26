@@ -67,6 +67,19 @@ public enum ActorType implements IsSerializable, Serializable {
             false,
             Constants.USE_SHORTNAME
     ),
+    TIMESTAMP_PROXY(
+            "Timestamp Proxy",
+            Arrays.asList("TIMESTAMP_PROXY", "tsproxy", "Timestamp Proxy"),
+            "tsp",
+            "gov.nist.toolkit.simcommon.server.factories.TimestampProxyActorFactory",
+            "gov.nist.toolkit.fhir.simulators.timestampProxy.TimeStampProxySimulator",
+//            "gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator",
+            Arrays.asList(TransactionType.ANY),
+            true,
+            null,
+            false,
+            Constants.USE_SHORTNAME
+    ),
 //    REGISTRY_RMD(
 //            "REMOVE Metadata",
 //            Arrays.asList(""),
@@ -685,7 +698,7 @@ public enum ActorType implements IsSerializable, Serializable {
     }
 
     public String getSimulatorClassName() { return simulatorClassName; }
-    
+
     public String getHttpSimulatorClassName() { return httpSimulatorClassName; }
 
     public String getActorsFileLabel() {
