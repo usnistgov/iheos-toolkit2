@@ -24,7 +24,7 @@ class TimeStampProxySimulator extends BaseActorSimulator  {
     }
 
     @Override
-    boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
+    boolean run(TransactionType transactionType /* ignored */, MessageValidatorEngine mvc, String validation) throws IOException {
         return false
     }
 }

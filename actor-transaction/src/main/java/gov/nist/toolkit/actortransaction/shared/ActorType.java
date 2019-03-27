@@ -73,7 +73,6 @@ public enum ActorType implements IsSerializable, Serializable {
             "tsp",
             "gov.nist.toolkit.simcommon.server.factories.TimestampProxyActorFactory",
             "gov.nist.toolkit.fhir.simulators.timestampProxy.TimeStampProxySimulator",
-//            "gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator",
             Arrays.asList(TransactionType.ANY),
             true,
             null,
