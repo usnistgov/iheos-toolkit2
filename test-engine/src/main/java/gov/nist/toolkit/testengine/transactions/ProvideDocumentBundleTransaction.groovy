@@ -69,9 +69,16 @@ class ProvideDocumentBundleTransaction extends FhirCreateTransaction {
                 if (sendEntry.class.simpleName == returnEntry.class.simpleName) {
                     if (responseEntry.status == '201') {
                         if (responseEntry.outcome) {
-                            hasError = true
-                            err("Entry #${index} (${sendEntry.class.simpleName}) returned status 201 and a response outcome:...")
-                            FhirSupport.operationOutcomeIssues(responseEntry.outcome).each { err(it) }
+                            List<String> errors = FhirSupport.operationOutcomeErrors(responseEntry.outcome)
+                            if (errors.size()) {
+                                hasError = true
+                                err("Entry #${index} (${sendEntry.class.simpleName}) returned status 201 and errors:...")
+                                errors.each { err(it) }
+                            }
+                            List<String> warningsAndInfo = FhirSupport.operationOutcomeWarningsOrInfo(responseEntry.outcome)
+                            if (warningsAndInfo.size()) {
+                                warningsAndInfo.each { warning(it) }
+                            }
                         }
                     } else {
                         hasError = true
@@ -170,6 +177,8 @@ class ProvideDocumentBundleTransaction extends FhirCreateTransaction {
     }
 
     def err(msg) { stepContext.set_error(msg) }
+
+    def warning(msg) { stepContext.addDetail('Warning or Info', msg)}
 
         @Override
     protected String getBasicTransactionName() {
