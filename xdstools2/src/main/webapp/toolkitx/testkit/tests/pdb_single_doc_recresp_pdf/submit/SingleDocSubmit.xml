@@ -147,7 +147,7 @@
                     </practiceSetting>
                     <facilityType>
                         <coding>
-                            <system value="http://www.snomed.org"/>
+                            <system value="http://snomed.info/sct"/>
                             <code value="419955002"/>
                             <display value="Residential institution"/>
                         </coding>
@@ -196,7 +196,7 @@
                 <status value="current"/>
                 <type>
                     <coding>
-                        <system value="http://www.snomed.org"/>
+                        <system value="http://snomed.info/sct"/>
                         <code value="419955002"/>
                         <display value="Residential institution"/>
                     </coding>

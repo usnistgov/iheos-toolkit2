@@ -147,7 +147,7 @@
                     </practiceSetting>
                     <facilityType>
                         <coding>
-                            <system value="http://www.snomed.org"/>
+                            <system value="http://snomed.info/sct"/>
                             <code value="225728007"/>
                             <display value="Private physicians group office"/>
                         </coding>
@@ -196,7 +196,7 @@
                 <status value="current"/>
                 <type>
                     <coding>
-                        <system value="http://www.snomed.org"/>
+                        <system value="http://snomed.info/sct"/>
                         <code value="225728007"/>
                         <display value="Accident and Emergency department"/>
                     </coding>
