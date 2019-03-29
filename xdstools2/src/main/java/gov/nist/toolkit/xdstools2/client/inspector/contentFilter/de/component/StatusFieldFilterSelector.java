@@ -6,6 +6,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.Widget;
+import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.IndexFieldValue;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.DocumentEntryIndexField;
 import gov.nist.toolkit.xdstools2.client.util.SimpleCallbackT;
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class StatusFieldFilterSelector extends Widget implements QueryFilter, DocumentEntryFieldComponent {
+public class StatusFieldFilterSelector extends Widget implements QueryFilter, IndexFieldFilterSelector<DocumentEntryIndexField, DocumentEntry> {
     HorizontalPanel hp = new HorizontalPanel();
 
     final static String approvedString = "Approved";
@@ -28,10 +29,11 @@ public class StatusFieldFilterSelector extends Widget implements QueryFilter, Do
     private final HTML deprecatedCountLabel = new HTML();
     private final HTML bothCountLabel = new HTML();
 
-    private DocumentEntryIndexField field = DocumentEntryIndexField.STATUS;
     private Map<IndexFieldValue, HTML> countLabelMap = new HashMap<>();
 
     private SimpleCallbackT valueChangeNotification;
+
+    private List<DocumentEntry> result = new ArrayList<>();
 
     public StatusFieldFilterSelector(String label, SimpleCallbackT<NewSelectedValue> valueChangeNotification) {
         this.valueChangeNotification = valueChangeNotification;
@@ -44,7 +46,7 @@ public class StatusFieldFilterSelector extends Widget implements QueryFilter, Do
         all.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
                                       @Override
                                       public void onValueChange(ValueChangeEvent<Boolean> valueChangeEvent) {
-                                            doValueChangeNotification(new NewSelectedValue(field, getSelectedValues()));
+                                            doValueChangeNotification(new NewSelectedValue(StatusFieldFilterSelector.this, getSelectedValues()));
                                       }
                                   });
                 hp.add(all);
@@ -54,6 +56,15 @@ public class StatusFieldFilterSelector extends Widget implements QueryFilter, Do
         mapFieldValueToCountLabel();
     }
 
+    @Override
+    public List<DocumentEntry> getResult() {
+        return result;
+    }
+
+    @Override
+    public DocumentEntryIndexField getFieldType() {
+        return DocumentEntryIndexField.STATUS;
+    }
 
     // skb TODO: create a constructor(label:string, impl:changeNotificationInterface)
     // store impl in local variable
@@ -103,4 +114,5 @@ public class StatusFieldFilterSelector extends Widget implements QueryFilter, Do
     public void doValueChangeNotification(NewSelectedValue newSelectedValue) {
        valueChangeNotification.run(newSelectedValue);
     }
+
 }

@@ -486,9 +486,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
            if (key.equals(targetObjectType)) {
                filterFeature.displayFilter();
                 if (!filterFeature.isActive()) {
-
                    filterFeature.setData( dataMap.get(key));
-//                    filterFeature.setData(new HashMap<>(
                 }
                 filterFeature.displayFilter();
            }

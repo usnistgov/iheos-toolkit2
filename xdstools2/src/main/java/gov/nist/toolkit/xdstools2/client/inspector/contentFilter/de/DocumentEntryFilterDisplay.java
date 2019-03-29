@@ -15,8 +15,7 @@ import gov.nist.toolkit.xdstools2.client.inspector.CommonDisplay;
 import gov.nist.toolkit.xdstools2.client.inspector.HyperlinkFactory;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.FilterFeature;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.IndexFieldValue;
-import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.DocumentEntryFieldComponent;
-import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.DocumentEntryFieldFilterSelector;
+import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.IndexFieldFilterSelector;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.NewSelectedValue;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.StatusFieldFilterSelector;
 import gov.nist.toolkit.xdstools2.client.util.SimpleCallbackT;
@@ -28,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 import static gov.nist.toolkit.http.client.HtmlMarkup.red;
@@ -63,8 +63,10 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
         }
     };
 
-    private LinkedList<DocumentEntryFieldFilterSelector> filterSelectors;
+    private LinkedList<IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry>> filterSelectors;
     private Map<DocumentEntryIndexField, Map<IndexFieldValue, List<DocumentEntry>>> fieldIndexMap;
+    private List<DocumentEntry> initialDeList;
+    private static boolean isActive = false;
 
     // enum of fields
 
@@ -107,13 +109,31 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
     public DocumentEntryFilterDisplay() {
         filterSelectors = new LinkedList<>();
 
-        DocumentEntryFieldComponent statusFilterSelector = new StatusFieldFilterSelector("DocumentEntries", new SimpleCallbackT<NewSelectedValue>() {
+        final IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry> statusFilterSelector = new StatusFieldFilterSelector("DocumentEntries", new SimpleCallbackT<NewSelectedValue>() {
             @Override
             public void run(NewSelectedValue newSelectedValue) {
-                // update count
+                // 1. reIndex
+//                filterSelectors.listIterator()
+                        int idx = filterSelectors.indexOf(newSelectedValue.getComponent());
+                        ListIterator<IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry>> it = filterSelectors.listIterator(idx);
+                        if (it!=null) {
+                            List<DocumentEntry> list = null;
+                            if (it.hasPrevious()) {
+                                 list = it.previous().getResult();
+                            } else {
+                                list = initialDeList;
+                            }
+                            if (list!=null && !list.isEmpty()) {
+                                Map<DocumentEntryIndexField, Map<IndexFieldValue, List<DocumentEntry>>> fieldMap = DocumentEntryIndex.indexMap(list);
+                                while (it.hasNext()) {
+                                    refreshCountableItems(fieldMap, it.next());
+                                }
+                            }
+                        }
             }
         });
-        filterSelectors.add(new DocumentEntryFieldFilterSelector(DocumentEntryIndexField.STATUS, statusFilterSelector));
+
+        filterSelectors.add(statusFilterSelector);
     }
 
     @Override
@@ -162,25 +182,25 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
         featurePanel.setVisible(false);
     }
 
-//    void setData(List<? extends MetadataObject> metadataObjects);
-//    @Override
-//    public void setData(List<? extends MetadataObject> metadataObjects) {
-//        List<DocumentEntry> documentEntries = (List<DocumentEntry>)metadataObjects;
-//
-//    }
-
 
     @Override
     public void setData(List<DocumentEntry> data) {
-      fieldIndexMap = DocumentEntryIndex.indexMap(data);
-      for (DocumentEntryFieldFilterSelector selector : filterSelectors) {
-          Map<IndexFieldValue, List<DocumentEntry>> valueMap = fieldIndexMap.get(selector.getField());
-          if (valueMap!=null && !valueMap.isEmpty()) {
-              for (IndexFieldValue ifv : valueMap.keySet()) {
-                  selector.getComponent().doUpdateCount(ifv, valueMap.get(ifv).size());
-              }
-          }
-      }
+        initialDeList = data;
+        fieldIndexMap = DocumentEntryIndex.indexMap(data);
+        for (IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry> selector : filterSelectors) {
+            refreshCountableItems(fieldIndexMap, selector);
+        }
+    }
+
+    private void refreshCountableItems(
+            Map<DocumentEntryIndexField, Map<IndexFieldValue, List<DocumentEntry>>> fieldMap,
+            IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry> selector) {
+        Map<IndexFieldValue, List<DocumentEntry>> valueMap = fieldMap.get(selector.getFieldType());
+        if (valueMap!=null && !valueMap.isEmpty()) {
+            for (IndexFieldValue ifv : valueMap.keySet()) {
+                selector.doUpdateCount(ifv, valueMap.get(ifv).size());
+            }
+        }
     }
 
     @Override
@@ -204,8 +224,8 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
             // TODO: iterate the selector display components
 
                     // skb TODO: Count the documents with codes for which we do not have a mapping in our codes.xml
-            for (DocumentEntryFieldFilterSelector fieldSelectionResult : filterSelectors) {
-                featurePanel.add(fieldSelectionResult.getComponent().asWidget());
+            for (IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry> fieldSelectionResult : filterSelectors) {
+                featurePanel.add(fieldSelectionResult.asWidget());
             }
 
 //            ft.setWidget(row, 0, applyFilterBtn);

@@ -5,16 +5,20 @@ import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.DocumentEntr
 import java.util.List;
 
 public class NewSelectedValue {
-    private DocumentEntryIndexField field;
+    private IndexFieldFilterSelector component;
     private List<String> values;
 
-    public NewSelectedValue(DocumentEntryIndexField field, List<String> values) {
-        this.field = field;
+    public NewSelectedValue(IndexFieldFilterSelector component, List<String> values) {
+        this.component = component;
         this.values = values;
     }
 
     public DocumentEntryIndexField getField() {
-        return field;
+        return component.getFieldType();
+    }
+
+    public IndexFieldFilterSelector getComponent() {
+        return component;
     }
 
     public List<String> getValues() {
