@@ -7,7 +7,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.registrymetadata.client.*;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractView;
-import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.DocumentEntryContentFilter;
+import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.DocumentEntryFilterDisplay;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.FilterFeature;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataObjectType;
@@ -297,15 +297,14 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         topNavPanel.add(advancedOptionCtl);
         topNavPanel.add(advancedOptionPanel);
 
-        // skb TODO: pickup here
         FlowPanel contentFilterWrapper = new FlowPanel();
         filterObjectSelector.displayShowAll(false);
         contentFilterWrapper.add(filterObjectSelector);
         contentFilterWrapper.add(new HTML("<br/>"));
         // The filter panel
-        deFilterFeature = new DocumentEntryContentFilter();
+        deFilterFeature = new DocumentEntryFilterDisplay();
+        deFilterFeature.hideFilter();
         contentFilterWrapper.add(deFilterFeature.asWidget());
-        // set visible false
 
 
         FlowPanel advancedOptionWrapper = new FlowPanel();
@@ -339,6 +338,8 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
 
     @Override
     protected void bindUI() {
+       filterFeatureMap.put(MetadataObjectType.DocEntries, new DocumentEntryFilterDisplay());
+
         tableMap.put(MetadataObjectType.ObjectRefs, objectRefTable);
         tableMap.put(MetadataObjectType.DocEntries, docEntryDataTable);
         tableMap.put(MetadataObjectType.SubmissionSets, submissionSetDataTable);

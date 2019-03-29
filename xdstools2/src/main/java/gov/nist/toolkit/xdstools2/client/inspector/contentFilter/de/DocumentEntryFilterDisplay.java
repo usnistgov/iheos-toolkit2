@@ -9,26 +9,30 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.http.client.HtmlMarkup;
-import gov.nist.toolkit.registrymetadata.client.MetadataObject;
+import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.xdstools2.client.inspector.CommonDisplay;
-import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.FilterFeature;
 import gov.nist.toolkit.xdstools2.client.inspector.HyperlinkFactory;
-import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.IndexField;
+import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.FilterFeature;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.IndexFieldValue;
-import gov.nist.toolkit.xdstools2.client.tabs.findDocuments2Tab.FindDocuments2Params;
+import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.DocumentEntryFieldComponent;
+import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.DocumentEntryFieldFilterSelector;
+import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.NewSelectedValue;
+import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.StatusFieldFilterSelector;
+import gov.nist.toolkit.xdstools2.client.util.SimpleCallbackT;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.CodeFilterBank;
 import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.StatusDisplay;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import static gov.nist.toolkit.http.client.HtmlMarkup.red;
 
-public class DocumentEntryContentFilter extends CommonDisplay implements FilterFeature {
+public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterFeature<DocumentEntry> {
     private Button applyFilterBtn = new Button("Apply Filter");
     private Button cancelBtn = new Button("Cancel");
     Map<String, List<String>> codeSpecMap = new HashMap<String, List<String>>();
@@ -47,11 +51,6 @@ public class DocumentEntryContentFilter extends CommonDisplay implements FilterF
     CodeFilterBank codeFilterBank;
     HTML statusBox = new HTML();
     VerticalPanel resultPanel = new VerticalPanel();
-    /**
-     * A place holder for the search parameters.
-     * Note the reuse of FindDocuments2Params class without the intent to run FindDocuments.
-      */
-    FindDocuments2Params queryParams;
     StatusDisplay statusDisplay = new StatusDisplay() {
         @Override
         public VerticalPanel getResultPanel() {
@@ -63,6 +62,9 @@ public class DocumentEntryContentFilter extends CommonDisplay implements FilterF
             statusBox.setHTML(HtmlMarkup.bold(red(message, status)));
         }
     };
+
+    private LinkedList<DocumentEntryFieldFilterSelector> filterSelectors;
+    private Map<DocumentEntryIndexField, Map<IndexFieldValue, List<DocumentEntry>>> fieldIndexMap;
 
     // enum of fields
 
@@ -102,7 +104,16 @@ public class DocumentEntryContentFilter extends CommonDisplay implements FilterF
     //      field becomes read-only with a count and an X to clear search term.
     // map[field, map[code,list<de>]
 
-    public DocumentEntryContentFilter() {
+    public DocumentEntryFilterDisplay() {
+        filterSelectors = new LinkedList<>();
+
+        DocumentEntryFieldComponent statusFilterSelector = new StatusFieldFilterSelector("DocumentEntries", new SimpleCallbackT<NewSelectedValue>() {
+            @Override
+            public void run(NewSelectedValue newSelectedValue) {
+                // update count
+            }
+        });
+        filterSelectors.add(new DocumentEntryFieldFilterSelector(DocumentEntryIndexField.STATUS, statusFilterSelector));
     }
 
     @Override
@@ -148,6 +159,7 @@ public class DocumentEntryContentFilter extends CommonDisplay implements FilterF
     // skb TODO: handle show hidden view
     @Override
     public void hideFilter() {
+        featurePanel.setVisible(false);
     }
 
 //    void setData(List<? extends MetadataObject> metadataObjects);
@@ -159,8 +171,16 @@ public class DocumentEntryContentFilter extends CommonDisplay implements FilterF
 
 
     @Override
-    public void setData(Map<IndexField, Map<IndexFieldValue, List<? extends MetadataObject>>> data) {
-
+    public void setData(List<DocumentEntry> data) {
+      fieldIndexMap = DocumentEntryIndex.indexMap(data);
+      for (DocumentEntryFieldFilterSelector selector : filterSelectors) {
+          Map<IndexFieldValue, List<DocumentEntry>> valueMap = fieldIndexMap.get(selector.getField());
+          if (valueMap!=null && !valueMap.isEmpty()) {
+              for (IndexFieldValue ifv : valueMap.keySet()) {
+                  selector.getComponent().doUpdateCount(ifv, valueMap.get(ifv).size());
+              }
+          }
+      }
     }
 
     @Override
@@ -170,6 +190,7 @@ public class DocumentEntryContentFilter extends CommonDisplay implements FilterF
 
     @Override
     public void displayFilter() {
+        featurePanel.setVisible(true);
         // skb TODO: Clear tree selection because the selected item may not be in the filtered result set.
 
         String title = "<h4>Trial Version Document Entries Filter</h4>";
@@ -179,28 +200,26 @@ public class DocumentEntryContentFilter extends CommonDisplay implements FilterF
         boolean b = false;
 
         try {
-            // skb TODO: Count the documents with codes for which we do not have a mapping in our codes.xml
-            queryParams = new FindDocuments2Params(statusDisplay);
-            featurePanel.add(queryParams.asWidget());
 
-            ft.setWidget(row, 0, applyFilterBtn);
-            ft.setWidget(row, 1, cancelBtn);
-            row++;
-//            ft.setHTML(row, 0, bold("objectType", b));
-//            ft.setWidget(row, 1, );
+            // TODO: iterate the selector display components
+
+                    // skb TODO: Count the documents with codes for which we do not have a mapping in our codes.xml
+            for (DocumentEntryFieldFilterSelector fieldSelectionResult : filterSelectors) {
+                featurePanel.add(fieldSelectionResult.getComponent().asWidget());
+            }
+
+//            ft.setWidget(row, 0, applyFilterBtn);
+//            ft.setWidget(row, 1, cancelBtn);
 //            row++;
-
-
-            ft.setWidget(row, 0, statusBox);
-            row++;
-            ft.setWidget(row, 0, resultPanel);
-            ft.getFlexCellFormatter().setColSpan(row, 0, 3);
-            row++;
-            featurePanel.add(ft);
+//            ft.setWidget(row, 0, statusBox);
+//            row++;
+//            ft.setWidget(row, 0, resultPanel);
+//            ft.getFlexCellFormatter().setColSpan(row, 0, 3);
+//            row++;
+//            featurePanel.add(ft);
         } catch (Exception ex) {
             new PopupMessage(ex.toString());
         } finally {
-
         }
     }
 

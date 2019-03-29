@@ -3,8 +3,6 @@ package gov.nist.toolkit.xdstools2.client.inspector.mvp;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -19,12 +17,12 @@ import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractPresenter;
-import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.DocumentEntryContentFilter;
 import gov.nist.toolkit.xdstools2.client.inspector.DataNotification;
-import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.FilterFeature;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataObjectType;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataObjectWrapper;
+import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.FilterFeature;
+import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.DocumentEntryFilterDisplay;
 import gov.nist.toolkit.xdstools2.client.util.AnnotatedItem;
 
 import java.util.ArrayList;
@@ -43,7 +41,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
     List<AnnotatedItem> metadataObjectTypeSelectionItems;
     Map<MetadataObjectType, List<? extends MetadataObject>> dataMap = new HashMap<>();
     List<AnnotatedItem> filterSelectionItems;
-    DocumentEntryContentFilter filterDisplay;
+    DocumentEntryFilterDisplay filterDisplay;
 
     @Override
     public void init() {
@@ -98,7 +96,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
             public void onAddToHistory(MetadataCollection metadataCollection) {
                 InspectorPresenter.this.metadataCollection = metadataCollection;
                 setDataMap(metadataCollection);
-                metadataObjectTypeSelectionItems = getMetadataObjectSelectionItems(metadataCollection);
+                metadataObjectTypeSelectionItems = getMetadataObjectSelectionItems();
                 view.metadataObjectSelector.refreshEnabledStatus(metadataObjectTypeSelectionItems);
                 doRefreshTable();
             }
@@ -160,9 +158,6 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
                     view.contentFilterCtl.addStyleName("inlineLinkDisabled");
 
                 }
-                MetadataObjectType currentObjectTypeSelection = getCurrentSelectedType();
-                boolean isFilterApplicable = isFilterApplicable(viewMode, currentObjectTypeSelection);
-                setFilterFeature(currentObjectTypeSelection, isFilterApplicable);
 
                 if (objectWrapper==null) return;
 
@@ -222,7 +217,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
             mc.add(metadataCollection);
         }
         setDataMap(metadataCollection);
-        metadataObjectTypeSelectionItems = getMetadataObjectSelectionItems(metadataCollection);
+        metadataObjectTypeSelectionItems = getMetadataObjectSelectionItems();
         view.metadataObjectSelector.setNames(metadataObjectTypeSelectionItems); // This will create the button list
     }
 
@@ -429,12 +424,13 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
     }
 
 
+    /*
     // skb TODO: remove this
     void setFilterFeature(MetadataObjectType metadataObjectType, boolean isVisible) {
         DataTable dt = view.getTableMap().get(metadataObjectType);
         if (dt!=null && dt.filterContents!=null) {
             if (isVisible && dt.filterFeature==null) {
-                filterDisplay = new DocumentEntryContentFilter(view.metadataInspectorLeft);
+                filterDisplay = new DocumentEntryFilterDisplay(view.metadataInspectorLeft);
                 dt.setFilterFeature(filterDisplay);
                 setFilterContentsSelectionHandler(dt, filterDisplay);
             }
@@ -448,11 +444,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
             // skb TODO: clear the lastItemSelected or currentItemSelected to nothing?
             // skb TODO: hide the structure panel!
         }
-    }
-
-    /**
-     * This Filter feature is mutually exclusive with the Compare feature. If Filter is selected, the Compare feature is disabled and vice versa.
-     */
+    } // remove this?
     private void setFilterContentsSelectionHandler(DataTable dt, FilterFeature filterFeature) {
         CheckBox filterContents = dt.filterContents;
         CheckBox compareSelect = dt.compareSelect;
@@ -481,20 +473,21 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
             }
         });
     }
+    */
 
     public void doSwitchFilter(MetadataObjectType targetObjectType) {
         // if filter not active then
         // skb TODO: do indexing here
         // display the filter
         // display the initial count
-        // skb TODO: pickup here 3/25/19
         // skb TODO: how to update existing filters to accommodate Size labels and Clear labels?
        for (MetadataObjectType key : view.getFilterFeatureMap().keySet()) {
            FilterFeature filterFeature = view.getFilterFeatureMap().get(key);
            if (key.equals(targetObjectType)) {
-               // set visibility true
+               filterFeature.displayFilter();
                 if (!filterFeature.isActive()) {
-//                   filterFeature.setData(dataMap.get(key));
+
+                   filterFeature.setData( dataMap.get(key));
 //                    filterFeature.setData(new HashMap<>(
                 }
                 filterFeature.displayFilter();
@@ -530,10 +523,6 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
                         doSetupDiffMode(true);
                         doDiffAction(key, (MetadataObject)dataTable.lastSelectedObject, (MetadataObject)dataTable.compareObject);
                     }
-                    // skb TODO: clean up this
-                    MetadataInspectorTab.SelectedViewMode viewMode = view.metadataInspectorLeft.getViewMode();
-                    boolean isFilterApplicable = isFilterApplicable(viewMode, key);
-                    setFilterFeature(key, isFilterApplicable);
                     setupResizeTableTimer(key);
                 }
             } else {

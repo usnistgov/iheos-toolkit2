@@ -1,4 +1,4 @@
-package gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de;
+package gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -7,8 +7,8 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.IndexFieldValue;
-import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.IndexFieldValueCountDisplay;
-import gov.nist.toolkit.xdstools2.client.util.SimpleCallback;
+import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.DocumentEntryIndexField;
+import gov.nist.toolkit.xdstools2.client.util.SimpleCallbackT;
 import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.QueryFilter;
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class StatusFilterSelector extends Widget implements QueryFilter, IndexFieldValueCountDisplay {
+public class StatusFieldFilterSelector extends Widget implements QueryFilter, DocumentEntryFieldComponent {
     HorizontalPanel hp = new HorizontalPanel();
 
     final static String approvedString = "Approved";
@@ -31,10 +31,9 @@ public class StatusFilterSelector extends Widget implements QueryFilter, IndexFi
     private DocumentEntryIndexField field = DocumentEntryIndexField.STATUS;
     private Map<IndexFieldValue, HTML> countLabelMap = new HashMap<>();
 
-    private SimpleCallback valueChangeNotification;
+    private SimpleCallbackT valueChangeNotification;
 
-    // messageId is required non-empty but is never displayed
-    public StatusFilterSelector(String label, SimpleCallback valueChangeNotification) {
+    public StatusFieldFilterSelector(String label, SimpleCallbackT<NewSelectedValue> valueChangeNotification) {
         this.valueChangeNotification = valueChangeNotification;
 
         hp.add(new RadioButton(label, approvedString));
@@ -45,8 +44,7 @@ public class StatusFilterSelector extends Widget implements QueryFilter, IndexFi
         all.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
                                       @Override
                                       public void onValueChange(ValueChangeEvent<Boolean> valueChangeEvent) {
-                                            doValueChangeNotification(field.toString(), getSelectedValues());
-                                            // skb TODO pickup here 3/26/19
+                                            doValueChangeNotification(new NewSelectedValue(field, getSelectedValues()));
                                       }
                                   });
                 hp.add(all);
@@ -102,7 +100,7 @@ public class StatusFilterSelector extends Widget implements QueryFilter, IndexFi
     }
 
     @Override
-    public void doValueChangeNotification(SimpleCallback callback) {
-       callback.run();
+    public void doValueChangeNotification(NewSelectedValue newSelectedValue) {
+       valueChangeNotification.run(newSelectedValue);
     }
 }
