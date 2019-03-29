@@ -27,7 +27,7 @@ public class DocumentEntryIndex {
             }
             Map<IndexFieldValue,List<DocumentEntry>> vMap = fieldMap.get(indexField);
             if (!vMap.containsKey(value)) {
-                vMap.put(value, new ArrayList<>());
+                vMap.put(value, new ArrayList<DocumentEntry>());
             }
             vMap.get(value).add(de);
         }

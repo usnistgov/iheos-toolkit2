@@ -41,7 +41,6 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
     List<AnnotatedItem> metadataObjectTypeSelectionItems;
     Map<MetadataObjectType, List<? extends MetadataObject>> dataMap = new HashMap<>();
     List<AnnotatedItem> filterSelectionItems;
-    DocumentEntryFilterDisplay filterDisplay;
 
     @Override
     public void init() {
@@ -362,23 +361,12 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
 
         for (MetadataObjectType type : MetadataObjectType.values()) {
             List<? extends MetadataObject> metadataObject = dataMap.get(type);
-            annotatedItems.add(new AnnotatedItem(metadataObject!=null && metadataObject.size()>0 && isFilterApplicable(type), type.name()));
+            annotatedItems.add(new AnnotatedItem(metadataObject!=null && metadataObject.size()>0, type.name()));
         }
 
         return annotatedItems;
     }
 
-    boolean isFilterApplicable(MetadataObjectType metadataObjectType) {
-        boolean isFilterApplicable = false;
-            try {
-                if (MetadataObjectType.DocEntries.equals(metadataObjectType)) {
-                    isFilterApplicable = true;
-                }
-            } catch (ToolkitRuntimeException tre) {
-                // No object type selected
-            }
-        return isFilterApplicable;
-    }
 
     public void setDataModel(MetadataCollection mc) {
 
@@ -483,8 +471,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
         // skb TODO: how to update existing filters to accommodate Size labels and Clear labels?
        for (MetadataObjectType key : view.getFilterFeatureMap().keySet()) {
            FilterFeature filterFeature = view.getFilterFeatureMap().get(key);
-           if (key.equals(targetObjectType)) {
-               filterFeature.displayFilter();
+           if (filterFeature !=null && key.equals(targetObjectType)) {
                 if (!filterFeature.isActive()) {
                    filterFeature.setData( dataMap.get(key));
                 }

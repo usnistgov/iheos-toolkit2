@@ -299,12 +299,13 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
 
         FlowPanel contentFilterWrapper = new FlowPanel();
         filterObjectSelector.displayShowAll(false);
-        contentFilterWrapper.add(filterObjectSelector);
+        contentFilterWrapper.add(filterObjectSelector.asWidget());
         contentFilterWrapper.add(new HTML("<br/>"));
         // The filter panel
         deFilterFeature = new DocumentEntryFilterDisplay();
         deFilterFeature.hideFilter();
         contentFilterWrapper.add(deFilterFeature.asWidget());
+        contentFilterPanel.add(contentFilterWrapper);
 
 
         FlowPanel advancedOptionWrapper = new FlowPanel();
@@ -338,7 +339,7 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
 
     @Override
     protected void bindUI() {
-       filterFeatureMap.put(MetadataObjectType.DocEntries, new DocumentEntryFilterDisplay());
+        filterFeatureMap.put(MetadataObjectType.DocEntries, deFilterFeature);
 
         tableMap.put(MetadataObjectType.ObjectRefs, objectRefTable);
         tableMap.put(MetadataObjectType.DocEntries, docEntryDataTable);

@@ -16,7 +16,7 @@ import gov.nist.toolkit.xdstools2.client.inspector.HyperlinkFactory;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.FilterFeature;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.IndexFieldValue;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.IndexFieldFilterSelector;
-import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.NewSelectedValue;
+import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.NewSelectedFieldValue;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.StatusFieldFilterSelector;
 import gov.nist.toolkit.xdstools2.client.util.SimpleCallbackT;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
@@ -109,12 +109,12 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
     public DocumentEntryFilterDisplay() {
         filterSelectors = new LinkedList<>();
 
-        final IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry> statusFilterSelector = new StatusFieldFilterSelector("DocumentEntries", new SimpleCallbackT<NewSelectedValue>() {
+        final IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry> statusFilterSelector = new StatusFieldFilterSelector("DocumentEntries", new SimpleCallbackT<NewSelectedFieldValue>() {
             @Override
-            public void run(NewSelectedValue newSelectedValue) {
+            public void run(NewSelectedFieldValue newSelectedValue) {
                 // 1. reIndex
 //                filterSelectors.listIterator()
-                        int idx = filterSelectors.indexOf(newSelectedValue.getComponent());
+                        int idx = filterSelectors.indexOf(newSelectedValue.getFilterSelector());
                         ListIterator<IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry>> it = filterSelectors.listIterator(idx);
                         if (it!=null) {
                             List<DocumentEntry> list = null;

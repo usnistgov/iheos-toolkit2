@@ -35,7 +35,7 @@ public class StatusFieldFilterSelector extends Widget implements QueryFilter, In
 
     private List<DocumentEntry> result = new ArrayList<>();
 
-    public StatusFieldFilterSelector(String label, SimpleCallbackT<NewSelectedValue> valueChangeNotification) {
+    public StatusFieldFilterSelector(String label, SimpleCallbackT<NewSelectedFieldValue> valueChangeNotification) {
         this.valueChangeNotification = valueChangeNotification;
 
         hp.add(new RadioButton(label, approvedString));
@@ -46,7 +46,7 @@ public class StatusFieldFilterSelector extends Widget implements QueryFilter, In
         all.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
                                       @Override
                                       public void onValueChange(ValueChangeEvent<Boolean> valueChangeEvent) {
-                                            doValueChangeNotification(new NewSelectedValue(StatusFieldFilterSelector.this, getSelectedValues()));
+                                            doValueChangeNotification(new NewSelectedFieldValue(StatusFieldFilterSelector.this, getSelectedValues()));
                                       }
                                   });
                 hp.add(all);
@@ -111,7 +111,7 @@ public class StatusFieldFilterSelector extends Widget implements QueryFilter, In
     }
 
     @Override
-    public void doValueChangeNotification(NewSelectedValue newSelectedValue) {
+    public void doValueChangeNotification(NewSelectedFieldValue newSelectedValue) {
        valueChangeNotification.run(newSelectedValue);
     }
 
