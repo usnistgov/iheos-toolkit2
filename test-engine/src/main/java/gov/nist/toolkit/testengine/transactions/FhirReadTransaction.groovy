@@ -8,6 +8,7 @@ import gov.nist.toolkit.fhir.server.utility.FhirId
 import gov.nist.toolkit.testengine.engine.FhirContentFormat
 import gov.nist.toolkit.testengine.engine.StepContext
 import gov.nist.toolkit.testengine.fhir.FhirSupport
+import gov.nist.toolkit.testengine.support.ContentTypeParser
 import gov.nist.toolkit.utilities.xml.Util
 import gov.nist.toolkit.xdsexception.client.MetadataException
 import gov.nist.toolkit.xdsexception.client.XdsInternalException
@@ -91,8 +92,10 @@ class FhirReadTransaction extends BasicFhirTransaction {
 //        if (requestAcceptType) {
             (statusLine, returnedContentType, contentBytes) = FhirClient.getBytes(new URI(fullEndpoint), acceptType)
             content = new String(contentBytes)
-        if (returnedContentType.contains(';'))
-            returnedContentType = returnedContentType.split(';')[0]
+
+        // isolate just content type - ignoring any parameters
+        returnedContentType = new ContentTypeParser(returnedContentType).contentType
+
         if (returnedContentType != acceptType)
             stepContext.set_error("Requested Content-Type ${acceptType}<br />Received ${returnedContentType} header")
         boolean isJson = content.trim().startsWith('{')

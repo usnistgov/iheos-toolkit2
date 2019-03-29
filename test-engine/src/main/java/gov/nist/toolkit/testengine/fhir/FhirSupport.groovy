@@ -9,6 +9,7 @@ import org.apache.http.HttpResponse
 import org.hl7.fhir.dstu3.model.Binary
 import org.hl7.fhir.dstu3.model.DomainResource
 import org.hl7.fhir.dstu3.model.OperationOutcome
+import org.hl7.fhir.dstu3.model.codesystems.IssueSeverity
 import org.hl7.fhir.instance.model.api.IBaseReference
 import org.hl7.fhir.instance.model.api.IBaseResource
 
@@ -79,6 +80,44 @@ class FhirSupport {
         oo.issue.each { OperationOutcome.OperationOutcomeIssueComponent issue ->
             issue.with {
                 issues << "Error ${code}: ${diagnostics}"
+            }
+        }
+
+        issues
+    }
+
+    static boolean isError(OperationOutcome.OperationOutcomeIssueComponent issue) {
+        issue.severity == IssueSeverity.FATAL || issue.severity == IssueSeverity.ERROR
+    }
+
+    static boolean isWarningOrInfo(OperationOutcome.OperationOutcomeIssueComponent issue) {
+        issue.severity == IssueSeverity.WARNING || issue.severity == IssueSeverity.INFORMATION
+    }
+
+    static List<String> operationOutcomeErrors(IBaseResource oo) {
+        assert oo instanceof OperationOutcome
+        OperationOutcome theoo = oo
+        def issues = []
+        oo.issue.each { OperationOutcome.OperationOutcomeIssueComponent issue ->
+            if (isError(issue)) {
+                issue.with {
+                    issues << "Error ${code}: ${diagnostics}"
+                }
+            }
+        }
+
+        issues
+    }
+
+    static List<String> operationOutcomeWarningsOrInfo(IBaseResource oo) {
+        assert oo instanceof OperationOutcome
+        OperationOutcome theoo = oo
+        def issues = []
+        oo.issue.each { OperationOutcome.OperationOutcomeIssueComponent issue ->
+            if (isWarningOrInfo(issue)) {
+                issue.with {
+                    issues << "Warning ${code}: ${diagnostics}"
+                }
             }
         }
 
