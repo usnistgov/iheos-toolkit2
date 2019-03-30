@@ -22,7 +22,6 @@ import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataObjectType;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataObjectWrapper;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.FilterFeature;
-import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.DocumentEntryFilterDisplay;
 import gov.nist.toolkit.xdstools2.client.util.AnnotatedItem;
 
 import java.util.ArrayList;
@@ -216,8 +215,12 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
             mc.add(metadataCollection);
         }
         setDataMap(metadataCollection);
+
         metadataObjectTypeSelectionItems = getMetadataObjectSelectionItems();
         view.metadataObjectSelector.setNames(metadataObjectTypeSelectionItems); // This will create the button list
+        filterSelectionItems = getFilterObjectSelectionItems();
+        view.filterObjectSelector.setNames(filterSelectionItems); // This will create the button list
+
     }
 
     void setDataMap(MetadataCollection metadataCollection) {

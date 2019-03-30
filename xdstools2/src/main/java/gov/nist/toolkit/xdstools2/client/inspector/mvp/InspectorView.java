@@ -306,7 +306,7 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         deFilterFeature.hideFilter();
         contentFilterWrapper.add(deFilterFeature.asWidget());
         contentFilterPanel.add(contentFilterWrapper);
-
+        contentFilterPanel.addStyleName("paddedHorizontalPanel");
 
         FlowPanel advancedOptionWrapper = new FlowPanel();
         metadataObjectSelector.displayShowAll(false);

@@ -23,7 +23,7 @@ public abstract class CommonDisplay {
         FlowPanel flowPanel = new FlowPanel();
         title.addStyleName("left");
         flowPanel.add(title);
-        if (it.dataNotification != null) {
+        if (it != null && it.dataNotification != null) {
             if (it.dataNotification.inCompare()) {
                 HTML closeX = new HTML("X");
                 closeX.setTitle("Close");

@@ -76,7 +76,7 @@ abstract public class ButtonListSelector implements IsWidget {
 
 
     public void refreshEnabledStatus(List<? extends AnnotatedItem> items) {
-        if (buttons !=null && buttons.size()>0) {
+        if (buttons !=null && buttons.size()>0) { // If there are no buttons maybe the setNames method was not called yet.
             for (AnnotatedItem item : items) {
                 Button b = findButton(item.getName());
                 if (b != null) {

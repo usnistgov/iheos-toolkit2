@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.HTML;
@@ -19,11 +20,13 @@ import java.util.Map;
 import java.util.Set;
 
 public class StatusFieldFilterSelector extends Widget implements QueryFilter, IndexFieldFilterSelector<DocumentEntryIndexField, DocumentEntry> {
+    public static final String URN_OASIS_NAMES_TC_EBXML_REGREP_STATUS_TYPE_APPROVED = "urn:oasis:names:tc:ebxml-regrep:StatusType:Approved";
+    public static final String URN_OASIS_NAMES_TC_EBXML_REGREP_STATUS_TYPE_DEPRECATED = "urn:oasis:names:tc:ebxml-regrep:StatusType:Deprecated";
     HorizontalPanel hp = new HorizontalPanel();
 
-    final static String approvedString = "Approved";
-    final static String deprecatedString = "Deprecated";
-    static final String bothString = "Both";
+    final static String approvedLabelString = "Approved";
+    final static String deprecatedLabelString = "Deprecated";
+    static final String bothLabelString = "Both";
 
     private final HTML approvedCountLabel = new HTML();
     private final HTML deprecatedCountLabel = new HTML();
@@ -38,11 +41,11 @@ public class StatusFieldFilterSelector extends Widget implements QueryFilter, In
     public StatusFieldFilterSelector(String label, SimpleCallbackT<NewSelectedFieldValue> valueChangeNotification) {
         this.valueChangeNotification = valueChangeNotification;
 
-        hp.add(new RadioButton(label, approvedString));
+        hp.add(new RadioButton(label, approvedLabelString));
         hp.add(approvedCountLabel);
-        hp.add(new RadioButton(label, deprecatedString));
+        hp.add(new RadioButton(label, deprecatedLabelString));
         hp.add(deprecatedCountLabel);
-        RadioButton all = new RadioButton(label, bothString);
+        RadioButton all = new RadioButton(label, bothLabelString);
         all.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
                                       @Override
                                       public void onValueChange(ValueChangeEvent<Boolean> valueChangeEvent) {
@@ -82,11 +85,11 @@ public class StatusFieldFilterSelector extends Widget implements QueryFilter, In
         for (int i=0; i<hp.getWidgetCount(); i++) {
             RadioButton rb = (RadioButton) hp.getWidget(i);
             if (rb.getValue()) {
-                if (approvedString.equals(rb.getText())) status.add("urn:oasis:names:tc:ebxml-regrep:StatusType:Approved");
-                else if (deprecatedString.equals(rb.getText())) status.add("urn:oasis:names:tc:ebxml-regrep:StatusType:Deprecated");
-                else if (bothString.equals(rb.getText())) {
-                    status.add("urn:oasis:names:tc:ebxml-regrep:StatusType:Approved");
-                    status.add("urn:oasis:names:tc:ebxml-regrep:StatusType:Deprecated");
+                if (approvedLabelString.equals(rb.getText())) status.add(URN_OASIS_NAMES_TC_EBXML_REGREP_STATUS_TYPE_APPROVED);
+                else if (deprecatedLabelString.equals(rb.getText())) status.add(URN_OASIS_NAMES_TC_EBXML_REGREP_STATUS_TYPE_DEPRECATED);
+                else if (bothLabelString.equals(rb.getText())) {
+                    status.add(URN_OASIS_NAMES_TC_EBXML_REGREP_STATUS_TYPE_APPROVED);
+                    status.add(URN_OASIS_NAMES_TC_EBXML_REGREP_STATUS_TYPE_DEPRECATED);
                 }
             }
         }
@@ -101,13 +104,17 @@ public class StatusFieldFilterSelector extends Widget implements QueryFilter, In
 
     @Override
     public void mapFieldValueToCountLabel() {
-        countLabelMap.put(new IndexFieldValue(approvedString), approvedCountLabel);
-        countLabelMap.put(new IndexFieldValue(deprecatedString), deprecatedCountLabel);
-        countLabelMap.put(new IndexFieldValue(bothString), bothCountLabel);
+        countLabelMap.put(new IndexFieldValue(URN_OASIS_NAMES_TC_EBXML_REGREP_STATUS_TYPE_APPROVED), approvedCountLabel);
+        countLabelMap.put(new IndexFieldValue(URN_OASIS_NAMES_TC_EBXML_REGREP_STATUS_TYPE_DEPRECATED), deprecatedCountLabel);
+        countLabelMap.put(new IndexFieldValue(bothLabelString), bothCountLabel);
     }
     @Override
     public void doUpdateCount(IndexFieldValue fieldValue, int count) {
-       countLabelMap.get(fieldValue).setText(Integer.toString(count));
+        if (!countLabelMap.containsKey(fieldValue)) {
+            GWT.log("Error: there is no Counter label defined for this value: " + fieldValue.toString());
+        } else {
+            countLabelMap.get(fieldValue).setText(Integer.toString(count));
+        }
     }
 
     @Override
