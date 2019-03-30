@@ -10,4 +10,6 @@ public interface IndexFieldFilterSelector <S,T extends MetadataObject> extends I
     Widget asWidget();
     S getFieldType();
     List<T> getResult();
+    void addResult(List<T> result);
+    void clearResult();
 }

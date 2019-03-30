@@ -126,7 +126,14 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
                             if (list!=null && !list.isEmpty()) {
                                 Map<DocumentEntryIndexField, Map<IndexFieldValue, List<DocumentEntry>>> fieldMap = DocumentEntryIndex.indexMap(list);
                                 while (it.hasNext()) {
-                                    refreshCountableItems(fieldMap, it.next());
+                                    IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry> selector = it.next();
+                                    refreshCountableItems(fieldMap, selector);
+                                    selector.clearResult();
+                                    if (newSelectedValue.getField().equals(selector.getFieldType())) {
+                                        for (IndexFieldValue ifv : newSelectedValue.getValues()) {
+                                           selector.addResult(fieldMap.get(newSelectedValue.getField()).get(ifv));
+                                        }
+                                    }
                                 }
                             }
                         }

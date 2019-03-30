@@ -4,6 +4,6 @@ import java.util.Set;
 
 public interface IndexFieldValueCount {
     void doUpdateCount(IndexFieldValue fieldValue, int count);
-    Set<IndexFieldValue> getFieldValues();
-    void mapFieldValueToCountLabel();
+    Set<IndexFieldValue> getSelectedValues();
+    void mapFieldValuesToCounterLabel();
 }

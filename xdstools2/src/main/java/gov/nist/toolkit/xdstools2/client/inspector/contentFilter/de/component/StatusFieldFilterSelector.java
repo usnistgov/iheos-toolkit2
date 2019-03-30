@@ -1,6 +1,8 @@
 package gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component;
 
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.HTML;
@@ -11,28 +13,32 @@ import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.IndexFieldValue;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.DocumentEntryIndexField;
 import gov.nist.toolkit.xdstools2.client.util.SimpleCallbackT;
-import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.QueryFilter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class StatusFieldFilterSelector extends Widget implements QueryFilter, IndexFieldFilterSelector<DocumentEntryIndexField, DocumentEntry> {
+public class StatusFieldFilterSelector extends Widget implements IndexFieldFilterSelector<DocumentEntryIndexField, DocumentEntry> {
     public static final String URN_OASIS_NAMES_TC_EBXML_REGREP_STATUS_TYPE_APPROVED = "urn:oasis:names:tc:ebxml-regrep:StatusType:Approved";
     public static final String URN_OASIS_NAMES_TC_EBXML_REGREP_STATUS_TYPE_DEPRECATED = "urn:oasis:names:tc:ebxml-regrep:StatusType:Deprecated";
     HorizontalPanel hp = new HorizontalPanel();
 
-    final static String approvedLabelString = "Approved";
-    final static String deprecatedLabelString = "Deprecated";
-    static final String bothLabelString = "Both";
+    static final String approvedLabelString = "Approved";
+    static final String deprecatedLabelString = "Deprecated";
+    static final String unknownLabelString = "Unknown";
 
+    private final RadioButton approvedRb;
+    private final RadioButton deprecatedRb;
+    private final RadioButton unknownRb;
     private final HTML approvedCountLabel = new HTML();
     private final HTML deprecatedCountLabel = new HTML();
-    private final HTML bothCountLabel = new HTML();
+    private final HTML unknownCountLabel = new HTML();
 
     private Map<IndexFieldValue, HTML> countLabelMap = new HashMap<>();
+    private Map<IndexFieldValue, Integer> unknownFieldValueCountMap = new HashMap<>();
 
     private SimpleCallbackT valueChangeNotification;
 
@@ -41,22 +47,47 @@ public class StatusFieldFilterSelector extends Widget implements QueryFilter, In
     public StatusFieldFilterSelector(String label, SimpleCallbackT<NewSelectedFieldValue> valueChangeNotification) {
         this.valueChangeNotification = valueChangeNotification;
 
-        hp.add(new RadioButton(label, approvedLabelString));
+        approvedRb = new RadioButton(label, approvedLabelString);
+        deprecatedRb = new RadioButton(label, deprecatedLabelString);
+        unknownRb = new RadioButton(label, unknownLabelString);
+
+        ValueChangeHandler<Boolean> valueChangeHandler = new ValueChangeHandler<Boolean>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Boolean> valueChangeEvent) {
+                doValueChangeNotification(new NewSelectedFieldValue(StatusFieldFilterSelector.this, getSelectedValues()));
+            }
+        };
+
+        hp.add(approvedRb);
+        approvedRb.addValueChangeHandler(valueChangeHandler);
         hp.add(approvedCountLabel);
-        hp.add(new RadioButton(label, deprecatedLabelString));
+        hp.add(deprecatedRb);
+        deprecatedRb.addValueChangeHandler(valueChangeHandler);
         hp.add(deprecatedCountLabel);
-        RadioButton all = new RadioButton(label, bothLabelString);
-        all.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
-                                      @Override
-                                      public void onValueChange(ValueChangeEvent<Boolean> valueChangeEvent) {
-                                            doValueChangeNotification(new NewSelectedFieldValue(StatusFieldFilterSelector.this, getSelectedValues()));
-                                      }
-                                  });
-                hp.add(all);
-        hp.add(bothCountLabel);
+        unknownRb.setVisible(false);
+        unknownCountLabel.setVisible(false);
+        unknownRb.addValueChangeHandler(valueChangeHandler);
+        hp.add(unknownRb);
 
+        HTML clearSelectionLabel = new HTML("Clear");
+        clearSelectionLabel.getElement().getStyle().setMarginTop(12, Style.Unit.PX);
+        clearSelectionLabel.addStyleName("roundedButton3");
+        clearSelectionLabel.addStyleName("right");
+        clearSelectionLabel.addClickHandler(new ClickHandler() {
+                                                @Override
+                                                public void onClick(ClickEvent clickEvent) {
+                                                    for (int i=0; i<hp.getWidgetCount(); i++) {
+                                                        Widget w =  hp.getWidget(i);
+                                                        if (w instanceof RadioButton) {
+                                                            RadioButton rb = (RadioButton) w;
+                                                            rb.setValue(false);
+                                                        }
+                                                    }
+                                                 }
+                                            });
+        hp.add(clearSelectionLabel);
 
-        mapFieldValueToCountLabel();
+        mapFieldValuesToCounterLabel();
     }
 
     @Override
@@ -75,46 +106,45 @@ public class StatusFieldFilterSelector extends Widget implements QueryFilter, In
 
     public Widget asWidget() { return hp; }
 
-    @Override
-    public void addToCodeSpec(Map<String, List<String>> codeSpec, String codeType) {
-        codeSpec.put(codeType, getSelectedValues());
-    }
 
-    List<String> getSelectedValues() {
-        List<String> status = new ArrayList<>();
-        for (int i=0; i<hp.getWidgetCount(); i++) {
-            RadioButton rb = (RadioButton) hp.getWidget(i);
-            if (rb.getValue()) {
-                if (approvedLabelString.equals(rb.getText())) status.add(URN_OASIS_NAMES_TC_EBXML_REGREP_STATUS_TYPE_APPROVED);
-                else if (deprecatedLabelString.equals(rb.getText())) status.add(URN_OASIS_NAMES_TC_EBXML_REGREP_STATUS_TYPE_DEPRECATED);
-                else if (bothLabelString.equals(rb.getText())) {
-                    status.add(URN_OASIS_NAMES_TC_EBXML_REGREP_STATUS_TYPE_APPROVED);
-                    status.add(URN_OASIS_NAMES_TC_EBXML_REGREP_STATUS_TYPE_DEPRECATED);
-                }
-            }
+    @Override
+    public Set<IndexFieldValue> getSelectedValues() {
+        Set<IndexFieldValue> values = new HashSet<>();
+        if (approvedRb.getValue()) values.add(new IndexFieldValue(URN_OASIS_NAMES_TC_EBXML_REGREP_STATUS_TYPE_APPROVED));
+        else if (deprecatedRb.getValue()) values.add(new IndexFieldValue(URN_OASIS_NAMES_TC_EBXML_REGREP_STATUS_TYPE_DEPRECATED));
+        else if (unknownRb.getValue()) {
+            values.addAll(unknownFieldValueCountMap.keySet());
         }
-        return status;
+        return values;
     }
 
 
     @Override
-    public Set<IndexFieldValue> getFieldValues() {
-        return countLabelMap.keySet();
-    }
-
-    @Override
-    public void mapFieldValueToCountLabel() {
+    public void mapFieldValuesToCounterLabel() {
         countLabelMap.put(new IndexFieldValue(URN_OASIS_NAMES_TC_EBXML_REGREP_STATUS_TYPE_APPROVED), approvedCountLabel);
         countLabelMap.put(new IndexFieldValue(URN_OASIS_NAMES_TC_EBXML_REGREP_STATUS_TYPE_DEPRECATED), deprecatedCountLabel);
-        countLabelMap.put(new IndexFieldValue(bothLabelString), bothCountLabel);
     }
     @Override
     public void doUpdateCount(IndexFieldValue fieldValue, int count) {
         if (!countLabelMap.containsKey(fieldValue)) {
-            GWT.log("Error: there is no Counter label defined for this value: " + fieldValue.toString());
+            // Unknown
+            unknownRb.setVisible(true);
+            unknownCountLabel.setVisible(true);
+           unknownFieldValueCountMap.put(fieldValue, count);
+           unknownCountLabel.setText(Integer.toString(getUnknownCount()));
         } else {
             countLabelMap.get(fieldValue).setText(Integer.toString(count));
         }
+    }
+
+    private int getUnknownCount() {
+        int count = 0;
+        if (!unknownFieldValueCountMap.isEmpty()) {
+            for (IndexFieldValue ifv : unknownFieldValueCountMap.keySet()) {
+                count += unknownFieldValueCountMap.get(ifv);
+            }
+        }
+        return count;
     }
 
     @Override
@@ -122,4 +152,13 @@ public class StatusFieldFilterSelector extends Widget implements QueryFilter, In
        valueChangeNotification.run(newSelectedValue);
     }
 
+    @Override
+    public void addResult(List<DocumentEntry> result) {
+        this.result.addAll(result);
+    }
+
+    @Override
+    public void clearResult() {
+        this.result.clear();
+    }
 }

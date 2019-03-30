@@ -1,15 +1,16 @@
 package gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component;
 
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
+import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.IndexFieldValue;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.DocumentEntryIndexField;
 
-import java.util.List;
+import java.util.Set;
 
 public class NewSelectedFieldValue {
     private IndexFieldFilterSelector<DocumentEntryIndexField, DocumentEntry> filterSelector;
-    private List<String> values;
+    private Set<IndexFieldValue> values;
 
-    public NewSelectedFieldValue(IndexFieldFilterSelector filterSelector, List<String> values) {
+    public NewSelectedFieldValue(IndexFieldFilterSelector filterSelector, Set<IndexFieldValue> values) {
         this.filterSelector = filterSelector;
         this.values = values;
     }
@@ -22,8 +23,7 @@ public class NewSelectedFieldValue {
         return filterSelector;
     }
 
-    public List<String> getValues() {
+    public Set<IndexFieldValue> getValues() {
         return values;
     }
-
 }
