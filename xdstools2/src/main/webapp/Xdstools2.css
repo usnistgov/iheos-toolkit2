@@ -332,6 +332,10 @@ h3 {
   vertical-align: bottom; cursor: pointer; margin: 3px; display:inline-block;
 }
 
+.inlineBlock {
+  vertical-align: bottom; display: inline-block;
+}
+
 .iconStyle_20x20 {
   width: 20px; height: 20px;
 }

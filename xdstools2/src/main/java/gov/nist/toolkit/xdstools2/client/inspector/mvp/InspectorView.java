@@ -294,20 +294,21 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
 
         topNavPanel.add(contentFilterCtl);
         topNavPanel.add(contentFilterPanel);
+
         topNavPanel.add(advancedOptionCtl);
         topNavPanel.add(advancedOptionPanel);
 
+        // The filter panel
         FlowPanel contentFilterWrapper = new FlowPanel();
         filterObjectSelector.displayShowAll(false);
         contentFilterWrapper.add(filterObjectSelector.asWidget());
         contentFilterWrapper.add(new HTML("<br/>"));
-        // The filter panel
         deFilterFeature = new DocumentEntryFilterDisplay();
-        deFilterFeature.hideFilter();
         contentFilterWrapper.add(deFilterFeature.asWidget());
         contentFilterPanel.add(contentFilterWrapper);
         contentFilterPanel.addStyleName("paddedHorizontalPanel");
 
+        // The advanced option panel
         FlowPanel advancedOptionWrapper = new FlowPanel();
         metadataObjectSelector.displayShowAll(false);
         advancedOptionWrapper.add(metadataObjectSelector.asWidget());

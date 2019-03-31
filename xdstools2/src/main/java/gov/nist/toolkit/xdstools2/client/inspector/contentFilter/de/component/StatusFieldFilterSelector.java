@@ -5,8 +5,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
@@ -24,7 +24,7 @@ import java.util.Set;
 public class StatusFieldFilterSelector extends Widget implements IndexFieldFilterSelector<DocumentEntryIndexField, DocumentEntry> {
     public static final String URN_OASIS_NAMES_TC_EBXML_REGREP_STATUS_TYPE_APPROVED = "urn:oasis:names:tc:ebxml-regrep:StatusType:Approved";
     public static final String URN_OASIS_NAMES_TC_EBXML_REGREP_STATUS_TYPE_DEPRECATED = "urn:oasis:names:tc:ebxml-regrep:StatusType:Deprecated";
-    HorizontalPanel hp = new HorizontalPanel();
+    FlowPanel hp = new FlowPanel();
 
     static final String approvedLabelString = "Approved";
     static final String deprecatedLabelString = "Deprecated";
@@ -58,13 +58,19 @@ public class StatusFieldFilterSelector extends Widget implements IndexFieldFilte
             }
         };
 
+        HTML selectorLabel = new HTML(label);
+        selectorLabel.addStyleName("inlineBlock");
+        hp.add(selectorLabel);
         hp.add(approvedRb);
         approvedRb.addValueChangeHandler(valueChangeHandler);
+        approvedCountLabel.addStyleName("inlineBlock");
         hp.add(approvedCountLabel);
         hp.add(deprecatedRb);
         deprecatedRb.addValueChangeHandler(valueChangeHandler);
+        deprecatedCountLabel.addStyleName("inlineBlock");
         hp.add(deprecatedCountLabel);
         unknownRb.setVisible(false);
+        unknownCountLabel.addStyleName("inlineBlock");
         unknownCountLabel.setVisible(false);
         unknownRb.addValueChangeHandler(valueChangeHandler);
         hp.add(unknownRb);
@@ -72,20 +78,22 @@ public class StatusFieldFilterSelector extends Widget implements IndexFieldFilte
         HTML clearSelectionLabel = new HTML("Clear");
         clearSelectionLabel.getElement().getStyle().setMarginTop(12, Style.Unit.PX);
         clearSelectionLabel.addStyleName("roundedButton3");
-        clearSelectionLabel.addStyleName("right");
+        clearSelectionLabel.addStyleName("inlineBlock");
         clearSelectionLabel.addClickHandler(new ClickHandler() {
                                                 @Override
                                                 public void onClick(ClickEvent clickEvent) {
-                                                    for (int i=0; i<hp.getWidgetCount(); i++) {
+                                                    for (int i = 0; i< hp.getWidgetCount(); i++) {
                                                         Widget w =  hp.getWidget(i);
                                                         if (w instanceof RadioButton) {
                                                             RadioButton rb = (RadioButton) w;
                                                             rb.setValue(false);
                                                         }
                                                     }
+                                                    doValueChangeNotification(new NewSelectedFieldValue(StatusFieldFilterSelector.this, null));
                                                  }
                                             });
         hp.add(clearSelectionLabel);
+        hp.add(new HTML("<br/>"));
 
         mapFieldValuesToCounterLabel();
     }
@@ -131,19 +139,22 @@ public class StatusFieldFilterSelector extends Widget implements IndexFieldFilte
             unknownRb.setVisible(true);
             unknownCountLabel.setVisible(true);
            unknownFieldValueCountMap.put(fieldValue, count);
-           unknownCountLabel.setText(Integer.toString(getUnknownCount()));
+           setUnknownCount(unknownCountLabel);
         } else {
             countLabelMap.get(fieldValue).setText(Integer.toString(count));
         }
     }
 
-    private int getUnknownCount() {
+    private int setUnknownCount(HTML label) {
         int count = 0;
+        StringBuffer sb = new StringBuffer();
         if (!unknownFieldValueCountMap.isEmpty()) {
             for (IndexFieldValue ifv : unknownFieldValueCountMap.keySet()) {
                 count += unknownFieldValueCountMap.get(ifv);
+                sb.append("ifv: " +ifv.toString() + " count: " + unknownFieldValueCountMap.get(ifv));
             }
         }
+        label.setText(sb.toString());
         return count;
     }
 

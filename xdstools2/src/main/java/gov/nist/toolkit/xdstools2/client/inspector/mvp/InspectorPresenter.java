@@ -476,9 +476,12 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
            FilterFeature filterFeature = view.getFilterFeatureMap().get(key);
            if (filterFeature !=null && key.equals(targetObjectType)) {
                 if (!filterFeature.isActive()) {
-                   filterFeature.setData( dataMap.get(key));
+                   filterFeature.setData(dataMap.get(key));
+                   filterFeature.displayFilter();
                 }
-                filterFeature.displayFilter();
+                filterFeature.asWidget().setVisible(true);
+           } else {
+               filterFeature.asWidget().setVisible(false);
            }
        }
     }

@@ -109,7 +109,7 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
     public DocumentEntryFilterDisplay() {
         filterSelectors = new LinkedList<>();
 
-        final IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry> statusFilterSelector = new StatusFieldFilterSelector("DocumentEntries", new SimpleCallbackT<NewSelectedFieldValue>() {
+        final IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry> statusFilterSelector = new StatusFieldFilterSelector("DocumentEntry Status", new SimpleCallbackT<NewSelectedFieldValue>() {
             @Override
             public void run(NewSelectedFieldValue newSelectedValue) {
                 // 1. reIndex
@@ -129,9 +129,15 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
                                     IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry> selector = it.next();
                                     refreshCountableItems(fieldMap, selector);
                                     selector.clearResult();
-                                    if (newSelectedValue.getField().equals(selector.getFieldType())) {
-                                        for (IndexFieldValue ifv : newSelectedValue.getValues()) {
-                                           selector.addResult(fieldMap.get(newSelectedValue.getField()).get(ifv));
+                                    if (newSelectedValue.getValues()==null) {
+                                        // Cleared filter
+                                        selector.addResult(list);
+
+                                    } else {
+                                        if (newSelectedValue.getField().equals(selector.getFieldType())) {
+                                            for (IndexFieldValue ifv : newSelectedValue.getValues()) {
+                                                selector.addResult(fieldMap.get(newSelectedValue.getField()).get(ifv));
+                                            }
                                         }
                                     }
                                 }
@@ -186,7 +192,6 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
     // skb TODO: handle show hidden view
     @Override
     public void hideFilter() {
-        featurePanel.setVisible(false);
     }
 
 
@@ -217,11 +222,11 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
 
     @Override
     public void displayFilter() {
-        featurePanel.setVisible(true);
         // skb TODO: Clear tree selection because the selected item may not be in the filtered result set.
 
-        String title = "<h4>Trial Version Document Entries Filter</h4>";
+        String title = "<b>Trial Version Document Entries Filter</b>";
         featurePanel.add(createTitle(HyperlinkFactory.addHTML(title)));
+        featurePanel.add(new HTML("<br/>"));
         FlexTable ft = new FlexTable();
         int row=0;
         boolean b = false;
