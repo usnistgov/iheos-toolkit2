@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -15,6 +16,7 @@ import gov.nist.toolkit.xdstools2.client.inspector.CommonDisplay;
 import gov.nist.toolkit.xdstools2.client.inspector.HyperlinkFactory;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.FilterFeature;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.IndexFieldValue;
+import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.EntryTypeFieldFilterSelector;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.IndexFieldFilterSelector;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.NewSelectedFieldValue;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.StatusFieldFilterSelector;
@@ -109,44 +111,62 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
     public DocumentEntryFilterDisplay() {
         filterSelectors = new LinkedList<>();
 
-        final IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry> statusFilterSelector = new StatusFieldFilterSelector("DocumentEntry Status", new SimpleCallbackT<NewSelectedFieldValue>() {
+        SimpleCallbackT<NewSelectedFieldValue> valueChangeCallback =  new SimpleCallbackT<NewSelectedFieldValue>() {
             @Override
             public void run(NewSelectedFieldValue newSelectedValue) {
                 // 1. reIndex
 //                filterSelectors.listIterator()
-                        int idx = filterSelectors.indexOf(newSelectedValue.getFilterSelector());
-                        ListIterator<IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry>> it = filterSelectors.listIterator(idx);
-                        if (it!=null) {
-                            List<DocumentEntry> list = null;
-                            if (it.hasPrevious()) {
-                                 list = it.previous().getResult();
-                            } else {
-                                list = initialDeList;
+                int idx = filterSelectors.indexOf(newSelectedValue.getFilterSelector());
+                ListIterator<IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry>> it = filterSelectors.listIterator(idx);
+                if (it!=null) {
+                    List<DocumentEntry> list = null;
+                    if (it.hasPrevious()) {
+                        list = it.previous().getResult();
+                    } else if (idx == 0) {
+                        list = new ArrayList<>();
+                        for (IndexFieldValue ifv : newSelectedValue.getValues()) {
+                            if (fieldIndexMap.containsKey(newSelectedValue.getField())) {
+                                if (fieldIndexMap.get(newSelectedValue.getField()).containsKey(ifv)) {
+                                    list.addAll(fieldIndexMap.get(newSelectedValue.getField()).get(ifv));
+                                }
                             }
-                            if (list!=null && !list.isEmpty()) {
-                                Map<DocumentEntryIndexField, Map<IndexFieldValue, List<DocumentEntry>>> fieldMap = DocumentEntryIndex.indexMap(list);
-                                while (it.hasNext()) {
-                                    IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry> selector = it.next();
-                                    refreshCountableItems(fieldMap, selector);
-                                    selector.clearResult();
-                                    if (newSelectedValue.getValues()==null) {
-                                        // Cleared filter
-                                        selector.addResult(list);
+                        }
+                    }
+                    if (list!=null) {
+                        if (list.isEmpty()) {
+                            while (it.hasNext()) {
+                                IndexFieldFilterSelector<DocumentEntryIndexField, DocumentEntry> selector = it.next();
+                                selector.clearResult();
+                            }
+                        } else {
+                            Map<DocumentEntryIndexField, Map<IndexFieldValue, List<DocumentEntry>>> fieldMap = DocumentEntryIndex.indexMap(list);
+                            while (it.hasNext()) {
+                                IndexFieldFilterSelector<DocumentEntryIndexField, DocumentEntry> selector = it.next();
+                                selector.clearResult();
+                                refreshCountableItems(selector, fieldMap);
+                                if (newSelectedValue.getValues() == null) {
+                                    // Cleared filter
+                                    selector.addResult(list);
 
-                                    } else {
-                                        if (newSelectedValue.getField().equals(selector.getFieldType())) {
-                                            for (IndexFieldValue ifv : newSelectedValue.getValues()) {
-                                                selector.addResult(fieldMap.get(newSelectedValue.getField()).get(ifv));
-                                            }
+                                } else {
+                                    if (newSelectedValue.getField().equals(selector.getFieldType())) {
+                                        for (IndexFieldValue ifv : newSelectedValue.getValues()) {
+                                            selector.addResult(fieldMap.get(newSelectedValue.getField()).get(ifv));
                                         }
                                     }
                                 }
                             }
                         }
+                    }
+                }
             }
-        });
+        };
+
+        final IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry> statusFilterSelector = new StatusFieldFilterSelector("DocumentEntry Status", valueChangeCallback);
+        final IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry> entryTypeFilterSelector = new EntryTypeFieldFilterSelector("DocumentEntry Type", valueChangeCallback);
 
         filterSelectors.add(statusFilterSelector);
+        filterSelectors.add(entryTypeFilterSelector);
     }
 
     @Override
@@ -200,18 +220,19 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
         initialDeList = data;
         fieldIndexMap = DocumentEntryIndex.indexMap(data);
         for (IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry> selector : filterSelectors) {
-            refreshCountableItems(fieldIndexMap, selector);
+            refreshCountableItems(selector, fieldIndexMap);
         }
     }
 
     private void refreshCountableItems(
-            Map<DocumentEntryIndexField, Map<IndexFieldValue, List<DocumentEntry>>> fieldMap,
-            IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry> selector) {
+            IndexFieldFilterSelector<DocumentEntryIndexField, DocumentEntry> selector, Map<DocumentEntryIndexField, Map<IndexFieldValue, List<DocumentEntry>>> fieldMap) {
         Map<IndexFieldValue, List<DocumentEntry>> valueMap = fieldMap.get(selector.getFieldType());
         if (valueMap!=null && !valueMap.isEmpty()) {
             for (IndexFieldValue ifv : valueMap.keySet()) {
                 selector.doUpdateCount(ifv, valueMap.get(ifv).size());
             }
+        } else {
+            GWT.log("Are you missing an index entry in DocumentEntryIndex#indexMap?");
         }
     }
 

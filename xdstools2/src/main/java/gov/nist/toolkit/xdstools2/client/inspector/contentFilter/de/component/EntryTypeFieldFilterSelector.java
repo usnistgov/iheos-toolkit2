@@ -21,20 +21,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class StatusFieldFilterSelector extends Widget implements IndexFieldFilterSelector<DocumentEntryIndexField, DocumentEntry> {
-    public static final String URN_OASIS_NAMES_TC_EBXML_REGREP_STATUS_TYPE_APPROVED = "urn:oasis:names:tc:ebxml-regrep:StatusType:Approved";
-    public static final String URN_OASIS_NAMES_TC_EBXML_REGREP_STATUS_TYPE_DEPRECATED = "urn:oasis:names:tc:ebxml-regrep:StatusType:Deprecated";
+public class EntryTypeFieldFilterSelector extends Widget implements IndexFieldFilterSelector<DocumentEntryIndexField, DocumentEntry> {
+    public static final String URN_UUID_STABLE_DOCUMENT_ENTRY_TYPE = "urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1";
+    public static final String URN_UUID_ONDEMAND_DOCUMENT_ENTRY_TYPE = "urn:uuid:34268e47-fdf5-41a6-ba33-82133c465248";
     FlowPanel hp = new FlowPanel();
 
-    static final String approvedLabelString = "Approved";
-    static final String deprecatedLabelString = "Deprecated";
+    static final String stableLabelString = "Stable";
+    static final String onDemandLabelString = "On-Demand";
     static final String unknownLabelString = "Unknown";
 
-    private final RadioButton approvedRb;
-    private final RadioButton deprecatedRb;
+    private final RadioButton stableRb;
+    private final RadioButton onDemandRb;
     private final RadioButton unknownRb;
-    private final HTML approvedCountLabel = new HTML();
-    private final HTML deprecatedCountLabel = new HTML();
+    private final HTML stableCountLabel = new HTML();
+    private final HTML onDemandCountLabel = new HTML();
     private final HTML unknownCountLabel = new HTML();
 
     private Map<IndexFieldValue, HTML> countLabelMap = new HashMap<>();
@@ -44,31 +44,31 @@ public class StatusFieldFilterSelector extends Widget implements IndexFieldFilte
 
     private List<DocumentEntry> result = new ArrayList<>();
 
-    public StatusFieldFilterSelector(String label, SimpleCallbackT<NewSelectedFieldValue> valueChangeNotification) {
+    public EntryTypeFieldFilterSelector(String label, SimpleCallbackT<NewSelectedFieldValue> valueChangeNotification) {
         this.valueChangeNotification = valueChangeNotification;
 
-        approvedRb = new RadioButton(label, approvedLabelString);
-        deprecatedRb = new RadioButton(label, deprecatedLabelString);
+        stableRb = new RadioButton(label, stableLabelString);
+        onDemandRb = new RadioButton(label, onDemandLabelString);
         unknownRb = new RadioButton(label, unknownLabelString);
 
         ValueChangeHandler<Boolean> valueChangeHandler = new ValueChangeHandler<Boolean>() {
             @Override
             public void onValueChange(ValueChangeEvent<Boolean> valueChangeEvent) {
-                doValueChangeNotification(new NewSelectedFieldValue(StatusFieldFilterSelector.this, getSelectedValues()));
+                doValueChangeNotification(new NewSelectedFieldValue(EntryTypeFieldFilterSelector.this, getSelectedValues()));
             }
         };
 
         HTML selectorLabel = new HTML(label);
         selectorLabel.addStyleName("inlineBlock");
         hp.add(selectorLabel);
-        hp.add(approvedRb);
-        approvedRb.addValueChangeHandler(valueChangeHandler);
-        approvedCountLabel.addStyleName("inlineBlock");
-        hp.add(approvedCountLabel);
-        hp.add(deprecatedRb);
-        deprecatedRb.addValueChangeHandler(valueChangeHandler);
-        deprecatedCountLabel.addStyleName("inlineBlock");
-        hp.add(deprecatedCountLabel);
+        hp.add(stableRb);
+        stableRb.addValueChangeHandler(valueChangeHandler);
+        stableCountLabel.addStyleName("inlineBlock");
+        hp.add(stableCountLabel);
+        hp.add(onDemandRb);
+        onDemandRb.addValueChangeHandler(valueChangeHandler);
+        onDemandCountLabel.addStyleName("inlineBlock");
+        hp.add(onDemandCountLabel);
         unknownRb.setVisible(false);
         unknownCountLabel.addStyleName("inlineBlock");
         unknownCountLabel.setVisible(false);
@@ -90,7 +90,7 @@ public class StatusFieldFilterSelector extends Widget implements IndexFieldFilte
                                                             rb.setValue(false);
                                                         }
                                                     }
-                                                    doValueChangeNotification(new NewSelectedFieldValue(StatusFieldFilterSelector.this, null));
+                                                    doValueChangeNotification(new NewSelectedFieldValue(EntryTypeFieldFilterSelector.this, null));
                                                  }
                                             });
         hp.add(clearSelectionLabel);
@@ -106,12 +106,8 @@ public class StatusFieldFilterSelector extends Widget implements IndexFieldFilte
 
     @Override
     public DocumentEntryIndexField getFieldType() {
-        return DocumentEntryIndexField.STATUS;
+        return DocumentEntryIndexField.OBJECT_TYPE;
     }
-
-    // skb TODO: create a constructor(label:string, impl:changeNotificationInterface)
-    // store impl in local variable
-    // on value change, return getValues(). This will be used to count the matching items.
 
     public Widget asWidget() { return hp; }
 
@@ -119,8 +115,8 @@ public class StatusFieldFilterSelector extends Widget implements IndexFieldFilte
     @Override
     public Set<IndexFieldValue> getSelectedValues() {
         Set<IndexFieldValue> values = new HashSet<>();
-        if (approvedRb.getValue()) values.add(new IndexFieldValue(URN_OASIS_NAMES_TC_EBXML_REGREP_STATUS_TYPE_APPROVED));
-        else if (deprecatedRb.getValue()) values.add(new IndexFieldValue(URN_OASIS_NAMES_TC_EBXML_REGREP_STATUS_TYPE_DEPRECATED));
+        if (stableRb.getValue()) values.add(new IndexFieldValue(URN_UUID_STABLE_DOCUMENT_ENTRY_TYPE));
+        else if (onDemandRb.getValue()) values.add(new IndexFieldValue(URN_UUID_ONDEMAND_DOCUMENT_ENTRY_TYPE));
         else if (unknownRb.getValue()) {
             values.addAll(unknownFieldValueCountMap.keySet());
         }
@@ -130,8 +126,8 @@ public class StatusFieldFilterSelector extends Widget implements IndexFieldFilte
 
     @Override
     public void mapFieldValuesToCounterLabel() {
-        countLabelMap.put(new IndexFieldValue(URN_OASIS_NAMES_TC_EBXML_REGREP_STATUS_TYPE_APPROVED), approvedCountLabel);
-        countLabelMap.put(new IndexFieldValue(URN_OASIS_NAMES_TC_EBXML_REGREP_STATUS_TYPE_DEPRECATED), deprecatedCountLabel);
+        countLabelMap.put(new IndexFieldValue(URN_UUID_STABLE_DOCUMENT_ENTRY_TYPE), stableCountLabel);
+        countLabelMap.put(new IndexFieldValue(URN_UUID_ONDEMAND_DOCUMENT_ENTRY_TYPE), onDemandCountLabel);
     }
     @Override
     public void doUpdateCount(IndexFieldValue fieldValue, int count) {

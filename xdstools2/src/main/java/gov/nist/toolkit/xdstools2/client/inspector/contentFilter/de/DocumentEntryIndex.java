@@ -14,6 +14,7 @@ public class DocumentEntryIndex {
         final Map<DocumentEntryIndexField, Map<IndexFieldValue, List<DocumentEntry>>> fieldMap = new HashMap<>();
         for (DocumentEntry de : deList) {
             indexField(fieldMap, de, DocumentEntryIndexField.STATUS, de.status);
+            indexField(fieldMap, de, DocumentEntryIndexField.OBJECT_TYPE, de.objectType);
         }
         return fieldMap;
     }
