@@ -28,7 +28,7 @@ public class AuthorFieldFilterSelector extends Widget implements IndexFieldFilte
     FlowPanel fp = new FlowPanel();
 
     private final ListBox inputAuthorList = new ListBox();
-    private final HTML authorCountLabel = new HTML();
+    private final HTML matchingItems = new HTML();
 
     private Map<IndexFieldValue, HTML> countLabelMap = new HashMap<>();
 
@@ -51,9 +51,6 @@ public class AuthorFieldFilterSelector extends Widget implements IndexFieldFilte
         fp.add(selectorLabel);
         inputAuthorList.setVisibleItemCount(3);
         fp.add(inputAuthorList);
-        authorCountLabel.addStyleName("inlineBlock");
-        authorCountLabel.addStyleName("labelMarginLeft");
-        fp.add(authorCountLabel);
 
         HTML editSelectionLabel = new HTML("Edit");
         editSelectionLabel.getElement().getStyle().setMarginTop(12, Style.Unit.PX);
@@ -100,6 +97,14 @@ public class AuthorFieldFilterSelector extends Widget implements IndexFieldFilte
                                                  }
                                             });
         fp.add(clearSelectionLabel);
+
+        fp.add(new HTML("&nbsp;"));
+        HTML matchingHeader = new HTML("Matching items:&nbsp;");
+        matchingHeader.addStyleName("inlineBlock");
+        fp.add(matchingHeader);
+        matchingItems.addStyleName("inlineBlock");
+        fp.add(matchingItems);
+
         fp.add(new HTML("<br/>"));
 
         mapFieldValuesToCounterLabel();
@@ -130,11 +135,11 @@ public class AuthorFieldFilterSelector extends Widget implements IndexFieldFilte
 
     @Override
     public void mapFieldValuesToCounterLabel() {
-        countLabelMap.put(new IndexFieldValue("author"), authorCountLabel);
+        countLabelMap.put(new IndexFieldValue("author"), matchingItems);
     }
     @Override
     public void doUpdateCount(IndexFieldValue fieldValue, int count) {
-        authorCountLabel.setText(Integer.toString(count));
+        matchingItems.setText(Integer.toString(count));
     }
 
     @Override
@@ -150,7 +155,7 @@ public class AuthorFieldFilterSelector extends Widget implements IndexFieldFilte
     @Override
     public void clearResult() {
         this.result.clear();
-        authorCountLabel.setText("0");
+        matchingItems.setText("0");
     }
 
     @Override

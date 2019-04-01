@@ -110,6 +110,8 @@ public abstract class TimeFieldFilterSelector extends DateRangeFieldFilter imple
         matchingItems.addStyleName("inlineBlock");
         fp.add(matchingItems);
 
+        fp.add(new HTML("<br/>"));
+
     }
 
     public Widget asWidget() { return fp; }
