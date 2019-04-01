@@ -54,7 +54,7 @@ public class StatusFieldFilterSelector extends Widget implements IndexFieldFilte
         ValueChangeHandler<Boolean> valueChangeHandler = new ValueChangeHandler<Boolean>() {
             @Override
             public void onValueChange(ValueChangeEvent<Boolean> valueChangeEvent) {
-                doValueChangeNotification(new NewSelectedFieldValue(StatusFieldFilterSelector.this, getSelectedValues()));
+                doValueChangeNotification(new NewSelectedFieldValue(StatusFieldFilterSelector.this, getSelectedValues(), false, false));
             }
         };
 
@@ -64,13 +64,16 @@ public class StatusFieldFilterSelector extends Widget implements IndexFieldFilte
         fp.add(approvedRb);
         approvedRb.addValueChangeHandler(valueChangeHandler);
         approvedCountLabel.addStyleName("inlineBlock");
+        approvedCountLabel.addStyleName("labelMarginLeft");
         fp.add(approvedCountLabel);
         fp.add(deprecatedRb);
         deprecatedRb.addValueChangeHandler(valueChangeHandler);
         deprecatedCountLabel.addStyleName("inlineBlock");
+        deprecatedCountLabel.addStyleName("labelMarginLeft");
         fp.add(deprecatedCountLabel);
         unknownRb.setVisible(false);
         unknownCountLabel.addStyleName("inlineBlock");
+        unknownCountLabel.addStyleName("labelMarginLeft");
         unknownCountLabel.setVisible(false);
         unknownRb.addValueChangeHandler(valueChangeHandler);
         fp.add(unknownRb);
@@ -90,7 +93,7 @@ public class StatusFieldFilterSelector extends Widget implements IndexFieldFilte
                                                             rb.setValue(false);
                                                         }
                                                     }
-                                                    doValueChangeNotification(new NewSelectedFieldValue(StatusFieldFilterSelector.this, null));
+                                                    doValueChangeNotification(new NewSelectedFieldValue(StatusFieldFilterSelector.this, null, false, true));
                                                  }
                                             });
         fp.add(clearSelectionLabel);
@@ -173,7 +176,7 @@ public class StatusFieldFilterSelector extends Widget implements IndexFieldFilte
     public void clearResult() {
         this.result.clear();
         for (IndexFieldValue ifv : countLabelMap.keySet()) {
-            countLabelMap.get(ifv).setText("");
+            countLabelMap.get(ifv).setText("0");
         }
         unknownCountLabel.setText("");
     }

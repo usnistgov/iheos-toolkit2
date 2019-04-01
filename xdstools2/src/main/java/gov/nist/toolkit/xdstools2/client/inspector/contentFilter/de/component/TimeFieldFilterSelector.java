@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class CreationTimeFieldFilterSelector extends DateRangeFieldFilter implements IndexFieldFilterSelector<DocumentEntryIndexField, DocumentEntry> {
+public abstract class TimeFieldFilterSelector extends DateRangeFieldFilter implements IndexFieldFilterSelector<DocumentEntryIndexField, DocumentEntry> {
     FlowPanel fp = new FlowPanel();
     DateBox fromDtBox;
     DateBox toDtBox;
@@ -33,14 +33,14 @@ public class CreationTimeFieldFilterSelector extends DateRangeFieldFilter implem
 
     List<DocumentEntry> result = new ArrayList<>();
 
-    public CreationTimeFieldFilterSelector(String label, SimpleCallbackT<NewSelectedFieldValue> valueChangeNotification) {
+    public TimeFieldFilterSelector(String label, SimpleCallbackT<NewSelectedFieldValue> valueChangeNotification) {
         this.valueChangeNotification = valueChangeNotification;
 
         HTML selectorLabel = new HTML(label);
         selectorLabel.addStyleName("inlineBlock");
         fp.add(selectorLabel);
 
-        HTML fromLabel = new HTML("From: ");
+        HTML fromLabel = new HTML("&nbsp;From: ");
         fromLabel.addStyleName("inlineBlock");
         fp.add(fromLabel);
 
@@ -50,7 +50,7 @@ public class CreationTimeFieldFilterSelector extends DateRangeFieldFilter implem
         fromDtBox.setFormat(new DateBox.DefaultFormat(uiViewFormat));
         fp.add(fromDtBox);
 
-        HTML toLabel = new HTML("To: ");
+        HTML toLabel = new HTML("&nbsp;To: ");
         toLabel.addStyleName("inlineBlock");
         fp.add(toLabel);
 
@@ -68,9 +68,7 @@ public class CreationTimeFieldFilterSelector extends DateRangeFieldFilter implem
         applySelectionLabel.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent clickEvent) {
-                fromDtBox.setValue(null);
-                toDtBox.setValue(null);
-                doValueChangeNotification(new NewSelectedFieldValue(CreationTimeFieldFilterSelector.this, getSelectedValues()));
+                doValueChangeNotification(new NewSelectedFieldValue(TimeFieldFilterSelector.this, getSelectedValues(), false, false));
             }
         });
         fp.add(applySelectionLabel);
@@ -87,26 +85,26 @@ public class CreationTimeFieldFilterSelector extends DateRangeFieldFilter implem
             public void onClick(ClickEvent clickEvent) {
                 fromDtBox.setValue(null);
                 toDtBox.setValue(null);
-                doValueChangeNotification(new NewSelectedFieldValue(CreationTimeFieldFilterSelector.this, null));
+                doValueChangeNotification(new NewSelectedFieldValue(TimeFieldFilterSelector.this, null, false, true));
             }
         });
         fp.add(clearSelectionLabel);
 
         fp.add(new HTML("&nbsp;"));
 
-        HTML earliestHeader = new HTML("Earliest available date is: ");
+        HTML earliestHeader = new HTML("Earliest available date is:&nbsp;");
         earliestHeader.addStyleName("inlineBlock");
         fp.add(earliestHeader);
         earliestDateLabel.addStyleName("inlineBlock");
         fp.add(earliestDateLabel);
         fp.add(new HTML("&nbsp;"));
-        HTML lastDateHeader = new HTML("Last available date is: ");
+        HTML lastDateHeader = new HTML("Last available date is:&nbsp;");
         lastDateHeader.addStyleName("inlineBlock");
         fp.add(lastDateHeader);
         lastDateLabel.addStyleName("inlineBlock");
         fp.add(lastDateLabel);
         fp.add(new HTML("&nbsp;"));
-        HTML matchingHeader = new HTML("Matching items: ");
+        HTML matchingHeader = new HTML("Matching items:&nbsp;");
         matchingHeader.addStyleName("inlineBlock");
         fp.add(matchingHeader);
         matchingItems.addStyleName("inlineBlock");
@@ -116,10 +114,7 @@ public class CreationTimeFieldFilterSelector extends DateRangeFieldFilter implem
 
     public Widget asWidget() { return fp; }
 
-    @Override
-    public DocumentEntryIndexField getFieldType() {
-        return DocumentEntryIndexField.CREATION_TIME;
-    }
+
 
     @Override
     public List<DocumentEntry> getResult() {
@@ -190,7 +185,7 @@ public class CreationTimeFieldFilterSelector extends DateRangeFieldFilter implem
 
     @Override
     public void doValueChangeNotification(NewSelectedFieldValue newSelectedValue) {
-
+        valueChangeNotification.run(newSelectedValue);
     }
 
 

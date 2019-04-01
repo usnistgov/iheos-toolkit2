@@ -23,6 +23,10 @@ public class DocumentEntryIndex {
                 indexField(fieldMap, de, DocumentEntryIndexField.OBJECT_TYPE, de.objectType);
             if (deif == null || (DocumentEntryIndexField.CREATION_TIME.equals(deif)))
                 indexField(fieldMap, de, DocumentEntryIndexField.CREATION_TIME, de.creationTime);
+            if (deif == null || DocumentEntryIndexField.SERVICE_START_TIME.equals(deif))
+                indexField(fieldMap, de, DocumentEntryIndexField.SERVICE_START_TIME, de.serviceStartTime);
+            if (deif == null || DocumentEntryIndexField.SERVICE_STOP_TIME.equals(deif))
+                indexField(fieldMap, de, DocumentEntryIndexField.SERVICE_STOP_TIME, de.serviceStopTime);
         }
         return fieldMap;
     }

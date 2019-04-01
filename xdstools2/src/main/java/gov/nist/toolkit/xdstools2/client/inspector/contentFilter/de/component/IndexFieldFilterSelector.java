@@ -9,6 +9,11 @@ import java.util.List;
 public interface IndexFieldFilterSelector <S,T extends MetadataObject> extends IndexFieldValueCount, ValueChangeNotifier {
     Widget asWidget();
     S getFieldType();
+
+    /**
+     * Aggregate result. Not tied to any specific option/value.
+     * @return
+     */
     List<T> getResult();
     void addResult(List<T> result);
     void clearResult();

@@ -54,7 +54,7 @@ public class EntryTypeFieldFilterSelector extends Widget implements IndexFieldFi
         ValueChangeHandler<Boolean> valueChangeHandler = new ValueChangeHandler<Boolean>() {
             @Override
             public void onValueChange(ValueChangeEvent<Boolean> valueChangeEvent) {
-                doValueChangeNotification(new NewSelectedFieldValue(EntryTypeFieldFilterSelector.this, getSelectedValues()));
+                doValueChangeNotification(new NewSelectedFieldValue(EntryTypeFieldFilterSelector.this, getSelectedValues(), false, false));
             }
         };
 
@@ -64,13 +64,16 @@ public class EntryTypeFieldFilterSelector extends Widget implements IndexFieldFi
         fp.add(stableRb);
         stableRb.addValueChangeHandler(valueChangeHandler);
         stableCountLabel.addStyleName("inlineBlock");
+        stableCountLabel.addStyleName("labelMarginLeft");
         fp.add(stableCountLabel);
         fp.add(onDemandRb);
         onDemandRb.addValueChangeHandler(valueChangeHandler);
         onDemandCountLabel.addStyleName("inlineBlock");
+        onDemandCountLabel.addStyleName("labelMarginLeft");
         fp.add(onDemandCountLabel);
         unknownRb.setVisible(false);
         unknownCountLabel.addStyleName("inlineBlock");
+        unknownCountLabel.addStyleName("labelMarginLeft");
         unknownCountLabel.setVisible(false);
         unknownRb.addValueChangeHandler(valueChangeHandler);
         fp.add(unknownRb);
@@ -90,7 +93,7 @@ public class EntryTypeFieldFilterSelector extends Widget implements IndexFieldFi
                                                             rb.setValue(false);
                                                         }
                                                     }
-                                                    doValueChangeNotification(new NewSelectedFieldValue(EntryTypeFieldFilterSelector.this, null));
+                                                    doValueChangeNotification(new NewSelectedFieldValue(EntryTypeFieldFilterSelector.this, null, false, true));
                                                  }
                                             });
         fp.add(clearSelectionLabel);
@@ -169,7 +172,7 @@ public class EntryTypeFieldFilterSelector extends Widget implements IndexFieldFi
     public void clearResult() {
         this.result.clear();
         for (IndexFieldValue ifv : countLabelMap.keySet()) {
-            countLabelMap.get(ifv).setText("");
+            countLabelMap.get(ifv).setText("0");
         }
         unknownCountLabel.setText("");
     }

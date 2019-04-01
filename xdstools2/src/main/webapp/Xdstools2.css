@@ -303,6 +303,10 @@ h3 {
   -moz-border-radius: 16px;
 }
 
+.labelMarginLeft {
+  margin-left: 4px;
+}
+
 .gwt-TabBar {
   margin-top:6.5px;
   border-bottom: 4px solid #92C1F0;

@@ -9,21 +9,29 @@ import java.util.Set;
 public class NewSelectedFieldValue {
     private IndexFieldFilterSelector<DocumentEntryIndexField, DocumentEntry> filterSelector;
     private Set<IndexFieldValue> values;
+    private boolean isInitialValue;
+    private boolean clearSelection;
 
-    public NewSelectedFieldValue(IndexFieldFilterSelector filterSelector, Set<IndexFieldValue> values) {
+    public NewSelectedFieldValue(IndexFieldFilterSelector<DocumentEntryIndexField, DocumentEntry> filterSelector, Set<IndexFieldValue> values, boolean isInitialValue, boolean clearSelection) {
         this.filterSelector = filterSelector;
         this.values = values;
+        this.isInitialValue = isInitialValue;
+        this.clearSelection = clearSelection;
     }
 
-    public DocumentEntryIndexField getField() {
-        return filterSelector.getFieldType();
-    }
-
-    public IndexFieldFilterSelector getFilterSelector() {
+    public IndexFieldFilterSelector<DocumentEntryIndexField, DocumentEntry> getFilterSelector() {
         return filterSelector;
     }
 
     public Set<IndexFieldValue> getValues() {
         return values;
+    }
+
+    public boolean isInitialValue() {
+        return isInitialValue;
+    }
+
+    public boolean isClearSelection() {
+        return clearSelection;
     }
 }
