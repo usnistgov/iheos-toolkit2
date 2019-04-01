@@ -58,7 +58,7 @@
           file="THIS" 
           as="output"/> 
         <Assert 
-          id="validation">count(//*[local-name()='ExtrinsicObject'][@lid="orig_uuid"]//*[local-name()='Classification'][@classificationScheme='urn:uuid:f33fb8ac-18af-42cc-ae0e-ed0b0bdb91e1']) = 0</Assert> 
+          id="validation">count(//*[local-name()='ExtrinsicObject'][@lid="orig_uuid"]//*[local-name()='Classification'][@classificationScheme='urn:uuid:f33fb8ac-18af-42cc-ae0e-ed0b0bdb91e1']) = 2</Assert> 
       </Assertions>     
     </NullTransaction>
   </TestStep>
