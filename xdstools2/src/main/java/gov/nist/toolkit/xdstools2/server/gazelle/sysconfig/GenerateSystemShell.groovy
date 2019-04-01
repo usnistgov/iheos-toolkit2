@@ -34,6 +34,9 @@ class GenerateSystemShell {
     }
 
     boolean run(String systemName) {
+        int i=1
+        if (systemName.startsWith("TOOL_IHE"))
+            i=0
         GeneratedSystems generatedSystems = new GenerateSingleSystem(gazellePull, cache, testSession).generate(systemName)
         if (!generatedSystems)
             return true // nothing generated
@@ -70,9 +73,13 @@ class GenerateSystemShell {
         Set<String> systemNames = new GenerateSystemNames(gazellePull, cache, testSession).getSystemNames()
         boolean status = true
         systemNames.each { String systemName ->
-            boolean myStatus = run(systemName)
-            if (!myStatus)
-                status = false
+            try {
+                boolean myStatus = run(systemName)
+                if (!myStatus)
+                    status = false
+            } catch (Throwable t) {
+                println("Cannot load - ${systemName} - ${t.message}")
+            }
         }
         return systemNames
     }

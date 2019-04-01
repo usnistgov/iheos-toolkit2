@@ -54,7 +54,16 @@ class GenerateSingleSystem {
 
     GeneratedSystems generate(String systemName) {
         StringBuilder log = new StringBuilder();
-        getter.getSingleConfig(systemName)  // load into cache
+        try {
+            getter.getSingleConfig(systemName)  // load into cache
+        } catch (Throwable t) {
+            GeneratedSystems systems = new GeneratedSystems()
+            systems.hasErrors = true
+
+            log.append("Configuration for ${systemName} cannot be loaded")
+            systems.log = log
+            return
+        }
         log.append("Gazelle System: ${systemName}").append(nl)
 
         getter.getAllOids()
