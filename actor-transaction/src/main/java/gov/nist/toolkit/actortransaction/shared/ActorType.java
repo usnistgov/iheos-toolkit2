@@ -764,6 +764,8 @@ public enum ActorType implements IsSerializable, Serializable {
                 return actor;
             if (actor.altNames.contains(name))
                 return actor;
+            if (actor.actorCode != null && actor.actorCode.equals(name))
+                return actor;
         }
         return null;
     }
