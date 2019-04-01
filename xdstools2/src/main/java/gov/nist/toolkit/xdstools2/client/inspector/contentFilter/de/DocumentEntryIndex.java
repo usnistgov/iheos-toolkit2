@@ -11,13 +11,22 @@ import java.util.Map;
 public class DocumentEntryIndex {
 
     public static Map<DocumentEntryIndexField, Map<IndexFieldValue, List<DocumentEntry>>> indexMap(List<DocumentEntry> deList) {
+        return indexMap(null, deList);
+    }
+
+    public static Map<DocumentEntryIndexField, Map<IndexFieldValue, List<DocumentEntry>>> indexMap(DocumentEntryIndexField deif, List<DocumentEntry> deList) {
         final Map<DocumentEntryIndexField, Map<IndexFieldValue, List<DocumentEntry>>> fieldMap = new HashMap<>();
         for (DocumentEntry de : deList) {
-            indexField(fieldMap, de, DocumentEntryIndexField.STATUS, de.status);
-            indexField(fieldMap, de, DocumentEntryIndexField.OBJECT_TYPE, de.objectType);
+            if (deif == null || (DocumentEntryIndexField.STATUS.equals(deif)))
+                indexField(fieldMap, de, DocumentEntryIndexField.STATUS, de.status);
+            if (deif == null || (DocumentEntryIndexField.OBJECT_TYPE.equals(deif)))
+                indexField(fieldMap, de, DocumentEntryIndexField.OBJECT_TYPE, de.objectType);
+            if (deif == null || (DocumentEntryIndexField.CREATION_TIME.equals(deif)))
+                indexField(fieldMap, de, DocumentEntryIndexField.CREATION_TIME, de.creationTime);
         }
         return fieldMap;
     }
+
 
 
     private static void indexField(Map<DocumentEntryIndexField, Map<IndexFieldValue, List<DocumentEntry>>> fieldMap, DocumentEntry de, DocumentEntryIndexField indexField, String valueStr) {

@@ -24,7 +24,7 @@ import java.util.Set;
 public class EntryTypeFieldFilterSelector extends Widget implements IndexFieldFilterSelector<DocumentEntryIndexField, DocumentEntry> {
     public static final String URN_UUID_STABLE_DOCUMENT_ENTRY_TYPE = "urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1";
     public static final String URN_UUID_ONDEMAND_DOCUMENT_ENTRY_TYPE = "urn:uuid:34268e47-fdf5-41a6-ba33-82133c465248";
-    FlowPanel hp = new FlowPanel();
+    FlowPanel fp = new FlowPanel();
 
     static final String stableLabelString = "Stable";
     static final String onDemandLabelString = "On-Demand";
@@ -60,20 +60,20 @@ public class EntryTypeFieldFilterSelector extends Widget implements IndexFieldFi
 
         HTML selectorLabel = new HTML(label);
         selectorLabel.addStyleName("inlineBlock");
-        hp.add(selectorLabel);
-        hp.add(stableRb);
+        fp.add(selectorLabel);
+        fp.add(stableRb);
         stableRb.addValueChangeHandler(valueChangeHandler);
         stableCountLabel.addStyleName("inlineBlock");
-        hp.add(stableCountLabel);
-        hp.add(onDemandRb);
+        fp.add(stableCountLabel);
+        fp.add(onDemandRb);
         onDemandRb.addValueChangeHandler(valueChangeHandler);
         onDemandCountLabel.addStyleName("inlineBlock");
-        hp.add(onDemandCountLabel);
+        fp.add(onDemandCountLabel);
         unknownRb.setVisible(false);
         unknownCountLabel.addStyleName("inlineBlock");
         unknownCountLabel.setVisible(false);
         unknownRb.addValueChangeHandler(valueChangeHandler);
-        hp.add(unknownRb);
+        fp.add(unknownRb);
 
         HTML clearSelectionLabel = new HTML("Clear");
         clearSelectionLabel.getElement().getStyle().setMarginTop(12, Style.Unit.PX);
@@ -83,8 +83,8 @@ public class EntryTypeFieldFilterSelector extends Widget implements IndexFieldFi
         clearSelectionLabel.addClickHandler(new ClickHandler() {
                                                 @Override
                                                 public void onClick(ClickEvent clickEvent) {
-                                                    for (int i = 0; i< hp.getWidgetCount(); i++) {
-                                                        Widget w =  hp.getWidget(i);
+                                                    for (int i = 0; i< fp.getWidgetCount(); i++) {
+                                                        Widget w =  fp.getWidget(i);
                                                         if (w instanceof RadioButton) {
                                                             RadioButton rb = (RadioButton) w;
                                                             rb.setValue(false);
@@ -93,8 +93,8 @@ public class EntryTypeFieldFilterSelector extends Widget implements IndexFieldFi
                                                     doValueChangeNotification(new NewSelectedFieldValue(EntryTypeFieldFilterSelector.this, null));
                                                  }
                                             });
-        hp.add(clearSelectionLabel);
-        hp.add(new HTML("<br/>"));
+        fp.add(clearSelectionLabel);
+        fp.add(new HTML("<br/>"));
 
         mapFieldValuesToCounterLabel();
     }
@@ -109,7 +109,7 @@ public class EntryTypeFieldFilterSelector extends Widget implements IndexFieldFi
         return DocumentEntryIndexField.OBJECT_TYPE;
     }
 
-    public Widget asWidget() { return hp; }
+    public Widget asWidget() { return fp; }
 
 
     @Override

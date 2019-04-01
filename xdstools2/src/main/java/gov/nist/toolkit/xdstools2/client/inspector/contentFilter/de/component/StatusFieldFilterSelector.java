@@ -24,7 +24,7 @@ import java.util.Set;
 public class StatusFieldFilterSelector extends Widget implements IndexFieldFilterSelector<DocumentEntryIndexField, DocumentEntry> {
     public static final String URN_OASIS_NAMES_TC_EBXML_REGREP_STATUS_TYPE_APPROVED = "urn:oasis:names:tc:ebxml-regrep:StatusType:Approved";
     public static final String URN_OASIS_NAMES_TC_EBXML_REGREP_STATUS_TYPE_DEPRECATED = "urn:oasis:names:tc:ebxml-regrep:StatusType:Deprecated";
-    FlowPanel hp = new FlowPanel();
+    FlowPanel fp = new FlowPanel();
 
     static final String approvedLabelString = "Approved";
     static final String deprecatedLabelString = "Deprecated";
@@ -60,20 +60,20 @@ public class StatusFieldFilterSelector extends Widget implements IndexFieldFilte
 
         HTML selectorLabel = new HTML(label);
         selectorLabel.addStyleName("inlineBlock");
-        hp.add(selectorLabel);
-        hp.add(approvedRb);
+        fp.add(selectorLabel);
+        fp.add(approvedRb);
         approvedRb.addValueChangeHandler(valueChangeHandler);
         approvedCountLabel.addStyleName("inlineBlock");
-        hp.add(approvedCountLabel);
-        hp.add(deprecatedRb);
+        fp.add(approvedCountLabel);
+        fp.add(deprecatedRb);
         deprecatedRb.addValueChangeHandler(valueChangeHandler);
         deprecatedCountLabel.addStyleName("inlineBlock");
-        hp.add(deprecatedCountLabel);
+        fp.add(deprecatedCountLabel);
         unknownRb.setVisible(false);
         unknownCountLabel.addStyleName("inlineBlock");
         unknownCountLabel.setVisible(false);
         unknownRb.addValueChangeHandler(valueChangeHandler);
-        hp.add(unknownRb);
+        fp.add(unknownRb);
 
         HTML clearSelectionLabel = new HTML("Clear");
         clearSelectionLabel.getElement().getStyle().setMarginTop(12, Style.Unit.PX);
@@ -83,8 +83,8 @@ public class StatusFieldFilterSelector extends Widget implements IndexFieldFilte
         clearSelectionLabel.addClickHandler(new ClickHandler() {
                                                 @Override
                                                 public void onClick(ClickEvent clickEvent) {
-                                                    for (int i = 0; i< hp.getWidgetCount(); i++) {
-                                                        Widget w =  hp.getWidget(i);
+                                                    for (int i = 0; i< fp.getWidgetCount(); i++) {
+                                                        Widget w =  fp.getWidget(i);
                                                         if (w instanceof RadioButton) {
                                                             RadioButton rb = (RadioButton) w;
                                                             rb.setValue(false);
@@ -93,8 +93,8 @@ public class StatusFieldFilterSelector extends Widget implements IndexFieldFilte
                                                     doValueChangeNotification(new NewSelectedFieldValue(StatusFieldFilterSelector.this, null));
                                                  }
                                             });
-        hp.add(clearSelectionLabel);
-        hp.add(new HTML("<br/>"));
+        fp.add(clearSelectionLabel);
+        fp.add(new HTML("<br/>"));
 
         mapFieldValuesToCounterLabel();
     }
@@ -113,7 +113,7 @@ public class StatusFieldFilterSelector extends Widget implements IndexFieldFilte
     // store impl in local variable
     // on value change, return getValues(). This will be used to count the matching items.
 
-    public Widget asWidget() { return hp; }
+    public Widget asWidget() { return fp; }
 
 
     @Override

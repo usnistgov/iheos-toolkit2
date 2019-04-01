@@ -16,6 +16,8 @@ import gov.nist.toolkit.xdstools2.client.inspector.CommonDisplay;
 import gov.nist.toolkit.xdstools2.client.inspector.HyperlinkFactory;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.FilterFeature;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.IndexFieldValue;
+import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.CreationTimeFieldFilterSelector;
+import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.DateRangeFieldFilter;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.EntryTypeFieldFilterSelector;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.IndexFieldFilterSelector;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.NewSelectedFieldValue;
@@ -139,21 +141,39 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
                                 selector.clearResult();
                             }
                         } else {
-                            Map<DocumentEntryIndexField, Map<IndexFieldValue, List<DocumentEntry>>> fieldMap = DocumentEntryIndex.indexMap(list);
+                            List<DocumentEntry> filteredResult = new ArrayList<>();
+                            filteredResult.addAll(list);
                             while (it.hasNext()) {
                                 IndexFieldFilterSelector<DocumentEntryIndexField, DocumentEntry> selector = it.next();
+                                Map<DocumentEntryIndexField, Map<IndexFieldValue, List<DocumentEntry>>> fieldMap = DocumentEntryIndex.indexMap(selector.getFieldType(), filteredResult);
                                 selector.clearResult();
-                                refreshCountableItems(selector, fieldMap);
-                                if (newSelectedValue.getValues() == null) {
-                                    // Cleared filter
-                                    selector.addResult(list);
-
+                                if (selector.getSelectedValues()==null || selector.getSelectedValues().isEmpty()) {
+                                    refreshCountableItems(selector, fieldMap);
+                                    selector.addResult(filteredResult);
                                 } else {
-                                    if (newSelectedValue.getField().equals(selector.getFieldType())) {
-                                        for (IndexFieldValue ifv : newSelectedValue.getValues()) {
-                                            selector.addResult(fieldMap.get(newSelectedValue.getField()).get(ifv));
+                                    if (selector instanceof DateRangeFieldFilter) {
+                                        String fromDt = ((DateRangeFieldFilter)selector).getFromDt();
+                                        String toDt = ((DateRangeFieldFilter)selector).getToDt();
+                                        for (IndexFieldValue ifv : fieldMap.get(selector.getFieldType()).keySet()) {
+                                            List<DocumentEntry> deList = fieldMap.get(selector.getFieldType()).get(ifv);
+                                            if (deList!=null) {
+                                                selector.doUpdateCount(ifv, deList.size());
+                                                selector.addResult(DateRangeFieldFilter.filterByCreationTime(fromDt, toDt, deList));
+                                            }
+                                        }
+                                        ((DateRangeFieldFilter)selector).setAvailableDates();
+                                    } else {
+                                        // Default to simple String value
+                                        for (IndexFieldValue ifv : selector.getSelectedValues()) {
+                                            List<DocumentEntry> deList = fieldMap.get(selector.getFieldType()).get(ifv);
+                                            if (deList!=null) {
+                                                selector.doUpdateCount(ifv, deList.size());
+                                                selector.addResult(deList);
+                                            }
                                         }
                                     }
+                                    filteredResult.clear();
+                                    filteredResult.addAll(selector.getResult());
                                 }
                             }
                         }
@@ -164,9 +184,11 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
 
         final IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry> statusFilterSelector = new StatusFieldFilterSelector("DocumentEntry Status", valueChangeCallback);
         final IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry> entryTypeFilterSelector = new EntryTypeFieldFilterSelector("DocumentEntry Type", valueChangeCallback);
+        final IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry> creationTimeFilterSelector = new CreationTimeFieldFilterSelector("Creation Time", valueChangeCallback);
 
         filterSelectors.add(statusFilterSelector);
         filterSelectors.add(entryTypeFilterSelector);
+        filterSelectors.add(creationTimeFilterSelector);
     }
 
     @Override
@@ -229,7 +251,12 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
         Map<IndexFieldValue, List<DocumentEntry>> valueMap = fieldMap.get(selector.getFieldType());
         if (valueMap!=null && !valueMap.isEmpty()) {
             for (IndexFieldValue ifv : valueMap.keySet()) {
-                selector.doUpdateCount(ifv, valueMap.get(ifv).size());
+                    List<DocumentEntry> deList = valueMap.get(ifv);
+                    selector.addResult(deList);
+                    selector.doUpdateCount(ifv, deList.size());
+            }
+            if (selector instanceof DateRangeFieldFilter) {
+                ((DateRangeFieldFilter)selector).setAvailableDates();
             }
         } else {
             GWT.log("Are you missing an index entry in DocumentEntryIndex#indexMap?");

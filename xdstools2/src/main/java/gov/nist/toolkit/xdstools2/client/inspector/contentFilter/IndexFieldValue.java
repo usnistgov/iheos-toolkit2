@@ -2,13 +2,12 @@ package gov.nist.toolkit.xdstools2.client.inspector.contentFilter;
 
 import java.util.Objects;
 
-public class IndexFieldValue {
+public class IndexFieldValue implements Comparable<IndexFieldValue> {
     private String value;
 
     public IndexFieldValue(String value) {
         this.value = value;
     }
-
 
     @Override
     public String toString() {
@@ -26,5 +25,10 @@ public class IndexFieldValue {
     @Override
     public int hashCode() {
         return Objects.hash(value);
+    }
+
+    @Override
+    public int compareTo(IndexFieldValue fieldValue) {
+        return this.toString().compareTo(fieldValue.toString());
     }
 }
