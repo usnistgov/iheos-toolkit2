@@ -16,6 +16,8 @@ public class DocumentEntryIndex {
 
     public static Map<DocumentEntryIndexField, Map<IndexFieldValue, List<DocumentEntry>>> indexMap(DocumentEntryIndexField deif, List<DocumentEntry> deList) {
         final Map<DocumentEntryIndexField, Map<IndexFieldValue, List<DocumentEntry>>> fieldMap = new HashMap<>();
+
+        // Instant processing
         for (DocumentEntry de : deList) {
             if (deif == null || (DocumentEntryIndexField.STATUS.equals(deif)))
                 indexField(fieldMap, de, DocumentEntryIndexField.STATUS, de.status);
@@ -28,6 +30,7 @@ public class DocumentEntryIndex {
             if (deif == null || DocumentEntryIndexField.SERVICE_STOP_TIME.equals(deif))
                 indexField(fieldMap, de, DocumentEntryIndexField.SERVICE_STOP_TIME, de.serviceStopTime);
         }
+
         return fieldMap;
     }
 

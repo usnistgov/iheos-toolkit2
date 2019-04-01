@@ -180,4 +180,9 @@ public class StatusFieldFilterSelector extends Widget implements IndexFieldFilte
         }
         unknownCountLabel.setText("");
     }
+
+    @Override
+    public boolean isDeferredIndex() {
+        return false;
+    }
 }

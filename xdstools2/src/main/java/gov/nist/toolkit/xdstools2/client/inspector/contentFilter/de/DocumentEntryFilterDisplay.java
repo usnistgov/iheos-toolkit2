@@ -10,12 +10,14 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.http.client.HtmlMarkup;
+import gov.nist.toolkit.registrymetadata.client.Author;
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.xdstools2.client.inspector.CommonDisplay;
 import gov.nist.toolkit.xdstools2.client.inspector.HyperlinkFactory;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.FilterFeature;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.IndexFieldValue;
+import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.AuthorFieldFilterSelector;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.CreationTimeFieldFilterSelector;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.DateRangeFieldFilter;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.EntryTypeFieldFilterSelector;
@@ -152,7 +154,7 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
                                     selector.addResult(filteredResult);
                                 } else {
 //                                    GWT.log("field selected: initial fieldMap size is: " + fieldMap.size());
-                                    if (fieldMap.isEmpty()) {
+                                    if (!selector.isDeferredIndex() && fieldMap.isEmpty()) {
                                         filteredResult.clear();
                                     } else {
                                         if (selector instanceof DateRangeFieldFilter) {
@@ -168,6 +170,13 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
                                                 }
                                             }
                                             ((DateRangeFieldFilter)selector).setAvailableDates();
+                                        } else if (selector.isDeferredIndex()) {
+                                            if (selector instanceof AuthorFieldFilterSelector) {
+                                                    AuthorFieldFilterSelector affs = (AuthorFieldFilterSelector) selector;
+                                                    List<DocumentEntry> result = affs.filterByAuthorPerson(filteredResult);
+                                                    selector.doUpdateCount(null, result.size());
+                                                    selector.addResult(result);
+                                            }
                                         } else {
                                             // Default to simple String value
                                             for (IndexFieldValue ifv : fieldMap.get(selector.getFieldType()).keySet()) {
@@ -198,13 +207,16 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
         final IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry> creationTimeFilterSelector = new CreationTimeFieldFilterSelector("Creation Time", valueChangeCallback);
         final IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry> serviceStartTimeFilterSelector = new ServiceStartTimeFieldFilterSelector("Service Start Time", valueChangeCallback);
         final IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry> serviceStopTimeFilterSelector = new ServiceStopTimeFieldFilterSelector("Service Stop Time", valueChangeCallback);
+        final IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry> authorFilterSelector = new AuthorFieldFilterSelector("Author Person", valueChangeCallback);
 
         filterSelectors.add(statusFilterSelector);
         filterSelectors.add(entryTypeFilterSelector);
         filterSelectors.add(creationTimeFilterSelector);
         filterSelectors.add(serviceStartTimeFilterSelector);
         filterSelectors.add(serviceStopTimeFilterSelector);
+        filterSelectors.add(authorFilterSelector);
     }
+
 
     @Override
     public Widget asWidget() {
@@ -285,15 +297,6 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
                 featurePanel.add(fieldSelectionResult.asWidget());
             }
 
-//            ft.setWidget(row, 0, applyFilterBtn);
-//            ft.setWidget(row, 1, cancelBtn);
-//            row++;
-//            ft.setWidget(row, 0, statusBox);
-//            row++;
-//            ft.setWidget(row, 0, resultPanel);
-//            ft.getFlexCellFormatter().setColSpan(row, 0, 3);
-//            row++;
-//            featurePanel.add(ft);
         } catch (Exception ex) {
             new PopupMessage(ex.toString());
         } finally {

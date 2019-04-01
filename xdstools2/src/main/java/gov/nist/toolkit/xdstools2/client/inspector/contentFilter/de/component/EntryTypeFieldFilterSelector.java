@@ -176,4 +176,9 @@ public class EntryTypeFieldFilterSelector extends Widget implements IndexFieldFi
         }
         unknownCountLabel.setText("");
     }
+
+    @Override
+    public boolean isDeferredIndex() {
+        return false;
+    }
 }

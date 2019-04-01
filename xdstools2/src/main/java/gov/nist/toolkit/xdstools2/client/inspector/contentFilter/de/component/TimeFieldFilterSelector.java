@@ -188,5 +188,8 @@ public abstract class TimeFieldFilterSelector extends DateRangeFieldFilter imple
         valueChangeNotification.run(newSelectedValue);
     }
 
-
+    @Override
+    public boolean isDeferredIndex() {
+        return false;
+    }
 }

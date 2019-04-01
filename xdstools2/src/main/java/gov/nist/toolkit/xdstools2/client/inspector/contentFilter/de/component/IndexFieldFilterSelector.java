@@ -17,4 +17,5 @@ public interface IndexFieldFilterSelector <S,T extends MetadataObject> extends I
     List<T> getResult();
     void addResult(List<T> result);
     void clearResult();
+    boolean isDeferredIndex();
 }
