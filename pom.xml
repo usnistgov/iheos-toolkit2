@@ -17,7 +17,7 @@
     <parent>
         <groupId>gov.nist.toolkit</groupId>
         <artifactId>tk-deps</artifactId>
-		<version>7.2.2</version>
+		<version>7.2.3</version>
         <relativePath>/tk-deps/pom.xml</relativePath>
     </parent>
 

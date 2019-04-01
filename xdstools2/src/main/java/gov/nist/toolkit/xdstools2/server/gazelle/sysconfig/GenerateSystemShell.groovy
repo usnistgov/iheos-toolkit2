@@ -34,9 +34,6 @@ class GenerateSystemShell {
     }
 
     boolean run(String systemName) {
-        int i=1
-        if (systemName.startsWith("TOOL_IHE"))
-            i=0
         GeneratedSystems generatedSystems = new GenerateSingleSystem(gazellePull, cache, testSession).generate(systemName)
         if (!generatedSystems)
             return true // nothing generated
