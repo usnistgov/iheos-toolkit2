@@ -2,13 +2,7 @@
 <rs:SubmitObjectsRequest xmlns:rs="urn:oasis:names:tc:ebxml-regrep:registry:xsd:3.0">
    <rim:LeafRegistryObjectList xmlns:rim="urn:oasis:names:tc:ebxml-regrep:rim:xsd:3.0">
       <rim:ExtrinsicObject id="Document01" objectType="urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1"
-         lid="$lid$"
-            mimeType="text/xml">
-         <rim:Slot name="urn:att">
-            <rim:ValueList>
-               <rim:Value>5</rim:Value>
-            </rim:ValueList>
-         </rim:Slot>
+         lid="$lid$" mimeType="text/xml">
          <rim:Slot name="creationTime">
             <rim:ValueList>
                <rim:Value>20051224</rim:Value>
@@ -21,7 +15,7 @@
          </rim:Slot>
          <rim:Slot name="languageCode">
             <rim:ValueList>
-               <rim:Value>en-uk</rim:Value>
+               <rim:Value>en-us</rim:Value>
             </rim:ValueList>
          </rim:Slot>
          <rim:Slot name="size">
@@ -31,7 +25,7 @@
          </rim:Slot>
          <rim:Slot name="hash">
             <rim:ValueList>
-               <rim:Value>e543712c0e10501972de13a5bfcbe826c49feb96</rim:Value>
+               <rim:Value>e543712c0e10501972de13a5bfcbe826c49feb75</rim:Value>
             </rim:ValueList>
          </rim:Slot>
          <rim:Slot name="URI">
@@ -54,11 +48,6 @@
                <rim:Value>89765a87b^^^&amp;1.2.3.4.5&amp;ISO</rim:Value>
             </rim:ValueList>
          </rim:Slot>
-         <rim:Slot name="legalAuthenticator">
-            <rim:ValueList>
-               <rim:Value>^Welby^Marcus^^^Dr^MD</rim:Value>
-            </rim:ValueList>
-         </rim:Slot>
          <rim:Slot name="sourcePatientInfo">
             <rim:ValueList>
                <rim:Value>PID-3|pid1^^^&amp;1.2.3.4.5.6&amp;ISO</rim:Value>
@@ -72,32 +61,8 @@
             <rim:LocalizedString value="Physical"/>
          </rim:Name>
          <rim:Description>            
-            <rim:LocalizedString value="Updated Physical"/>
+            <rim:LocalizedString value="Physical"/>
          </rim:Description>
-         <rim:Classification classifiedObject="Document01"
-               nodeRepresentation="" classificationScheme="urn:uuid:93606bcf-9494-43ec-9b4e-a7748d1a838d">
-            <rim:Slot name="authorPerson">
-               <rim:ValueList>
-                  <rim:Value>^Smitty^Gerald^^^</rim:Value>
-               </rim:ValueList>
-            </rim:Slot>
-            <rim:Slot name="authorInstitution">
-               <rim:ValueList>
-                  <rim:Value>Cleveland Clinic^^^^^&amp;1.2.3&amp;ISO^^^^CleveClin</rim:Value>
-                  <rim:Value>Parma Community^^^^^^^^^1.2.3</rim:Value>
-               </rim:ValueList>
-            </rim:Slot>
-            <rim:Slot name="authorRole">
-               <rim:ValueList>
-                  <rim:Value>Attending</rim:Value>
-               </rim:ValueList>
-            </rim:Slot>
-            <rim:Slot name="authorSpecialty">
-               <rim:ValueList>
-                  <rim:Value>Orthopedic</rim:Value>
-               </rim:ValueList>
-            </rim:Slot>
-         </rim:Classification>
          <rim:Classification classifiedObject="Document01"
                nodeRepresentation="REPORTS" classificationScheme="urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a">
             <rim:Name>
@@ -106,18 +71,6 @@
             <rim:Slot name="codingScheme">
                <rim:ValueList>
                   <rim:Value>1.3.6.1.4.1.19376.1.2.6.1</rim:Value>
-               </rim:ValueList>
-            </rim:Slot>
-         </rim:Classification>
-         <rim:Classification classifiedObject="Document01"
-               nodeRepresentation="urn:connectathon:policy:deny-access"
-               classificationScheme="urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4">
-            <rim:Name>
-               <rim:LocalizedString value="DENY ACCESS TO ALL POLICY"/>
-            </rim:Name>
-            <rim:Slot name="codingScheme">
-               <rim:ValueList>
-                  <rim:Value>1.3.6.1.4.1.21367.2017.3</rim:Value>
                </rim:ValueList>
             </rim:Slot>
          </rim:Classification>
@@ -134,9 +87,9 @@
             </rim:Slot>
          </rim:Classification>
          <rim:Classification classifiedObject="Document01"
-               nodeRepresentation="U" classificationScheme="urn:uuid:f4f85eac-e6cb-4883-b524-f2705394840f">
+               nodeRepresentation="V" classificationScheme="urn:uuid:f4f85eac-e6cb-4883-b524-f2705394840f">
             <rim:Name>
-               <rim:LocalizedString value="unrestriced"/>
+               <rim:LocalizedString value="very restricted"/>
             </rim:Name>
             <rim:Slot name="codingScheme">
                <rim:ValueList>
