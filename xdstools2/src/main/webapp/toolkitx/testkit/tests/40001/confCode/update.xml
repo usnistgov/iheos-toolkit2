@@ -4,11 +4,6 @@
       <rim:ExtrinsicObject id="Document01" objectType="urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1"
          lid="$lid$"
             mimeType="text/plain">
-         <rim:Slot name="urn:att">
-            <rim:ValueList>
-               <rim:Value>5</rim:Value>
-            </rim:ValueList>
-         </rim:Slot>
          <rim:Slot name="creationTime">
             <rim:ValueList>
                <rim:Value>20051224</rim:Value>
@@ -66,33 +61,9 @@
          <rim:Name>
             <rim:LocalizedString value="Physical"/>
          </rim:Name>
-         <rim:Description>            
-            <rim:LocalizedString value="Updated Physical"/>
+         <rim:Description>
+            <rim:LocalizedString value="Physical"/>
          </rim:Description>
-         <rim:Classification classifiedObject="Document01"
-               nodeRepresentation="" classificationScheme="urn:uuid:93606bcf-9494-43ec-9b4e-a7748d1a838d">
-            <rim:Slot name="authorPerson">
-               <rim:ValueList>
-                  <rim:Value>^Smitty^Gerald^^^</rim:Value>
-               </rim:ValueList>
-            </rim:Slot>
-            <rim:Slot name="authorInstitution">
-               <rim:ValueList>
-                  <rim:Value>Cleveland Clinic^^^^^&amp;1.2.3&amp;ISO^^^^CleveClin</rim:Value>
-                  <rim:Value>Parma Community^^^^^^^^^1.2.3</rim:Value>
-               </rim:ValueList>
-            </rim:Slot>
-            <rim:Slot name="authorRole">
-               <rim:ValueList>
-                  <rim:Value>Attending</rim:Value>
-               </rim:ValueList>
-            </rim:Slot>
-            <rim:Slot name="authorSpecialty">
-               <rim:ValueList>
-                  <rim:Value>Orthopedic</rim:Value>
-               </rim:ValueList>
-            </rim:Slot>
-         </rim:Classification>
          <rim:Classification classifiedObject="Document01"
                nodeRepresentation="REPORTS" classificationScheme="urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a">
             <rim:Name>

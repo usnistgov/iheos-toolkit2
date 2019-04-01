@@ -120,7 +120,7 @@
                   <rim:Value>1.3.6.1.4.1.19376.1.2.3</rim:Value>
                </rim:ValueList>
             </rim:Slot>
-         </rim:Classification>
+         </rim:Classification>         
          <rim:Classification classifiedObject="Document01"
                nodeRepresentation="264372000" classificationScheme="urn:uuid:f33fb8ac-18af-42cc-ae0e-ed0b0bdb91e1">
             <rim:Name>
