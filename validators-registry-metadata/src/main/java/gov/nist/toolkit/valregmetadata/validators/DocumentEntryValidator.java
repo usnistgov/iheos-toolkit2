@@ -335,7 +335,7 @@ public class DocumentEntryValidator implements ObjectValidator {
                 er.err(XdsErrorCode.Code.XDSRegistryMetadataError, mo.identifyingString() + ": On-Demand objectType must be " + MetadataSupport.XDSRODDEDocumentEntry_objectType_uuid + " (found " + mo.getObjectType() + ")", this, table415);
 
         } else if (!MetadataSupport.XDSDocumentEntry_objectType_uuid.equals(mo.getObjectType()))
-            er.err(XdsErrorCode.Code.XDSRegistryMetadataError, mo.identifyingString() + ": objectType must be " + MetadataSupport.XDSDocumentEntry_objectType_uuid + " (found " + mo.getObjectType() + ")", this, table415);
+            er.err(XdsErrorCode.Code.UnmodifiableMetadataError, mo.identifyingString() + ": objectType must be " + MetadataSupport.XDSDocumentEntry_objectType_uuid + " (found " + mo.getObjectType() + ")", this, table415);
 
         if (mo.getMimeType() == null || mo.getMimeType().equals(""))
             er.err(XdsErrorCode.Code.XDSRegistryMetadataError, mo.identifyingString() + ": mimeType attribute missing or empty", this, table415);

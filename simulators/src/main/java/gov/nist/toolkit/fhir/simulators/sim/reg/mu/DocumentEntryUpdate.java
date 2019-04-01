@@ -49,7 +49,7 @@ public class DocumentEntryUpdate  {
 		if (!latest.getUid().equals(submittedUid)) {
 			Code code = Code.XDSMetadataUpdateError;
 			if (muSim.getCommon().vc.isRMU)
-				code = Code.UnmodifiableMetadataError;
+				code = Code.XDSMetadataIdentifierError;
 			er.err(code,
 					prefix + "previous version does not have same value for uniqueId: " +
 							" previous version has " + latest.getUid() +
