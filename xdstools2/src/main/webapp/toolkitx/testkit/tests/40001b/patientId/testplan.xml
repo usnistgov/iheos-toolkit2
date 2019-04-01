@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>40001b/patientId</Test>
+  <TestStep id="submit_original">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <RegisterTransaction>
+      <AssignUuids/>
+      <XDSb/>
+      <NoPatientId/>
+      <UseReport reportName="$patientid$" test="15817" section="pif" step="step" useAs="$patientid1$"/>
+      <MetadataFile>original.xml</MetadataFile>
+      <Report name="doc_uuid" section="InputMetadata">
+                //*[local-name()='ExtrinsicObject'][1]/@id
+            </Report>
+    </RegisterTransaction>
+  </TestStep>
+  <TestStep id="submit_update">
+    <ExpectedStatus>Failure</ExpectedStatus>
+    <ExpectedErrorCode>XDSPatientIDReconciliationError</ExpectedErrorCode>
+     <RmuTransaction>
+      <NoAssignUids id="Document01"/>
+      <XDSb/>
+      <NoPatientId/>
+      <UseReport reportName="$patientid$" test="15817b" section="pif" step="step" useAs="$patientid2$"/>
+      <AssignUuids/>
+      <MetadataFile>update.xml</MetadataFile>
+      <UseId id="Document01" symbol="$lid$" step="submit_original" section="AssignedUuids"/>
+      <UseId id="Document01" symbol="$Document01_uid$" step="submit_original" section="AssignedUids"/>
+      <Report name="update_doc_uuid" section="InputMetadata">
+        //*[local-name()='ExtrinsicObject'][1]/@id
+      </Report>
+    </RmuTransaction>
+  </TestStep>
+</TestPlan>

@@ -1,0 +1,3 @@
+
+Test - DocumentEntry.documentAvailability
+

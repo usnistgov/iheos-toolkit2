@@ -24,7 +24,7 @@ public class AcceptableUpdate {
             ok = false;
         }
         if (!prev.sourcePatientId.equals(de.sourcePatientId)) {
-            er.err(XdsErrorCode.Code.XDSMetadataIdentifierError, "Illegal change made to SourcePatientId - was " + prev.sourcePatientId + " updated to " + de.sourcePatientId, null, null);
+            er.err(XdsErrorCode.Code.UnmodifiableMetadataError, "Illegal change made to SourcePatientId - was " + prev.sourcePatientId + " updated to " + de.sourcePatientId, null, null);
             ok = false;
         }
         if (prev.documentAvailability == null)
@@ -32,7 +32,7 @@ public class AcceptableUpdate {
         if (de.documentAvailability == null)
             de.documentAvailability = "urn:ihe:iti:2010:DocumentAvailability:Online";
         if (!prev.documentAvailability.equals(de.documentAvailability)) {
-            er.err(XdsErrorCode.Code.XDSMetadataIdentifierError, "Illegal change made to documentAvailability - was " + prev.documentAvailability + " updated to " + de.documentAvailability, null, null);
+            er.err(XdsErrorCode.Code.UnmodifiableMetadataError, "Illegal change made to documentAvailability - was " + prev.documentAvailability + " updated to " + de.documentAvailability, null, null);
             ok = false;
         }
         if (!prev.uid.equals(de.uid)) {
@@ -41,7 +41,11 @@ public class AcceptableUpdate {
         }
 
         if (!prev.repositoryUniqueId.equals(de.repositoryUniqueId)) {
-            er.err(XdsErrorCode.Code.XDSMetadataIdentifierError, "Illegal change made to repositoryUniqueId - was " + prev.repositoryUniqueId + " updated to " + de.repositoryUniqueId, null, null);
+            er.err(XdsErrorCode.Code.UnmodifiableMetadataError, "Illegal change made to repositoryUniqueId - was " + prev.repositoryUniqueId + " updated to " + de.repositoryUniqueId, null, null);
+            ok = false;
+        }
+        if (!prev.documentAvailability.equals(de.documentAvailability)) {
+            er.err(XdsErrorCode.Code.UnmodifiableMetadataError, "documentAvailability cannot be changed through Restricted Metadata Update", null, null);
             ok = false;
         }
         return ok;
