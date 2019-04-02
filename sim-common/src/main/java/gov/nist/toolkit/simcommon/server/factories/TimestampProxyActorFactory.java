@@ -32,14 +32,14 @@ public class TimestampProxyActorFactory extends AbstractActorFactory implements 
         else
             sc = new SimulatorConfig();
 
-        addFixedEndpoint(sc, SimulatorProperties.pnrEndpoint, actorType, TransactionType.PROVIDE_AND_REGISTER, false);
-        addFixedEndpoint(sc, SimulatorProperties.storedQueryEndpoint, actorType, TransactionType.STORED_QUERY, false);
-        addFixedEndpoint(sc, SimulatorProperties.retrieveEndpoint, actorType, TransactionType.RETRIEVE, false);
-        addFixedEndpoint(sc, SimulatorProperties.igqEndpoint, actorType, TransactionType.IG_QUERY, false);
-        addFixedEndpoint(sc, SimulatorProperties.igrEndpoint, actorType, TransactionType.IG_RETRIEVE, false);
-        addFixedEndpoint(sc, SimulatorProperties.xcrEndpoint, actorType, TransactionType.XC_RETRIEVE, false);
-        addFixedEndpoint(sc, SimulatorProperties.xcqEndpoint, actorType, TransactionType.XC_QUERY, false);
-        addFixedEndpoint(sc, SimulatorProperties.xcpdEndpoint, actorType, TransactionType.XCPD, false);
+        addFixedEndpoint(sc, SimulatorProperties.pnrEndpoint, actorType, TransactionType.ANY, false);
+        addFixedEndpoint(sc, SimulatorProperties.storedQueryEndpoint, actorType, TransactionType.ANY, false);
+        addFixedEndpoint(sc, SimulatorProperties.retrieveEndpoint, actorType, TransactionType.ANY, false);
+        addFixedEndpoint(sc, SimulatorProperties.igqEndpoint, actorType, TransactionType.ANY, false);
+        addFixedEndpoint(sc, SimulatorProperties.igrEndpoint, actorType, TransactionType.ANY, false);
+        addFixedEndpoint(sc, SimulatorProperties.xcrEndpoint, actorType, TransactionType.ANY, false);
+        addFixedEndpoint(sc, SimulatorProperties.xcqEndpoint, actorType, TransactionType.ANY, false);
+        addFixedEndpoint(sc, SimulatorProperties.xcpdEndpoint, actorType, TransactionType.ANY, false);
 
         return new Simulator(sc);
     }
