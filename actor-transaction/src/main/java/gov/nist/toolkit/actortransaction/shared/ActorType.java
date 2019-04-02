@@ -685,7 +685,7 @@ public enum ActorType implements IsSerializable, Serializable {
     }
 
     public String getSimulatorClassName() { return simulatorClassName; }
-    
+
     public String getHttpSimulatorClassName() { return httpSimulatorClassName; }
 
     public String getActorsFileLabel() {
@@ -763,6 +763,8 @@ public enum ActorType implements IsSerializable, Serializable {
             if (actor.shortName.equals(name))
                 return actor;
             if (actor.altNames.contains(name))
+                return actor;
+            if (actor.actorCode != null && actor.actorCode.equals(name))
                 return actor;
         }
         return null;
