@@ -73,44 +73,6 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
     private List<DocumentEntry> initialDeList;
     SimpleCallbackT<NewSelectedFieldValue> valueChangeCallback;
 
-    // enum of fields
-
-    // index field:
-    //  type:Enum
-    // search widgets:
-    // a doubly linked list of
-    //  enum
-    //  widget, call the constructor with the enum type and a callback to doIndex(indexField:enum,selectedFieldValues:list<String>).
-    //  result of doIndex:list<de>. This is an aggregate list.
-    // refresh widget result count:
-    // for each fieldValue code result, call widget.updateCount(fieldValue:String,count:Int)
-
-    // fill the search screen in the order of the linked list
-
-   // skb TODO: map here
-    // initial state just shows independent count for each field-value.
-    // when a field value is selected, changed:
-    // doIndex(searchField:Enum, list<de>):
-    //      skip all previous fields and doIndex for the field that changed and if other field values are present after this one.
-    //          Use the list<de> from the previous field if exists else use the main Mc.
-    //      from list<de> this map is created: map[field:Enum, map[field-value:String,list<de>]
-    //          example:                       DocEntryStatus, [stable=list,ondemand=list,both=list]
-    //      Sort the map.keySet for Time fields
-    // iM = initial map
-    //
-    // fM = filtered map
-    // initially fM is a deep copy of iM
-    // on search field S selected:
-    // fmTemp: list<de> = new temporary storage
-    //      get fM map by field
-    //         for each selected-value
-    //          get value-map by the field-value
-    //              add to fMTemp(list<de>)
-    //          count fMTemp, if > 0, fM = doIndex(fMTemp), lock the search field S so it cannot be changed until it is cleared.  When a search field is cleared, the iM map must be used!
-    // locking the search field:
-    //      field becomes read-only with a count and an X to clear search term.
-    // map[field, map[code,list<de>]
-
     public DocumentEntryFilterDisplay() {
         filterSelectors = new LinkedList<>();
 
@@ -207,13 +169,7 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
         resultPanel.add(widget);
     }
 
-    // skb TODO: on cancel filter, restore last selected item, and restore the normal view.
-    /** skb TODO: when filter is applied
-          a) show rounded label with an X to remove filter. Place this label next to Contents.
-          b) show an edit label, which will restore the filter view
-        run advanced mode in single mode
-        clear current table selection
-     **/
+
     // skb TODO: when view mode is changed to History, warn user that filter will be cleared.
 
     // skb TODO: handle show hidden view
@@ -246,14 +202,9 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
         boolean b = false;
 
         try {
-
-            // TODO: iterate the selector display components
-
-                    // skb TODO: Count the documents with codes for which we do not have a mapping in our codes.xml
             for (IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry> fieldSelectionResult : filterSelectors) {
                 featurePanel.add(fieldSelectionResult.asWidget());
             }
-
         } catch (Exception ex) {
             new PopupMessage(ex.toString());
         } finally {
