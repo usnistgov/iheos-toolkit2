@@ -71,7 +71,6 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
     private LinkedList<IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry>> filterSelectors;
 //    private Map<DocumentEntryIndexField, Map<IndexFieldValue, List<DocumentEntry>>> fieldIndexMap;
     private List<DocumentEntry> initialDeList;
-    private static boolean isActive = false;
     SimpleCallbackT<NewSelectedFieldValue> valueChangeCallback;
 
     // enum of fields
@@ -227,13 +226,12 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
     public void setData(List<DocumentEntry> data) {
         initialDeList = data;
         valueChangeCallback.run(new NewSelectedFieldValue(filterSelectors.getFirst(), null, true, false));
-
     }
 
 
     @Override
     public boolean isActive() {
-        return false;
+        return initialDeList != null;
     }
 
     @Override

@@ -359,13 +359,13 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
 
         return annotatedItems;
     }
+
     List<AnnotatedItem> getFilterObjectSelectionItems() {
        List<AnnotatedItem> annotatedItems = new ArrayList<>();
 
-        for (MetadataObjectType type : MetadataObjectType.values()) {
-            List<? extends MetadataObject> metadataObject = dataMap.get(type);
-            annotatedItems.add(new AnnotatedItem(metadataObject!=null && metadataObject.size()>0, type.name()));
-        }
+       MetadataObjectType type = MetadataObjectType.DocEntries;
+       List<? extends MetadataObject> metadataObject = dataMap.get(type);
+       annotatedItems.add(new AnnotatedItem(metadataObject!=null && metadataObject.size()>0, type.name()));
 
         return annotatedItems;
     }
@@ -415,63 +415,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
     }
 
 
-    /*
-    // skb TODO: remove this
-    void setFilterFeature(MetadataObjectType metadataObjectType, boolean isVisible) {
-        DataTable dt = view.getTableMap().get(metadataObjectType);
-        if (dt!=null && dt.filterContents!=null) {
-            if (isVisible && dt.filterFeature==null) {
-                filterDisplay = new DocumentEntryFilterDisplay(view.metadataInspectorLeft);
-                dt.setFilterFeature(filterDisplay);
-                setFilterContentsSelectionHandler(dt, filterDisplay);
-            }
-            // Do we need to clear the filter when filter control display is hidden?
-//            if (!isActive) {
-//               dt.filterContents.setValue(false);
-//            }
-            dt.filterContents.setVisible(isVisible);
-            dt.filterContents.setEnabled(isVisible);
-            // skb TODO: clear current DE selection when filter is activated and if the current selection doesn't exist in the applied filter. Notify the user when this happens.
-            // skb TODO: clear the lastItemSelected or currentItemSelected to nothing?
-            // skb TODO: hide the structure panel!
-        }
-    } // remove this?
-    private void setFilterContentsSelectionHandler(DataTable dt, FilterFeature filterFeature) {
-        CheckBox filterContents = dt.filterContents;
-        CheckBox compareSelect = dt.compareSelect;
-        filterContents.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
-            @Override
-            public void onValueChange(ValueChangeEvent<Boolean> valueChangeEvent) {
-                if (filterFeature!=null) {
-                    if (filterContents.getValue()) {
-                        compareSelect.setValue(false);
-                        compareSelect.setEnabled(false);
-                        // Display the filter screen
-                        filterFeature.displayFilter();
-                        // Hide History & Structure panels
-                        view.metadataInspectorLeft.showHistory(false);
-                        view.metadataInspectorLeft.showStructure(false);
-                    } else {
-                        compareSelect.setEnabled(true);
-                        // Remove any filters that might have been applied
-                        filterFeature.hideFilter();
-                        filterFeature.removeFilter();
-                        // Restore History & Structure panels
-                        view.metadataInspectorLeft.showHistory(true);
-                        view.metadataInspectorLeft.showStructure(true);
-                    }
-                }
-            }
-        });
-    }
-    */
-
     public void doSwitchFilter(MetadataObjectType targetObjectType) {
-        // if filter not active then
-        // skb TODO: do indexing here
-        // display the filter
-        // display the initial count
-        // skb TODO: how to update existing filters to accommodate Size labels and Clear labels?
        for (MetadataObjectType key : view.getFilterFeatureMap().keySet()) {
            FilterFeature filterFeature = view.getFilterFeatureMap().get(key);
            if (filterFeature !=null && key.equals(targetObjectType)) {
