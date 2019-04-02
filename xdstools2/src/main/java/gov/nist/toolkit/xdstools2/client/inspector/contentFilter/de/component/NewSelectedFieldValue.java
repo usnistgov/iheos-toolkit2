@@ -9,14 +9,10 @@ import java.util.Set;
 public class NewSelectedFieldValue {
     private IndexFieldFilterSelector<DocumentEntryIndexField, DocumentEntry> filterSelector;
     private Set<IndexFieldValue> values;
-    private boolean isInitialValue;
-    private boolean clearSelection;
 
-    public NewSelectedFieldValue(IndexFieldFilterSelector<DocumentEntryIndexField, DocumentEntry> filterSelector, Set<IndexFieldValue> values, boolean isInitialValue, boolean clearSelection) {
+    public NewSelectedFieldValue(IndexFieldFilterSelector<DocumentEntryIndexField, DocumentEntry> filterSelector, Set<IndexFieldValue> values) {
         this.filterSelector = filterSelector;
         this.values = values;
-        this.isInitialValue = isInitialValue;
-        this.clearSelection = clearSelection;
     }
 
     public IndexFieldFilterSelector<DocumentEntryIndexField, DocumentEntry> getFilterSelector() {
@@ -27,11 +23,4 @@ public class NewSelectedFieldValue {
         return values;
     }
 
-    public boolean isInitialValue() {
-        return isInitialValue;
-    }
-
-    public boolean isClearSelection() {
-        return clearSelection;
-    }
 }

@@ -54,7 +54,7 @@ public class StatusFieldFilterSelector extends IndexFieldFilterSelector<Document
         ValueChangeHandler<Boolean> valueChangeHandler = new ValueChangeHandler<Boolean>() {
             @Override
             public void onValueChange(ValueChangeEvent<Boolean> valueChangeEvent) {
-                doValueChangeNotification(new NewSelectedFieldValue(StatusFieldFilterSelector.this, getSelectedValues(), false, false));
+                doValueChangeNotification(new NewSelectedFieldValue(StatusFieldFilterSelector.this, getSelectedValues()));
             }
         };
 
@@ -93,7 +93,7 @@ public class StatusFieldFilterSelector extends IndexFieldFilterSelector<Document
                                                             rb.setValue(false);
                                                         }
                                                     }
-                                                    doValueChangeNotification(new NewSelectedFieldValue(StatusFieldFilterSelector.this, null, false, true));
+                                                    doValueChangeNotification(new NewSelectedFieldValue(StatusFieldFilterSelector.this, null));
                                                  }
                                             });
         fp.add(clearSelectionLabel);

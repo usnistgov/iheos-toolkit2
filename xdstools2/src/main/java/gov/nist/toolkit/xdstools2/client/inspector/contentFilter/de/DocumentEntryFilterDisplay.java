@@ -12,12 +12,14 @@ import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.registrymetadata.client.Author;
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
+import gov.nist.toolkit.results.client.CodesConfiguration;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.xdstools2.client.inspector.CommonDisplay;
 import gov.nist.toolkit.xdstools2.client.inspector.HyperlinkFactory;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.FilterFeature;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.IndexFieldValue;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.AuthorFieldFilterSelector;
+import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.ClassCodeFieldFilterSelection;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.CreationTimeFieldFilterSelector;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.EntryTypeFieldFilterSelector;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.IndexFieldFilterSelector;
@@ -69,12 +71,13 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
     };
 
     private LinkedList<IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry>> filterSelectors;
-//    private Map<DocumentEntryIndexField, Map<IndexFieldValue, List<DocumentEntry>>> fieldIndexMap;
+
     private List<DocumentEntry> initialDeList;
     SimpleCallbackT<NewSelectedFieldValue> valueChangeCallback;
 
     public DocumentEntryFilterDisplay() {
         filterSelectors = new LinkedList<>();
+
 
         valueChangeCallback =  new SimpleCallbackT<NewSelectedFieldValue>() {
             @Override
@@ -106,22 +109,17 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
                                 IndexFieldFilterSelector<DocumentEntryIndexField, DocumentEntry> selector = it.next();
 //                                GWT.log("Selector: " + selector.getFieldType().name());
                                 selector.clearResult();
-                                if (newSelectedValue.isClearSelection()) {
-                                    selector.addResult(filteredResult);
+                                if (selector.isDeferredIndex()) {
+                                    List<DocumentEntry> deList = selector.filter(filteredResult);
+                                    selector.addResult(deList);
                                 } else {
-                                        if (selector.isDeferredIndex()) {
-                                            List<DocumentEntry> deList = selector.filter(filteredResult);
-                                            selector.addResult(deList);
-                                        } else {
-                                            Map<DocumentEntryIndexField, Map<IndexFieldValue, List<DocumentEntry>>> fieldMap = DocumentEntryIndex.indexMap(selector.getFieldType(), filteredResult);
-                                            List<DocumentEntry> deList = selector.filter(fieldMap.get(selector.getFieldType()));
-                                            selector.addResult(deList);
-                                        }
-
-                                        filteredResult.clear();
-                                        filteredResult.addAll(selector.getResult());
-                                    }
+                                    Map<DocumentEntryIndexField, Map<IndexFieldValue, List<DocumentEntry>>> fieldMap = DocumentEntryIndex.indexMap(selector.getFieldType(), filteredResult);
+                                    List<DocumentEntry> deList = selector.filter(fieldMap.get(selector.getFieldType()));
+                                    selector.addResult(deList);
                                 }
+                                filteredResult.clear();
+                                filteredResult.addAll(selector.getResult());
+                            }
                         }
                     }
                 }
@@ -134,6 +132,7 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
         filterSelectors.add(new ServiceStartTimeFieldFilterSelector("Service Start Time", valueChangeCallback));
         filterSelectors.add(new ServiceStopTimeFieldFilterSelector("Service Stop Time", valueChangeCallback));
         filterSelectors.add(new AuthorFieldFilterSelector("Author Person", valueChangeCallback));
+        filterSelectors.add(new ClassCodeFieldFilterSelection("Class Code", CodesConfiguration.ClassCode, valueChangeCallback));
 
     }
 
@@ -181,7 +180,7 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
     @Override
     public void setData(List<DocumentEntry> data) {
         initialDeList = data;
-        valueChangeCallback.run(new NewSelectedFieldValue(filterSelectors.getFirst(), null, true, false));
+        valueChangeCallback.run(new NewSelectedFieldValue(filterSelectors.getFirst(), null));
     }
 
 
@@ -208,6 +207,8 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
         } catch (Exception ex) {
             new PopupMessage(ex.toString());
         } finally {
+            resultPanel.add(statusBox);
+            featurePanel.add(resultPanel);
         }
     }
 

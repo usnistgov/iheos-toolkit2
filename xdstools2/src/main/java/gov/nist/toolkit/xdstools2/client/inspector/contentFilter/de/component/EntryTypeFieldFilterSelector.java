@@ -54,7 +54,7 @@ public class EntryTypeFieldFilterSelector extends IndexFieldFilterSelector<Docum
         ValueChangeHandler<Boolean> valueChangeHandler = new ValueChangeHandler<Boolean>() {
             @Override
             public void onValueChange(ValueChangeEvent<Boolean> valueChangeEvent) {
-                doValueChangeNotification(new NewSelectedFieldValue(EntryTypeFieldFilterSelector.this, getSelectedValues(), false, false));
+                doValueChangeNotification(new NewSelectedFieldValue(EntryTypeFieldFilterSelector.this, getSelectedValues()));
             }
         };
 
@@ -93,7 +93,7 @@ public class EntryTypeFieldFilterSelector extends IndexFieldFilterSelector<Docum
                                                             rb.setValue(false);
                                                         }
                                                     }
-                                                    doValueChangeNotification(new NewSelectedFieldValue(EntryTypeFieldFilterSelector.this, null, false, true));
+                                                    doValueChangeNotification(new NewSelectedFieldValue(EntryTypeFieldFilterSelector.this, null));
                                                  }
                                             });
         fp.add(clearSelectionLabel);

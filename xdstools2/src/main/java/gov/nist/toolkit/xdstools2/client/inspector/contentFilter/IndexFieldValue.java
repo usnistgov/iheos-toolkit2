@@ -1,5 +1,9 @@
 package gov.nist.toolkit.xdstools2.client.inspector.contentFilter;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 
 public class IndexFieldValue implements Comparable<IndexFieldValue> {
@@ -31,4 +35,13 @@ public class IndexFieldValue implements Comparable<IndexFieldValue> {
     public int compareTo(IndexFieldValue fieldValue) {
         return this.toString().compareTo(fieldValue.toString());
     }
+
+    public static List<IndexFieldValue> toIndexFieldValues(Collection<String> stringCollection) {
+        Iterator<String> it = stringCollection.iterator();
+        List<IndexFieldValue> ifvs = new ArrayList<>();
+        while (it.hasNext()) {
+            ifvs.add(new IndexFieldValue(it.next()));
+        }
+        return ifvs;
+     }
 }

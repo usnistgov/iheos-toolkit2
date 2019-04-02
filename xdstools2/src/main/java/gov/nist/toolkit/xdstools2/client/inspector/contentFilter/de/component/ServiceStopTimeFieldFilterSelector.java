@@ -15,7 +15,7 @@ public class ServiceStopTimeFieldFilterSelector extends TimeFieldFilterSelector 
     }
 
     @Override
-    public String getTimeFieldValue(DocumentEntry de) {
+    public String getFieldValue(DocumentEntry de) {
         return de.serviceStopTime;
     }
 }

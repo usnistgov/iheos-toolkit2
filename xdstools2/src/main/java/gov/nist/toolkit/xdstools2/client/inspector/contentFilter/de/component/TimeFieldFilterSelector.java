@@ -70,7 +70,7 @@ public abstract class TimeFieldFilterSelector extends IndexFieldFilterSelector<D
         applySelectionLabel.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent clickEvent) {
-                doValueChangeNotification(new NewSelectedFieldValue(TimeFieldFilterSelector.this, getSelectedValues(), false, false));
+                doValueChangeNotification(new NewSelectedFieldValue(TimeFieldFilterSelector.this, getSelectedValues()));
             }
         });
         fp.add(applySelectionLabel);
@@ -87,7 +87,7 @@ public abstract class TimeFieldFilterSelector extends IndexFieldFilterSelector<D
             public void onClick(ClickEvent clickEvent) {
                 fromDtBox.setValue(null);
                 toDtBox.setValue(null);
-                doValueChangeNotification(new NewSelectedFieldValue(TimeFieldFilterSelector.this, null, false, true));
+                doValueChangeNotification(new NewSelectedFieldValue(TimeFieldFilterSelector.this, null));
             }
         });
         fp.add(clearSelectionLabel);
@@ -204,7 +204,7 @@ public abstract class TimeFieldFilterSelector extends IndexFieldFilterSelector<D
         return result;
     }
 
-    public abstract String getTimeFieldValue(DocumentEntry de);
+    public abstract String getFieldValue(DocumentEntry de);
 
 
     public List<DocumentEntry> filterByTime(String from, String to, List<DocumentEntry> docs) {
@@ -214,7 +214,7 @@ public abstract class TimeFieldFilterSelector extends IndexFieldFilterSelector<D
 
             for (int i=0; i<result.size(); i++) {
                 DocumentEntry de = result.get(i);
-                String timeFieldValue = getTimeFieldValue(de);
+                String timeFieldValue = getFieldValue(de);
                 dates.add(new IndexFieldValue(timeFieldValue));
 
                 if (! ((from == null || from.equals("")) && (to == null || to.equals("")))) {

@@ -42,14 +42,14 @@ public class AuthorFieldFilterSelector extends IndexFieldFilterSelector<Document
         ValueChangeHandler<Boolean> valueChangeHandler = new ValueChangeHandler<Boolean>() {
             @Override
             public void onValueChange(ValueChangeEvent<Boolean> valueChangeEvent) {
-                doValueChangeNotification(new NewSelectedFieldValue(AuthorFieldFilterSelector.this, getSelectedValues(), false, false));
+                doValueChangeNotification(new NewSelectedFieldValue(AuthorFieldFilterSelector.this, getSelectedValues()));
             }
         };
 
         HTML selectorLabel = new HTML(label);
         selectorLabel.addStyleName("inlineBlock");
         fp.add(selectorLabel);
-        inputAuthorList.setVisibleItemCount(3);
+        inputAuthorList.setVisibleItemCount(2);
         fp.add(inputAuthorList);
 
         HTML editSelectionLabel = new HTML("Edit");
@@ -79,7 +79,7 @@ public class AuthorFieldFilterSelector extends IndexFieldFilterSelector<Document
         applySelectionLabel.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent clickEvent) {
-                doValueChangeNotification(new NewSelectedFieldValue(AuthorFieldFilterSelector.this, getSelectedValues(), false, false));
+                doValueChangeNotification(new NewSelectedFieldValue(AuthorFieldFilterSelector.this, getSelectedValues()));
             }
         });
         fp.add(applySelectionLabel);
@@ -93,7 +93,7 @@ public class AuthorFieldFilterSelector extends IndexFieldFilterSelector<Document
                                                 @Override
                                                 public void onClick(ClickEvent clickEvent) {
                                                     inputAuthorList.clear();
-                                                    doValueChangeNotification(new NewSelectedFieldValue(AuthorFieldFilterSelector.this, null, false, true));
+                                                    doValueChangeNotification(new NewSelectedFieldValue(AuthorFieldFilterSelector.this, null));
                                                  }
                                             });
         fp.add(clearSelectionLabel);
