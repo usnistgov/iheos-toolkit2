@@ -18,7 +18,17 @@ class StatusValidater extends AbstractFhirValidater {
     @Override
     ValidaterResult validate(FhirSimulatorTransaction transactionInstance) {
             boolean match = transactionInstance.responseHeaders.statusLine.statusCode == (statusCode as Integer)
+        error(transactionInstance.simDbEvent.eventId + " does not match")
             new ValidaterResult(transactionInstance, this, match)
+    }
+
+    def errors = []
+    def error(String x) {
+        errors << x
+    }
+
+    String getLog() {
+        errors.join('\n')
     }
 
 }

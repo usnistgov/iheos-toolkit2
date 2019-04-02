@@ -3,9 +3,11 @@ package gov.nist.toolkit.testengine.engine.validations
 import gov.nist.toolkit.actortransaction.client.TransactionInstance
 import gov.nist.toolkit.testengine.assertionEngine.Assertion
 import gov.nist.toolkit.testengine.engine.AbstractValidater
+import gov.nist.toolkit.testengine.engine.FhirSimulatorTransaction
 import gov.nist.toolkit.testengine.engine.ILogReporting
 import gov.nist.toolkit.testengine.engine.SimReference
 import gov.nist.toolkit.testengine.engine.TransactionRecord
+import gov.nist.toolkit.testengine.engine.validations.fhir.AbstractFhirValidater
 import gov.nist.toolkit.testengine.transactions.TransactionInstanceBuilder
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException
 import gov.nist.toolkit.xdsexception.client.XdsInternalException
@@ -64,7 +66,7 @@ class ValidationPluginRunner<T extends TransactionRecord<T>> {
                 }
             } catch (Exception ex) {
                this.logReport.fail(ex.toString())
-                failing <<  new ValidaterResult(transaction, this, false)
+                failing <<  new ValidaterResult(transaction, new AllFalse(), false)
             }
         }
 
@@ -95,6 +97,15 @@ class ValidationPluginRunner<T extends TransactionRecord<T>> {
         return passing
     }
 
+    class AllFalse extends AbstractFhirValidater {
+        @Override
+        ValidaterResult validate(FhirSimulatorTransaction transactionInstance) {
+            return new ValidaterResult(transactionInstance, this, false)
+        }
+
+        AllFalse() {
+        }
+    }
 
     private def consolidateLogs(List<ValidaterResult> results) {
         ValidaterResult first = null

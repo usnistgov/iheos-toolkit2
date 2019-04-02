@@ -1,6 +1,9 @@
 package gov.nist.toolkit.testengine.engine.validations
 
+import gov.nist.toolkit.testengine.engine.AbstractValidater
 import groovy.transform.ToString
+
+
 
 @ToString
 class ValidaterResult {
@@ -15,7 +18,7 @@ class ValidaterResult {
     boolean match
     private StringBuilder log = new StringBuilder()
 
-    ValidaterResult(def transaction, def filter, boolean match) {
+    ValidaterResult(def transaction, /* PostValidater */ AbstractValidater filter, boolean match) {
         this.transaction = transaction
         this.filter = filter
         this.match = match
