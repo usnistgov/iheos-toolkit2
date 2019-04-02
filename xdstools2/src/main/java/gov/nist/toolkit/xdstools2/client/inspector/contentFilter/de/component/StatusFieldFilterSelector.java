@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class StatusFieldFilterSelector extends Widget implements IndexFieldFilterSelector<DocumentEntryIndexField, DocumentEntry> {
+public class StatusFieldFilterSelector extends IndexFieldFilterSelector<DocumentEntryIndexField, DocumentEntry> {
     public static final String URN_OASIS_NAMES_TC_EBXML_REGREP_STATUS_TYPE_APPROVED = "urn:oasis:names:tc:ebxml-regrep:StatusType:Approved";
     public static final String URN_OASIS_NAMES_TC_EBXML_REGREP_STATUS_TYPE_DEPRECATED = "urn:oasis:names:tc:ebxml-regrep:StatusType:Deprecated";
     FlowPanel fp = new FlowPanel();
@@ -181,8 +181,6 @@ public class StatusFieldFilterSelector extends Widget implements IndexFieldFilte
         unknownCountLabel.setText("");
     }
 
-    @Override
-    public boolean isDeferredIndex() {
-        return false;
-    }
+
+
 }

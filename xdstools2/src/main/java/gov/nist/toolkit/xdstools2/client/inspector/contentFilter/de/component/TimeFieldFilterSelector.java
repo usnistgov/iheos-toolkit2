@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public abstract class TimeFieldFilterSelector extends DateRangeFieldFilter implements IndexFieldFilterSelector<DocumentEntryIndexField, DocumentEntry> {
+public abstract class TimeFieldFilterSelector extends IndexFieldFilterSelector<DocumentEntryIndexField, DocumentEntry> {
     FlowPanel fp = new FlowPanel();
     DateBox fromDtBox;
     DateBox toDtBox;
@@ -28,6 +28,8 @@ public abstract class TimeFieldFilterSelector extends DateRangeFieldFilter imple
     private HTML earliestDateLabel = new HTML();
     private HTML lastDateLabel = new HTML();
     private HTML matchingItems = new HTML();
+
+    DateTimeFormat hl7DTM = DateTimeFormat.getFormat("yyyyMMddHHmm");
 
     private SimpleCallbackT valueChangeNotification;
 
@@ -138,22 +140,18 @@ public abstract class TimeFieldFilterSelector extends DateRangeFieldFilter imple
 
     @Override
     public void doUpdateCount(IndexFieldValue fieldValue, int count) {
-        dates.add(fieldValue);
-    }
-
-    @Override
-    public void setAvailableDates() {
-        if (dates.size()>0) {
+        if (count>0 && dates.size()>0) {
             Collections.sort(dates);
             earliestDateLabel.setText(dates.get(0).toString());
             lastDateLabel.setText(dates.get(dates.size()-1).toString());
-            matchingItems.setText(Integer.toString(result.size()));
+            matchingItems.setText(Integer.toString(count));
         } else {
-           earliestDateLabel.setText("");
-           lastDateLabel.setText("");
-           matchingItems.setText("");
+            earliestDateLabel.setText("");
+            lastDateLabel.setText("");
+            matchingItems.setText("0");
         }
     }
+
 
     @Override
     public Set<IndexFieldValue> getSelectedValues() {
@@ -164,7 +162,6 @@ public abstract class TimeFieldFilterSelector extends DateRangeFieldFilter imple
         return values;
     }
 
-    @Override
     public String getFromDt() {
         if (fromDtBox.getValue()!=null)
              return hl7DTM.format(fromDtBox.getValue());
@@ -172,7 +169,6 @@ public abstract class TimeFieldFilterSelector extends DateRangeFieldFilter imple
             return "";
     }
 
-    @Override
     public String getToDt() {
         if (toDtBox.getValue()!=null)
             return hl7DTM.format(toDtBox.getValue());
@@ -192,6 +188,58 @@ public abstract class TimeFieldFilterSelector extends DateRangeFieldFilter imple
 
     @Override
     public boolean isDeferredIndex() {
-        return false;
+        return true;
     }
+
+
+    @Override
+    public List<DocumentEntry> filter(List<DocumentEntry> inputList) {
+        dates.clear();
+        List<DocumentEntry> result = new ArrayList<>();
+        String fromDt = getFromDt();
+        String toDt = getToDt();
+
+        result.addAll(filterByTime(fromDt, toDt, inputList));
+        doUpdateCount(null, result.size());
+        return result;
+    }
+
+    public abstract String getTimeFieldValue(DocumentEntry de);
+
+
+    public List<DocumentEntry> filterByTime(String from, String to, List<DocumentEntry> docs) {
+        List<DocumentEntry> result = new ArrayList<>();
+        result.addAll(docs);
+        if (result.isEmpty()) return result;
+
+            for (int i=0; i<result.size(); i++) {
+                DocumentEntry de = result.get(i);
+                String timeFieldValue = getTimeFieldValue(de);
+                dates.add(new IndexFieldValue(timeFieldValue));
+
+                if (! ((from == null || from.equals("")) && (to == null || to.equals("")))) {
+                    if (timeCompare(timeFieldValue, from, to))
+                        continue;
+                    result.remove(i);
+                    i--;
+                }
+            }
+
+        return result;
+    }
+
+    public static boolean timeCompare(String att, String from, String to) {
+        if (att == null || att.equals(""))
+            return false;
+        if (from != null && !from.equals("")) {
+            if ( !  (from.compareTo(att) <= 0))
+                return false;
+        }
+        if (to != null && !to.equals("")) {
+            if ( !  (att.compareTo(to) < 0))
+                return false;
+        }
+        return true;
+    }
+
 }

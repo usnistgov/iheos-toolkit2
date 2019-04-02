@@ -19,7 +19,6 @@ import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.FilterFeature;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.IndexFieldValue;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.AuthorFieldFilterSelector;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.CreationTimeFieldFilterSelector;
-import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.DateRangeFieldFilter;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.EntryTypeFieldFilterSelector;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.IndexFieldFilterSelector;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.NewSelectedFieldValue;
@@ -124,7 +123,7 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
                 int idx = filterSelectors.indexOf(newSelectedValue.getFilterSelector());
                 ListIterator<IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry>> it = filterSelectors.listIterator(idx);
 //                GWT.log("idx: " + idx);
-                if (it!=null) {
+                if (it != null) {
                     List<DocumentEntry> list = null;
                     if (it.hasPrevious()) {
                         list = it.previous().getResult();
@@ -133,7 +132,7 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
                         list = new ArrayList<>();
                         list.addAll(initialDeList);
                     }
-                    if (list!=null) {
+                    if (list != null) {
                         if (list.isEmpty()) {
                             while (it.hasNext()) {
                                 IndexFieldFilterSelector<DocumentEntryIndexField, DocumentEntry> selector = it.next();
@@ -144,77 +143,37 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
                             filteredResult.addAll(list);
                             while (it.hasNext()) {
                                 IndexFieldFilterSelector<DocumentEntryIndexField, DocumentEntry> selector = it.next();
-                                Map<DocumentEntryIndexField, Map<IndexFieldValue, List<DocumentEntry>>> fieldMap = DocumentEntryIndex.indexMap(selector.getFieldType(), filteredResult);
 //                                GWT.log("Selector: " + selector.getFieldType().name());
                                 selector.clearResult();
-//                                GWT.log("initial filteredResult size is: " + filteredResult.size());
-//                                GWT.log("About to begin filtering...");
                                 if (newSelectedValue.isClearSelection()) {
-//                                    GWT.log("clearing field: initial fieldMap size is: " + fieldMap.size());
                                     selector.addResult(filteredResult);
                                 } else {
-//                                    GWT.log("field selected: initial fieldMap size is: " + fieldMap.size());
-                                    if (!selector.isDeferredIndex() && fieldMap.isEmpty()) {
-                                        filteredResult.clear();
-                                    } else {
-                                        if (selector instanceof DateRangeFieldFilter) {
-                                            String fromDt = ((DateRangeFieldFilter)selector).getFromDt();
-                                            String toDt = ((DateRangeFieldFilter)selector).getToDt();
-                                            for (IndexFieldValue ifv : fieldMap.get(selector.getFieldType()).keySet()) {
-                                                List<DocumentEntry> deList = fieldMap.get(selector.getFieldType()).get(ifv);
-                                                if (deList!=null) {
-                                                    selector.doUpdateCount(ifv, deList.size());
-                                                    selector.addResult(DateRangeFieldFilter.filterByCreationTime(fromDt, toDt, deList));
-                                                } else {
-                                                    selector.doUpdateCount(ifv, 0);
-                                                }
-                                            }
-                                            ((DateRangeFieldFilter)selector).setAvailableDates();
-                                        } else if (selector.isDeferredIndex()) {
-                                            if (selector instanceof AuthorFieldFilterSelector) {
-                                                    AuthorFieldFilterSelector affs = (AuthorFieldFilterSelector) selector;
-                                                    List<DocumentEntry> result = affs.filterByAuthorPerson(filteredResult);
-                                                    selector.doUpdateCount(null, result.size());
-                                                    selector.addResult(result);
-                                            }
+                                        if (selector.isDeferredIndex()) {
+                                            List<DocumentEntry> deList = selector.filter(filteredResult);
+                                            selector.addResult(deList);
                                         } else {
-                                            // Default to simple String value
-                                            for (IndexFieldValue ifv : fieldMap.get(selector.getFieldType()).keySet()) {
-                                                List<DocumentEntry> deList = fieldMap.get(selector.getFieldType()).get(ifv);
-                                                if (deList!=null) {
-                                                    selector.doUpdateCount(ifv, deList.size());
-                                                    if (newSelectedValue.isInitialValue() || (selector.getSelectedValues()!=null && selector.getSelectedValues().contains(ifv)))
-                                                        selector.addResult(deList);
-                                                } else {
-                                                    selector.doUpdateCount(ifv, 0);
-                                                }
-                                            }
+                                            Map<DocumentEntryIndexField, Map<IndexFieldValue, List<DocumentEntry>>> fieldMap = DocumentEntryIndex.indexMap(selector.getFieldType(), filteredResult);
+                                            List<DocumentEntry> deList = selector.filter(fieldMap.get(selector.getFieldType()));
+                                            selector.addResult(deList);
                                         }
+
                                         filteredResult.clear();
                                         filteredResult.addAll(selector.getResult());
                                     }
                                 }
-//                                GWT.log("done. filtered size is: " + filteredResult.size());
-                            }
                         }
                     }
                 }
             }
         };
 
-        final IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry> statusFilterSelector = new StatusFieldFilterSelector("DocumentEntry Status", valueChangeCallback);
-        final IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry> entryTypeFilterSelector = new EntryTypeFieldFilterSelector("DocumentEntry Type", valueChangeCallback);
-        final IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry> creationTimeFilterSelector = new CreationTimeFieldFilterSelector("Creation Time", valueChangeCallback);
-        final IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry> serviceStartTimeFilterSelector = new ServiceStartTimeFieldFilterSelector("Service Start Time", valueChangeCallback);
-        final IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry> serviceStopTimeFilterSelector = new ServiceStopTimeFieldFilterSelector("Service Stop Time", valueChangeCallback);
-        final IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry> authorFilterSelector = new AuthorFieldFilterSelector("Author Person", valueChangeCallback);
+        filterSelectors.add(new StatusFieldFilterSelector("DocumentEntry Status", valueChangeCallback));
+        filterSelectors.add(new EntryTypeFieldFilterSelector("DocumentEntry Type", valueChangeCallback));
+        filterSelectors.add(new CreationTimeFieldFilterSelector("Creation Time", valueChangeCallback));
+        filterSelectors.add(new ServiceStartTimeFieldFilterSelector("Service Start Time", valueChangeCallback));
+        filterSelectors.add(new ServiceStopTimeFieldFilterSelector("Service Stop Time", valueChangeCallback));
+        filterSelectors.add(new AuthorFieldFilterSelector("Author Person", valueChangeCallback));
 
-        filterSelectors.add(statusFilterSelector);
-        filterSelectors.add(entryTypeFilterSelector);
-        filterSelectors.add(creationTimeFilterSelector);
-        filterSelectors.add(serviceStartTimeFilterSelector);
-        filterSelectors.add(serviceStopTimeFilterSelector);
-        filterSelectors.add(authorFilterSelector);
     }
 
 
@@ -230,7 +189,7 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
         StringBuffer buf = new StringBuffer();
         it.assertionsToSb(result, buf);
         clearResult();
-        if (!result.passed()) {
+        if (! result.passed()) {
             resultPanel.add(new HTML(red(bold("Status: Failed.<br/>",true))));
         } else {
             resultPanel.add(new HTML(bold("Status: Passed.<br/>",true)));
@@ -315,7 +274,7 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
 
 
     private void popListBox(ListBox listBox, List<String> values) {
-        if ((values != null && !values.isEmpty())) {
+        if ((values != null && ! values.isEmpty())) {
             if (values == null)
                 values = new ArrayList<>();
             for (String value : values) {

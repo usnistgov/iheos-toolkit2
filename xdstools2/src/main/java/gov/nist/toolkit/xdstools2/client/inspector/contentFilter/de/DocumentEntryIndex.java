@@ -17,18 +17,12 @@ public class DocumentEntryIndex {
     public static Map<DocumentEntryIndexField, Map<IndexFieldValue, List<DocumentEntry>>> indexMap(DocumentEntryIndexField deif, List<DocumentEntry> deList) {
         final Map<DocumentEntryIndexField, Map<IndexFieldValue, List<DocumentEntry>>> fieldMap = new HashMap<>();
 
-        // Instant processing
+        // Build an index for all non-deferred selectable fields
         for (DocumentEntry de : deList) {
             if (deif == null || (DocumentEntryIndexField.STATUS.equals(deif)))
                 indexField(fieldMap, de, DocumentEntryIndexField.STATUS, de.status);
             if (deif == null || (DocumentEntryIndexField.OBJECT_TYPE.equals(deif)))
                 indexField(fieldMap, de, DocumentEntryIndexField.OBJECT_TYPE, de.objectType);
-            if (deif == null || (DocumentEntryIndexField.CREATION_TIME.equals(deif)))
-                indexField(fieldMap, de, DocumentEntryIndexField.CREATION_TIME, de.creationTime);
-            if (deif == null || DocumentEntryIndexField.SERVICE_START_TIME.equals(deif))
-                indexField(fieldMap, de, DocumentEntryIndexField.SERVICE_START_TIME, de.serviceStartTime);
-            if (deif == null || DocumentEntryIndexField.SERVICE_STOP_TIME.equals(deif))
-                indexField(fieldMap, de, DocumentEntryIndexField.SERVICE_STOP_TIME, de.serviceStopTime);
         }
 
         return fieldMap;

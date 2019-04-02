@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class AuthorFieldFilterSelector extends Widget implements IndexFieldFilterSelector<DocumentEntryIndexField, DocumentEntry> {
+public class AuthorFieldFilterSelector extends IndexFieldFilterSelector<DocumentEntryIndexField, DocumentEntry> {
     FlowPanel fp = new FlowPanel();
 
     private final ListBox inputAuthorList = new ListBox();
@@ -161,6 +161,13 @@ public class AuthorFieldFilterSelector extends Widget implements IndexFieldFilte
     @Override
     public boolean isDeferredIndex() {
         return true;
+    }
+
+    @Override
+    public List<DocumentEntry> filter(List<DocumentEntry> inputList) {
+        List<DocumentEntry> result = filterByAuthorPerson(inputList);
+        doUpdateCount(null, result.size());
+        return result;
     }
 
     // These utils were copied from the DocEntryCollection server side class

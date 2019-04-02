@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class EntryTypeFieldFilterSelector extends Widget implements IndexFieldFilterSelector<DocumentEntryIndexField, DocumentEntry> {
+public class EntryTypeFieldFilterSelector extends IndexFieldFilterSelector<DocumentEntryIndexField, DocumentEntry> {
     public static final String URN_UUID_STABLE_DOCUMENT_ENTRY_TYPE = "urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1";
     public static final String URN_UUID_ONDEMAND_DOCUMENT_ENTRY_TYPE = "urn:uuid:34268e47-fdf5-41a6-ba33-82133c465248";
     FlowPanel fp = new FlowPanel();
