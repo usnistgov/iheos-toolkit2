@@ -127,11 +127,6 @@
             classificationNode="urn:uuid:d9d542f3-6cc4-48b6-8870-ea235fbc94c2"/>
       <tag0:Association targetObject="Folder01" sourceObject="SubmissionSet01"
             associationType="HasMember">
-         <tag0:Slot name="SubmissionSetStatus">
-            <tag0:ValueList>
-               <tag0:Value>Original</tag0:Value>
-            </tag0:ValueList>
-         </tag0:Slot>
          <tag0:Slot name="PreviousVersion">
             <tag0:ValueList>
                <tag0:Value>99999</tag0:Value>
