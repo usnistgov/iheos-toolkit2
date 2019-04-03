@@ -78,9 +78,11 @@ class FhirClient implements IFhirSearch {
             contentType = contentTypeHeader
         }
 
-        if (contentType.contains(';')) {  // has params
+        if (contentType && contentType.contains(';')) {  // has params
             contentType = contentType.split(';')[0].trim()
         }
+        if (!contentType)  // not all responses have Content-Type
+            return [ '', null ]
         if (contentType != expectedValue) {
             error = "Expected Content-Type ${expectedValue}\nFound ${contentType} in ${contentTypeHeader} instead"
         }
