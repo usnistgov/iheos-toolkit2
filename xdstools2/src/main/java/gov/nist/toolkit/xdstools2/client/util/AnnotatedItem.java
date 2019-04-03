@@ -1,5 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.util;
 
+import java.util.Objects;
+
 /**
  * An object name annotated with enabled status
  */
@@ -18,5 +20,20 @@ public class AnnotatedItem {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AnnotatedItem that = (AnnotatedItem) o;
+        return enabled == that.enabled &&
+                Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(enabled, name);
     }
 }

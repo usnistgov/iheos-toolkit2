@@ -149,6 +149,10 @@ abstract public class ButtonListSelector implements IsWidget {
         return currentSelection;
     }
 
+    public List<? extends AnnotatedItem> getItems() {
+        return items;
+    }
+
     void setCurrentSelection(String currentSelection) {
         this.currentSelection = currentSelection;
     }

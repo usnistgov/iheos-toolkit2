@@ -8,9 +8,9 @@ import java.util.List;
 public interface FilterFeature<T extends MetadataObject> extends IsWidget {
 //    void setData(Map<S, Map<IndexFieldValue, List<T>>> data);
     void setData(List<T> data);
+    List<T> getFilteredData();
     void displayFilter();
-    void hideFilter();
-    boolean applyFilter();
+    void applyFilter();
+    void removeFilter();
     boolean isActive();
-    boolean removeFilter();
 }

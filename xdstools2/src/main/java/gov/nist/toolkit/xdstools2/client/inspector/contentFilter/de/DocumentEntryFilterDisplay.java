@@ -1,5 +1,8 @@
 package gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -9,6 +12,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
+import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
 import gov.nist.toolkit.results.client.CodesConfiguration;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.xdstools2.client.inspector.CommonDisplay;
@@ -28,7 +32,7 @@ import java.util.Map;
 
 import static gov.nist.toolkit.http.client.HtmlMarkup.red;
 
-public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterFeature<DocumentEntry> {
+public abstract class DocumentEntryFilterDisplay extends CommonDisplay implements FilterFeature<DocumentEntry> {
 
     // Main body
     boolean isFilterApplied = false;
@@ -41,6 +45,8 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
     private TextBox languageCodeTxt = new TextBox();
     private TextBox legalAuthenticatorTxt = new TextBox();
     private ListBox sourcePatientInfoLBox = new ListBox();
+    private Button applyBtn = new Button("Apply");
+    private Button cancelBtn = new Button("Cancel");
     HTML statusBox = new HTML();
     VerticalPanel resultPanel = new VerticalPanel();
     StatusDisplay statusDisplay = new StatusDisplay() {
@@ -125,6 +131,13 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
         filterSelectors.add(new ConfidentialityCodeFieldFilterSelection("Confidentiality Code", CodesConfiguration.ConfidentialityCode, valueChangeCallback));
         filterSelectors.add(new EventCodeFieldFilterSelection("Event Code List", CodesConfiguration.EventCodeList, valueChangeCallback));
 
+        applyBtn.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent clickEvent) {
+                applyFilter();
+            }
+        });
+
     }
 
 
@@ -156,13 +169,13 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
         resultPanel.add(widget);
     }
 
+    @Override
+    public List<DocumentEntry> getFilteredData() {
+        return filterSelectors.getLast().getResult();
+    }
 
     // skb TODO: when view mode is changed to History, warn user that filter will be cleared.
 
-    // skb TODO: handle show hidden view
-    @Override
-    public void hideFilter() {
-    }
 
 
     @Override
@@ -172,10 +185,7 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
     }
 
 
-    @Override
-    public boolean isActive() {
-        return initialDeList != null;
-    }
+
 
     @Override
     public void displayFilter() {
@@ -192,22 +202,18 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
             for (IndexFieldFilterSelector<DocumentEntryIndexField,DocumentEntry> fieldSelectionResult : filterSelectors) {
                 featurePanel.add(fieldSelectionResult.asWidget());
             }
+            featurePanel.add(new HTML("&nbsp;"));
+            applyBtn.addStyleName("uiSpacerMarginLeft");
+            applyBtn.addStyleName("inlineBlock");
+            featurePanel.add(applyBtn);
+            cancelBtn.addStyleName("uiSpacerMarginLeft");
+            cancelBtn.addStyleName("inlineBlock");
         } catch (Exception ex) {
             new PopupMessage(ex.toString());
         } finally {
             resultPanel.add(statusBox);
             featurePanel.add(resultPanel);
         }
-    }
-
-    @Override
-    public boolean applyFilter() {
-        return false;
-    }
-
-    @Override
-    public boolean removeFilter() {
-        return false;
     }
 
 

@@ -11,6 +11,7 @@ import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.DocumentEntr
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.FilterFeature;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataObjectType;
+import gov.nist.toolkit.xdstools2.client.util.AnnotatedItem;
 import gov.nist.toolkit.xdstools2.client.widgets.ButtonListSelector;
 
 import java.util.HashMap;
@@ -42,7 +43,23 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         }
     };
 
-    FilterFeature deFilterFeature;
+    private FilterFeature deFilterFeature = new DocumentEntryFilterDisplay() {
+        @Override
+        public void applyFilter() {
+            getPresenter().doApplyFilter(getFilteredData());
+        }
+
+        @Override
+        public void removeFilter() {
+
+        }
+
+        @Override
+        public boolean isActive() {
+            return false;
+        }
+    };
+
     ButtonListSelector filterObjectSelector = new ButtonListSelector("Select Metadata Type") {
         @Override
         public void doSelected(String label) {
@@ -50,7 +67,7 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         }
     };
 
-    AssocDataTable assocDataTable = new AssocDataTable(rowsPerPage) {
+    private AssocDataTable assocDataTable = new AssocDataTable(rowsPerPage) {
         @Override
         void defaultSingleClickAction(Association row) {
             getPresenter().doSingleMode();
@@ -81,7 +98,7 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         }
     };
 
-    FoldersDataTable foldersDataTable = new FoldersDataTable(rowsPerPage) {
+    private FoldersDataTable foldersDataTable = new FoldersDataTable(rowsPerPage) {
         @Override
         void defaultSingleClickAction(Folder row) {
             getPresenter().doSingleMode();
@@ -112,7 +129,7 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         }
     };
 
-    SubmissionSetDataTable submissionSetDataTable = new SubmissionSetDataTable(rowsPerPage) {
+    private SubmissionSetDataTable submissionSetDataTable = new SubmissionSetDataTable(rowsPerPage) {
         @Override
         void defaultSingleClickAction(SubmissionSet row) {
             getPresenter().doSingleMode();
@@ -142,7 +159,7 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         }
     };
 
-    DocEntryDataTable docEntryDataTable = new DocEntryDataTable(rowsPerPage) {
+    private DocEntryDataTable docEntryDataTable = new DocEntryDataTable(rowsPerPage) {
         @Override
         void defaultSingleClickAction(DocumentEntry row) {
             getPresenter().doSingleMode();
@@ -173,7 +190,7 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         }
     };
 
-    ObjectRefDataTable objectRefTable = new ObjectRefDataTable(rowsPerPage) {
+    private ObjectRefDataTable objectRefTable = new ObjectRefDataTable(rowsPerPage) {
         @Override
         void doGetDocuments(List<ObjectRef> objectRefs) { // TODO: remove this
 //            getPresenter().do
@@ -209,7 +226,7 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         }
     };
 
-    ResourceDataTable resourceDataTable = new ResourceDataTable(rowsPerPage) {
+    private ResourceDataTable resourceDataTable = new ResourceDataTable(rowsPerPage) {
         @Override
         void doGetDocuments(List<ResourceItem> objectRefs) { // TODO: remove this
 //            getPresenter().do
@@ -257,7 +274,6 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
     }
 
 
-
     @Override
     public void onResize() {
         objectRefTable.resizeTable();
@@ -303,7 +319,6 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         filterObjectSelector.displayShowAll(false);
         contentFilterWrapper.add(filterObjectSelector.asWidget());
         contentFilterWrapper.add(new HTML("<br/>"));
-        deFilterFeature = new DocumentEntryFilterDisplay();
         contentFilterWrapper.add(deFilterFeature.asWidget());
         contentFilterPanel.add(contentFilterWrapper);
         contentFilterPanel.addStyleName("paddedHorizontalPanel");

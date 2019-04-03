@@ -150,6 +150,12 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
                     // enable the filter ctl
                    view.contentFilterCtl.removeStyleName("inlineLinkDisabled");
                 } else {
+                    /**
+                     * As to why the filter feature is not available in History view mode:
+                     * The History mode expects Results object which is dependent on a query-tool and further not necessary to perform two things:
+                     * 1) Browsing the registry simulator without any context
+                     * 2) Filtering once the Inspector is already opened from a query-tool.
+                     */
                     // close panel if open
                     doFilterOptionToggle(view.contentFilterCtl, view.contentFilterPanel);
                     // disable the filter ctl
@@ -255,8 +261,6 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
 
     public void doSetupDiffMode(boolean isSelected) {
         if (isSelected) {
-//            view.metadataInspectorRight.setSiteSpec(siteSpec);
-//            view.metadataInspectorRight.setResults(view.metadataInspectorLeft.getResults());
             view.metadataInspectorRight.setResults(null);
             view.metadataInspectorRight.setData(view.metadataInspectorLeft.getData());
             view.metadataInspectorRight.init();
@@ -412,6 +416,51 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
     void doUpdateChosenFilterObjectType(String type) {
         MetadataObjectType metadataObjectType = MetadataObjectType.valueOf(type);
         doSwitchFilter(metadataObjectType);
+    }
+
+    void doApplyFilter(List<DocumentEntry> fDeList) {
+        if (fDeList != null && ! fDeList.isEmpty()) {
+            if (view.metadataObjectSelector.getItems().contains(new AnnotatedItem(true, MetadataObjectType.DocEntries.name()))) {
+                MetadataObjectType mdOt = MetadataObjectType.valueOf(view.metadataObjectSelector.getCurrentSelection());
+                if (!MetadataObjectType.DocEntries.equals(mdOt)) {
+                    doSwitchTable(MetadataObjectType.DocEntries);
+                }
+                DataTable<DocumentEntry> deDt = view.getTableMap().get(MetadataObjectType.DocEntries);
+                if (deDt.compareSelect.getValue()) {
+                    deDt.compareSelect.setValue(false, true);
+                }
+                view.metadataInspectorLeft.asWidget().setVisible(false);
+
+                MetadataCollection fMc = new MetadataCollection();
+                fMc.init();
+                fMc.docEntries.addAll(fDeList);
+
+                setDataMap(fMc);
+
+                // Try to use the left inspector?
+
+                view.metadataInspectorRight.setResults(null);
+                view.metadataInspectorRight.setMetadataCollection(fMc);
+                view.metadataInspectorRight.preInit();
+                view.metadataInspectorRight.init();
+
+
+                // hide history pane when Diff is selected
+                view.metadataInspectorRight.showHistory(false);
+                view.metadataInspectorRight.showStructure(false);
+
+                TreeItem compare = doFocusTreeItem(metadataObjectType, view.metadataInspectorRight.getTreeList(), null, right, view.metadataInspectorLeft.getCurrentSelectedTreeItem());
+                if (compare!=null)
+                    view.metadataInspectorRight.setCurrentSelectedTreeItem(compare);
+            }
+        }
+    }
+
+    void doCancelFilter() {
+        // hide insp. right
+        // restore setDataMap with original mc
+        // display insp. left
+
     }
 
 
