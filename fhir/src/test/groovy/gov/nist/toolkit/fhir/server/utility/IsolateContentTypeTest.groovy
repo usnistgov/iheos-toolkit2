@@ -6,8 +6,9 @@ class IsolateContentTypeTest extends Specification {
 
     def 'simple type' () {
         when:
-        def type = 'application/fhir+json'
-        def (contentType, error) = FhirClient.isolateContentType(type, type)
+        def header = 'Content-Type: application/fhir+json'
+        def expected = 'application/fhir+json'
+        def (contentType, error) = FhirClient.isolateContentType(header, expected)
 
         then:
         contentType == 'application/fhir+json'
@@ -16,8 +17,9 @@ class IsolateContentTypeTest extends Specification {
 
     def 'simple type with spaces' () {
         when:
-        def type = '  application/fhir+json  '
-        def (contentType, error) = FhirClient.isolateContentType(type, type)
+        def header = 'Content-Type:   application/fhir+json  '
+        def expected = 'application/fhir+json'
+        def (contentType, error) = FhirClient.isolateContentType(header, expected)
 
         then:
         contentType == 'application/fhir+json'
@@ -27,7 +29,7 @@ class IsolateContentTypeTest extends Specification {
     def 'simple type with charset' () {
         when:
         def expected = 'application/fhir+json'
-        def type = 'application/fhir+json;charset=UTF-8'
+        def type = 'Content-Type: application/fhir+json;charset=UTF-8'
         def (contentType, error) = FhirClient.isolateContentType(type, expected)
 
         then:
@@ -38,7 +40,7 @@ class IsolateContentTypeTest extends Specification {
     def 'simple type with charset and spaces' () {
         when:
         def expected = 'application/fhir+json'
-        def type = ' application/fhir+json ; charset=UTF-8 '
+        def type = 'Content-Type:  application/fhir+json ; charset=UTF-8 '
         def (contentType, error) = FhirClient.isolateContentType(type, expected)
 
         then:
@@ -49,11 +51,11 @@ class IsolateContentTypeTest extends Specification {
     def 'bad type' () {
         when:
         def expected = 'application/fhir+json'
-        def type = ' application/fhir+jso ; charset=UTF-8 '
+        def type = 'Content-Type:  application/fhir+jso ; charset=UTF-8 '
         def (contentType, error) = FhirClient.isolateContentType(type, expected)
 
         then:
         contentType != expected
-        error.contains('Requested')
+        error.contains('Expected')
     }
 }
