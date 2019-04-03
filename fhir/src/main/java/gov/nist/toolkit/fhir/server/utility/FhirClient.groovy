@@ -40,15 +40,19 @@ class FhirClient implements IFhirSearch {
             post.setHeader('Accept', contentType)
             post.setEntity(entity)
             response = httpclient.execute(post)
-            String responseContentType = response.getFirstHeader('Content-Type')
-            if (responseContentType) {
-                responseContentType = responseContentType.split(':')[1].trim()
-                if (responseContentType != contentType)
-                    error = "Requsted Content-Type ${contentType}\nReceived ${responseContentType}"
-            } else {
-                responseContentType = 'text/plain'
-            }
-            FhirId locationHeader
+
+            def (responseContentType, theError) = isolateContentType(response.getFirstHeader('Content-Type') as String, contentType)
+            error = theError
+
+//            String responseContentType = response.getFirstHeader('Content-Type')
+//            if (responseContentType) {
+//                responseContentType = responseContentType.split(':')[1].trim()
+//                if (responseContentType != contentType)
+//                    error = "Requsted Content-Type ${contentType}\nReceived ${responseContentType}"
+//            } else {
+//                responseContentType = 'text/plain'
+//            }
+            FhirId locationHeader = null
             String lhdr = response.getFirstHeader('Location')
             if (lhdr) {
                 def (nametag, value) = lhdr.split(':', 2)
@@ -70,6 +74,22 @@ class FhirClient implements IFhirSearch {
             if (response)
                 response.close()
         }
+    }
+
+    // returns [ contentType, errorMsg ]
+    static def isolateContentType(String origContentType, String expected) {
+        def error = null
+        def contentType
+        if (origContentType && origContentType.contains(';')) {
+            contentType = origContentType.split(';')[0].trim()
+            if (contentType != expected)
+                error = "Requested Content-Type ${expected}\nReceived ${origContentType}"
+        } else if (origContentType) {
+            contentType = origContentType.trim()
+        } else {
+            contentType = 'text/plain'
+        }
+        [ contentType, error ]
     }
 
     static String contentType(String content) {
