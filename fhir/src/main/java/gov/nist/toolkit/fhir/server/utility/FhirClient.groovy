@@ -44,14 +44,6 @@ class FhirClient implements IFhirSearch {
             def (responseContentType, theError) = isolateContentType(response.getFirstHeader('Content-Type') as String, contentType)
             error = theError
 
-//            String responseContentType = response.getFirstHeader('Content-Type')
-//            if (responseContentType) {
-//                responseContentType = responseContentType.split(':')[1].trim()
-//                if (responseContentType != contentType)
-//                    error = "Requsted Content-Type ${contentType}\nReceived ${responseContentType}"
-//            } else {
-//                responseContentType = 'text/plain'
-//            }
             FhirId locationHeader = null
             String lhdr = response.getFirstHeader('Location')
             if (lhdr) {
@@ -77,17 +69,20 @@ class FhirClient implements IFhirSearch {
     }
 
     // returns [ contentType, errorMsg ]
-    static def isolateContentType(String origContentType, String expected) {
+    static def isolateContentType(String contentTypeHeader, String expectedValue) {
         def error = null
         def contentType
-        if (origContentType && origContentType.contains(';')) {
-            contentType = origContentType.split(';')[0].trim()
-            if (contentType != expected)
-                error = "Requested Content-Type ${expected}\nReceived ${origContentType}"
-        } else if (origContentType) {
-            contentType = origContentType.trim()
+        if (contentTypeHeader && contentTypeHeader.contains(':')) {  // header name included
+            contentType = contentTypeHeader.split(':')[1].trim()
         } else {
-            contentType = 'text/plain'
+            contentType = contentTypeHeader
+        }
+
+        if (contentType.contains(';')) {  // has params
+            contentType = contentType.split(';')[0].trim()
+        }
+        if (contentType != expectedValue) {
+            error = "Expected Content-Type ${expectedValue}\nFound ${contentType} in ${contentTypeHeader} instead"
         }
         [ contentType, error ]
     }
