@@ -1,4 +1,4 @@
-/** Add css rules here for your application. */
+ List", CodesConfiguration.EventCodeList, valueChangeCallback));/** Add css rules here for your application. */
 
 .extraBottomMargin {
   margin-bottom: 10px;
@@ -303,7 +303,7 @@ h3 {
   -moz-border-radius: 16px;
 }
 
-.labelMarginLeft {
+.uiSpacerMarginLeft {
   margin-left: 4px;
 }
 

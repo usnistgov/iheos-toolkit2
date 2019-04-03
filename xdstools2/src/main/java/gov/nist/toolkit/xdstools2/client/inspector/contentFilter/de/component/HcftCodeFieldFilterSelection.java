@@ -6,19 +6,19 @@ import gov.nist.toolkit.xdstools2.client.util.SimpleCallbackT;
 
 import java.util.List;
 
-public class ClassCodeFieldFilterSelection extends CodeFieldFilterSelector {
+public class HcftCodeFieldFilterSelection extends CodeFieldFilterSelector {
 
-    public ClassCodeFieldFilterSelection(String label, String codeName, SimpleCallbackT valueChangeNotification) {
+    public HcftCodeFieldFilterSelection(String label, String codeName, SimpleCallbackT valueChangeNotification) {
         super(label, codeName, valueChangeNotification);
     }
 
     @Override
     public List<String> getFieldValue(DocumentEntry de) {
-        return de.classCode;
+        return de.hcftc;
     }
 
     @Override
     public DocumentEntryIndexField getFieldType() {
-        return DocumentEntryIndexField.CLASS_CODE;
+        return DocumentEntryIndexField.HEALTHCARE_FACILITY_TYPE_CODE;
     }
 }

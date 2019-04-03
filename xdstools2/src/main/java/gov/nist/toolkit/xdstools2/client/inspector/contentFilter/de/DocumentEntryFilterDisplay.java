@@ -1,7 +1,5 @@
 package gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -10,7 +8,6 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.http.client.HtmlMarkup;
-import gov.nist.toolkit.registrymetadata.client.Author;
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
 import gov.nist.toolkit.results.client.CodesConfiguration;
 import gov.nist.toolkit.results.client.Result;
@@ -18,22 +15,12 @@ import gov.nist.toolkit.xdstools2.client.inspector.CommonDisplay;
 import gov.nist.toolkit.xdstools2.client.inspector.HyperlinkFactory;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.FilterFeature;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.IndexFieldValue;
-import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.AuthorFieldFilterSelector;
-import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.ClassCodeFieldFilterSelection;
-import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.CreationTimeFieldFilterSelector;
-import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.EntryTypeFieldFilterSelector;
-import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.IndexFieldFilterSelector;
-import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.NewSelectedFieldValue;
-import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.ServiceStartTimeFieldFilterSelector;
-import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.ServiceStopTimeFieldFilterSelector;
-import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.StatusFieldFilterSelector;
+import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.component.*;
 import gov.nist.toolkit.xdstools2.client.util.SimpleCallbackT;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.CodeFilterBank;
 import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.StatusDisplay;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -42,7 +29,6 @@ import java.util.Map;
 import static gov.nist.toolkit.http.client.HtmlMarkup.red;
 
 public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterFeature<DocumentEntry> {
-    Map<String, List<String>> codeSpecMap = new HashMap<String, List<String>>();
 
     // Main body
     boolean isFilterApplied = false;
@@ -55,7 +41,6 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
     private TextBox languageCodeTxt = new TextBox();
     private TextBox legalAuthenticatorTxt = new TextBox();
     private ListBox sourcePatientInfoLBox = new ListBox();
-    CodeFilterBank codeFilterBank;
     HTML statusBox = new HTML();
     VerticalPanel resultPanel = new VerticalPanel();
     StatusDisplay statusDisplay = new StatusDisplay() {
@@ -133,6 +118,12 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
         filterSelectors.add(new ServiceStopTimeFieldFilterSelector("Service Stop Time", valueChangeCallback));
         filterSelectors.add(new AuthorFieldFilterSelector("Author Person", valueChangeCallback));
         filterSelectors.add(new ClassCodeFieldFilterSelection("Class Code", CodesConfiguration.ClassCode, valueChangeCallback));
+        filterSelectors.add(new TypeCodeFieldFilterSelection("Type Code", CodesConfiguration.TypeCode, valueChangeCallback));
+        filterSelectors.add(new FormatCodeFieldFilterSelection("Format Code", CodesConfiguration.FormatCode, valueChangeCallback));
+        filterSelectors.add(new HcftCodeFieldFilterSelection("Healthcare Facility Type Code", CodesConfiguration.HealthcareFacilityTypeCode, valueChangeCallback));
+        filterSelectors.add(new PracticeSettingCodeFieldFilterSelection("Practice Setting Code", CodesConfiguration.PracticeSettingCode, valueChangeCallback));
+        filterSelectors.add(new ConfidentialityCodeFieldFilterSelection("Confidentiality Code", CodesConfiguration.ConfidentialityCode, valueChangeCallback));
+        filterSelectors.add(new EventCodeFieldFilterSelection("Event Code List", CodesConfiguration.EventCodeList, valueChangeCallback));
 
     }
 
@@ -140,9 +131,6 @@ public class DocumentEntryFilterDisplay extends CommonDisplay implements FilterF
     @Override
     public Widget asWidget() {
         return featurePanel;
-    }
-    public void addToCodeSpec(Map<String, List<String>> codeSpec) {
-        codeFilterBank.addToCodeSpec(codeSpec);
     }
 
     private String displayResult(Result result) {

@@ -15,7 +15,6 @@ import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
 import gov.nist.toolkit.results.client.CodeConfiguration;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.IndexFieldValue;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.DocumentEntryIndexField;
-import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.CodeEditButtonSelector;
 import gov.nist.toolkit.xdstools2.client.util.SimpleCallbackT;
 import gov.nist.toolkit.xdstools2.client.widgets.CodePicker;
 import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.StatusDisplay;
@@ -69,6 +68,7 @@ public abstract class CodeFieldFilterSelector extends IndexFieldFilterSelector<D
         HTML selectorLabel = new HTML(label);
         selectorLabel.addStyleName("inlineBlock");
         fp.add(selectorLabel);
+        inputCodeList.addStyleName("uiSpacerMarginLeft");
         inputCodeList.setVisibleItemCount(2);
         fp.add(inputCodeList);
 
@@ -204,7 +204,8 @@ public abstract class CodeFieldFilterSelector extends IndexFieldFilterSelector<D
 
         for (int i=0; i<docs.size(); i++) {
             DocumentEntry de = docs.get(i);
-            if (Collections.disjoint(IndexFieldValue.toIndexFieldValues(getFieldValue(de)), codes)) {
+            List<IndexFieldValue> ifvList = IndexFieldValue.toIndexFieldValues(getFieldValue(de));
+            if (Collections.disjoint(ifvList, codes)) {
                 docs.remove(i);
                 i--;
             }
