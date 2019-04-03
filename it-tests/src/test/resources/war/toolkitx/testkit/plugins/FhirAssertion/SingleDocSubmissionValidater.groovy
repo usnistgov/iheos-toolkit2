@@ -34,4 +34,14 @@ class SingleDocSubmissionValidater extends AbstractFhirValidater {
         }
         documentManifest && documentReferences.size() > 0
     }
+
+    def errors = []
+    def error(String x) {
+        errors << x
+    }
+    boolean isErrors() { !errors.empty }
+
+    SingleDocSubmissionValidater() {
+        super()
+    }
 }
