@@ -25,8 +25,11 @@ class FhirId {
         if (!theResource.id)
             throw new ToolkitRuntimeException('Logical ID of the resource is missing. - http://hl7.org/fhir/resource.html#id')
         id = theResource.id
+        if (id.contains('/_history'))
+            id = id.substring(0, id.indexOf('/_history'))
         if (id.contains('/'))
             id = id.substring(id.indexOf('/') + 1)
+        println id
     }
 
     // format is Patient/ea0d8b08-8f1d-40ac-b9e2-bbcc781c586b/_history/1
