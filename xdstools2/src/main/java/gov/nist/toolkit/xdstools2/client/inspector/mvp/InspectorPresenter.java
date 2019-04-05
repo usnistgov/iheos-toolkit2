@@ -17,12 +17,15 @@ import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractPresenter;
+import gov.nist.toolkit.xdstools2.client.inspector.DataModel;
 import gov.nist.toolkit.xdstools2.client.inspector.DataNotification;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataObjectType;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataObjectWrapper;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.FilterFeature;
 import gov.nist.toolkit.xdstools2.client.util.AnnotatedItem;
+import gov.nist.toolkit.xdstools2.client.widgets.ButtonListSelector;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,6 +43,10 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
     List<AnnotatedItem> metadataObjectTypeSelectionItems;
     Map<MetadataObjectType, List<? extends MetadataObject>> dataMap = new HashMap<>();
     List<AnnotatedItem> filterSelectionItems;
+
+    DataModel dmTemp;
+    Collection<Result> resultsTemp;
+    MetadataCollection mcTemp;
 
     @Override
     public void init() {
@@ -95,7 +102,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
                 InspectorPresenter.this.metadataCollection = metadataCollection;
                 setDataMap(metadataCollection);
                 metadataObjectTypeSelectionItems = getMetadataObjectSelectionItems();
-                view.metadataObjectSelector.refreshEnabledStatus(metadataObjectTypeSelectionItems);
+                view.metadataObjectSelector.setNames(metadataObjectTypeSelectionItems);
                 doRefreshTable();
             }
 
@@ -145,8 +152,10 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
             @Override
             public void onViewModeChanged(MetadataInspectorTab.SelectedViewMode viewMode, MetadataObjectWrapper objectWrapper) {
                 if (MetadataInspectorTab.SelectedViewMode.CONTENT.equals(viewMode)) {
-                    filterSelectionItems = getFilterObjectSelectionItems();
-                    view.filterObjectSelector.refreshEnabledStatus(filterSelectionItems);
+                    if (view.filterObjectSelector.getCurrentSelection() == null) {
+                        filterSelectionItems = getFilterObjectSelectionItems();
+                        view.filterObjectSelector.setNames(filterSelectionItems);
+                    }
                     // enable the filter ctl
                    view.contentFilterCtl.removeStyleName("inlineLinkDisabled");
                 } else {
@@ -157,7 +166,9 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
                      * 2) Filtering once the Inspector is already opened from a query-tool.
                      */
                     // close panel if open
-                    doFilterOptionToggle(view.contentFilterCtl, view.contentFilterPanel);
+                    if (view.contentFilterPanel.isVisible()) {
+                        doFilterOptionToggle(view.contentFilterCtl, view.contentFilterPanel);
+                    }
                     // disable the filter ctl
                     view.contentFilterCtl.addStyleName("inlineLinkDisabled");
 
@@ -215,17 +226,16 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
                 }
             }
         });
-        setupInspectorWidget(view.metadataInspectorRight);
-        MetadataCollection mc = setupInspectorWidget(view.metadataInspectorLeft);
+
+        setupInspectorWidget(results, metadataCollection, siteSpec, view.metadataInspectorRight);
+        MetadataCollection mc = setupInspectorWidget(results, metadataCollection, siteSpec, view.metadataInspectorLeft);
+
         if (results==null) {
             mc.add(metadataCollection);
         }
         setDataMap(metadataCollection);
 
-        metadataObjectTypeSelectionItems = getMetadataObjectSelectionItems();
-        view.metadataObjectSelector.setNames(metadataObjectTypeSelectionItems); // This will create the button list
-        filterSelectionItems = getFilterObjectSelectionItems();
-        view.filterObjectSelector.setNames(filterSelectionItems); // This will create the button list
+        doSelectorSetup();
 
     }
 
@@ -277,7 +287,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
         }
     }
 
-    private MetadataCollection setupInspectorWidget(MetadataInspectorTab inspector) {
+    private static MetadataCollection setupInspectorWidget(Collection<Result> results, MetadataCollection metadataCollection, SiteSpec siteSpec, MetadataInspectorTab inspector) {
         inspector.setResults(results);
         inspector.setMetadataCollection(metadataCollection);
         inspector.setSiteSpec(siteSpec);
@@ -358,7 +368,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
 
         for (MetadataObjectType type : MetadataObjectType.values()) {
             List<? extends MetadataObject> metadataObject = dataMap.get(type);
-            annotatedItems.add(new AnnotatedItem(metadataObject!=null && metadataObject.size()>0, type.name()));
+            annotatedItems.add(new AnnotatedItem(metadataObject != null && metadataObject.size()>0, type.name()));
         }
 
         return annotatedItems;
@@ -369,7 +379,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
 
        MetadataObjectType type = MetadataObjectType.DocEntries;
        List<? extends MetadataObject> metadataObject = dataMap.get(type);
-       annotatedItems.add(new AnnotatedItem(metadataObject!=null && metadataObject.size()>0, type.name()));
+       annotatedItems.add(new AnnotatedItem(metadataObject != null && metadataObject.size()>0, type.name()));
 
         return annotatedItems;
     }
@@ -420,46 +430,72 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
 
     void doApplyFilter(List<DocumentEntry> fDeList) {
         if (fDeList != null && ! fDeList.isEmpty()) {
+            // backup the current state off the inspector
+            // 1. data, 2. results, 3. mc
+
+             dmTemp =  view.metadataInspectorLeft.getData();
+             mcTemp = dmTemp.getCombinedMetadata();
+             resultsTemp = view.metadataInspectorLeft.getResults();
+
+
             if (view.metadataObjectSelector.getItems().contains(new AnnotatedItem(true, MetadataObjectType.DocEntries.name()))) {
-                MetadataObjectType mdOt = MetadataObjectType.valueOf(view.metadataObjectSelector.getCurrentSelection());
-                if (!MetadataObjectType.DocEntries.equals(mdOt)) {
-                    doSwitchTable(MetadataObjectType.DocEntries);
-                }
+                doSwitchTable(MetadataObjectType.DocEntries);
                 DataTable<DocumentEntry> deDt = view.getTableMap().get(MetadataObjectType.DocEntries);
                 if (deDt.compareSelect.getValue()) {
                     deDt.compareSelect.setValue(false, true);
                 }
-                view.metadataInspectorLeft.asWidget().setVisible(false);
 
                 MetadataCollection fMc = new MetadataCollection();
                 fMc.init();
                 fMc.docEntries.addAll(fDeList);
 
-                setDataMap(fMc);
+                try {
+                    // use the left inspector as the primary inspector
+                    setupInspectorWidget(null, fMc, siteSpec, view.metadataInspectorLeft);
+                    // the right inspector is a secondary one for comparison purposes
+                    setupInspectorWidget(null, fMc, siteSpec, view.metadataInspectorRight);
 
-                // Try to use the left inspector?
+                    setDataMap(fMc);
 
-                view.metadataInspectorRight.setResults(null);
-                view.metadataInspectorRight.setMetadataCollection(fMc);
-                view.metadataInspectorRight.preInit();
-                view.metadataInspectorRight.init();
+                    // restrict metadata selection to the same as the filter options
+                    view.metadataObjectSelector.setNames(getFilterObjectSelectionItems()); // This will create the button list
 
+                } catch (Exception ex) {
+                    new PopupMessage("Filter could not be applied.");
+                    doRemoveFilter();
+                    doSelectorSetup();
+                }
 
-                // hide history pane when Diff is selected
-                view.metadataInspectorRight.showHistory(false);
-                view.metadataInspectorRight.showStructure(false);
-
-                TreeItem compare = doFocusTreeItem(metadataObjectType, view.metadataInspectorRight.getTreeList(), null, right, view.metadataInspectorLeft.getCurrentSelectedTreeItem());
-                if (compare!=null)
-                    view.metadataInspectorRight.setCurrentSelectedTreeItem(compare);
             }
         }
     }
 
-    void doCancelFilter() {
-        // hide insp. right
+    void doRemoveFilter() {
         // restore setDataMap with original mc
-        // display insp. left
+
+        MetadataInspectorTab inspector = view.metadataInspectorRight;
+        inspector.setData(dmTemp);
+        inspector.setResults(null);
+        inspector.setMetadataCollection(dmTemp.getCombinedMetadata());
+        inspector.setSiteSpec(siteSpec);
+        inspector.init();
+
+        inspector = view.metadataInspectorLeft;
+        inspector.setData(dmTemp);
+        inspector.setResults(null);
+        inspector.setMetadataCollection(dmTemp.getCombinedMetadata());
+        inspector.setSiteSpec(siteSpec);
+        inspector.init();
+
+        setDataMap(mcTemp);
+    }
+
+    void doSelectorSetup() {
+
+        metadataObjectTypeSelectionItems = getMetadataObjectSelectionItems();
+        view.metadataObjectSelector.setNames(metadataObjectTypeSelectionItems); // This will create the button list
+        filterSelectionItems = getFilterObjectSelectionItems();
+        view.filterObjectSelector.setNames(filterSelectionItems); // This will create the button list
 
     }
 
@@ -468,7 +504,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
        for (MetadataObjectType key : view.getFilterFeatureMap().keySet()) {
            FilterFeature filterFeature = view.getFilterFeatureMap().get(key);
            if (filterFeature !=null && key.equals(targetObjectType)) {
-                if (!filterFeature.isActive()) {
+                if (! filterFeature.isActive()) {
                    filterFeature.setData(dataMap.get(key));
                    filterFeature.displayFilter();
                 }
@@ -670,14 +706,27 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
     }
 
     public void doFilterOptionToggle(HTML ctl, FlowPanel panel) {
-        if (!ctl.getStyleName().contains("inlineLinkDisabled")) {
-            boolean isPanelVisible = panel.isVisible();
-            if (isPanelVisible) {
-                ctl.removeStyleName("insetBorder");
-            } else {
-                ctl.addStyleName("insetBorder");
-            }
-            panel.setVisible(!isPanelVisible);
+        boolean isLinkDisabled =  ctl.getStyleName().contains("inlineLinkDisabled");
+        if (! isLinkDisabled) {
+           boolean isFilterViewExpanded  = panel.isVisible();
+
+           if (isFilterViewExpanded) {
+               ctl.removeStyleName("insetBorder");
+           } else {
+               ctl.addStyleName("insetBorder");
+
+               // Auto select DocEntries
+               ButtonListSelector filterSelector = view.filterObjectSelector;
+               if (filterSelector.getItems().contains(new AnnotatedItem(true, MetadataObjectType.DocEntries.name()))) {
+                   String currentSelection = filterSelector.getCurrentSelection();
+                   if (currentSelection == null || (currentSelection != null && ! MetadataObjectType.DocEntries.name().equals(currentSelection))) {
+                       filterSelector.updateSiteSelectedView(MetadataObjectType.DocEntries.name());
+                   }
+               } else {
+                   new PopupMessage("DocEntries not available to select from this list: " + filterSelector.getItems().toString());
+               }
+           }
+           panel.setVisible(! isFilterViewExpanded);
         }
     }
 

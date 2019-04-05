@@ -31,9 +31,17 @@ public class AnnotatedItem {
                 Objects.equals(name, that.name);
     }
 
+
     @Override
     public int hashCode() {
+        return name.hashCode();
+    }
 
-        return Objects.hash(enabled, name);
+    @Override
+    public String toString() {
+        return "AnnotatedItem{" +
+                "enabled=" + enabled +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

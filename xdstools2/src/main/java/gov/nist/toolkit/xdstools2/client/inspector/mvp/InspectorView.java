@@ -4,15 +4,27 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.*;
-import gov.nist.toolkit.registrymetadata.client.*;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.ProvidesResize;
+import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.TreeItem;
+import com.google.gwt.user.client.ui.Widget;
+import gov.nist.toolkit.registrymetadata.client.Association;
+import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
+import gov.nist.toolkit.registrymetadata.client.Folder;
+import gov.nist.toolkit.registrymetadata.client.ObjectRef;
+import gov.nist.toolkit.registrymetadata.client.ResourceItem;
+import gov.nist.toolkit.registrymetadata.client.SubmissionSet;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractView;
-import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.DocumentEntryFilterDisplay;
-import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.FilterFeature;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataObjectType;
-import gov.nist.toolkit.xdstools2.client.util.AnnotatedItem;
+import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.FilterFeature;
+import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.DocumentEntryFilterDisplay;
 import gov.nist.toolkit.xdstools2.client.widgets.ButtonListSelector;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 import java.util.HashMap;
 import java.util.List;
@@ -44,20 +56,38 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
     };
 
     private FilterFeature deFilterFeature = new DocumentEntryFilterDisplay() {
+
+        boolean isFilterApplied = false;
+
         @Override
         public void applyFilter() {
-            getPresenter().doApplyFilter(getFilteredData());
+            try {
+                getPresenter().doApplyFilter(getFilteredData());
+                isFilterApplied = true;
+            } catch (Exception ex) {
+                new PopupMessage(ex.toString());
+            }
         }
 
         @Override
         public void removeFilter() {
-
+            if (isFilterApplied) {
+                try {
+                    getPresenter().doRemoveFilter();
+                    getPresenter().doSelectorSetup();
+                    isFilterApplied = false;
+                } catch (Exception ex) {
+                    new PopupMessage(ex.toString());
+                }
+            }
         }
 
         @Override
         public boolean isActive() {
-            return false;
+            return isFilterApplied;
         }
+
+
     };
 
     ButtonListSelector filterObjectSelector = new ButtonListSelector("Select Metadata Type") {

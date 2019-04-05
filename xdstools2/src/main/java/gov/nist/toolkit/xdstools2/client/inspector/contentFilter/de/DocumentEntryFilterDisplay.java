@@ -12,7 +12,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
-import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
 import gov.nist.toolkit.results.client.CodesConfiguration;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.xdstools2.client.inspector.CommonDisplay;
@@ -35,7 +34,6 @@ import static gov.nist.toolkit.http.client.HtmlMarkup.red;
 public abstract class DocumentEntryFilterDisplay extends CommonDisplay implements FilterFeature<DocumentEntry> {
 
     // Main body
-    boolean isFilterApplied = false;
     private FlowPanel featurePanel = new FlowPanel();
     private VerticalPanel previousPanel;
     // controls
@@ -45,8 +43,8 @@ public abstract class DocumentEntryFilterDisplay extends CommonDisplay implement
     private TextBox languageCodeTxt = new TextBox();
     private TextBox legalAuthenticatorTxt = new TextBox();
     private ListBox sourcePatientInfoLBox = new ListBox();
-    private Button applyBtn = new Button("Apply");
-    private Button cancelBtn = new Button("Cancel");
+    private Button applyFilterBtn = new Button("Apply Filter");
+    private Button removeFilterBtn = new Button("&nbsp;Remove Filter");
     HTML statusBox = new HTML();
     VerticalPanel resultPanel = new VerticalPanel();
     StatusDisplay statusDisplay = new StatusDisplay() {
@@ -131,13 +129,25 @@ public abstract class DocumentEntryFilterDisplay extends CommonDisplay implement
         filterSelectors.add(new ConfidentialityCodeFieldFilterSelection("Confidentiality Code", CodesConfiguration.ConfidentialityCode, valueChangeCallback));
         filterSelectors.add(new EventCodeFieldFilterSelection("Event Code List", CodesConfiguration.EventCodeList, valueChangeCallback));
 
-        applyBtn.addClickHandler(new ClickHandler() {
+        applyFilterBtn.setEnabled(true);
+        applyFilterBtn.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent clickEvent) {
                 applyFilter();
+                applyFilterBtn.setEnabled(false);
+                removeFilterBtn.setEnabled(true);
             }
         });
 
+        removeFilterBtn.setEnabled(false);
+        removeFilterBtn.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent clickEvent) {
+               removeFilter();
+               removeFilterBtn.setEnabled(false);
+               applyFilterBtn.setEnabled(true);
+            }
+        });
     }
 
 
@@ -146,10 +156,10 @@ public abstract class DocumentEntryFilterDisplay extends CommonDisplay implement
         return featurePanel;
     }
 
-    private String displayResult(Result result) {
+    private String displayResultPanel(Result result) {
         StringBuffer buf = new StringBuffer();
         it.assertionsToSb(result, buf);
-        clearResult();
+        clearResultPanel();
         if (! result.passed()) {
             resultPanel.add(new HTML(red(bold("Status: Failed.<br/>",true))));
         } else {
@@ -160,12 +170,12 @@ public abstract class DocumentEntryFilterDisplay extends CommonDisplay implement
         return buf.toString();
     }
 
-    private void clearResult() {
+    private void clearResultPanel() {
         resultPanel.clear();
     }
 
-    private void displayResult(Widget widget) {
-        clearResult();
+    private void displayResultPanel(Widget widget) {
+        clearResultPanel();
         resultPanel.add(widget);
     }
 
@@ -191,6 +201,8 @@ public abstract class DocumentEntryFilterDisplay extends CommonDisplay implement
     public void displayFilter() {
         // skb TODO: Clear tree selection because the selected item may not be in the filtered result set.
 
+        clearResultPanel();
+
         String title = "<b>Trial Version Document Entries Filter</b>";
         featurePanel.add(createTitle(HyperlinkFactory.addHTML(title)));
         featurePanel.add(new HTML("<br/>"));
@@ -203,11 +215,15 @@ public abstract class DocumentEntryFilterDisplay extends CommonDisplay implement
                 featurePanel.add(fieldSelectionResult.asWidget());
             }
             featurePanel.add(new HTML("&nbsp;"));
-            applyBtn.addStyleName("uiSpacerMarginLeft");
-            applyBtn.addStyleName("inlineBlock");
-            featurePanel.add(applyBtn);
-            cancelBtn.addStyleName("uiSpacerMarginLeft");
-            cancelBtn.addStyleName("inlineBlock");
+            applyFilterBtn.addStyleName("uiSpacerMarginLeft");
+            applyFilterBtn.addStyleName("inlineBlock");
+            featurePanel.add(applyFilterBtn);
+//            HTML spacer = new HTML("&nbsp;&nbsp;");
+//            spacer.addStyleName("inlineBlock");
+//            featurePanel.add(spacer);
+            removeFilterBtn.addStyleName("uiSpacerMarginLeft");
+            removeFilterBtn.addStyleName("inlineBlock");
+            featurePanel.add(removeFilterBtn);
         } catch (Exception ex) {
             new PopupMessage(ex.toString());
         } finally {

@@ -747,4 +747,9 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 			return SelectedViewMode.CONTENT;
 		return SelectedViewMode.HISTORY; // default
 	}
+
+
+	public Collection<Result> getResults() {
+		return results;
+	}
 }
