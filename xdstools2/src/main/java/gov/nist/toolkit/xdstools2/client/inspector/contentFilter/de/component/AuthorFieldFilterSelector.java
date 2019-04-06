@@ -47,6 +47,7 @@ public class AuthorFieldFilterSelector extends IndexFieldFilterSelector<Document
         };
 
         HTML selectorLabel = new HTML(label);
+        selectorLabel.addStyleName("labelWidthFmt");
         selectorLabel.addStyleName("inlineBlock");
         fp.add(selectorLabel);
         inputAuthorList.setVisibleItemCount(2);

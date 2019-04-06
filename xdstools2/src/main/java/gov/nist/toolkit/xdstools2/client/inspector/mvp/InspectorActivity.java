@@ -60,7 +60,10 @@ public class InspectorActivity extends AbstractToolkitActivity {
         assert(displayer != null);
 
         presenter.setTitle("ResultInspector");
-        presenter.setDataModel(place.getResults());
+        if (place.getResults() != null)
+            presenter.setDataModel(place.getResults());
+        if (place.getMc() != null)
+            presenter.setDataModel(place.getMc());
         presenter.setSiteSpec(place.getSiteSpec());
         finish(acceptsOneWidget, eventBus);
     }

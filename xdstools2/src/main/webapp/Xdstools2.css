@@ -336,6 +336,10 @@ h3 {
   vertical-align: bottom; cursor: pointer; margin: 3px; display:inline-block;
 }
 
+.labelWidthFmt {
+  width: 140px;
+}
+
 .inlineBlock {
   vertical-align: bottom; display: inline-block;
 }

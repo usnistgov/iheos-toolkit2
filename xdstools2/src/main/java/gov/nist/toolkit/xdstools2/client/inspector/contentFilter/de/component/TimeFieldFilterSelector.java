@@ -39,6 +39,7 @@ public abstract class TimeFieldFilterSelector extends IndexFieldFilterSelector<D
         this.valueChangeNotification = valueChangeNotification;
 
         HTML selectorLabel = new HTML(label);
+        selectorLabel.addStyleName("labelWidthFmt");
         selectorLabel.addStyleName("inlineBlock");
         fp.add(selectorLabel);
 

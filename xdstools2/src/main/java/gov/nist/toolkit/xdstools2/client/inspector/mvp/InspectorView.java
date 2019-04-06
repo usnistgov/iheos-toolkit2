@@ -327,7 +327,11 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
 
         contentFilterCtl.setTitle("This feature is only available in the Inspector Contents View Mode.");
         contentFilterCtl.addStyleName("iconStyle");
-        contentFilterCtl.addStyleName("inlineLinkDisabled");
+        // If the inspector is starting out in Content mode, then this can only happen from the registry browser.
+        // Otherwise, the normal mode is History and the Filter should be disabled.
+        if (! MetadataInspectorTab.SelectedViewMode.CONTENT.equals(metadataInspectorLeft.getViewMode())) {
+            contentFilterCtl.addStyleName("inlineLinkDisabled");
+        }
         contentFilterCtl.addStyleName("roundedButton1");
         contentFilterPanel.addStyleName("with-border");
         contentFilterPanel.setVisible(false);

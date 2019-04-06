@@ -227,7 +227,6 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 
 		selectHistory.setValue(false);
 		selectContents.setValue(true);
-//		selectDiff.setValue(false);
 
 		if (data.combinedMetadata != null) {
 			Tree contentTree = new Tree();
@@ -240,6 +239,7 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 					.listing();
 			historyPanel.add(contentTree);
 		}
+
 	}
 
 	ListingDisplay.QueryOriginFinder qoFinder = new ListingDisplay.QueryOriginFinder() {
@@ -262,6 +262,8 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 	};
 
 	boolean isHistory() {
+		if (results == null && metadataCollection != null)
+			return false;
 		if (selectContents == null)
 			return true;
 		if (selectContents.getValue())

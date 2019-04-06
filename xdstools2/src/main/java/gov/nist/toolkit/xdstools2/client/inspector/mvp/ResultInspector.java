@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client.inspector.mvp;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
+import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 
@@ -14,6 +15,7 @@ import java.util.Collection;
 public class ResultInspector extends Place {
     private String placeName = null;
     private Collection<Result> results;
+    private MetadataCollection mc;
     private SiteSpec siteSpec;
 
     public ResultInspector() {
@@ -71,4 +73,11 @@ public class ResultInspector extends Place {
         this.siteSpec = siteSpec;
     }
 
+    public MetadataCollection getMc() {
+        return mc;
+    }
+
+    public void setMc(MetadataCollection mc) {
+        this.mc = mc;
+    }
 }

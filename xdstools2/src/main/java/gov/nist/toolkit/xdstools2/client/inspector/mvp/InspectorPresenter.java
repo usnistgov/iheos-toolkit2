@@ -89,7 +89,9 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
     private void setData() {
         GWT.log("In setData");
 
-        GWT.log("result list size is: " + results.size());
+        if (results != null) {
+            GWT.log("Result mode. Result list size is: " + results.size());
+        }
 
         view.metadataInspectorLeft.setDataNotification(new DataNotification() {
             @Override
@@ -230,13 +232,9 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
         setupInspectorWidget(results, metadataCollection, siteSpec, view.metadataInspectorRight);
         MetadataCollection mc = setupInspectorWidget(results, metadataCollection, siteSpec, view.metadataInspectorLeft);
 
-        if (results==null) {
-            mc.add(metadataCollection);
-        }
         setDataMap(metadataCollection);
 
         doSelectorSetup();
-
     }
 
     void setDataMap(MetadataCollection metadataCollection) {
@@ -386,7 +384,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
 
 
     public void setDataModel(MetadataCollection mc) {
-
+        this.metadataCollection = mc;
     }
 
     public void setDataModel(Collection<Result> results) {

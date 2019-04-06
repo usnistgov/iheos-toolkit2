@@ -66,6 +66,7 @@ public abstract class CodeFieldFilterSelector extends IndexFieldFilterSelector<D
         };
 
         HTML selectorLabel = new HTML(label);
+        selectorLabel.addStyleName("labelWidthFmt");
         selectorLabel.addStyleName("inlineBlock");
         fp.add(selectorLabel);
         inputCodeList.addStyleName("uiSpacerMarginLeft");

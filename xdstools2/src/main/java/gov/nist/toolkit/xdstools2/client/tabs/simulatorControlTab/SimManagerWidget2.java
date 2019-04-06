@@ -40,18 +40,23 @@ import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SelectionModel;
 import com.google.gwt.view.client.SingleSelectionModel;
-import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
+import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
+import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.SimulatorStats;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
+import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.xdstools2.client.command.command.GetMetadataFromRegIndexCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionInstancesCommand;
+import gov.nist.toolkit.xdstools2.client.inspector.mvp.ResultInspector;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewer;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.od.OddsEditTab;
 import gov.nist.toolkit.xdstools2.client.toolLauncher.NewToolLauncher;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetMetadataFromRegIndexRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTransactionRequest;
 
 import java.util.ArrayList;
@@ -522,15 +527,66 @@ public class SimManagerWidget2 extends Composite {
             }
         });
 
-        TextColumn<SimInfo> folderCtColumn = new TextColumn<SimInfo>() {
-            @Override
-            public String getValue(SimInfo simInfo) {
-                if (simInfo.getSimulatorStats()!=null) {
-                    return simInfo.getSimulatorStats().getStats().get(SimulatorStats.FOLDER_COUNT);
-                }
-                return null;
-            }
-        };
+        // begin DeCt action col
+
+        Column<SimInfo, SimInfo> deCtActionColumn =
+                new Column<SimInfo, SimInfo>(new ActionCell<SimInfo>("", new ActionCell.Delegate<SimInfo>() {
+                    @Override
+                    public void execute(final SimInfo simInfo) {
+                        new GetMetadataFromRegIndexCommand() {
+                            @Override
+                            public void onComplete(MetadataCollection result) {
+                                SimulatorConfig config = simInfo.getSimulatorConfig();
+                                ResultInspector resultInspector = new ResultInspector();
+                                resultInspector.setResults(null);
+                                resultInspector.setMc(result);
+                                SiteSpec siteSpec = new SiteSpec(config.getId().toString(), ActorType.findActor(config.getActorType()), null, config.getTestSession());
+                                resultInspector.setSiteSpec(siteSpec);
+                                new NewToolLauncher().launch(resultInspector);
+                            }
+                        }.run(new GetMetadataFromRegIndexRequest(commandContext, simInfo.getSimulatorConfig().getId()));
+
+                    }
+                })) {
+                    @Override
+                    public void render(Cell.Context context, SimInfo object, SafeHtmlBuilder sb) {
+                        if (object.getSimulatorStats()!=null) {
+                            String deCtStr = object.getSimulatorStats().getStats().get(SimulatorStats.DOCUMENT_ENTRY_COUNT);
+                            if (deCtStr != null && ! "".equals(deCtStr)) {
+                                SafeHtml safeHtml = new SafeHtmlBuilder().appendHtmlConstant("<u style='cursor:pointer'>" + deCtStr + "</u>").toSafeHtml();
+                                sb.append(safeHtml);
+                            } else {
+                               super.render(context, object, sb);
+                            }
+                        } else {
+                            super.render(context, object, sb);
+                        }
+                    }
+
+                    @Override
+                    public SimInfo getValue(SimInfo simInfo) {
+                        return simInfo;
+                    }
+                };
+        deCtActionColumn.setSortable(true);
+        deCtActionColumn.setDefaultSortAscending(false);
+        columnSortHandler.setComparator(deCtActionColumn, new Comparator<SimInfo>() {
+                    @Override
+                    public int compare(SimInfo o1, SimInfo o2) {
+                        return compareStats(SimulatorStats.DOCUMENT_ENTRY_COUNT,o1,o2);
+                    }
+                });
+                // end DeCt action col
+
+                TextColumn < SimInfo > folderCtColumn = new TextColumn<SimInfo>() {
+                    @Override
+                    public String getValue(SimInfo simInfo) {
+                        if (simInfo.getSimulatorStats() != null) {
+                            return simInfo.getSimulatorStats().getStats().get(SimulatorStats.FOLDER_COUNT);
+                        }
+                        return null;
+                    }
+                };
         folderCtColumn.setSortable(true);
         folderCtColumn.setDefaultSortAscending(false);
         columnSortHandler.setComparator(folderCtColumn, new Comparator<SimInfo>() {
@@ -790,6 +846,7 @@ public class SimManagerWidget2 extends Composite {
         newSimTable.addColumn(pifPortColumn, "Patient Feed Port");
         newSimTable.addColumn(ssCtColumn, "Submission Sets");
         newSimTable.addColumn(deCtColumn, "Doc Entries");
+        newSimTable.addColumn(deCtActionColumn, "Doc Entries2");
         newSimTable.addColumn(folderCtColumn, "Folders");
         newSimTable.addColumn(docCtColumn, "Docs");
         newSimTable.addColumn(pidCtColumn, "PIds");

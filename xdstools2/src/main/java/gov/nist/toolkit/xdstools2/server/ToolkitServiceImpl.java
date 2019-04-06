@@ -8,6 +8,7 @@ import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.actortransaction.shared.ActorOption;
 import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.actortransaction.shared.IheItiProfile;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.PidSet;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
@@ -15,6 +16,7 @@ import gov.nist.toolkit.datasets.server.DatasetFactory;
 import gov.nist.toolkit.datasets.shared.DatasetModel;
 import gov.nist.toolkit.fhir.simulators.servlet.SimServlet;
 import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegIndex;
+import gov.nist.toolkit.fhir.simulators.sim.reg.store.StatusValue;
 import gov.nist.toolkit.fhir.simulators.sim.rep.RepIndex;
 import gov.nist.toolkit.fhir.simulators.support.StoredDocument;
 import gov.nist.toolkit.fhir.simulators.support.od.TransactionUtil;
@@ -2087,7 +2089,12 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
                clientDe.version = Integer.toString(storeDe.version);
                clientDe.uniqueId = storeDe.uid;
                clientDe.patientId = storeDe.pid;
-               clientDe.status = storeDe.documentAvailability;
+               if (StatusValue.APPROVED.equals(storeDe.getAvailabilityStatus())) {
+                  clientDe.status = MetadataSupport.status_type_namespace + "Approved";
+               }
+               if (StatusValue.DEPRECATED.equals(storeDe.getAvailabilityStatus())) {
+                   clientDe.status = MetadataSupport.status_type_namespace + "Deprecated";
+               }
                clientDe.hash = storeDe.hash;
                clientDe.size = storeDe.size;
 
@@ -2116,6 +2123,11 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
                if (storeDe.classCode != null && !"".equals(storeDe.classCode)) {
                    clientDe.classCode = new ArrayList<>();
                    clientDe.classCode.add(storeDe.classCode);
+                   
+//                   skb TODO:
+//                   clientDe.classCodeDoc
+//                   clientDe.classCodeX
+
                }
 
                if (storeDe.formatCode !=null && !"".equals(storeDe.formatCode)) {
