@@ -216,7 +216,8 @@ public abstract class TimeFieldFilterSelector extends IndexFieldFilterSelector<D
             for (int i=0; i<result.size(); i++) {
                 DocumentEntry de = result.get(i);
                 String timeFieldValue = getFieldValue(de);
-                dates.add(new IndexFieldValue(timeFieldValue));
+                if (timeFieldValue != null)
+                    dates.add(new IndexFieldValue(timeFieldValue));
 
                 if (! ((from == null || from.equals("")) && (to == null || to.equals("")))) {
                     if (timeCompare(timeFieldValue, from, to))
