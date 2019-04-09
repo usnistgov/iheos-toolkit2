@@ -510,6 +510,7 @@ public class SimManagerWidget2 extends Composite {
             }
         });
 
+        /*
         TextColumn<SimInfo> deCtColumn = new TextColumn<SimInfo>() {
             @Override
             public String getValue(SimInfo simInfo) {
@@ -519,6 +520,7 @@ public class SimManagerWidget2 extends Composite {
                 return null;
             }
         };
+
         deCtColumn.setSortable(true);
         deCtColumn.setDefaultSortAscending(false);
         columnSortHandler.setComparator(deCtColumn, new Comparator<SimInfo>() {
@@ -526,6 +528,7 @@ public class SimManagerWidget2 extends Composite {
                 return compareStats(SimulatorStats.DOCUMENT_ENTRY_COUNT,o1,o2);
             }
         });
+        */
 
         // begin DeCt action col
 
@@ -845,8 +848,8 @@ public class SimManagerWidget2 extends Composite {
         newSimTable.addColumn(lastAccessedDtColumn, "Last Tran Date");
         newSimTable.addColumn(pifPortColumn, "Patient Feed Port");
         newSimTable.addColumn(ssCtColumn, "Submission Sets");
-        newSimTable.addColumn(deCtColumn, "Doc Entries");
-        newSimTable.addColumn(deCtActionColumn, "Doc Entries2");
+        // newSimTable.addColumn(deCtColumn, "Doc Entries");
+        newSimTable.addColumn(deCtActionColumn, "Doc Entries");
         newSimTable.addColumn(folderCtColumn, "Folders");
         newSimTable.addColumn(docCtColumn, "Docs");
         newSimTable.addColumn(pidCtColumn, "PIds");
