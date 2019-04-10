@@ -132,7 +132,7 @@
                xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <Slot name="authorPerson" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
                <ValueList xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-                  <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">^^Dsub^Author-One^^^</Value>
+                  <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">^Dsub^Author-One^^^</Value>
                </ValueList>
             </Slot>
             <Slot name="authorInstitution" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
