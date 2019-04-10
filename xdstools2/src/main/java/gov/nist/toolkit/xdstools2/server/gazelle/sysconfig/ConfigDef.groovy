@@ -146,7 +146,7 @@ ITI-69:Create/Destroy Pull Point
     */
     // Transactions to process
     static final TRANSACTIONS_TO_PROCESS = [
-            'ITI-39', 'ITI-43', 'ITI-18', 'ITI-57', 'ITI-38', 'ITI-41', 'ITI-51', 'ITI-42', 'ITI-61', 'ITI-65', 'ITI-67', 'ITI-62',
+            'ITI-39', 'ITI-43', 'ITI-18', 'ITI-57', 'ITI-38', 'ITI-41', 'ITI-51', 'ITI-42', 'ITI-61', 'ITI-65', 'ITI-67', 'ITI-62', 'ITI-86',
             'RAD-68', 'RAD-69', 'RAD-75', 'RAD-55'   // imaging
     ]
 }
