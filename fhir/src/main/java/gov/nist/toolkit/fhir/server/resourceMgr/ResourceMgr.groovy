@@ -263,6 +263,10 @@ class ResourceMgr {
                 return [null, null]
             }
             def type = resourceTypeFromUrl(referenceUrl)
+            // TODO - isAbsolute does an assert on containingUrl... here is why... if we have gotten to this point...
+            // Resource.fullUrl (containingUrl) is a uuid (not a real reference) then it is not absolute
+            // if it is not absolute then this refernceUrl cannot be relative (relative to what???).
+            // this is a correct validation but needs a lot more on the error message (now a Groovy assert)
             if (!isAbsolute(containingUrl) && isRelative(referenceUrl)) {
                 def x = resources.find {
                     def key = it.key
