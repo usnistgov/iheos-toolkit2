@@ -93,6 +93,10 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
             GWT.log("Result mode. Result list size is: " + results.size());
         }
 
+        setDataMap(metadataCollection);
+
+        doSelectorSetup();
+
         view.metadataInspectorLeft.setDataNotification(new DataNotification() {
             @Override
             public boolean inCompare() {
@@ -230,11 +234,9 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
         });
 
         setupInspectorWidget(results, metadataCollection, siteSpec, view.metadataInspectorRight);
-        MetadataCollection mc = setupInspectorWidget(results, metadataCollection, siteSpec, view.metadataInspectorLeft);
+        setupInspectorWidget(results, metadataCollection, siteSpec, view.metadataInspectorLeft);
 
-        setDataMap(metadataCollection);
 
-        doSelectorSetup();
     }
 
     void setDataMap(MetadataCollection metadataCollection) {
