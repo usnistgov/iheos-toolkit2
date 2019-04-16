@@ -5,7 +5,7 @@ import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
-import gov.nist.toolkit.xdstools2.client.inspector.mvp.RegistryDbInspector;
+import gov.nist.toolkit.xdstools2.client.inspector.mvp.SimIndexInspector;
 import gov.nist.toolkit.xdstools2.client.inspector.mvp.ResultInspector;
 import gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab.SubmitResource;
 import gov.nist.toolkit.xdstools2.client.tabs.fhirSearchTab.FhirSearch;
@@ -95,10 +95,10 @@ public class Xdstools2ActivityMapper implements ActivityMapper {
             pushHomeTabToBackground();
             return clientFactory.getInspectorActivity((ResultInspector)place);
         }
-        if (place instanceof RegistryDbInspector) {
-            GWT.log("Launch RegistryDbInspector");
+        if (place instanceof SimIndexInspector) {
+            GWT.log("Launch SimIndexInspector");
             pushHomeTabToBackground();
-            return clientFactory.getRegistryBrowserActivity((RegistryDbInspector)place);
+            return clientFactory.getRegistryBrowserActivity((SimIndexInspector)place);
         }
         return null;
     }

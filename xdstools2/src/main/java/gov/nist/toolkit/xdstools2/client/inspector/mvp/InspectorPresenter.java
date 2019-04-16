@@ -50,9 +50,18 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
 
     @Override
     public void init() {
-        GWT.log("Init InspectorPresenter");
+        GWT.log("Init InspectorPresenter: " + getTitle());
 
         setData();
+
+        if ("SimIndexInspector".equals(getTitle())) {
+            // Go directly to the content filter option
+//            doFilterOptionToggle(view.contentFilterCtl, view.contentFilterPanel);
+        } else if ("ResultInspector".equals(getTitle())) {
+            // Normal data browsing/inspector
+            setupInspectorWidget(results, metadataCollection, siteSpec, view.metadataInspectorRight);
+            setupInspectorWidget(results, metadataCollection, siteSpec, view.metadataInspectorLeft);
+        }
     }
 
     public void setupResizeTableTimer(final MetadataObjectType objectType) {
@@ -232,9 +241,6 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
                 }
             }
         });
-
-        setupInspectorWidget(results, metadataCollection, siteSpec, view.metadataInspectorRight);
-        setupInspectorWidget(results, metadataCollection, siteSpec, view.metadataInspectorLeft);
 
 
     }
@@ -433,10 +439,9 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
             // backup the current state off the inspector
             // 1. data, 2. results, 3. mc
 
-             dmTemp =  view.metadataInspectorLeft.getData();
-             mcTemp = dmTemp.getCombinedMetadata();
-             resultsTemp = view.metadataInspectorLeft.getResults();
-
+            if ("ResultInspector".equals(getTitle())) {
+                backupCurrentDataToTemp();
+            }
 
             if (view.metadataObjectSelector.getItems().contains(new AnnotatedItem(true, MetadataObjectType.DocEntries.name()))) {
                 doSwitchTable(MetadataObjectType.DocEntries);
@@ -462,12 +467,19 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
 
                 } catch (Exception ex) {
                     new PopupMessage("Filter could not be applied.");
-                    doRemoveFilter();
-                    doSelectorSetup();
+                    if ("ResultInspector".equals(getTitle())) {
+                        doRemoveFilter();
+                        doSelectorSetup();
+                    }
                 }
-
             }
         }
+    }
+
+    private void backupCurrentDataToTemp() {
+        dmTemp =  view.metadataInspectorLeft.getData();
+        mcTemp = dmTemp.getCombinedMetadata();
+        resultsTemp = view.metadataInspectorLeft.getResults();
     }
 
     void doRemoveFilter() {
@@ -491,12 +503,10 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
     }
 
     void doSelectorSetup() {
-
         metadataObjectTypeSelectionItems = getMetadataObjectSelectionItems();
         view.metadataObjectSelector.setNames(metadataObjectTypeSelectionItems); // This will create the button list
         filterSelectionItems = getFilterObjectSelectionItems();
         view.filterObjectSelector.setNames(filterSelectionItems); // This will create the button list
-
     }
 
 

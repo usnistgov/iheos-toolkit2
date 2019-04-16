@@ -10,30 +10,31 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 /**
  *
  */
-public class RegistryDbInspector extends Place {
+public class SimIndexInspector extends Place {
     private String paramString;
     private MetadataCollection metadataCollection;
     private SiteSpec siteSpec;
 
-    public RegistryDbInspector(MetadataCollection mc, SiteSpec siteSpec) {
-        super();
+    public SimIndexInspector(String paramString, MetadataCollection mc, SiteSpec siteSpec) {
+        this(paramString);
         GWT.log("Build Registry Browser Place");
         this.metadataCollection = mc;
         this.siteSpec = siteSpec;
     }
 
-    public RegistryDbInspector(String paramString) {
+    public SimIndexInspector(String paramString) {
+        super();
         this.paramString = paramString;
     }
 
-    public static class Tokenizer implements PlaceTokenizer<RegistryDbInspector> {
+    public static class Tokenizer implements PlaceTokenizer<SimIndexInspector> {
         @Override
-        public RegistryDbInspector getPlace(String paramString) {
-            return new RegistryDbInspector(paramString);
+        public SimIndexInspector getPlace(String paramString) {
+            return new SimIndexInspector(paramString);
         }
 
         @Override
-        public String getToken(RegistryDbInspector place) {
+        public String getToken(SimIndexInspector place) {
             return place.paramString;
         }
     }

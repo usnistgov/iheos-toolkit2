@@ -50,7 +50,7 @@ import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.command.command.GetMetadataFromRegIndexCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetTransactionInstancesCommand;
-import gov.nist.toolkit.xdstools2.client.inspector.mvp.ResultInspector;
+import gov.nist.toolkit.xdstools2.client.inspector.mvp.SimIndexInspector;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewer;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.od.OddsEditTab;
@@ -540,12 +540,18 @@ public class SimManagerWidget2 extends Composite {
                             @Override
                             public void onComplete(MetadataCollection result) {
                                 SimulatorConfig config = simInfo.getSimulatorConfig();
+                                SiteSpec siteSpec = new SiteSpec(config.getId().toString(), ActorType.findActor(config.getActorType()), null, config.getTestSession());
+                                SimIndexInspector mcInspector = new SimIndexInspector("", result, siteSpec);
+                                new NewToolLauncher().launch(mcInspector);
+                                /*
+                                SimulatorConfig config = simInfo.getSimulatorConfig();
                                 ResultInspector resultInspector = new ResultInspector();
                                 resultInspector.setResults(null);
                                 resultInspector.setMc(result);
                                 SiteSpec siteSpec = new SiteSpec(config.getId().toString(), ActorType.findActor(config.getActorType()), null, config.getTestSession());
                                 resultInspector.setSiteSpec(siteSpec);
                                 new NewToolLauncher().launch(resultInspector);
+                                */
                             }
                         }.run(new GetMetadataFromRegIndexRequest(commandContext, simInfo.getSimulatorConfig().getId()));
 

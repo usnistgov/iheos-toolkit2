@@ -16,14 +16,14 @@ import gov.nist.toolkit.xdstools2.client.util.ClientFactoryImpl;
 /**
  *
  */
-public class RegistryDbInspectorActivity extends AbstractToolkitActivity {
+public class SimIndexInspectorActivity extends AbstractToolkitActivity {
 
     private InspectorView view;
     private InspectorPresenter presenter;
     private ActivityDisplayer displayer;
-    private RegistryDbInspector place;
+    private SimIndexInspector place;
 
-    public RegistryDbInspectorActivity(RegistryDbInspector place) {
+    public SimIndexInspectorActivity(SimIndexInspector place) {
         super();
         this.place = place;
         GWT.log("Start activity ");
@@ -47,14 +47,14 @@ public class RegistryDbInspectorActivity extends AbstractToolkitActivity {
 
     @Override
     public void start(final AcceptsOneWidget acceptsOneWidget, final EventBus eventBus) {
-        GWT.log("Starting RegistryDbInspector Activity - name is " + place.getName());
+        GWT.log("Starting SimIndexInspector Activity - name is " + place.getName());
         presenter = Injector.INSTANCE.getInspectorPresenter();
         view =      Injector.INSTANCE.getInspectorView();
         displayer = Injector.INSTANCE.getToolkitAppDisplayer();
         assert(presenter != null);
         assert(displayer != null);
 
-        presenter.setTitle("RegistryDbInspector");
+        presenter.setTitle("SimIndexInspector");
         presenter.setDataModel(place.getMetadataCollection());
         presenter.setSiteSpec(place.getSiteSpec());
         finish(acceptsOneWidget, eventBus);
