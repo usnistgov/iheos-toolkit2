@@ -82,8 +82,8 @@ public abstract class CommonDisplay {
     int displayDetail(FlexTable ft, int row, boolean bold, String label, List<String> values, List<String> xml) {
         if (values == null)
             values = new ArrayList<>();
-        if (xml == null)
-            xml = new ArrayList<>();
+//        if (xml == null)
+//            xml = new ArrayList<>();
         int startRow = row;
         int rowI = 0;
         for (String value : values) {
@@ -91,7 +91,11 @@ public abstract class CommonDisplay {
                 ft.setHTML(row, 0, bold(label, bold));
             }
             //			ft.setHTML(row, 1, value.replaceAll(" ", "&nbsp;"));
-            ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, value, xml.get(rowI)));
+            if (xml != null) {
+                ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, value, xml.get(rowI)));
+            } else {
+                ft.setWidget(row, 1, HyperlinkFactory.addHTML(value));
+            }
             row++;
             rowI++;
         }

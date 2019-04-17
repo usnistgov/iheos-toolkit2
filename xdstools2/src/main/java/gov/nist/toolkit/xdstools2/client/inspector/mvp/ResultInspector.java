@@ -13,7 +13,7 @@ import java.util.Collection;
  *
  */
 public class ResultInspector extends Place {
-    private String placeName = null;
+    private String placeName = "";
     private Collection<Result> results;
     private MetadataCollection mc;
     private SiteSpec siteSpec;

@@ -10,6 +10,8 @@ public interface FilterFeature<T extends MetadataObject> extends IsWidget {
     void setData(List<T> data);
     List<T> getFilteredData();
     void displayFilter();
+    String getFilterName();
+    boolean isRemoveEnabled();
     void applyFilter();
     void removeFilter();
     boolean isActive();

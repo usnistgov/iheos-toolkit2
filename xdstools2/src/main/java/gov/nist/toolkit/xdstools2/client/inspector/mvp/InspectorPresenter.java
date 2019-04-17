@@ -23,6 +23,7 @@ import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataObjectType;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataObjectWrapper;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.FilterFeature;
+import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.DocumentEntryFilterDisplay;
 import gov.nist.toolkit.xdstools2.client.util.AnnotatedItem;
 import gov.nist.toolkit.xdstools2.client.widgets.ButtonListSelector;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
@@ -53,19 +54,20 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
         GWT.log("Init InspectorPresenter: " + getTitle());
 
         setData();
+    }
 
-        if ("SimIndexInspector".equals(getTitle())) {
-            // Go directly to the content filter option
-//            doFilterOptionToggle(view.contentFilterCtl, view.contentFilterPanel);
-        } else if ("ResultInspector".equals(getTitle())) {
-            // Normal data browsing/inspector
-            setupInspectorWidget(results, metadataCollection, siteSpec, view.metadataInspectorRight);
-            setupInspectorWidget(results, metadataCollection, siteSpec, view.metadataInspectorLeft);
-        }
+    public void setupDefaultInspector() {
+        // Normal data browsing/inspector
+        setupInspectorWidget(results, metadataCollection, siteSpec, view.metadataInspectorRight);
+        setupInspectorWidget(results, metadataCollection, siteSpec, view.metadataInspectorLeft);
+    }
+
+    public void postInit() {
+        setDataMap(metadataCollection);
+        doSelectorSetup();
     }
 
     public void setupResizeTableTimer(final MetadataObjectType objectType) {
-
         /*
         Scheduler is required because view is built before it is actually displayed.
         https://www.mail-archive.com/google-web-toolkit@googlegroups.com/msg75253.html
@@ -102,9 +104,58 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
             GWT.log("Result mode. Result list size is: " + results.size());
         }
 
-        setDataMap(metadataCollection);
+        view.setDeFilterFeature(new DocumentEntryFilterDisplay() {
+            boolean isFilterApplied = false;
 
-        doSelectorSetup();
+            @Override
+            public String getFilterName() {
+                if ("ResultInspector".equals(getTitle())) {
+                   return "Apply Filter";
+                } else if ("SimIndexInspector".equals(getTitle())) {
+                   return "Display Results";
+                }
+                return "Unknown Filter";
+            }
+
+            @Override
+            public boolean isRemoveEnabled() {
+                if ("ResultInspector".equals(getTitle())) {
+                    return true;
+                } else if ("SimIndexInspector".equals(getTitle())) {
+                    return false;
+                }
+                return false;
+            }
+
+            @Override
+            public void applyFilter() {
+                try {
+                    doApplyFilter(getFilteredData());
+                    isFilterApplied = true;
+                } catch (Exception ex) {
+                    new PopupMessage(ex.toString());
+                }
+            }
+
+            @Override
+            public void removeFilter() {
+                if (isFilterApplied) {
+                    try {
+                        doRemoveFilter();
+                        doSelectorSetup();
+                        isFilterApplied = false;
+                    } catch (Exception ex) {
+                        new PopupMessage(ex.toString());
+                    }
+                }
+            }
+
+            @Override
+            public boolean isActive() {
+                return isFilterApplied;
+            }
+        });
+
 
         view.metadataInspectorLeft.setDataNotification(new DataNotification() {
             @Override
@@ -464,6 +515,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
 
                     // restrict metadata selection to the same as the filter options
                     view.metadataObjectSelector.setNames(getFilterObjectSelectionItems()); // This will create the button list
+                    view.metadataObjectSelector.doSelected(MetadataObjectType.DocEntries.name());
 
                 } catch (Exception ex) {
                     new PopupMessage("Filter could not be applied.");
@@ -483,23 +535,25 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
     }
 
     void doRemoveFilter() {
-        // restore setDataMap with original mc
+        if ("ResultInspector".equals(getTitle())) {
+            // restore setDataMap with original mc
 
-        MetadataInspectorTab inspector = view.metadataInspectorRight;
-        inspector.setData(dmTemp);
-        inspector.setResults(null);
-        inspector.setMetadataCollection(dmTemp.getCombinedMetadata());
-        inspector.setSiteSpec(siteSpec);
-        inspector.init();
+            MetadataInspectorTab inspector = view.metadataInspectorRight;
+            inspector.setData(dmTemp);
+            inspector.setResults(null);
+            inspector.setMetadataCollection(dmTemp.getCombinedMetadata());
+            inspector.setSiteSpec(siteSpec);
+            inspector.init();
 
-        inspector = view.metadataInspectorLeft;
-        inspector.setData(dmTemp);
-        inspector.setResults(null);
-        inspector.setMetadataCollection(dmTemp.getCombinedMetadata());
-        inspector.setSiteSpec(siteSpec);
-        inspector.init();
+            inspector = view.metadataInspectorLeft;
+            inspector.setData(dmTemp);
+            inspector.setResults(null);
+            inspector.setMetadataCollection(dmTemp.getCombinedMetadata());
+            inspector.setSiteSpec(siteSpec);
+            inspector.init();
 
-        setDataMap(mcTemp);
+            setDataMap(mcTemp);
+        }
     }
 
     void doSelectorSetup() {
@@ -530,10 +584,10 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
             DataTable dataTable = view.getTableMap().get(key);
             if (key.equals(targetObjectType)) {
                 // Redisplay current selection in table selection. Without this there is no data display.
-                if (dataTable!=null) {
+                if (dataTable != null) {
                     dataTable.setData(dataMap.get(targetObjectType));
                     dataTable.asWidget().setVisible(true);
-                    if (!dataTable.compareSelect.getValue()) {
+                    if (! dataTable.compareSelect.getValue()) {
                         doSingleMode();
                         MetadataObject lastSelection = (MetadataObject)dataTable.lastSelectedObject;
                         if (lastSelection!=null) {
@@ -563,11 +617,15 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
     }
 
     public void doSingleMode() {
-        view.metadataInspectorLeft.showHistory(true);
-        view.metadataInspectorLeft.showStructure(true);
+        try {
+            view.metadataInspectorLeft.showHistory(true);
+            view.metadataInspectorLeft.showStructure(true);
 
-        if (view.inspectorWrapper.getWidgetCount()>1)
-            view.inspectorWrapper.remove(1);
+            if (view.inspectorWrapper.getWidgetCount() > 1)
+                view.inspectorWrapper.remove(1);
+        } catch (Exception ex) {
+            GWT.log("doSingleMode error: " + ex.toString());
+        }
     }
 
 

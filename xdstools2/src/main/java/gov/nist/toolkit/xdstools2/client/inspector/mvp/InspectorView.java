@@ -55,40 +55,7 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         }
     };
 
-    private FilterFeature deFilterFeature = new DocumentEntryFilterDisplay() {
-
-        boolean isFilterApplied = false;
-
-        @Override
-        public void applyFilter() {
-            try {
-                getPresenter().doApplyFilter(getFilteredData());
-                isFilterApplied = true;
-            } catch (Exception ex) {
-                new PopupMessage(ex.toString());
-            }
-        }
-
-        @Override
-        public void removeFilter() {
-            if (isFilterApplied) {
-                try {
-                    getPresenter().doRemoveFilter();
-                    getPresenter().doSelectorSetup();
-                    isFilterApplied = false;
-                } catch (Exception ex) {
-                    new PopupMessage(ex.toString());
-                }
-            }
-        }
-
-        @Override
-        public boolean isActive() {
-            return isFilterApplied;
-        }
-
-
-    };
+    private FilterFeature deFilterFeature = null;
 
     ButtonListSelector filterObjectSelector = new ButtonListSelector("Select Metadata Type") {
         @Override
@@ -444,4 +411,7 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         }
     }
 
+    public void setDeFilterFeature(FilterFeature deFilterFeature) {
+        this.deFilterFeature = deFilterFeature;
+    }
 }

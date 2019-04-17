@@ -67,8 +67,9 @@ public class SimIndexInspectorActivity extends AbstractToolkitActivity {
         presenter.setActivityDisplayer(displayer);  // so presenter can update tab title
         GWT.log("Calling activityDisplay");
         displayer.display(getContainer(), presenter.getTitle(), this, presenter, acceptsOneWidget, eventBus);
-
-
+        presenter.postInit();
+        // Go directly to the content filter option
+        presenter.doFilterOptionToggle(view.contentFilterCtl, view.contentFilterPanel);
     }
 
     private GenericMVP<Result, InspectorView, InspectorPresenter> buildMVP() {

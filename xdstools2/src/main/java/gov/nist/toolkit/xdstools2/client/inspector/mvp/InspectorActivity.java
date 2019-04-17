@@ -75,8 +75,8 @@ public class InspectorActivity extends AbstractToolkitActivity {
         presenter.setActivityDisplayer(displayer);  // so presenter can update tab title
         GWT.log("Calling activityDisplay");
         displayer.display(getContainer(), presenter.getTitle(), this, presenter, acceptsOneWidget, eventBus);
-
-
+        presenter.setupDefaultInspector();
+        presenter.postInit();
     }
 
     private GenericMVP<Result, InspectorView, InspectorPresenter> buildMVP() {

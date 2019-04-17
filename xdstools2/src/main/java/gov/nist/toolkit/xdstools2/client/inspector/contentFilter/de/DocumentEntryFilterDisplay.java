@@ -43,8 +43,8 @@ public abstract class DocumentEntryFilterDisplay extends CommonDisplay implement
     private TextBox languageCodeTxt = new TextBox();
     private TextBox legalAuthenticatorTxt = new TextBox();
     private ListBox sourcePatientInfoLBox = new ListBox();
-    private Button applyFilterBtn = new Button("Apply Filter");
-    private Button removeFilterBtn = new Button("&nbsp;Remove Filter");
+    private Button applyFilterBtn;
+    private Button removeFilterBtn;
     HTML statusBox = new HTML();
     VerticalPanel resultPanel = new VerticalPanel();
     StatusDisplay statusDisplay = new StatusDisplay() {
@@ -65,6 +65,7 @@ public abstract class DocumentEntryFilterDisplay extends CommonDisplay implement
     SimpleCallbackT<NewSelectedFieldValue> valueChangeCallback;
 
     public DocumentEntryFilterDisplay() {
+
         filterSelectors = new LinkedList<>();
 
 
@@ -129,25 +130,32 @@ public abstract class DocumentEntryFilterDisplay extends CommonDisplay implement
         filterSelectors.add(new ConfidentialityCodeFieldFilterSelection("Confidentiality Code", CodesConfiguration.ConfidentialityCode, valueChangeCallback));
         filterSelectors.add(new EventCodeFieldFilterSelection("Event Code List", CodesConfiguration.EventCodeList, valueChangeCallback));
 
+        applyFilterBtn = new Button(getFilterName());
         applyFilterBtn.setEnabled(true);
+        applyFilterBtn.setTitle("Output will be displayed below. Note: DocumentEntry Author information may not be persisted in the SimIndex.");
         applyFilterBtn.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent clickEvent) {
                 applyFilter();
-                applyFilterBtn.setEnabled(false);
-                removeFilterBtn.setEnabled(true);
+                if (isRemoveEnabled()) {
+                    applyFilterBtn.setEnabled(false);
+                    removeFilterBtn.setEnabled(true);
+                }
             }
         });
 
-        removeFilterBtn.setEnabled(false);
-        removeFilterBtn.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent clickEvent) {
-               removeFilter();
-               removeFilterBtn.setEnabled(false);
-               applyFilterBtn.setEnabled(true);
-            }
-        });
+        if (isRemoveEnabled()) {
+            removeFilterBtn = new Button("&nbsp;Remove Filter");
+            removeFilterBtn.setEnabled(false);
+            removeFilterBtn.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent clickEvent) {
+                    removeFilter();
+                    removeFilterBtn.setEnabled(false);
+                    applyFilterBtn.setEnabled(true);
+                }
+            });
+        }
     }
 
 
@@ -215,15 +223,18 @@ public abstract class DocumentEntryFilterDisplay extends CommonDisplay implement
                 featurePanel.add(fieldSelectionResult.asWidget());
             }
             featurePanel.add(new HTML("&nbsp;"));
+
             applyFilterBtn.addStyleName("uiSpacerMarginLeft");
             applyFilterBtn.addStyleName("inlineBlock");
             featurePanel.add(applyFilterBtn);
-//            HTML spacer = new HTML("&nbsp;&nbsp;");
-//            spacer.addStyleName("inlineBlock");
-//            featurePanel.add(spacer);
-            removeFilterBtn.addStyleName("uiSpacerMarginLeft");
-            removeFilterBtn.addStyleName("inlineBlock");
-            featurePanel.add(removeFilterBtn);
+
+            if (isRemoveEnabled()) {
+                removeFilterBtn.addStyleName("uiSpacerMarginLeft");
+                removeFilterBtn.addStyleName("inlineBlock");
+                featurePanel.add(removeFilterBtn);
+            }
+
+            featurePanel.add(new HTML("<br/>"));
         } catch (Exception ex) {
             new PopupMessage(ex.toString());
         } finally {
