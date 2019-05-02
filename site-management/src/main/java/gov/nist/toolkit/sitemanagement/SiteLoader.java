@@ -157,7 +157,7 @@ public abstract class SiteLoader {
 			site_ele.addChild(pida_ele);
 		}
 
-		OMElement useProxy_ele = MetadataSupport.om_factory.createOMElement("useTimestampProxy", null);
+		OMElement useProxy_ele = MetadataSupport.om_factory.createOMElement("useFilterProxy", null);
 		useProxy_ele.setText((s.useFilterProxy) ? "true" : "false");
 		site_ele.addChild(useProxy_ele);
 

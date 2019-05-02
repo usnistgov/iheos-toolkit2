@@ -70,7 +70,7 @@ public enum ActorType implements IsSerializable, Serializable {
     FILTER_PROXY(
             "Filter Proxy",
             Arrays.asList("filter_PROXY", "filterproxy", "Filter Proxy"),
-            "fp",
+            "fproxy",
             "gov.nist.toolkit.simcommon.server.factories.FilterProxyActorFactory",
             "gov.nist.toolkit.fhir.simulators.timestampProxy.FilterProxySimulator",
             Arrays.asList(TransactionType.ANY),

@@ -1,14 +1,10 @@
 package gov.nist.toolkit.services.server;
 
+import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.session.server.Session;
-import gov.nist.toolkit.simcommon.client.SimExistsException;
-import gov.nist.toolkit.simcommon.client.SimId;
-import gov.nist.toolkit.simcommon.client.Simulator;
-import gov.nist.toolkit.simcommon.client.SimulatorConfig;
-import gov.nist.toolkit.simcommon.server.GenericSimulatorFactory;
-import gov.nist.toolkit.simcommon.server.SimCache;
-import gov.nist.toolkit.simcommon.server.SimDb;
-import gov.nist.toolkit.simcommon.server.SimManager;
+import gov.nist.toolkit.simcommon.client.*;
+import gov.nist.toolkit.simcommon.server.*;
+import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
@@ -27,6 +23,33 @@ public class SimulatorApi {
     public SimulatorApi(Session session) {
         this.session = session;
     }
+
+    public String saveSite(String sessionId, Site site, TestSession testSession) throws Exception {
+        SimId fpSimId = getFilterProxySimId(testSession, site.getSiteName());
+        boolean exists = exists(fpSimId);
+        boolean needed = site.useFilterProxy;
+
+        if (exists && !needed) {
+            delete(fpSimId);
+        } else if (!exists && needed) {
+            create("fproxy", fpSimId, session.getCurrentEnvironment());
+        }
+        return SiteServiceManager.getSiteServiceManager().saveSite(sessionId, site, testSession);
+    }
+
+    public String deleteSite(String sessionId, String siteName, TestSession testSession) throws Exception {
+        SimId fpSimId = getFilterProxySimId(testSession, siteName);
+        if (exists(fpSimId))
+            delete(fpSimId);
+        return SiteServiceManager.getSiteServiceManager().deleteSite(sessionId, siteName, testSession);
+    }
+
+    static SimId getFilterProxySimId(TestSession testSession,String siteName) {
+        String proxyName = siteName + "_FilterProxy";
+        return SimIdFactory.simIdBuilder(testSession, proxyName);
+    }
+
+    // End of wrapper
 
     public Simulator create(String actorTypeName, SimId simID, String environment) throws Exception {
 //        return new SimulatorServiceManager(session).getNewSimulator(actorTypeName, simID);
