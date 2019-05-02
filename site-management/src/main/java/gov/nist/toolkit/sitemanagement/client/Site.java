@@ -62,7 +62,7 @@ public class Site  implements IsSerializable, Serializable {
 	public String pifHost = null;
 	public String pifPort = null;
 	private String owner = null;
-	public boolean useTimestampProxy = false;
+	public boolean useFilterProxy = false;
 
 	public String pidAllocateURI = null;
 	transient public boolean changed = false;

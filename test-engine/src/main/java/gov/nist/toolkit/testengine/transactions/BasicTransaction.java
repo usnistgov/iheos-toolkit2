@@ -1415,7 +1415,7 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 					getRequestAction(),
 					getResponseAction(),
 					this.planContext.getExtraLinkage(),
-					testConfig.site.useTimestampProxy
+					testConfig.site.useFilterProxy
 			);
 			logger.info("back from making soap call");
 		}

@@ -504,11 +504,11 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
 			}
 		}
 
-			actorEditGrid.setWidget(row, 0, new HTML("Enable Timestamp Proxy"));
+			actorEditGrid.setWidget(row, 0, new HTML("Enable Filter Proxy"));
 			CheckBox proxyCheckBox = new CheckBox();
 			actorEditGrid.setWidget(row, 1, proxyCheckBox);
-			proxyCheckBox.setValue(site.useTimestampProxy);
-			proxyCheckBox.addValueChangeHandler(new UseTimestampProxyChangedHandler(this, site, proxyCheckBox));
+			proxyCheckBox.setValue(site.useFilterProxy);
+			proxyCheckBox.addValueChangeHandler(new UseFilterProxyChangedHandler(this, site, proxyCheckBox));
 
 			row++;
 

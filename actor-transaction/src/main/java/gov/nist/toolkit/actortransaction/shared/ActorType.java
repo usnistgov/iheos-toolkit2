@@ -67,12 +67,12 @@ public enum ActorType implements IsSerializable, Serializable {
             false,
             Constants.USE_SHORTNAME
     ),
-    TIMESTAMP_PROXY(
-            "Timestamp Proxy",
-            Arrays.asList("TIMESTAMP_PROXY", "tsproxy", "Timestamp Proxy"),
-            "tsp",
-            "gov.nist.toolkit.simcommon.server.factories.TimestampProxyActorFactory",
-            "gov.nist.toolkit.fhir.simulators.timestampProxy.TimeStampProxySimulator",
+    FILTER_PROXY(
+            "Filter Proxy",
+            Arrays.asList("filter_PROXY", "filterproxy", "Filter Proxy"),
+            "fp",
+            "gov.nist.toolkit.simcommon.server.factories.FilterProxyActorFactory",
+            "gov.nist.toolkit.fhir.simulators.timestampProxy.FilterProxySimulator",
             Arrays.asList(TransactionType.ANY),
             true,
             null,

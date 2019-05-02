@@ -6,12 +6,12 @@ import com.google.gwt.user.client.ui.CheckBox;
 import gov.nist.toolkit.sitemanagement.client.Site;
 
 
-public class UseTimestampProxyChangedHandler implements ValueChangeHandler {
+public class UseFilterProxyChangedHandler implements ValueChangeHandler {
     private ActorConfigTab actorConfigTab;
     Site site;
     CheckBox checkBox;
 
-    UseTimestampProxyChangedHandler(ActorConfigTab actorConfigTab, Site site, CheckBox checkBox) {
+    UseFilterProxyChangedHandler(ActorConfigTab actorConfigTab, Site site, CheckBox checkBox) {
         this.actorConfigTab = actorConfigTab;
         this.site = site;
         this.checkBox = checkBox;
@@ -21,7 +21,7 @@ public class UseTimestampProxyChangedHandler implements ValueChangeHandler {
 
     @Override
     public void onValueChange(ValueChangeEvent valueChangeEvent) {
-        site.useTimestampProxy = checkBox.getValue();
+        site.useFilterProxy = checkBox.getValue();
         actorConfigTab.currentEditSite.changed = true;
     }
 }

@@ -16,7 +16,7 @@ import gov.nist.toolkit.xdsexception.NoSimulatorException;
 import java.util.Arrays;
 import java.util.List;
 
-public class TimestampProxyActorFactory extends AbstractActorFactory implements IActorFactory {
+public class FilterProxyActorFactory extends AbstractActorFactory implements IActorFactory {
 
     static final List<TransactionType> incomingTransactions =
             Arrays.asList(
@@ -25,7 +25,7 @@ public class TimestampProxyActorFactory extends AbstractActorFactory implements 
 
     @Override
     protected Simulator buildNew(SimManager simm, SimId simId, String environment, boolean configureBase) throws Exception {
-        ActorType actorType = ActorType.TIMESTAMP_PROXY;
+        ActorType actorType = ActorType.FILTER_PROXY;
         SimulatorConfig sc;
         if (configureBase)
             sc = configureBaseElements(getActorType(), simId, simId.getTestSession(), environment);
@@ -132,6 +132,6 @@ public class TimestampProxyActorFactory extends AbstractActorFactory implements 
 
     @Override
     public ActorType getActorType() {
-        return ActorType.TIMESTAMP_PROXY;
+        return ActorType.FILTER_PROXY;
     }
 }
