@@ -38,6 +38,8 @@ class FilterProxySimulator extends BaseDsActorSimulator  {
     boolean run(TransactionType transactionType /* ignored */, MessageValidatorEngine mvc, String validation) throws IOException {
         // re-send without using Axiom and Axis2
 
+
+
         String header = dsSimCommon.simDb().getRequestMessageHeader();
         byte[] bodyBytes = dsSimCommon.simDb().getRequestMessageBody();
         String body = new String(bodyBytes);

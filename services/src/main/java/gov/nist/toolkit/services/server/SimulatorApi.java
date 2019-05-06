@@ -4,6 +4,7 @@ import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.simcommon.client.*;
 import gov.nist.toolkit.simcommon.server.*;
+import gov.nist.toolkit.simcommon.server.factories.FilterProxyActorFactory;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
@@ -33,6 +34,10 @@ public class SimulatorApi {
             delete(fpSimId);
         } else if (!exists && needed) {
             create("fproxy", fpSimId, session.getCurrentEnvironment());
+        }
+        if (needed) {
+            // update proxy config based on Site
+            FilterProxyActorFactory.updateEndpoints(fpSimId,site);
         }
         return SiteServiceManager.getSiteServiceManager().saveSite(sessionId, site, testSession);
     }

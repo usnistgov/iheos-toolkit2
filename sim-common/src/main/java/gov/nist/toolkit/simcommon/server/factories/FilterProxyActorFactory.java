@@ -1,22 +1,26 @@
 package gov.nist.toolkit.simcommon.server.factories;
 
+import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.server.FilterProxyProperties;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.Simulator;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
-import gov.nist.toolkit.simcommon.server.AbstractActorFactory;
-import gov.nist.toolkit.simcommon.server.IActorFactory;
-import gov.nist.toolkit.simcommon.server.SimManager;
+import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
+import gov.nist.toolkit.simcommon.server.*;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.xdsexception.NoSimulatorException;
+import org.apache.log4j.Logger;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 public class FilterProxyActorFactory extends AbstractActorFactory implements IActorFactory {
+    static Logger logger = Logger.getLogger(FilterProxyActorFactory.class);
 
     static final List<TransactionType> incomingTransactions =
             Arrays.asList(
@@ -25,23 +29,66 @@ public class FilterProxyActorFactory extends AbstractActorFactory implements IAc
 
     @Override
     protected Simulator buildNew(SimManager simm, SimId simId, String environment, boolean configureBase) throws Exception {
-        ActorType actorType = ActorType.FILTER_PROXY;
         SimulatorConfig sc;
         if (configureBase)
             sc = configureBaseElements(getActorType(), simId, simId.getTestSession(), environment);
         else
             sc = new SimulatorConfig();
 
-        addFixedEndpoint(sc, SimulatorProperties.pnrEndpoint, actorType, TransactionType.ANY, false);
-        addFixedEndpoint(sc, SimulatorProperties.storedQueryEndpoint, actorType, TransactionType.ANY, false);
-        addFixedEndpoint(sc, SimulatorProperties.retrieveEndpoint, actorType, TransactionType.ANY, false);
-        addFixedEndpoint(sc, SimulatorProperties.igqEndpoint, actorType, TransactionType.ANY, false);
-        addFixedEndpoint(sc, SimulatorProperties.igrEndpoint, actorType, TransactionType.ANY, false);
-        addFixedEndpoint(sc, SimulatorProperties.xcrEndpoint, actorType, TransactionType.ANY, false);
-        addFixedEndpoint(sc, SimulatorProperties.xcqEndpoint, actorType, TransactionType.ANY, false);
-        addFixedEndpoint(sc, SimulatorProperties.xcpdEndpoint, actorType, TransactionType.ANY, false);
-
         return new Simulator(sc);
+    }
+
+    /**
+     * Update the endpoints on the proxy to forward to the site.  This is called when
+     * the site has been updated to keep the two in sync.
+     * @param proxySimId
+     * @param siteToProxy
+     * @throws Exception
+     */
+    static public void updateEndpoints(SimId proxySimId, Site siteToProxy) throws Exception {
+        FilterProxyActorFactory me = new FilterProxyActorFactory();
+        SimulatorConfig proxyConfig = GenericSimulatorFactory.getSimConfig(proxySimId);
+
+        me.addFixedConfig(proxyConfig, SimulatorProperties.relayToSiteName, ParamType.TEXT, siteToProxy.getName());
+
+        // Delete old
+        List<SimulatorConfigElement> endpointConfigs = proxyConfig.getEndpointConfigs();
+        for (SimulatorConfigElement ele : endpointConfigs) {
+            proxyConfig.deleteFixedByName(ele.name);
+        }
+
+        if (proxyConfig.getEndpointConfigs().size() != 0) {
+            logger.error("Cannot delete endpoints for " + proxySimId);
+        }
+
+        ActorType actorType = ActorType.findActor(proxyConfig.getActorType());
+        FilterProxyProperties fpProps = new FilterProxyProperties();
+        // Add from Site
+        for (TransactionBean tb : siteToProxy.transactions.transactions) {
+            String name = tb.getName();
+            TransactionType tt = tb.getTransactionType();
+            String endpoint = tb.getEndpoint();
+            if (!endpoint.trim().equals("")) {
+                TransactionType type = tb.getTransactionType();
+
+                String transactionEndpointLabel =
+                        (tb.isSecure) ? tt.getTlsEndpointSimPropertyName() : tt.getEndpointSimPropertyName();
+                String relayEndpointLabel =
+                        fpProps.getRelayEndpointName(transactionEndpointLabel);
+
+                me.addFixedEndpoint(proxyConfig, transactionEndpointLabel, actorType, type, tb.isSecure);
+                me.addFixedRelayEndpoint(proxyConfig, relayEndpointLabel, actorType, type, tb.isSecure, endpoint);
+            }
+        }
+
+        // Save
+        try {
+            new GenericSimulatorFactory().saveConfiguration(proxyConfig);
+        } catch (IOException e) {
+            logger.error("saveSimConfig", e);
+            throw e;
+        }
+        logger.debug("save complete");
     }
 
     @Override
@@ -60,66 +107,29 @@ public class FilterProxyActorFactory extends AbstractActorFactory implements IAc
 
         boolean isAsync = false;
 
-        site.addTransaction(new TransactionBean(
-                TransactionType.XDR_PROVIDE_AND_REGISTER.getCode(),
-                TransactionBean.RepositoryType.NONE,
-                asc.get(SimulatorProperties.pnrEndpoint).asString(),
-                false,
-                isAsync));
-        site.addTransaction(new TransactionBean(
-                TransactionType.PROVIDE_AND_REGISTER.getCode(),
-                TransactionBean.RepositoryType.NONE,
-                asc.get(SimulatorProperties.pnrEndpoint).asString(),
-                false,
-                isAsync));
-        site.addTransaction(new TransactionBean(
-                TransactionType.STORED_QUERY.getCode(),
-                TransactionBean.RepositoryType.NONE,
-                asc.get(SimulatorProperties.storedQueryEndpoint).asString(),
-                false,
-                isAsync));
-        site.addTransaction(new TransactionBean(
-                TransactionType.RETRIEVE.getCode(),
-                TransactionBean.RepositoryType.NONE,
-                asc.get(SimulatorProperties.retrieveEndpoint).asString(),
-                false,
-                isAsync));
-        site.addTransaction(new TransactionBean(
-                TransactionType.IG_QUERY.getCode(),
-                TransactionBean.RepositoryType.NONE,
-                asc.get(SimulatorProperties.igqEndpoint).asString(),
-                false,
-                isAsync));
-        site.addTransaction(new TransactionBean(
-                TransactionType.IG_RETRIEVE.getCode(),
-                TransactionBean.RepositoryType.NONE,
-                asc.get(SimulatorProperties.igrEndpoint).asString(),
-                false,
-                isAsync));
-        site.addTransaction(new TransactionBean(
-                TransactionType.XC_RETRIEVE.getCode(),
-                TransactionBean.RepositoryType.NONE,
-                asc.get(SimulatorProperties.xcrEndpoint).asString(),
-                false,
-                isAsync));
-        site.addTransaction(new TransactionBean(
-                TransactionType.XC_QUERY.getCode(),
-                TransactionBean.RepositoryType.NONE,
-                asc.get(SimulatorProperties.xcqEndpoint).asString(),
-                false,
-                isAsync));
-        site.addTransaction(new TransactionBean(
-                TransactionType.XC_PATIENT_DISCOVERY.getCode(),
-                TransactionBean.RepositoryType.NONE,
-                asc.get(SimulatorProperties.xcpdEndpoint).asString(),
-                false,
-                isAsync));
-        site.addTransaction(new TransactionBean(
-                TransactionType.XCPD.getCode(),
-                TransactionBean.RepositoryType.NONE,
-                asc.get(SimulatorProperties.xcpdEndpoint).asString(),
-                false,
-                isAsync));
+        for (TransactionType tt : TransactionType.values()) {
+            String simProp = tt.getEndpointSimPropertyName();
+            String simTlsProp = tt.getTlsEndpointSimPropertyName();
+            SimulatorConfigElement ele;
+
+            ele = asc.get(simProp);
+            if (ele != null) {
+                site.addTransaction(new TransactionBean(tt.getCode(),
+                        TransactionBean.RepositoryType.NONE,
+                        ele.asString(),
+                        false,
+                        isAsync));
+            }
+
+            ele = asc.get(simTlsProp);
+            if (ele != null) {
+                site.addTransaction(new TransactionBean(tt.getCode(),
+                        TransactionBean.RepositoryType.NONE,
+                        ele.asString(),
+                        true,
+                        isAsync));
+            }
+        }
 
 
         return site;

@@ -339,6 +339,8 @@ public class SimulatorProperties {
      */
     public static final String                     idsImageCache = "IDS Image Cache";
 
+    public static final String                      relayToSiteName = "Relay To Site Name";
+
     /*
      * These two are for RAD-55's sent to Imaging Document Sources
      */

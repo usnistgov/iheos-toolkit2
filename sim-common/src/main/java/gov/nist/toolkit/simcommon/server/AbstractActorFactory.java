@@ -634,6 +634,16 @@ public abstract class AbstractActorFactory {
 		addFixed(sc, ele);
 	}
 
+	public void addFixedRelayEndpoint(SimulatorConfig sc, String endpointName, ActorType actorType, TransactionType transactionType, boolean tls, String relayEndpoint) throws Exception {
+		SimulatorConfigElement ele = new SimulatorConfigElement();
+		ele.name = endpointName;
+		ele.type = ParamType.ENDPOINT;
+		ele.transType = transactionType;
+		ele.setStringValue(relayEndpoint);
+		ele.setTls(tls);
+		addFixed(sc, ele);
+	}
+
 	public void addFixedFhirEndpoint(SimulatorConfig sc, String endpointName, ActorType actorType, TransactionType transactionType, boolean tls) throws Exception {
 		addFixedFhirEndpoint(sc, endpointName, actorType, transactionType, tls, false);
 	}
