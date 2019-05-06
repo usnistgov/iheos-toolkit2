@@ -2,7 +2,11 @@ package gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.simcommon.client.SimIdFactory;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
@@ -51,43 +55,50 @@ class DeleteSite implements ClickHandler {
 			deleteSignedInCallback.onSuccess(true);
 		}
 		else {
-			PasswordManagement.addSignInCallback(deleteSignedInCallback);
-			PasswordManagement.addSignInCallback(updateSignInStatusCallback);
-
-			if (Xdstools2.getInstance().multiUserModeEnabled && !Xdstools2.getInstance().casModeEnabled) {
-				deleteSignedInCallback.onSuccess(true);
-//				((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireActorsConfigUpdatedEvent();
+			if (Xdstools2.getInstance().multiUserModeEnabled) {
+				if (! Xdstools2.getInstance().casModeEnabled) {
+					deleteSignedInCallback.onSuccess(true);
+				} else {
+					new PopupMessage("You must be signed in as admin");
+				}
 			} else {
-				new PopupMessage("You must be signed in as admin");
+				// Owner of the site to be deleted is performing this action
+				deleteSignedInCallback.onSuccess(true);
 			}
-
-
-//			new AdminPasswordDialogBox(actorConfigTab.getTabTopPanel());
-
-			//				PasswordManagement.rmSignInCallback(deleteSignedInCallback);
-			//				PasswordManagement.rmSignInCallback(updateSignInStatusCallback);
 		}
 	}
 	
 	// Boolean data type ignored 
-	AsyncCallback<Boolean> deleteSignedInCallback = new AsyncCallback<Boolean> () {
+	private AsyncCallback<Boolean> deleteSignedInCallback = new AsyncCallback<Boolean> () {
 
 		public void onFailure(Throwable ignored) {
 		}
 
 		public void onSuccess(Boolean ignored) {
-			new DeleteSiteCommand(){
-				@Override
-				public void onComplete(String result) {
-					actorConfigTab.currentEditSite.changed = false;
-					actorConfigTab.newActorEditGrid();
-					actorConfigTab.loadExternalSites();
-					((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireActorsConfigUpdatedEvent();
-				}
-			}.run(new DeleteSiteRequest(ClientUtils.INSTANCE.getCommandContext().withTestSession(actorConfigTab.currentEditSite.getTestSession().getValue()),
-					actorConfigTab.currentEditSite.getName()));
-		}
+			VerticalPanel body = new VerticalPanel();
+			body.add(new HTML("<p>Are you sure you want to delete site '" + actorConfigTab.currentEditSite.getName() + "'?</p>"));
 
+			Button actionButton = new Button("Yes");
+		    actionButton.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent clickEvent) {
+					new DeleteSiteCommand(){
+						@Override
+						public void onComplete(String result) {
+							actorConfigTab.currentEditSite.changed = false;
+							actorConfigTab.newActorEditGrid();
+							actorConfigTab.loadExternalSites();
+							((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireActorsConfigUpdatedEvent();
+						}
+					}.run(new DeleteSiteRequest(ClientUtils.INSTANCE.getCommandContext().withTestSession(actorConfigTab.currentEditSite.getTestSession().getValue()),
+							actorConfigTab.currentEditSite.getName()));
+				}
+			});
+			SafeHtmlBuilder safeHtmlBuilder = new SafeHtmlBuilder();
+			safeHtmlBuilder.appendHtmlConstant("<img src=\"icons2/garbage.png\" title=\"Delete\" height=\"16\" width=\"16\"/>&nbsp;");
+			safeHtmlBuilder.appendHtmlConstant("Confirm Delete Site");
+			new PopupMessage(safeHtmlBuilder.toSafeHtml() , body, actionButton);
+		}
 	};
 	
 	// Boolean data type ignored 
