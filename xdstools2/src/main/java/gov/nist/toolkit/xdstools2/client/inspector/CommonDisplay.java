@@ -17,13 +17,13 @@ import java.util.Map;
 public abstract class CommonDisplay {
     VerticalPanel detailPanel;
     MetadataCollection metadataCollection;
-    MetadataInspectorTab it;
+    protected MetadataInspectorTab it;
 
-    void addTitle(HTML title) {
+    protected FlowPanel createTitle(HTML title) {
         FlowPanel flowPanel = new FlowPanel();
         title.addStyleName("left");
         flowPanel.add(title);
-        if (it.dataNotification != null) {
+        if (it != null && it.dataNotification != null) {
             if (it.dataNotification.inCompare()) {
                 HTML closeX = new HTML("X");
                 closeX.setTitle("Close");
@@ -38,9 +38,8 @@ public abstract class CommonDisplay {
                 });
                 flowPanel.add(closeX);
             }
-
         }
-        detailPanel.add(flowPanel);
+        return flowPanel;
     }
 
     int displayDetail(FlexTable ft, int row, boolean bold, String label, List<String> values, String xml) {
@@ -83,8 +82,8 @@ public abstract class CommonDisplay {
     int displayDetail(FlexTable ft, int row, boolean bold, String label, List<String> values, List<String> xml) {
         if (values == null)
             values = new ArrayList<>();
-        if (xml == null)
-            xml = new ArrayList<>();
+//        if (xml == null)
+//            xml = new ArrayList<>();
         int startRow = row;
         int rowI = 0;
         for (String value : values) {
@@ -92,7 +91,11 @@ public abstract class CommonDisplay {
                 ft.setHTML(row, 0, bold(label, bold));
             }
             //			ft.setHTML(row, 1, value.replaceAll(" ", "&nbsp;"));
-            ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, value, xml.get(rowI)));
+            if (xml != null) {
+                ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, value, xml.get(rowI)));
+            } else {
+                ft.setWidget(row, 1, HyperlinkFactory.addHTML(value));
+            }
             row++;
             rowI++;
         }
@@ -163,14 +166,14 @@ public abstract class CommonDisplay {
         return row;
     }
 
-    String bold(String msg, boolean condition) {
+    protected String bold(String msg, boolean condition) {
         if (condition)
             return "<b>" + msg + "</b>";
         return msg;
     }
 
     void displayText(String title, String html) {
-        addTitle(HyperlinkFactory.addHTML("<h4>" + title + "</h4>"));
+        detailPanel.add(createTitle(HyperlinkFactory.addHTML("<h4>" + title + "</h4>")));
         detailPanel.add(new HTML(html));
     }
 

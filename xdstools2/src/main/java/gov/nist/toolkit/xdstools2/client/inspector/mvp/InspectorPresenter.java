@@ -17,11 +17,16 @@ import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractPresenter;
+import gov.nist.toolkit.xdstools2.client.inspector.DataModel;
 import gov.nist.toolkit.xdstools2.client.inspector.DataNotification;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataObjectType;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataObjectWrapper;
+import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.FilterFeature;
+import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.DocumentEntryFilterDisplay;
 import gov.nist.toolkit.xdstools2.client.util.AnnotatedItem;
+import gov.nist.toolkit.xdstools2.client.widgets.ButtonListSelector;
+import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,25 +41,33 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
     private Collection<Result> results;
     private SiteSpec siteSpec;
     private MetadataCollection metadataCollection;
-    List<AnnotatedItem> annotatedItems;
+    List<AnnotatedItem> metadataObjectTypeSelectionItems;
     Map<MetadataObjectType, List<? extends MetadataObject>> dataMap = new HashMap<>();
+    List<AnnotatedItem> filterSelectionItems;
+
+    DataModel dmTemp;
+    Collection<Result> resultsTemp;
+    MetadataCollection mcTemp;
 
     @Override
     public void init() {
-        GWT.log("Init InspectorPresenter");
+        GWT.log("Init InspectorPresenter: " + getTitle());
 
         setData();
+    }
 
-        // The provided EventBus doesn't seem to work ?
+    public void setupDefaultInspector() {
+        // Normal data browsing/inspector
+        setupInspectorWidget(results, metadataCollection, siteSpec, view.metadataInspectorRight);
+        setupInspectorWidget(results, metadataCollection, siteSpec, view.metadataInspectorLeft);
+    }
 
-
-//        doResizeTable();
-
-
+    public void postInit() {
+        setDataMap(metadataCollection);
+        doSelectorSetup();
     }
 
     public void setupResizeTableTimer(final MetadataObjectType objectType) {
-
         /*
         Scheduler is required because view is built before it is actually displayed.
         https://www.mail-archive.com/google-web-toolkit@googlegroups.com/msg75253.html
@@ -84,22 +97,78 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
         },200);
     }
 
-    private void    setData() {
+    private void setData() {
         GWT.log("In setData");
 
-        GWT.log("result list size is: " + results.size());
+        if (results != null) {
+            GWT.log("Result mode. Result list size is: " + results.size());
+        }
+
+        view.setDeFilterFeature(new DocumentEntryFilterDisplay() {
+            boolean isFilterApplied = false;
+
+            @Override
+            public String getFilterName() {
+                if ("ResultInspector".equals(getTitle())) {
+                   return "Apply Filter";
+                } else if ("SimIndexInspector".equals(getTitle())) {
+                   return "Display Results";
+                }
+                return "Unknown Filter";
+            }
+
+            @Override
+            public boolean isRemoveEnabled() {
+                if ("ResultInspector".equals(getTitle())) {
+                    return true;
+                } else if ("SimIndexInspector".equals(getTitle())) {
+                    return false;
+                }
+                return false;
+            }
+
+            @Override
+            public void applyFilter() {
+                try {
+                    doApplyFilter(getFilteredData());
+                    isFilterApplied = true;
+                } catch (Exception ex) {
+                    new PopupMessage(ex.toString());
+                }
+            }
+
+            @Override
+            public void removeFilter() {
+                if (isFilterApplied) {
+                    try {
+                        doRemoveFilter();
+                        doSelectorSetup();
+                        isFilterApplied = false;
+                    } catch (Exception ex) {
+                        new PopupMessage(ex.toString());
+                    }
+                }
+            }
+
+            @Override
+            public boolean isActive() {
+                return isFilterApplied;
+            }
+        });
+
+
         view.metadataInspectorLeft.setDataNotification(new DataNotification() {
             @Override
-        public boolean inCompare() {
-            return false;
-        }
+            public boolean inCompare() {
+                return false;
+            }
 
             @Override
             public void onAddToHistory(MetadataCollection metadataCollection) {
                 InspectorPresenter.this.metadataCollection = metadataCollection;
                 setDataMap(metadataCollection);
-                annotatedItems = getMetadataObjectAnnotatedItems(metadataCollection);
-                view.metadataObjectSelector.refreshEnabledStatus(annotatedItems);
+                metadataObjectTypeSelectionItems = getMetadataObjectSelectionItems();
+                view.metadataObjectSelector.setNames(metadataObjectTypeSelectionItems);
                 doRefreshTable();
             }
 
@@ -131,7 +200,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
                 MetadataObjectType objectType = MetadataObjectType.valueOf(view.metadataObjectSelector.getCurrentSelection());
                 MetadataObject toClose = ((MetadataObjectWrapper)currentTreeItem.getUserObject()).getObject();
                 MetadataObject toFocus = null;
-                DataTable dataTable = view.tableMap.get(objectType);
+                DataTable dataTable = view.getTableMap().get(objectType);
                 if (dataTable.lastSelectedObject.equals(toClose)) {
                     toFocus = (MetadataObject)dataTable.compareObject;
                 } else {
@@ -147,11 +216,35 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
             }
 
             @Override
-            public void onHistoryContentModeChanged(MetadataObjectWrapper objectWrapper) {
+            public void onViewModeChanged(MetadataInspectorTab.SelectedViewMode viewMode, MetadataObjectWrapper objectWrapper) {
+                if (MetadataInspectorTab.SelectedViewMode.CONTENT.equals(viewMode)) {
+                    if (view.filterObjectSelector.getCurrentSelection() == null) {
+                        filterSelectionItems = getFilterObjectSelectionItems();
+                        view.filterObjectSelector.setNames(filterSelectionItems);
+                    }
+                    // enable the filter ctl
+                   view.contentFilterCtl.removeStyleName("inlineLinkDisabled");
+                } else {
+                    /**
+                     * As to why the filter feature is not available in History view mode:
+                     * The History mode expects Results object which is dependent on a query-tool and further not necessary to perform two things:
+                     * 1) Browsing the registry simulator without any context
+                     * 2) Filtering once the Inspector is already opened from a query-tool.
+                     */
+                    // close panel if open
+                    if (view.contentFilterPanel.isVisible()) {
+                        doFilterOptionToggle(view.contentFilterCtl, view.contentFilterPanel);
+                    }
+                    // disable the filter ctl
+                    view.contentFilterCtl.addStyleName("inlineLinkDisabled");
+
+                }
+
                 if (objectWrapper==null) return;
+
               TreeItem treeItem = doFocusTreeItem(objectWrapper.getType(), view.metadataInspectorLeft.getTreeList(), null, objectWrapper.getObject(), null /* Passing a Null will select/focus even if it is the same node */);
               if (treeItem!=null)
-                view.metadataInspectorLeft.setCurrentSelectedTreeItem(treeItem);
+                  view.metadataInspectorLeft.setCurrentSelectedTreeItem(treeItem);
             }
 
             @Override
@@ -184,7 +277,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
             }
 
             @Override
-            public void onHistoryContentModeChanged(MetadataObjectWrapper objectWrapper) {}
+            public void onViewModeChanged(MetadataInspectorTab.SelectedViewMode viewMode, MetadataObjectWrapper objectWrapper) {}
 
             /**
              *
@@ -199,11 +292,8 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
                 }
             }
         });
-        setupInspectorWidget(view.metadataInspectorRight);
-        metadataCollection = setupInspectorWidget(view.metadataInspectorLeft);
-        setDataMap(metadataCollection);
-        annotatedItems = getMetadataObjectAnnotatedItems(metadataCollection);
-        view.metadataObjectSelector.setNames(annotatedItems); // This will create the button list
+
+
     }
 
     void setDataMap(MetadataCollection metadataCollection) {
@@ -218,7 +308,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
     public MetadataObjectType autoSelectObjectType() {
         AnnotatedItem defaultItem = null;
         // Make DocEntry the default object type selection when more than one are available at loading time.
-        for (AnnotatedItem annotatedItem : annotatedItems) {
+        for (AnnotatedItem annotatedItem : metadataObjectTypeSelectionItems) {
            if (annotatedItem.isEnabled()) {
                if (MetadataObjectType.DocEntries.equals(MetadataObjectType.valueOf(annotatedItem.getName()))) {
                    defaultItem = annotatedItem;
@@ -238,8 +328,6 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
 
     public void doSetupDiffMode(boolean isSelected) {
         if (isSelected) {
-//            view.metadataInspectorRight.setSiteSpec(siteSpec);
-//            view.metadataInspectorRight.setResults(view.metadataInspectorLeft.getResults());
             view.metadataInspectorRight.setResults(null);
             view.metadataInspectorRight.setData(view.metadataInspectorLeft.getData());
             view.metadataInspectorRight.init();
@@ -256,8 +344,9 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
         }
     }
 
-    private MetadataCollection setupInspectorWidget(MetadataInspectorTab inspector) {
+    private static MetadataCollection setupInspectorWidget(Collection<Result> results, MetadataCollection metadataCollection, SiteSpec siteSpec, MetadataInspectorTab inspector) {
         inspector.setResults(results);
+        inspector.setMetadataCollection(metadataCollection);
         inspector.setSiteSpec(siteSpec);
         inspector.preInit();
         return inspector.init();
@@ -319,8 +408,8 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
         if (metadataObjectType==null)
             metadataObjectType = getCurrentSelectedType();
 
-        if (view.tableMap.containsKey(metadataObjectType))
-            return view.tableMap.get(metadataObjectType);
+        if (view.getTableMap().containsKey(metadataObjectType))
+            return view.getTableMap().get(metadataObjectType);
         throw new ToolkitRuntimeException("DataTable for " + metadataObjectType.name() + " does not exist.");
     }
 
@@ -331,17 +420,31 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
     }
     */
 
-    List<AnnotatedItem> getMetadataObjectAnnotatedItems(MetadataCollection metadataCollection) {
+    List<AnnotatedItem> getMetadataObjectSelectionItems() {
         List<AnnotatedItem> annotatedItems = new ArrayList<>();
 
         for (MetadataObjectType type : MetadataObjectType.values()) {
             List<? extends MetadataObject> metadataObject = dataMap.get(type);
-            annotatedItems.add(new AnnotatedItem(metadataObject!=null && metadataObject.size()>0, type.name()));
+            annotatedItems.add(new AnnotatedItem(metadataObject != null && metadataObject.size()>0, type.name()));
         }
 
         return annotatedItems;
     }
 
+    List<AnnotatedItem> getFilterObjectSelectionItems() {
+       List<AnnotatedItem> annotatedItems = new ArrayList<>();
+
+       MetadataObjectType type = MetadataObjectType.DocEntries;
+       List<? extends MetadataObject> metadataObject = dataMap.get(type);
+       annotatedItems.add(new AnnotatedItem(metadataObject != null && metadataObject.size()>0, type.name()));
+
+        return annotatedItems;
+    }
+
+
+    public void setDataModel(MetadataCollection mc) {
+        this.metadataCollection = mc;
+    }
 
     public void setDataModel(Collection<Result> results) {
         this.results = results;
@@ -377,15 +480,114 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
         doSwitchTable(metadataObjectType);
     }
 
+    void doUpdateChosenFilterObjectType(String type) {
+        MetadataObjectType metadataObjectType = MetadataObjectType.valueOf(type);
+        doSwitchFilter(metadataObjectType);
+    }
+
+    void doApplyFilter(List<DocumentEntry> fDeList) {
+        if (fDeList != null && ! fDeList.isEmpty()) {
+            // backup the current state off the inspector
+            // 1. data, 2. results, 3. mc
+
+            if ("ResultInspector".equals(getTitle())) {
+                backupCurrentDataToTemp();
+            }
+
+            if (view.metadataObjectSelector.getItems().contains(new AnnotatedItem(true, MetadataObjectType.DocEntries.name()))) {
+                doSwitchTable(MetadataObjectType.DocEntries);
+                DataTable<DocumentEntry> deDt = view.getTableMap().get(MetadataObjectType.DocEntries);
+                if (deDt.compareSelect.getValue()) {
+                    deDt.compareSelect.setValue(false, true);
+                }
+
+                MetadataCollection fMc = new MetadataCollection();
+                fMc.init();
+                fMc.docEntries.addAll(fDeList);
+
+                try {
+                    // use the left inspector as the primary inspector
+                    setupInspectorWidget(null, fMc, siteSpec, view.metadataInspectorLeft);
+                    // the right inspector is a secondary one for comparison purposes
+                    setupInspectorWidget(null, fMc, siteSpec, view.metadataInspectorRight);
+
+                    setDataMap(fMc);
+
+                    // restrict metadata selection to the same as the filter options
+                    view.metadataObjectSelector.setNames(getFilterObjectSelectionItems()); // This will create the button list
+                    view.metadataObjectSelector.doSelected(MetadataObjectType.DocEntries.name());
+
+                } catch (Exception ex) {
+                    new PopupMessage("Filter could not be applied.");
+                    if ("ResultInspector".equals(getTitle())) {
+                        doRemoveFilter();
+                        doSelectorSetup();
+                    }
+                }
+            }
+        }
+    }
+
+    private void backupCurrentDataToTemp() {
+        dmTemp =  view.metadataInspectorLeft.getData();
+        mcTemp = dmTemp.getCombinedMetadata();
+        resultsTemp = view.metadataInspectorLeft.getResults();
+    }
+
+    void doRemoveFilter() {
+        if ("ResultInspector".equals(getTitle())) {
+            // restore setDataMap with original mc
+
+            MetadataInspectorTab inspector = view.metadataInspectorRight;
+            inspector.setData(dmTemp);
+            inspector.setResults(null);
+            inspector.setMetadataCollection(dmTemp.getCombinedMetadata());
+            inspector.setSiteSpec(siteSpec);
+            inspector.init();
+
+            inspector = view.metadataInspectorLeft;
+            inspector.setData(dmTemp);
+            inspector.setResults(null);
+            inspector.setMetadataCollection(dmTemp.getCombinedMetadata());
+            inspector.setSiteSpec(siteSpec);
+            inspector.init();
+
+            setDataMap(mcTemp);
+        }
+    }
+
+    void doSelectorSetup() {
+        metadataObjectTypeSelectionItems = getMetadataObjectSelectionItems();
+        view.metadataObjectSelector.setNames(metadataObjectTypeSelectionItems); // This will create the button list
+        filterSelectionItems = getFilterObjectSelectionItems();
+        view.filterObjectSelector.setNames(filterSelectionItems); // This will create the button list
+    }
+
+
+    public void doSwitchFilter(MetadataObjectType targetObjectType) {
+       for (MetadataObjectType key : view.getFilterFeatureMap().keySet()) {
+           FilterFeature filterFeature = view.getFilterFeatureMap().get(key);
+           if (filterFeature !=null && key.equals(targetObjectType)) {
+                if (! filterFeature.isActive()) {
+                   filterFeature.setData(dataMap.get(key));
+                   filterFeature.displayFilter();
+                }
+                filterFeature.asWidget().setVisible(true);
+           } else {
+               filterFeature.asWidget().setVisible(false);
+           }
+       }
+    }
+
     public void doSwitchTable(MetadataObjectType targetObjectType) {
-        for (MetadataObjectType key : view.tableMap.keySet()) {
-            DataTable dataTable = view.tableMap.get(key);
+        for (MetadataObjectType key : view.getTableMap().keySet()) {
+            DataTable dataTable = view.getTableMap().get(key);
             if (key.equals(targetObjectType)) {
                 // Redisplay current selection in table selection. Without this there is no data display.
-                if (dataTable!=null) {
+                if (dataTable != null) {
                     dataTable.setData(dataMap.get(targetObjectType));
                     dataTable.asWidget().setVisible(true);
-                    if (!dataTable.compareSelect.getValue()) {
+                    if (! dataTable.compareSelect.getValue()) {
                         doSingleMode();
                         MetadataObject lastSelection = (MetadataObject)dataTable.lastSelectedObject;
                         if (lastSelection!=null) {
@@ -407,21 +609,23 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
                     }
                     setupResizeTableTimer(key);
                 }
-
             } else {
                 dataTable.asWidget().setVisible(false);
             }
-//            dataTable.diffSelect.setValue(false,true);
         }
 
     }
 
     public void doSingleMode() {
-        view.metadataInspectorLeft.showHistory(true);
-        view.metadataInspectorLeft.showStructure(true);
+        try {
+            view.metadataInspectorLeft.showHistory(true);
+            view.metadataInspectorLeft.showStructure(true);
 
-        if (view.inspectorWrapper.getWidgetCount()>1)
-            view.inspectorWrapper.remove(1);
+            if (view.inspectorWrapper.getWidgetCount() > 1)
+                view.inspectorWrapper.remove(1);
+        } catch (Exception ex) {
+            GWT.log("doSingleMode error: " + ex.toString());
+        }
     }
 
 
@@ -569,14 +773,37 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
 
     }
 
+    public void doFilterOptionToggle(HTML ctl, FlowPanel panel) {
+        boolean isLinkDisabled =  ctl.getStyleName().contains("inlineLinkDisabled");
+        if (! isLinkDisabled) {
+           boolean isFilterViewExpanded  = panel.isVisible();
+
+           if (isFilterViewExpanded) {
+               ctl.removeStyleName("insetBorder");
+           } else {
+               ctl.addStyleName("insetBorder");
+
+               // Auto select DocEntries
+               ButtonListSelector filterSelector = view.filterObjectSelector;
+               if (filterSelector.getItems().contains(new AnnotatedItem(true, MetadataObjectType.DocEntries.name()))) {
+                   String currentSelection = filterSelector.getCurrentSelection();
+                   if (currentSelection == null || (currentSelection != null && ! MetadataObjectType.DocEntries.name().equals(currentSelection))) {
+                       filterSelector.updateSiteSelectedView(MetadataObjectType.DocEntries.name());
+                   }
+               } else {
+                   new PopupMessage("DocEntries not available to select from this list: " + filterSelector.getItems().toString());
+               }
+           }
+           panel.setVisible(! isFilterViewExpanded);
+        }
+    }
+
     public void doAdvancedOptionToggle(HTML ctl, FlowPanel panel) {
         boolean isPanelVisible = panel.isVisible();
         if (isPanelVisible) {
             ctl.removeStyleName("insetBorder");
-            ctl.addStyleName("outsetBorder");
             doSingleMode();
         } else {
-            ctl.removeStyleName("outsetBorder");
             ctl.addStyleName("insetBorder");
             if (view.metadataObjectSelector.getCurrentSelection()==null) {
                 MetadataObjectType objectType = autoSelectObjectType();
@@ -593,4 +820,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
         panel.setVisible(!isPanelVisible);
     }
 
+    public void setMetadataCollection(MetadataCollection metadataCollection) {
+        this.metadataCollection = metadataCollection;
+    }
 }

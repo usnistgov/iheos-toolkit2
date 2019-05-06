@@ -15,8 +15,6 @@ class HistorySelector implements ClickHandler {
 	}
 
 	public void onClick(ClickEvent event) {
-		it.detailPanel.clear();
-//		it.displayDetail(mo);
 		new DetailDisplay(it).displayDetail(mo, MetadataDiff.nullObject(mo));
 		new StructureDisplay(it).displayStructure(mo);
 	}

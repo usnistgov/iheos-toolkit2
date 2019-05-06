@@ -8,8 +8,8 @@ import gov.nist.toolkit.xdstools2.client.command.command.GetSimConfigsCommand;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.od.OddsEditTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
-import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.toolContext.State;
-import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.toolContext.Token;
+import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.toolContext.ToolParameter;
+import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.toolContext.ToolParameterMap;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSimConfigsRequest;
 
 import java.util.ArrayList;
@@ -32,10 +32,10 @@ public class SimConfigEditorTabLoader {
         this.simConfig = simConfig;
     }
 
-    public void load(State state) {
+    public void load(ToolParameterMap tpm) {
 
         List<SimId> ids = new ArrayList<>();
-        SimId si = new SimId(new TestSession(state.getValue(Token.TEST_SESSION)), state.getValue(Token.SYSTEM_ID));
+        SimId si = new SimId(new TestSession(tpm.getValue(ToolParameter.TEST_SESSION)), tpm.getValue(ToolParameter.SYSTEM_ID));
         ids.add(si);
 
         new GetSimConfigsCommand() {

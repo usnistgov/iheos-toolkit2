@@ -189,7 +189,7 @@ public class HyperlinkFactory {
 		return link(it, mo, text);
 	}
 
-	static protected HTML addHTML(String html) {		
+	public static HTML addHTML(String html) {
 		HTML msgBox = new HTML();
 		msgBox.setHTML(html);
 		return msgBox;		

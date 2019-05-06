@@ -128,7 +128,7 @@ List<SimInfo> simInfoList;
                 }
         );
         SafeHtmlBuilder safeHtmlBuilder = new SafeHtmlBuilder();
-        safeHtmlBuilder.appendHtmlConstant("<img src=\"icons2/garbage.png\" title=\"Delete\" height=\"16\" width=\"16\"/>");
+        safeHtmlBuilder.appendHtmlConstant("<img src=\"icons2/garbage.png\" title=\"Delete\" height=\"16\" width=\"16\"/>&nbsp;");
         safeHtmlBuilder.appendHtmlConstant("Confirm Delete Simulator");
         new PopupMessage(safeHtmlBuilder.toSafeHtml() , body, actionButton);
     }

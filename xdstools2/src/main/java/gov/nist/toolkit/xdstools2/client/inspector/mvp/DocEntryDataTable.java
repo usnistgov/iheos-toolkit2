@@ -23,10 +23,12 @@ abstract class DocEntryDataTable extends DataTable<DocumentEntry> implements IsW
     private static String STATUS_COLUMN_NAME = "Status";
     private static String ID_COLUMN_NAME = "Id";
     private static String LID_COLUMN_NAME = "Lid";
+    private static String UNIQUE_ID_COLUMN_NAME = "UniqueId";
     private static String VERSION_COLUMN_NAME = "Version";
+    private static String TITLE_COLUMN_NAME = "Title";
     private static String HOME_ID_COLUMN_NAME = "HomeId";
     private static String REPOSITORY_UNIQUE_ID = "ReposId";
-    private static String TITLE_COLUMN_NAME = "Title";
+    private static String MIME_TYPE_COLUMN_NAME = "MimeType";
     private static String HASH_COLUMN_NAME = "Hash";
     private static String SIZE_COLUMN_NAME = "Size";
     private FlowPanel columnSelectionPanel = new FlowPanel();
@@ -35,10 +37,12 @@ abstract class DocEntryDataTable extends DataTable<DocumentEntry> implements IsW
             new AnnotatedItem(true, STATUS_COLUMN_NAME),
             new AnnotatedItem(false, ID_COLUMN_NAME),
             new AnnotatedItem(true, LID_COLUMN_NAME),
+            new AnnotatedItem(true, UNIQUE_ID_COLUMN_NAME),
             new AnnotatedItem(true, VERSION_COLUMN_NAME),
             new AnnotatedItem(false, TITLE_COLUMN_NAME),
             new AnnotatedItem(false, HOME_ID_COLUMN_NAME),
             new AnnotatedItem(false, REPOSITORY_UNIQUE_ID),
+            new AnnotatedItem(true, MIME_TYPE_COLUMN_NAME),
             new AnnotatedItem(false, HASH_COLUMN_NAME),
             new AnnotatedItem(false, SIZE_COLUMN_NAME)
     );
@@ -147,6 +151,30 @@ abstract class DocEntryDataTable extends DataTable<DocumentEntry> implements IsW
                     });
             dataTable.addColumn(lidColumn, LID_COLUMN_NAME);
         }
+        if (columnToBeDisplayedIsChecked(UNIQUE_ID_COLUMN_NAME)) {
+            TextColumn<DocumentEntry> uniqueIdColumn = new TextColumn<DocumentEntry>() {
+                @Override
+                public String getValue(DocumentEntry de) {
+                    return de.uniqueId;
+                }
+
+            };
+            uniqueIdColumn.setSortable(true);
+            columnSortHandler.setComparator(uniqueIdColumn,
+                    new Comparator<DocumentEntry>() {
+                        public int compare(DocumentEntry o1, DocumentEntry o2) {
+                            if (o1 == o2) {
+                                return 0;
+                            }
+
+                            if (o1 != null && o1.uniqueId!= null) {
+                                return (o2 != null && o2.uniqueId!= null) ? o1.uniqueId.compareTo(o2.uniqueId) : 1;
+                            }
+                            return -1;
+                        }
+                    });
+            dataTable.addColumn(uniqueIdColumn, UNIQUE_ID_COLUMN_NAME);
+        }
         if (columnToBeDisplayedIsChecked(VERSION_COLUMN_NAME)) {
             TextColumn<DocumentEntry> versionColumn = new TextColumn<DocumentEntry>() {
                 @Override
@@ -245,6 +273,32 @@ abstract class DocEntryDataTable extends DataTable<DocumentEntry> implements IsW
             dataTable.addColumn(reposColumn,REPOSITORY_UNIQUE_ID);
         }
 
+        if (columnToBeDisplayedIsChecked(MIME_TYPE_COLUMN_NAME)) {
+            TextColumn<DocumentEntry> mimeTypeColumn = new TextColumn<DocumentEntry>() {
+                @Override
+                public String getValue(DocumentEntry de) {
+                    return de.mimeType;
+                }
+            };
+            mimeTypeColumn.setSortable(true);
+            columnSortHandler.setComparator(mimeTypeColumn,
+                    new Comparator<DocumentEntry>() {
+                        public int compare(DocumentEntry o1, DocumentEntry o2) {
+                            if (o1 == o2) {
+                                return 0;
+                            }
+
+                            if (o1 != null && o1.mimeType!=null) {
+                                return (o2 != null && o2.mimeType!=null) ? o1.mimeType.toString().compareTo(o2.mimeType.toString()) : 1;
+                            }
+                            return -1;
+                        }
+                    });
+
+            dataTable.addColumn(mimeTypeColumn,MIME_TYPE_COLUMN_NAME);
+        }
+
+
 
         // hash
         if (columnToBeDisplayedIsChecked(HASH_COLUMN_NAME)) {
@@ -326,11 +380,11 @@ abstract class DocEntryDataTable extends DataTable<DocumentEntry> implements IsW
     }
 
 
-    void setData(List<DocumentEntry> objectRefList) {
+    void setData(List<DocumentEntry> deList) {
         dataProvider.getList().clear();
-        if (objectRefList!=null) {
-            compareSelect.setEnabled(objectRefList.size()>1);
-            dataProvider.getList().addAll(objectRefList);
+        if (deList!=null) {
+            compareSelect.setEnabled(deList.size()>1);
+            dataProvider.getList().addAll(deList);
         }
     }
 

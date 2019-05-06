@@ -4,15 +4,19 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import edu.wustl.mir.erl.ihe.xdsi.util.PrsSimLogs;
 import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
 import gov.nist.toolkit.actortransaction.TransactionErrorCodeDbLoader;
+import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.actortransaction.shared.ActorOption;
 import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.actortransaction.shared.IheItiProfile;
-import gov.nist.toolkit.actortransaction.client.TransactionInstance;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.PidSet;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.datasets.server.DatasetFactory;
 import gov.nist.toolkit.datasets.shared.DatasetModel;
+import gov.nist.toolkit.fhir.simulators.servlet.SimServlet;
+import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegIndex;
+import gov.nist.toolkit.fhir.simulators.sim.reg.store.StatusValue;
 import gov.nist.toolkit.fhir.simulators.sim.rep.RepIndex;
 import gov.nist.toolkit.fhir.simulators.support.StoredDocument;
 import gov.nist.toolkit.fhir.simulators.support.od.TransactionUtil;
@@ -25,10 +29,17 @@ import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.interactionmapper.InteractionMapper;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.registrymetadata.Metadata;
+import gov.nist.toolkit.registrymetadata.client.Author;
+import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
 import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
-import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.results.client.CodesResult;
+import gov.nist.toolkit.results.client.DocumentEntryDetail;
+import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.Test;
+import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest;
 import gov.nist.toolkit.services.client.FhirSupportOrchestrationResponse;
 import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
@@ -104,7 +115,14 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Scanner;
 
 @SuppressWarnings("serial")
 public class ToolkitServiceImpl extends RemoteServiceServlet implements
@@ -2053,6 +2071,99 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
             return e.getMessage();
         }
         return null;
+    }
+
+    public MetadataCollection getMetadataFromRegIndex(GetMetadataFromRegIndexRequest request) throws Exception {
+        // The registry index store.metadatacollection needs to copied into client.metadatacollection
+        // The target will not have the full metadata XML equivalent property available on hand because it is not necessary to build a BST
+           RegIndex regIndex = SimServlet.getRegIndex(request.getSimId());
+           return copyMetadataCollection(regIndex.mc);
+    }
+
+    private MetadataCollection copyMetadataCollection(gov.nist.toolkit.fhir.simulators.sim.reg.store.MetadataCollection storeMc) {
+        MetadataCollection clientMc = new MetadataCollection();
+        if (storeMc.docEntryCollection != null && storeMc.docEntryCollection.size()>0) {
+           for (gov.nist.toolkit.fhir.simulators.sim.reg.store.DocEntry storeDe : storeMc.docEntryCollection.getAll()) {
+               DocumentEntry clientDe = new DocumentEntry();
+               clientDe.id = storeDe.id;
+               clientDe.lid = storeDe.lid;
+               clientDe.version = Integer.toString(storeDe.version);
+               clientDe.uniqueId = storeDe.uid;
+               clientDe.patientId = storeDe.pid;
+               if (StatusValue.APPROVED.equals(storeDe.getAvailabilityStatus())) {
+                  clientDe.status = MetadataSupport.status_type_namespace + "Approved";
+               }
+               if (StatusValue.DEPRECATED.equals(storeDe.getAvailabilityStatus())) {
+                   clientDe.status = MetadataSupport.status_type_namespace + "Deprecated";
+               }
+               clientDe.hash = storeDe.hash;
+               clientDe.size = storeDe.size;
+
+               // no mimeType in storeDe??
+               // clientDe.mimeType = storeDe.xxx
+
+               clientDe.objectType = storeDe.objecttype;
+
+               clientDe.repositoryUniqueId = storeDe.repositoryUniqueId;
+
+               // no document reference Id List in clientDe?
+               // - clientDe.xxx = storeDe.referenceIdList
+
+               // no lang in storeDe
+               // clientDe.lang = storeDe.xxx
+
+               clientDe.creationTime = storeDe.creationTime;
+               clientDe.serviceStartTime = storeDe.serviceStartTime;
+               clientDe.serviceStopTime = storeDe.serviceStopTime;
+
+               clientDe.sourcePatientId = storeDe.sourcePatientId;
+
+               // no source patient info in storeDe
+               // clientDe.sourcePatientInfo = new ArrayList<>(storeDe.xxx)
+
+               if (storeDe.classCode != null && !"".equals(storeDe.classCode)) {
+                   clientDe.classCode = new ArrayList<>();
+                   clientDe.classCode.add(storeDe.classCode);
+                   
+//                   skb TODO:
+//                   clientDe.classCodeDoc
+//                   clientDe.classCodeX
+
+               }
+
+               if (storeDe.formatCode !=null && !"".equals(storeDe.formatCode)) {
+                   clientDe.formatCode = new ArrayList<>();
+                   clientDe.formatCode.add(storeDe.formatCode);
+               }
+
+               if (storeDe.healthcareFacilityTypeCode != null && !"".equals(storeDe.healthcareFacilityTypeCode)) {
+                   clientDe.hcftc = new ArrayList<>();
+                   clientDe.hcftc.add(storeDe.healthcareFacilityTypeCode);
+               }
+
+               if (storeDe.practiceSettingCode != null) {
+                  clientDe.pracSetCode = new ArrayList<>();
+                  clientDe.pracSetCode.add(storeDe.practiceSettingCode);
+               }
+
+               if (storeDe.typeCode != null) {
+                   clientDe.typeCode = new ArrayList<>();
+                   clientDe.typeCode.add(storeDe.typeCode);
+               }
+
+               if (storeDe.authorNames!=null && storeDe.authorNames.length > 0) {
+                   clientDe.authors = new ArrayList<>();
+                   for (String storeAuthor : storeDe.authorNames) {
+                       Author clientAuthor = new Author();
+                       clientAuthor.person = storeAuthor;
+                       clientDe.authors.add(clientAuthor);
+                   }
+               }
+
+               clientMc.docEntries.add(clientDe);
+           }
+        }
+        return clientMc;
     }
 
 }

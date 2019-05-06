@@ -5,7 +5,7 @@ import gov.nist.toolkit.xdsexception.client.TkNotFoundException;
 /**
  *
  */
-public enum Token {
+public enum ToolParameter {
     TOOLID("toolId"),
     ENVIRONMENT("env"),
     TEST_SESSION("testSession"),
@@ -19,14 +19,14 @@ public enum Token {
 
     String name;
 
-    Token(String name) {
+    ToolParameter(String name) {
         this.name = name;
     }
 
 
-    static public Token findByPropertyName(String name) throws TkNotFoundException {
+    static public ToolParameter findByPropertyName(String name) throws TkNotFoundException {
         if (name==null) throw new NullPointerException("Name cannot be null.");
-        for (Token pn : values()) {
+        for (ToolParameter pn : values()) {
             if (pn.name.equals(name)) return pn;
         }
         throw new TkNotFoundException("Name cannot be found.","Name.");
