@@ -22,9 +22,7 @@ import gov.nist.toolkit.xdstools2.client.abstracts.AbstractView;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataObjectType;
 import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.FilterFeature;
-import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.de.DocumentEntryFilterDisplay;
 import gov.nist.toolkit.xdstools2.client.widgets.ButtonListSelector;
-import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 import java.util.HashMap;
 import java.util.List;
@@ -292,13 +290,10 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         title.setHTML("<h2>Inspector</h2>");
         topNavPanel.add(title);
 
-        contentFilterCtl.setTitle("This feature is only available in the Inspector Contents View Mode.");
+        contentFilterCtl.setTitle("This feature is only available in the Contents Inspector View Mode.");
         contentFilterCtl.addStyleName("iconStyle");
         // If the inspector is starting out in Content mode, then this can only happen from the registry browser.
         // Otherwise, the normal mode is History and the Filter should be disabled.
-//        if (! MetadataInspectorTab.SelectedViewMode.CONTENT.equals(metadataInspectorLeft.getViewMode())) {
-//            contentFilterCtl.addStyleName("inlineLinkDisabled");
-//        }
         contentFilterCtl.addStyleName("roundedButton1");
         contentFilterPanel.addStyleName("with-border");
         contentFilterPanel.setVisible(false);

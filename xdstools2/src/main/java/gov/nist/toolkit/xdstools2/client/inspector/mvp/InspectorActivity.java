@@ -77,6 +77,8 @@ public class InspectorActivity extends AbstractToolkitActivity {
         displayer.display(getContainer(), presenter.getTitle(), this, presenter, acceptsOneWidget, eventBus);
         presenter.setupDefaultInspector();
         presenter.postInit();
+        // See Filter Feature Availability Note in InspectorPresenter
+        view.showFilterCtl(false);
     }
 
     private GenericMVP<Result, InspectorView, InspectorPresenter> buildMVP() {

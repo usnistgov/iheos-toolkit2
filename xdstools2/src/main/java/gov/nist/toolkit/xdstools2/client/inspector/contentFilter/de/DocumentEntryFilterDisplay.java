@@ -47,6 +47,7 @@ public abstract class DocumentEntryFilterDisplay extends CommonDisplay implement
     private Button removeFilterBtn;
     HTML statusBox = new HTML();
     VerticalPanel resultPanel = new VerticalPanel();
+    HTML resultsNotice = new HTML("");
     StatusDisplay statusDisplay = new StatusDisplay() {
         @Override
         public VerticalPanel getResultPanel() {
@@ -67,7 +68,6 @@ public abstract class DocumentEntryFilterDisplay extends CommonDisplay implement
     public DocumentEntryFilterDisplay() {
 
         filterSelectors = new LinkedList<>();
-
 
         valueChangeCallback =  new SimpleCallbackT<NewSelectedFieldValue>() {
             @Override
@@ -132,7 +132,6 @@ public abstract class DocumentEntryFilterDisplay extends CommonDisplay implement
 
         applyFilterBtn = new Button(getFilterName());
         applyFilterBtn.setEnabled(true);
-        applyFilterBtn.setTitle("Output will be displayed below. Note: DocumentEntry Author information may not be persisted in the SimIndex.");
         applyFilterBtn.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent clickEvent) {
@@ -234,6 +233,9 @@ public abstract class DocumentEntryFilterDisplay extends CommonDisplay implement
                 featurePanel.add(removeFilterBtn);
             }
 
+//            resultsNotice.setVisible(false); // Initially hidden and displayed when Displayed Results is clicked
+            featurePanel.add(resultsNotice);
+
             featurePanel.add(new HTML("<br/>"));
         } catch (Exception ex) {
             new PopupMessage(ex.toString());
@@ -241,6 +243,12 @@ public abstract class DocumentEntryFilterDisplay extends CommonDisplay implement
             resultPanel.add(statusBox);
             featurePanel.add(resultPanel);
         }
+    }
+
+    @Override
+    public void displayResultNotice(String message, boolean isVisible) {
+        resultsNotice.setHTML(("<p>Output will be displayed below.&nbsp;" + message + "</p>"));
+        resultsNotice.setVisible(isVisible);
     }
 
 
@@ -255,6 +263,7 @@ public abstract class DocumentEntryFilterDisplay extends CommonDisplay implement
             listBox.setVisible(false);
         }
     }
+
 
 
 

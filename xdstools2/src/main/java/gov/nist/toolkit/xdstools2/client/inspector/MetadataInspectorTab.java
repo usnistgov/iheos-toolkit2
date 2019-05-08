@@ -26,6 +26,7 @@ import gov.nist.toolkit.results.client.StepResult;
 import gov.nist.toolkit.results.client.TestLog;
 import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
@@ -74,7 +75,7 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 	Collection<Result> results;
 	MetadataCollection metadataCollection;
 	private SiteSpec siteSpec;
-
+	SelectedViewMode exclusiveViewMode;
 
 	public MetadataInspectorTab() {
 	}
@@ -176,13 +177,19 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 	};
 
 	void showHistoryOrContents() {
-		if (isHistory())
-			showHistory();
-		/* else if (isDiff())
-			new DiffDisplay(this, data.combinedMetadata).showDiff(historyPanel);
-		*/
-		else
-			showContents();
+	    if (exclusiveViewMode != null) {
+	    	SelectedViewMode viewMode = getExclusiveViewMode();
+	    	if (SelectedViewMode.HISTORY.equals(viewMode)) {
+	    		showHistory();
+			} else if (SelectedViewMode.CONTENT.equals(viewMode)) {
+	    		showContents();
+			}
+		} else {
+			if (isHistory())
+				showHistory();
+			else
+				showContents();
+		}
 	}
 	
 	
@@ -262,8 +269,6 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 	};
 
 	boolean isHistory() {
-		if (results == null && metadataCollection != null)
-			return false;
 		if (selectContents == null)
 			return true;
 		if (selectContents.getValue())
@@ -282,19 +287,23 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 	 * @param panel to add to
 	 */
 	void addHistoryContentsSelector(VerticalPanel panel) {
+		final int idHashCode = System.identityHashCode(this);
+
 		FlexTable ft = new FlexTable();
 
-		selectHistory = new RadioButton("historyContents", "History");
-		selectContents = new RadioButton("historyContents", "Contents");
-//		selectDiff = new RadioButton("historyContents", "Diff");
+		selectHistory = new RadioButton("historyContents_" + idHashCode, "History");
+		selectContents = new RadioButton("historyContents_" + idHashCode, "Contents");
 
-		selectHistory.addClickHandler(new HistorySelectChange(SelectedViewMode.HISTORY));
+		if (exclusiveViewMode != null && SelectedViewMode.CONTENT.equals(exclusiveViewMode)) {
+			selectHistory.setEnabled(false);
+		} else {
+			selectHistory.addClickHandler(new HistorySelectChange(SelectedViewMode.HISTORY));
+		}
+
 		selectContents.addClickHandler(new HistorySelectChange(SelectedViewMode.CONTENT));
-//		selectDiff.addClickHandler(new HistorySelectChange());
 
 		ft.setWidget(0, 0, selectHistory);
 		ft.setWidget(0, 1, selectContents);
-//		ft.setWidget(0, 2, selectDiff);
 
 		panel.add(ft);
 
@@ -317,7 +326,6 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 		}
 
 		public void onClick(ClickEvent event) {
-//			groupByPanel.setVisible(selectHistory.getValue().booleanValue());
 			showHistoryOrContents();
 			if (dataNotification!=null) {
 				if (currentSelectedTreeItem!=null && currentSelectedTreeItem.getUserObject()!=null && (currentSelectedTreeItem.getUserObject() instanceof  MetadataObjectWrapper))
@@ -637,23 +645,31 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 		});
 		*/
 
+//		if (viewMode != null) {
+//			if (results == null && metadataCollection != null) // ContentFilter case of applying the filter
+//				return false;
+//			if (results == null && data != null && data.getResults() != null)  // ContentFilter case of restoring the History view from : Apply Filter -> Remove Filter -> History
+//				return true;
 
-		if (results!=null) {
-			addToHistory(results);
-		} else {
-			data.buildCombined(metadataCollection);
-			showHistoryOrContents();
-		}
+//		} else {
 
-		if (!data.enableActions) {
+			if (results != null) {
+				addToHistory(results);
+			} else {
+				data.buildCombined(metadataCollection);
+				showHistoryOrContents();
+			}
+//		}
+
+		if (! data.enableActions) {
 			if (selectHistory != null) selectHistory.setEnabled(false);
 			if (selectContents != null) selectContents.setEnabled(true);
 //			if (selectDiff != null) selectDiff.setEnabled(false);
 //			if (groupByListBox != null) groupByListBox.setEnabled(false);
 
-			if (results.size() == 1 && !hasContents(results))
+			if (results.size() == 1 && ! hasContents(results))
 				showAssertions(results.iterator().next());
-        else
+        	else
 				showHistory();
 		}
 
@@ -744,12 +760,15 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 	    return hpanel;
 	}
 
-	public SelectedViewMode getViewMode() {
-		if (selectContents != null && selectContents.getValue())
-			return SelectedViewMode.CONTENT;
-		return SelectedViewMode.HISTORY; // default
+	public SelectedViewMode getExclusiveViewMode() {
+	    return exclusiveViewMode;
 	}
 
+	public void setExclusiveViewMode(SelectedViewMode viewMode) {
+		if (viewMode != null) {
+			exclusiveViewMode = viewMode;
+        }
+	}
 
 	public Collection<Result> getResults() {
 		return results;

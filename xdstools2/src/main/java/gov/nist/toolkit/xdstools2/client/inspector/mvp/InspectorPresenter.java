@@ -132,6 +132,11 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
                 try {
                     doApplyFilter(getFilteredData());
                     isFilterApplied = true;
+                    if ("ResultInspector".equals(getTitle())) {
+                        displayResultNotice( "", true);
+                    } else if ("SimIndexInspector".equals(getTitle())) {
+                        displayResultNotice( "Note: DocumentEntry Author information may not be persisted in the SimIndex.", true);
+                    }
                 } catch (Exception ex) {
                     new PopupMessage(ex.toString());
                 }
@@ -222,10 +227,13 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
                         filterSelectionItems = getFilterObjectSelectionItems();
                         view.filterObjectSelector.setNames(filterSelectionItems);
                     }
-                    // enable the filter ctl
-                   view.contentFilterCtl.removeStyleName("inlineLinkDisabled");
+                    if (view.filterObjectSelector.getItems() != null && view.filterObjectSelector.getItems().size() > 0) {
+                        // enable the filter ctl
+                        view.showFilterCtl(true);
+                    }
                 } else {
                     /**
+                     * Filter Feature Availability Note
                      * As to why the filter feature is not available in History view mode:
                      * The History mode expects Results object which is dependent on a query-tool and further not necessary to perform two things:
                      * 1) Browsing the registry simulator without any context
@@ -236,7 +244,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
                         doFilterOptionToggle(view.contentFilterCtl, view.contentFilterPanel);
                     }
                     // disable the filter ctl
-                    view.contentFilterCtl.addStyleName("inlineLinkDisabled");
+                    view.showFilterCtl(false);
 
                 }
 
@@ -344,12 +352,16 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
         }
     }
 
-    private static MetadataCollection setupInspectorWidget(Collection<Result> results, MetadataCollection metadataCollection, SiteSpec siteSpec, MetadataInspectorTab inspector) {
+    private void setupInspectorWidget(Collection<Result> results, MetadataCollection metadataCollection, SiteSpec siteSpec, MetadataInspectorTab inspector) {
         inspector.setResults(results);
         inspector.setMetadataCollection(metadataCollection);
         inspector.setSiteSpec(siteSpec);
         inspector.preInit();
-        return inspector.init();
+        if ("SimIndexInspector".equals(getTitle())) {
+            inspector.setExclusiveViewMode(MetadataInspectorTab.SelectedViewMode.CONTENT);
+        }
+        inspector.init();
+
     }
 
     public void doDiffAction(MetadataObjectType metadataObjectType, MetadataObject left, MetadataObject right) {
@@ -513,6 +525,10 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
 
                     setDataMap(fMc);
 
+                    if ("SimIndexInspector".equals(getTitle())) {
+                        view.metadataInspectorLeft.setExclusiveViewMode(MetadataInspectorTab.SelectedViewMode.CONTENT);
+                    }
+
                     // restrict metadata selection to the same as the filter options
                     view.metadataObjectSelector.setNames(getFilterObjectSelectionItems()); // This will create the button list
                     view.metadataObjectSelector.doSelected(MetadataObjectType.DocEntries.name());
@@ -536,7 +552,7 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
 
     void doRemoveFilter() {
         if ("ResultInspector".equals(getTitle())) {
-            // restore setDataMap with original mc
+            // Restore setDataMap with original mc only if in the Result Inspector
 
             MetadataInspectorTab inspector = view.metadataInspectorRight;
             inspector.setData(dmTemp);
@@ -617,14 +633,16 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
     }
 
     public void doSingleMode() {
-        try {
-            view.metadataInspectorLeft.showHistory(true);
-            view.metadataInspectorLeft.showStructure(true);
+        if ("ResultInspector".equals(getTitle())) {
+            try {
+                view.metadataInspectorLeft.showHistory(true);
+                view.metadataInspectorLeft.showStructure(true);
 
-            if (view.inspectorWrapper.getWidgetCount() > 1)
-                view.inspectorWrapper.remove(1);
-        } catch (Exception ex) {
-            GWT.log("doSingleMode error: " + ex.toString());
+                if (view.inspectorWrapper.getWidgetCount() > 1)
+                    view.inspectorWrapper.remove(1);
+            } catch (Exception ex) {
+                GWT.log("doSingleMode error: " + ex.toString());
+            }
         }
     }
 

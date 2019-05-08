@@ -15,4 +15,5 @@ public interface FilterFeature<T extends MetadataObject> extends IsWidget {
     void applyFilter();
     void removeFilter();
     boolean isActive();
+    void displayResultNotice(String message, boolean isVisible);
 }
