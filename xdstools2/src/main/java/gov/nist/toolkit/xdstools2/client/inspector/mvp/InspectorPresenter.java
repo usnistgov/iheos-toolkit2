@@ -356,10 +356,10 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
         inspector.setResults(results);
         inspector.setMetadataCollection(metadataCollection);
         inspector.setSiteSpec(siteSpec);
-        inspector.preInit();
         if ("SimIndexInspector".equals(getTitle())) {
             inspector.setExclusiveViewMode(MetadataInspectorTab.SelectedViewMode.CONTENT);
         }
+        inspector.preInit();
         inspector.init();
 
     }
@@ -737,7 +737,12 @@ public class InspectorPresenter extends AbstractPresenter<InspectorView> {
         TreeItem attemptSelect(TreeItem treeItem, MetadataObjectWrapper userObject, MetadataObject target) {
             if (userObject != null && target!=null) {
                 if (compareTo(userObject,target)) {
-                    ((Hyperlink)treeItem.getWidget()).fireEvent(new ClickEvent() {});
+                    try {
+                        ((Hyperlink) treeItem.getWidget()).fireEvent(new ClickEvent() {
+                        });
+                    } catch (Exception ex) {
+                        GWT.log("attemptSelect error: " + ex.toString());
+                    }
                     treeItem.setSelected(true);
 //                    treeItem.setState(false, true);
                     removeSelectedStyleFromCurrentSelection();

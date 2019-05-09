@@ -26,7 +26,6 @@ import gov.nist.toolkit.results.client.StepResult;
 import gov.nist.toolkit.results.client.TestLog;
 import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
-import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
@@ -611,7 +610,7 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 
 //		GWT.log("In MetadataInsp siteSpec is " + siteSpec.name);
 
-		if (siteSpec == null)
+		if (siteSpec == null || (getExclusiveViewMode() != null && SelectedViewMode.CONTENT.equals(getExclusiveViewMode())))
 			data.enableActions = false;
 	}
 
@@ -667,10 +666,12 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 //			if (selectDiff != null) selectDiff.setEnabled(false);
 //			if (groupByListBox != null) groupByListBox.setEnabled(false);
 
-			if (results.size() == 1 && ! hasContents(results))
-				showAssertions(results.iterator().next());
-        	else
-				showHistory();
+            if (results != null) {
+				if (results.size() == 1 && !hasContents(results))
+					showAssertions(results.iterator().next());
+				else
+					showHistory();
+			}
 		}
 
 		return data.combinedMetadata;
