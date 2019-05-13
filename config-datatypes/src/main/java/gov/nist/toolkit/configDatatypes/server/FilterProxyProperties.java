@@ -1,35 +1,14 @@
 package gov.nist.toolkit.configDatatypes.server;
 
-import gov.nist.toolkit.configDatatypes.client.TransactionType;
-
-import java.util.HashMap;
-import java.util.Map;
-
 public class FilterProxyProperties {
-    static Map<String, String> endpointToRelayEndpoint = new HashMap<>();
-    static Map<String, String> relayEndpointToEndpoint = new HashMap<>();
+    static String prefix = "RelayTo_";
 
-    public FilterProxyProperties() {
-        if (endpointToRelayEndpoint.isEmpty()) {
-            init();
-        }
+    static public String getRelayEndpointName(String endpointName) {
+        return prefix + endpointName;
     }
 
-    public String getRelayEndpointName(String endpointName) {
-        return endpointToRelayEndpoint.get(endpointName);
+    static public String getEndpointName(String relayEndpointName) {
+        return relayEndpointName.replaceFirst(prefix, "");
     }
 
-    public String getEndpointName(String relayEndpointName) {
-        return relayEndpointToEndpoint.get(relayEndpointName);
-    }
-
-    private void init() {
-        for (TransactionType tt : TransactionType.values()) {
-            String endpointPropName = tt.getEndpointSimPropertyName();
-            String relayEndpointPropName = "RelayTo_" + endpointPropName;
-
-            endpointToRelayEndpoint.put(endpointPropName, relayEndpointPropName);
-            relayEndpointToEndpoint.put(relayEndpointPropName, endpointPropName);
-        }
-    }
 }

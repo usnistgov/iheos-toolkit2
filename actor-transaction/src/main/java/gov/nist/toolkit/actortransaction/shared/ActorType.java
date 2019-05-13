@@ -74,7 +74,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "gov.nist.toolkit.simcommon.server.factories.FilterProxyActorFactory",
             "gov.nist.toolkit.fhir.simulators.timestampProxy.FilterProxySimulator",
             Arrays.asList(TransactionType.ANY),
-            true,
+            false,
             null,
             false,
             Constants.USE_SHORTNAME

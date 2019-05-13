@@ -127,14 +127,14 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
 				//option is enabled but no endpoint present - create it
 
 				updateEndpointEle = new SimulatorConfigElement();
-				updateEndpointEle.name = SimulatorProperties.updateEndpoint;
+				updateEndpointEle.setName(SimulatorProperties.updateEndpoint);
 				updateEndpointEle.type = ParamType.ENDPOINT;
 				updateEndpointEle.transType = TransactionType.UPDATE;
 				updateEndpointEle.setStringValue(mkEndpoint(config, updateEndpointEle, ActorType.REGISTRY.getShortName(), false));
 				addFixed(config, updateEndpointEle);
 
 				updateEndpointEle = new SimulatorConfigElement();
-				updateEndpointEle.name = SimulatorProperties.updateTlsEndpoint;
+				updateEndpointEle.setName(SimulatorProperties.updateTlsEndpoint);
 				updateEndpointEle.type = ParamType.ENDPOINT;
 				updateEndpointEle.transType = TransactionType.UPDATE;
 				updateEndpointEle.setStringValue(mkEndpoint(config, updateEndpointEle, ActorType.REGISTRY.getShortName(), true));
@@ -159,14 +159,14 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
 				//option is enabled but no endpoint present - create it
 
 				updateEndpointEle = new SimulatorConfigElement();
-				updateEndpointEle.name = SimulatorProperties.rmuEndpoint;
+				updateEndpointEle.setName(SimulatorProperties.rmuEndpoint);
 				updateEndpointEle.type = ParamType.ENDPOINT;
 				updateEndpointEle.transType = TransactionType.RMU;
 				updateEndpointEle.setStringValue(mkEndpoint(config, updateEndpointEle, ActorType.REGISTRY.getShortName(), false));
 				addFixed(config, updateEndpointEle);
 
 				updateEndpointEle = new SimulatorConfigElement();
-				updateEndpointEle.name = SimulatorProperties.rmuTlsEndpoint;
+				updateEndpointEle.setName(SimulatorProperties.rmuTlsEndpoint);
 				updateEndpointEle.type = ParamType.ENDPOINT;
 				updateEndpointEle.transType = TransactionType.RMU;
 				updateEndpointEle.setStringValue(mkEndpoint(config, updateEndpointEle, ActorType.REGISTRY.getShortName(), true));

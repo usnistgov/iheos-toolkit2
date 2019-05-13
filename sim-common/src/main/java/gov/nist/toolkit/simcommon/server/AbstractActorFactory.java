@@ -148,13 +148,13 @@ public abstract class AbstractActorFactory {
 		SimulatorConfigElement ele;
 
 		ele = new SimulatorConfigElement();
-		ele.name = SimulatorProperties.creationTime;
+		ele.setName(SimulatorProperties.creationTime);
 		ele.type = ParamType.TIME;
 		ele.setStringValue(new Date().toString());
 		addFixed(sc, ele);
 
 		ele = new SimulatorConfigElement();
-		ele.name = name;
+		ele.setName(name);
 		ele.type = ParamType.TEXT;
 		ele.setStringValue(sc.getId().toString());
 		addFixed(sc, ele);
@@ -606,7 +606,7 @@ public abstract class AbstractActorFactory {
 
 	public void addEditableEndpoint(SimulatorConfig sc, String endpointName, ActorType actorType, TransactionType transactionType, boolean tls) throws Exception {
 		SimulatorConfigElement ele = new SimulatorConfigElement();
-		ele.name = endpointName;
+		ele.setName(endpointName);
 		ele.type = ParamType.ENDPOINT;
 		ele.transType = transactionType;
 		ele.setTls(tls);
@@ -616,7 +616,7 @@ public abstract class AbstractActorFactory {
 
 	public void addEditableNullEndpoint(SimulatorConfig sc, String endpointName, ActorType actorType, TransactionType transactionType, boolean tls) {
 		SimulatorConfigElement ele = new SimulatorConfigElement();
-		ele.name = endpointName;
+        ele.setName(endpointName);
 		ele.type = ParamType.ENDPOINT;
 		ele.transType = transactionType;
 		ele.setTls(tls);
@@ -626,7 +626,7 @@ public abstract class AbstractActorFactory {
 
 	public void addFixedEndpoint(SimulatorConfig sc, String endpointName, ActorType actorType, TransactionType transactionType, boolean tls) throws Exception {
 		SimulatorConfigElement ele = new SimulatorConfigElement();
-		ele.name = endpointName;
+        ele.setName(endpointName);
 		ele.type = ParamType.ENDPOINT;
 		ele.transType = transactionType;
 		ele.setStringValue(mkEndpoint(sc, ele, actorType.getShortName(), tls));
@@ -636,7 +636,7 @@ public abstract class AbstractActorFactory {
 
 	public void addFixedRelayEndpoint(SimulatorConfig sc, String endpointName, ActorType actorType, TransactionType transactionType, boolean tls, String relayEndpoint) throws Exception {
 		SimulatorConfigElement ele = new SimulatorConfigElement();
-		ele.name = endpointName;
+        ele.setName(endpointName);
 		ele.type = ParamType.ENDPOINT;
 		ele.transType = transactionType;
 		ele.setStringValue(relayEndpoint);
@@ -650,7 +650,7 @@ public abstract class AbstractActorFactory {
 
 	public void addFixedFhirEndpoint(SimulatorConfig sc, String endpointName, ActorType actorType, TransactionType transactionType, boolean tls, boolean proxy) throws Exception {
 		SimulatorConfigElement ele = new SimulatorConfigElement();
-		ele.name = endpointName;
+        ele.setName(endpointName);
 		ele.type = ParamType.ENDPOINT;
 		ele.transType = transactionType;
 		ele.setStringValue(mkFhirEndpoint(sc, ele, actorType.getShortName(), transactionType, tls, proxy));

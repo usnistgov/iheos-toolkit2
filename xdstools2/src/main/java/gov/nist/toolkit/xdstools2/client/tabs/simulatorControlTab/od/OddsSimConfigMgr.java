@@ -197,7 +197,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
         if (persistenceOption!=null) {
             newRow();
 
-            tbl.setText(getRow(), 0, persistenceOption.name.replace('_', ' '));
+            tbl.setText(getRow(), 0, persistenceOption.getName().replace('_', ' '));
 
 //            List<String> pOtpn = new ArrayList<>();
 //            pOtpn.display("Off");
@@ -282,14 +282,14 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
 
 
 
-            if (SimulatorProperties.retrieveEndpoint.equals(ele.name)) {
+            if (SimulatorProperties.retrieveEndpoint.equals(ele.getName())) {
 
                 newRow();
-                new ConfigTextDisplayBox(config.get(ele.name), tbl, getRow());
-            } else if (SimulatorProperties.retrieveTlsEndpoint.equals(ele.name)) {
+                new ConfigTextDisplayBox(config.get(ele.getName()), tbl, getRow());
+            } else if (SimulatorProperties.retrieveTlsEndpoint.equals(ele.getName())) {
 
                 newRow();
-                new ConfigTextDisplayBox(config.get(ele.name), tbl, getRow());
+                new ConfigTextDisplayBox(config.get(ele.getName()), tbl, getRow());
             }
 
 

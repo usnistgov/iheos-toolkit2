@@ -54,7 +54,7 @@ public class FilterProxyActorFactory extends AbstractActorFactory implements IAc
         // Delete old
         List<SimulatorConfigElement> endpointConfigs = proxyConfig.getEndpointConfigs();
         for (SimulatorConfigElement ele : endpointConfigs) {
-            proxyConfig.deleteFixedByName(ele.name);
+            proxyConfig.deleteFixedByName(ele.getName());
         }
 
         if (proxyConfig.getEndpointConfigs().size() != 0) {
@@ -74,7 +74,7 @@ public class FilterProxyActorFactory extends AbstractActorFactory implements IAc
                 String transactionEndpointLabel =
                         (tb.isSecure) ? tt.getTlsEndpointSimPropertyName() : tt.getEndpointSimPropertyName();
                 String relayEndpointLabel =
-                        fpProps.getRelayEndpointName(transactionEndpointLabel);
+                        FilterProxyProperties.getRelayEndpointName(transactionEndpointLabel);
 
                 me.addFixedEndpoint(proxyConfig, transactionEndpointLabel, actorType, type, tb.isSecure);
                 me.addFixedRelayEndpoint(proxyConfig, relayEndpointLabel, actorType, type, tb.isSecure, endpoint);
