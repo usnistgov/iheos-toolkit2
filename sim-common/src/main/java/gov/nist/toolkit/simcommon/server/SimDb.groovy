@@ -1320,9 +1320,13 @@ public class SimDb {
 	}
 
 	void putResponseHeaderFile(byte[] bytes) {
-		Io.bytesToFile(getResponseHdrFile(), bytes)
+		if (!getResponseHdrFile().exists())
+			Io.bytesToFile(getResponseHdrFile(), bytes)
 	}
 
+	void putResponseHeader(String str) {
+		getResponseHdrFile().text = str
+	}
 
 
 	public void putResponse(HttpMessage msg) throws IOException {
