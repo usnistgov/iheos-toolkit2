@@ -2,9 +2,11 @@ package gov.nist.toolkit.simcommon.server.factories;
 
 import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.actortransaction.shared.ActorType;
+import gov.nist.toolkit.adt.ListenerFactory;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.configDatatypes.server.FilterProxyProperties;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
+import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.Simulator;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
@@ -81,6 +83,9 @@ public class FilterProxyActorFactory extends AbstractActorFactory implements IAc
             }
         }
 
+        me.addFixedConfig(proxyConfig, SimulatorProperties.PIF_PORT, ParamType.TEXT, siteToProxy.pifPort);
+        //me.addFixedConfig(proxyConfig, "pifHost", ParamType.TEXT, siteToProxy.pifHost);
+
         // Save
         try {
             new GenericSimulatorFactory().saveConfiguration(proxyConfig);
@@ -130,6 +135,11 @@ public class FilterProxyActorFactory extends AbstractActorFactory implements IAc
                         isAsync));
             }
         }
+
+        SimulatorConfigElement pifPortElement = asc.get(SimulatorProperties.PIF_PORT);
+        if (pifPortElement != null)
+            site.pifPort = pifPortElement.asString();
+        site.pifHost = Installation.instance().propertyServiceManager().getToolkitHost();
 
 
         return site;

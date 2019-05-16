@@ -55,23 +55,26 @@ class FilterProxySimulator extends BaseDsActorSimulator  {
         byte[] bodyBytes = dsSimCommon.simDb().getRequestMessageBody()
         String body = new String(bodyBytes)
 
-        if (transactionType.requiresMtom) {
-        } else  {
+//        if (transactionType.requiresMtom) {
             String inputName = transactionType.endpointSimPropertyName
             String relayName = FilterProxyProperties.getRelayEndpointName(inputName)
             SimulatorConfigElement ele = simulatorConfig.getConfigEle(relayName)
             String outgoingEndpoint = ele.asString()
-            byte[] response = post(outgoingEndpoint, header, body)
-            String responseStr = new String(response)
-            String responseHdr = lastHeader
+            byte[] responseBody = post(outgoingEndpoint, header, body)
             if (dsSimCommon.simCommon.db) {
-                dsSimCommon.simCommon.db.putResponseBody(response)
+                dsSimCommon.simCommon.db.putResponseBody(responseBody)
                 dsSimCommon.simCommon.db.putResponseHeader(lastHeader)
             }
-            if (dsSimCommon.simCommon.os) {
-                dsSimCommon.simCommon.os.write(response)
+            lastHeader.split('\n').each { String hdr ->
+                String[] parts = hdr.split(':', 2)
+                if (!parts.size() == 2) return
+                String name = parts[0]
+                String value = parts[1]
+                response.addHeader(name, value)
             }
-        }
+            if (dsSimCommon.simCommon.os) {
+                dsSimCommon.simCommon.os.write(responseBody)
+            }
 
         return false
     }
@@ -102,8 +105,7 @@ class FilterProxySimulator extends BaseDsActorSimulator  {
             String name = h.name.trim()
             if (postHeadersToIgnore.contains(name.toLowerCase())) return
             String value = h.value.trim()
-            buf.append("${name}: \"${value}\"")
-            buf.append('\n')
+            buf.append("${name}: ${value}\n")
         }
         lastHeader = buf.toString()
         HttpEntity returnEntity = response.entity
