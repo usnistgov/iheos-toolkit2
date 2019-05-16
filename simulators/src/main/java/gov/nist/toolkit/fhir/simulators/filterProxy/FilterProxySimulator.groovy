@@ -55,7 +55,8 @@ class FilterProxySimulator extends BaseDsActorSimulator  {
         byte[] bodyBytes = dsSimCommon.simDb().getRequestMessageBody()
         String body = new String(bodyBytes)
 
-        if (!transactionType.requiresMtom) {
+        if (transactionType.requiresMtom) {
+        } else  {
             String inputName = transactionType.endpointSimPropertyName
             String relayName = FilterProxyProperties.getRelayEndpointName(inputName)
             SimulatorConfigElement ele = simulatorConfig.getConfigEle(relayName)
@@ -70,8 +71,6 @@ class FilterProxySimulator extends BaseDsActorSimulator  {
             if (dsSimCommon.simCommon.os) {
                 dsSimCommon.simCommon.os.write(response)
             }
-        } else  {
-
         }
 
         return false
@@ -90,10 +89,11 @@ class FilterProxySimulator extends BaseDsActorSimulator  {
         msgHeader.split('\n').each { String headerLine ->
             headerLine = headerLine.trim()
             if (!headerLine.contains(':')) return
-            String[] parts = headerLine.split(':')
+            String[] parts = headerLine.split(':', 2)
             String name = parts[0].trim()
             String value = parts[1].trim()
             if (postHeadersToIgnore.contains(name.toLowerCase())) return
+            post.addHeader(name, value)
         }
         HttpResponse response = httpclient.execute(post)
         Header[] hs = response.allHeaders
@@ -103,15 +103,6 @@ class FilterProxySimulator extends BaseDsActorSimulator  {
             if (postHeadersToIgnore.contains(name.toLowerCase())) return
             String value = h.value.trim()
             buf.append("${name}: \"${value}\"")
-//            buf.append(name).append(': ')
-//            buf.append("\"")
-//            buf.append(value)
-//            buf.append("\"")
-//            h.getElements().each { HeaderElement he ->
-//                String ename = he.name
-//                String evalue = he.value
-//                buf.append('; ').append(ename).append('=').append('"').append(evalue).append('"')
-//            }
             buf.append('\n')
         }
         lastHeader = buf.toString()
