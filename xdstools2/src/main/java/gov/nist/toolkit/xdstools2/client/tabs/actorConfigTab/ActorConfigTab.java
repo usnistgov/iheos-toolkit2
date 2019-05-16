@@ -3,6 +3,8 @@ package gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
@@ -188,18 +190,18 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
 //
 //
 //		sitesPanel.add(signOutPanel);
-		
+
 		showSims.setText("Show Sims");
 		showSims.setValue(false);
-		
+
 		showSims.addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
 				new ReloadClickHandler(ActorConfigTab.this).onClick(null);
 			}
-			
+
 		});
-		
+
 		sitesPanel.add(showSims);
 
 //		mainGrid.setWidget(row, 0, sitesPanel);
@@ -281,7 +283,7 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
 	}
 
 	List<String> currentSiteNames = null;
-	
+
 	private void reloadExternalSites() {
 		new GetSiteNamesCommand(){
 
@@ -385,7 +387,7 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
 		row++;
 
 		for (ActorType actorType : TransactionCollection.getActorTypes()) {
-			
+
 			// These actor types need not be shown in the configuration page. Showing these actors causes redundant endpoints in the configuration UI page.
 			if (ActorType.REPOSITORY_REGISTRY.equals(actorType)
 					|| ActorType.COMBINED_INITIATING_GATEWAY.equals(actorType)
@@ -434,7 +436,7 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
 				HorizontalPanel hpanel = new HorizontalPanel();
 				Label pifLabel = new Label("Patient Identity Feed");
 				actorEditGrid.setWidget(row, 0, pifLabel);
-				
+
 				hpanel.add(new Label("host"));
 				TextBox hostbox = new TextBox();
 				hostbox.setWidth("300px");
@@ -448,13 +450,13 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
 				portbox.setText(site.pifPort);
 				portbox.addValueChangeHandler(new PifPortChangedHandler(this, currentEditSite, portbox));
 				hpanel.add(portbox);
-				
+
 				actorEditGrid.setWidget(row, 2, hpanel);
-				
+
 				row++;
 			}
 
-			for(TransactionType transType : actorType.getTransactions()) {
+			for (TransactionType transType : actorType.getTransactions()) {
 				if (transType == TransactionType.RETRIEVE)
 					continue;   // Handled above
 				if (transType == TransactionType.NONE)
@@ -478,7 +480,7 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
 				}
 				row++;
 			}
-			for(TransactionType transType : actorType.getHTTPTransactions()) {
+			for (TransactionType transType : actorType.getHTTPTransactions()) {
 				if (transType == TransactionType.RETRIEVE)
 					continue;   // Handled above
 				HTML transNameLabel = new HTML(transType.getName());
@@ -500,8 +502,16 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
 				}
 				row++;
 			}
-
 		}
+
+			actorEditGrid.setWidget(row, 0, new HTML("Enable Filter Proxy"));
+			CheckBox proxyCheckBox = new CheckBox();
+			actorEditGrid.setWidget(row, 1, proxyCheckBox);
+			proxyCheckBox.setValue(site.useFilterProxy);
+			proxyCheckBox.addValueChangeHandler(new UseFilterProxyChangedHandler(this, site, proxyCheckBox));
+
+			row++;
+
 
 //		Button saveButton = new Button("Save Changes");
 //		saveButton.addClickHandler(new SaveButtonClickHandler(this));
@@ -682,8 +692,8 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
 			return "";
 		return s.trim();
 	}
-		
-	// Boolean data type ignored 
+
+	// Boolean data type ignored
 	AsyncCallback<Boolean> saveSignedInCallback = new AsyncCallback<Boolean> () {
 
 		public void onFailure(Throwable ignored) {
@@ -714,7 +724,7 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
 		}.run(new SaveSiteRequest(getCommandContext().withTestSession(currentEditSite.getTestSession().getValue()),currentEditSite));
         ((Xdstools2EventBus) ClientUtils.INSTANCE.getEventBus()).fireActorsConfigUpdatedEvent();
 	}
-	
+
 	void loadExternalSites() {
 		GWT.log("loadExternalSites");
 

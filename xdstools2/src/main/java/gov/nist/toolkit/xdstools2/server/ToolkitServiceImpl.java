@@ -46,6 +46,7 @@ import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
 import gov.nist.toolkit.services.client.PifType;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.server.RawResponseBuilder;
+import gov.nist.toolkit.services.server.SimulatorApi;
 import gov.nist.toolkit.services.server.SimulatorServiceManager;
 import gov.nist.toolkit.services.server.orchestration.OrchestrationManager;
 import gov.nist.toolkit.services.server.orchestration.OrchestrationProperties;
@@ -256,12 +257,14 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public String saveSite(SaveSiteRequest request) throws Exception {
         installCommandContext(request);
-        return siteServiceManager.saveSite(session().getId(), request.getSite(), request.getTestSession());
+        return new SimulatorApi(session()).saveSite(session().getId(), request.getSite(), request.getTestSession());
+//        return siteServiceManager.saveSite(session().getId(), request.getSite(), request.getTestSession());
     }
     @Override
     public String deleteSite(DeleteSiteRequest request) throws Exception {
         installCommandContext(request);
-        return siteServiceManager.deleteSite(session().getId(), request.getSiteName(), request.getTestSession());
+        return new SimulatorApi((session())).deleteSite(session().getId(), request.getSiteName(), request.getTestSession());
+//        return siteServiceManager.deleteSite(session().getId(), request.getSiteName(), request.getTestSession());
     }
     //	public String getHome() throws Exception { return session().getHome(); }
     @Override
@@ -1282,7 +1285,6 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     public String getAttributeValue(String username, String attName) throws Exception { return Installation.instance().propertyServiceManager().getAttributeValue(username, attName); }
     @Override
     public void setAttributeValue(String username, String attName, String attValue) throws Exception { Installation.instance().propertyServiceManager().setAttributeValue(username, attName, attValue); }
-
 
     //------------------------------------------------------------------------
     //------------------------------------------------------------------------

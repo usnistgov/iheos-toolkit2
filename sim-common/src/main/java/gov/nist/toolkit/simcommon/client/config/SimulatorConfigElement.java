@@ -17,7 +17,7 @@ public class SimulatorConfigElement implements Serializable,IsSerializable {
 	/**
 	 * Parameter name
 	 */
-	public String name = null;
+	private String name = null;
 	/**
 	 * Parameter type
 	 */
@@ -40,31 +40,31 @@ public class SimulatorConfigElement implements Serializable,IsSerializable {
 	public SimulatorConfigElement() {   }
 
 	public SimulatorConfigElement(String name, ParamType type, Boolean value) {
-		this.name = name;
+		this.setName(name);
 		this.type = type;
 		setBooleanValue(value);
 	}
 
 	public SimulatorConfigElement(String name, ParamType type, String value) {
-		this.name = name;
+		this.setName(name);
 		this.type = type;
 		setStringValue(value);
 	}
 
     public SimulatorConfigElement(String name, ParamType type, List<String> values, boolean isMultiSelect) {
-        this.name = name;
+		this.setName(name);
         this.type = type;
         setListValueWithType(values, ((isMultiSelect) ? ValueType.MULTI_SELECT_LIST : ValueType.SINGLE_SELECT_LIST));
     }
 
 	public SimulatorConfigElement(String name, ParamType type, List<String> values) {
-		this.name = name;
+		this.setName(name);
 		this.type = type;
 		setListValueWithType(values, ValueType.SIMPLE_LIST);
 	}
 
 	public SimulatorConfigElement(String name, ParamType type, String[] vals, boolean isMultiSelect) {
-        this.name = name;
+		this.setName(name);
         this.type = type;
         List<String> values = new ArrayList<>();
         for (String value : vals) values.add(value);
@@ -72,10 +72,15 @@ public class SimulatorConfigElement implements Serializable,IsSerializable {
     }
 
     public SimulatorConfigElement(String name, ParamType type, PatientErrorMap value) {
-        this.name = name;
+		this.setName(name);
         this.type = type;
         setPatientErrorMapValue(value);
     }
+
+    public void setName(String name) {
+		this.name = name;
+	}
+
 
     public String getExtraValue() {
         return extraValue;

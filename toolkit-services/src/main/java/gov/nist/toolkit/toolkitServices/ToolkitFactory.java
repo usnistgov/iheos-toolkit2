@@ -38,11 +38,11 @@ public class ToolkitFactory {
 
         for (SimulatorConfigElement ele : config.getElements()) {
             if (ele.hasBoolean()) {
-                bean.setProperty(ele.name, ele.asBoolean());
+                bean.setProperty(ele.getName(), ele.asBoolean());
             } else if (ele.hasString()) {
-                bean.setProperty(ele.name, ele.asString());
+                bean.setProperty(ele.getName(), ele.asString());
             } else if (ele.hasList()) {
-                bean.setProperty(ele.name, ele.asList());
+                bean.setProperty(ele.getName(), ele.asList());
             }
         }
         return bean;
