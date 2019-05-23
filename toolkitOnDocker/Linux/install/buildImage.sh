@@ -64,6 +64,7 @@ fi
 
 createContainer() {
 docker create \
+ -e TZ=America/New_York \
  --hostname $tkHostName \
  --name $tkHostName \
  --add-host=host.xdstoolkit.test:$toolkitHostIp \
