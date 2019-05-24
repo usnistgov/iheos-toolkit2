@@ -4,7 +4,7 @@ The purpose of this Readme is to guide the user in setting up a new instance of 
 File Descriptions i.e., The files available to the Docker context
 cert/from-eu-gss-all-purpose-3129 - Certificate #3129 as issued by the European Gazelle Security Suite (GSS). This certificate has the following SubjectAltNames: host.xdstoolkit.test, sut.xdstoolkit.test, latest.xdstoolkit.test, a.xdstoolkit.test, b.xdstoolkit.test, c.xdstoolkit.test. The "host" and the "sut" are intended for the systems running on the Docker Host while all others are reserved for Toolkit on Docker.
 
-buildImage.bat - Batch command file that makes use of the Docker build command and the Docker create command.
+buildImage.bat - Batch command file that makes use of the Docker build command and the Docker create command. Line separators must be CRLF.
 
 Dockerfile - Used by Docker build.
 
@@ -12,7 +12,7 @@ Docker issues.txt - Some of the Windows-specific Docker issues encountered durin
 
 readme.txt - This file.
 
-toolkit.properties - Toolkit.properties file.
+toolkit.properties - Toolkit.properties file. Note: This file uses UNIX style LF newlines. TODO: Replace the CRLF with newlines in Dockerfile.
 
 First Time Setup
 Host System Configuration
@@ -41,8 +41,10 @@ Managing User Data
 External Cache
 Toolkit on Docker for Windows makes use of the built-in Docker Volume feature since there may be a firewall issue which prevents File Sharing for the purpose of mapping an External Cache folder on the C:\ drive. Special instructions (Footnote 2) are needed for Windows users to make a copy/snapshot of the External Cache so that it is viewable from the Windows Explorer and to troubleshoot using Toolkit user data components such as the Test Log Cache. (Footnote 2.)
 
+If you wish to reset a given Toolkit container's External Cache, with the intention to remove all user data and to have a clean start, see Footnote 3.
+
 Toolkit.properties
-In the case of an upgrade, the toolkit.properties file must be manually backed up to prevent custom settings from being lost from an upgrade. (Footnote 3.)
+In the case of an upgrade, the toolkit.properties file must be manually backed up to prevent custom settings from being lost from an upgrade. (Footnote 4.)
 
 
 Footnotes
@@ -57,6 +59,10 @@ docker cp cert/from-eu-gss-all-purpose-3129.jks latest.xdstoolkit.test:/opt/ecdi
 2. Making a snapshot of the External Cache/Viewing the External Cache through File Explorer
 docker cp latest.xdstoolkit.test:/opt/ecdir .
 
-3. Backing up Toolkit.properties file
+3. To Remove an existing Docker Volume
+docker volume rm ec[latest|ReleaseNumber]
+
+4. Backing up Toolkit.properties file
 Note: In addition to the note on the container name being used in the command, If you are not using the "latest" Toolkit Release, replace the "xdstools[latest]" with a proper Toolkit Release number, for example "xdstools7.1.2", in the following command: 
 docker cp latest.xdstoolkit.test:/usr/local/tomcat/webapps/xdstoolslatest/WEB-INF/classes/toolkit.properties .
+

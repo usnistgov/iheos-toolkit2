@@ -77,12 +77,6 @@ xdstools${TK_VER}/WEB-INF/classes/toolkit.properties  \
 \<\!--\ Define\ a\ SSL\ HTTP/ \
 /usr/local/tomcat/conf/server.xml 
 
-# Depending on the computer management, Windows 10 could have firewall issues with file sharing. Folder in C: cannot be shared. 
-# For external cache, Use /opt/ecdir with a Docker Volume instead.
-# Because of this, the certificate needs to be manually updated on the mounted volume until the new cert becomes part of the source release. 
-# Otherwise, the user would have been able to have more direct control of the External_Cache, the environment and the certificate.
-
-
 EXPOSE $TK_PORT \
 $TK_TLS_PORT \
 $TK_PROXYPORT \ 

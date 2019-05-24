@@ -68,37 +68,30 @@ IF %errorlevel% EQU 0 (
 ) ELSE (
 	ECHO Error extracting parameters.
 )
-GOTO:eof
+EXIT /B 0
 
 :BUILD_IMAGE
 SET tkVer=%1
-		
+
 IF NOT DEFINED tkVer (
 	ECHO "Building latest image"
 docker build ^
 --build-arg TOOLKIT_PROPERTY_FILE=%tkPropertyFile% ^
--t usnistgov-xdstoolkit . 	
+-t usnistgov-xdstoolkit .
 	) ELSE (
-		ECHO "Building %tkVer% image"
+    ECHO "Building %tkVer% image"
 docker build ^
 --build-arg TK_VER=%tkVer% ^
 --build-arg TOOLKIT_PROPERTY_FILE=%tkPropertyFile% ^
--t usnistgov-xdstoolkit:%tkVer% . 
+-t usnistgov-xdstoolkit:%tkVer% .
 	)
-	IF %errorlevel% GEQ 1 (
+IF %errorlevel% GEQ 1 (
 		EXIT /B %errorlevel%
-	)
-GOTO:eof
+)
+EXIT /B 0
 
-:CREATE_CONTAINER
-rem If firewall is working for file sharing purposes with Docker, then use this:
-rem -v %External_Cache%:%External_Cache% ^
-rem -v %toolkitPropertyParentPath%\%tkPropertyFile%:/etc/toolkit/toolkit.properties ^
-rem Otherwise, use this to make a local copy of the External Cache to the current directory:
-rem docker cp latest.xdstoolkit.test:/opt/ecdir .
-
-ECHO "Creating container"
-ECHO %Proxy_Port%.
+: CREATE_CONTAINER
+ECHO Creating container for %tkVer%
 docker create ^
 -e TZ=America/New_York ^
 --hostname %Toolkit_Host% ^
@@ -114,16 +107,26 @@ docker create ^
 --mount source=ec%tkVer%,target=/opt/ecdir ^
 usnistgov-xdstoolkit:%tkVer%
 
-
-SET CREATE_RET_CODE=%errorlevel%
-IF %CREATE_RET_CODE% EQU 0 (
-	ECHO.
-	ECHO To Start without STDIN/STDOUT (No screen output and runs in the background): docker start %Toolkit_Host%
-	ECHO To attach local standard input, output, and error streams to a running container: docker attach %Toolkit_Host%
-	ECHO To Start with STDIN/STDOUT (Catalina.out is displayed to screen): docker start -a %Toolkit_Host%
-	ECHO To connect to this Toolkit running on Tomcat use the URL: http://%Toolkit_Host%:%Toolkit_Port%/xdstools%tkVer%/
+SET createError=%errorlevel%
+IF %createError% EQU 0 (
+    ECHO.
+    ECHO To Start without STDIN/STDOUT ^(No screen output and runs in the background^)
+    ECHO docker start %Toolkit_Host%
+    ECHO.
+    ECHO To attach local standard input, output, and error streams to a running container
+    ECHO docker attach %Toolkit_Host%
+    ECHO.
+    ECHO To Start with STDIN/STDOUT ^(Catalina.out is displayed to screen^)
+    ECHO docker start -a %Toolkit_Host%
+    ECHO.
+    ECHO To login to the container shell
+    ECHO docker exec -it latest.xdstoolkit.test /bin/bash
+    ECHO.
+    ECHO To connect to this Toolkit running on Tomcat use the URL
+    ECHO http://%Toolkit_Host%:%Toolkit_Port%/xdstools%tkVer%/
+    ECHO.
 ) ELSE (
-	ECHO Error.
-	EXIT /B %CREATE_RET_CODE%
+    ECHO Error.
+    EXIT /B %createError%
 )
-GOTO:eof
+EXIT /B 0
