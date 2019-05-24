@@ -14,7 +14,7 @@ toolkit.properties - Toolkit.properties file.
 
 First time setup
 Host System configuration
-/etc/hosts: You must add an entry for the following hosts all pointing to the same Docker NAT IPV4 (use ifconfig -a and use the "inet addr" for the "docker0" interface):
+/etc/hosts: You must add an entry for the following hosts all pointing to the same Docker NAT IPv4 (use ifconfig -a and use the "inet addr" for the "docker0" interface):
 x.x.x.x latest.xdstoolkit.test, a.xdstoolkit.test, b.xdstoolkit.test, c.xdstoolkit.test
 
 Create a Toolkit Docker Network
@@ -23,11 +23,11 @@ sudo docker network create xdstoolkitNet
 
 Personalizing Toolkit
 buildImage.sh: 
-User must set the "toolkitHostIp" value to the host's IPV4 address in this script (use ifconfig -a and use the "inet addr" for the  main Ethernet interface).
+User must set the "toolkitHostIp" value to the host's IPv4 address in this script (use ifconfig -a and use the "inet addr" for the  main Ethernet interface).
 
 toolkit.properties:
-User must set the "External_Cache" value to a folder path on the host system. Please note: For Toolkit Releases which do not ship with the GSS certificate, an addition step is required: you must manually copy the certificate to the External Cache environment keystore folder. The keystore password is "changeit".
-In addition, User must review the following properties: Toolkit_Port, Proxy_Port, and the Listener_Port_Range. If any changes are desired, they should be updated.
+User must set the "External_Cache" value to a folder path on the host system. Please note: For Toolkit Releases which do not ship with the GSS certificate, an additional step is required: you must manually copy the certificate to the External Cache environment keystore folder. The keystore password is "changeit".
+User must review the following properties: Toolkit_Port, Proxy_Port, and the Listener_Port_Range. If any changes are desired, they should be updated.
 Toolkit_Host property: This is both the container name and FQDN. The value must be one of the certificate's subjectAtlNames which were added to the /etc/hosts file.
 
 Run "sudo ./buildImage.sh" to build a Toolkit Docker image and to create a Docker container. If this is successful, instructions on how to start the container and how to access the Toolkit running on Tomcat will be provided when the script completes running. There are two optional parameters: Release number and the toolkit.property file name. Without any parameters, two default parameter values are implied by the script: the latest Toolkit release to be installed/upgraded and a reference the "toolkit.properties" file that exists in the same folder as the script.
