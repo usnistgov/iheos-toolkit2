@@ -100,6 +100,7 @@ rem docker cp latest.xdstoolkit.test:/opt/ecdir .
 ECHO "Creating container"
 ECHO %Proxy_Port%.
 docker create ^
+-e TZ=America/New_York ^
 --hostname %Toolkit_Host% ^
 --name %Toolkit_Host% ^
 --add-host=host.xdstoolkit.test:%containerHostIp% ^
@@ -116,11 +117,11 @@ usnistgov-xdstoolkit:%tkVer%
 
 SET CREATE_RET_CODE=%errorlevel%
 IF %CREATE_RET_CODE% EQU 0 (
-    ECHO.
-    ECHO To Start without STDIN/STDOUT (No screen output and runs in the background): docker start %Toolkit_Host%
-    ECHO To attach local standard input, output, and error streams to a running container: docker attach %Toolkit_Host%
-    ECHO To Start with STDIN/STDOUT (Catalina.out is displayed to screen): docker start -a %Toolkit_Host%
-    ECHO To connect to this Toolkit running on Tomcat use the URL: http://%Toolkit_Host%:%Toolkit_Port%/xdstools%tkVer%/
+	ECHO.
+	ECHO To Start without STDIN/STDOUT (No screen output and runs in the background): docker start %Toolkit_Host%
+	ECHO To attach local standard input, output, and error streams to a running container: docker attach %Toolkit_Host%
+	ECHO To Start with STDIN/STDOUT (Catalina.out is displayed to screen): docker start -a %Toolkit_Host%
+	ECHO To connect to this Toolkit running on Tomcat use the URL: http://%Toolkit_Host%:%Toolkit_Port%/xdstools%tkVer%/
 ) ELSE (
 	ECHO Error.
 	EXIT /B %CREATE_RET_CODE%
