@@ -359,6 +359,7 @@ public class SimulatorProperties {
      public static final String      idsrIigTlsEndpoint = "IDSR to IIG TLS endpoint";
 
     public static final String                        environment = "Environment";
+    public static final String                        environmentName = "environmentName";
 
     /**
      * Requires STS SAML.

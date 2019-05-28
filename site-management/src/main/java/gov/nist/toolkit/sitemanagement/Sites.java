@@ -288,10 +288,10 @@ public class Sites {
 
 	public Site getSite(String siteName, TestSession testSession) throws Exception {
 		try {
-			if (siteName.equals(FAKE_SITE_NAME))
-				return FAKE_SITE;
 			if (siteName == null)
 				throw new Exception("Internal error: null site requested");
+			if (siteName.equals(FAKE_SITE_NAME))
+				return FAKE_SITE;
 			if (siteName.equals("gov/nist/toolkit/installation/shared"))
 				return new Site("gov/nist/toolkit/installation/shared", testSession);
 			List<String> sitenames = getSiteNames();

@@ -2,10 +2,13 @@ package gov.nist.toolkit.fhir.simulators.filterProxy;
 
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.configDatatypes.server.FilterProxyProperties
+import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
+import gov.nist.toolkit.envSetting.EnvSetting
 import gov.nist.toolkit.errorrecording.ErrorRecorder
 import gov.nist.toolkit.fhir.simulators.support.BaseDsActorSimulator
 import gov.nist.toolkit.fhir.simulators.support.DsSimCommon
 import gov.nist.toolkit.http.httpclient.HttpClient
+import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
 import gov.nist.toolkit.utilities.io.Io
@@ -16,9 +19,20 @@ import org.apache.http.HeaderElement
 import org.apache.http.HttpEntity
 import org.apache.http.HttpResponse
 import org.apache.http.client.methods.HttpPost
+import org.apache.http.config.Registry
+import org.apache.http.config.RegistryBuilder
+import org.apache.http.conn.socket.ConnectionSocketFactory
+import org.apache.http.conn.socket.PlainConnectionSocketFactory
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory
 import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.HttpClients
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager
+import org.apache.http.ssl.SSLContexts
 import org.apache.log4j.Logger
+
+import javax.net.ssl.SSLContext
+import java.security.KeyManagementException
+import java.security.NoSuchAlgorithmException
 
 @TypeChecked
 class FilterProxySimulator extends BaseDsActorSimulator  {
@@ -56,7 +70,7 @@ class FilterProxySimulator extends BaseDsActorSimulator  {
         String body = new String(bodyBytes)
 
 //        if (transactionType.requiresMtom) {
-            String inputName = transactionType.endpointSimPropertyName
+            String inputName = (common.isTls()) ? transactionType.tlsEndpointSimPropertyName : transactionType.endpointSimPropertyName
             String relayName = FilterProxyProperties.getRelayEndpointName(inputName)
             SimulatorConfigElement ele = simulatorConfig.getConfigEle(relayName)
             String outgoingEndpoint = ele.asString()
@@ -80,15 +94,28 @@ class FilterProxySimulator extends BaseDsActorSimulator  {
     }
 
     static List<String> postHeadersToIgnore = [
-            'content-length'
+            'content-length',
+            'transfer-encoding',
+            'user-agent',
+            'host'
     ]
 
     String lastHeader = null
 
     byte[] post(String endpoint, String msgHeader, String msgBody) {
-        org.apache.http.client.HttpClient httpclient = HttpClients.createDefault()
+        logger.info("Has simConfig ${dsSimCommon.simulatorConfig != null}")
+        logger.info("Has environmentName ${dsSimCommon.simulatorConfig.environmentName != null}")
+        String envName = dsSimCommon.simulatorConfig.environmentName //.getConfigEle(SimulatorProperties.environmentName).asString()
+        logger.info("Environment name is ${envName}")
+        File keyStoreFile = Installation.instance().getKeystore(envName)
+        logger.info("Keystore is ${keyStoreFile}")
+        String keyStorePassword = Installation.instance().getKeystorePassword(envName)
+        logger.info("POST to ${endpoint}")
+        logger.info("Header is \n${msgHeader}")
+        org.apache.http.client.HttpClient httpclient = (org.apache.http.client.HttpClient) ((common.isTls()) ? TlsBuilder.getTlsClient(keyStoreFile, keyStorePassword) : HttpClients.createDefault())
         HttpPost post = new HttpPost(endpoint)
         post.setEntity(new StringEntity(msgBody))
+        logger.info("Filtering headers:")
         msgHeader.split('\n').each { String headerLine ->
             headerLine = headerLine.trim()
             if (!headerLine.contains(':')) return
@@ -96,6 +123,7 @@ class FilterProxySimulator extends BaseDsActorSimulator  {
             String name = parts[0].trim()
             String value = parts[1].trim()
             if (postHeadersToIgnore.contains(name.toLowerCase())) return
+            logger.info("...using header " + name + ": " + value)
             post.addHeader(name, value)
         }
         HttpResponse response = httpclient.execute(post)
@@ -112,6 +140,7 @@ class FilterProxySimulator extends BaseDsActorSimulator  {
         InputStream is = returnEntity.content
         is.bytes
     }
+
 
     // remove namespace from Id attrubute in Timestamp element
     static String transform(String str) {
