@@ -30,7 +30,10 @@ WORKDIR /usr/local/tomcat/webapps
 # 'Latest version' code snippet is from ahdis/xdstools-docker
 #
 RUN \
-export TK_HOST=`grep Toolkit_Host /tmp/toolkit.properties | cut -d'=' -f2`; \
+sed -i \
+-e 's/\r$//' \
+/tmp/toolkit.properties \
+&& export TK_HOST=`grep Toolkit_Host /tmp/toolkit.properties | cut -d'=' -f2`; \
 export TK_PORT=`grep Toolkit_Port /tmp/toolkit.properties | cut -d'=' -f2`; \
 export TK_TLS_PORT=`grep Toolkit_TLS_Port /tmp/toolkit.properties | cut -d'=' -f2`; \
 export TK_PROXYPORT=`grep Proxy_Port /tmp/toolkit.properties | cut -d= -f2`; \

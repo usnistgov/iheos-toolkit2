@@ -6,13 +6,13 @@ cert/from-eu-gss-all-purpose-3129 - Certificate #3129 as issued by the European 
 
 buildImage.bat - Batch command file that makes use of the Docker build command and the Docker create command. Line separators must be CRLF.
 
-Dockerfile - Used by Docker build.
+Dockerfile - Used by Docker build. Line separators may be CRLF or LF.
 
 Docker issues.txt - Some of the Windows-specific Docker issues encountered during our installation and suggested solutions.
 
 readme.txt - This file.
 
-toolkit.properties - Toolkit.properties file. Note: This file uses UNIX style LF newlines. TODO: Replace the CRLF with newlines in Dockerfile.
+toolkit.properties - Toolkit.properties file which is part of the Docker context. Line separators must be CRLF for the Windows copy. At runtime, the actual copy of the toolkit.properties lives in the Docker container and uses only LF line separators.
 
 First Time Setup
 Host System Configuration
