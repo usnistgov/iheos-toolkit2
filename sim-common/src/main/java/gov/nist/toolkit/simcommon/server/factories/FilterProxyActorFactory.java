@@ -84,6 +84,7 @@ public class FilterProxyActorFactory extends AbstractActorFactory implements IAc
         }
 
         me.addFixedConfig(proxyConfig, SimulatorProperties.PIF_PORT, ParamType.TEXT, siteToProxy.pifPort);
+        me.addEditableConfig(proxyConfig, SimulatorProperties.homeCommunityId, ParamType.OID, siteToProxy.home);
         //me.addFixedConfig(proxyConfig, "pifHost", ParamType.TEXT, siteToProxy.pifHost);
 
         // Save
@@ -140,7 +141,9 @@ public class FilterProxyActorFactory extends AbstractActorFactory implements IAc
         if (pifPortElement != null)
             site.pifPort = pifPortElement.asString();
         site.pifHost = Installation.instance().propertyServiceManager().getToolkitHost();
-
+        SimulatorConfigElement hciElement = asc.get(SimulatorProperties.homeCommunityId);
+        if (hciElement != null)
+            site.home = hciElement.asString();
 
         return site;
     }
