@@ -69,8 +69,9 @@ class FilterProxySimulator extends BaseDsActorSimulator  {
         byte[] bodyBytes = dsSimCommon.simDb().getRequestMessageBody()
         String body = new String(bodyBytes)
 
-//        if (transactionType.requiresMtom) {
-            String inputName = (common.isTls()) ? transactionType.tlsEndpointSimPropertyName : transactionType.endpointSimPropertyName
+//        common.setTls(true)
+
+        String inputName = (common.isTls()) ? transactionType.tlsEndpointSimPropertyName : transactionType.endpointSimPropertyName
             String relayName = FilterProxyProperties.getRelayEndpointName(inputName)
             SimulatorConfigElement ele = simulatorConfig.getConfigEle(relayName)
             String outgoingEndpoint = ele.asString()
@@ -126,7 +127,14 @@ class FilterProxySimulator extends BaseDsActorSimulator  {
             logger.info("...using header " + name + ": " + value)
             post.addHeader(name, value)
         }
-        HttpResponse response = httpclient.execute(post)
+
+        HttpResponse response
+        try {
+            response = httpclient.execute(post)
+        } catch (Exception e) {
+            logger.error("POST to ${endpoint} failed", e)
+            throw e
+        }
         Header[] hs = response.allHeaders
         StringBuilder buf = new StringBuilder()
         response.allHeaders.each { Header h ->

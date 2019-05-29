@@ -1,6 +1,7 @@
 package gov.nist.toolkit.fhir.simulators.filterProxy;
 
 import gov.nist.toolkit.http.httpclient.HttpClient;
+import gov.nist.toolkit.installation.server.Installation;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
@@ -8,6 +9,8 @@ import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.ssl.PrivateKeyDetails;
+import org.apache.http.ssl.PrivateKeyStrategy;
 import org.apache.http.ssl.SSLContexts;
 
 import javax.net.ssl.SSLContext;
@@ -15,13 +18,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.Socket;
 import java.security.*;
 import java.security.cert.CertificateException;
+import java.util.Map;
 
 public class TlsBuilder {
     private static Registry<ConnectionSocketFactory> getRegistry(File keyStoreFile, String keyStorePassword) throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException, IOException, CertificateException, UnrecoverableKeyException {
 
-        KeyStore keyStore  = KeyStore.getInstance("PKCS12");
+        KeyStore keyStore  = KeyStore.getInstance("JKS" /*"PKCS12"*/);
         FileInputStream instream = new FileInputStream(keyStoreFile);
         try {
             keyStore.load(instream, keyStorePassword.toCharArray());
@@ -32,15 +37,20 @@ public class TlsBuilder {
 
         SSLContext sslContext = SSLContexts.custom()
                 .loadKeyMaterial(keyStore, keyStorePassword.toCharArray())
+                .loadTrustMaterial(keyStoreFile, keyStorePassword.toCharArray())
                 .build();
-        String[] versions = new String[1];
-        versions[0] = "TLSv1.2";
-        String[] cipherSuites = new String[1];
-        cipherSuites[0] = "TLS_RSA_WITH_AES_128_CBC_SHA";
+//        String[] versions = new String[1];
+//        versions[0] = "TLSv1.2";
+        String[] versions = Installation.instance().propertyServiceManager().getPropertyManager().getClientSSLProtocols();
+        String[] cipherSuites = Installation.instance().propertyServiceManager().getPropertyManager().getClientCipherSuites();
+//        String[] cipherSuites = new String[1];
+//        cipherSuites[0] = "TLS_RSA_WITH_AES_128_CBC_SHA";
         SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContext,
-                versions, cipherSuites, SSLConnectionSocketFactory.getDefaultHostnameVerifier());
+                versions, cipherSuites,
+                SSLConnectionSocketFactory.getDefaultHostnameVerifier()
+        );
         return RegistryBuilder.<ConnectionSocketFactory>create()
-                .register("http", PlainConnectionSocketFactory.getSocketFactory())
+               // .register("http", PlainConnectionSocketFactory.getSocketFactory())
                 .register("https", sslConnectionSocketFactory)
                 .build();
     }

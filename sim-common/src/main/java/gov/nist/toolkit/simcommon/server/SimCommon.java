@@ -31,7 +31,7 @@ import java.io.OutputStream;
     // References to Regindex, RepIndex, RegistryErrorListGenerator, documentsToAttach should be refactored out
 public class SimCommon {
 	public SimDb db = null;
-	boolean tls = false;
+	private boolean tls = false;
 	public ValidationContext vc = null;
 	public SimulatorConfig simConfig = null;
 	public HttpServletRequest request = null;
@@ -169,5 +169,9 @@ public class SimCommon {
 
 	public void setActorType(ActorType actorType) {
 		this.actorType = actorType;
+	}
+
+	public void setTls(boolean tls) {
+		this.tls = tls;
 	}
 }
