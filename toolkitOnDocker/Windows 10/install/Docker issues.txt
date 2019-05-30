@@ -1,0 +1,37 @@
+1. Error message:
+Unable to create: The running command stopped because the preference variable "ErrorActionPreference" or common parameter is set to Stop: Hyper-V encountered an error trying to access an object on computer 'XXXXX' because the object was not found. The object might have been deleted. Verify that the Virtual Machine Management service on the computer is running.
+at New-Switch, <No file>: line 121
+at <ScriptBlock>, <No file>: line 411
+   at Docker.Core.Pipe.NamedPipeClient.Send(String action, Object[] parameters) in C:\workspaces\stable-18.09.x\src\github.com\docker\pinata\win\src\Docker.Core\pipe\NamedPipeClient.cs:line 36
+   at Docker.Actions.DoStart(SynchronizationContext syncCtx, Boolean showWelcomeWindow, Boolean executeAfterStartCleanup) in C:\workspaces\stable-18.09.x\src\github.com\docker\pinata\win\src\Docker.Windows\Actions.cs:line 92
+   at Docker.Actions.<>c__DisplayClass19_0.<Start>b__0() in C:\workspaces\stable-18.09.x\src\github.com\docker\pinata\win\src\Docker.Windows\Actions.cs:line 74
+   at Docker.WPF.TaskQueue.<>c__DisplayClass19_0.<.ctor>b__1() in C:\workspaces\stable-18.09.x\src\github.com\docker\pinata\win\src\Docker.WPF\TaskQueue.cs:line 59
+
+
+Fix:
+Quit docker.
+
+Ctrl-X 
+Open CMD as Administrator
+
+C:\WINDOWS\system32>MOFCOMP %SYSTEMROOT%\System32\WindowsVirtualization.V2.mof
+Microsoft (R) MOF Compiler Version 10.0.15063.0
+Copyright (c) Microsoft Corp. 1997-2006. All rights reserved.
+Parsing MOF file: C:\WINDOWS\System32\WindowsVirtualization.V2.mof
+MOF file has been successfully parsed
+Storing data in the repository...
+Done!
+
+
+C:\WINDOWS\system32>net stop vmms
+The Hyper-V Virtual Machine Management service is stopping.
+The Hyper-V Virtual Machine Management service was stopped successfully.
+
+
+C:\WINDOWS\system32>net start vmms
+The Hyper-V Virtual Machine Management service is starting.
+The Hyper-V Virtual Machine Management service was started successfully.
+--
+
+2. DNS Issues
+If you cannot ping from a running container then you should check your Control Panel > Network and Internet > Network Connectons > DockerNAT TCP/IPv4 Properties. In the General Tab, you may want to try the DHCP Setting for the Automatic IP address and then enter your DNS in the 'Use the following DNS server addresses' panel. Next, In the Alternate Configuration tab, Select User configured option and enter the Docker IP address, Subnet mask, and the Preferred DNS server.

@@ -8,6 +8,8 @@ import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
+import gov.nist.toolkit.simcommon.server.SiteServiceManager;
+import org.apache.log4j.Logger;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -58,7 +60,7 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	// not sure what to do with the other attributes, leave alone for now
 	public void add(SimulatorConfig asc) {
 		for (SimulatorConfigElement ele : asc.elements) {
-			if (getFixedByName(ele.name) == null)
+			if (getFixedByName(ele.getName()) == null)
 				elements.add(ele);
 		}
 	}
@@ -154,7 +156,7 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 			return null;
 		
 		for (SimulatorConfigElement ele : elements) {
-			if (name.equals(ele.name))
+			if (name.equals(ele.getName()))
 				return ele;
 		}
 		return null;
@@ -166,7 +168,7 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 			return null;
 		
 		for (SimulatorConfigElement ele : elements) {
-			if (name.equals(ele.name))
+			if (name.equals(ele.getName()))
 				return ele;
 		}
 		return null;
@@ -177,7 +179,7 @@ public class SimulatorConfig implements Serializable, IsSerializable {
             return null;
 
         for (SimulatorConfigElement ele : elements) {
-            if (name.equals(ele.name))
+            if (name.equals(ele.getName()))
                 return ele;
         }
         return null;
@@ -223,7 +225,7 @@ public class SimulatorConfig implements Serializable, IsSerializable {
        Iterator <SimulatorConfigElement> itr = elements.iterator();
        while(itr.hasNext()) {
           SimulatorConfigElement existing = itr.next();
-          if (existing.name.equals(replacement.name)) {
+          if (existing.getName().equals(replacement.getName())) {
              itr.remove();
              replaced = true;
              break;
@@ -250,11 +252,16 @@ public class SimulatorConfig implements Serializable, IsSerializable {
         if (type == null) return actorTypeName;
         return type.getName();
     }
-	
+
+    int log = 0;
 	public SimulatorConfigElement get(String name) {
 		for (SimulatorConfigElement ele : elements) {
-			if (ele.name.equals(name))
-				return ele;
+			try {
+				if (ele.getName().equals(name))
+					return ele;
+			} catch (Throwable t) {
+				log = 9;
+			}
 		}
 		return null;
 	}

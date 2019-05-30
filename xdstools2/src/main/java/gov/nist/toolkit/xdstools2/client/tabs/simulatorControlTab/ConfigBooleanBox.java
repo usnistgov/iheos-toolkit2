@@ -12,7 +12,7 @@ public class ConfigBooleanBox {
 	public ConfigBooleanBox(SimulatorConfigElement ele, FlexTable tbl, int row) {
 		this.ele = ele;
 
-		tbl.setText(row, 0, ele.name.replace('_', ' '));
+		tbl.setText(row, 0, ele.getName().replace('_', ' '));
 		
 		CheckBox cb = new CheckBox();
 		cb.setValue(ele.asBoolean());

@@ -7,7 +7,6 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
-import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 /**
@@ -25,7 +24,7 @@ class MuClickHandler implements ClickHandler {
 	}
 
 	public void onClick(ClickEvent event) {
-		// Symbolic Id is indicative of submission data, not as it was stored by the target registry.
+		// Symbolic Id is indicative of submission data, not as it was stored by the target registry. This is the case where Inspector was launched from a Submission tool.
 		// Warn user about symbolic id
 		final String realObjectPrefixId = "urn:uuid:";
 		boolean isSymbolicId = de.id != null && !de.id.startsWith(realObjectPrefixId);
@@ -41,18 +40,16 @@ class MuClickHandler implements ClickHandler {
 			actionBtn.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent clickEvent) {
-				    edit();
+				    launchEdit();
 				}
 			});
 			new PopupMessage(safeHtmlBuilder.toSafeHtml(), body, actionBtn);
 		} else {
-			edit();
+			launchEdit();
 		}
 	}
 
-	private void edit() {
-		it.detailPanel.clear();
-//		it.showStructure(false);
+	private void launchEdit() {
 		try {
 			EditDisplay editDisplay = new EditDisplay(it, de, queryOrigin);
 			editDisplay.editDetail();

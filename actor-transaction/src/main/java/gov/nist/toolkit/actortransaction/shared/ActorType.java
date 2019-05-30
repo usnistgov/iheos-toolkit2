@@ -67,6 +67,18 @@ public enum ActorType implements IsSerializable, Serializable {
             false,
             Constants.USE_SHORTNAME
     ),
+    FILTER_PROXY(
+            "Filter Proxy",
+            Arrays.asList("filter_PROXY", "filterproxy", "Filter Proxy"),
+            "fproxy",
+            "gov.nist.toolkit.simcommon.server.factories.FilterProxyActorFactory",
+            "gov.nist.toolkit.fhir.simulators.filterProxy.FilterProxySimulator",
+            Arrays.asList(TransactionType.ANY),
+            false,
+            null,
+            false,
+            Constants.USE_SHORTNAME
+    ),
 //    REGISTRY_RMD(
 //            "REMOVE Metadata",
 //            Arrays.asList(""),

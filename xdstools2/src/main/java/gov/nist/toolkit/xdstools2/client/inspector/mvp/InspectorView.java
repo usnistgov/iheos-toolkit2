@@ -12,10 +12,16 @@ import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.Widget;
-import gov.nist.toolkit.registrymetadata.client.*;
+import gov.nist.toolkit.registrymetadata.client.Association;
+import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
+import gov.nist.toolkit.registrymetadata.client.Folder;
+import gov.nist.toolkit.registrymetadata.client.ObjectRef;
+import gov.nist.toolkit.registrymetadata.client.ResourceItem;
+import gov.nist.toolkit.registrymetadata.client.SubmissionSet;
 import gov.nist.toolkit.xdstools2.client.abstracts.AbstractView;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataObjectType;
+import gov.nist.toolkit.xdstools2.client.inspector.contentFilter.FilterFeature;
 import gov.nist.toolkit.xdstools2.client.widgets.ButtonListSelector;
 
 import java.util.HashMap;
@@ -25,10 +31,13 @@ import java.util.Map;
 public class InspectorView extends AbstractView<InspectorPresenter> implements ProvidesResize, RequiresResize {
     FlowPanel mainHeaderPanel = new FlowPanel();
 
+    final HTML contentFilterCtl = new HTML("Content Filter");
+    final FlowPanel contentFilterPanel = new FlowPanel();
     final HTML advancedOptionCtl = new HTML("Advanced Options");
     final FlowPanel advancedOptionPanel = new FlowPanel();
 
-    Map<MetadataObjectType, DataTable> tableMap = new HashMap<>();
+    private Map<MetadataObjectType, FilterFeature> filterFeatureMap = new HashMap<>();
+    private Map<MetadataObjectType, DataTable> tableMap = new HashMap<>();
 
     ActivityItem activityItem;
     int rowsPerPage = 10;
@@ -37,14 +46,23 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
     MetadataInspectorTab metadataInspectorLeft = new MetadataInspectorTab(true);
     MetadataInspectorTab metadataInspectorRight = new MetadataInspectorTab(true);
 
-    ButtonListSelector metadataObjectSelector = new ButtonListSelector("Select a Metadata Object") {
+    ButtonListSelector metadataObjectSelector = new ButtonListSelector("Select Metadata Type") {
         @Override
         public void doSelected(String label) {
             getPresenter().doUpdateChosenMetadataObjectType(label);
         }
     };
 
-    AssocDataTable assocDataTable = new AssocDataTable(rowsPerPage) {
+    private FilterFeature deFilterFeature = null;
+
+    ButtonListSelector filterObjectSelector = new ButtonListSelector("Select Metadata Type") {
+        @Override
+        public void doSelected(String label) {
+            getPresenter().doUpdateChosenFilterObjectType(label);
+        }
+    };
+
+    private AssocDataTable assocDataTable = new AssocDataTable(rowsPerPage) {
         @Override
         void defaultSingleClickAction(Association row) {
             getPresenter().doSingleMode();
@@ -75,7 +93,7 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         }
     };
 
-    FoldersDataTable foldersDataTable = new FoldersDataTable(rowsPerPage) {
+    private FoldersDataTable foldersDataTable = new FoldersDataTable(rowsPerPage) {
         @Override
         void defaultSingleClickAction(Folder row) {
             getPresenter().doSingleMode();
@@ -106,7 +124,7 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         }
     };
 
-    SubmissionSetDataTable submissionSetDataTable = new SubmissionSetDataTable(rowsPerPage) {
+    private SubmissionSetDataTable submissionSetDataTable = new SubmissionSetDataTable(rowsPerPage) {
         @Override
         void defaultSingleClickAction(SubmissionSet row) {
             getPresenter().doSingleMode();
@@ -136,7 +154,7 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         }
     };
 
-    DocEntryDataTable docEntryDataTable = new DocEntryDataTable(rowsPerPage) {
+    private DocEntryDataTable docEntryDataTable = new DocEntryDataTable(rowsPerPage) {
         @Override
         void defaultSingleClickAction(DocumentEntry row) {
             getPresenter().doSingleMode();
@@ -167,7 +185,7 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         }
     };
 
-    ObjectRefDataTable objectRefTable = new ObjectRefDataTable(rowsPerPage) {
+    private ObjectRefDataTable objectRefTable = new ObjectRefDataTable(rowsPerPage) {
         @Override
         void doGetDocuments(List<ObjectRef> objectRefs) { // TODO: remove this
 //            getPresenter().do
@@ -203,7 +221,7 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         }
     };
 
-    ResourceDataTable resourceDataTable = new ResourceDataTable(rowsPerPage) {
+    private ResourceDataTable resourceDataTable = new ResourceDataTable(rowsPerPage) {
         @Override
         void doGetDocuments(List<ResourceItem> objectRefs) { // TODO: remove this
 //            getPresenter().do
@@ -251,7 +269,6 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
     }
 
 
-
     @Override
     public void onResize() {
         objectRefTable.resizeTable();
@@ -273,16 +290,36 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         title.setHTML("<h2>Inspector</h2>");
         topNavPanel.add(title);
 
+        contentFilterCtl.setTitle("This feature is only available in the Contents Inspector View Mode.");
+        contentFilterCtl.addStyleName("iconStyle");
+        // If the inspector is starting out in Content mode, then this can only happen from the registry browser.
+        // Otherwise, the normal mode is History and the Filter should be disabled.
+        contentFilterCtl.addStyleName("roundedButton1");
+        contentFilterPanel.addStyleName("with-border");
+        contentFilterPanel.setVisible(false);
+
         advancedOptionCtl.addStyleName("iconStyle");
         advancedOptionCtl.addStyleName("inlineLink");
-        advancedOptionCtl.addStyleName("outsetBorder");
         advancedOptionCtl.addStyleName("roundedButton1");
         advancedOptionPanel.addStyleName("with-border");
-
         advancedOptionPanel.setVisible(false);
+
+        topNavPanel.add(contentFilterCtl);
+        topNavPanel.add(contentFilterPanel);
+
         topNavPanel.add(advancedOptionCtl);
         topNavPanel.add(advancedOptionPanel);
 
+        // The filter panel
+        FlowPanel contentFilterWrapper = new FlowPanel();
+        filterObjectSelector.displayShowAll(false);
+        contentFilterWrapper.add(filterObjectSelector.asWidget());
+        contentFilterWrapper.add(new HTML("<br/>"));
+        contentFilterWrapper.add(deFilterFeature.asWidget());
+        contentFilterPanel.add(contentFilterWrapper);
+        contentFilterPanel.addStyleName("paddedHorizontalPanel");
+
+        // The advanced option panel
         FlowPanel advancedOptionWrapper = new FlowPanel();
         metadataObjectSelector.displayShowAll(false);
         advancedOptionWrapper.add(metadataObjectSelector.asWidget());
@@ -301,7 +338,6 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         advancedOptionPanel.add(advancedOptionWrapper);
         advancedOptionPanel.addStyleName("paddedHorizontalPanel");
 
-
         mainHeaderPanel.add(topNavPanel);
 
         inspectorWrapper.add(metadataInspectorLeft.asWidget());
@@ -315,6 +351,7 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
 
     @Override
     protected void bindUI() {
+        filterFeatureMap.put(MetadataObjectType.DocEntries, deFilterFeature);
 
         tableMap.put(MetadataObjectType.ObjectRefs, objectRefTable);
         tableMap.put(MetadataObjectType.DocEntries, docEntryDataTable);
@@ -327,6 +364,12 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
             @Override
             public void onClick(ClickEvent clickEvent) {
                 getPresenter().doAdvancedOptionToggle(advancedOptionCtl, advancedOptionPanel);
+            }
+        });
+        contentFilterCtl.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent clickEvent) {
+                getPresenter().doFilterOptionToggle(contentFilterCtl, contentFilterPanel);
             }
         });
     }
@@ -349,4 +392,21 @@ public class InspectorView extends AbstractView<InspectorPresenter> implements P
         return tableMap;
     }
 
+    public Map<MetadataObjectType, FilterFeature> getFilterFeatureMap() {
+        return filterFeatureMap;
+    }
+
+    void showFilterCtl(boolean isEnabled) {
+        if (isEnabled) {
+            contentFilterCtl.removeStyleName("inlineLinkDisabled");
+            contentFilterCtl.addStyleName("inlineLink");
+        } else {
+            contentFilterCtl.removeStyleName("inlineLink");
+            contentFilterCtl.addStyleName("inlineLinkDisabled");
+        }
+    }
+
+    public void setDeFilterFeature(FilterFeature deFilterFeature) {
+        this.deFilterFeature = deFilterFeature;
+    }
 }

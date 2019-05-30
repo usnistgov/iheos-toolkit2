@@ -338,10 +338,6 @@ public class SiteServiceManager {
 	public String saveSite(String sessionId, Site site, TestSession testSession) throws Exception {
 		logger.debug(sessionId + ": " + "saveSite");
 		try {
-
-//			if (commonSites.get(testSession) == null) commonSites.put(testSession, new Sites(testSession));
-//			commonSites.get(testSession).putSite(site);
-			// sites.saveToFile(configuredActorsFile(false));
 			if (!useActorsFile())
 				new SeparateSiteLoader(testSession).saveToFile(Installation.instance()
 						.actorsDir(testSession), site);
@@ -359,10 +355,7 @@ public class SiteServiceManager {
 
 	public String deleteSite(String sessionId, String siteName, TestSession testSession) throws Exception {
 		logger.debug(sessionId + ": " + "deleteSite");
-//		if (commonSites.get(testSession) != null)
-//			commonSites.get(testSession).deleteSite(siteName);
 		try {
-			// sites.saveToFile(configuredActorsFile(false));
 			if (!useActorsFile())
 				new SeparateSiteLoader(testSession).delete(Installation.instance()
 						.actorsDir(testSession), siteName);

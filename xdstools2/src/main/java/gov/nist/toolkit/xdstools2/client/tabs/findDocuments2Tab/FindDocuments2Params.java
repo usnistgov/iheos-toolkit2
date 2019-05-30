@@ -9,6 +9,7 @@ import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.AuthorFilter;
 import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.CodeFilterBank;
 import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.OnDemandFilter;
 import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.ReturnTypeFilter;
+import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.StatusDisplay;
 import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.StatusFilter;
 import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.TimeFilter;
 
@@ -39,14 +40,12 @@ public class FindDocuments2Params {
     CodeFilterBank codeFilterBank;
     ReturnTypeFilter returnFilter;
     Label errorLabel;
-    GenericQueryTab genericQueryTab;
 
 
 
-    public FindDocuments2Params(/*ToolkitServiceAsync toolkitService, */GenericQueryTab genericQueryTab){
-        this.genericQueryTab = genericQueryTab;
+    public FindDocuments2Params(StatusDisplay statusDisplay){
         // The collective validate bank being assembled
-        codeFilterBank = new CodeFilterBank(genericQueryTab);
+        codeFilterBank = new CodeFilterBank(statusDisplay);
 
         errorLabel = new Label();
 

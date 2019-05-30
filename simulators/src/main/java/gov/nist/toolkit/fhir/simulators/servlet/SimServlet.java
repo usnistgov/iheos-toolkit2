@@ -35,6 +35,7 @@ import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import org.apache.axiom.om.OMElement;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -625,6 +626,17 @@ public class SimServlet  extends HttpServlet {
 					transactionOk = sim.run(transactionType, mvc, validation);
 					sim.onTransactionEnd(asc);
 				}
+			} else if (baseSim != null) {
+				if (asc.getConfigEle(SimulatorProperties.FORCE_FAULT).asBoolean()) {
+					sendSoapFault(dsSimCommon, "Forced Fault");
+					responseSent = true;
+				} else {
+					baseSim.onTransactionBegin(asc);
+					transactionOk = baseSim.run(transactionType, mvc, validation);
+					baseSim.onTransactionEnd(asc);
+				}
+			} else {
+				throw new ToolkitRuntimeException("Simulator " + simid.toString() + " is not runnable");
 			}
 
 			// Archive logs

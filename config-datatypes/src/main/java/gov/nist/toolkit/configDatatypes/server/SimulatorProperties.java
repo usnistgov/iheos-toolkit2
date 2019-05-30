@@ -339,6 +339,8 @@ public class SimulatorProperties {
      */
     public static final String                     idsImageCache = "IDS Image Cache";
 
+    public static final String                      relayToSiteName = "Relay To Site Name";
+
     /*
      * These two are for RAD-55's sent to Imaging Document Sources
      */
@@ -357,6 +359,7 @@ public class SimulatorProperties {
      public static final String      idsrIigTlsEndpoint = "IDSR to IIG TLS endpoint";
 
     public static final String                        environment = "Environment";
+    public static final String                        environmentName = "environmentName";
 
     /**
      * Requires STS SAML.

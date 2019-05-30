@@ -6,7 +6,7 @@
 
     <groupId>gov.nist.toolkit</groupId>
     <artifactId>tk-deps</artifactId>
-    <version>7.2.8</version>
+    <version>7.3.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>tk-deps</name>
@@ -39,24 +39,25 @@
         <maven-war-plugin.version>2.4</maven-war-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.2</nexus-staging-maven-plugin.version>
         <tomcat7-maven-plugin.version>2.2</tomcat7-maven-plugin.version>
+        <axis2-version>1.5.4</axis2-version>
+        <!--<axis2-version>1.7.9</axis2-version>-->
 
         <hapi.version>2.5</hapi.version>
         <spring_version>4.3.6.RELEASE</spring_version>
         <thymeleaf-version>3.0.2.RELEASE</thymeleaf-version>
         <lucene-version>5.5.5</lucene-version>
-        <maven-site-plugin-version>3.7.1</maven-site-plugin-version>  <!-- 3.7.1  3.5-->
         <!--<lucene-version>6.6.0</lucene-version>-->
     </properties>
 
     <repositories>
         <repository>
+            <id>maven-central</id>
+            <url>https://repo1.maven.org/maven2</url>
+        </repository>
+        <repository>
             <id>repository.jboss.org-public</id>
             <name>JBoss.org Maven repository</name>
             <url>https://repository.jboss.org/nexus/content/groups/public</url>
-        </repository>
-        <repository>
-            <id>maven-central</id>
-            <url>https://repo1.maven.org/maven2</url>
         </repository>
         <repository>
             <id>apache-central</id>
@@ -104,157 +105,157 @@
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>sim-proxy</artifactId>
-                <version>7.2.8</version>
+                <version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>datasets</artifactId>
-                <version>7.2.8</version>
+                <version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>config-datatypes</artifactId>
-                <version>7.2.8</version>
+                <version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>it-support</artifactId>
-                <version>7.2.8</version>
+                <version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>transaction-notification-service</artifactId>
-                <version>7.2.8</version>
+                <version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>toolkit-services-common</artifactId>
-                <version>7.2.8</version>
+                <version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>toolkit-api</artifactId>
-                <version>7.2.8</version>
+                <version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>services</artifactId>
-                <version>7.2.8</version>
+                <version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>toolkit-services</artifactId>
-                <version>7.2.8</version>
+                <version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>rest-tools</artifactId>
-                <version>7.2.8</version>
+                <version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>validators-soap-message</artifactId>
-                <version>7.2.8</version>
+                <version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>simulators</artifactId>
-                <version>7.2.8</version>
+                <version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>sim-support</artifactId>
-                <version>7.2.8</version>
+                <version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>adt</artifactId>
-                <version>7.2.8</version>
+                <version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>envSettings</artifactId>
-                <version>7.2.8</version>
+                <version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>sim-common</artifactId>
-                <version>7.2.8</version>
+                <version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>session</artifactId>
-                <version>7.2.8</version>
+                <version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>actorfactory</artifactId>
-                <version>7.2.8</version>
+                <version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>test-engine</artifactId>
-                <version>7.2.8</version>
+                <version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>saml</artifactId>
-                <version>7.2.8</version>
+                <version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>message-validator-factory2</artifactId>
-                <version>7.2.8</version>
+                <version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>testkit-utilities</artifactId>
-		<version>7.2.8</version>
+		<version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>soap</artifactId>
-		        <version>7.2.8</version>
+		        <version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>validators-registry-metadata</artifactId>
-				<version>7.2.8</version>
+				<version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>validators-registry-message</artifactId>
-				<version>7.2.8</version>
+				<version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>xdstest2-logging</artifactId>
-				<version>7.2.8</version>
+				<version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>installation</artifactId>
-				<version>7.2.8</version>
+				<version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>common</artifactId>
-				<version>7.2.8</version>
+				<version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>registry-msg-formats</artifactId>
-				<version>7.2.8</version>
+				<version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>site-management</artifactId>
-				<version>7.2.8</version>
+				<version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>http</artifactId>
-				<version>7.2.8</version>
+				<version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>xml-security</groupId>
@@ -264,77 +265,77 @@
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>results</artifactId>
-				<version>7.2.8</version>
+				<version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>docref</artifactId>
-				<version>7.2.8</version>
+				<version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>dsig</artifactId>
-				<version>7.2.8</version>
+				<version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>security-common</artifactId>
-				<version>7.2.8</version>
+				<version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>tk</artifactId>
-				<version>7.2.8</version>
+				<version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>validators-support</artifactId>
-				<version>7.2.8</version>
+				<version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>xds-exceptions</artifactId>
-				<version>7.2.8</version>
+				<version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>error-recording</artifactId>
-				<version>7.2.8</version>
+				<version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>utilities</artifactId>
-				<version>7.2.8</version>
+				<version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>registry-metadata</artifactId>
-				<version>7.2.8</version>
+				<version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>registry-support</artifactId>
-				<version>7.2.8</version>
+				<version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>common-datatypes</artifactId>
-				<version>7.2.8</version>
+				<version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>grizzly-support</artifactId>
-				<version>7.2.8</version>
+				<version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>actor-transaction</artifactId>
-                <version>7.2.8</version>
+                <version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>fhir</artifactId>
-                <version>7.2.8</version>
+                <version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
@@ -352,12 +353,12 @@
             <dependency>
                 <groupId>org.apache.axis2</groupId>
                 <artifactId>axis2-transport-http</artifactId>
-                <version>1.5.4</version>
+                <version>${axis2-version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.axis2</groupId>
                 <artifactId>axis2-transport-local</artifactId>
-                <version>1.6.2</version>
+                <version>${axis2-version}</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
@@ -662,17 +663,17 @@
             <dependency>
                 <groupId>org.apache.axis2</groupId>
                 <artifactId>axis2-adb</artifactId>
-                <version>1.5.4</version>
+                <version>${axis2-version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.axis2</groupId>
                 <artifactId>axis2-kernel</artifactId>
-                <version>1.5.4</version>
+                <version>${axis2-version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.axis2</groupId>
                 <artifactId>axis2</artifactId>
-                <version>1.5.4</version>
+                <version>${axis2-version}</version>
             </dependency>
             <dependency>
                 <groupId>org.ow2.asm</groupId>
@@ -732,27 +733,27 @@
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>interaction-model</artifactId>
-				<version>7.2.8</version>
+				<version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>interaction-mapper</artifactId>
-				<version>7.2.8</version>
+				<version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>interaction-diagram</artifactId>
-				<version>7.2.8</version>
+				<version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>plugin-support</artifactId>
-                <version>7.2.8</version>
+                <version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>plugins</artifactId>
-                <version>7.2.8</version>
+                <version>7.3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.vectomatic</groupId>

@@ -95,8 +95,12 @@ public class CodePicker extends DialogBox {
         String value;
         if (showDetail)
             value = codeDef;
-        else
-            value = new Code(codeDef).display;
+        else {
+			value = new Code(codeDef).display;
+			if ("".equals(value)) {
+				value = codeDef;
+			}
+		}
         availableCodes.addItem(value, codeDef);
         } catch (Exception e) {}
 	}

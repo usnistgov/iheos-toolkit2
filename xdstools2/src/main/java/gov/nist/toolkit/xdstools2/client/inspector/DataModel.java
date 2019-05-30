@@ -46,22 +46,26 @@ public class DataModel {
 	
 	// content is loaded into results one query at a time
 	// this builds the combined structure
-	public void buildCombined() {
+	public void buildCombined(MetadataCollection mc) {
 		combinedMetadata = new MetadataCollection();
 		combinedMetadata.init();
 
 		docMap = new HashMap<String, Document>();
 
 		try {
-			for (Result result : results) {
-				for (StepResult stepResult : result.stepResults) {
-					combinedMetadata.add(stepResult.getMetadata());
-					if (stepResult.documents != null) {
-						for (Document doc : stepResult.documents) {
-							docMap.put(doc.uid, doc);
+		    if (results!=null) {
+				for (Result result : results) {
+					for (StepResult stepResult : result.stepResults) {
+						combinedMetadata.add(stepResult.getMetadata());
+						if (stepResult.documents != null) {
+							for (Document doc : stepResult.documents) {
+								docMap.put(doc.uid, doc);
+							}
 						}
 					}
 				}
+			} else if (mc!=null) {
+				combinedMetadata.add(mc);
 			}
 		} catch (Exception e) {}
 
@@ -82,10 +86,6 @@ public class DataModel {
 		return combinedMetadata;
 	}
 
-	public void setCombinedMetadata(MetadataCollection combinedMetadata) {
-		this.combinedMetadata = combinedMetadata;
-	}
-
 	public SiteSpec getSiteSpec() {
 		return siteSpec;
 	}
@@ -98,23 +98,14 @@ public class DataModel {
 		return allDocs;
 	}
 
-	public void setAllDocs(List<Document> allDocs) {
-		this.allDocs = allDocs;
-	}
 
 	public Map<String, Document> getDocMap() {
 		return docMap;
 	}
 
-	public void setDocMap(Map<String, Document> docMap) {
-		this.docMap = docMap;
-	}
 
 	public boolean isEnableActions() {
 		return enableActions;
 	}
 
-	public void setEnableActions(boolean enableActions) {
-		this.enableActions = enableActions;
-	}
 }

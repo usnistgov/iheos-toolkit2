@@ -23,7 +23,7 @@ public class ConfigEditBox {
 	public void configure(SimulatorConfigElement ele, FlexTable tbl, int row) {
 		this.ele = ele;
 
-		lblTextBox.setText(ele.name.replace('_', ' '));
+		lblTextBox.setText(ele.getName().replace('_', ' '));
 		tbl.setWidget(row, 0, lblTextBox);
 
 		tb.setWidth("550px");

@@ -2,8 +2,11 @@ package gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces;
 
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
-import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.toolContext.State;
-import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.toolContext.Token;
+import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.toolContext.ToolParameter;
+import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.toolContext.ToolParameterFormatter;
+import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.toolContext.ToolParameterMap;
+import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.toolContext.ToolParameterParser;
+import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.toolContext.ToolParameterString;
 
 /**
  * The URL will be created as
@@ -13,14 +16,12 @@ import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.toolContext.To
  * See constants in ToolLauncher for toolId.
  */
 public class Tool extends Place {
-    private State state;
+    private ToolParameterMap tpm;
     private String toolId;
 
     public Tool(String paramString) {
-       state = new State(paramString);
-       state.restore();
-
-       toolId = state.getValue(Token.TOOLID);
+       tpm = ToolParameterParser.parse(new ToolParameterString(paramString));
+       toolId = tpm.getValue(ToolParameter.TOOLID);
     }
 
     public String getToolId() { return toolId; }
@@ -29,14 +30,14 @@ public class Tool extends Place {
     public boolean equals(Object obj) {
         if (obj instanceof Tool) {
             Tool toCompare = (Tool)obj;
-            return state.equals(toCompare.state);
+            return tpm.equals(toCompare.tpm);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return state.hashCode();
+        return ToolParameterFormatter.format(tpm).toString().hashCode();
     }
 
     @Override
@@ -53,11 +54,11 @@ public class Tool extends Place {
 
         @Override
         public String getToken(Tool tool) {
-            return tool.state.tokenize();
+            return ToolParameterFormatter.format(tool.tpm).toString();
         }
     }
 
-    public State getState() {
-        return state;
+    public ToolParameterMap getTpm() {
+        return tpm;
     }
 }

@@ -7,7 +7,7 @@ import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.command.command.GetToolkitPropertiesCommand;
 import gov.nist.toolkit.xdstools2.client.toolLauncher.ToolLauncher;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
-import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.toolContext.State;
+import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.toolContext.ToolParameterMap;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 
 import java.util.Map;
@@ -17,8 +17,8 @@ import java.util.Map;
  */
 public class ConfActorActivity extends AbstractActivity {
     private Xdstools2 xdstools2view = Xdstools2.getInstance();
+    private ToolParameterMap tpm;
     private ConfActor confActor;
-    State state;
 
     @Override
     public void start(AcceptsOneWidget acceptsOneWidget, EventBus eventBus) {
@@ -36,7 +36,7 @@ public class ConfActorActivity extends AbstractActivity {
                 public void onComplete(final Map<String, String> tkPropMap) {
                     ClientUtils.INSTANCE.setTkPropMap(tkPropMap);
                     ToolLauncher toolLauncher = new ToolLauncher(ToolLauncher.conformanceTestsLabel);
-                    toolLauncher.setState(state);
+                    toolLauncher.setTpm(tpm);
                     toolLauncher.launch();
 
                     xdstools2view.resizeToolkit();
@@ -48,13 +48,11 @@ public class ConfActorActivity extends AbstractActivity {
 
     public void setConfActor(ConfActor confActor) { this.confActor = confActor; }
 
+    public void setTpm(ToolParameterMap tpm) {
+        this.tpm = tpm;
+    }
+
     public Xdstools2 getView() { return xdstools2view; }
 
-    public State getState() {
-        return state;
-    }
 
-    public void setState(State state) {
-        this.state = state;
-    }
 }

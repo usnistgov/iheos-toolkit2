@@ -213,7 +213,8 @@ public class SimDb {
 		} catch (Exception e) {
 			return false
 		}
-		ActorType.findActor(config.actorType).isFhir()
+		ActorType type = ActorType.findActor(config.actorType)
+		type.isFhir()
 
 		//ActorType.findActor(new File(simRoot, simTypeFilename).text).isFhir()
 	}
@@ -1319,9 +1320,13 @@ public class SimDb {
 	}
 
 	void putResponseHeaderFile(byte[] bytes) {
-		Io.bytesToFile(getResponseHdrFile(), bytes)
+		if (!getResponseHdrFile().exists())
+			Io.bytesToFile(getResponseHdrFile(), bytes)
 	}
 
+	void putResponseHeader(String str) {
+		getResponseHdrFile().text = str
+	}
 
 
 	public void putResponse(HttpMessage msg) throws IOException {
