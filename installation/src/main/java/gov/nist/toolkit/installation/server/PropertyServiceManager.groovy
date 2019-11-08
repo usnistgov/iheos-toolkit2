@@ -224,6 +224,51 @@ public class PropertyServiceManager {
 		logger.info("Property manager initialized from " + location);
 		propertyManager = new PropertyManager(location);
 
+        /*
+		Detect proper External Cache location using the following logic:
+
+		SP[1] | ECPath Exists | SP[2] | Result
+		N       Y       N       External_Cache from the default toolkit.properties is used.
+		N       N       N       Bogus ECPath means user needs to update the External Cache manually using the Tool Configuration UI tool page. (This instruction is printed in the startup log message.)
+		N       N       Y*       The External_Cache from the system property is used and the default toolkit.properties file ExternalCache property is updated to this value.
+		Y       Y       N       External_Cache from the SP[1] toolkit.properties is used.
+		Y       N       Y*       The External_Cache from the SP[2] is used and the SP[1] toolkit.properties file ExternalCache property is updated to this value.
+		Y       Y       Y*       External_Cache from the SP[1] toolkit.properties is used. SP[2] is ignored. The reason being External_Cache should always be editable from the Toolkit UI, and when the user changes this property the intention is to use that value from that point on. Hence, SP[2] is just a bootstrap to use the testing-tools\external_cache.
+
+		Legend
+		SP[1] = Java System Property -DTOOLKIT_PROPERTIES is Present
+		ECPath Exists =  Toolkit.properties ExternalCache Java File Path exists (could be either of the toolkit.properties file from SP[1] or the default toolkit.properties depending on the presence of SP[1])
+		SP[2] = Java System Property -DEXTERNAL_CACHE is Present
+		* = This part of the code
+		SP[2] N = Existing case, no need for updates.
+         */
+		try {
+			String ecString = propertyManager.getExternalCache()
+			if (ecString != null) {
+				File ecFile = new File(ecString)
+				if (! ecFile.exists()) {
+					logger.info("External_Cache Directory does not exist.")
+					logger.info("Checking for EXTERNAL_CACHE System Property ...")
+					String ecSpString = System.getProperty("EXTERNAL_CACHE")
+					if (ecSpString != null) {
+						File ecSpFile = new File(ecSpString)
+						if (ecSpFile.exists()) {
+							propertyManager.setExternalCache(ecSpString)
+							propertyManager.saveProperties()
+							logger.info("Updated toolkit.properties using EXTERNAL_CACHE System Property: " + ecSpString)
+						} else {
+							logger.info("EXTERNAL_CACHE Directory as specified by the System Property does not exist.")
+						}
+					} else {
+                        // Unresolved EXTERNAL_CACHE: All options exhausted.
+						logger.info("User needs to manually configure the EXTERNAL_CACHE in the Toolkit Configuration UI.")
+					}
+				}
+			}
+		} catch(IOException ioex) {
+			logger.error(ioex.toString())
+		}
+
 		// This removes the dependency that
 		// gov.nist.registry.common2.xml.SchemaValidation
 		// has on port 9080
