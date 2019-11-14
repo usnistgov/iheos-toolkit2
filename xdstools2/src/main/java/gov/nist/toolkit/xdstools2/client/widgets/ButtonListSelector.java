@@ -74,17 +74,6 @@ abstract public class ButtonListSelector implements IsWidget {
         bindSites();
     }
 
-
-    public void refreshEnabledStatus(List<? extends AnnotatedItem> items) {
-        if (buttons !=null && buttons.size()>0) {
-            for (AnnotatedItem item : items) {
-                Button b = findButton(item.getName());
-                if (b != null) {
-                    b.setEnabled(item.isEnabled());
-                }
-            }
-        }
-    }
     /**
      * I tried using the defined style SiteButtonSelected defined in css
      * but it is ignored so removing the default style gives a dark
@@ -147,6 +136,10 @@ abstract public class ButtonListSelector implements IsWidget {
     public String getCurrentSelection() {
         // TODO: Should throw an exception if nothing?
         return currentSelection;
+    }
+
+    public List<? extends AnnotatedItem> getItems() {
+        return items;
     }
 
     void setCurrentSelection(String currentSelection) {

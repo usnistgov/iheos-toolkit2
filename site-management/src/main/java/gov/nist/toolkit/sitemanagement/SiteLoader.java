@@ -96,6 +96,9 @@ public abstract class SiteLoader {
 
 				s.pifHost = host;
 				s.pifPort = port;
+			} else if ("useFilterProxy".equals(ele_name)) {
+				String tsValue = ele.getText();
+				s.useFilterProxy = tsValue.equals("true");
 			} else {
 				for (ActorType actorType : ATFactory.RetrieveActorTypes) {
 					String label = actorType.getActorsFileLabel();
@@ -153,6 +156,10 @@ public abstract class SiteLoader {
 			pida_ele.setText(s.pidAllocateURI);
 			site_ele.addChild(pida_ele);
 		}
+
+		OMElement useProxy_ele = MetadataSupport.om_factory.createOMElement("useFilterProxy", null);
+		useProxy_ele.setText((s.useFilterProxy) ? "true" : "false");
+		site_ele.addChild(useProxy_ele);
 
 		return site_ele;
 	}

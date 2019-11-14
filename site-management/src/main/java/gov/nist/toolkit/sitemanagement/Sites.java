@@ -20,7 +20,7 @@ public class Sites {
 	final public static String FAKE_SITE_NAME = "fake_site";
 	final public static Site FAKE_SITE = new Site(FAKE_SITE_NAME, TestSession.DEFAULT_TEST_SESSION);
 	TestSession testSession = null;
-	
+
 	public boolean equals(Sites s) {
 		if (s == null)
 			return false;
@@ -29,20 +29,20 @@ public class Sites {
 		map1.remove(ALL_REPOSITORIES);
 		map2.remove(ALL_REPOSITORIES);
 		boolean mapped = equals(map1, map2);
-		
+
 		return
 				((defaultSiteName == null) ? s.defaultSiteName == null : defaultSiteName.equals(s.defaultSiteName)) &&
-				mapped;
+						mapped;
 	}
 
 	public boolean exists(String siteName) {
 		return siteMap.keySet().contains(siteName);
 	}
-	
+
 	public int size() {
 		return siteMap.size();
 	}
-	
+
 	boolean equals(HashMap<String, Site> map1, HashMap<String, Site> map2) {
 		if (map1 == null)
 			if (map2 == null)
@@ -61,7 +61,7 @@ public class Sites {
 		}
 		return true;
 	}
-	
+
 	public Sites clone() {
 		Sites s = new Sites(testSession);
 		s.siteMap = new HashMap<String, Site>();
@@ -70,32 +70,32 @@ public class Sites {
 			s.siteMap.put(key, value);
 		}
 		s.defaultSiteName = defaultSiteName;
-		
+
 		return s;
 	}
-	
+
 	public HashMap<String, Site> getSiteMap() {
 		return siteMap;
 	}
-	
+
 	public Sites getAllSites() {
 		return new Sites(siteMap.values());
 	}
-	
+
 	public Collection<Site> asCollection() {
 		return siteMap.values();
 	}
-	
+
 	public void validate(StringBuffer buf) {
 		for (Site s : asCollection()) {
 			s.validate(buf);
 		}
 	}
-	
+
 	public Sites(TestSession testSession) {
 		this.testSession = testSession;
 	}
-	
+
 	public Sites(Site site) {
 //		if (!testSession.equals(site.getTestSession()))
 //			throw new ToolkitRuntimeException("TestSession mismatch - trying to add " + site + " to Sites/" + testSession);
@@ -110,7 +110,7 @@ public class Sites {
 		}
 		return TestSession.DEFAULT_TEST_SESSION;
 	}
-	
+
 	public Sites(Collection<Site> sites) {
 		if (testSession == null && !sites.isEmpty())
 			testSession = testSessionFromCollection(sites);
@@ -134,7 +134,7 @@ public class Sites {
 		if (site.getTestSession().equals(testSession)) return true;
 		return false;
 	}
-	
+
 	public void add(Site site) {
 		siteMap.put(site.getName(), site);
 //		validate();
@@ -150,7 +150,7 @@ public class Sites {
 	public void deleteSite(String siteName) {
 		siteMap.remove(siteName);
 	}
-	
+
 	public String getAllRepositoriesSiteName() { // This string is present in ActorConfigTab.java as well (client)
 		return "allRepositories";
 	}
@@ -191,7 +191,7 @@ public class Sites {
 
 		return buf.toString();
 	}
-	
+
 	public List<Site> getSitesWithActor(ActorType actorType, TestSession testSession) throws Exception {
 		List<Site> rs = new ArrayList<Site>();
 
@@ -202,9 +202,9 @@ public class Sites {
 		}
 
 		return rs;
-		
+
 	}
-	
+
 	public List<Site> getSitesWithTransaction(TransactionType tt, TestSession testSession) throws Exception {
 		List<Site> rs = new ArrayList<Site>();
 
@@ -215,9 +215,9 @@ public class Sites {
 		}
 
 		return rs;
-		
+
 	}
-	
+
 	public Site getSiteForHome(String home) {
 		for (Site site : siteMap.values()) {
 			if (home.equals(site.getHome()))
@@ -225,23 +225,23 @@ public class Sites {
 		}
 		return null;
 	}
-   
-   /**
-    * @param uid unique id to look for.
-    * @param repType type of repository to search
-    * @return Site instance with that id, or null if not found.
-    */
-   public Site getSiteForRepUid(String uid, RepositoryType repType) {
-      for (Site site : siteMap.values()) {
-         if (site.transactionBeanForRepositoryUniqueId(uid, repType) != null)
-            return site;
-      }
-      return null;
-   }
+
+	/**
+	 * @param uid unique id to look for.
+	 * @param repType type of repository to search
+	 * @return Site instance with that id, or null if not found.
+	 */
+	public Site getSiteForRepUid(String uid, RepositoryType repType) {
+		for (Site site : siteMap.values()) {
+			if (site.transactionBeanForRepositoryUniqueId(uid, repType) != null)
+				return site;
+		}
+		return null;
+	}
 
 	public List<String> getSiteNamesWithActor(ActorType actorType, TestSession testSession) throws Exception {
 		List<String> rs = new ArrayList<String>();
-				
+
 		for (Site s : getSitesWithActor(actorType, testSession)) {
 			rs.add(s.getName());
 		}
@@ -251,7 +251,7 @@ public class Sites {
 
 	public List<String> getSiteNamesWithTransaction(TransactionType tt, TestSession testSession) throws Exception {
 		List<String> rs = new ArrayList<String>();
-				
+
 		for (Site s : getSitesWithTransaction(tt, testSession)) {
 			rs.add(s.getName());
 		}
@@ -264,7 +264,7 @@ public class Sites {
 
 		for (String siteName : siteMap.keySet()) {
 			Site site = getSite(siteName, testSession);
-			if (site.hasRepositoryB()) 
+			if (site.hasRepositoryB())
 				rs.add(siteName);
 		}
 
@@ -287,38 +287,44 @@ public class Sites {
 	}
 
 	public Site getSite(String siteName, TestSession testSession) throws Exception {
-   		if (siteName.equals(FAKE_SITE_NAME))
-   			return FAKE_SITE;
-		if (siteName == null)
-			throw new Exception("Internal error: null site requested");
-		if (siteName.equals("gov/nist/toolkit/installation/shared"))
-			return new Site("gov/nist/toolkit/installation/shared", testSession);
-		List<String> sitenames = getSiteNames();
-		if ( !sitenames.contains(siteName)) {
-			if (sitenames.contains(testSession.getValue() + "__" + siteName))
-				siteName = testSession.getValue() + "__" + siteName;
-			else if (!sitenames.contains(siteName))
-				throw new Exception("Site [" + siteName + "] is not defined");
+		try {
+			if (siteName == null)
+				throw new Exception("Internal error: null site requested");
+			if (siteName.equals(FAKE_SITE_NAME))
+				return FAKE_SITE;
+			if (siteName.equals("gov/nist/toolkit/installation/shared"))
+				return new Site("gov/nist/toolkit/installation/shared", testSession);
+			List<String> sitenames = getSiteNames();
+			if (!sitenames.contains(siteName)) {
+				if (sitenames.contains(testSession.getValue() + "__" + siteName))
+					siteName = testSession.getValue() + "__" + siteName;
+				else if (!sitenames.contains(siteName))
+					throw new Exception("Site [" + siteName + "] is not defined");
+			}
+			Site s = siteMap.get(siteName);
+			return s;
+		} catch (Exception e) {
+			int i;
+			i = 1;
+			throw e;
 		}
-		Site s = siteMap.get(siteName);
-		return s;
 	}
 
 	public void setSites(HashMap<String, Site> sites) {
 		this.siteMap = sites;
 		validate();
 	}
-	
+
 	public void setDefaultSite(String name) {
 		defaultSiteName = name;
 	}
 
 
 	public void putSite(Site s) {
-        String name = s.getName();
+		String name = s.getName();
 		siteMap.put(name, s);
 	}
-	
+
 	boolean isEmpty(String x) {
 		if (x == null)
 			return true;

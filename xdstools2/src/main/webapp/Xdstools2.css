@@ -303,6 +303,10 @@ h3 {
   -moz-border-radius: 16px;
 }
 
+.uiSpacerMarginLeft {
+  margin-left: 4px;
+}
+
 .gwt-TabBar {
   margin-top:6.5px;
   border-bottom: 4px solid #92C1F0;
@@ -332,6 +336,14 @@ h3 {
   vertical-align: bottom; cursor: pointer; margin: 3px; display:inline-block;
 }
 
+.labelWidthFmt {
+  width: 140px;
+}
+
+.inlineBlock {
+  vertical-align: bottom; display: inline-block;
+}
+
 .iconStyle_20x20 {
   width: 20px; height: 20px;
 }
@@ -355,6 +367,10 @@ h3 {
 
 .inlineLink {
  color: #0000ad;
+}
+
+.inlineLinkDisabled {
+  color: dimgray;
 }
 
 .queryBoilerPlate {

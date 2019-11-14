@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class GenericSimulatorFactory extends AbstractActorFactory {
 	SimId newID = null;
-	@SuppressWarnings("unused")
+
 	public GenericSimulatorFactory() {
 	}
 	

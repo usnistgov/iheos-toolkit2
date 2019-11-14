@@ -6,6 +6,7 @@ import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.datasets.shared.DatasetModel;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
+import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
 import gov.nist.toolkit.results.client.CodesResult;
 import gov.nist.toolkit.results.client.DocumentEntryDetail;
 import gov.nist.toolkit.results.client.Result;
@@ -302,4 +303,6 @@ public interface ToolkitServiceAsync {
     void promote(PromoteRequest request, AsyncCallback<String> async);
 
     void getTestSessionStats(CommandContext commandContext, AsyncCallback<List<TestSessionStats>> async);
+
+    void getMetadataFromRegIndex(GetMetadataFromRegIndexRequest request, AsyncCallback<MetadataCollection> callback);
 }

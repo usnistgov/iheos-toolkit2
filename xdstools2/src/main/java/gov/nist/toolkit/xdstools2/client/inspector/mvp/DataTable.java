@@ -64,7 +64,7 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
      * Compare only shows two objects side by side.
      * Diff should show/highlight the differences.
      */
-    CheckBox compareSelect = new CheckBox("Compare");
+    CheckBox compareSelect = new CheckBox("Trial Version Compare");
     CheckBox highlightDifferences = new CheckBox("Highlight differences");
 
     ColumnSortEvent.ListHandler<T> columnSortHandler = new ColumnSortEvent.ListHandler<T>(
@@ -90,13 +90,14 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
     abstract int getWidthInPx();
     abstract void setData(List<T> metadataObjectList);
 
+
     public DataTable(List<AnnotatedItem> columnList, int pageSize, T placeHolderRow, boolean displayDiff, boolean displayAction) {
         this.columnList = columnList;
         this.pageSize = pageSize;
         this.placeHolderRow = placeHolderRow;
         this.keyProvider = keyProvider;
 
-        // Begin adding to the containerPanel
+        // Begin adding controls to the containerPanel
         addColumnSelectionCheckboxes();
         addDiffModeCheckbox();
 
@@ -116,7 +117,7 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
         initSingleSelectionMode();
 //        assignSingleSelectionModel();
         dataTable.setSelectionModel(selectionModel);
-        diffModeSelectionHandler();
+        setDiffModeSelectionHandler();
 
         if (displayAction)
             addActionTable();
@@ -132,7 +133,7 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
         containerPanel.add(multiSelect);
     }
 
-    private void diffModeSelectionHandler() {
+    private void setDiffModeSelectionHandler() {
         if (compareSelect.isVisible()) {
             compareSelect.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
                 @Override
@@ -327,8 +328,6 @@ abstract class DataTable<T> extends ResizeComposite implements RequiresResize, P
                 ((MultiSelectionModel)dataTable.getSelectionModel()).getSelectedSet().clear();
             }
 //            dataTable.setSelectionModel(selectionModel, DefaultSelectionEventManager.<T> createCheckboxManager());
-
-
 
             selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
                 @Override

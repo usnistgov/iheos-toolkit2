@@ -101,11 +101,11 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
 
 
             // Selecting RGs for the IG
-            else if (SimulatorProperties.respondingGateways.equals(ele.name)) {
+            else if (SimulatorProperties.respondingGateways.equals(ele.getName())) {
                 final SimulatorConfigElement configEle = ele;
                 HorizontalPanel rgBoxes = new HorizontalPanel();
                 final RGSelectionPresenter rgSelectionPresenter = new RGSelectionPresenter(configEle.asList(), rgBoxes);
-                tbl.setWidget(row, 0, HtmlMarkup.html(ele.name));
+                tbl.setWidget(row, 0, HtmlMarkup.html(ele.getName()));
                 tbl.setWidget(row, 1, rgBoxes);
                 saveButton.addClickHandler(
                         new ClickHandler() {
@@ -119,12 +119,12 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
             }
 
             // Selecting Repositories behind the RG
-            else if (SimulatorProperties.repositories.equals(ele.name)) {
+            else if (SimulatorProperties.repositories.equals(ele.getName())) {
                 final SimulatorConfigElement configEle = ele;
                 HorizontalPanel rgBoxes = new HorizontalPanel();
                 // more general than the name suggests
                 final RepositorySelectionPresenter rgSelectionPresenter = new RepositorySelectionPresenter(configEle.asList(), rgBoxes);
-                tbl.setWidget(row, 0, HtmlMarkup.html(ele.name));
+                tbl.setWidget(row, 0, HtmlMarkup.html(ele.getName()));
                 tbl.setWidget(row, 1, rgBoxes);
                 saveButton.addClickHandler(
                         new ClickHandler() {
@@ -138,11 +138,11 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
             }
 
             // Selecting RIGs for the IIG
-            else if (SimulatorProperties.respondingImagingGateways.equals(ele.name)) {
+            else if (SimulatorProperties.respondingImagingGateways.equals(ele.getName())) {
                final SimulatorConfigElement configEle = ele;
                HorizontalPanel rigBoxes = new HorizontalPanel();
                final RigSelectionPresenter rigSelectionPresenter = new RigSelectionPresenter(configEle.asList(), rigBoxes);
-               tbl.setWidget(row, 0, HtmlMarkup.html(ele.name));
+               tbl.setWidget(row, 0, HtmlMarkup.html(ele.getName()));
                tbl.setWidget(row, 1, rigBoxes);
                saveButton.addClickHandler(
                        new ClickHandler() {
@@ -156,11 +156,11 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
             }
             
             // Selecting IDS for the RG
-            else if (SimulatorProperties.imagingDocumentSources.equals(ele.name)) {
+            else if (SimulatorProperties.imagingDocumentSources.equals(ele.getName())) {
                final SimulatorConfigElement configEle = ele;
                HorizontalPanel idsBoxes = new HorizontalPanel();
                final IDSSelectionPresenter idsSelectionPresenter = new IDSSelectionPresenter(configEle.asList(), idsBoxes);
-               tbl.setWidget(row, 0, HtmlMarkup.html(ele.name));
+               tbl.setWidget(row, 0, HtmlMarkup.html(ele.getName()));
                tbl.setWidget(row, 1, idsBoxes);
                saveButton.addClickHandler(
                   new ClickHandler() {
@@ -174,11 +174,11 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
            }
 
             // Should the RG return an error instead of content?
-            else if (SimulatorProperties.errors.equals(ele.name)) {
+            else if (SimulatorProperties.errors.equals(ele.getName())) {
                 final SimulatorConfigElement configEle = ele;
                 HorizontalPanel erBoxes = new HorizontalPanel();
                 final ErrorSelectionPresenter erSelectionPresenter = new ErrorSelectionPresenter(/*simulatorControlTab.toolkitService,*/ TransactionType.XC_QUERY.getName(), configEle.asList(), erBoxes);
-                tbl.setWidget(row, 0, HtmlMarkup.html(ele.name));
+                tbl.setWidget(row, 0, HtmlMarkup.html(ele.getName()));
                 tbl.setWidget(row, 1, erBoxes);
                 saveButton.addClickHandler(
                         new ClickHandler() {
@@ -193,13 +193,13 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
             }
 
 
-            else if (SimulatorProperties.errorForPatient.equals(ele.name)) {
+            else if (SimulatorProperties.errorForPatient.equals(ele.getName())) {
                 final SimulatorConfigElement configEle = ele;
 //                List<TransactionType> transactionTypes = ActorType.findActor(config.getActorType()).getTransactions();
                 ActorType actorType = ActorType.findActor(config.getActorType());
                 final PatientErrorMap map = config.getConfigEle(SimulatorProperties.errorForPatient).asPatientErrorMap();
                 final PatientErrorMapPresenter presenter = new PatientErrorMapPresenter(map, actorType/*, simulatorControlTab.toolkitService*/);
-                tbl.setWidget(row, 0, HtmlMarkup.html(ele.name));
+                tbl.setWidget(row, 0, HtmlMarkup.html(ele.getName()));
                 tbl.setWidget(row, 1, presenter.asWidget());
                 saveButton.addClickHandler(
                         new ClickHandler() {
@@ -213,7 +213,7 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
                 row++;
             }    // List
             else if (ele.hasList()) {
-                tbl.setWidget(row, 0, HtmlMarkup.html(ele.name));
+                tbl.setWidget(row, 0, HtmlMarkup.html(ele.getName()));
                 FlowPanel values = new FlowPanel();
                 List<String> vals = ele.asList();
                 for (String val : vals) values.add(new Label(val));

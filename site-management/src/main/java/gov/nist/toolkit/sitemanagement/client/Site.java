@@ -62,6 +62,7 @@ public class Site  implements IsSerializable, Serializable {
 	public String pifHost = null;
 	public String pifPort = null;
 	private String owner = null;
+	public boolean useFilterProxy = false;
 
 	public String pidAllocateURI = null;
 	transient public boolean changed = false;
@@ -119,26 +120,26 @@ public class Site  implements IsSerializable, Serializable {
 		if (!isValid())
 			throw new ToolkitRuntimeException("Site " + toString() + " is not valie");
 	}
-	
+
 	public TransactionCollection transactions() {
 		return transactions;
 	}
-	
+
 	public TransactionCollection repositories() {
 		return repositories;
 	}
-	
+
 	public boolean verify() {
 		StringBuffer buf = new StringBuffer();
 		validate(buf);
 		return buf.length() == 0;
 	}
-	
+
 	public void validate(StringBuffer buf) {
 
 		if (name.contains("__"))
 			buf.append("Site name cannot contain double underscore (__)\n");
-		
+
 		for (TransactionBean b : transactions.transactions) {
 			for (TransactionBean c : transactions.transactions) {
 				if (b == c)
@@ -151,7 +152,7 @@ public class Site  implements IsSerializable, Serializable {
 				}
 			}
 		}
-		
+
 		for (TransactionBean b : repositories.transactions) {
 			if (ActorType.REPOSITORY.equals(b.actorType))
 			for (TransactionBean c : repositories.transactions) {
@@ -165,16 +166,16 @@ public class Site  implements IsSerializable, Serializable {
 				}
 			}
 		}
-		
+
 		// All Repository transactions must be for the same repositoryUniqueId
 		Set<String> repUids = repositoryUniqueIds();
 		if (repUids.size() > 1) {
 			buf.append("Site ").append(name).append(" contains more than one repositoryUniqueId: " + repUids)
 			.append("  A site can define a single Document Repository.");
-		}		
+		}
 	}
-	
-	
+
+
 
 	public void cleanup() {
 //		transactions.removeEmptyEndpoints();
@@ -183,11 +184,11 @@ public class Site  implements IsSerializable, Serializable {
 		transactions.fixTlsEndpoints();
 		repositories.fixTlsEndpoints();
 	}
-	
+
 	public int size() {
 		return transactions.size() + repositories.size();
 	}
-	
+
 	public void addTransaction(String transactionName, String endpoint, boolean isSecure, boolean isAsync) {
 		addTransaction(new TransactionBean(transactionName, RepositoryType.NONE, endpoint, isSecure, isAsync));
 	}
@@ -195,11 +196,11 @@ public class Site  implements IsSerializable, Serializable {
 	public void addTransaction(TransactionBean transbean) {
 		transactions.addTransaction(transbean);
 	}
-	
+
 	public String getPidAllocateURI() {
 		return pidAllocateURI;
 	}
-	
+
 	public boolean hasActor(ActorType actorType) {
 		return transactions.hasActor(actorType);
 	}
@@ -283,7 +284,7 @@ public class Site  implements IsSerializable, Serializable {
 		throw new TkActorNotFoundException("ActorType could not be determined by TransactionType. ", targetTransaction.toString());
 
 	}
-	
+
 	public boolean hasTransaction(TransactionType tt) {
 		return transactions.hasTransaction(tt);
 	}
@@ -305,7 +306,7 @@ public class Site  implements IsSerializable, Serializable {
 	public void addRepository(TransactionBean transbean) {
 		repositories.addTransaction(transbean);
 	}
-	
+
 	public void addRepository(String repositoryUniqueId, RepositoryType repositoryType, String endpoint, boolean isSecure, boolean isAsync) {
 		TransactionBean bean = new TransactionBean(repositoryUniqueId, repositoryType, endpoint, isSecure, isAsync);
 		addRepository(bean);
@@ -329,7 +330,7 @@ public class Site  implements IsSerializable, Serializable {
 		}
 		return null;
 	}
-	
+
 	public boolean isAllRepositories() {
 		return (name != null && name.equals("allRepositories"));
 	}
@@ -351,17 +352,17 @@ public class Site  implements IsSerializable, Serializable {
 		}
 		return cnt;
 	}
-	
+
 	public Set<String> repositoryUniqueIds() {
 		Set<String> ids = new HashSet<String>();
 		for (TransactionBean b : repositories.transactions) {
 			if (b.repositoryType == RepositoryType.REPOSITORY || b.repositoryType == RepositoryType.ODDS) {
 				ids.add(b.name); // repositoryUniqueId since this is a retrieve
 			}
-		}		
+		}
 		return ids;
 	}
-	
+
 	List<TransactionBean> transactionBeansForRepositoryUniqueId(String repuid) {
 		List<TransactionBean> tbs = new ArrayList<TransactionBean>();
 		if (repuid == null || repuid.equals(""))
@@ -369,7 +370,7 @@ public class Site  implements IsSerializable, Serializable {
 		for (TransactionBean b : repositories.transactions) {
 			if (repuid.equals(b.name))
 				tbs.add(b);
-		}		
+		}
 		return tbs;
 	}
 
@@ -385,7 +386,7 @@ public class Site  implements IsSerializable, Serializable {
 	   }
 	   return null;
 	}
-		
+
 	public boolean hasRepositoryB() {
 		return repositoryBCount(RepositoryType.REPOSITORY) > 0;
 	}
@@ -401,11 +402,11 @@ public class Site  implements IsSerializable, Serializable {
 	public String getHome() {
 		return home;
 	}
-	
+
 	public void setHome(String home) {
 		this.home = home;
 	}
-	
+
 	public String getFullName() {
 		return testSession + "/" + name;
 	}
@@ -435,7 +436,7 @@ public class Site  implements IsSerializable, Serializable {
 	public void setName(String name) {
 		if (name == null || name.equals("null")) throw new ToolkitRuntimeException("Site: null name");
 		this.name = name;
-		transactions.setName(name); 
+		transactions.setName(name);
 		repositories.setName(name);
 	}
 
@@ -446,7 +447,7 @@ public class Site  implements IsSerializable, Serializable {
 
 	public String getEndpoint(TransactionType transaction, boolean isSecure, boolean isAsync) throws Exception {
 		String endpoint = getRawEndpoint(transaction, isSecure, isAsync);
-		if (endpoint == null) 
+		if (endpoint == null)
 			throw new Exception("Site#getEndpoint: no endpoint defined for site=" + name + " transaction=" + transaction + " secure=" + isSecure + " async=" + isAsync);
 		return endpoint;
 	}
@@ -461,11 +462,11 @@ public class Site  implements IsSerializable, Serializable {
 			throw new Exception("Site#getRetrieveEndpoint: no repository uid specified");
 		String endpoint = null;
 		endpoint = repositories.get(reposUid, isSecure, isAsync);
-		if (endpoint == null) 
+		if (endpoint == null)
 			throw new Exception("Site#getRetrieveEndpoint: no endpoint defined for repository uid " + reposUid + " and secure=" + isSecure + " and async=" + isAsync);
 		return endpoint;
 	}
-	
+
 	public String getSiteName() {
 		return name;
 	}

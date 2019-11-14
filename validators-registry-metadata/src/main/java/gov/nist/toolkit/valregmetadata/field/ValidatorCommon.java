@@ -102,8 +102,8 @@ public class ValidatorCommon implements ErrorRecorder {
 	public static boolean is_oid(String value, boolean xds_b) {
 		if (value == null) return false;
 		if (xds_b)
-			return value.matches("\\d(?=\\d*\\.)(?:\\.(?=\\d)|\\d){0,255}") && (value.startsWith("1.") || value.startsWith("2."));
-		return value.matches("\\d(?=\\d*\\.)(?:\\.(?=\\d)|\\d){0,63}") && (value.startsWith("1.") || value.startsWith("2."));
+			return value.matches("\\d(?=\\d*\\.)(?:\\.(?=\\d)|\\d){0,255}") && (value.startsWith("0.") || value.startsWith("1.") || value.startsWith("2."));
+		return value.matches("\\d(?=\\d*\\.)(?:\\.(?=\\d)|\\d){0,63}") && (value.startsWith("0.") || (value.startsWith("1.") || value.startsWith("2.")));
 	}
 
 	@SuppressWarnings("unchecked")

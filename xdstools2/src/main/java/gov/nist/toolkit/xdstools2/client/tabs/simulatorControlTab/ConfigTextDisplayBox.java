@@ -8,7 +8,7 @@ public class ConfigTextDisplayBox {
 	
 	public ConfigTextDisplayBox(SimulatorConfigElement ele, FlexTable tbl, int row) {
 		
-		tbl.setWidget(row, 0, new HTML(ele.name.replace('_', ' ')));
+		tbl.setWidget(row, 0, new HTML(ele.getName().replace('_', ' ')));
 		tbl.setWidget(row, 1, new HTML(ele.asString()));
 	}
 	

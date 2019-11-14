@@ -58,6 +58,7 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 //	RadioButton selectDiff = null;
 //	ListBox groupByListBox;
 //	HorizontalPanel groupByPanel = new HorizontalPanel();
+	public enum SelectedViewMode { HISTORY, CONTENT }
 
 	// Data for test being displayed.
 	DataModel data;
@@ -71,8 +72,9 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 	// main panel
 	HorizontalPanel hpanel = new HorizontalPanel();
 	Collection<Result> results;
+	MetadataCollection metadataCollection;
 	private SiteSpec siteSpec;
-
+	SelectedViewMode exclusiveViewMode;
 
 	public MetadataInspectorTab() {
 	}
@@ -108,7 +110,7 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 				data.results = new ArrayList<Result>();
 			data.results.add(result);
 		}
-		data.buildCombined();
+		data.buildCombined(null);
 		showHistoryOrContents();
 		if (dataNotification!=null) {
 			dataNotification.onAddToHistory(data.combinedMetadata);
@@ -116,6 +118,11 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 	}
 
 	public void setResults(Collection<Result> results) { this.results = results; }
+
+	public void setMetadataCollection(MetadataCollection metadataCollection) {
+		this.metadataCollection = metadataCollection;
+	}
+
 	public void setSiteSpec(SiteSpec ss) { siteSpec = ss; }
 
 	@Override
@@ -169,13 +176,19 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 	};
 
 	void showHistoryOrContents() {
-		if (isHistory())
-			showHistory();
-		/* else if (isDiff())
-			new DiffDisplay(this, data.combinedMetadata).showDiff(historyPanel);
-		*/
-		else
-			showContents();
+	    if (exclusiveViewMode != null) {
+	    	SelectedViewMode viewMode = getExclusiveViewMode();
+	    	if (SelectedViewMode.HISTORY.equals(viewMode)) {
+	    		showHistory();
+			} else if (SelectedViewMode.CONTENT.equals(viewMode)) {
+	    		showContents();
+			}
+		} else {
+			if (isHistory())
+				showHistory();
+			else
+				showContents();
+		}
 	}
 	
 	
@@ -195,7 +208,7 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 		
 	}
 
-	void assertionsToSb(Result result, StringBuffer buf) {
+	public static void assertionsToSb(Result result, StringBuffer buf) {
 		for (AssertionResult ar : result.assertions.assertions) {
 			if (!isEmpty(ar.assertion))
 				buf.append(redAsText(htmlize(ar.assertion), ar.status)).append("<br />");
@@ -204,7 +217,7 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 		}
 	}
 	
-	String htmlize(String s) {
+	public static String htmlize(String s) {
 		return s.replaceAll("\\n", "<br />");
 	}
 	
@@ -220,7 +233,6 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 
 		selectHistory.setValue(false);
 		selectContents.setValue(true);
-//		selectDiff.setValue(false);
 
 		if (data.combinedMetadata != null) {
 			Tree contentTree = new Tree();
@@ -233,15 +245,19 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 					.listing();
 			historyPanel.add(contentTree);
 		}
+
 	}
 
 	ListingDisplay.QueryOriginFinder qoFinder = new ListingDisplay.QueryOriginFinder() {
 		@Override
-		public QueryOrigin get(String id) {
+		public QueryOrigin get(String uuid) {
+			if (data.results==null)
+				return null;
+			// Assuming this path is reached when initially coming from History View to Content View. In this case, data.results should be available, otherwise it is possible to be viewing just the Content without any History context.
 			// Lookup QueryOrigin if no queryOrigin was provided.
 			for (Result result : data.results) {
 				for (StepResult stepResult : result.stepResults) {
-					MetadataObject mo = stepResult.getMetadata().findObject(id);
+					MetadataObject mo = stepResult.getMetadata().findObject(uuid);
 					if (mo instanceof DocumentEntry) {
 						return new QueryOrigin(result.logId, stepResult.section, stepResult.stepName);
 					}
@@ -270,19 +286,23 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 	 * @param panel to add to
 	 */
 	void addHistoryContentsSelector(VerticalPanel panel) {
+		final int idHashCode = System.identityHashCode(this);
+
 		FlexTable ft = new FlexTable();
 
-		selectHistory = new RadioButton("historyContents", "History");
-		selectContents = new RadioButton("historyContents", "Contents");
-//		selectDiff = new RadioButton("historyContents", "Diff");
+		selectHistory = new RadioButton("historyContents_" + idHashCode, "History");
+		selectContents = new RadioButton("historyContents_" + idHashCode, "Contents");
 
-		selectHistory.addClickHandler(new HistorySelectChange());
-		selectContents.addClickHandler(new HistorySelectChange());
-//		selectDiff.addClickHandler(new HistorySelectChange());
+		if (exclusiveViewMode != null && SelectedViewMode.CONTENT.equals(exclusiveViewMode)) {
+			selectHistory.setEnabled(false);
+		} else {
+			selectHistory.addClickHandler(new HistorySelectChange(SelectedViewMode.HISTORY));
+		}
+
+		selectContents.addClickHandler(new HistorySelectChange(SelectedViewMode.CONTENT));
 
 		ft.setWidget(0, 0, selectHistory);
 		ft.setWidget(0, 1, selectContents);
-//		ft.setWidget(0, 2, selectDiff);
 
 		panel.add(ft);
 
@@ -298,13 +318,19 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 	}
 
 	class HistorySelectChange implements ClickHandler {
+		SelectedViewMode viewMode;
+
+		public HistorySelectChange(SelectedViewMode viewMode) {
+			this.viewMode = viewMode;
+		}
 
 		public void onClick(ClickEvent event) {
-//			groupByPanel.setVisible(selectHistory.getValue().booleanValue());
 			showHistoryOrContents();
 			if (dataNotification!=null) {
 				if (currentSelectedTreeItem!=null && currentSelectedTreeItem.getUserObject()!=null && (currentSelectedTreeItem.getUserObject() instanceof  MetadataObjectWrapper))
-				dataNotification.onHistoryContentModeChanged((MetadataObjectWrapper)currentSelectedTreeItem.getUserObject());
+					dataNotification.onViewModeChanged(viewMode, (MetadataObjectWrapper)currentSelectedTreeItem.getUserObject());
+				else
+					dataNotification.onViewModeChanged(viewMode, null);
 			}
 		}
 	}
@@ -314,7 +340,7 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
     * @param in text
     * @return HTML, with color="#FF0000"
     */
-	HTML redAsHTML(String in) {
+	public static HTML redAsHTML(String in) {
 		HTML h = new HTML();
 		h.setHTML("<font color=\"#FF0000\">" + in + "</font>");
 		return h;
@@ -325,7 +351,7 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 	 * @param in text to process
 	 * @return String {@code <font color="#FF0000">in</font>}
 	 */
-	String redAsText(String in) {
+	public static String redAsText(String in) {
 		return "<font color=\"#FF0000\">" + in + "</font>";
 	}
 	/**
@@ -336,7 +362,7 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
     * @return HTML with color="#FF0000" if condition is false otherwise with
     * no color attribute.
     */
-	HTML redAsHTML(String in, boolean condition) {
+	public static HTML redAsHTML(String in, boolean condition) {
 		if (!condition)
 			return redAsHTML(in);
 		HTML h = new HTML();
@@ -344,7 +370,7 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 		return h;
 	}
 	
-	String redAsText(String in, boolean condition) {
+	public static String redAsText(String in, boolean condition) {
 		if (!condition)
 			return redAsText(in);
 		return in;
@@ -569,7 +595,7 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 
 
 
-	boolean isEmpty(String b) { return b == null || b.equals(""); }
+	public static boolean isEmpty(String b) { return b == null || b.equals(""); }
 
 
 	public SiteSpec getSiteSpec() {
@@ -584,7 +610,7 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 
 //		GWT.log("In MetadataInsp siteSpec is " + siteSpec.name);
 
-		if (siteSpec == null)
+		if (siteSpec == null || (getExclusiveViewMode() != null && SelectedViewMode.CONTENT.equals(getExclusiveViewMode())))
 			data.enableActions = false;
 	}
 
@@ -618,24 +644,34 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 		});
 		*/
 
+//		if (viewMode != null) {
+//			if (results == null && metadataCollection != null) // ContentFilter case of applying the filter
+//				return false;
+//			if (results == null && data != null && data.getResults() != null)  // ContentFilter case of restoring the History view from : Apply Filter -> Remove Filter -> History
+//				return true;
 
-		if (results!=null) {
-			addToHistory(results);
-		} else {
-			data.buildCombined();
-			showHistoryOrContents();
-		}
+//		} else {
 
-		if (!data.enableActions) {
+			if (results != null) {
+				addToHistory(results);
+			} else {
+				data.buildCombined(metadataCollection);
+				showHistoryOrContents();
+			}
+//		}
+
+		if (! data.enableActions) {
 			if (selectHistory != null) selectHistory.setEnabled(false);
 			if (selectContents != null) selectContents.setEnabled(true);
 //			if (selectDiff != null) selectDiff.setEnabled(false);
 //			if (groupByListBox != null) groupByListBox.setEnabled(false);
 
-			if (results.size() == 1 && !hasContents(results))
-				showAssertions(results.iterator().next());
-			else
-				showHistory();
+            if (results != null) {
+				if (results.size() == 1 && !hasContents(results))
+					showAssertions(results.iterator().next());
+				else
+					showHistory();
+			}
 		}
 
 		return data.combinedMetadata;
@@ -723,5 +759,19 @@ public class MetadataInspectorTab extends ToolWindow implements IsWidget {
 	@Override
 	public Widget asWidget() {
 	    return hpanel;
+	}
+
+	public SelectedViewMode getExclusiveViewMode() {
+	    return exclusiveViewMode;
+	}
+
+	public void setExclusiveViewMode(SelectedViewMode viewMode) {
+		if (viewMode != null) {
+			exclusiveViewMode = viewMode;
+        }
+	}
+
+	public Collection<Result> getResults() {
+		return results;
 	}
 }

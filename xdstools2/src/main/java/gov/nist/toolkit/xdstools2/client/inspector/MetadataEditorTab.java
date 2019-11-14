@@ -33,8 +33,6 @@ public class MetadataEditorTab extends ToolWindow {
 	boolean freezeStructDisplay = false;
 	boolean enableActions = true;
 
-	EditDisplayOLD editDisplay;
-	
 	SiteSpec siteSpec;
 	RegistryObject ro;
 	
@@ -70,8 +68,6 @@ public class MetadataEditorTab extends ToolWindow {
 		if (siteSpec == null)
 			enableActions = false;
 
-		editDisplay = new EditDisplayOLD(detailPanel, structPanel,this);
-		editDisplay.displayDetail(ro);
 	}
 
 

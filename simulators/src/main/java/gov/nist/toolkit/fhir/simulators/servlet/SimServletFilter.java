@@ -42,28 +42,32 @@ public class SimServletFilter implements Filter {
             logger.error("SimServletFilter - request.getAttribute(\"SimulatorConfig\") failed");
             return;
         }
+
 		
 		Map<String, String> hdrs = wrapper.headers;
 		String contentType = wrapper.contentType;
+		String hdrsx = response.toString();
+
+		Io.stringToFile(db.getResponseHdrFile(), hdrsx);
 		
-		HttpMessage hmsg = new HttpMessage();
-		hmsg.setHeaderMap(hdrs);
-		String messageHeader;
-		try {
-			messageHeader = hmsg.asMessage();
-		} catch (HttpParseException e) {
-			Io.stringToFile(db.getResponseHdrFile(), ExceptionUtil.exception_details(e));
-			return;
-		}
-		
-		if (contentType != null) {
-			if (messageHeader == null || messageHeader.equals(""))
-				messageHeader = "Content-Type: " + contentType + "\r\n\r\n";
-			else 
-				messageHeader = messageHeader + "Content-Type: " + contentType + "\r\n\r\n";
-		}
-		
-		Io.stringToFile(db.getResponseHdrFile(), messageHeader);
+//		HttpMessage hmsg = new HttpMessage();
+//		hmsg.setHeaderMap(hdrs);
+//		String messageHeader;
+//		try {
+//			messageHeader = hmsg.asMessage();
+//		} catch (HttpParseException e) {
+//			Io.stringToFile(db.getResponseHdrFile(), ExceptionUtil.exception_details(e));
+//			return;
+//		}
+//
+//		if (contentType != null) {
+//			if (messageHeader == null || messageHeader.equals(""))
+//				messageHeader = "Content-Type: " + contentType + "\r\n\r\n";
+//			else
+//				messageHeader = messageHeader + "Content-Type: " + contentType + "\r\n\r\n";
+//		}
+//
+//		Io.stringToFile(db.getResponseHdrFile(), messageHeader);
 
         // This parameter is the base address of a webservice, for example
         // http://localhost:8080/xdstools2/rest/
