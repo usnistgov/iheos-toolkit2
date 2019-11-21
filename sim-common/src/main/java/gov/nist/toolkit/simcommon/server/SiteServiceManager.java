@@ -40,9 +40,9 @@ public class SiteServiceManager {
 
 	private SiteServiceManager() {
 	}
-	
+
 	static public SiteServiceManager getSiteServiceManager() {
-		if (siteServiceManager == null)	
+		if (siteServiceManager == null)
 			siteServiceManager = new SiteServiceManager();
 		return siteServiceManager;
 	}
@@ -321,7 +321,7 @@ public class SiteServiceManager {
 
 
 	public Site getSite(String sessionId, String siteName, TestSession testSession) throws Exception {
-		logger.debug(sessionId + ": " + "getSite");
+		logger.info(sessionId + ": " + "getSite : " + siteName);
 		try {
 			try {
 				return SimManager.getAllSites(testSession).getSite(siteName, testSession);

@@ -97,6 +97,11 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 			common.vc.hasHttp = true;
 			common.vc.hasSoap = true;
 
+			SimulatorConfigElement sce = dsSimCommon.getSimulatorConfig().getConfigEle(SimulatorProperties.METADATA_LIMITED);
+			if (sce.asBoolean()) {
+				common.vc.isXDRLimited = true;
+			}
+
 			if (transactionType.equals(TransactionType.XDR_PROVIDE_AND_REGISTER)) {
 				logger.info("XDR style of PnR");
 				common.vc.isXDR = true;
