@@ -7,7 +7,7 @@
 #
 # Upgrade feature uses the /etc/toolkit/toolkit.properties lookup which was introduced in 7.1.2. Earlier versions will have a problem withthe toolkit.properties file! If an earlier release is desired, using the Install script may be a better choice.
 
-toolkitHostIp=129.6.59.139 
+toolkitHostIp=172.17.0.1
 
 # Optional. If empty, default to latest. Otherwise use the version number such as #.#.#.
 tkVer=$1
