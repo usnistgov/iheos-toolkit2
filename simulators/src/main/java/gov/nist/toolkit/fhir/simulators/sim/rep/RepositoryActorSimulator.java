@@ -4,6 +4,11 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
+import gov.nist.toolkit.fhir.simulators.servlet.SimServlet;
+import gov.nist.toolkit.fhir.simulators.sim.reg.RegistryResponseGeneratorSim;
+import gov.nist.toolkit.fhir.simulators.sim.reg.SoapWrapperRegistryResponseSim;
+import gov.nist.toolkit.fhir.simulators.support.BaseDsActorSimulator;
+import gov.nist.toolkit.fhir.simulators.support.DsSimCommon;
 import gov.nist.toolkit.registrymsg.registry.Response;
 import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
 import gov.nist.toolkit.simcommon.client.NoSimException;
@@ -11,13 +16,8 @@ import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.SimulatorStats;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
-import gov.nist.toolkit.simcommon.server.SimDb;
-import gov.nist.toolkit.fhir.simulators.servlet.SimServlet;
-import gov.nist.toolkit.fhir.simulators.sim.reg.RegistryResponseGeneratorSim;
-import gov.nist.toolkit.fhir.simulators.sim.reg.SoapWrapperRegistryResponseSim;
-import gov.nist.toolkit.fhir.simulators.support.BaseDsActorSimulator;
-import gov.nist.toolkit.fhir.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simcommon.server.SimCommon;
+import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.validatorsSoapMessage.message.SoapMessageValidator;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
@@ -25,7 +25,6 @@ import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.namespace.QName;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -97,9 +96,12 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 			common.vc.hasHttp = true;
 			common.vc.hasSoap = true;
 
-			SimulatorConfigElement sce = dsSimCommon.getSimulatorConfig().getConfigEle(SimulatorProperties.METADATA_LIMITED);
-			if (sce.asBoolean()) {
-				common.vc.isXDRLimited = true;
+			// This will be true when the simulator is a RegRep actor type
+			if (dsSimCommon.getSimulatorConfig().hasConfig(SimulatorProperties.METADATA_LIMITED)) {
+				SimulatorConfigElement sce = dsSimCommon.getSimulatorConfig().getConfigEle(SimulatorProperties.METADATA_LIMITED);
+				if (sce.asBoolean()) {
+					common.vc.isXDRLimited = true;
+				}
 			}
 
 			if (transactionType.equals(TransactionType.XDR_PROVIDE_AND_REGISTER)) {
