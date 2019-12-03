@@ -1,7 +1,5 @@
 package gov.nist.toolkit.itTests.xds.saml
 
-import gov.nist.toolkit.configDatatypes.server.SimulatorActorType
-import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.installation.shared.TestSession
@@ -16,11 +14,9 @@ import gov.nist.toolkit.sitemanagement.client.Site
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
-import spock.lang.Ignore
 import spock.lang.Shared
 
 import java.nio.file.Paths
-
 /**
  * Test the STS as provided by Gazelle using Toolkit's HttpTransaction step instruction
  * References:
@@ -155,106 +151,4 @@ class StsSamlAssertionSpec extends ToolkitSpecification {
         results.size() == 1
         results.get(0).passed()
     }
-
-
-    /* --------------------------------------------------------------------- */
-    /* headless */
-    /* --------------------------------------------------------------------- */
-
-    @Ignore
-    def 'headless0 - Create sim'() {
-        when:
-        // Begin headless
-        rrConfig = spi.create(
-                'rr',
-                testSession.value,
-                SimulatorActorType.REPOSITORY_REGISTRY,
-                'default')
-
-        then:
-        true
-    }
-
-    @Ignore
-    def 'headless1 - Submit Pid transaction to Registry simulator'() {
-            when:
-            String siteName = testSession + '__rr'
-            TestInstance testId = new TestInstance("15804",testSession)
-            List<String> sections = new ArrayList<>()
-            sections.add("section")
-            Map<String, String> params = new HashMap<>()
-            params.put('$patientid$', patientId)
-            boolean stopOnFirstError = true
-
-            and: 'Run pid transaction test'
-            List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
-
-            then:
-            true
-            results.size() == 1
-            results.get(0).passed()
-    }
-
-
-    @Ignore
-    def 'headless1.1 - Run SQ initialization'() {
-        when:
-        String siteName =  testSession + '__rr'
-        TestInstance testId = new TestInstance("tc:Initialize_for_Stored_Query",testSession)
-        List<String> sections = new ArrayList<>()
-        Map<String, String> params = new HashMap<>()
-        params.put('$patientid$', patientId)
-        boolean stopOnFirstError = true
-
-        and: 'Run'
-        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
-
-        then:
-        results.size() == 1
-        results.get(0).passed()
-    }
-
-    @Ignore
-    def 'headless1.2 Setup test with submissions'() {
-        when:
-        String siteName = testSession + '__rr'
-        TestInstance testId = new TestInstance("15816",testSession)
-        List<String> sections = ['Register_Stable', 'PnR']
-        Map<String, String> params = new HashMap<>()
-        params.put('$patientid$', patientId)
-        params.put('$repuid$', repUid)
-        boolean stopOnFirstError = true
-
-        and: 'Run'
-        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
-
-        then:
-        true
-        results.size() == 1
-        results.get(0).passed()
-    }
-
-    @Ignore
-    def 'headless2 - Run until killed'() {
-        when:
-
-
-        // Start requiring SAML from this point on after initial data load is completed.
-        rrConfig.setProperty(SimulatorProperties.requiresStsSaml, true)
-        spi.update(rrConfig)
-
-        // Loop forever until killed
-        while (1) {
-            sleep(20000)
-        }
-
-        then:
-        true
-
-    }
-
-    @Ignore
-    def 'noOp'() {
-    }
-
 }
