@@ -6,6 +6,7 @@ import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.session.client.TestSessionStats
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.installation.shared.ExpirationPolicy
+import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.utilities.io.Io
 import groovy.transform.TypeChecked
@@ -103,7 +104,16 @@ class TestSessionServiceManager {
 
         // also delete simulators owned by this test session
 
-        SimDb.deleteSims(SimDb.getSimIdsForUser(testSession));
+        List<SimId> simIds = SimDb.getSimIdsForUser(testSession);
+
+        // don't delete any sims inherited from default
+        List<SimId> onlyMySimIds = new ArrayList<>();
+        for (SimId simId : simIds) {
+            if (simId.isTestSession(testSession))
+                onlyMySimIds.add(simId)
+        }
+
+        SimDb.deleteSims(onlyMySimIds);
 
         Io.delete(SimDb.getSimDbFile(testSession));
 
