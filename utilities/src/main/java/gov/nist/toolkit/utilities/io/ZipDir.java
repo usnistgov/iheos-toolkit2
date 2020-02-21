@@ -64,7 +64,7 @@ public class ZipDir {
 	void zipDir(String dir2zip, ZipOutputStream zos) {
 		File d = new File(dir2zip);
 		File parent = d.getParentFile();
-		int parentSize = parent.toString().length();
+		int parentSize = parent.toString().length() + 1 /* plus 1 to skip the trailing slash which causes a problem for Windows */;
 		zipDir2(dir2zip, parentSize, zos);
 	}
 
@@ -95,8 +95,8 @@ public class ZipDir {
 				//if we reached here, the File model f was not a directory
 				//create a FileInputStream on top of f 
 				FileInputStream fis = new FileInputStream(f); 
-				// create a new zip entry 
-				ZipEntry anEntry = new ZipEntry(f.getPath().substring(parentSize)); 
+				// create a new zip entry using a forward slash as the file separator since the zip produced this way works on both Windows and Linux
+				ZipEntry anEntry = new ZipEntry(f.getPath().substring(parentSize).replace('\\','/'));
 				//place the zip entry in the ZipOutputStream model
 				zos.putNextEntry(anEntry); 
 				//now write the content of the file to the ZipOutputStream 
