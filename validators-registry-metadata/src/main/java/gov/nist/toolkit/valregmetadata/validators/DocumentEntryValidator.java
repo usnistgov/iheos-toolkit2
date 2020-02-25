@@ -12,6 +12,9 @@ import gov.nist.toolkit.xdsexception.client.MetadataException;
 
 import java.util.*;
 
+import static gov.nist.toolkit.valregmetadata.model.DocumentEntry.directRequiredSlots;
+import static gov.nist.toolkit.valregmetadata.model.DocumentEntry.roddeRequiredSlots;
+
 /**
  *
  */
@@ -35,6 +38,7 @@ public class DocumentEntryValidator implements ObjectValidator {
                     "documentAvailability",
                     "urn:ihe:iti:xds:2013:referenceIdList"
             );
+
 
     static public ClassAndIdDescription directClassificationDescription = new ClassAndIdDescription();
     static {
@@ -89,6 +93,7 @@ public class DocumentEntryValidator implements ObjectValidator {
                         MetadataSupport.XDSDocumentEntry_confCode_uuid,
                         MetadataSupport.XDSDocumentEntry_formatCode_uuid,
                         MetadataSupport.XDSDocumentEntry_hcftCode_uuid,
+                        MetadataSupport.XDSDocumentEntry_typeCode_uuid,
                         MetadataSupport.XDSDocumentEntry_psCode_uuid
                 );
         classificationDescription.multipleSchemes =
@@ -206,25 +211,28 @@ public class DocumentEntryValidator implements ObjectValidator {
         // Slots always required
 
         if (vc.isXDRMinimal) {
-            for (String slotName : mo.directRequiredSlots) {
+            for (String slotName : DocumentEntry.directRequiredSlots) {
                 if (mo.getSlot(slotName) == null)
                     er.err(XdsErrorCode.Code.XDSRegistryMetadataError, mo.identifyingString() + ": Slot " + slotName + " missing", this, table415);
             }
         }
-        else if (vc.isStableOrODDE) {
-
-        } else if (vc.isRODDE) {
-            for (String slotName : mo.roddeRequiredSlots) {
+        else if (vc.isRODDE) {
+            for (String slotName : DocumentEntry.roddeRequiredSlots) {
                 if (mo.getSlot(slotName) == null)
                     er.err(XdsErrorCode.Code.XDSRegistryMetadataError, mo.identifyingString() + ": Slot " + slotName + " missing", this, table415);
             }
-        } else if (!(vc.isXDM || vc.isXDRLimited)) {
-            for (String slotName : mo.limitedRequiredSlots) {
+        } else if ((vc.isXDM || vc.isXDRLimited)) {
+            for (String slotName : DocumentEntry.limitedRequiredSlots) {
                 if (mo.getSlot(slotName) == null)
                     er.err(XdsErrorCode.Code.XDSRegistryMetadataError, mo.identifyingString() + ": Slot " + slotName + " missing", this, table415);
             }
         }
-
+        else  {
+            for (String slotName : DocumentEntry.requiredSlots) {
+                if (mo.getSlot(slotName) == null)
+                    er.err(XdsErrorCode.Code.XDSRegistryMetadataError, mo.identifyingString() + ": Slot " + slotName + " missing", this, table415);
+            }
+        }
         //  Optional Slots required by this transaction
         if (vc.hashRequired() && mo.getSlot("hash") == null && !mo.isODDE())
             er.err(XdsErrorCode.Code.XDSRegistryMetadataError, mo.identifyingString() + ": Slot hash required in this context", this, table415);
