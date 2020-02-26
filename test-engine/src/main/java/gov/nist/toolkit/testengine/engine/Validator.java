@@ -499,7 +499,7 @@ public class Validator {
 		}
 		return true;
 	}
-	
+
 	public boolean folsDeprecated() throws MetadataException {
 		for (OMElement fol : m.getFolders()) {
 			String status = m.stripNamespace(fol.getAttributeValue(MetadataSupport.status_qname));
@@ -766,11 +766,8 @@ public class Validator {
                         HashMap<String, String> myMap = l.compile();
 
                         if (myMap!=null) {
-                        	String submittedIdValue = null;
-							// Iterate the registry response to see if this docid, the one that was previously submitted, exists in the collection!
-                        	if (myMap.size()==1) {
-                        		submittedIdValue = myMap.get(myMap.keySet().iterator().next()); // grab the first entry
-							}
+                        	for (String key : myMap.keySet()) {
+								String submittedIdValue = myMap.get(key);
 
                             if (submittedIdValue==null || "".equals(submittedIdValue)) {
 								err("UseId ExtrinsicObject " + " Id value cannot be null.");
@@ -793,6 +790,9 @@ public class Validator {
                             } else if (DocumentEntryFilter.EXCLUDE.equals(def) && found) {
 								err("This id ["+ submittedIdValue +"] is not supposed to included in the registry response but it was found.");
 								return false;
+							}
+                            if (found)
+                            	return true;
 							}
                         } else {
 							err("Missing UseId: This instruction is required to extract the Document Entry UUID.");

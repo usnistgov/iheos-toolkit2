@@ -1,7 +1,7 @@
 
-<tag0:RemoveDocumentsRequest xmlns:tag0="urn:ihe:iti:rmd:2017">
-    <tag0:DocumentRequest>
-        <tag0:RepositoryUniqueId>1.2.1.1.1</tag0:RepositoryUniqueId>
-        <tag0:DocumentUniqueId>$docuid1$</tag0:DocumentUniqueId>
-    </tag0:DocumentRequest>
-</tag0:RemoveDocumentsRequest>
+<rmd:RemoveDocumentsRequest xmlns:rmd="urn:ihe:iti:rmd:2017" xmlns:xds="urn:ihe:iti:xds-b:2007">
+    <xds:DocumentRequest>
+        <xds:RepositoryUniqueId>1.2.1.1.1</xds:RepositoryUniqueId>
+        <xds:DocumentUniqueId>$docuid1$</xds:DocumentUniqueId>
+    </xds:DocumentRequest>
+</rmd:RemoveDocumentsRequest>
