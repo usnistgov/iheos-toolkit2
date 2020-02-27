@@ -1,26 +1,15 @@
 package gov.nist.toolkit.webUITests
 
-import com.gargoylesoftware.htmlunit.html.HtmlButton
-import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput
-import com.gargoylesoftware.htmlunit.html.HtmlDivision
-import com.gargoylesoftware.htmlunit.html.HtmlImage
-import com.gargoylesoftware.htmlunit.html.HtmlLabel
-import com.gargoylesoftware.htmlunit.html.HtmlRadioButtonInput
+import com.gargoylesoftware.htmlunit.html.*
 import gov.nist.toolkit.toolkitApi.DocumentRegRep
-import spock.lang.Shared
 import spock.lang.Stepwise
 import spock.lang.Timeout
-
 /**
  * Created by skb1 on 6/5/2017.
  */
 @Stepwise
 @Timeout(612) // Keep this to accommodate slow computers (Sunil's Windows 10 laptop).
-class RegistryActorA1SimulatorSpec extends ConformanceActor {
-
-    public static final String simName = "reg" /* Sim names should be lowered cased */
-
-    @Shared DocumentRegRep regRepSim
+class RegistryActorA1SimulatorSpec extends RegistryConformanceActor {
 
     @Override
     void setupSim() {
@@ -28,11 +17,6 @@ class RegistryActorA1SimulatorSpec extends ConformanceActor {
         deleteOldRegSim()
         sleep(5000) // Why we need this -- Problem here is that the Delete request via REST could be still running before we execute the next Create REST command. The PIF Port release timing will be off causing a connection refused error.
         regRepSim = createNewRegSim()
-    }
-
-    @Override
-    String getSimId() {
-        return ToolkitWebPage.testSessionName + "__" + simName
     }
 
     void deleteOldRegSim() {

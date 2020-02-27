@@ -31,7 +31,7 @@ class RespondingGatewayActorSimulatorSpec extends ConformanceActor {
     }
 
    @Override
-    String getSimId()     {
+    String getSimIdAsString()     {
        return ToolkitWebPage.testSessionName + "__" + simName
     }
 

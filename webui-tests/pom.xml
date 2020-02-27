@@ -65,6 +65,15 @@
                         <include>**/RecipientActorSimulatorSpec.java</include>
                         <include>**/RegistryActorA1SimulatorSpec.java</include>
                         <include>**/RegistryActorA2FindDocumentswInspectResultSpec.java</include>
+                        <include>**/RegistryActorA30MetadataUpdateOptionSpec.java</include>
+                        <include>**/RegistryActorA31RestrictedMetadataUpdateOptionSpec.java</include>
+                        <include>**/RegistryActorA32RemoveMetadataDocumentsOptionSpec.java</include>
+                        <include>**/RegistryActorA33MpqOptionSpec.java</include>
+                        <include>**/RegistryActorA34OnDemandOptionSpec.java</include>
+                        <include>**/RegistryActorA35IntegratedSourceRepOptionSpec.java</include>
+                        <include>**/RegistryActorA36XuaOptionSpec.java</include>
+                        <include>**/RegistryActorA37CATFolderOptionSpec.java</include>
+                        <include>**/RegistryActorA38CATLifecycleOptionSpec.java</include>
                         <include>**/RepositoryActorSimulatorSpec.java</include>
                         <include>**/RespondingGatewayActorSimulatorSpec.java</include>
                     </includes>

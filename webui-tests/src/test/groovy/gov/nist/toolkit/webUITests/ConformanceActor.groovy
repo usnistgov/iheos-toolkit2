@@ -12,7 +12,7 @@ abstract class ConformanceActor extends ToolkitWebPage {
     @Shared String actorPage
     @Shared int testCount
     abstract void setupSim()
-    abstract String getSimId()
+    abstract String getSimIdAsString()
 
     def setupSpec() {
         setupSim()
@@ -36,7 +36,7 @@ abstract class ConformanceActor extends ToolkitWebPage {
         "XDS Toolkit" == page.getTitleText()
         page.asText().contains("complete")
 
-        page.asText().contains("SUT: " + getSimId())
+        page.asText().contains("SUT: " + getSimIdAsString())
     }
 
 }

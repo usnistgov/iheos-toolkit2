@@ -83,7 +83,7 @@ class RegistryActorA2FindDocumentswInspectResultSpec extends ToolkitWebPage {
 
     def 'Find and select registry site'() {
         when:
-        List<HtmlLabel> labelList = page.getByXPath(String.format("//label[text()='%s']", new RegistryActorA1SimulatorSpec().getSimId()))
+        List<HtmlLabel> labelList = page.getByXPath(String.format("//label[text()='%s']", new RegistryActorA1SimulatorSpec().getSimIdAsString()))
 
         then:
         listHasOnlyOneItem(labelList)
