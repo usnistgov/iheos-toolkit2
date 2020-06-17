@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12319/verify_deprecated_and_confCode</Test>
+  <Rule>Verify DocumentEntry version 1 is deprecated.</Rule>
+  <TestStep id="by_uid">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseId testdir="../rmu_update_confCode" id="Document01" symbol="$deuuid$" step="update" section="AssignedUuids"/>
+      <MetadataFile>query.xml</MetadataFile>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="verify_availabilityStatus">
+    <NullTransaction>
+      <Assertions>
+        <DataRef file="THIS" as="output"/>
+        <Assert id="availabilityStatus">
+          //*[local-name()='ExtrinsicObject']/@status = 'urn:oasis:names:tc:ebxml-regrep:StatusType:Deprecated'
+        </Assert>
+      </Assertions>
+    </NullTransaction>
+  </TestStep>
+  <TestStep id="verify_confCode">
+    <NullTransaction>
+      <Assertions>
+        <DataRef file="THIS" as="output"/>
+        <Assert id="confCode">
+          //*[local-name()='ExtrinsicObject']//*[local-name()='Classification'][@classificationScheme='urn:uuid:f4f85eac-e6cb-4883-b524-f2705394840f']/@nodeRepresentation = 'V'
+        </Assert>
+      </Assertions>
+    </NullTransaction>
+  </TestStep>
+  <TestStep id="verify_version">
+    <NullTransaction>
+      <Assertions>
+        <DataRef file="THIS" as="output"/>
+        <Assert id="version">
+          //*[local-name()='ExtrinsicObject']//*[local-name()='VersionInfo']/@versionName = '2'
+        </Assert>
+      </Assertions>
+    </NullTransaction>
+  </TestStep>
+</TestPlan>

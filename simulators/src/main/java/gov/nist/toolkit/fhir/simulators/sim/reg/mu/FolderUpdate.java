@@ -33,11 +33,12 @@ public class FolderUpdate {
 
         if (latest.getAvailabilityStatus() != StatusValue.APPROVED) {
             XdsErrorCode.Code code = XdsErrorCode.Code.XDSMetadataUpdateError;
-            if (muSim.getCommon().vc.isRMU)
-                code = XdsErrorCode.Code.XDSMetadataVersionError;
-            er.err(code,
-                    prefix + "previous version does not have availabilityStatus of Approved, " + latest.getAvailabilityStatus() + " found instead",
-                    this, "ITI TF-2b:3.57.4.1.3.3.3.2");
+            if (!muSim.getCommon().vc.isRMU) {
+                //code = XdsErrorCode.Code.XDSMetadataVersionError;
+                er.err(code,
+                        prefix + "previous version does not have availabilityStatus of Approved, " + latest.getAvailabilityStatus() + " found instead",
+                        this, "ITI TF-2b:3.57.4.1.3.3.3.2");
+            }
         }
 
         String submittedUid = "";

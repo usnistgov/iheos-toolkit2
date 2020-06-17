@@ -9,7 +9,7 @@ import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 public class Committer extends AbstractMessageValidator {
 	SimCommon common;
 	MetadataCollection delta;
-	
+
 	public Committer(SimCommon common, MetadataCollection delta) {
 		super(common.vc);
 		this.common = common;
@@ -21,10 +21,10 @@ public class Committer extends AbstractMessageValidator {
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
 		er.registerValidator(this);
-		
+
 
 		// merge in changes
-		delta.mergeDelta(er);
+		delta.mergeDelta(vc, er);
 		er.unRegisterValidator(this);
 	}
 

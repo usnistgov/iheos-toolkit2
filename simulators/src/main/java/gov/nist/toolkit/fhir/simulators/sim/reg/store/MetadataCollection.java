@@ -112,7 +112,7 @@ public class MetadataCollection implements RegistryValidationInterface, Serializ
 	// A delta has been created during the operation of a Register transaction
 	// Merge the delta into the parent record
 	// Caller takes responsibility for locking
-	boolean mergeDelta(ErrorRecorder er) {
+	boolean mergeDelta(ValidationContext vc, ErrorRecorder er) {
 		if (parent == null)
 			return false;
 
@@ -129,7 +129,7 @@ public class MetadataCollection implements RegistryValidationInterface, Serializ
 				return false;
 			}
 
-			if (obj.getAvailabilityStatus() != oldVal) {
+			if (obj.getAvailabilityStatus() != oldVal && !vc.isRMU) {
 				er.err(Code.XDSRegistryError, "mergeDelta: old status has changed", this, null);
 				return false;
 			}
@@ -380,6 +380,17 @@ public class MetadataCollection implements RegistryValidationInterface, Serializ
 				return ro;
 		}
 		return null;
+	}
+
+	public List<Ro> getObjectsByUid(String uid) {
+		List<Ro> objs  = new ArrayList<>();
+		buildAllCollections();
+		for (RegObCollection c : allCollections) {
+			Ro ro = c.getRoByUid(uid);
+			if (ro != null)
+				objs.add(ro);
+		}
+		return objs;
 	}
 
 	private Ro getRo(String id) {
@@ -681,5 +692,9 @@ public class MetadataCollection implements RegistryValidationInterface, Serializ
 	@Override
 	public boolean hasRegistryIndex() {
 		return regIndex.getSimDb().getRegistryIndexFile().exists();
+	}
+
+	public MetadataCollection getParent() {
+		return parent;
 	}
 }

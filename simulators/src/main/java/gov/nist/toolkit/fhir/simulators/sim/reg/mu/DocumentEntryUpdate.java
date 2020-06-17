@@ -1,5 +1,6 @@
 package gov.nist.toolkit.fhir.simulators.sim.reg.mu;
 
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
@@ -32,10 +33,21 @@ public class DocumentEntryUpdate  {
 			return;
 		}
 
-		if (latest.getAvailabilityStatus() != StatusValue.APPROVED)
+		if (latest.getAvailabilityStatus() != StatusValue.APPROVED && !muSim.getCommon().vc.isRMU)
 			er.err(Code.XDSMetadataUpdateError,
 					prefix + "previous version does not have availabilityStatus of Approved, " + latest.getAvailabilityStatus() + " found instead",
 					this, "ITI TF-2b:3.57.4.1.3.3.1.3");
+
+		// from CP 1190-2
+		//m.setStatus(docEle, latest.getAvailabilityStatus().name());
+
+		if (muSim.getCommon().vc.isRMU) {
+			// availabilityStatus carries over from previous version
+			StatusValue statusValue = latest.getAvailabilityStatus();
+			if (statusValue == StatusValue.DEPRECATED) {
+				m.setStatus(docEle, MetadataSupport.statusType_deprecated);
+			}
+		}
 
 		String submittedUid = "";
 		try {
@@ -51,10 +63,10 @@ public class DocumentEntryUpdate  {
 			if (muSim.getCommon().vc.isRMU)
 				code = Code.XDSMetadataIdentifierError;
 			er.err(code,
-					prefix + "previous version does not have same value for uniqueId: " +
-							" previous version has " + latest.getUid() +
-							" update has " + submittedUid,
-					this, "ITI TF-2b:3.57.4.1.3.3.1.3");
+						prefix + "previous version does not have same value for uniqueId: " +
+								" previous version has " + latest.getUid() +
+								" update has " + submittedUid,
+						this, "ITI TF-2b:3.57.4.1.3.3.1.3");
 		}
 
 		String objectType = "";

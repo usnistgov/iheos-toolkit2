@@ -106,6 +106,27 @@ public class MuSim extends RegRSim {
 		//
 		documentEntryUpdateTrigger(clone);
 
+		// if old DE status was Deprecated - new version should be the same
+		DocEntry latestDE = null;  // latest version already in registry
+		//List<DocEntry> existing = delta.docEntryCollection.parent.getAll();
+		// delta objects are updates
+		// delta.parent objects are the state of the registry
+		for (DocEntry theDe : delta.docEntryCollection.getAllForUpdate()) {
+			String uid = theDe.getUid();
+			List<Ro> objs = delta.getParent().getObjectsByUid(uid);  // search registry for previous versions
+			for (Ro obj : objs) {
+				DocEntry de = (DocEntry) obj;
+				if (latestDE == null) {
+					latestDE = de;
+				}
+				else if (de.version > latestDE.version)
+					latestDE = de;
+			}
+			if (latestDE != null && latestDE.getAvailabilityStatus() == StatusValue.DEPRECATED) {
+				theDe.setAvailabilityStatus(StatusValue.DEPRECATED);
+			}
+		}
+
 		docEntryUpdateStatusTrigger(clone);
 
 		submittedAssociationsTrigger(clone);
