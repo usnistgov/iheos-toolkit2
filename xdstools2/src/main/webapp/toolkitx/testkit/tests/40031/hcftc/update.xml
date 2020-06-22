@@ -105,6 +105,17 @@
             </rim:Slot>
          </rim:Classification>
          <rim:Classification classifiedObject="Document01"
+               nodeRepresentation="264372000" classificationScheme="urn:uuid:f33fb8ac-18af-42cc-ae0e-ed0b0bdb91e1">
+            <rim:Name>
+               <rim:LocalizedString value="Pharmacy"/>
+            </rim:Name>
+            <rim:Slot name="codingScheme">
+               <rim:ValueList>
+                  <rim:Value>2.16.840.1.113883.6.96</rim:Value>
+               </rim:ValueList>
+            </rim:Slot>
+         </rim:Classification>
+         <rim:Classification classifiedObject="Document01"
                nodeRepresentation="urn:connectathon:policy:deny-access"
                classificationScheme="urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4">
             <rim:Name>

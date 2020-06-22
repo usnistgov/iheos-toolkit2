@@ -26,9 +26,9 @@ public class DocumentEntryUpdate  {
 		DocEntry latest = muSim.delta.docEntryCollection.getLatestVersion(lid);
 
 		if (latest == null) {
-			Code code = Code.XDSMetadataUpdateError;
-			if (muSim.getCommon().vc.isRMU)
-				code = Code.UnresolvedReferenceException;
+			Code code = Code.XDSMetadataVersionError;
+//			if (muSim.getCommon().vc.isRMU)
+//				code = Code.UnresolvedReferenceException;
 			er.err(code, prefix + "existing DocumentEntry not present in Registry", this, "ITI TF-2b:3.57.4.1.3.3.1.3");
 			return;
 		}
