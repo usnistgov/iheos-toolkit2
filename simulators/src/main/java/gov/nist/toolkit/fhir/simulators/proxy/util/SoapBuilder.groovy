@@ -41,7 +41,7 @@ class SoapBuilder {
         def contentIdBase = '.694859fac46e21a68c012f8f4fe208a370fc32b6e07ae79f'
         StringBuilder buf = new StringBuilder()
 
-        def partHeaderTemplate = Paths.get(getClass().getResource('/').toURI()).resolve('templates/part_header.txt').text
+        def partHeaderTemplate = Paths.get(getClass().getResource('/').toURI()).resolve('templates/part_header.txt').toFile().text
         int index = 1
         parts.each {
             def map = [theContentType: it.contentType, theContentId:"${index}${contentIdBase}"]
@@ -55,7 +55,7 @@ class SoapBuilder {
     }
 
     private String buildHeader(def hdrFile, def map) {
-        def hdrTemplate = Paths.get(getClass().getResource('/').toURI()).resolve(hdrFile).text
+        def hdrTemplate = Paths.get(getClass().getResource('/').toURI()).resolve(hdrFile).toFile().text
         return new StrSubstitutor(map).replace(hdrTemplate)
     }
 }

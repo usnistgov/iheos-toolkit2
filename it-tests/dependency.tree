@@ -1,0 +1,252 @@
+[[1;34mINFO[m] Scanning for projects...
+[[1;33mWARNING[m] The metadata /home/bill/.m2/repository/org/codehaus/groovy/groovy-eclipse-batch/maven-metadata-codehaus.org.xml is invalid: entity reference name can not contain character =' (position: START_TAG seen ...com/main?ParticipantID=euekiz39ksg8nwp7iqj2fp5wzfwi5q76&FailedURI=... @1:270) 
+[[1;33mWARNING[m] The metadata /home/bill/.m2/repository/org/codehaus/groovy/groovy-eclipse-batch/maven-metadata-codehaus-snapshots.xml is invalid: entity reference name can not contain character =' (position: START_TAG seen ...com/main?ParticipantID=euekiz39ksg8nwp7iqj2fp5wzfwi5q76&FailedURI=... @1:270) 
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m---------------------< [0;36mgov.nist.toolkit:it-tests[0;1m >----------------------[m
+[[1;34mINFO[m] [1mBuilding it-tests 7.4.0[m
+[[1;34mINFO[m] [1m--------------------------------[ jar ]---------------------------------[m
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-dependency-plugin:2.8:tree[m [1m(default-cli)[m @ [36mit-tests[0;1m ---[m
+[[1;34mINFO[m] gov.nist.toolkit:it-tests:jar:7.4.0
+[[1;34mINFO[m] +- gov.nist.toolkit:it-support:jar:7.4.0:compile
+[[1;34mINFO[m] |  +- gov.nist.toolkit:actorfactory:jar:7.4.0:compile
+[[1;34mINFO[m] |  |  +- gov.nist.toolkit:adt:jar:7.4.0:compile
+[[1;34mINFO[m] |  |  |  +- ca.uhn.hapi:hapi-base:jar:2.3:compile
+[[1;34mINFO[m] |  |  |  |  \- joda-time:joda-time:jar:2.1:compile
+[[1;34mINFO[m] |  |  |  \- org.dcm4che:dcm4che-hl7:jar:3.3.7:compile
+[[1;34mINFO[m] |  |  +- gov.nist.toolkit:http:jar:7.4.0:compile
+[[1;34mINFO[m] |  |  |  +- javax.mail:mail:jar:1.4:compile
+[[1;34mINFO[m] |  |  |  |  \- javax.activation:activation:jar:1.1:compile
+[[1;34mINFO[m] |  |  |  +- soap:soap:jar:2.3.1:compile
+[[1;34mINFO[m] |  |  |  \- backport-util-concurrent:backport-util-concurrent:jar:3.1:compile
+[[1;34mINFO[m] |  |  \- com.fasterxml.jackson.core:jackson-databind:jar:2.9.0:compile
+[[1;34mINFO[m] |  +- gov.nist.toolkit:services:jar:7.4.0:compile
+[[1;34mINFO[m] |  |  \- gov.nist.toolkit:sim-proxy:jar:7.4.0:compile
+[[1;34mINFO[m] |  \- org.codehaus.groovy:groovy-all:jar:2.4.13:compile
+[[1;34mINFO[m] +- gov.nist.toolkit:toolkit-services-common:jar:7.4.0:compile
+[[1;34mINFO[m] |  +- gov.nist.toolkit:config-datatypes:jar:7.4.0:compile
+[[1;34mINFO[m] |  +- log4j:log4j:jar:1.2.12:compile
+[[1;34mINFO[m] |  \- org.glassfish.jersey.containers:jersey-container-servlet:jar:2.22.1:compile
+[[1;34mINFO[m] |     \- org.glassfish.jersey.containers:jersey-container-servlet-core:jar:2.22.1:compile
+[[1;34mINFO[m] +- gov.nist.toolkit:results:jar:7.4.0:compile
+[[1;34mINFO[m] |  +- gov.nist.toolkit:installation:jar:7.4.0:compile
+[[1;34mINFO[m] |  |  +- com.fasterxml.jackson.core:jackson-core:jar:2.9.0:compile
+[[1;34mINFO[m] |  |  +- org.codehaus.jackson:jackson-mapper-asl:jar:1.9.12:compile
+[[1;34mINFO[m] |  |  |  \- org.codehaus.jackson:jackson-core-asl:jar:1.9.12:compile
+[[1;34mINFO[m] |  |  +- net.timewalker.ffmq3:ffmq3-core:jar:3.0.5:compile
+[[1;34mINFO[m] |  |  +- mx4j:mx4j:jar:3.0.2:compile
+[[1;34mINFO[m] |  |  +- net.timewalker.ffmq3:ffmq3-server:jar:3.0.5:compile
+[[1;34mINFO[m] |  |  +- net.timewalker.ffmq3:ffmq3-tools:jar:3.0.5:compile
+[[1;34mINFO[m] |  |  +- javax.jms:jms:jar:1.1:compile
+[[1;34mINFO[m] |  |  +- org.apache.ws.commons.axiom:axiom-common-impl:jar:1.2.14:compile
+[[1;34mINFO[m] |  |  \- org.apache.commons.io:commons-io:jar:2.4:compile
+[[1;34mINFO[m] |  +- gov.nist.toolkit:sim-support:jar:7.4.0:compile
+[[1;34mINFO[m] |  +- gov.nist.toolkit:registry-metadata:jar:7.4.0:compile
+[[1;34mINFO[m] |  |  \- com.sun.ebxml:ebxmlrr-common:jar:1.0:compile
+[[1;34mINFO[m] |  +- gov.nist.toolkit:actor-transaction:jar:7.4.0:compile
+[[1;34mINFO[m] |  +- gov.nist.toolkit:site-management:jar:7.4.0:compile
+[[1;34mINFO[m] |  +- gov.nist.toolkit:xds-exceptions:jar:7.4.0:compile
+[[1;34mINFO[m] |  +- gov.nist.toolkit:utilities:jar:7.4.0:compile
+[[1;34mINFO[m] |  |  +- gov.nist.toolkit:common-datatypes:jar:7.4.0:compile
+[[1;34mINFO[m] |  |  +- xerces:xercesImpl:jar:2.9.1:compile
+[[1;34mINFO[m] |  |  |  \- xml-apis:xml-apis:jar:1.3.04:compile
+[[1;34mINFO[m] |  |  +- org.apache.commons:commons-lang3:jar:3.5:compile
+[[1;34mINFO[m] |  |  \- org.apache.httpcomponents:httpclient:jar:4.5.2:compile
+[[1;34mINFO[m] |  +- gov.nist.toolkit:registry-support:jar:7.4.0:compile
+[[1;34mINFO[m] |  +- ca.uhn.hapi.fhir:hapi-fhir-base:jar:2.5:compile
+[[1;34mINFO[m] |  |  +- com.google.code.gson:gson:jar:2.3.1:compile
+[[1;34mINFO[m] |  |  +- org.codehaus.woodstox:woodstox-core-asl:jar:4.4.1:compile
+[[1;34mINFO[m] |  |  |  +- javax.xml.stream:stax-api:jar:1.0-2:compile
+[[1;34mINFO[m] |  |  |  \- org.codehaus.woodstox:stax2-api:jar:3.1.4:compile
+[[1;34mINFO[m] |  |  +- commons-codec:commons-codec:jar:1.9:compile
+[[1;34mINFO[m] |  |  +- commons-io:commons-io:jar:2.5:compile
+[[1;34mINFO[m] |  |  \- org.slf4j:jcl-over-slf4j:jar:1.7.25:compile
+[[1;34mINFO[m] |  +- ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3:jar:2.5:compile
+[[1;34mINFO[m] |  |  \- xpp3:xpp3_min:jar:1.1.4c:compile
+[[1;34mINFO[m] |  +- ca.uhn.hapi.fhir:hapi-fhir-validation-resources-dstu3:jar:2.5:compile
+[[1;34mINFO[m] |  \- ca.uhn.hapi.fhir:hapi-fhir-structures-hl7org-dstu2:jar:2.5:compile
+[[1;34mINFO[m] |     \- net.sf.saxon:Saxon-HE:jar:9.6.0-4:compile
+[[1;34mINFO[m] +- gov.nist.toolkit:session:jar:7.4.0:compile
+[[1;34mINFO[m] |  +- gov.nist.toolkit:datasets:jar:7.4.0:compile
+[[1;34mINFO[m] |  +- gov.nist.toolkit:security-common:jar:7.4.0:compile
+[[1;34mINFO[m] |  +- gov.nist.toolkit:xdstest2-logging:jar:7.4.0:compile
+[[1;34mINFO[m] |  +- gov.nist.toolkit:testkit-utilities:jar:7.4.0:compile
+[[1;34mINFO[m] |  +- gov.nist.toolkit:tk:jar:7.4.0:compile
+[[1;34mINFO[m] |  +- gov.nist.toolkit:test-engine:jar:7.4.0:compile
+[[1;34mINFO[m] |  |  +- gov.nist.toolkit:plugins:jar:7.4.0:compile
+[[1;34mINFO[m] |  |  +- org.apache.xmlbeans:xmlbeans:jar:2.4.0:compile
+[[1;34mINFO[m] |  |  |  \- stax:stax-api:jar:1.0.1:compile
+[[1;34mINFO[m] |  |  +- org.apache.axis2:addressing:mar:1.5.4:compile
+[[1;34mINFO[m] |  |  +- org.apache.commons:commons-collections4:jar:4.0:compile
+[[1;34mINFO[m] |  |  +- org.dcm4che:dcm4che-core:jar:3.3.7:compile
+[[1;34mINFO[m] |  |  |  \- org.dcm4che:dcm4che-dict:jar:3.3.7:compile
+[[1;34mINFO[m] |  |  +- org.dcm4che.tool:dcm4che-tool-common:jar:3.3.7:compile
+[[1;34mINFO[m] |  |  |  \- commons-cli:commons-cli:jar:1.2:compile
+[[1;34mINFO[m] |  |  +- org.dcm4che:dcm4che-net:jar:3.3.7:compile
+[[1;34mINFO[m] |  |  |  \- org.dcm4che:dcm4che-conf-core-api:jar:3.3.7:compile
+[[1;34mINFO[m] |  |  +- org.dcm4che:dcm4che-imageio:jar:3.3.7:compile
+[[1;34mINFO[m] |  |  |  \- org.dcm4che:dcm4che-image:jar:3.3.7:compile
+[[1;34mINFO[m] |  |  +- commons-configuration:commons-configuration:jar:1.8:compile
+[[1;34mINFO[m] |  |  |  \- commons-lang:commons-lang:jar:2.3:compile
+[[1;34mINFO[m] |  |  +- org.javatuples:javatuples:jar:1.2:compile
+[[1;34mINFO[m] |  |  \- net.ihe.gazelle:sequoia-security-adaptor-jar:jar:1.0.1-SNAPSHOT:compile
+[[1;34mINFO[m] |  |     \- net.ihe.gazelle:gazelle-security-adaptor-jar:jar:1.0.1-SNAPSHOT:compile
+[[1;34mINFO[m] |  |        \- net.ihe.gazelle:gazelle-sts-client:jar:1.1.2-SNAPSHOT:compile
+[[1;34mINFO[m] |  |           \- net.ihe.gazelle:gazelle-sts-constants:jar:1.1.2-SNAPSHOT:compile
+[[1;34mINFO[m] |  +- gov.nist.toolkit:sim-common:jar:7.4.0:compile
+[[1;34mINFO[m] |  |  \- gov.nist.toolkit:saml:jar:7.4.0:compile
+[[1;34mINFO[m] |  |     +- org.opensaml:opensaml:jar:2.5.3:compile
+[[1;34mINFO[m] |  |     |  +- org.opensaml:openws:jar:1.4.4:compile
+[[1;34mINFO[m] |  |     |  |  \- org.opensaml:xmltooling:jar:1.3.4:compile
+[[1;34mINFO[m] |  |     |  |     +- org.bouncycastle:bcprov-jdk15:jar:1.46:compile
+[[1;34mINFO[m] |  |     |  |     +- ca.juliusdavies:not-yet-commons-ssl:jar:0.3.9:compile
+[[1;34mINFO[m] |  |     |  |     \- org.apache.santuario:xmlsec:jar:1.4.5:compile
+[[1;34mINFO[m] |  |     |  +- velocity:velocity:jar:1.5:compile
+[[1;34mINFO[m] |  |     |  +- org.owasp.esapi:esapi:jar:2.0.1:compile
+[[1;34mINFO[m] |  |     |  \- xalan:xalan:jar:2.7.1:runtime
+[[1;34mINFO[m] |  |     |     \- xalan:serializer:jar:2.7.1:runtime
+[[1;34mINFO[m] |  |     \- net.jcip:jcip-annotations:jar:1.0:compile
+[[1;34mINFO[m] |  \- gov.nist.toolkit:envSettings:jar:7.4.0:compile
+[[1;34mINFO[m] +- gov.nist.toolkit:toolkit-services:jar:7.4.0:compile
+[[1;34mINFO[m] +- gov.nist.toolkit:toolkit-api:jar:7.4.0:compile
+[[1;34mINFO[m] |  \- org.glassfish.jersey.core:jersey-client:jar:2.22.1:compile
+[[1;34mINFO[m] |     +- org.glassfish.hk2:hk2-api:jar:2.4.0-b31:compile
+[[1;34mINFO[m] |     |  +- org.glassfish.hk2:hk2-utils:jar:2.4.0-b31:compile
+[[1;34mINFO[m] |     |  \- org.glassfish.hk2.external:aopalliance-repackaged:jar:2.4.0-b31:compile
+[[1;34mINFO[m] |     \- org.glassfish.hk2:hk2-locator:jar:2.4.0-b31:compile
+[[1;34mINFO[m] |        \- org.javassist:javassist:jar:3.18.1-GA:compile
+[[1;34mINFO[m] +- gov.nist.toolkit:simulators:jar:7.4.0:compile
+[[1;34mINFO[m] |  +- gov.nist.toolkit:validators-soap-message:jar:7.4.0:compile
+[[1;34mINFO[m] |  +- gov.nist.toolkit:soap:jar:7.4.0:compile
+[[1;34mINFO[m] |  |  +- gov.nist.toolkit:dsig:jar:7.4.0:compile
+[[1;34mINFO[m] |  |  |  \- xml-security:xmlsec:jar:1.3.0:compile
+[[1;34mINFO[m] |  |  \- gov.nist.toolkit:wsseTool:jar:1.3.1:compile
+[[1;34mINFO[m] |  +- gov.nist.toolkit:validators-registry-metadata:jar:7.4.0:compile
+[[1;34mINFO[m] |  |  \- org.spockframework:spock-maven:jar:0.7-groovy-2.0:compile
+[[1;34mINFO[m] |  |     +- org.codehaus.plexus:plexus-utils:jar:1.5.7:compile
+[[1;34mINFO[m] |  |     +- org.ow2.asm:asm:jar:5.0.3:runtime
+[[1;34mINFO[m] |  |     +- org.apache.maven:maven-project:jar:2.0:compile
+[[1;34mINFO[m] |  |     |  +- org.apache.maven:maven-profile:jar:2.0:compile
+[[1;34mINFO[m] |  |     |  +- org.apache.maven:maven-model:jar:2.0:compile
+[[1;34mINFO[m] |  |     |  +- org.apache.maven:maven-artifact-manager:jar:2.0:compile
+[[1;34mINFO[m] |  |     |  +- org.apache.maven:maven-artifact:jar:2.0:compile
+[[1;34mINFO[m] |  |     |  \- org.codehaus.plexus:plexus-container-default:jar:1.0-alpha-8:compile
+[[1;34mINFO[m] |  |     |     \- classworlds:classworlds:jar:1.1-alpha-2:compile
+[[1;34mINFO[m] |  |     +- org.apache.maven:maven-core:jar:2.0:compile
+[[1;34mINFO[m] |  |     |  +- org.apache.maven:maven-settings:jar:2.0:compile
+[[1;34mINFO[m] |  |     |  +- org.apache.maven.wagon:wagon-file:jar:1.0-alpha-5:runtime
+[[1;34mINFO[m] |  |     |  +- org.apache.maven:maven-plugin-parameter-documenter:jar:2.0:compile
+[[1;34mINFO[m] |  |     |  +- org.apache.maven.wagon:wagon-http-lightweight:jar:1.0-alpha-5:runtime
+[[1;34mINFO[m] |  |     |  +- org.apache.maven.reporting:maven-reporting-api:jar:2.0:compile
+[[1;34mINFO[m] |  |     |  |  \- doxia:doxia-sink-api:jar:1.0-alpha-4:compile
+[[1;34mINFO[m] |  |     |  +- org.apache.maven.wagon:wagon-provider-api:jar:1.0-alpha-5:compile
+[[1;34mINFO[m] |  |     |  +- org.apache.maven:maven-repository-metadata:jar:2.0:compile
+[[1;34mINFO[m] |  |     |  +- org.apache.maven:maven-error-diagnostics:jar:2.0:compile
+[[1;34mINFO[m] |  |     |  +- org.apache.maven:maven-plugin-registry:jar:2.0:compile
+[[1;34mINFO[m] |  |     |  +- org.apache.maven:maven-plugin-descriptor:jar:2.0:compile
+[[1;34mINFO[m] |  |     |  +- org.codehaus.plexus:plexus-interactivity-api:jar:1.0-alpha-4:compile
+[[1;34mINFO[m] |  |     |  +- org.apache.maven:maven-monitor:jar:2.0:compile
+[[1;34mINFO[m] |  |     |  \- org.apache.maven.wagon:wagon-ssh:jar:1.0-alpha-5:runtime
+[[1;34mINFO[m] |  |     |     \- com.jcraft:jsch:jar:0.1.23:runtime
+[[1;34mINFO[m] |  |     \- org.apache.maven:maven-plugin-api:jar:2.0:compile
+[[1;34mINFO[m] |  +- gov.nist.toolkit:error-recording:jar:7.4.0:compile
+[[1;34mINFO[m] |  |  \- org.apache.velocity:velocity:jar:1.5:compile
+[[1;34mINFO[m] |  |     +- commons-collections:commons-collections:jar:3.1:compile
+[[1;34mINFO[m] |  |     \- oro:oro:jar:2.0.8:compile
+[[1;34mINFO[m] |  +- gov.nist.toolkit:docref:jar:7.4.0:compile
+[[1;34mINFO[m] |  +- gov.nist.toolkit:validators-registry-message:jar:7.4.0:compile
+[[1;34mINFO[m] |  |  \- gov.nist.toolkit:message-validator-factory2:jar:7.4.0:compile
+[[1;34mINFO[m] |  +- gov.nist.toolkit:common:jar:7.4.0:compile
+[[1;34mINFO[m] |  +- gov.nist.toolkit:validators-support:jar:7.4.0:compile
+[[1;34mINFO[m] |  +- gov.nist.toolkit:registry-msg-formats:jar:7.4.0:compile
+[[1;34mINFO[m] |  |  \- xmlunit:xmlunit:jar:1.5:compile
+[[1;34mINFO[m] |  +- org.codehaus.groovy.modules.http-builder:http-builder:jar:0.7.1:compile
+[[1;34mINFO[m] |  |  +- net.sf.json-lib:json-lib:jar:jdk15:2.3:compile
+[[1;34mINFO[m] |  |  |  +- commons-beanutils:commons-beanutils:jar:1.8.0:compile
+[[1;34mINFO[m] |  |  |  \- net.sf.ezmorph:ezmorph:jar:1.0.6:compile
+[[1;34mINFO[m] |  |  +- net.sourceforge.nekohtml:nekohtml:jar:1.9.16:compile
+[[1;34mINFO[m] |  |  \- xml-resolver:xml-resolver:jar:1.2:compile
+[[1;34mINFO[m] |  +- org.glassfish.jersey.core:jersey-common:jar:2.22.1:compile
+[[1;34mINFO[m] |  |  +- javax.annotation:javax.annotation-api:jar:1.2:compile
+[[1;34mINFO[m] |  |  +- org.glassfish.jersey.bundles.repackaged:jersey-guava:jar:2.22.1:compile
+[[1;34mINFO[m] |  |  \- org.glassfish.hk2:osgi-resource-locator:jar:1.0.1:compile
+[[1;34mINFO[m] |  \- gov.nist.toolkit:plugin-support:jar:7.4.0:compile
+[[1;34mINFO[m] +- gov.nist.toolkit:transaction-notification-service:jar:7.4.0:compile
+[[1;34mINFO[m] +- gov.nist.toolkit:interaction-model:jar:7.4.0:compile
+[[1;34mINFO[m] +- gov.nist.toolkit:grizzly-support:jar:7.4.0:compile
+[[1;34mINFO[m] +- org.glassfish.jersey.containers:jersey-container-grizzly2-http:jar:2.22.1:compile
+[[1;34mINFO[m] |  +- org.glassfish.hk2.external:javax.inject:jar:2.4.0-b31:compile
+[[1;34mINFO[m] |  +- org.glassfish.grizzly:grizzly-http-server:jar:2.3.23:compile
+[[1;34mINFO[m] |  |  \- org.glassfish.grizzly:grizzly-http:jar:2.3.23:compile
+[[1;34mINFO[m] |  +- org.glassfish.jersey.core:jersey-server:jar:2.22.1:compile
+[[1;34mINFO[m] |  |  \- org.glassfish.jersey.media:jersey-media-jaxb:jar:2.22.1:compile
+[[1;34mINFO[m] |  \- javax.ws.rs:javax.ws.rs-api:jar:2.0.1:compile
+[[1;34mINFO[m] +- org.glassfish.grizzly:grizzly-http-servlet-server:jar:2.3.22:compile
+[[1;34mINFO[m] |  +- org.glassfish.grizzly:grizzly-http-servlet:jar:2.3.22:compile
+[[1;34mINFO[m] |  \- org.glassfish.grizzly:grizzly-http-servlet-extras:jar:2.3.22:compile
+[[1;34mINFO[m] +- org.glassfish.grizzly:grizzly-framework:jar:2.3.22:compile
+[[1;34mINFO[m] +- org.glassfish.grizzly:grizzly-http-server-core:jar:2.3.22:compile
+[[1;34mINFO[m] |  +- org.glassfish.grizzly:grizzly-core:jar:2.3.22:compile
+[[1;34mINFO[m] |  |  \- org.glassfish.grizzly:grizzly-portunif:jar:2.3.22:compile
+[[1;34mINFO[m] |  +- org.glassfish.grizzly:grizzly-http-ajp:jar:2.3.22:compile
+[[1;34mINFO[m] |  +- org.glassfish.grizzly:grizzly-spdy:jar:2.3.22:compile
+[[1;34mINFO[m] |  +- org.glassfish.grizzly:grizzly-npn-api:jar:1.1:compile
+[[1;34mINFO[m] |  \- org.glassfish.grizzly:grizzly-http-server-multipart:jar:2.3.22:compile
+[[1;34mINFO[m] +- org.glassfish.jersey.media:jersey-media-json-jackson:jar:2.22.1:compile
+[[1;34mINFO[m] |  +- org.glassfish.jersey.ext:jersey-entity-filtering:jar:2.22.1:compile
+[[1;34mINFO[m] |  +- com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:jar:2.5.4:compile
+[[1;34mINFO[m] |  +- com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:jar:2.5.4:compile
+[[1;34mINFO[m] |  |  \- com.fasterxml.jackson.module:jackson-module-jaxb-annotations:jar:2.5.4:compile
+[[1;34mINFO[m] |  \- com.fasterxml.jackson.core:jackson-annotations:jar:2.9.0:compile
+[[1;34mINFO[m] +- junit:junit:jar:4.11:compile
+[[1;34mINFO[m] |  \- org.hamcrest:hamcrest-core:jar:1.3:compile
+[[1;34mINFO[m] +- org.spockframework:spock-core:jar:0.7-groovy-2.0:test
+[[1;34mINFO[m] |  \- junit:junit-dep:jar:4.10:test
+[[1;34mINFO[m] +- com.google.gwt:gwt-user:jar:2.8.0:provided
+[[1;34mINFO[m] |  +- com.google.jsinterop:jsinterop-annotations:jar:1.0.1:provided
+[[1;34mINFO[m] |  +- com.google.jsinterop:jsinterop-annotations:jar:sources:1.0.1:provided
+[[1;34mINFO[m] |  +- javax.validation:validation-api:jar:1.0.0.GA:compile
+[[1;34mINFO[m] |  +- javax.validation:validation-api:jar:sources:1.0.0.GA:provided
+[[1;34mINFO[m] |  +- javax.servlet:javax.servlet-api:jar:3.0.1:provided
+[[1;34mINFO[m] |  \- org.w3c.css:sac:jar:1.3:provided
+[[1;34mINFO[m] +- org.apache.axis2:axis2-transport-http:jar:1.5.4:compile
+[[1;34mINFO[m] |  \- org.apache.httpcomponents:httpcore:jar:4.4.4:compile
+[[1;34mINFO[m] +- org.apache.axis2:axis2-transport-tcp:jar:1.0.0:compile
+[[1;34mINFO[m] |  +- org.apache.axis2:axis2-transport-base:jar:1.0.0:compile
+[[1;34mINFO[m] |  \- commons-logging:commons-logging:jar:1.1.1:compile
+[[1;34mINFO[m] +- org.apache.axis2:axis2-transport-local:jar:1.5.4:compile
+[[1;34mINFO[m] +- org.apache.axis2:axis2-adb:jar:1.5.4:compile
+[[1;34mINFO[m] |  \- org.apache.geronimo.specs:geronimo-activation_1.1_spec:jar:1.0.2:compile
+[[1;34mINFO[m] +- org.apache.axis2:axis2-kernel:jar:1.5.4:compile
+[[1;34mINFO[m] |  +- org.apache.ws.commons.axiom:axiom-api:jar:1.2.10:compile
+[[1;34mINFO[m] |  |  +- org.apache.geronimo.specs:geronimo-javamail_1.4_spec:jar:1.6:compile
+[[1;34mINFO[m] |  |  +- jaxen:jaxen:jar:1.1.1:compile
+[[1;34mINFO[m] |  |  \- org.apache.geronimo.specs:geronimo-stax-api_1.0_spec:jar:1.0.1:compile
+[[1;34mINFO[m] |  +- org.apache.ws.commons.axiom:axiom-impl:jar:1.2.10:compile
+[[1;34mINFO[m] |  |  \- org.codehaus.woodstox:wstx-asl:jar:3.2.9:compile
+[[1;34mINFO[m] |  +- org.apache.ws.commons.axiom:axiom-dom:jar:1.2.10:compile
+[[1;34mINFO[m] |  +- org.apache.geronimo.specs:geronimo-ws-metadata_2.0_spec:jar:1.1.2:compile
+[[1;34mINFO[m] |  +- org.apache.geronimo.specs:geronimo-jta_1.1_spec:jar:1.1:compile
+[[1;34mINFO[m] |  +- javax.servlet:servlet-api:jar:2.5:provided
+[[1;34mINFO[m] |  +- commons-httpclient:commons-httpclient:jar:3.1:compile
+[[1;34mINFO[m] |  +- commons-fileupload:commons-fileupload:jar:1.2:compile
+[[1;34mINFO[m] |  +- wsdl4j:wsdl4j:jar:1.6.2:compile
+[[1;34mINFO[m] |  +- org.apache.ws.commons.schema:XmlSchema:jar:1.4.3:compile
+[[1;34mINFO[m] |  +- org.apache.neethi:neethi:jar:2.0.4:compile
+[[1;34mINFO[m] |  +- org.apache.woden:woden-api:jar:1.0M8:compile
+[[1;34mINFO[m] |  |  \- org.apache.ant:ant:jar:1.7.0:compile
+[[1;34mINFO[m] |  |     \- org.apache.ant:ant-launcher:jar:1.7.0:compile
+[[1;34mINFO[m] |  \- org.apache.woden:woden-impl-dom:jar:1.0M8:compile
+[[1;34mINFO[m] +- org.apache.axis2:axis2:jar:1.5.4:compile
+[[1;34mINFO[m] +- gov.nist.toolkit:fhir:jar:7.4.0:compile
+[[1;34mINFO[m] |  \- org.apache.lucene:lucene-core:jar:5.5.5:compile
+[[1;34mINFO[m] +- org.apache.commons:commons-csv:jar:1.2:compile
+[[1;34mINFO[m] +- org.slf4j:slf4j-log4j12:jar:1.7.5:compile
+[[1;34mINFO[m] +- org.slf4j:slf4j-api:jar:1.7.5:compile
+[[1;34mINFO[m] \- cglib:cglib-nodep:jar:3.2.4:compile
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;34mINFO[m] [1;32mBUILD SUCCESS[m
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;34mINFO[m] Total time:  1.558 s
+[[1;34mINFO[m] Finished at: 2020-07-07T12:36:16-04:00
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m

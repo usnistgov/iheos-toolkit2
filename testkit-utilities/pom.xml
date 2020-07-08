@@ -12,10 +12,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
-        </dependency>
-        <dependency>
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>common</artifactId>
         </dependency>
@@ -41,7 +37,7 @@
         </dependency>
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
+            <artifactId>groovy</artifactId>
         </dependency>
     </dependencies>
 

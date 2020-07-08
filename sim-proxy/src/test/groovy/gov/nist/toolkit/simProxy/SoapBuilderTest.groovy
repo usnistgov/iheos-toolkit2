@@ -30,9 +30,9 @@ class SoapBuilderTest extends Specification {
 
     def 'mtom test' () {
         given:
-        String referenceMsg = Paths.get(this.getClass().getResource('/').toURI()).resolve('sample_mtom_message.txt').text
-        def part1 = correctCRLF(Paths.get(this.getClass().getResource('/').toURI()).resolve('sample_part_1.txt').text)   // start part
-        def part2 = correctCRLF(Paths.get(this.getClass().getResource('/').toURI()).resolve('sample_part_2.txt').text)   // text attachment
+        String referenceMsg = Paths.get(this.getClass().getResource('/').toURI()).resolve('sample_mtom_message.txt').toFile().text
+        def part1 = correctCRLF(Paths.get(this.getClass().getResource('/').toURI()).resolve('sample_part_1.txt').toFile().text)   // start part
+        def part2 = correctCRLF(Paths.get(this.getClass().getResource('/').toURI()).resolve('sample_part_2.txt').toFile().text)   // text attachment
 
         def part1Spec = new PartSpec(PartSpec.SOAPXOP, part1, '444')
         def part2Spec = new PartSpec(PartSpec.PLAINTEXT, part2, '555')
