@@ -9,7 +9,7 @@ import gov.nist.toolkit.toolkitServicesCommon.resource.xdm.XdmReportResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.xdm.XdmRequest;
 import org.apache.log4j.Logger;
 import org.glassfish.jersey.client.ClientConfig;
-import org.glassfish.jersey.filter.LoggingFilter;
+//import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.jackson.JacksonFeature;
 
 import javax.ws.rs.client.Client;
@@ -32,7 +32,7 @@ import javax.ws.rs.core.Response;
  */
 public class EngineSpi {
     static Logger logger = Logger.getLogger("SYSTEM");
-    
+
     private WebTarget target;
 
     /**
@@ -43,7 +43,7 @@ public class EngineSpi {
     public EngineSpi(String urlRoot) {
         ClientConfig cc = new ClientConfig().register(new JacksonFeature());
         Client c = ClientBuilder.newClient(cc);
-        c.register(new LoggingFilter(java.util.logging.Logger.getLogger("SYSTEM"), true));
+//        c.register(new LoggingFilter(java.util.logging.Logger.getLogger("SYSTEM"), true));
         Configuration conf = c.getConfiguration();
         logger.info(conf.getPropertyNames());
         logger.info("target is " + urlRoot + "/rest/");

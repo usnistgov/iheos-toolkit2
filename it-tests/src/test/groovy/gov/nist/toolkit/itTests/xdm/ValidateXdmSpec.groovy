@@ -36,7 +36,7 @@ class ValidateXdmSpec extends ToolkitSpecification {
 
     def 'validate ccda xdm'() {
         when:
-        byte[] bytes = Paths.get(this.getClass().getResource('/').toURI()).resolve('testdata/xdm/Ccda.zip').bytes
+        byte[] bytes = Paths.get(this.getClass().getResource('/').toURI()).resolve('testdata/xdm/Ccda.zip').toFile().bytes
         XdmRequestResource request = new XdmRequestResource()
         request.zip = bytes
         XdmValidator validator = spi.createXdmValidator()

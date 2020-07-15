@@ -12,6 +12,7 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.log4j.Logger;
 
 import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Map;
@@ -28,10 +29,16 @@ public class SimServletFilter implements Filter {
    public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
 		SimServletResponseWrapper wrapper = new SimServletResponseWrapper((HttpServletResponse) response);
+
+        logger.debug("in SimServletFilter");
+		if (request instanceof HttpServletRequest) {
+		    HttpServletRequest r = (HttpServletRequest) request;
+		    logger.info(r.getRequestURI());
+        }
+
 		chain.doFilter(request,wrapper);
-		
-		logger.debug("in doFilter");
-		
+
+
 		SimDb db = (SimDb) request.getAttribute("SimDb");
 		if (db == null) {
 			logger.error("SimServletFilter - request.getAttribute(\"SimDb\") failed");
@@ -43,13 +50,12 @@ public class SimServletFilter implements Filter {
             return;
         }
 
-		
-		Map<String, String> hdrs = wrapper.headers;
-		String contentType = wrapper.contentType;
-		String hdrsx = response.toString();
 
+//		Map<String, String> hdrs = wrapper.headers;
+//		String contentType = wrapper.contentType;
+        String hdrsx = response.toString();
 		Io.stringToFile(db.getResponseHdrFile(), hdrsx);
-		
+
 //		HttpMessage hmsg = new HttpMessage();
 //		hmsg.setHeaderMap(hdrs);
 //		String messageHeader;

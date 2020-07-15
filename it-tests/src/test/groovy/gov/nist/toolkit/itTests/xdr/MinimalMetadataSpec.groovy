@@ -85,7 +85,7 @@ class MinimalMetadataSpec extends ToolkitSpecification {
         String minimalMetadataHeader = '<direct:metadata-level xmlns:direct="urn:direct:addressing">minimal</direct:metadata-level>'
 
         req.addExtraHeader(minimalMetadataHeader)
-        req.metadata = Paths.get(this.getClass().getResource('/').toURI()).resolve('xdr/XdrMinimal.xml').text
+        req.metadata = Paths.get(this.getClass().getResource('/').toURI()).resolve('xdr/XdrMinimal.xml').toFile().text;
         req.addDocument('Document01', new DocumentResource('text/plain', 'Hello World!'.bytes))
 
         when:
@@ -109,7 +109,7 @@ class MinimalMetadataSpec extends ToolkitSpecification {
         String minimalMetadataHeader = '<direct:metadata-level xmlns:direct="urn:direct:addressing">minimal</direct:metadata-level>'
 
         req.addExtraHeader(minimalMetadataHeader)
-        req.metadata = Paths.get(this.getClass().getResource('/').toURI()).resolve('xdr/XdrMinimalBad.xml').text
+        req.metadata = Paths.get(this.getClass().getResource('/').toURI()).resolve('xdr/XdrMinimalBad.xml').toFile().text
         req.addDocument('Document01', new DocumentResource('text/plain', 'Hello World!'.bytes))
 
         when:

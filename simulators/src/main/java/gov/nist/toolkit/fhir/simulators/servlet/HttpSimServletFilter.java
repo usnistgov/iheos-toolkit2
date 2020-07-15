@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package gov.nist.toolkit.fhir.simulators.servlet;
 
@@ -12,6 +12,7 @@ import gov.nist.toolkit.valsupport.engine.ValidationStep;
 import org.apache.log4j.Logger;
 
 import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Enumeration;
@@ -27,9 +28,15 @@ public class HttpSimServletFilter implements Filter {
    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
       throws IOException, ServletException {
       HttpSimServletResponseWrapper wrapper = new HttpSimServletResponseWrapper((HttpServletResponse) response);
+
+      logger.debug("in HttpSimServletFilter");
+      if (request instanceof HttpServletRequest) {
+         HttpServletRequest r = (HttpServletRequest) request;
+         logger.info(r.getRequestURI());
+      }
+
       chain.doFilter(request, wrapper);
 
-      logger.debug("in doFilter");
 
       SimDb db = (SimDb) request.getAttribute("SimDb");
       if (db == null) {
