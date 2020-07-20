@@ -39,10 +39,6 @@
             <groupId>org.spockframework</groupId>
             <artifactId>spock-core</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
-        </dependency>
     </dependencies>
 
     <build>

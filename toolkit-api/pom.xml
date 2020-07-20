@@ -13,6 +13,12 @@
     <artifactId>toolkit-api</artifactId>
 
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
+        </dependency>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>toolkit-services-common</artifactId>

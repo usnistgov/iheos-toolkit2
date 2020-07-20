@@ -19,20 +19,16 @@
 
     <dependencies>
         <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>utilities</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
             <version>4.4.7</version>
         </dependency>
-        <dependency>
-            <groupId>org.spockframework</groupId>
-            <artifactId>spock-core</artifactId>
-            <version>${spock.version}</version>
-            <scope>test</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.spockframework</groupId>-->
+<!--            <artifactId>spock-core</artifactId>-->
+<!--            <version>${spock.version}</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
@@ -59,10 +55,6 @@
                 <artifactId>spock-core</artifactId>
                 <scope>test</scope>
             </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>sim-common</artifactId>
-        </dependency>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>sim-common</artifactId>

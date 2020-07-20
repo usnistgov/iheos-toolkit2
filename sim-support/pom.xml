@@ -69,10 +69,6 @@
             <artifactId>jersey-common</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>sim-common</artifactId>
-        </dependency>
         <!-- needed by Spock for mocking -->
         <dependency>
             <groupId>cglib</groupId>
