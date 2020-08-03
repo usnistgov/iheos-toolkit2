@@ -65,6 +65,13 @@ public class RGActorFactory extends AbstractActorFactory implements IActorFactor
          TransactionType.XC_RETRIEVE, false);
       addFixedEndpoint(sc, SimulatorProperties.xcrTlsEndpoint, actorType,
          TransactionType.XC_RETRIEVE, true);
+
+
+      addFixedEndpoint(sc, SimulatorProperties.xcRmuEndpoint, actorType,
+              TransactionType.XCRMU, false);
+      addFixedEndpoint(sc, SimulatorProperties.xcRmuTlsEndpoint, actorType,
+              TransactionType.XCRMU, true);
+
       addEditableConfig(sc, SimulatorProperties.errors, ParamType.SELECTION,
          new ArrayList <String>(), false);
       addEditableConfig(sc, SimulatorProperties.errorForPatient,
@@ -90,7 +97,7 @@ public class RGActorFactory extends AbstractActorFactory implements IActorFactor
       // their identity as belonging to the Registry or Repository is lost
       // which means the SimServlet cannot find them when a message comes in
       sc.add(repositoryConfig);
-      
+
       return new Simulator(sc);
    }
 
@@ -131,6 +138,19 @@ public class RGActorFactory extends AbstractActorFactory implements IActorFactor
             TransactionType.XC_RETRIEVE.getCode(), RepositoryType.NONE,
             sc.get(SimulatorProperties.xcrTlsEndpoint).asString(), true,
             isAsync));
+         site.addTransaction(new TransactionBean(
+                 TransactionType.XCRMU.getCode(),
+                 RepositoryType.NONE,
+                 sc.get(SimulatorProperties.xcRmuEndpoint).asString(),
+                 false,
+                 isAsync));
+         site.addTransaction(new TransactionBean(
+                 TransactionType.XCRMU.getCode(),
+                 RepositoryType.NONE,
+                 sc.get(SimulatorProperties.xcRmuTlsEndpoint).asString(),
+                 true,
+                 isAsync));
+
 
          site.setHome(sc.get(SimulatorProperties.homeCommunityId).asString());
 

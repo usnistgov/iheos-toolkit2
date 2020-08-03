@@ -347,7 +347,7 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
                   break;
                case "RemoveMetadataTransaction":
                    transaction = new RemoveMetadataTransaction(this, instruction, instruction_output);
-                   break; 
+                   break;
                case "NullTransaction":
                   transaction = new NullTransaction(this, instruction, instruction_output);
                   break;
@@ -375,6 +375,9 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
                   break;
 				case "RmuTransaction":
 					transaction = new RmuTransaction(this, instruction, instruction_output);
+					break;
+				case "XCRmuTransaction":
+					transaction = new XCRmuTransaction(this, instruction, instruction_output);
 					break;
 				case "RdTransaction":
 					transaction = new RdTransaction(this, instruction, instruction_output);
@@ -407,15 +410,15 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
                   transaction = new SocketTransaction(this, instruction, instruction_output);
                   break;
                case "ImagingDocSetRetrieveTransaction":
-                  transaction = new RetrieveImgDocSetTransaction(this, 
+                  transaction = new RetrieveImgDocSetTransaction(this,
                      instruction, instruction_output, TransactionType.RET_IMG_DOC_SET);
                   break;
                case "ImagingDocSetIigRetrieveTransaction":
-                  transaction = new RetrieveImgDocSetTransaction(this, 
+                  transaction = new RetrieveImgDocSetTransaction(this,
                      instruction, instruction_output, TransactionType.RET_IMG_DOC_SET_GW);
                   break;
                case "ImagingDocSetRigRetrieveTransaction":
-                  transaction = new RetrieveImgDocSetTransaction(this, 
+                  transaction = new RetrieveImgDocSetTransaction(this,
                      instruction, instruction_output, TransactionType.XC_RET_IMG_DOC_SET);
                   break;
                case "ImgDetailTransaction":
@@ -526,7 +529,7 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 
 public void add_name_value(OMElement instruction_output, String string, OMElement omElement) {
 	// TODO Auto-generated method stub
-	
+
 }
 
 }

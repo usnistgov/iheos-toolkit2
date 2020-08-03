@@ -9,12 +9,12 @@ public class SimulatorProperties {
 
     static public boolean isTlsEndpoint(String name) { return name != null && name.indexOf("TLS") != -1; }
 
-    
+
     /**
      * Boolean property controlling whether Remove Metadata is enabled on Registry Simulator.
      */
 //    public static final String                 REMOVE_METADATA = "Remove_Metadata_Remote_Registry_Option";
-    
+
     /**
      * Boolean property controlling whether Metadata Update is enabled on Registry Simulator.
      */
@@ -126,7 +126,9 @@ public class SimulatorProperties {
      * Updates to this property are ignored.
      */
     public static final String                         updateEndpoint = "Update_endpoint";
-    public static final String                         rmuEndpoint = "Restricted_update_endpoint";
+    public static final String                         rmuEndpoint = "XDS_Restricted_update_endpoint";
+    public static final String                         xcRmuEndpoint = "XCA_Restricted_update_endpoint";
+    public static final String                         xcRmuTlsEndpoint = "XCA_Restricted_update_tls_endpoint";
 
     public static final String                          multiPatientQueryEndpoint = "Multipatient_query_endpoint";
 
@@ -137,7 +139,7 @@ public class SimulatorProperties {
      * Updates to this property are ignored.
      */
     public static final String                      updateTlsEndpoint = "Update_TLS_endpoint";
-    public static final String                      rmuTlsEndpoint = "Restricted_update_TLS_endpoint";
+    public static final String                      rmuTlsEndpoint = "XDS_Restricted_update_TLS_endpoint";
 
     /**
      * Profile RMD: ITI-62
@@ -312,7 +314,7 @@ public class SimulatorProperties {
     public static final String                           repositories = "Repositories";
 
     public static final String                           respondingImagingGateways = "Responding Imaging Gateways";
-    
+
     public static final String imagingDocumentSources = "Imaging Document Sources";
 
     /**
@@ -334,7 +336,7 @@ public class SimulatorProperties {
     public static final String                     idsRepositoryUniqueId = "IDS Repository UniqueId";
 
     /**
-     * String property defining the Image Cache root directory for an IDS 
+     * String property defining the Image Cache root directory for an IDS
      * simulator, absolute or relative to the toolkit image cache directory.
      */
     public static final String                     idsImageCache = "IDS Image Cache";

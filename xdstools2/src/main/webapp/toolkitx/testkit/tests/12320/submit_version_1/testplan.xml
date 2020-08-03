@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12320/submit_version_1</Test>
+  <Rule>R.b Accept register one document</Rule>
+  <TestStep id="submit">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <RegisterTransaction>
+      <XDSb/>
+      <NoPatientId/>
+      <AssignUuids/>
+      <UseReport reportName="$patientid$" test="15823" section="pif" step="step" useAs="$patientid$"/>
+      <MetadataFile>single_doc.xml</MetadataFile>
+    </RegisterTransaction>
+  </TestStep>
+</TestPlan>
