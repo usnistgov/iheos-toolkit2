@@ -5,7 +5,7 @@
     <MuTransaction>
       <XDSb/>
       <NoPatientId/>
-      <UseReport reportName="$patientid$" test="15823" section="pif" step="step" useAs="$patientid$"/>
+      <UseReport reportName="$patientid$" test="15817" section="pif" step="step" useAs="$patientid$"/>
       <AssignUuids/>
       <MetadataFile>deprecate.xml</MetadataFile>
       <UseReport reportName="Document01_uuid" section="submit_version_1" step="submit" useAs="$orig_docentry_uuid$"/>

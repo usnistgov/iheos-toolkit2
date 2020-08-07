@@ -7,7 +7,7 @@
       <XDSb/>
       <NoPatientId/>
       <AssignUuids/>
-      <UseReport reportName="$patientid$" test="15823" section="pif" step="step" useAs="$patientid$"/>
+      <UseReport reportName="$patientid$" test="15817" section="pif" step="step" useAs="$patientid$"/>
       <MetadataFile>single_doc.xml</MetadataFile>
     </RegisterTransaction>
   </TestStep>
