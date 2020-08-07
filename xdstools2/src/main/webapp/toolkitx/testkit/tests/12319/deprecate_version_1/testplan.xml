@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><TestPlan>
-  <Test>12318/deprecate_version_1</Test>
+  <Test>12319/deprecate_version_1</Test>
   <TestStep id="deprecate_docentry_1">
     <ExpectedStatus>Success</ExpectedStatus>
     <MuTransaction>

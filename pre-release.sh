@@ -30,5 +30,9 @@ cd $BUILDDIR
 mkdir xdstools2/target/$WARNAME/javadoc
 bash $BASEDIR/genapidoc.sh xdstools2/target/$WARNAME/javadoc
 
+
+# This will fail if plexus stuff is not up to date locally.  If so, run mvn site
+# to force downloads.  This will never complete (in your lifetime) but once it has downloaded
+# the packages it can be killed and this script re-run.
 cd xdstools2
 mvn -o site

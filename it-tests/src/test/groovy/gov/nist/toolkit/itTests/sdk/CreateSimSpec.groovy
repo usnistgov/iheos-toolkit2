@@ -42,7 +42,9 @@ class CreateSimSpec extends ToolkitSpecification {
 
         then:
         ToolkitServiceException e = thrown()
-        e.code == Response.Status.BAD_REQUEST.statusCode
+        def code = e.code
+        def expected = Response.Status.BAD_REQUEST.statusCode
+        code == expected
     }
 
     def 'Create sim with bad environment'() {
@@ -126,7 +128,11 @@ class CreateSimSpec extends ToolkitSpecification {
     }
 
     def cleanupSpec() {
-        if (params && spi)
-            spi.delete(params)
+        try {
+            if (params && spi)
+                spi.delete(params)
+        } catch (Throwable t) {
+
+        }
     }
 }

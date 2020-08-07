@@ -122,7 +122,7 @@ class XdrSrcSpec extends ToolkitSpecification implements TransactionNotification
         println 'STEP - SEND XDR'
         RawSendRequest req = documentSource.newRawSendRequest()
 
-        req.metadata = Paths.get(this.getClass().getResource('/').toURI()).resolve('testdata/PnR1Doc.xml').text
+        req.metadata = Paths.get(this.getClass().getResource('/').toURI()).resolve('testdata/PnR1Doc.xml').toFile().text
         req.addDocument('Document01', new DocumentResource('text/plain', 'Hello World!'.bytes))
 
         RawSendResponse response = documentSource.sendProvideAndRegister(req)

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12320/deprecate_version_1</Test>
+  <TestStep id="deprecate_docentry_1">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <MuTransaction>
+      <XDSb/>
+      <NoPatientId/>
+      <UseReport reportName="$patientid$" test="15823" section="pif" step="step" useAs="$patientid$"/>
+      <AssignUuids/>
+      <MetadataFile>deprecate.xml</MetadataFile>
+      <UseReport reportName="Document01_uuid" section="submit_version_1" step="submit" useAs="$orig_docentry_uuid$"/>
+    </MuTransaction>
+  </TestStep>
+</TestPlan>

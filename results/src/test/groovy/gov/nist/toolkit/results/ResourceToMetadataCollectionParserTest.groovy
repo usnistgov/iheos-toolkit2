@@ -26,7 +26,7 @@ class ResourceToMetadataCollectionParserTest extends Specification {
 
 
 
-        String dr = Paths.get(this.class.getResource('/').toURI()).resolve('DocumentReference1.xml').text
+        String dr = Paths.get(this.class.getResource('/').toURI()).resolve('DocumentReference1.xml').toFile().text
         documentReference = ToolkitFhirContext.get().newXmlParser().parseResource(dr)
     }
 

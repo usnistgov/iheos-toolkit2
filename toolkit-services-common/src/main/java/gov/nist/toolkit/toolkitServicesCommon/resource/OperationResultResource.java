@@ -1,5 +1,6 @@
 package gov.nist.toolkit.toolkitServicesCommon.resource;
 
+import javax.swing.text.html.parser.Entity;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -25,7 +26,9 @@ public class OperationResultResource {
 
     static final public int ENVIRONMENT_DOES_NOT_EXIST = Response.Status.BAD_REQUEST.getStatusCode()*100+1;
 
-    public OperationResultResource() {}
+    public OperationResultResource() {
+
+    }
 
     public OperationResultResource(Response.Status status, String reason) {
         this.status = status;

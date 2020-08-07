@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestPlan>
-  <Test>15800/update</Test>
+  <Test>12319/rmu_update_typeCode</Test>
   <Rule>Update original DocumentEntry</Rule>
   <TestStep id="update">
     <ExpectedStatus>Failure</ExpectedStatus>

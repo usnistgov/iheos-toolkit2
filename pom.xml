@@ -12,12 +12,17 @@
             <artifactId>toolkit-api</artifactId>
             <scope>test</scope>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.codehaus.groovy</groupId>-->
+<!--            <artifactId>groovy-all</artifactId>-->
+<!--            <version>${groovyVersion}</version>-->
+<!--        </dependency>-->
     </dependencies>
 
     <parent>
         <groupId>gov.nist.toolkit</groupId>
         <artifactId>tk-deps</artifactId>
-		<version>7.4.0</version>
+		<version>7.5.0</version>
         <relativePath>/tk-deps/pom.xml</relativePath>
     </parent>
 

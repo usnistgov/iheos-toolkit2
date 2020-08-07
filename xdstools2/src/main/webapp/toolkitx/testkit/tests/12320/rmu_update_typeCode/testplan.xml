@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>12320/rmu_update_typeCode</Test>
+  <Rule>Update original DocumentEntry</Rule>
+  <TestStep id="updateTypeCode">
+    <ExpectedStatus>Failure</ExpectedStatus>
+    <XCRmuTransaction>
+      <NoAssignUids id="Document01"/>
+      <XDSb/>
+      <NoPatientId/>
+      <UseReport reportName="$patientid$" test="15823" section="pif" step="step" useAs="$patientid$"/>
+      <UseReport reportName="$testdata_home$" test="12318" section="query" step="query" useAs="$home$"/>
+      <AssignUuids/>
+      <MetadataFile>single_doc.xml</MetadataFile>
+      <UseId testdir="../submit_version_1" id="Document01" symbol="$lid$" step="submit" section="AssignedUuids"/>
+      <UseId testdir="../submit_version_1" id="Document01" symbol="$Document01_uid$" step="submit" section="AssignedUids"/>
+      <Report name="update_doc_uuid" section="InputMetadata">
+                //*[local-name()='ExtrinsicObject'][1]/@id
+        </Report>
+    </XCRmuTransaction>
+  </TestStep>
+</TestPlan>

@@ -82,9 +82,9 @@ My Content
 
     def 'multipart test'() {
         when:
-        String messageHeader = Paths.get(getClass().getResource('/').toURI()).resolve('multipart.header.txt').text
+        String messageHeader = Paths.get(getClass().getResource('/').toURI()).resolve('multipart.header.txt').toFile().text
         //String messageHeader = getClass().getResource('/multipart.header.txt').text
-        String messageBody = Paths.get(getClass().getResource('/').toURI()).resolve('multipart.body.txt').text
+        String messageBody = Paths.get(getClass().getResource('/').toURI()).resolve('multipart.body.txt').toFile().text
         //String messageBody = getClass().getResource('/multipart.body.txt').text
         assert messageHeader
         assert messageBody
@@ -98,8 +98,8 @@ My Content
 
     def 'simple test'() {
         when:
-        String messageHeader = Paths.get(getClass().getResource('/').toURI()).resolve('simple.header.txt').text
-        String messageBody = Paths.get(getClass().getResource('/').toURI()).resolve('simple.body.txt').text
+        String messageHeader = Paths.get(getClass().getResource('/').toURI()).resolve('simple.header.txt').toFile().text
+        String messageBody = Paths.get(getClass().getResource('/').toURI()).resolve('simple.body.txt').toFile().text
         // String messageHeader = getClass().getResource('/simple.header.txt').text
         // String messageBody = getClass().getResource('/simple.body.txt').text
         assert messageHeader

@@ -1,5 +1,6 @@
 package gov.nist.toolkit.fhir.simulators.sim.rg
 
+import ca.uhn.hl7v2.util.StringUtil
 import gov.nist.toolkit.actortransaction.client.Severity
 import gov.nist.toolkit.commondatatypes.MetadataSupport
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
@@ -7,6 +8,7 @@ import gov.nist.toolkit.configDatatypes.client.*
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code
 import gov.nist.toolkit.registrymetadata.Metadata
+import gov.nist.toolkit.registrymetadata.MetadataParser
 import gov.nist.toolkit.registrymsg.registry.AdhocQueryRequest
 import gov.nist.toolkit.registrymsg.registry.AdhocQueryRequestParser
 import gov.nist.toolkit.registrymsg.registry.Response
@@ -297,9 +299,54 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 
             return true; // no updates anyway
 
-         case TransactionType.RMU:
+         case TransactionType.XCRMU:
+            ValidationContext vc = common.vc;
+            vc.isRequest = true;
+            vc.isSimpleSoap = true;
+            vc.isXC = true;
+            vc.isRMU = true;
+            vc.xds_b = true;
+            vc.hasSoap = true;
+            vc.hasHttp = true;
             RegistryActorSimulator ras = new RegistryActorSimulator(getDsSimCommon(), simulatorConfig);
-            ras.validationContext = validationContext;
+            ras.validationContext = vc;
+
+            if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
+               return false;  // returns if SOAP Fault was generated
+
+            if (mvc.hasErrors()) {
+               dsSimCommon.sendErrorsInRegistryResponse(er);
+               return false;
+            }
+
+
+
+            // validate homeCommunityId - must match local configuration
+            String configuredHome = getSimulatorConfig().get(SimulatorProperties.homeCommunityId).asString();
+
+            AbstractMessageValidator mv = dsSimCommon.getMessageValidatorIfAvailable(SoapMessageValidator.class);
+            if (mv == null || !(mv instanceof SoapMessageValidator)) {
+               er.err(Code.XDSRegistryError, "RG Internal Error - cannot find SoapMessageValidator instance", "RespondingGatewayActorSimulator", "");
+               dsSimCommon.sendErrorsInAdhocQueryResponse(er);
+               return false;
+            }
+            SoapMessageValidator smv = (SoapMessageValidator) mv;
+            OMElement sor = smv.getMessageBody();
+            Metadata metadata = MetadataParser.parse(sor);
+         for (OMElement obj : metadata.getExtrinsicObjects()) {
+            String submittedHome = obj.getAttributeValue(MetadataSupport.home_qname);
+            if (submittedHome == null || submittedHome.equals("")) {
+               er.err(Code.XDSMissingHomeCommunityId, "Update does not contain a homeCommunityId", "RGActorSimulator", "");
+               dsSimCommon.sendErrorsInAdhocQueryResponse(er);
+               return false;
+            }
+            if (!submittedHome.equals(configuredHome)) {
+               er.err(Code.XDSMissingHomeCommunityId, "Update has updated homeCommunityId - it no longer matches RespondingGateway configuration (" + configuredHome + ")", "RGActorSimulator", "");
+               dsSimCommon.sendErrorsInAdhocQueryResponse(er);
+               return false;
+            }
+         }
+
             return ras.processRMU(mvc, validation);
 
          default:

@@ -24,6 +24,7 @@ public enum TransactionType implements Serializable, IsSerializable {
     IG_QUERY("ITI-18", "Initiating Gateway Query", "igq", "igq", "igq.as", false, "urn:ihe:iti:2007:RegistryStoredQuery", "urn:ihe:iti:2007:RegistryStoredQueryResponse", false, SimulatorProperties.igqEndpoint, SimulatorProperties.igqTlsEndpoint, false),
     UPDATE("ITI-57", "Update", "update", "update.b", "update.b.as", false, "urn:ihe:iti:2010:UpdateDocumentSet", "urn:ihe:iti:2010:UpdateDocumentSetResponse", false, SimulatorProperties.updateEndpoint, SimulatorProperties.updateTlsEndpoint, false),
     RMU("ITI-92", "RMU", "rmu", "rmu.b", "rmu.b.as", false, "urn:ihe:iti:2018:RestrictedUpdateDocumentSet", "urn:ihe:iti:2018:RestrictedUpdateDocumentSetResponse", false, SimulatorProperties.rmuEndpoint, SimulatorProperties.rmuTlsEndpoint, false),
+    XCRMU("ITI-92", "XCRMU", "xcrmu", "xcrmu.b", "xcrmu.b.as", false, "urn:ihe:iti:2018:RestrictedUpdateDocumentSet", "urn:ihe:iti:2018:RestrictedUpdateDocumentSetResponse", false, SimulatorProperties.xcRmuEndpoint, SimulatorProperties.xcRmuTlsEndpoint, false),
     XC_QUERY("ITI-38", "Cross-Community Query", "xcq", "xcq", "xcq.as", false, "urn:ihe:iti:2007:CrossGatewayQuery", "urn:ihe:iti:2007:CrossGatewayQueryResponse", false, SimulatorProperties.xcqEndpoint, SimulatorProperties.xcqTlsEndpoint, false),
     XC_RETRIEVE("ITI-39", "Cross-Community Retrieve", "xcr", "xcr", "xcr.as", false, "urn:ihe:iti:2007:CrossGatewayRetrieve", "urn:ihe:iti:2007:CrossGatewayRetrieveResponse", true, SimulatorProperties.xcrEndpoint, SimulatorProperties.xcrTlsEndpoint, true),
     MPQ("ITI-51", "Multi-Patient Query", "mpq", "mpq", "mpq.as", false, "urn:ihe:iti:2009:MultiPatientStoredQuery", "urn:ihe:iti:2009:MultiPatientStoredQueryResponse", false, "MPQ", "tlsMPQ", false),
@@ -189,7 +190,7 @@ public enum TransactionType implements Serializable, IsSerializable {
    public String getResponseAction() {
       return responseAction;
    }
-   
+
    public boolean isHttpOnly() {
       return http;
    }
