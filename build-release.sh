@@ -29,7 +29,8 @@ then
 	exit -1
 fi
 
-mvn clean install -P Bill -D skipTests
+#mvn clean install -P Bill -D skipTests
+mvn clean install -P SunilUbuntu -D skipTests
 
 bash pre-release.sh
 
