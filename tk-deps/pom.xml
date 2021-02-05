@@ -32,7 +32,9 @@
             <groovyVersion>2.6.0-alpha-2</groovyVersion>
         -->
         <!-- This one works with IntelliJ/Jetty/Windows. -->
-        <groovyVersion>2.5.0</groovyVersion>  <!--  2.4.13   -->
+<!--        <groovyVersion>2.5.0</groovyVersion>-->
+        <!-- This one is more compatible with Windows and Linux -->
+        <groovyVersion>2.4.13</groovyVersion>
         <!--<groovyVersion>2.4.5</groovyVersion>-->
         <!--<groovyVersion>2.1.1</groovyVersion>-->
         <gwtVersion>2.8.0</gwtVersion>    <!-- 2.7.0 -->
