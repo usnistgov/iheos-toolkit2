@@ -1364,42 +1364,15 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 				additionalHeaders.add(getSecurityEl(transactionSettings.siteSpec.getStsAssertion()));
 			}
 		}
-//		soap = testConfig.soap;
 		soap.setAsync(async);
 		soap.setUseSaml(testConfig.saml);
 
-		/*
-		if (testConfig.saml) {
-			System.out.println("\tAxis2 client Repository: " + testConfig.testmgmt_dir + File.separator + "rampart" + File.separator + "client_repositories");
-			System.out.println("\tEnabling WSSEC ...");
-			soap.setRepositoryLocation(testConfig.testmgmt_dir + File.separator + "rampart" + File.separator + "client_repositories" );
-		}
-		*/
 
 		if (additionalHeaders != null) {
 			for (OMElement hdr : additionalHeaders)
-//				try {
-//					soap.addHeader(Util.deep_copy(hdr));
 					soap.addHeader(hdr);
-//				} catch (XdsInternalException e) {
-//					s_ctx.set_error(e.getMessage());
-//					failed();
-//					logSoapRequest(soap);
-//				}
 		}
 
-		/*
-		if (wsSecHeaders != null) {
-			for (OMElement hdr : wsSecHeaders)
-				try {
-					soap.addSecHeader(Util.deep_copy(hdr));
-				} catch (XdsInternalException e) {
-					s_ctx.set_error(e.getMessage());
-					failed();
-					logSoapRequest(soap);
-				}
-		}
-		*/
 
 		try {
 			testLog.add_name_value(instruction_output, "InputMetadata", requestBody);

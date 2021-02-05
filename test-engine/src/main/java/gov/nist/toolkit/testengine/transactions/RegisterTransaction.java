@@ -23,7 +23,7 @@ public class RegisterTransaction extends BasicTransaction {
 		else return "r.a";
 	}
 
-	public void run(OMElement request) 
+	public void run(OMElement request)
 	throws XdsException {
 
 		validate_xds_version();
@@ -39,9 +39,9 @@ public class RegisterTransaction extends BasicTransaction {
 
 		if (request_element == null) {
 			if (metadata_filename == null)
-				throw new XdsInternalException("No MetadataFile element found for RegisterTransaction instruction within step " + this.s_ctx.get("step_id"));
+				throw new XdsInternalException("No MetadataFile element found for transaction instruction within step " + this.s_ctx.get("step_id"));
 			else
-				throw new XdsInternalException("No Metadata in memory element found for RegisterTransaction instruction within step " + this.s_ctx.get("step_id"));
+				throw new XdsInternalException("No Metadata in memory element found for transaction instruction within step " + this.s_ctx.get("step_id"));
 		}
 
 		if (parse_metadata && !no_convert) {
