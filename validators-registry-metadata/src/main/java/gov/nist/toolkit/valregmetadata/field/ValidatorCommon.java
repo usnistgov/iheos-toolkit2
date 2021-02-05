@@ -99,11 +99,27 @@ public class ValidatorCommon implements ErrorRecorder {
 	public void err(String msg, String resource) {
 		rel.add_error(MetadataSupport.XDSRegistryMetadataError, msg, null, resource, null);	}
 
+	/**
+     * 			Where does the dot notation for OIDs come from?
+	 * 			http://www.oid-info.com/faq.htm#14
+	 *
+	 * 			International OID tree
+	 * 			ISO/IEC 8824-1:2015:
+	 * 			https://standards.iso.org/ittf/PubliclyAvailableStandards/c068350_ISO_IEC_8824-1_2015.zip
+	 *
+	 * @param value
+	 * @param xds_b
+	 * @return
+	 */
 	public static boolean is_oid(String value, boolean xds_b) {
 		if (value == null) return false;
-		if (xds_b)
-			return value.matches("\\d(?=\\d*\\.)(?:\\.(?=\\d)|\\d){0,255}") && (value.startsWith("0.") || value.startsWith("1.") || value.startsWith("2."));
-		return value.matches("\\d(?=\\d*\\.)(?:\\.(?=\\d)|\\d){0,63}") && (value.startsWith("0.") || (value.startsWith("1.") || value.startsWith("2.")));
+		String oidRegexStr = "^([0-2])(\\.((0)|([1-9]+[0-9]*)))+$";
+		if (xds_b) {
+			// return value.matches("\\d(?=\\d*\\.)(?:\\.(?=\\d)|\\d){0,255}") && (value.startsWith("0.") || value.startsWith("1.") || value.startsWith("2."));
+			return value.matches(oidRegexStr) && value.length() < 256; // retains the original length restriction as shown above.
+		}
+		// return value.matches("\\d(?=\\d*\\.)(?:\\.(?=\\d)|\\d){0,63}") && (value.startsWith("0.") || (value.startsWith("1.") || value.startsWith("2.")));
+		return value.matches(oidRegexStr) && value.length() < 64; // retains the original length restriction as shown above.
 	}
 
 	@SuppressWarnings("unchecked")
