@@ -116,6 +116,13 @@ public class ValidatorCommon implements ErrorRecorder {
 		String oidRegexStr = "^([0-2])(\\.((0)|([1-9]+[0-9]*)))+$";
 		if (xds_b) {
 			// return value.matches("\\d(?=\\d*\\.)(?:\\.(?=\\d)|\\d){0,255}") && (value.startsWith("0.") || value.startsWith("1.") || value.startsWith("2."));
+			/*
+			ITI TF 3
+			5.1 Basic Patient Privacy Consents Module 2865
+			The UniqueId length of 255 characters only applies to BPCC Only.
+			5.1.2.1.1.4 XDSDocumentEntry.uniqueId
+			This value shall be the ClinicalDocument/id in the HL7 CDA R2 header. The root attribute is 2905 required, and the extension attribute is optional. The total length is limited to 256 characters. See PCC TF-2: 4.1.1, for further content specification
+			 */
 			return value.matches(oidRegexStr) && value.length() < 256; // retains the original length restriction as shown above.
 		}
 		// return value.matches("\\d(?=\\d*\\.)(?:\\.(?=\\d)|\\d){0,63}") && (value.startsWith("0.") || (value.startsWith("1.") || value.startsWith("2.")));
