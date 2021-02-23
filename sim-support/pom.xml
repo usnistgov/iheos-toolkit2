@@ -4,7 +4,7 @@
     <parent>
         <groupId>gov.nist.toolkit</groupId>
         <artifactId>tk-deps</artifactId>
-        <version>7.6.0-SNAPSHOT</version>
+        <version>7.7.0-SNAPSHOT</version>
         <relativePath>../tk-deps/pom.xml</relativePath>
     </parent>
 
@@ -69,10 +69,6 @@
 <!--            <artifactId>jersey-common</artifactId>-->
 <!--        </dependency>-->
 
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>sim-common</artifactId>
-        </dependency>
         <!-- needed by Spock for mocking -->
         <dependency>
             <groupId>cglib</groupId>

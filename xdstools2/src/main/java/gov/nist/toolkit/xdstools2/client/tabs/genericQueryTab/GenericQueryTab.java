@@ -363,7 +363,7 @@ public abstract class GenericQueryTab  extends ToolWindow implements StatusDispl
                     if (sites==null || (sites!=null && sites.size()==0)) {
                         samlListBox.setSelectedIndex(0);
                         samlListBox.setEnabled(false);
-                        fp.add(new HTML("<span class=\"serverResponseLabelError\">GazelleSts site is not configured. Please check the Sts_ActorName property value in toolkit.properties and its actor file in External Cache.</span>"));
+                        fp.add(new HTML("<span class=\"serverResponseLabelError\">Site collection error: 1) If this is a new installation run against simulators from a prior toolkit version, they may not be compatible. Please remove old simulators in this case. 2) The GazelleSts site may not be configured. Please check the Sts_ActorName property value in toolkit.properties and its actor file in External Cache.</span>"));
                     }
                     fp.setVisible(true);
                     samlLabel.setVisible(true);

@@ -21,13 +21,18 @@ public class TestLogCache {
 	public File getTestDir(TestSession testSession, TestInstance testInstance) {
 		// find test directory under external_cache/TestLogCache/<sessionName>/
 
-		for (File testDir : getSessionDir(testSession).listFiles()) {
-			if (!testDir.isDirectory())
-				continue;
-			if (testDir.getName().equals(testInstance.getId())) {
-				return testDir;
+		File sessionFile = getSessionDir(testSession);
+		if (sessionFile != null) {
+			File[] files = sessionFile.listFiles();
+			if (files != null) {
+				for (File testDir : files) {
+					if (!testDir.isDirectory())
+						continue;
+					if (testDir.getName().equals(testInstance.getId())) {
+						return testDir;
+					}
+				}
 			}
-
 		}
 		return null;
 
