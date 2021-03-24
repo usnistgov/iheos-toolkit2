@@ -105,13 +105,13 @@
             </rim:Slot>
          </rim:Classification>
          <rim:Classification classifiedObject="Document01"
-               nodeRepresentation="SUMMARY" classificationScheme="urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a">
+               nodeRepresentation="57016-8" classificationScheme="urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a">
             <rim:Name>
-               <rim:LocalizedString value="Summary"/>
+               <rim:LocalizedString value="Privacy Policy Acknowledgement Document"/>
             </rim:Name>
             <rim:Slot name="codingScheme">
                <rim:ValueList>
-                  <rim:Value>1.3.6.1.4.1.19376.1.2.6.1</rim:Value>
+                  <rim:Value>2.16.840.1.113883.6.1</rim:Value>
                </rim:ValueList>
             </rim:Slot>
          </rim:Classification>
@@ -139,7 +139,8 @@
             </rim:Slot>
          </rim:Classification>
          <rim:Classification classifiedObject="Document01"
-               nodeRepresentation="MPQ-hcftcode-1" classificationScheme="urn:uuid:f33fb8ac-18af-42cc-ae0e-ed0b0bdb91e1">
+               nodeRepresentation="MPQ-hcftcode-1"
+               classificationScheme="urn:uuid:f33fb8ac-18af-42cc-ae0e-ed0b0bdb91e1">
             <rim:Name>
                <rim:LocalizedString value="MPQ Healthcare Facility Code 1"/>
             </rim:Name>
