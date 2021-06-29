@@ -132,14 +132,15 @@
             </Slot>
          </Classification>
          <Classification classificationScheme="urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a"
-               classifiedObject="Document01" nodeRepresentation="SUMMARY"
+               classifiedObject="Document01" nodeRepresentation="57016-8"
                xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <Name xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <LocalizedString value="Summary" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
+               <LocalizedString value="Privacy Policy Acknowledgement Document"
+                     xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
             </Name>
             <Slot name="codingScheme" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
                <ValueList xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-                  <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">1.3.6.1.4.1.19376.1.2.6.1</Value>
+                  <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">2.16.840.1.113883.6.1</Value>
                </ValueList>
             </Slot>
          </Classification>

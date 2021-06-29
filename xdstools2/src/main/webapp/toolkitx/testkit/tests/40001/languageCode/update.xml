@@ -16,7 +16,7 @@
          </rim:Slot>
          <rim:Slot name="languageCode">
             <rim:ValueList>
-               <rim:Value>en-uk</rim:Value>
+               <rim:Value>en-GB</rim:Value>
             </rim:ValueList>
          </rim:Slot>
          <rim:Slot name="size">

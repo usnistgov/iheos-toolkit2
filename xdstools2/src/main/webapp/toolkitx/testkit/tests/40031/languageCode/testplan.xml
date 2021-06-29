@@ -58,7 +58,7 @@
           file="THIS" 
           as="output"/> 
         <Assert 
-          id="validation">//*[local-name()='ExtrinsicObject'][@lid="orig_uuid"]//*[local-name()='Slot'][@name='languageCode']//*[local-name()='ValueList']//*[local-name()='Value'] = 'en-uk'</Assert> 
+          id="validation">//*[local-name()='ExtrinsicObject'][@lid="orig_uuid"]//*[local-name()='Slot'][@name='languageCode']//*[local-name()='ValueList']//*[local-name()='Value'] = 'en-GB'</Assert> 
       </Assertions>     
     </NullTransaction>
   </TestStep>

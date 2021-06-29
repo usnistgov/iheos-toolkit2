@@ -90,8 +90,26 @@ public class RegistryObjectValidator {
             new ExternalIdentifierValidator(ei).validateStructure(er, vc);
             if (MetadataSupport.XDSDocumentEntry_uniqueid_uuid.equals(ei.getIdentificationScheme())) {
                 String[] parts = ei.getValue().split("\\^");
+                // Expecting an uniqueId to be in the format: OID^extension
+                // where OID = root.suffix (a length of 64 characters)
+                // where extension is 16 characters (CDA Document ID)
+                // In other words, a full-form of an uniqueId is: root.suffix^extension
                 new OidFormat(er, mo.identifyingString() + ": " + ei.identifyingString(), externalIdentifierDescription(desc, ei.getIdentificationScheme()))
                         .validate(parts[0]);
+                /*
+                ITI TF 3
+                4.2.3.2.26 DocumentEntry.uniqueId
+                For documents using URIs, the uniqueId should be the URI, *except* for URNs with the “urn:oid:” and “urn:uuid:” namespaces.
+                -- This is why only the plain value is stored without the URI scheme.
+                ITI TF 3
+                Table 4.2.3.1.7-2: Data Types (previously Table 4.1-3)
+                Identifier data type:
+                when an OID format is specified, it shall follow the assignment and format rules defined for unique IDs in ITI TF-2x: Appendix B.
+                ITI TF 2x
+                Appendix B
+                B.3 UID Encoding Rules
+                UIDs shall not exceed 64 total characters, including the digits of each component, and separators between components.
+                 */
                 if (parts[0].length() > 64)
                     er.err(XdsErrorCode.Code.XDSRegistryMetadataError, mo.identifyingString() + ": " + ei.identifyingString() + " OID part of DocumentEntry uniqueID is limited to 64 digits", this, resource);
                 if (parts.length > 1 && parts[1].length() > 16) {

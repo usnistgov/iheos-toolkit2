@@ -2,8 +2,7 @@
 <rs:SubmitObjectsRequest xmlns:rs="urn:oasis:names:tc:ebxml-regrep:registry:xsd:3.0">
    <rim:LeafRegistryObjectList xmlns:rim="urn:oasis:names:tc:ebxml-regrep:rim:xsd:3.0">
       <rim:ExtrinsicObject id="Document01" objectType="urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1"
-         lid="$lid$"
-            mimeType="text/plain">
+            lid="$lid$" mimeType="text/plain">
          <rim:Slot name="creationTime">
             <rim:ValueList>
                <rim:Value>20051224</rim:Value>
@@ -87,13 +86,13 @@
             </rim:Slot>
          </rim:Classification>
          <rim:Classification classifiedObject="Document01"
-            nodeRepresentation="SUMMARY" classificationScheme="urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a">
+               nodeRepresentation="57016-8" classificationScheme="urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a">
             <rim:Name>
-               <rim:LocalizedString value="Summary"/>
+               <rim:LocalizedString value="Privacy Policy Acknowledgement Document"/>
             </rim:Name>
             <rim:Slot name="codingScheme">
                <rim:ValueList>
-                  <rim:Value>1.3.6.1.4.1.19376.1.2.6.1</rim:Value>
+                  <rim:Value>2.16.840.1.113883.6.1</rim:Value>
                </rim:ValueList>
             </rim:Slot>
          </rim:Classification>
