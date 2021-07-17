@@ -1,14 +1,14 @@
 package gov.nist.toolkit.grizzlySupport
 
-import gov.nist.toolkit.fhir.server.servlet.FhirServletFilter
-import gov.nist.toolkit.fhir.simulators.servlet.HttpSimServlet
-import gov.nist.toolkit.fhir.server.servlet.RestfulServlet
-import gov.nist.toolkit.fhir.simulators.servlet.SimServlet
 import gov.nist.toolkit.simcommon.server.SimDb
+
+
+import gov.nist.toolkit.fhir.simulators.servlet.HttpSimServlet
+import gov.nist.toolkit.fhir.simulators.servlet.SimServlet
+
 import groovy.transform.TypeChecked
 import org.apache.log4j.Logger
 import org.glassfish.grizzly.http.server.HttpServer
-import org.glassfish.grizzly.servlet.FilterRegistration
 import org.glassfish.grizzly.servlet.ServletRegistration
 import org.glassfish.grizzly.servlet.WebappContext
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory
@@ -17,8 +17,6 @@ import org.glassfish.jersey.server.ServerConfig
 import org.glassfish.jersey.server.ServerProperties
 import org.glassfish.jersey.server.model.Resource
 import org.glassfish.jersey.server.model.ResourceMethod
-
-import javax.servlet.DispatcherType
 
 /**
  *
@@ -90,6 +88,7 @@ abstract public class AbstractGrizzlyController {
     }
 
 
+    /*
     AbstractGrizzlyController withFhirServlet() {
         final WebappContext tools2 = new WebappContext("fhir","")
         FilterRegistration fhirFilter = tools2.addFilter("FhirLoggingFilter", FhirServletFilter.class)
@@ -105,6 +104,8 @@ abstract public class AbstractGrizzlyController {
         tools2.deploy(getHttpServer())
         this
     }
+
+     */
 
     AbstractGrizzlyController withToolkit() {
         withAxis2().withSimServlet()

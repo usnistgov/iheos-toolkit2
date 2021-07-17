@@ -7,7 +7,6 @@ import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -181,7 +180,15 @@ public class ToolConfigTab extends GenericQueryTab {
         if (PasswordManagement.isSignedIn) {
             new SetToolkitPropertiesCommand() {
                 @Override
+                public void onFailure(Throwable throwable) {
+                    new PopupMessage("Save properties failed.");
+                }
+
+                @Override
                 public void onComplete(String result) {
+                    new PopupMessage("Properties saved");
+                    /*
+                    FHIR Support sim is no longer needed after Asbestos was introduced.
                     Timer t = new Timer() {
                         @Override
                         public void run() {
@@ -215,7 +222,7 @@ public class ToolConfigTab extends GenericQueryTab {
                         }
                     };
                     t.schedule(1);
-
+                     */
                 }
             }.run(new SetToolkitPropertiesRequest(getCommandContext(), props));
         } else {

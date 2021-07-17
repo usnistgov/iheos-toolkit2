@@ -1,5 +1,6 @@
-package gov.nist.toolkit.fhir.simulators.mhd
+package gov.nist.toolkit.fhir.simulators.proxy.mhd
 
+import gov.nist.toolkit.fhir.simulators.mhd.DateTransform
 import spock.lang.Specification
 
 class DateTransformTest extends Specification {

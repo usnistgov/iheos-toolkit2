@@ -13,14 +13,12 @@ import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel;
 import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.MetadataToMetadataCollectionParser;
-import gov.nist.toolkit.results.ResourceToMetadataCollectionParser;
 import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
 import gov.nist.toolkit.session.server.CodesConfigurationBuilder;
-import gov.nist.toolkit.session.server.FhirMessageBuilder;
 import gov.nist.toolkit.session.server.MessageBuilder;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.services.TestLogCache;
@@ -31,7 +29,6 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testengine.engine.ResultPersistence;
 import gov.nist.toolkit.testengine.engine.TestLogsBuilder;
 import gov.nist.toolkit.testengine.engine.Xdstest2;
-import gov.nist.toolkit.testengine.fhir.FhirSupport;
 import gov.nist.toolkit.testenginelogging.LogFileContentBuilder;
 import gov.nist.toolkit.testenginelogging.TestLogDetails;
 import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
@@ -46,7 +43,11 @@ import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.utilities.id.UuidAllocator;
 import gov.nist.toolkit.utilities.io.Io;
-import gov.nist.toolkit.utilities.xml.*;
+import gov.nist.toolkit.utilities.xml.OMFormatter;
+import gov.nist.toolkit.utilities.xml.Parse;
+import gov.nist.toolkit.utilities.xml.Util;
+import gov.nist.toolkit.utilities.xml.XmlFormatter;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
@@ -54,7 +55,6 @@ import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import jdk.internal.org.xml.sax.SAXException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
-import org.hl7.fhir.instance.model.api.IBaseResource;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
@@ -62,9 +62,18 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+//import gov.nist.toolkit.testengine.fhir.FhirSupport;
+//import org.hl7.fhir.instance.model.api.IBaseResource;
 
 
 public class XdsTestServiceManager extends CommonService {
@@ -389,29 +398,29 @@ public class XdsTestServiceManager extends CommonService {
 			// inputMetadata
 			String input = deformat(testLog.inputMetadata);
 			if (!input.equals("")) {
-				try {
+//				try {
 					// FHIR content
-					boolean isJson = input.trim().startsWith("{");
-					IBaseResource resource = FhirSupport.parse(input);
-					result.add(new FhirMessageBuilder(isJson).build("", resource).setName(testLog.stepName + " Request"));
-				} catch (Exception e) {
+//					boolean isJson = input.trim().startsWith("{");
+//					IBaseResource resource = FhirSupport.parse(input);
+//					result.add(new FhirMessageBuilder(isJson).build("", resource).setName(testLog.stepName + " Request"));
+//				} catch (Exception e) {
 					// non-FHIR content (failed parse)
 					result.add(new MessageBuilder().build("", input).setName(testLog.stepName + " Request"));
-				}
+//				}
 			} else {
 				result.add(new MessageBuilder().build("", testLog.outHeader).setName(testLog.stepName + " Request"));
 			}
 			// result
 			String output = deformat(testLog.result);
-			try {
+//			try {
 				// FHIR content
-				IBaseResource resource = FhirSupport.parse(output);
-				boolean isJson = output.trim().startsWith("{");
-				result.add(new FhirMessageBuilder(isJson).build("", resource).setName(testLog.stepName + " Response"));
-			} catch (Exception e) {
+//				IBaseResource resource = FhirSupport.parse(output);
+//				boolean isJson = output.trim().startsWith("{");
+//				result.add(new FhirMessageBuilder(isJson).build("", resource).setName(testLog.stepName + " Response"));
+//			} catch (Exception e) {
 				// non-FHIR content (failed parse)
 				result.add(new MessageBuilder().build("", output).setName(testLog.stepName + " Response"));
-			}
+//			}
 		}
 		return result;
 	}
@@ -1049,13 +1058,13 @@ public class XdsTestServiceManager extends CommonService {
 						try {
 							String input = testStepLogContentDTO.getInputMetadata();
 							stepResult.setRawResults(input);
-								try {
-									IBaseResource resource = FhirSupport.parse(input);
-									ResourceToMetadataCollectionParser parser = new ResourceToMetadataCollectionParser();
-									parser.add(resource, null);
-									stepResult.setMetadata(parser.get());
-									inRequest = true;
-								} catch (Throwable e) {
+//								try {
+//									IBaseResource resource = FhirSupport.parse(input);
+//									ResourceToMetadataCollectionParser parser = new ResourceToMetadataCollectionParser();
+//									parser.add(resource, null);
+//									stepResult.setMetadata(parser.get());
+//									inRequest = true;
+//								} catch (Throwable e) {
 									Metadata m = MetadataParser
 											.parseNonSubmission(input);
 									if (m.getAllObjects().size() > 0) {
@@ -1064,7 +1073,7 @@ public class XdsTestServiceManager extends CommonService {
 										stepResult.setMetadata(mcp.get());
 										inRequest = true;
 									}
-								}
+//								}
 						} catch (Exception e) {
 							logger.warn("Cannot convert logs for section " + section + " for UI");
 						}
@@ -1073,18 +1082,18 @@ public class XdsTestServiceManager extends CommonService {
 						if (!inRequest) {
 							try {
 								String reslt = testStepLogContentDTO.getResult();
-								try {
-									IBaseResource resource = FhirSupport.parse(reslt);
-									ResourceToMetadataCollectionParser parser = new ResourceToMetadataCollectionParser();
-									parser.add(resource, null);
-									stepResult.setMetadata(parser.get());
-								} catch (Throwable e) {
+//								try {
+//									IBaseResource resource = FhirSupport.parse(reslt);
+//									ResourceToMetadataCollectionParser parser = new ResourceToMetadataCollectionParser();
+//									parser.add(resource, null);
+//									stepResult.setMetadata(parser.get());
+//								} catch (Throwable e) {
 									Metadata m = MetadataParser
 											.parseNonSubmission(reslt);
 									MetadataToMetadataCollectionParser mcp = new MetadataToMetadataCollectionParser(
 											m, stepResult.stepName);
 									stepResult.setMetadata(mcp.get());
-								}
+//								}
 								inResponse = true;
 							} catch (Exception e) {
 								logger.warn("Cannot convert logs for section " + section + " for UI");

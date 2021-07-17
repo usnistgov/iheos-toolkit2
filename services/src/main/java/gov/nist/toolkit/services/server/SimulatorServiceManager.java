@@ -6,7 +6,7 @@ import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
-import gov.nist.toolkit.fhir.simulators.proxy.util.ResourceParser;
+//import gov.nist.toolkit.fhir.simulators.proxy.util.ResourceParser;
 import gov.nist.toolkit.fhir.simulators.servlet.ServletSimulator;
 import gov.nist.toolkit.fhir.simulators.servlet.SimServlet;
 import gov.nist.toolkit.fhir.simulators.sim.reg.RegistryActorSimulator;
@@ -24,7 +24,7 @@ import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
-import gov.nist.toolkit.session.server.FhirMessageBuilder;
+//import gov.nist.toolkit.session.server.FhirMessageBuilder;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.shared.Message;
 import gov.nist.toolkit.simcommon.client.*;
@@ -40,7 +40,7 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
-import org.hl7.fhir.instance.model.api.IBaseResource;
+//import org.hl7.fhir.instance.model.api.IBaseResource;
 
 import java.io.File;
 import java.io.IOException;
@@ -196,7 +196,7 @@ public class SimulatorServiceManager extends CommonService {
 			String body = "";
 			try {
 				body = new String(Io.bytesFromFile(bodyFile));
-				body = FhirMessageBuilder.formatMessage(body);
+//				body = FhirMessageBuilder.formatMessage(body);
 			} catch (IOException e) {
 				;
 			}
@@ -217,6 +217,7 @@ public class SimulatorServiceManager extends CommonService {
 	}
 
 	private Message subParseMessage(Message message) {
+	    /*
 		try {
 			String rawMsg = message.getParts().get(1);
 			boolean isJson = rawMsg.trim().startsWith("{");
@@ -227,6 +228,8 @@ public class SimulatorServiceManager extends CommonService {
 		} catch (Exception e) {
 			logger.info("Message not FHIR format - " + ExceptionUtil.exception_details(e));
 		}
+
+	     */
 		return message;
 	}
 
@@ -251,9 +254,9 @@ public class SimulatorServiceManager extends CommonService {
 			String body = "";
 			try {
 				body = new String(Io.bytesFromFile(bodyFile));
-				body = FhirMessageBuilder.formatMessage(body);
+//				body = FhirMessageBuilder.formatMessage(body);
 			} catch (Exception e) {
-				;
+
 			}
 			String header;
 			if (headerFile.exists())

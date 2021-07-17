@@ -115,11 +115,11 @@ The "tabs" element adds extra layer which is not necessary. It can be removed bu
 					<tab label="Required" type="option" tcCode="" externalStart="true"/>
 				</tabs>
 			</tab>
-			<tab label="MHD" type="profile" tcCode="mhd">
-				<tabs label="Options">
-					<tab label="Required" type="option" tcCode="" externalStart="true"/>
-				</tabs>
-			</tab>
+<!--			<tab label="MHD" type="profile" tcCode="mhd">-->
+<!--				<tabs label="Options">-->
+<!--					<tab label="Required" type="option" tcCode="" externalStart="true"/>-->
+<!--				</tabs>-->
+<!--			</tab>-->
 		</tabs>
 	</tab>
 
@@ -143,15 +143,16 @@ The "tabs" element adds extra layer which is not necessary. It can be removed bu
 		</tabs>
 	</tab>
 
-	<tab label="FHIR Support" type="actor" tcCode="fhirsupport" displayColorCode="#D0E4F6">
-		<tabs label="Profiles">
-			<tab label="FHIR Init" type="profile" tcCode="fhir-init">
-				<tabs label="Options">
-					<tab label="Required" type="option" tcCode="" externalStart="false"/>
-				</tabs>
-			</tab>
-		</tabs>
-	</tab>
+<!-- Fhirsupport was superseded by Asbestos -->
+<!--	<tab label="FHIR Support" type="actor" tcCode="fhirsupport" displayColorCode="#D0E4F6">-->
+<!--		<tabs label="Profiles">-->
+<!--			<tab label="FHIR Init" type="profile" tcCode="fhir-init">-->
+<!--				<tabs label="Options">-->
+<!--					<tab label="Required" type="option" tcCode="" externalStart="false"/>-->
+<!--				</tabs>-->
+<!--			</tab>-->
+<!--		</tabs>-->
+<!--	</tab>-->
 
 
 	<tab label="Document Recipient" type="actor" tcCode="rec" displayColorCode="#D0E4F6">
@@ -162,14 +163,14 @@ The "tabs" element adds extra layer which is not necessary. It can be removed bu
 					<tab label="XUA Option" type="option" tcCode="xua" externalStart="false"/>
 				</tabs>
 			</tab>
-			<tab label="MHD" type="profile" tcCode="mhd">
-				<tabs label="Options">
+<!--			<tab label="MHD" type="profile" tcCode="mhd">-->
+<!--				<tabs label="Options">-->
 					<!--<tab label="Required" type="option" tcCode="" externalStart="false"/>-->
-					<tab label="Combined Recipient/Responder" type="option" tcCode="docreciprespndr" externalStart="false"/>
+<!--					<tab label="Combined Recipient/Responder" type="option" tcCode="docreciprespndr" externalStart="false"/>-->
 					<!--<tab label="Recipient" type="option" tcCode="mhddocrecip" externalStart="false"/>-->
 					<!--<tab label="XDSonFHIR" type="option" tcCode="xdsonfhir" externalStart="false"/>-->
-				</tabs>
-			</tab>
+<!--				</tabs>-->
+<!--			</tab>-->
 		</tabs>
 	</tab>
 

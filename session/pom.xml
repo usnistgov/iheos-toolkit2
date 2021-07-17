@@ -80,6 +80,7 @@
             <artifactId>actor-transaction</artifactId>
         </dependency>
 
+        <!--
         <dependency>
             <groupId>ca.uhn.hapi.fhir</groupId>
             <artifactId>hapi-fhir-base</artifactId>
@@ -94,6 +95,7 @@
             <groupId>ca.uhn.hapi.fhir</groupId>
             <artifactId>hapi-fhir-validation-resources-dstu3</artifactId>
         </dependency>
+        -->
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-json</artifactId>

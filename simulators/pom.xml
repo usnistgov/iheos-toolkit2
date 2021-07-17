@@ -116,7 +116,6 @@
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>session</artifactId>
         </dependency>
-
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>plugin-support</artifactId>

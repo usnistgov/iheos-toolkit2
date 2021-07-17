@@ -12,6 +12,7 @@ import gov.nist.toolkit.sitemanagement.TransactionOfferingFactory;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import gov.nist.toolkit.xdsexception.NoSimulatorException;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
 
@@ -62,31 +63,28 @@ public class SiteServiceManager {
 
 		List<SimId> simIds;
 		simIds = SimDb.getAllSimIds(TestSession.DEFAULT_TEST_SESSION);
-		for (SimId simId : simIds) {
-			SimulatorConfig config = new SimDb().getSimulator(simId);
-			if (config != null) {
-				AbstractActorFactory af = getActorFactory(config);
-				if (af == null)
-					throw new ToolkitRuntimeException("No ActorFactory for " + config);
-				Site site = af.getActorSite(config, null);
-				sites.put(site.getName(), site);
-			}
-		}
+		collectSites(sites, simIds);
 		simIds = SimDb.getAllSimIds(testSession);
-		for (SimId simId : simIds) {
-			SimulatorConfig config = new SimDb().getSimulator(simId);
-			if (config!=null) {
-				AbstractActorFactory af = getActorFactory(config);
-				Site site = af.getActorSite(config, null);
-				sites.put(site.getName(), site);
-			}
-		}
+		collectSites(sites, simIds);
 
 		List<Site> returns = new ArrayList<>();
 		returns.addAll(sites.values());
 		logger.debug("allSites are " + returns);
 		return returns;
 
+	}
+
+	private void collectSites(Map<String, Site> sites, List<SimId> simIds) throws SimDoesNotExistException, NoSimulatorException {
+		for (SimId simId : simIds) {
+			SimulatorConfig config = new SimDb().getSimulator(simId);
+			if (config!=null) {
+				AbstractActorFactory af = getActorFactory(config);
+				if (af == null)
+					throw new ToolkitRuntimeException(String.format("No ActorFactory found for %s as required by SimId %s config.", config.getActorType(), simId.toString()));
+				Site site = af.getActorSite(config, null);
+				sites.put(site.getName(), site);
+			}
+		}
 	}
 
 

@@ -10,7 +10,7 @@ import gov.nist.toolkit.registrymetadata.Metadata
 import gov.nist.toolkit.results.client.AssertionResults
 import gov.nist.toolkit.results.client.CodesConfiguration
 import gov.nist.toolkit.securityCommon.SecurityParams
-import gov.nist.toolkit.session.server.serviceManager.FhirServiceManager
+//import gov.nist.toolkit.session.server.serviceManager.FhirServiceManager
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager
 import gov.nist.toolkit.simcommon.client.SimId
@@ -89,7 +89,7 @@ public class Session implements SecurityParams {
 	PropertyServiceManager propertyServiceMgr = null;
 	XdsTestServiceManager xdsTestServiceManager = null;
 	QueryServiceManager queryServiceMgr = null;
-	FhirServiceManager fhirServiceManager = null;
+//	FhirServiceManager fhirServiceManager = null;
 	static Map<String, Session> sessionMap = new HashMap<String, Session>();
 	// environment name ==> codes configuration
 	static Map<String, CodesConfiguration> codesConfigurations = new Hashtable<>();
@@ -225,11 +225,14 @@ public class Session implements SecurityParams {
 		return xdsTestServiceManager;
 	}
 
+    /*
 	public FhirServiceManager fhirServiceManager() {
 		if (fhirServiceManager == null)
 			fhirServiceManager = new FhirServiceManager(this);
 		return fhirServiceManager;
 	}
+
+     */
 	
 	public void setTestSession(TestSession name) {
 		testSession = name;

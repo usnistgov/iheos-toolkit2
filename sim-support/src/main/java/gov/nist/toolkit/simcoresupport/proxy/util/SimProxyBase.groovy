@@ -1,10 +1,9 @@
 package gov.nist.toolkit.simcoresupport.proxy.util
 
-import gov.nist.toolkit.actortransaction.shared.ActorType
 import gov.nist.toolkit.actortransaction.client.ProxyTransformConfig
 import gov.nist.toolkit.actortransaction.client.TransactionDirection
 import gov.nist.toolkit.actortransaction.server.EndpointParser
-import gov.nist.toolkit.configDatatypes.client.FhirVerb
+import gov.nist.toolkit.actortransaction.shared.ActorType
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.installation.server.Installation
@@ -18,7 +17,6 @@ import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.simcommon.server.SimEndpoint
 import gov.nist.toolkit.simcommon.server.SiteFactory
 import gov.nist.toolkit.simcommon.server.factories.SimProxyFactory
-import gov.nist.toolkit.simcoresupport.mhd.CodeTranslator
 import gov.nist.toolkit.simcoresupport.proxy.exceptions.SimProxyTransformException
 import gov.nist.toolkit.sitemanagement.client.Site
 import gov.nist.toolkit.sitemanagement.client.TransactionBean
@@ -29,13 +27,11 @@ import org.apache.http.HttpHost
 import org.apache.http.HttpRequest
 import org.apache.http.HttpResponse
 import org.apache.log4j.Logger
-import org.hl7.fhir.dstu3.model.Resource
 /**
  *
  */
 @TypeChecked
 public class SimProxyBase {
-    static final String fhirSupportSimName = 'fhir_support'
     static Logger logger = Logger.getLogger(SimProxyBase.class);
 
 
@@ -58,23 +54,11 @@ public class SimProxyBase {
     ProxyLogger clientLogger = null
     ProxyLogger targetLogger = null
     List<String> clientContentTypes = []
-    List<Resource> resourcesSubmitted = []
-    FhirVerb fhirVerb
-    CodeTranslator codeTranslator
     String clientAddress = null
 
     SimProxyBase() {
         ValidationContext vc = new ValidationContext()
         vc.codesFilename = Installation.instance().getDefaultCodesFile().toString()
-        codeTranslator = new CodeTranslator(vc)
-    }
-
-    String fhirSupportBase() {
-        def userName = simId.testSession
-        SimId supportId = new SimId(userName, fhirSupportSimName)
-        SimDb simDb = new SimDb(supportId)
-        SimulatorConfig config = simDb.getSimulator(supportId)
-        config.getConfigEle(SimulatorProperties.fhirEndpoint).asString()
     }
 
     String getClientAddress() {
@@ -193,21 +177,20 @@ public class SimProxyBase {
         if (!clientActorType) return handleEarlyException(new Exception("ActorType name was ${endpoint.actorType}"))
         if (endpoint.transactionType) {
             clientTransactionType = endpoint.transactionType
-            fhirVerb = endpoint.fhirVerb
         }
         if (!clientTransactionType) return handleEarlyException(new Exception("TransactionType name was ${endpoint.transactionTypeName}"))
         simId = SimIdParser.parse(uri)
         logger.info("SimId parsed from URI as ${simId}")
         simDb = new SimDb(simId, endpoint.actorType, clientTransactionType.shortName, false)
-        config = simDb.getSimulator(simId);
-        if (config == null) throw new BadSimIdException("Simulator " + simId +  " does not exist");
+        config = simDb.getSimulator(simId)
+        if (config == null) throw new BadSimIdException("Simulator " + simId +  " does not exist")
 
-        proxySite = new SimProxyFactory().getActorSite(config, SiteFactory.buildSite(simId));
+        proxySite = new SimProxyFactory().getActorSite(config, SiteFactory.buildSite(simId))
 
-        SimulatorConfigElement ele = config.getConfigEle(SimulatorProperties.proxyPartner);
-        if (ele == null) throw new Exception("SimProxy " + simId + " has no backend sim (connection to target system)");
+        SimulatorConfigElement ele = config.getConfigEle(SimulatorProperties.proxyPartner)
+        if (ele == null) throw new Exception("SimProxy " + simId + " has no backend sim (connection to target system)")
 
-        simId2 = SimIdFactory.simIdBuilder(ele.asString());
+        simId2 = SimIdFactory.simIdBuilder(ele.asString())
 
         transformConfigs = []
         SimulatorConfigElement sce = config.get(SimulatorProperties.simProxyTransformations)

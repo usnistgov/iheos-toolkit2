@@ -316,7 +316,7 @@ public class SimulatorsController {
         logger.info("Delete " + simIdResource.asSimId());
         try {
             SimId simId = ToolkitFactory.asServerSimId(simIdResource);
-            if (simIdResource.isFhir()) simId.forFhir();
+//            if (simIdResource.isFhir()) simId.forFhir();
             api.deleteSimulatorIfItExists(simId);
         }
         catch (Throwable e) {

@@ -28,7 +28,7 @@ public class SimIdResource implements gov.nist.toolkit.toolkitServicesCommon.Sim
         id = simId.getId();
         actorType = simId.getActorType();
         environmentName = simId.getEnvironmentName();
-        fhir = simId.isFhir();
+        fhir = false; //simId.isFhir();
     }
 
     @Override

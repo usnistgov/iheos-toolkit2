@@ -526,11 +526,14 @@ public class SimServlet  extends HttpServlet {
 
 		simid = SimDb.getFullSimId(simid);
 		isProxy = ActorType.findActor(simid.getActorType()).equals(ActorType.SIM_PROXY);
+		/*
 		isFhir = simid.isFhir();
 		if (isProxy && isFhir) {
 			transaction = TransactionType.FHIR.getCode();
 			actor = ActorType.FHIR_SERVER.getShortName();
 		}
+
+		 */
 
 		try {
 			validation = uriParts[simIndex+4];
@@ -551,7 +554,7 @@ public class SimServlet  extends HttpServlet {
 			sendSoapFault(response, "Simulator: Do not understand the actor requested by this endpoint (" + actor + ") in http://" + request.getLocalName() + ":" + request.getLocalPort() + uri + endpointFormat, mvc, vc);
 			return;
 		}
-		isFhir = actorType.isFhir();
+//		isFhir = actorType.isFhir();
 
 		boolean transactionOk = true;
 
@@ -607,9 +610,9 @@ public class SimServlet  extends HttpServlet {
 			//
 			//////////////////////////////////////////////////////////////
 
-			if (actorType == ActorType.FHIR_SERVER)
-				response.setContentType("application/fhir+xml");  // TODO - JSON
-			else
+//			if (actorType == ActorType.FHIR_SERVER)
+//				response.setContentType("application/fhir+xml");  // TODO - JSON
+//			else
 				response.setContentType("application/soap+xml");
 
 //			BaseDsActorSimulator sim = getSimulatorRuntime(simid);

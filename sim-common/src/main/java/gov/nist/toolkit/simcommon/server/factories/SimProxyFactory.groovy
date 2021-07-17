@@ -56,16 +56,19 @@ class SimProxyFactory extends AbstractActorFactory implements IActorFactory{
         addFixedConfig(config2, SimulatorProperties.isProxyFrontEnd, ParamType.BOOLEAN, false)
 
         actorType.transactions.each { TransactionType transactionType ->
+            /*
             if (transactionType.isFhir()) {
                 if (transactionType.endpointSimPropertyName)
                     addFixedFhirEndpoint(config, transactionType.endpointSimPropertyName, actorType, transactionType, false, true)
 //                addFixedFhirEndpoint(config, transactionType.tlsEndpointSimPropertyName, actorType, transactionType, true)
             } else {
+
+             */
                 if (transactionType.endpointSimPropertyName) {
                     addFixedEndpoint(config, transactionType.endpointSimPropertyName, actorType, transactionType, false)
                     addFixedEndpoint(config, transactionType.tlsEndpointSimPropertyName, actorType, transactionType, true)
                 }
-            }
+//            }
         }
 
         // link the two sims making up the front end and the back end of the simproxy

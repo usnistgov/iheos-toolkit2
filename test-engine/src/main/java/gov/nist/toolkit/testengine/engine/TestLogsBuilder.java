@@ -1,6 +1,5 @@
 package gov.nist.toolkit.testengine.engine;
 
-import gov.nist.toolkit.fhir.context.ToolkitFhirContext;
 import gov.nist.toolkit.results.client.TestLog;
 import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
@@ -9,7 +8,6 @@ import gov.nist.toolkit.testenginelogging.client.LogMapItemDTO;
 import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
-import org.hl7.fhir.instance.model.api.IBaseResource;
 
 import java.util.List;
 
@@ -49,6 +47,7 @@ public class TestLogsBuilder {
 		xml = xml.trim();
 		if (xml.startsWith("<"))
 			return new OMFormatter(xml).toHtml();
+		/*
 		if (xml.startsWith("{")) {
 			try {
 				IBaseResource res = ToolkitFhirContext.get().newJsonParser().parseResource(xml);
@@ -58,6 +57,8 @@ public class TestLogsBuilder {
 				return xml;
 			}
 		}
+
+		 */
 		return xml;
 	}
 

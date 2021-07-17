@@ -3,8 +3,6 @@ package gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
@@ -394,7 +392,7 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
 					|| ActorType.COMBINED_RESPONDING_GATEWAY.equals(actorType)
 					|| ActorType.OD_RESPONDING_GATEWAY.equals(actorType)
 					|| ActorType.FIXED_REPLY.equals(actorType)
-					|| ActorType.FHIR_SERVER.equals(actorType) // MHD combines both the FHIR Server and the PDB extension so the basic FHIR (base address) will be made available as part of MHD(displayed in the UI, see the label change below, as FHIR Server).
+//					|| ActorType.FHIR_SERVER.equals(actorType) // MHD combines both the FHIR Server and the PDB extension so the basic FHIR (base address) will be made available as part of MHD(displayed in the UI, see the label change below, as FHIR Server).
 					|| (!site.isSimulator() && ActorType.ONDEMAND_DOCUMENT_SOURCE.equals(actorType)))
 				continue;
 
@@ -407,9 +405,11 @@ public class ActorConfigTab extends GenericQueryTab implements NotifyOnDelete {
 			actorEditGrid.setWidget(row, 1, actorTypeLabel);
 			row++;
 
+			/*
 			if (ActorType.MHD_DOC_RECIPIENT.equals(actorType)) {
 				actorTypeLabel.setHTML(HtmlMarkup.bold(ActorType.FHIR_SERVER.getName()));
 			}
+			 */
 
 			/**
 			 * Prefix entries that are needed before standard entries

@@ -10,7 +10,6 @@ import gov.nist.toolkit.results.client.*
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
 import gov.nist.toolkit.session.server.Session
-import gov.nist.toolkit.session.server.serviceManager.TestSessionServiceManager
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.SimId
 import gov.nist.toolkit.utilities.io.Io
@@ -94,7 +93,7 @@ class ToolkitSpecification extends Specification {
             server = new GrizzlyController()
             server.start(remoteToolkitPort);
             server.withToolkit()
-            server.withFhirServlet()
+//            server.withFhirServlet()
         }
         Installation.instance().overrideToolkitPort(remoteToolkitPort)  // ignore toolkit.properties
     }

@@ -3,11 +3,14 @@ package gov.nist.toolkit.testengine.engine.validations
 import gov.nist.toolkit.actortransaction.client.TransactionInstance
 import gov.nist.toolkit.testengine.assertionEngine.Assertion
 import gov.nist.toolkit.testengine.engine.AbstractValidater
-import gov.nist.toolkit.testengine.engine.FhirSimulatorTransaction
+//import gov.nist.toolkit.testengine.engine.FhirSimulatorTransaction
 import gov.nist.toolkit.testengine.engine.ILogReporting
 import gov.nist.toolkit.testengine.engine.SimReference
+import gov.nist.toolkit.testengine.engine.SoapSimulatorTransaction
 import gov.nist.toolkit.testengine.engine.TransactionRecord
-import gov.nist.toolkit.testengine.engine.validations.fhir.AbstractFhirValidater
+import gov.nist.toolkit.testengine.engine.validations.soap.AbstractSoapValidater
+
+//import gov.nist.toolkit.testengine.engine.validations.fhir.AbstractFhirValidater
 import gov.nist.toolkit.testengine.transactions.TransactionInstanceBuilder
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException
 import gov.nist.toolkit.xdsexception.client.XdsInternalException
@@ -97,6 +100,17 @@ class ValidationPluginRunner<T extends TransactionRecord<T>> {
         return passing
     }
 
+    class AllFalse extends AbstractSoapValidater {
+        @Override
+        ValidaterResult validate(SoapSimulatorTransaction transactionInstance) {
+            return new ValidaterResult(transactionInstance, this, false)
+        }
+
+        AllFalse() {
+        }
+    }
+
+    /*
     class AllFalse extends AbstractFhirValidater {
         @Override
         ValidaterResult validate(FhirSimulatorTransaction transactionInstance) {
@@ -106,6 +120,8 @@ class ValidationPluginRunner<T extends TransactionRecord<T>> {
         AllFalse() {
         }
     }
+
+     */
 
     private def consolidateLogs(List<ValidaterResult> results) {
         ValidaterResult first = null

@@ -28,10 +28,10 @@
 			<groupId>gov.nist.toolkit</groupId>
 			<artifactId>soap</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>gov.nist.toolkit</groupId>
-			<artifactId>fhir</artifactId>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>gov.nist.toolkit</groupId>-->
+<!--			<artifactId>fhir</artifactId>-->
+<!--		</dependency>-->
 		<dependency>
 			<groupId>gov.nist.toolkit</groupId>
 			<artifactId>adt</artifactId>
@@ -177,6 +177,7 @@
          <version>1.2</version>
       </dependency>
 
+		<!--
 		<dependency>
 			<groupId>ca.uhn.hapi.fhir</groupId>
 			<artifactId>hapi-fhir-base</artifactId>
@@ -196,6 +197,7 @@
 			<groupId>ca.uhn.hapi.fhir</groupId>
 			<artifactId>hapi-fhir-structures-hl7org-dstu2</artifactId>
 		</dependency>
+		-->
 
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>

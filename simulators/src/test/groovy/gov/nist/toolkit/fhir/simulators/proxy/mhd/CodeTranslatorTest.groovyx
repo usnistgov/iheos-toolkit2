@@ -1,4 +1,4 @@
-package gov.nist.toolkit.fhir.simulators.mhd
+package gov.nist.toolkit.fhir.simulators.proxy.mhd
 
 import gov.nist.toolkit.simcoresupport.mhd.Code
 import gov.nist.toolkit.simcoresupport.mhd.CodeTranslator

@@ -11,10 +11,10 @@
     <artifactId>sim-support</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>fhir</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>gov.nist.toolkit</groupId>-->
+<!--            <artifactId>fhir</artifactId>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>common</artifactId>

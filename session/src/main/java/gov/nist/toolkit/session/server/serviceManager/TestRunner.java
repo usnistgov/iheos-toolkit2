@@ -10,16 +10,16 @@ import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.TestSessionNotSelectedException;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
-import gov.nist.toolkit.testengine.engine.FhirContentFormat;
 import gov.nist.toolkit.testengine.engine.ResultPersistence;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepositoryFactory;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import org.apache.log4j.Logger;
-import org.hl7.fhir.dstu3.elementmodel.Manager;
 
 import java.util.List;
 import java.util.Map;
+
+//import org.hl7.fhir.dstu3.elementmodel.Manager;
 
 public class TestRunner {
     private final XdsTestServiceManager xdsTestServiceManager;
@@ -72,6 +72,7 @@ public class TestRunner {
             } else
                 session.transactionSettings.altPatientId = null;
 
+            /*
             String format = params.get("format");
             if (format != null && !format.equals("")) {
                 if (format.equalsIgnoreCase(Manager.FhirFormat.XML.name()))
@@ -79,6 +80,8 @@ public class TestRunner {
                 else
                     session.transactionSettings.fhirContentFormat = FhirContentFormat.JSON;
             }
+
+             */
 
 
             // This sets result.testId so it looks like a session-based utility usage

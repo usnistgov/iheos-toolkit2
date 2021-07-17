@@ -71,13 +71,13 @@ public enum SimulatorActorType {
      */
     INITIATING_IMAGING_GATEWAY("iig"),
 
-    FHIR_SERVER("fhir"),
+//    FHIR_SERVER("fhir"),
 
     SIM_PROXY("simproxy"),
 
-    XDS_on_FHIR_Recipient("xdsonfhir"),
+    XDS_on_FHIR_Recipient("xdsonfhir");
 
-    MHD_DOC_RECIPIENT("mhddocrec");
+//    MHD_DOC_RECIPIENT("mhddocrec")
 
     String name;  // name that matches ActorType.java
 

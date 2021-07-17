@@ -19,10 +19,10 @@ import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 public class SignInSelector implements IsWidget {
     private FlowPanel panel = new HorizontalFlowPanel();
     private HTML signInStatus = new HTML();
-    private Anchor signIn = new Anchor("Sign In");
-    private Anchor signOut = new Anchor("Sign Out");
-    private final String signedIn = "You are signed-in";
-    private final String signedOut = "You are not signed-in";
+    private Anchor signIn = new Anchor("Sign In.");
+    private Anchor signOut = new Anchor("Sign Out.");
+    private final String signedIn = "You are signed-in.";
+    private final String signedOut = "You are not signed-in.";
 
     public SignInSelector() {
 //        panel.add(new HTML("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"));

@@ -97,6 +97,7 @@
             <artifactId>gwt-user</artifactId>
         </dependency>
 
+        <!--
         <dependency>
             <groupId>ca.uhn.hapi.fhir</groupId>
             <artifactId>hapi-fhir-base</artifactId>
@@ -116,6 +117,7 @@
             <groupId>ca.uhn.hapi.fhir</groupId>
             <artifactId>hapi-fhir-structures-hl7org-dstu2</artifactId>
         </dependency>
+        -->
 
     </dependencies>
 

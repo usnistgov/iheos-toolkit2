@@ -98,9 +98,11 @@ public class ActorOptionConfig extends ActorOption {
         }.run(request);
     }
 
+    /*
     public boolean isFhirSupport() {
         return actorTypeId != null && ActorType.FHIR_SUPPORT.getActorCode().equals(actorTypeId);
     }
+     */
 
     public boolean isDocAdmin() {
         return actorTypeId != null && ActorType.DOC_ADMIN.getActorCode().equals(actorTypeId);

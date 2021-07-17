@@ -42,10 +42,12 @@
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>simulators</artifactId>
             </dependency>
+        <!--
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>fhir</artifactId>
             </dependency>
+            -->
             <dependency>
                 <groupId>com.google.gwt</groupId>
                 <artifactId>gwt-user</artifactId>

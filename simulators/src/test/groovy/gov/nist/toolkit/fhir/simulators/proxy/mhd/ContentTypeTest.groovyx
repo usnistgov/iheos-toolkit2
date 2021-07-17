@@ -1,4 +1,4 @@
-package gov.nist.toolkit.fhir.simulators.mhd
+package gov.nist.toolkit.fhir.simulators.proxy.mhd
 
 import spock.lang.Specification
 

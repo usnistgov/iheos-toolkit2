@@ -1,14 +1,15 @@
 package gov.nist.toolkit.actortransaction.shared;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import gov.nist.toolkit.actortransaction.client.ProxyTransformConfig;
-import gov.nist.toolkit.actortransaction.client.TransactionDirection;
-import gov.nist.toolkit.configDatatypes.client.FhirVerb;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import org.apache.http.annotation.Obsolete;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 // This file must be kept up to date with SimulatorActorTypes.java
 
@@ -62,18 +63,6 @@ public enum ActorType implements IsSerializable, Serializable {
             "gov.nist.toolkit.fhir.simulators.sim.reg.RegistryActorSimulator",
             Arrays.asList(TransactionType.REGISTER, TransactionType.REGISTER_ODDE, TransactionType.STORED_QUERY, TransactionType.UPDATE, TransactionType.RMU, TransactionType.MPQ, TransactionType.REMOVE_METADATA, TransactionType.XAD_PID),
             true,
-            null,
-            false,
-            Constants.USE_SHORTNAME
-    ),
-    FILTER_PROXY(
-            "Filter Proxy",
-            Arrays.asList("filter_PROXY", "filterproxy", "Filter Proxy"),
-            "fproxy",
-            "gov.nist.toolkit.simcommon.server.factories.FilterProxyActorFactory",
-            "gov.nist.toolkit.fhir.simulators.filterProxy.FilterProxySimulator",
-            Arrays.asList(TransactionType.ANY),
-            false,
             null,
             false,
             Constants.USE_SHORTNAME
@@ -138,6 +127,7 @@ public enum ActorType implements IsSerializable, Serializable {
             false,
             Constants.USE_SHORTNAME
     ),
+    /*
     MHD_DOC_RECIPIENT(    // needs to be split into responder and recipient
             "MHD Document Recipient",
             Arrays.asList(""),
@@ -212,6 +202,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "rec"   // must match rec from rec(mhd) in collections.txt
     ),
 
+     */
     INITIATING_GATEWAY(
             "Initiating Gateway",
             Arrays.asList("INIT_GATEWAY"),
@@ -369,18 +360,6 @@ public enum ActorType implements IsSerializable, Serializable {
             false,
             Constants.USE_SHORTNAME
     ),
-    FHIR_SERVER(
-            "FHIR Server",
-            Arrays.asList(""),
-            "fhir",
-            "gov.nist.toolkit.simcommon.server.factories.FhirActorFactory",
-            "gov.nist.toolkit.fhir.simulators.fhir.FhirSimulator",
-            Arrays.asList(TransactionType.FHIR),
-            true,
-            null,
-            true,
-            Constants.USE_SHORTNAME
-    ),
     DOC_SOURCE(
             "Document Source",
             Arrays.asList(""),
@@ -413,6 +392,20 @@ public enum ActorType implements IsSerializable, Serializable {
             null,
             Constants.USE_SHORTNAME   // must match docadmin in collections.txt
     ),
+    /*
+        FHIR_SERVER(
+            "FHIR Server",
+            Arrays.asList(""),
+            "fhir",
+            "gov.nist.toolkit.simcommon.server.factories.FhirActorFactory",
+            "gov.nist.toolkit.fhir.simulators.fhir.FhirSimulator",
+            Arrays.asList(TransactionType.FHIR),
+            true,
+            null,
+            true,
+            Constants.USE_SHORTNAME
+    ),
+
     FHIR_SUPPORT(
             "FHIR Support",
             Arrays.asList(""),
@@ -428,6 +421,19 @@ public enum ActorType implements IsSerializable, Serializable {
             // proxy transform classes
             null,
             Constants.USE_SHORTNAME   // must match src from src(mhd) in collections.txt
+    ),
+     */
+    FILTER_PROXY(
+            "Filter Proxy",
+            Arrays.asList("filter_PROXY", "filterproxy", "Filter Proxy"),
+            "fproxy",
+            "gov.nist.toolkit.simcommon.server.factories.FilterProxyActorFactory",
+            "gov.nist.toolkit.fhir.simulators.filterProxy.FilterProxySimulator",
+            Arrays.asList(TransactionType.ANY),
+            false,
+            null,
+            false,
+            Constants.USE_SHORTNAME
     ),
     SIM_PROXY(   // this is really an abstract type - offers no transactions in configuration, PIF is only placeholder
             "Sim Proxy",
@@ -492,7 +498,7 @@ public enum ActorType implements IsSerializable, Serializable {
         this.actorsFileLabel = actorsFileLabel;
         this.httpTransactionTypes = new ArrayList<>();
         this.httpSimulatorClassName = null;
-        this.isFhir = isFhir;
+//        this.isFhir = isFhir;
         this.proxyTransforms = null;
         this.actorCode = actorCode;
     }
@@ -509,7 +515,7 @@ public enum ActorType implements IsSerializable, Serializable {
            httpTt = new ArrayList<>();
        this.httpTransactionTypes = httpTt;
        this.httpSimulatorClassName = httpSimulatorClassName;
-       this.isFhir = isFhir;
+//       this.isFhir = isFhir;
        if (proxyTransforms == null)
            proxyTransforms = new ArrayList<>();
        this.proxyTransforms = proxyTransforms;

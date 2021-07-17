@@ -14,6 +14,24 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+
+        <!-- hk2 is required. Without this, java.lang.IllegalStateException: InjectionManagerFactory not found. exception will occur. -->
+        <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
+            <version>${jersey.inject.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.bundles.repackaged</groupId>
+            <artifactId>jersey-guava</artifactId>
+            <version>${jersey.guava.version}</version>   <!--     2.6 -->
+        </dependency>
+
+        <dependency>
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>actor-transaction</artifactId>
         </dependency>
@@ -60,22 +78,23 @@
                     <!-- While running these tests, keep an eye on projectdir/webui-tests/target/yyyy_mm_dd.stderrout.log to view server for output,errors, or javascript wait timeout issues. -->
                     <runOrder>alphabetical</runOrder> <!-- alphabetical: This means that all classes in the Include block will be sorted by their Package name + Class name. Thus, all classes exist only in one package so only the Class name part is used for sorting. The moment classes are shifted out of the single-package structure, alphabetical sorting will not work. -->
                     <includes>
-                        <include>**/A1_RunFirst_SimulatorManagerSpec.java</include> <!-- SimulatorManager deletes and recreates all simulators. If this is not the first test to run, Simulator logs (Not TestLogCache) created by other tests are gone! You can tell by the created timestamp of the Test run time and Simulator creation time -->
+                        <!-- SimulatorManager deletes and recreates all simulators. If this is not the first test to run, Simulator logs (Not TestLogCache) created by other tests are gone! You can tell by the created timestamp of the Test run time and Simulator creation time -->
+                        <include>**/A1_RunFirst_SimulatorManagerSpec.java</include>
                         <include>**/A2_Run_TestContextSpec.java</include>
-                        <include>**/RecipientActorSimulatorSpec.java</include>
-                        <include>**/RegistryActorA1SimulatorSpec.java</include>
-                        <include>**/RegistryActorA2FindDocumentswInspectResultSpec.java</include>
-                        <include>**/RegistryActorA30MetadataUpdateOptionSpec.java</include>
-                        <include>**/RegistryActorA31RestrictedMetadataUpdateOptionSpec.java</include>
-                        <include>**/RegistryActorA32RemoveMetadataDocumentsOptionSpec.java</include>
-                        <include>**/RegistryActorA33MpqOptionSpec.java</include>
-                        <include>**/RegistryActorA34OnDemandOptionSpec.java</include>
-                        <include>**/RegistryActorA35IntegratedSourceRepOptionSpec.java</include>
-                        <include>**/RegistryActorA36XuaOptionSpec.java</include>
-                        <include>**/RegistryActorA37CATFolderOptionSpec.java</include>
-                        <include>**/RegistryActorA38CATLifecycleOptionSpec.java</include>
-                        <include>**/RepositoryActorSimulatorSpec.java</include>
-                        <include>**/RespondingGatewayActorSimulatorSpec.java</include>
+<!--                        <include>**/RecipientActorSimulatorSpec.java</include>-->
+<!--                        <include>**/RegistryActorA1SimulatorSpec.java</include>-->
+<!--                        <include>**/RegistryActorA2FindDocumentswInspectResultSpec.java</include>-->
+<!--                        <include>**/RegistryActorA30MetadataUpdateOptionSpec.java</include>-->
+<!--                        <include>**/RegistryActorA31RestrictedMetadataUpdateOptionSpec.java</include>-->
+<!--                        <include>**/RegistryActorA32RemoveMetadataDocumentsOptionSpec.java</include>-->
+<!--                        <include>**/RegistryActorA33MpqOptionSpec.java</include>-->
+<!--                        <include>**/RegistryActorA34OnDemandOptionSpec.java</include>-->
+<!--                        <include>**/RegistryActorA35IntegratedSourceRepOptionSpec.java</include>-->
+<!--                        <include>**/RegistryActorA36XuaOptionSpec.java</include>-->
+<!--                        <include>**/RegistryActorA37CATFolderOptionSpec.java</include>-->
+<!--                        <include>**/RegistryActorA38CATLifecycleOptionSpec.java</include>-->
+<!--                        <include>**/RepositoryActorSimulatorSpec.java</include>-->
+<!--                        <include>**/RespondingGatewayActorSimulatorSpec.java</include>-->
                     </includes>
                     <!-- Uncomment below to Run all tests -->
                     <!--<includes>-->
@@ -138,11 +157,17 @@
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
-                <version>9.2.21.v20170120</version>
+<!--                <version>9.2.21.v20170120</version>-->
+                <version>9.4.9.v20180320</version>
                 <configuration>
                     <!-- Enter any systemProperties here. -->
-                    <jettyXml>${basedir}/src/test/etc/jetty.xml,${basedir}/src/test/etc/jetty-http.xml,${basedir}/src/test/etc/jetty-https.xml,${basedir}/src/test/etc/jetty-ssl.xml,${basedir}/src/test/etc/jetty-logging.xml</jettyXml>
-                    <war>../xdstools2/target/xdstools2-${project.version}.war</war>
+                    <jettyXml>${basedir}/src/test/etc/jetty.xml,${basedir}/src/test/etc/jetty-http.xml,${basedir}/src/test/etc/jetty-logging.xml</jettyXml>
+                    <!-- http, ${basedir}/src/test/etc/jetty-https.xml,${basedir}/src/test/etc/jetty-ssl.xml, logging -->
+
+                    <war>../xdstools2/target/xdstools2-${project.version}</war> <!-- Use exploded-directory name or file.war -->
+                    <webApp>
+                        <contextPath>/xdstools</contextPath>
+                    </webApp>
                     <stopKey>alpha</stopKey>
                     <stopPort>9099</stopPort>
                     <systemProperties>

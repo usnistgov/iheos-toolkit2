@@ -54,7 +54,7 @@ public class EngineSpi {
 
     public SimConfigResource create(String id, String user, SimulatorActorType actorType, String environmentName) throws ToolkitServiceException {
         String actorTypeString = actorType.getName();
-        SimId simId = ToolkitFactory.newSimId(id, user, actorTypeString, environmentName, actorType == SimulatorActorType.FHIR_SERVER);
+        SimId simId = ToolkitFactory.newSimId(id, user, actorTypeString, environmentName, false /*actorType == SimulatorActorType.FHIR_SERVER*/);
         SimIdResource bean = new SimIdResource(simId);
         logger.info(bean.describe());
         Response response = target
@@ -124,6 +124,7 @@ public class EngineSpi {
      * @throws ToolkitServiceException
      */
     public void delete(SimId simId) throws ToolkitServiceException {
+        /*
         if (simId.isFhir()) {
             SimIdResource bean = new SimIdResource(simId);
             logger.info(bean.describe());
@@ -141,10 +142,12 @@ public class EngineSpi {
 //            }
 
         } else {
+
+         */
             Response response = target.path("simulators/" + simId.getUser() + "__" + simId.getId()).request().delete();
             if (response.getStatus() != 200)
                 throw new ToolkitServiceException(response);
-        }
+//        }
     }
 
     /**

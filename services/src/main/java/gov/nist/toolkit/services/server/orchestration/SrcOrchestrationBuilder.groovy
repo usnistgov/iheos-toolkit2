@@ -40,9 +40,10 @@ class SrcOrchestrationBuilder extends AbstractOrchestrationBuilder {
     }
 
     RawResponse buildTestEnvironment() {
-        if (IheItiProfile.MHD.equals(actorOption.profileId)) {
+        /* if (IheItiProfile.MHD.equals(actorOption.profileId)) {
            return buildMhdTestEnvironment();
-        } else if (IheItiProfile.XDS.equals(actorOption.profileId)) {
+        } else */
+        if (IheItiProfile.XDS.equals(actorOption.profileId)) {
             return buildXdsTestEnvironment();
         } else {
             return RawResponseBuilder.build(new Exception("Unrecognized profile: " + actorOption.toString()));
@@ -113,6 +114,7 @@ class SrcOrchestrationBuilder extends AbstractOrchestrationBuilder {
         }
     }
 
+    /*
     RawResponse buildMhdTestEnvironment() {
         try {
             String supportIdName = 'mhdrec_support'
@@ -159,5 +161,6 @@ class SrcOrchestrationBuilder extends AbstractOrchestrationBuilder {
             return RawResponseBuilder.build(e);
         }
     }
+     */
 
 }

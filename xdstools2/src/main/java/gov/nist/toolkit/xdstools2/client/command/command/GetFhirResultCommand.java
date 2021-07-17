@@ -1,7 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.command.command;
 
 import gov.nist.toolkit.session.shared.Message;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetRawLogsRequest;
 
 import java.util.List;
@@ -12,6 +11,6 @@ import java.util.List;
 public abstract class GetFhirResultCommand extends GenericCommand<GetRawLogsRequest,List<Message>>{
     @Override
     public void run(GetRawLogsRequest var1) {
-        ClientUtils.INSTANCE.getToolkitServices().getFhirResult(var1,this);
+//        ClientUtils.INSTANCE.getToolkitServices().getFhirResult(var1,this);
     }
 }

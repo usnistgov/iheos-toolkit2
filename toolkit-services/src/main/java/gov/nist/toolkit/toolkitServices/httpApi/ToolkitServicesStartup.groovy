@@ -1,11 +1,6 @@
 package gov.nist.toolkit.toolkitServices.httpApi
 
-import gov.nist.toolkit.installation.server.Installation
-import gov.nist.toolkit.installation.shared.TestSession
-import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest
-import gov.nist.toolkit.services.client.FhirSupportOrchestrationResponse
-import gov.nist.toolkit.services.server.orchestration.OrchestrationManager
-import gov.nist.toolkit.session.server.Session
+
 import groovy.transform.TypeChecked
 import org.apache.log4j.Logger
 
@@ -14,8 +9,9 @@ import javax.servlet.ServletException
 import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
-
 /**
+ * This was superseded by Asbestos.
+ * Class no longer needed.
  * wait for the servlets to all startup up and then make sure FHIR Support Server is running.
  */
 @TypeChecked
@@ -27,6 +23,7 @@ class ToolkitServicesStartup extends HttpServlet {
 
         @Override
         void run() {
+            /*
                 try {
                     logger.info("FHIR Support Server about to start")
                     FhirSupportOrchestrationRequest fRequest = new FhirSupportOrchestrationRequest()
@@ -53,6 +50,7 @@ class ToolkitServicesStartup extends HttpServlet {
                     logger.fatal("${e}")
                     e.printStackTrace()
                 }
+             */
             }
     }
 

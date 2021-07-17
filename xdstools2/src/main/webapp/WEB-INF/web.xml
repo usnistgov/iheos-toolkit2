@@ -36,10 +36,10 @@
       End of configuration parameters.
      -->
 
-    <filter>
-        <filter-name>fhir-request-log</filter-name>
-        <filter-class>gov.nist.toolkit.fhir.server.servlet.FhirServletFilter</filter-class>
-    </filter>
+<!--    <filter>-->
+<!--        <filter-name>fhir-request-log</filter-name>-->
+<!--        <filter-class>gov.nist.toolkit.fhir.server.servlet.FhirServletFilter</filter-class>-->
+<!--    </filter>-->
 
     <!--  The validate is necessary so the simulator response headers can be captured for the message log -->
     <filter>
@@ -62,10 +62,10 @@
         <filter-class>gov.nist.toolkit.fhir.simulators.servlet.HttpSimServletFilter</filter-class>
     </filter>
 
-    <filter-mapping>
-        <filter-name>fhir-request-log</filter-name>
-        <url-pattern>/fsim/*</url-pattern>
-    </filter-mapping>
+<!--    <filter-mapping>-->
+<!--        <filter-name>fhir-request-log</filter-name>-->
+<!--        <url-pattern>/fsim/*</url-pattern>-->
+<!--    </filter-mapping>-->
 
     <filter-mapping>
         <filter-name>response-header-log</filter-name>
@@ -123,11 +123,14 @@
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 
+   <!--
+   This FHIR support server is no longer needed after Asbestos was introduced.
     <servlet>
         <servlet-name>FHIR-Server-init</servlet-name>
         <servlet-class>gov.nist.toolkit.toolkitServices.httpApi.ToolkitServicesStartup</servlet-class>
         <load-on-startup>10</load-on-startup>
     </servlet>
+    -->
 
     <servlet>
         <servlet-name>httpSimulatorServlet</servlet-name>
@@ -191,11 +194,11 @@
         <servlet-class>gov.nist.toolkit.testkitutilities.TestkitServlet</servlet-class>
     </servlet>
 
-    <servlet>
-        <servlet-name>fhirServlet</servlet-name>
-        <servlet-class>gov.nist.toolkit.fhir.server.servlet.RestfulServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
+<!--    <servlet>-->
+<!--        <servlet-name>fhirServlet</servlet-name>-->
+<!--        <servlet-class>gov.nist.toolkit.fhir.server.servlet.RestfulServlet</servlet-class>-->
+<!--        <load-on-startup>1</load-on-startup>-->
+<!--    </servlet>-->
 
     <servlet>
         <servlet-name>casServlet</servlet-name>
@@ -207,10 +210,10 @@
         <url-pattern>/CasSessionBuilder</url-pattern>
     </servlet-mapping>
 
-    <servlet-mapping>
-        <servlet-name>fhirServlet</servlet-name>
-        <url-pattern>/fsim/*</url-pattern>
-    </servlet-mapping>
+<!--    <servlet-mapping>-->
+<!--        <servlet-name>fhirServlet</servlet-name>-->
+<!--        <url-pattern>/fsim/*</url-pattern>-->
+<!--    </servlet-mapping>-->
 
     <servlet-mapping>
         <servlet-name>DocumentGenerator</servlet-name>
@@ -282,10 +285,11 @@
         <url-pattern>/mapping</url-pattern>
     </servlet-mapping>
 
-    <servlet-mapping>
-        <servlet-name>FHIR-Server-init</servlet-name>
-        <url-pattern>/init</url-pattern>
-    </servlet-mapping>
+<!-- Fhir support sim superseded by Asbestos -->
+<!--    <servlet-mapping>-->
+<!--        <servlet-name>FHIR-Server-init</servlet-name>-->
+<!--        <url-pattern>/init</url-pattern>-->
+<!--    </servlet-mapping>-->
 
     <servlet-mapping>
         <servlet-name>Reconfigure Simulators</servlet-name>

@@ -583,6 +583,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
+                <version>2.20</version>
 				<configuration>
 					<systemPropertyVariables>
 						<confTestsTabsConfigFile>${basedir}/src/main/webapp/toolkitx/tool-tab-configs/ConfTestsTabs.xml</confTestsTabsConfigFile>

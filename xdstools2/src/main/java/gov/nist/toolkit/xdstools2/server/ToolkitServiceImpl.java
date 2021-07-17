@@ -40,8 +40,6 @@ import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.Test;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.results.client.TestLogs;
-import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest;
-import gov.nist.toolkit.services.client.FhirSupportOrchestrationResponse;
 import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
 import gov.nist.toolkit.services.client.PifType;
 import gov.nist.toolkit.services.client.RawResponse;
@@ -55,7 +53,6 @@ import gov.nist.toolkit.session.client.TestSessionStats;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
 import gov.nist.toolkit.session.server.Session;
-import gov.nist.toolkit.session.server.serviceManager.FhirServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.TestSessionServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
@@ -124,6 +121,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Scanner;
+
+//import gov.nist.toolkit.session.server.serviceManager.FhirServiceManager;
 
 @SuppressWarnings("serial")
 public class ToolkitServiceImpl extends RemoteServiceServlet implements
@@ -454,6 +453,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
             String uid = request.getUids().uids.get(0).repositoryUniqueId;
             if (uid==null)  // For XDS tools, the repository UID is set in the RetrieveDocument#run method's setSiteSpec call.
                 return session().queryServiceManager().retrieveDocument(request.getSite(), request.getUids());
+            /*
             if (uid.startsWith("http")) {
                     // fhir read
                 return session().fhirServiceManager().read(request.getSite(), uid);
@@ -461,8 +461,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
                 uid = uid.substring(1, uid.length()-1);
                 return session().fhirServiceManager().read(request.getSite(), uid);
             } else {
+             */
                 return session().queryServiceManager().retrieveDocument(request.getSite(), request.getUids());
-            }
+//            }
         } catch (Exception e) {
             throw new Exception("retrieveDocument failed: " + e.toString());
         }
@@ -720,6 +721,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
 
 
+    /*
     @Override
     public RawResponse buildFhirSupportOrchestration(FhirSupportOrchestrationRequest request) throws Exception {
         Session s = getSession();
@@ -728,6 +730,8 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         FhirSupportOrchestrationResponse theResponse = (FhirSupportOrchestrationResponse) response;
         return theResponse;
     }
+
+     */
 
     /*
 	@Override
@@ -972,11 +976,14 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return session().xdsTestServiceManager().getRawLogs(request.getLogId());
     }
 
+    /*
     @Override
     public List<Message> getFhirResult(GetRawLogsRequest request)  throws Exception {
         installCommandContext(request);
         return session().xdsTestServiceManager().getFhirResult(request.getLogId());
     }
+
+     */
 
     @Override
     public List<String> getTestdataSetListing(GetTestdataSetListingRequest request)  throws Exception {
@@ -2020,6 +2027,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return DatasetFactory.getAllDatasets();
     }
 
+    /*
     @Override
     public List<Result> fhirCreate(FhirCreateRequest request) throws Exception {
         installCommandContext(request);
@@ -2029,6 +2037,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return results;
     }
 
+     */
+
+    /*
     @Override
     public List<Result> fhirTransaction(FhirTransactionRequest request) throws Exception {
         installCommandContext(request);
@@ -2055,6 +2066,8 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         List<Result> results = new FhirServiceManager(session()).read(request.getSite(), request.getReference());
         return results;
     }
+
+     */
 
     @Override
     public String getDatasetContent(GetDatasetElementContentRequest request)  {

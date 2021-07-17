@@ -15,7 +15,6 @@ import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.Test;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.results.client.TestLogs;
-import gov.nist.toolkit.services.client.FhirSupportOrchestrationRequest;
 import gov.nist.toolkit.services.client.IdcOrchestrationRequest;
 import gov.nist.toolkit.services.client.PifType;
 import gov.nist.toolkit.services.client.RawResponse;
@@ -189,7 +188,7 @@ public interface ToolkitService extends RemoteService  {
 	List<Result> findDocuments2(FindDocuments2Request request) throws Exception;
 
 	TestLogs getRawLogs(GetRawLogsRequest request) throws Exception;
-	List<Message> getFhirResult(GetRawLogsRequest request) throws Exception;
+//	List<Message> getFhirResult(GetRawLogsRequest request) throws Exception;
 
 	String getAdminPassword(CommandContext context) throws Exception;
 
@@ -325,9 +324,9 @@ public interface ToolkitService extends RemoteService  {
 
 	List<DatasetModel> getAllDatasets(CommandContext context) throws Exception;
 
-    List<Result> fhirCreate(FhirCreateRequest request) throws Exception;
+//    List<Result> fhirCreate(FhirCreateRequest request) throws Exception;
 
-	List<Result> fhirTransaction(FhirTransactionRequest request) throws Exception;
+//	List<Result> fhirTransaction(FhirTransactionRequest request) throws Exception;
 
     String getDatasetContent(GetDatasetElementContentRequest var1);
 
@@ -335,11 +334,11 @@ public interface ToolkitService extends RemoteService  {
     RawResponse buildSrcTestOrchestration(BuildSrcTestOrchestrationRequest request) throws Exception;
 	RawResponse buildIsrTestOrchestration(BuildIsrTestOrchestrationRequest request) throws Exception;
 
-    RawResponse buildFhirSupportOrchestration(FhirSupportOrchestrationRequest var1) throws Exception;
+//    RawResponse buildFhirSupportOrchestration(FhirSupportOrchestrationRequest var1) throws Exception;
 
-    List<Result> fhirSearch(FhirSearchRequest var1) throws Exception;
+//    List<Result> fhirSearch(FhirSearchRequest var1) throws Exception;
 
-    List<Result> fhirRead(FhirReadRequest request) throws Exception;
+//    List<Result> fhirRead(FhirReadRequest request) throws Exception;
 
     String promote(PromoteRequest request);
 

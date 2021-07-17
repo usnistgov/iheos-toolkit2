@@ -124,12 +124,14 @@ public class SimDb {
 		assert simid?.testSession?.value
 
 		// if this is a FHIR sim there is a different factory method to use
+		/*
 		ActorType actorType = ActorType.findActor(actor);
 		if (actorType == ActorType.FHIR_SERVER)
 			simid.forFhir()
 		if (simid.isFhir()) {
 			return mkfSim(simid)
 		}
+		 */
 
 		File dbRoot = getSimDbFile(simid.testSession);
 		validateSimId(simid);
@@ -181,8 +183,8 @@ public class SimDb {
 	 */
 	static public File getSimDbFile(SimId simId) {
 		assert simId?.testSession?.value
-		if (simId.isFhir())
-			return Installation.instance().fhirSimDbFile(simId.testSession);
+//		if (simId.isFhir())
+//			return Installation.instance().fhirSimDbFile(simId.testSession);
 		return Installation.instance().simDbFile(simId.testSession);
 	}
 
@@ -206,7 +208,9 @@ public class SimDb {
 
 	static boolean isFSim(SimId simId) {
 		//isPrefix(simRoot, getFSimDbFile())
+		throw new Exception("isFSim - Unsupported option.")
 
+		/*
 		SimulatorConfig config
 		try {
 			config = AbstractActorFactory.getSimConfig(simId)
@@ -215,6 +219,8 @@ public class SimDb {
 		}
 		ActorType type = ActorType.findActor(config.actorType)
 		type.isFhir()
+
+		 */
 
 		//ActorType.findActor(new File(simRoot, simTypeFilename).text).isFhir()
 	}
@@ -590,7 +596,7 @@ public class SimDb {
 
 	static private SimId internalSimIdBuilder(File simDefDir, TestSession testSession) {
 		SimId simId = SimIdFactory.simIdBuilder(simDefDir.name)//new SimId(testSession, simDefDir.name)
-		if (isFSim(simId)) simId.forFhir()
+//		if (isFSim(simId)) simId.forFhir()
 		try {
 			simId.actorType = new SimDb(simId).getSimulatorType()
 		} catch (Exception e) {

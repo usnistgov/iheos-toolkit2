@@ -36,7 +36,6 @@
         <module>xds-exceptions</module>
         <module>actor-transaction</module>
         <module>docref</module>
-        <!-- headless -->
         <module>xdstools2</module>
         <module>session</module>
         <module>simulators</module>
@@ -89,8 +88,10 @@
         <module>interaction-diagram</module>
         <module>testdoctool</module>
         <module>itsupport</module>
-        <module>fhir</module>
+ <!-- unused fhir -->
+<!--        <module>fhir</module>-->
         <module>datasets</module>
+        <!-- proxy -->
         <module>sim-proxy</module>
         <module>proxy</module>
         <module>it-tests</module>

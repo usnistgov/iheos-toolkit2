@@ -12,6 +12,7 @@ class A1_RunFirst_SimulatorManagerSpec extends ToolkitWebPage {
     def setupSpec() {
         // Load sim man page here.
         // http://127.0.0.1:8888/Xdstools2.html#Tool:toolId=Simulators
+        // localhost:8080/xdstools2-7.7.0-SNAPSHOT/#Tool:toolId=Simulators;env=default;testSession=manualwebuitest;
         loadPage(String.format("%s/#Tool:toolId=Simulators;env=default;testSession=%s;",toolkitBaseUrl, ToolkitWebPage.testSessionName))
     }
 
@@ -127,6 +128,7 @@ Error: This simulator type could not be created --> webuitest__ris
                         listHasOnlyOneItem(okButtonList)
                         page = okButtonList.get(0).click()
                     } else {
+                        println(simId + " was created successfully.")
                         addedSims++
                     }
 

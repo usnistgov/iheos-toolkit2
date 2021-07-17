@@ -1,13 +1,13 @@
 package gov.nist.toolkit.fhir.simulators.proxy.service;
 
-import ca.uhn.fhir.context.FhirContext;
-import gov.nist.toolkit.fhir.server.resourceMgr.FileSystemResourceCache;
-import gov.nist.toolkit.fhir.server.utility.WrapResourceInHttpResponse;
+//import ca.uhn.fhir.context.FhirContext;
+//import gov.nist.toolkit.fhir.server.resourceMgr.FileSystemResourceCache;
+//import gov.nist.toolkit.fhir.server.utility.WrapResourceInHttpResponse;
 import gov.nist.toolkit.simcommon.client.BadSimIdException;
 import gov.nist.toolkit.simcoresupport.proxy.util.ProxyLogger;
 import gov.nist.toolkit.simcoresupport.proxy.util.ReturnableErrorException;
 import gov.nist.toolkit.simcoresupport.proxy.util.SimProxyBase;
-import gov.nist.toolkit.testengine.fhir.FhirSupport;
+//import gov.nist.toolkit.testengine.fhir.FhirSupport;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.http.ConnectionReuseStrategy;
@@ -27,7 +27,7 @@ import org.apache.http.protocol.HttpProcessor;
 import org.apache.http.protocol.HttpRequestExecutor;
 import org.apache.http.protocol.HttpRequestHandler;
 import org.apache.log4j.Logger;
-import org.hl7.fhir.dstu3.model.OperationOutcome;
+//import org.hl7.fhir.dstu3.model.OperationOutcome;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -195,8 +195,9 @@ class ProxyHandler implements HttpRequestHandler {
         }
     }
 
-    // TODO if this is FHIR return OperationOutcome
     private void returnInternalError(HttpResponse response, ProxyLogger clientLogger, Throwable e) {
+        /*
+        // TODO if this is FHIR return OperationOutcome
         boolean isFhir = true;
         if (isFhir) {
             OperationOutcome outcome = FhirSupport.operationOutcomeFromThrowable(e);
@@ -204,12 +205,13 @@ class ProxyHandler implements HttpRequestHandler {
             String content = ctx.newJsonParser().encodeResourceToString(outcome);
             clientLogger.logResponseEntity(content.getBytes());
             WrapResourceInHttpResponse.inResponse(response, "application/fhir+json", content);
-        } else {
+        }
+         */
             response.setStatusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
             response.setReasonPhrase("SimProxy error - " + e.getMessage().replaceAll("\n", "|"));
-        }
         logger.error(ExceptionUtil.exception_details(e));
         clientLogger.logResponse(response);  // just logs the header
     }
+
 
 }

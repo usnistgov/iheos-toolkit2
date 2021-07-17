@@ -878,11 +878,11 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 				orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
 				initializationPanel.add(orchInit.panel());
 			}
-		} else if (currentActorOption.isFhirSupport()) {
+		} /* else if (currentActorOption.isFhirSupport()) {
 			orchInit = new BuildFhirSupportOrchestrationButton(this, testContext, testContextView, initializationPanel, label, currentActorOption);
 			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
 			initializationPanel.add(orchInit.panel());
-		}
+		} */
 		else {
 			if (testContext.getSiteUnderTest() != null)
 				siteToIssueTestAgainst = testContext.getSiteUnderTestAsSiteSpec();

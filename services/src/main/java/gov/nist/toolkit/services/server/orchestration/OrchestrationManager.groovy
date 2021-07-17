@@ -153,6 +153,7 @@ class OrchestrationManager {
         }
     }
 
+
     public RawResponse buildRSNAEdgeTestEnvironment(Session session, RSNAEdgeOrchestrationRequest request) {
         try {
             ToolkitApi api
@@ -209,6 +210,7 @@ class OrchestrationManager {
         }
     }
 
+    /*
     RawResponse buildFhirSupportEnvironment(Session session, FhirSupportOrchestrationRequest request) {
         try {
             ToolkitApi api
@@ -222,4 +224,6 @@ class OrchestrationManager {
             return RawResponseBuilder.build(e);
         }
     }
+
+     */
 }

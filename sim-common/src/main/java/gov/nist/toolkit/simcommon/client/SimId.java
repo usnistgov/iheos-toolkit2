@@ -71,12 +71,17 @@ public class SimId implements Serializable, IsSerializable {
 
     public SimId() {}
 
-    public SimId forFhir() {
+    public SimId forFhir() throws Exception {
+        throw new Exception("Unsupported option.");
+        /*
         fhir = true;
         return this;
+         */
     }
 
-    public boolean isFhir() { return fhir; }
+    public boolean isFhir() {
+        return false;
+    }
 
     private void build(TestSession testSession, String id) throws BadSimIdException {
         testSession.clean();

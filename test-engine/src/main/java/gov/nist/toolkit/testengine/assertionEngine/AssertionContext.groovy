@@ -2,15 +2,11 @@ package gov.nist.toolkit.testengine.assertionEngine
 
 import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.pluginSupport.loader.PluginClassLoader
-import gov.nist.toolkit.testengine.engine.AbstractValidater
-import gov.nist.toolkit.testengine.engine.validations.fhir.FhirAssertionLoader
 import gov.nist.toolkit.testengine.engine.validations.registry.RegistryValidatorLoader
 import gov.nist.toolkit.testengine.engine.validations.soap.SoapAssertionLoader
 import gov.nist.toolkit.testkitutilities.TestKit
 import gov.nist.toolkit.testkitutilities.TestKitSearchPath
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException
-import gov.nist.toolkit.xdsexception.client.ValidaterNotFoundException
-
 // keeping track of assertion plugins
 class AssertionContext {
 
@@ -21,9 +17,10 @@ class AssertionContext {
 
         if (!context) {
             PluginClassLoader loader
-            if (pluginType == TestKit.PluginType.FHIR_ASSERTION)
+            /* if (pluginType == TestKit.PluginType.FHIR_ASSERTION)
                 loader = new FhirAssertionLoader(new TestKitSearchPath(environment, testSession))
-            else if (pluginType == TestKit.PluginType.SOAP_ASSERTION)
+            else */
+            if (pluginType == TestKit.PluginType.SOAP_ASSERTION)
                 loader = new SoapAssertionLoader(new TestKitSearchPath(environment, testSession))
             else if (pluginType == TestKit.PluginType.REGISTRY_VALIDATOR)
                 loader = new RegistryValidatorLoader(new TestKitSearchPath(environment, testSession))

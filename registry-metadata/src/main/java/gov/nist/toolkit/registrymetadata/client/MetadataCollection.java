@@ -21,6 +21,7 @@ public class MetadataCollection implements IsSerializable, Serializable {
 	public List<ResourceItem> resources = new ArrayList<>();
 	public boolean isFhir = false;
 
+	/*
 	public void setAllIsFhir(boolean fhir) {
 		isFhir = fhir;
 		for (DocumentEntry de : docEntries) de.isFhir = true;
@@ -29,6 +30,8 @@ public class MetadataCollection implements IsSerializable, Serializable {
 		for (Association as : assocs) as.isFhir = true;
 		for (ObjectRef o : objectRefs) o.isFhir = true;
 	}
+
+	 */
 	
 	public MetadataObject findObject(String id) {
 		for (MetadataObject ro : docEntries) {

@@ -18,7 +18,7 @@ public class ToolkitFactory {
     static Logger logger = Logger.getLogger(ToolkitFactory.class);
 
     static public gov.nist.toolkit.simcommon.client.SimId asServerSimId(SimId simId) {
-        return new gov.nist.toolkit.simcommon.client.SimId(new TestSession(simId.getUser()), simId.getId(), simId.getActorType(), simId.getEnvironmentName(), simId.isFhir());
+        return new gov.nist.toolkit.simcommon.client.SimId(new TestSession(simId.getUser()), simId.getId(), simId.getActorType(), simId.getEnvironmentName(), false /* simId.isFhir()*/);
     }
 
     static public SimIdResource asSimIdBean(gov.nist.toolkit.simcommon.client.SimId simId) {

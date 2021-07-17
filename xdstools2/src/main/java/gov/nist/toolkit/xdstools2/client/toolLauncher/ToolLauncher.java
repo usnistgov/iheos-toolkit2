@@ -162,8 +162,8 @@ public class ToolLauncher implements ClickHandler {
 		tools.add(new ToolDef(toolConfigTabLabel, "ToolkitConf", "ToolkitConf"));
 		tools.add(new ToolDef(homeTabLabel, "Home", "Home"));
 		tools.add(new ToolDef(SysConfigTabLabel, "Admin", "Admin"));
-		tools.add(new ToolDef(submitResourceTabLabel, "Submit Resource", "SubmitResource"));
-		tools.add(new ToolDef(fhirSearchTabLabel, "FhirSearch", "FhirSearch"));
+//		tools.add(new ToolDef(submitResourceTabLabel, "Submit Resource", "SubmitResource"));
+//		tools.add(new ToolDef(fhirSearchTabLabel, "FhirSearch", "FhirSearch"));
 	}
 
 	private ToolDef getToolDef(String requestedName) {

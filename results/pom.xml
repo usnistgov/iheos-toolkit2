@@ -47,10 +47,10 @@
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>registry-support</artifactId>
         </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>fhir</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>gov.nist.toolkit</groupId>-->
+<!--            <artifactId>fhir</artifactId>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
@@ -61,6 +61,7 @@
         </dependency>
 
 
+        <!--
         <dependency>
             <groupId>ca.uhn.hapi.fhir</groupId>
             <artifactId>hapi-fhir-base</artifactId>
@@ -80,7 +81,9 @@
             <groupId>ca.uhn.hapi.fhir</groupId>
             <artifactId>hapi-fhir-structures-hl7org-dstu2</artifactId>
         </dependency>
+        -->
     </dependencies>
+
 
     <build>
         <plugins>

@@ -3,7 +3,6 @@ package gov.nist.toolkit.testengine.transactions;
 import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.testengine.assertionEngine.Assertion;
 import gov.nist.toolkit.testengine.assertionEngine.AssertionEngine;
-import gov.nist.toolkit.testengine.engine.FhirSimulatorTransaction;
 import gov.nist.toolkit.testengine.engine.ILogReporting;
 import gov.nist.toolkit.testengine.engine.ILogger;
 import gov.nist.toolkit.testengine.engine.SimReference;
@@ -66,6 +65,8 @@ public class NullTransaction extends BasicTransaction {
 			SimReference simReference = getSimReference(errs, a);
 			if (a.hasValidations()) {
 			    if (TestKit.PluginType.FHIR_ASSERTION.equals(a.validations.getPluginType())) {
+			    	throw new Exception("FHIR Assertion is not supported.");
+			    	/*
 					List<FhirSimulatorTransaction> transactions = new FhirSimulatorTransaction(simReference.getSimId(),simReference.getTransactionType()).get();
 					List<ValidaterResult> passing = new ValidationPluginRunner<FhirSimulatorTransaction>(getStepContext())
 							.run(new SimDbTransactionInstanceBuilder(new SimDb(simReference.getSimId()),null)
@@ -75,6 +76,7 @@ public class NullTransaction extends BasicTransaction {
 									, transactions);
 					if (passing.isEmpty())
 						errs.add("No " + simReference.getTransactionType() + " Transactions match requirements");
+			    	 */
 				} else if (TestKit.PluginType.SOAP_ASSERTION.equals(a.validations.getPluginType())) {
 					SoapSimulatorTransaction sst = new SoapSimulatorTransaction(simReference);
 					List<SoapSimulatorTransaction> transactions = sst.get();

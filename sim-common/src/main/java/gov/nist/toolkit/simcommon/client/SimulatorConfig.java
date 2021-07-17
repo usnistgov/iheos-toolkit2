@@ -3,13 +3,11 @@ package gov.nist.toolkit.simcommon.client;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.google.gwt.user.client.rpc.IsSerializable;
-import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
+import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
-import gov.nist.toolkit.simcommon.server.SiteServiceManager;
-import org.apache.log4j.Logger;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -113,8 +111,11 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 		this.environmentName = environment;
 
 		ActorType at = ActorType.findActor(actorType);
+		/*
 		if (at != null && at.isFhir())
 			this.id.forFhir();
+
+		 */
 	}
 	
 	public List<SimulatorConfigElement> elements() {

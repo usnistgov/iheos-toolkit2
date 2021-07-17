@@ -2,8 +2,6 @@ package gov.nist.toolkit.services.server.orchestration
 
 import gov.nist.toolkit.actortransaction.shared.ActorOption
 import gov.nist.toolkit.actortransaction.shared.ActorType
-import gov.nist.toolkit.actortransaction.shared.IheItiProfile
-import gov.nist.toolkit.actortransaction.shared.OptionType
 import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.configDatatypes.client.PidBuilder
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
@@ -18,8 +16,9 @@ import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
 import gov.nist.toolkit.simcommon.server.SimCache
-import gov.nist.toolkit.testengine.transactions.ProvideDocumentBundleTransaction
 import groovy.transform.TypeChecked
+//import gov.nist.toolkit.testengine.transactions.ProvideDocumentBundleTransaction
+
 /**
  *
  */
@@ -43,20 +42,20 @@ class RecOrchestrationBuilder extends AbstractOrchestrationBuilder {
     RawResponse buildTestEnvironment() {
 
         // depends on Fhir Support server running and initialized
-        FhirSupportOrchestrationBuilder supportBuilder = new FhirSupportOrchestrationBuilder(api, session, request.testSession, request.useExistingState)
-        FhirSupportOrchestrationResponse supportResponse = supportBuilder.buildTestEnvironment()
+//        FhirSupportOrchestrationBuilder supportBuilder = new FhirSupportOrchestrationBuilder(api, session, request.testSession, request.useExistingState)
+//        FhirSupportOrchestrationResponse supportResponse = supportBuilder.buildTestEnvironment()
 
-        if (actorOption.optionId == OptionType.XDS_ON_FHIR.toString()) {
-            RawResponse res =  setupXdsOnFhir(supportResponse)
-            RecOrchestrationResponse rres = (RecOrchestrationResponse) res
-            rres.additionalDocumentation = ProvideDocumentBundleTransaction.additionalDocumentation()
-            return res
-        } else {
+//        if (actorOption.optionId == OptionType.XDS_ON_FHIR.toString()) {
+//            RawResponse res =  setupXdsOnFhir(supportResponse)
+//            RecOrchestrationResponse rres = (RecOrchestrationResponse) res
+//            rres.additionalDocumentation = ProvideDocumentBundleTransaction.additionalDocumentation()
+//            return res
+//        } else {
             RecOrchestrationResponse response = new RecOrchestrationResponse()
-            if (actorOption.profileId == IheItiProfile.MHD)
-                response.additionalDocumentation = ProvideDocumentBundleTransaction.additionalDocumentation()
+//            if (actorOption.profileId == IheItiProfile.MHD)
+//                response.additionalDocumentation = ProvideDocumentBundleTransaction.additionalDocumentation()
 
-            response.supportResponse = supportResponse
+//            response.supportResponse = supportResponse
             Map<String, TestInstanceManager> pidNameMap = [
                     // RecPIF does not really exist as a test.  It will never be sent.  Just a
                     // name for the TestInstanceManager to use in storing the property
@@ -82,7 +81,7 @@ class RecOrchestrationBuilder extends AbstractOrchestrationBuilder {
 
             return response
 
-        }
+//        }
     }
 
 /**

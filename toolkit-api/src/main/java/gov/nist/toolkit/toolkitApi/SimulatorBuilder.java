@@ -3,7 +3,6 @@ package gov.nist.toolkit.toolkitApi;
 import gov.nist.toolkit.configDatatypes.server.SimulatorActorType;
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig;
 import gov.nist.toolkit.toolkitServicesCommon.SimId;
-import gov.nist.toolkit.toolkitServicesCommon.ToolkitFactory;
 import gov.nist.toolkit.toolkitServicesCommon.resource.SimConfigResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.SimIdResource;
 
@@ -146,12 +145,15 @@ public class SimulatorBuilder {
         return act;
     }
 
+    /*
     public IFhirServer createFhirServer(String id, String user, String environmentName) throws ToolkitServiceException {
         FhirServer server = new FhirServer();
         server.engine = engine;
         server.config = engine.create(id, user, SimulatorActorType.FHIR_SERVER, environmentName);
         return server;
     }
+
+     */
 
 
     /**
