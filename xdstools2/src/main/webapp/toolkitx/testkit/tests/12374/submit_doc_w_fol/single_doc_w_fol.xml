@@ -148,7 +148,7 @@
             </rim:Name>
             <rim:Slot name="codingScheme">
                <rim:ValueList>
-                  <rim:Value>2.16.840.1.113883.6.1</rim:Value>
+                  <rim:Value>1.3.6.1.4.1.19376.1.2.6.1</rim:Value>
                </rim:ValueList>
             </rim:Slot>
          </rim:Classification>
