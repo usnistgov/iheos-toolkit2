@@ -53,6 +53,7 @@ configurations.  See
 [here](https://github.com/usnistgov/iheos-toolkit2/wiki/Managing-System-Configurations-at-Connectathon) 
 for details.
 
+<!--
 ### New tests and tools for MHD and FHIR in general.
 
 The Conformance Tool now has tests for MHD Document Recipient/Responder
@@ -62,6 +63,7 @@ perform a limited set of queries on DocumentReferences.
 
 A new tool labels **Submit Resource** can write a collection of pre-loaded FHIR resouces
 to any FHIR server.  All of the Connectathon Patients are available here.
+-->
 
 ### Inspector has new support for Metadata Update
 

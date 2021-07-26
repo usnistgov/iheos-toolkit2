@@ -151,7 +151,8 @@ public class HomeTab extends GenericQueryTab {
 //			mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(ToolLauncher.imagingDocumentSetRetrieveTabLabel, new ToolLauncher(ToolLauncher.imagingDocumentSetRetrieveTabLabel)));
 		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.imagingDocumentSetRetrieveTabLabel, new ToolLauncher(ToolLauncher.imagingDocumentSetRetrieveTabLabel)));
 
-		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.fhirSearchTabLabel, new ToolLauncher(ToolLauncher.fhirSearchTabLabel)));
+		// FhirSearch is tool superseded by Asbestos
+//		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.fhirSearchTabLabel, new ToolLauncher(ToolLauncher.fhirSearchTabLabel)));
 
 
 		// ***************************************************************************
