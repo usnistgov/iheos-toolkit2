@@ -58,7 +58,7 @@
           file="THIS" 
           as="output"/> 
         <Assert 
-          id="validate">//*[local-name()='ExtrinsicObject'][@lid="orig_uuid"]//*[local-name()='Classification'][@classificationScheme='urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a']/@nodeRepresentation = 'SUMMARY'</Assert> 
+          id="validate">//*[local-name()='ExtrinsicObject'][@lid="orig_uuid"]//*[local-name()='Classification'][@classificationScheme='urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a']/@nodeRepresentation = '57016-8'</Assert>
       </Assertions>     
     </NullTransaction>
   </TestStep>

@@ -22,10 +22,10 @@ class RegistryActorA31RestrictedMetadataUpdateOptionSpec extends RegistryConform
     @Override
     void setOptions() {
         simConfig = getSpi().get(getSimId())
-        simConfig.setProperty(SimulatorProperties.UPDATE_METADATA_OPTION, false)
+        simConfig.setProperty(SimulatorProperties.UPDATE_METADATA_OPTION, true) // Now required by Test 12319
         simConfig.setProperty(SimulatorProperties.RESTRICTED_UPDATE_METADATA_OPTION, true)
         simConfig.setProperty(SimulatorProperties.REMOVE_METADATA, false)
-        simConfig.setProperty(SimulatorProperties.REMOVE_DOCUMENTS, false)
+//        simConfig.setProperty(SimulatorProperties.REMOVE_DOCUMENTS, false)
         simConfig.setProperty(SimulatorProperties.requiresStsSaml, false)
         updateSimConfig(simConfig)
     }
