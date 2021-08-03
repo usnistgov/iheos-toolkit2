@@ -65,7 +65,7 @@ public class XMLSignatureValidatorUtil
 	private static boolean verifySignature(NodeList nl) {
 		
 		DOMValidateContext valContext = new DOMValidateContext(new PublicKeySelector(), nl.item(0));
-		XMLSignatureFactory factory = XMLSignatureFactory.getInstance("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI()); 
+		XMLSignatureFactory factory = XMLSignatureFactory.getInstance("DOM");  /* Removed argument for Internal API: , new org.jcp.xml.dsig.internal.dom.XMLDSigRI() */
 		XMLSignature signature;
 		boolean coreValidity = true;
 		try {

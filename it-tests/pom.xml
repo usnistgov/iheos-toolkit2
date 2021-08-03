@@ -177,7 +177,7 @@
                     <version>2.19.1</version>
                     <configuration>
                         <includes>
-                            <!--<include>**/OdConsumerSpec.java</include>-->
+<!--                            <include>**/OdConsumerSpec.java</include>-->
                             <!--<include>**/StsSamlAssertionSpec.java</include>-->
                             <!--<include>**/FhirSupportOrchestrationBuilderSpec.java</include>-->
 

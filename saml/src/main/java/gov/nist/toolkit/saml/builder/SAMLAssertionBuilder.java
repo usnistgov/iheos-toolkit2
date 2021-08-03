@@ -10,18 +10,23 @@ import gov.nist.toolkit.saml.builder.bean.AuthenticationStatementBean;
 import gov.nist.toolkit.saml.builder.bean.ConditionsBean;
 import gov.nist.toolkit.saml.builder.bean.KeyInfoBean;
 import gov.nist.toolkit.saml.builder.bean.SubjectBean;
-import gov.nist.toolkit.saml.util.SAMLCallback;
 import gov.nist.toolkit.saml.util.SamlConstants;
-import gov.nist.toolkit.saml.util.SamlTokenExtractor;
 import gov.nist.toolkit.saml.util.UUIDGenerator;
-
-import java.io.FileInputStream;
-import java.security.KeyStore;
-import java.security.PublicKey;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import org.joda.time.DateTime;
+import org.opensaml.Configuration;
+import org.opensaml.common.SAMLObjectBuilder;
+import org.opensaml.common.SAMLVersion;
+import org.opensaml.saml2.core.*;
+import org.opensaml.xml.XMLObject;
+import org.opensaml.xml.XMLObjectBuilderFactory;
+import org.opensaml.xml.io.Unmarshaller;
+import org.opensaml.xml.io.UnmarshallingException;
+import org.opensaml.xml.schema.XSString;
+import org.opensaml.xml.schema.impl.XSStringBuilder;
+import org.opensaml.xml.security.x509.BasicX509Credential;
+import org.opensaml.xml.security.x509.X509KeyInfoGeneratorFactory;
+import org.opensaml.xml.signature.KeyInfo;
+import org.w3c.dom.Element;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.crypto.dsig.DigestMethod;
@@ -34,50 +39,11 @@ import javax.xml.crypto.dsig.keyinfo.KeyInfoFactory;
 import javax.xml.crypto.dsig.keyinfo.KeyValue;
 import javax.xml.crypto.dsig.spec.C14NMethodParameterSpec;
 import javax.xml.crypto.dsig.spec.TransformParameterSpec;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.joda.time.DateTime;
-import org.opensaml.Configuration;
-import org.opensaml.common.SAMLObjectBuilder;
-import org.opensaml.common.SAMLVersion;
-
-import org.opensaml.saml2.core.SubjectLocality;
-import org.opensaml.saml2.core.Action;
-import org.opensaml.saml2.core.Assertion;
-import org.opensaml.saml2.core.Attribute;
-import org.opensaml.saml2.core.AttributeStatement;
-import org.opensaml.saml2.core.AttributeValue;
-import org.opensaml.saml2.core.Audience;
-import org.opensaml.saml2.core.AudienceRestriction;
-import org.opensaml.saml2.core.AuthnContext;
-import org.opensaml.saml2.core.AuthnContextClassRef;
-import org.opensaml.saml2.core.AuthnStatement;
-import org.opensaml.saml2.core.AuthzDecisionStatement;
-import org.opensaml.saml2.core.Conditions;
-import org.opensaml.saml2.core.DecisionTypeEnumeration;
-import org.opensaml.saml2.core.Evidence;
-import org.opensaml.saml2.core.Issuer;
-import org.opensaml.saml2.core.KeyInfoConfirmationDataType;
-import org.opensaml.saml2.core.NameID;
-import org.opensaml.saml2.core.Subject;
-import org.opensaml.saml2.core.SubjectConfirmation;
-import org.opensaml.saml2.core.SubjectConfirmationData;
-import org.opensaml.saml2.metadata.RoleDescriptor;
-import org.opensaml.xml.XMLObject;
-import org.opensaml.xml.XMLObjectBuilderFactory;
-import org.opensaml.xml.io.MarshallerFactory;
-import org.opensaml.xml.io.Unmarshaller;
-import org.opensaml.xml.io.UnmarshallerFactory;
-import org.opensaml.xml.io.UnmarshallingException;
-import org.opensaml.xml.schema.XSString;
-import org.opensaml.xml.schema.impl.XSStringBuilder;
-import org.opensaml.xml.security.x509.BasicX509Credential;
-import org.opensaml.xml.security.x509.X509KeyInfoGeneratorFactory;
-import org.opensaml.xml.signature.KeyInfo;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
+import java.security.PublicKey;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Srinivasarao.Eadara
@@ -277,7 +243,7 @@ public class SAMLAssertionBuilder {
         subject.setNameID(nameID);
         
         
-        XMLSignatureFactory fac = XMLSignatureFactory.getInstance("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());		
+        XMLSignatureFactory fac = XMLSignatureFactory.getInstance("DOM"); /* Removed argument for internal API: , new org.jcp.xml.dsig.internal.dom.XMLDSigRI() */
 		List envelopedTransform = Collections.singletonList(fac.newTransform(Transform.ENVELOPED, (TransformParameterSpec) null));
         Reference ref = fac.newReference(assertionId, fac.newDigestMethod(DigestMethod.SHA1, null),envelopedTransform, null, null);
 
@@ -440,7 +406,8 @@ public class SAMLAssertionBuilder {
      *   urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
      *   urn:oasis:names:tc:SAML:2.0:nameid-format:transient
      *
-     * @param subject A SubjectBean instance
+     * @param address
+     * @param dnsName
      * @return NameID
      */
 
@@ -646,7 +613,6 @@ public class SAMLAssertionBuilder {
     /**
      * Create an Evidence model
      *
-     * @param evidence An Object instance
      * @return an Action model
      */
     @SuppressWarnings("unchecked")

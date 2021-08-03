@@ -14,16 +14,22 @@ import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel;
 import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.MetadataToMetadataCollectionParser;
 import gov.nist.toolkit.results.ResultBuilder;
-import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.results.client.AssertionResult;
+import gov.nist.toolkit.results.client.AssertionResults;
+import gov.nist.toolkit.results.client.CodesConfiguration;
+import gov.nist.toolkit.results.client.CodesResult;
+import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.StepResult;
+import gov.nist.toolkit.results.client.Test;
+import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.session.client.ConformanceSessionValidationStatus;
 import gov.nist.toolkit.session.client.logtypes.TestOverviewDTO;
 import gov.nist.toolkit.session.client.logtypes.TestPartFileDTO;
 import gov.nist.toolkit.session.server.CodesConfigurationBuilder;
-import gov.nist.toolkit.session.server.MessageBuilder;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.services.TestLogCache;
 import gov.nist.toolkit.session.server.testlog.TestOverviewBuilder;
-import gov.nist.toolkit.session.shared.Message;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.testengine.engine.ResultPersistence;
@@ -52,13 +58,11 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
-import jdk.internal.org.xml.sax.SAXException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -373,7 +377,7 @@ public class XdsTestServiceManager extends CommonService {
 		}
 	}
 
-	/**
+	/*
 	 * build structured display content.  Also returns non-FHIR content.  Each test step
 	 * returns a pair of Messages, one for the request and one for the response.  If there is no
 	 * request/response content for a step then an empty Message pair is returned.
@@ -383,6 +387,7 @@ public class XdsTestServiceManager extends CommonService {
 	 * @throws SAXException
 	 * @throws IOException
 	 */
+	/*
 	public List<Message> getFhirResult(TestInstance testInstance) throws ParserConfigurationException, SAXException, IOException {
 		TestLogs testLogs = getRawLogs(testInstance);
 		List<Message> result = new ArrayList<>();
@@ -424,6 +429,8 @@ public class XdsTestServiceManager extends CommonService {
 		}
 		return result;
 	}
+	*
+	 */
 
 	String deformat(String xml) {
 		if (xml == null) return xml;

@@ -1,10 +1,10 @@
 package gov.nist.toolkit.registrymsg.repository
+
 import gov.nist.toolkit.utilities.io.Io
 import gov.nist.toolkit.xdsexception.XdsIOException
 import groovy.transform.TypeChecked
 import org.apache.axiom.om.OMElement
 import org.apache.axiom.om.OMText
-import sun.misc.BASE64Decoder
 
 @TypeChecked
 public class Mtom {
@@ -36,8 +36,12 @@ public class Mtom {
 			content_type = datahandler.getContentType();
 		} else {
 			String base64 =  document.text
-			BASE64Decoder d  = new BASE64Decoder();
-			contents = d.decodeBuffer(base64);
+            try {
+				Base64.Decoder d = Base64.getDecoder()
+				contents = d.decode(base64);
+			} catch(IllegalArgumentException ex) { // For the case where base64 is invalid, i.e., base64 was stripped for UI display by Toolkit
+				contents = String.format("Mtom Base64 Decode Exception: %s. String length was %d.", ex.toString(), base64.length()).getBytes()
+			}
 			content_type = null;
 		}
 	}

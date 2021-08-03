@@ -1,8 +1,8 @@
 package gov.nist.toolkit.registrymsg.repository
+
 import gov.nist.toolkit.commondatatypes.MetadataSupport
 import groovy.transform.TypeChecked
 import org.apache.axiom.om.OMElement
-import sun.misc.BASE64Encoder
 /**
  *
  */
@@ -37,9 +37,9 @@ public class DocumentResponseGenerator {
             OMElement doc = MetadataSupport.om_factory.createOMElement(MetadataSupport.document_qnamens);
             response.addChild(doc)
 
-            BASE64Encoder e = new BASE64Encoder()
+            Base64.Encoder e = Base64.getEncoder()
             if (contents) {
-                String base64 = e.encodeBuffer(contents)
+                String base64 = e.encodeToString(contents)
                 doc.setText(base64)
             } else {
                 doc.setText('')

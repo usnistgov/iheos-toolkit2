@@ -39,10 +39,12 @@
         <!--<groovyVersion>2.1.1</groovyVersion>-->
         <gwtVersion>2.8.2</gwtVersion>    <!-- 2.7.0 -->
         <!-- <gwtVersion>2.6.1</gwtVersion> -->
-        <spock.version>0.7-groovy-2.0</spock.version>   <!-- 0.7-groovy-2.0   -->
+        <spock.version>1.2-groovy-2.4</spock.version>   <!-- 0.7-groovy-2.0   -->
         <mavenCompilerPluginVersion>3.1</mavenCompilerPluginVersion>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
+        <groovy-eclipse-compiler.version>2.9.0-01</groovy-eclipse-compiler.version>
+        <groovy-eclipse-batch.version>2.4.3-01</groovy-eclipse-batch.version> <!-- 2.3.4-01 -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven-source-plugin.version>2.3</maven-source-plugin.version>
         <maven-deploy-plugin.version>2.8.1</maven-deploy-plugin.version>
         <maven-release-plugin.version>2.5.1</maven-release-plugin.version>
@@ -530,19 +532,19 @@
                 <version>${spock.version}</version>
                 <scope>test</scope>
             </dependency>
-            <!-- the following two go together.
+            <!-- The following was used along with spock version 0.7-groovy-2.0.
             See http://stackoverflow.com/questions/15526510/junit-maven-parallel-test-execution-error for details -->
-            <dependency>
-                <groupId>org.spockframework</groupId>
-                <artifactId>spock-maven</artifactId>
-                <version>${spock.version}</version>
-                <exclusions>
-                    <exclusion>  <!-- exclude so we can pick up surefire-junit4 2.17 version for failsafe integration tests  -->
-                        <groupId>org.apache.maven.surefire</groupId>
-                        <artifactId>surefire-junit47</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
+<!--            <dependency>-->
+<!--                <groupId>org.spockframework</groupId>-->
+<!--                <artifactId>spock-maven</artifactId>-->
+<!--                <version>${spock.version}</version>-->
+<!--                <exclusions>-->
+<!--                    <exclusion>  &lt;!&ndash; exclude so we can pick up surefire-junit4 2.17 version for failsafe integration tests  &ndash;&gt;-->
+<!--                        <groupId>org.apache.maven.surefire</groupId>-->
+<!--                        <artifactId>surefire-junit47</artifactId>-->
+<!--                    </exclusion>-->
+<!--                </exclusions>-->
+<!--            </dependency>-->
             <dependency>
                 <groupId>org.apache.maven.surefire</groupId>
                 <artifactId>surefire-junit4</artifactId>
@@ -895,15 +897,15 @@
                 <plugin>
                     <groupId>org.codehaus.groovy</groupId>
                     <artifactId>groovy-eclipse-compiler</artifactId>
-                    <version>2.8.0-01</version>
+                    <version>${groovy-eclipse-compiler.version}</version>
                     <extensions>true</extensions>
                 </plugin>
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${maven-compiler-plugin.version}</version>
                     <configuration>
-                        <source>1.7</source>
-                        <target>1.7</target> <!-- If target is 1.8, config-datatypes module has compiler error -->
+                        <source>1.8</source>
+                        <target>1.8</target>
                     </configuration>
                 </plugin>
 

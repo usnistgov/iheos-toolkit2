@@ -1,47 +1,17 @@
 package gov.nist.toolkit.saml.util;
 
 import gov.nist.toolkit.saml.attributes.AttributeUtil;
-import gov.nist.toolkit.saml.bean.AssertionType;
-import gov.nist.toolkit.saml.bean.CeType;
-import gov.nist.toolkit.saml.bean.HomeCommunityType;
-import gov.nist.toolkit.saml.bean.PersonNameType;
-import gov.nist.toolkit.saml.bean.SamlAuthnStatementType;
-import gov.nist.toolkit.saml.bean.SamlAuthzDecisionStatementEvidenceAssertionType;
-import gov.nist.toolkit.saml.bean.SamlAuthzDecisionStatementEvidenceConditionsType;
-import gov.nist.toolkit.saml.bean.SamlAuthzDecisionStatementEvidenceType;
-import gov.nist.toolkit.saml.bean.SamlAuthzDecisionStatementType;
-import gov.nist.toolkit.saml.bean.SamlSignatureKeyInfoType;
-import gov.nist.toolkit.saml.bean.SamlSignatureType;
-import gov.nist.toolkit.saml.bean.UserType;
-
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-
-import javax.security.auth.x500.X500Principal;
-
+import gov.nist.toolkit.saml.bean.*;
 import org.apache.axiom.om.OMElement;
 import org.apache.axis2.util.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.opensaml.DefaultBootstrap;
-import org.opensaml.common.SAMLException;
-import org.opensaml.saml2.core.Assertion;
-import org.opensaml.saml2.core.Attribute;
-import org.opensaml.saml2.core.AttributeStatement;
-import org.opensaml.saml2.core.AuthenticatingAuthority;
-import org.opensaml.saml2.core.AuthnStatement;
-import org.opensaml.saml2.core.AuthzDecisionStatement;
-import org.opensaml.saml2.core.Conditions;
-import org.opensaml.saml2.core.Evidence;
-import org.opensaml.saml2.core.SubjectConfirmation;
-import org.opensaml.saml2.core.SubjectConfirmationData;
+import org.opensaml.saml2.core.*;
 import org.opensaml.xml.Configuration;
 import org.opensaml.xml.ConfigurationException;
 import org.opensaml.xml.XMLObject;
-import org.opensaml.xml.XMLObjectBuilderFactory;
-import org.opensaml.xml.io.MarshallerFactory;
 import org.opensaml.xml.io.Unmarshaller;
 import org.opensaml.xml.io.UnmarshallerFactory;
 import org.opensaml.xml.signature.ContentReference;
@@ -50,8 +20,9 @@ import org.opensaml.xml.signature.Signature;
 import org.opensaml.xml.util.LazyList;
 import org.opensaml.xml.validation.ValidationException;
 
-import sun.security.x509.AVA;
-import sun.security.x509.X500Name;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
 
 public class SamlTokenExtractor {
 	private static Log log = LogFactory.getLog(SamlTokenExtractor.class);
@@ -85,7 +56,7 @@ public class SamlTokenExtractor {
     }
 
     
-    
+   /* Not used
    public static AssertionType CreateAssertion(OMElement  element  ) throws Exception {
         log.debug("Entering SamlTokenExtractor.CreateAssertion...");
 
@@ -137,6 +108,8 @@ public class SamlTokenExtractor {
         log.debug("Exiting SamlTokenExtractor.CreateAssertion");
         return assertion;
     }
+
+    */
    
    
    
@@ -397,7 +370,6 @@ public class SamlTokenExtractor {
      * Initializes the assertion model to contain empty strings for all values.
      * These are overwritten in the extraction process with real values if they
      * are available
-     * @param assertOut The Assertion element being written to
      */
     private static AssertionType initializeAssertion() {
 
@@ -539,6 +511,8 @@ public class SamlTokenExtractor {
  * 
  * 
  */
+
+/* Not used
     private static void  extractSubject(Assertion assertion, AssertionType assertOut) throws ValidationException {
     	   
       
@@ -570,8 +544,9 @@ public class SamlTokenExtractor {
             assertOut.setUserInfo(userInfo);
         }
         //System.out.println("Exiting SamlTokenExtractor.extractSubject...");
-        
     }
+
+ */
 
     /**
      * Extracts the value of the UID model identifier of the X509 formatted
@@ -582,6 +557,7 @@ public class SamlTokenExtractor {
      * @param in509 The X509 formatted string
      * @return The extracted userid value, null if not defined.
      */
+    /* Not used
     private static String extract509(String in509) {
         //System.out.println("Entering SamlTokenExtractor.extract509...");
 
@@ -606,6 +582,7 @@ public class SamlTokenExtractor {
         //System.out.println("Exiting SamlTokenExtractor.extract509...");
         return userVal;
     }
+     */
     
     /**
      * This method is responsible to extract the information from both the 
@@ -854,7 +831,6 @@ public class SamlTokenExtractor {
      * codeSystemName, and the displayName attributes of that element.
      * @param attrib The Attribute that has the UserRole or PurposeForUse as its 
      * value
-     * @param assertOut The Assertion element being written to
      * @param codeId Identifies which coded element this is parsing
      * @throws Exception 
      */

@@ -30,7 +30,6 @@ import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.io.DicomInputStream;
 import org.dcm4che3.util.TagUtils;
-import sun.misc.BASE64Decoder;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -1107,8 +1106,13 @@ public class ImgDetailTransaction extends BasicTransaction {
          String docUID = XmlUtil.onlyChildWithLocalName(docRespEle, "DocumentUniqueId").getText();
          OMElement docEle = XmlUtil.onlyChildWithLocalName(docRespEle, "Document");
          String txt = docEle.getText();
-         BASE64Decoder d  = new BASE64Decoder();
-         byte[] contents = d.decodeBuffer(txt);
+         byte[] contents;
+         Base64.Decoder d = Base64.getDecoder();
+         try {
+            contents = d.decode(txt);
+         } catch (IllegalArgumentException iae1) {
+            contents = String.format("ImgDetailTransaction Base64 Decode Exception %s. String length was %d.", iae1.toString(), (txt!=null)?txt.length():0).getBytes();
+         }
          File dcmFile = dirPath.resolve(docUID + ".dcm").toFile();
          FileUtils.writeByteArrayToFile(dcmFile, contents);
       }
