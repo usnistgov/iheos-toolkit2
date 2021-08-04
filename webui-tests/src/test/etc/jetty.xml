@@ -101,4 +101,10 @@
     <Set name="dumpAfterStart"><Property name="jetty.server.dumpAfterStart" deprecated="jetty.dump.start" default="false"/></Set>
     <Set name="dumpBeforeStop"><Property name="jetty.server.dumpBeforeStop" deprecated="jetty.dump.stop" default="false"/></Set>
 
+    <Call name="setProperty" class="java.lang.System">
+        <Arg>org.eclipse.jetty.annotations.maxWait</Arg>
+        <!-- TODO: large amount used until duplicate jar issue is fixed -->
+        <Arg>20000</Arg> <!-- seconds -->
+    </Call>
+
 </Configure>

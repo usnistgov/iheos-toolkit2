@@ -25,7 +25,7 @@ class RegistryActorA30MetadataUpdateOptionSpec extends RegistryConformanceActorO
         simConfig.setProperty(SimulatorProperties.UPDATE_METADATA_OPTION, true)
         simConfig.setProperty(SimulatorProperties.RESTRICTED_UPDATE_METADATA_OPTION, false)
         simConfig.setProperty(SimulatorProperties.REMOVE_METADATA, false)
-        simConfig.setProperty(SimulatorProperties.REMOVE_DOCUMENTS, false)
+//        simConfig.setProperty(SimulatorProperties.REMOVE_DOCUMENTS, false) // This does not seem to be in the original config? Is this correct?
         simConfig.setProperty(SimulatorProperties.requiresStsSaml, false)
         updateSimConfig(simConfig)
     }

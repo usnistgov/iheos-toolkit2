@@ -8,11 +8,10 @@ import spock.lang.Shared
 
 abstract class RegistryConformanceActor extends ConformanceActor {
 
-
     public static final String simName = "reg" /* Sim names should be lowered cased */
 
     @Shared
-    protected DocumentRegRep regRepSim
+    protected DocumentRegRep regCTSim
 
     @Shared
     protected SimConfig simConfig

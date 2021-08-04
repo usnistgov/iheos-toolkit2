@@ -16,7 +16,7 @@ class RegistryActorA1SimulatorSpec extends RegistryConformanceActor {
         setActorPage(String.format("%s/#ConfActor:env=default;testSession=%s;actor=reg;systemId=%s",toolkitBaseUrl,ToolkitWebPage.testSessionName,simName))
         deleteOldRegSim()
         sleep(5000) // Why we need this -- Problem here is that the Delete request via REST could be still running before we execute the next Create REST command. The PIF Port release timing will be off causing a connection refused error.
-        regRepSim = createNewRegSim()
+        regCTSim = createNewRegSim()
     }
 
     void deleteOldRegSim() {
@@ -24,7 +24,7 @@ class RegistryActorA1SimulatorSpec extends RegistryConformanceActor {
     }
 
     DocumentRegRep createNewRegSim() {
-        return getSpi().createDocumentRegRep(simName, ToolkitWebPage.testSessionName, "default")
+        return getSpi().createDocumentReg(simName, ToolkitWebPage.testSessionName, "default")
     }
 
 

@@ -11,12 +11,16 @@ import spock.lang.Timeout
 /**
  * This OptionSpec class should only be queued to run after the Registry Required Spec tests since it will use the existing Orchestration and Simulator state.
  */
-class RegistryActorA33MpqOptionSpec extends RegistryActorA1SimulatorSpec { // extends RegistryConformanceActorOption {
+class RegistryActorA39MpqOptionSpec extends RegistryActorA1SimulatorSpec { // extends RegistryConformanceActorOption {
 
     @Override
     void setupSim() {
-        simName = "reg4mpqtests"
-
+        /*
+         * MPQ fails if a RegRep is used. Submissions are mysteriously duplicated:
+         *  Orchestration results in 24 SubmissionSets instead of 12, etc.
+         *  Test without patient Id reports that 6 ObjectRefs found instead of 3.
+         *  MQP Test fails.
+         */
         setActorPage(String.format(
                 "%s/#ConfActor:env=default;testSession=%s;"
                         + "actor=reg;profile=xds;option=mpq;systemId=%s",
@@ -26,7 +30,7 @@ class RegistryActorA33MpqOptionSpec extends RegistryActorA1SimulatorSpec { // ex
 
         deleteOldRegSim()
         sleep(5000) // Why we need this -- Problem here is that the Delete request via REST could be still running before we execute the next Create REST command. The PIF Port release timing will be off causing a connection refused error.
-        regRepSim = createNewRegSim()
+        regCTSim = createNewRegSim()
     }
 
     ///////////

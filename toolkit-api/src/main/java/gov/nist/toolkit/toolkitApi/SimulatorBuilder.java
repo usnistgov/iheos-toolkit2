@@ -178,6 +178,14 @@ public class SimulatorBuilder {
         return act;
     }
 
+    public DocumentRegRep createDocumentReg(String id, String user, String environmentName) throws ToolkitServiceException {
+        XdsDocumentRegRep act = new XdsDocumentRegRep();
+        act.engine = engine;
+        act.config = engine.create(id, user, SimulatorActorType.REGISTRY, environmentName);
+        return act;
+    }
+
+
     public DocumentRepository createDocumentRepository(String id, String user, String environmentName)  throws ToolkitServiceException {
         XdsDocumentRepository act = new XdsDocumentRepository();
         act.engine = engine;

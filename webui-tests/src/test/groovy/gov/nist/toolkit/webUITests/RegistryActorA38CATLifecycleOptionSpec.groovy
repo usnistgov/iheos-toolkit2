@@ -25,7 +25,7 @@ class RegistryActorA38CATLifecycleOptionSpec extends RegistryConformanceActorOpt
         simConfig.setProperty(SimulatorProperties.UPDATE_METADATA_OPTION, false)
         simConfig.setProperty(SimulatorProperties.RESTRICTED_UPDATE_METADATA_OPTION, false)
         simConfig.setProperty(SimulatorProperties.REMOVE_METADATA, false)
-        simConfig.setProperty(SimulatorProperties.REMOVE_DOCUMENTS, false)
+//        simConfig.setProperty(SimulatorProperties.REMOVE_DOCUMENTS, false)
         simConfig.setProperty(SimulatorProperties.requiresStsSaml, false)
         updateSimConfig(simConfig)
     }

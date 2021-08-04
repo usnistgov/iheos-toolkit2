@@ -25,7 +25,7 @@ class RegistryActorA32RemoveMetadataDocumentsOptionSpec extends RegistryConforma
         simConfig.setProperty(SimulatorProperties.UPDATE_METADATA_OPTION, false)
         simConfig.setProperty(SimulatorProperties.RESTRICTED_UPDATE_METADATA_OPTION, false)
         simConfig.setProperty(SimulatorProperties.REMOVE_METADATA, true)
-        simConfig.setProperty(SimulatorProperties.REMOVE_DOCUMENTS, true)
+//        simConfig.setProperty(SimulatorProperties.REMOVE_DOCUMENTS, true)
         simConfig.setProperty(SimulatorProperties.requiresStsSaml, false)
         updateSimConfig(simConfig)
     }
