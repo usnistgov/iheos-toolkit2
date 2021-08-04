@@ -23,3 +23,30 @@ http://127.0.0.1:8888/Xdstools2.html#ConfActor:alternate/dev/reg/xds/catfolder/r
 http://127.0.0.1:8888/Xdstools2.html#ConfActor:env=default;testSession=default;actor=reg;profile=xds;option=catfolder;systemId=reg;
 
 http://127.0.0.1:8888/Xdstools2.html#ConfActor:env=default;testSession=default;actor=rec;profile=mhd;option=docreciprespndr;systemId=reg;
+
+RegistryActorA2FindDocumentswInspectResultSpec
+http://127.0.0.1:8888/xdstools/Xdstools2.html#ConfActor:env=default;testSession=webuitest;actor=reg;systemId=reg
+P0730182100.28^^^&1.3.6.1.4.1.21367.13.20.1000&ISO
+http://127.0.0.1:8888/xdstools/Xdstools2.html#Tool:toolId=FindDocuments;env=default;testSession=webuitest;
+
+MetadataUpdate option
+http://127.0.0.1:8888/xdstools/Xdstools2.html#ConfActor:env=default;testSession=webuitest;actor=reg;profile=xds;option=mu;systemId=reg
+
+RMU
+http://127.0.0.1:8888/xdstools/#ConfActor:env=default;testSession=webuitest;actor=reg;profile=xds;option=rmu;systemId=reg
+
+RMD Remove Metadata
+http://127.0.0.1:8888/xdstools/#ConfActor:env=default;testSession=webuitest;actor=reg;profile=xds;option=rm;systemId=reg
+
+MPQ (requires a clean registry without any metadata)
+http://127.0.0.1:8888/xdstools/#ConfActor:env=default;testSession=webuitest;actor=reg;profile=xds;option=mpq;systemId=reg
+
+OD
+http://127.0.0.1:8888/xdstools/#ConfActor:env=default;testSession=webuitest;actor=reg;profile=xds;option=od;systemId=reg
+
+ISR
+http://127.0.0.1:8888/xdstools/#ConfActor:env=default;testSession=webuitest;actor=reg;profile=xds;option=isr;systemId=reg
+
+
+
+
