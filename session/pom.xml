@@ -98,7 +98,7 @@
         -->
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-json</artifactId>
+            <artifactId>groovy-all</artifactId>
             <version>${groovyVersion}</version>
         </dependency>
 
