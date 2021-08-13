@@ -68,6 +68,7 @@ public interface ToolkitServiceAsync {
     void reloadSystemFromGazelle(ReloadSystemFromGazelleRequest request, AsyncCallback<String> callback);
     void getSiteNamesWithRG(CommandContext context,AsyncCallback<List<String>> callback);
     void getSiteNamesByTranType(GetSiteNamesByTranTypeRequest request, AsyncCallback<List<String>> callback);
+    void isAdminPasswordValid(IsAdminPasswordValidRequest request, AsyncCallback<Boolean> callback);
 
     void getDashboardRegistryData(CommandContext context, AsyncCallback<List<RegistryStatus>> callback);
     void getDashboardRepositoryData(CommandContext context, AsyncCallback<List<RepositoryStatus>> callback);
@@ -162,8 +163,6 @@ public interface ToolkitServiceAsync {
     void mpqFindDocuments(MpqFindDocumentsRequest request, AsyncCallback<List<Result>> callback);
     void getAll(GetAllRequest request, AsyncCallback<List<Result>> callback);
     void findDocuments2(FindDocuments2Request request, AsyncCallback<List<Result>> callback);
-
-    void getAdminPassword(CommandContext context,AsyncCallback<String> callback);
 
     void getImplementationVersion(CommandContext context,AsyncCallback<String> callback);
 

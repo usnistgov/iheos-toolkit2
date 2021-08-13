@@ -1281,11 +1281,12 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 //        installCommandContext(request);
         return setToolkitPropertiesImpl(request.getProperties());
     }
+
     @Override
-    public String getAdminPassword(CommandContext context) throws Exception  {
-//        installCommandContext(context);
-        return Installation.instance().propertyServiceManager().getAdminPassword();
+    public boolean isAdminPasswordValid(IsAdminPasswordValidRequest request) throws Exception {
+        return (request.getPasswordToValidate().equals(Installation.instance().propertyServiceManager().getAdminPassword()));
     }
+
     @Override
     public boolean reloadPropertyFile() throws NoServletSessionException  { return Installation.instance().propertyServiceManager().reloadPropertyFile(); }
     @Override

@@ -44,11 +44,6 @@ public class PasswordManagement {
 		clearSignInCallbacks();
 	}
 	
-	static public void comparePassword(String password) {
-		isSignedIn = adminPassword.equals(password);
-//		return isSignedIn;
-	}
-
 	public static void clearSignInCallbacks() {
 		signInCallbacks.clear();
 	}

@@ -89,6 +89,8 @@ public interface ToolkitService extends RemoteService  {
 	boolean addTestSession(CommandContext context) throws Exception;
 	boolean deleteTestSession(CommandContext context) throws Exception;
 
+	boolean isAdminPasswordValid(IsAdminPasswordValidRequest request) throws Exception;
+
 	/* Simulator Management */
 	List<String> getActorTypeNames(CommandContext context) throws Exception;
 	Simulator getNewSimulator(GetNewSimulatorRequest request) throws Exception;
@@ -189,8 +191,6 @@ public interface ToolkitService extends RemoteService  {
 
 	TestLogs getRawLogs(GetRawLogsRequest request) throws Exception;
 //	List<Message> getFhirResult(GetRawLogsRequest request) throws Exception;
-
-	String getAdminPassword(CommandContext context) throws Exception;
 
 	String getTestplanAsText(GetTestplanAsTextRequest request) throws Exception;
 	TestPartFileDTO getSectionTestPartFile(GetSectionTestPartFileRequest request) throws Exception;

@@ -5,10 +5,8 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
-import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
-import gov.nist.toolkit.xdstools2.client.command.command.GetAdminPasswordCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetImplementationVersionCommand;
 import gov.nist.toolkit.xdstools2.client.inspector.HyperlinkFactory;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
@@ -53,12 +51,6 @@ public class HomeTab extends GenericQueryTab {
 		mainGrid.setCellSpacing(20);
 
 		loadIHEGrid(0);
-		new GetAdminPasswordCommand(){
-			@Override
-			public void onComplete(String result) {
-				PasswordManagement.adminPassword = result;
-			}
-		}.run(getCommandContext());
 		loadVersion();
 	}
 

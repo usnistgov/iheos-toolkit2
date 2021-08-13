@@ -12,6 +12,9 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
+import gov.nist.toolkit.xdstools2.client.command.command.IsAdminPasswordValidCommand;
+import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.shared.command.request.IsAdminPasswordValidRequest;
 
 public class AdminPasswordDialogBox extends DialogBox {
 	PasswordTextBox passBox;
@@ -60,15 +63,29 @@ public class AdminPasswordDialogBox extends DialogBox {
 		public void onClick(ClickEvent unused) {
 			String password = passBox.getText();
 			AdminPasswordDialogBox.this.hide();
-			PasswordManagement.comparePassword(password);
-			
-			if (PasswordManagement.isSignedIn) {
-				PasswordManagement.callSignInCallbacks();
-			}
-			else {
-				new PopupMessage("Sorry");
-				PasswordManagement.clearSignInCallbacks();
-			}
+
+			new IsAdminPasswordValidCommand() {
+				@Override
+				public void onComplete(Boolean isValid) {
+					PasswordManagement.isSignedIn = isValid;
+
+					if (PasswordManagement.isSignedIn) {
+						PasswordManagement.callSignInCallbacks();
+					}
+					else {
+						new PopupMessage("Sorry");
+						PasswordManagement.clearSignInCallbacks();
+					}
+				}
+
+				@Override
+				public void onFailure(Throwable throwable) {
+					PasswordManagement.isSignedIn = false;
+					PasswordManagement.clearSignInCallbacks();
+				}
+			}.run(new IsAdminPasswordValidRequest(ClientUtils.INSTANCE.getCommandContext(), password));
+
+
 		}
 		
 	}
