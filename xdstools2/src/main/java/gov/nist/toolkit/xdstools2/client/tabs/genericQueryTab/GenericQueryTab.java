@@ -377,6 +377,7 @@ public abstract class GenericQueryTab  extends ToolWindow implements StatusDispl
 
         if (tlsEnabled) {
             doTls = new CheckBox("use TLS");
+            doTls.setTitle("Select this option to display systems that support TLS. Otherwise, TLS-configured systems will be hidden.");
             doTls.setEnabled(tlsOptionEnabled);
             if (getCommonSiteSpec() != null) {
                 doTls.setValue(getCommonSiteSpec().isTls());
