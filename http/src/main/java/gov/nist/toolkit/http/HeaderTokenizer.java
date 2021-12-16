@@ -1,7 +1,7 @@
 package gov.nist.toolkit.http;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ public class HeaderTokenizer {
 	int cursor = 0;
 	Token currentToken = null;
 	Token previousToken = null;
-	static final Logger logger = Logger.getLogger(HeaderTokenizer.class);
+	static final Logger logger = Logger.getLogger(HeaderTokenizer.class.getName());
 	boolean debug = false;
 	
 	public HeaderTokenizer(String inputString) {
@@ -123,11 +123,11 @@ public class HeaderTokenizer {
 	
 	void addToken(Token token) {
 		if (token.isString()) {
-			logger.debug("Add S(" + token + ") ");
+			logger.fine("Add S(" + token + ") ");
 			if (debug) logger.info("Add S(" + token + ") ");
 		}
 		else {
-			logger.debug("Add T(" + token + ") ");
+			logger.fine("Add T(" + token + ") ");
 			if (debug) logger.info("Add T(" + token + ") ");
 		}
 		tokens.add(token);

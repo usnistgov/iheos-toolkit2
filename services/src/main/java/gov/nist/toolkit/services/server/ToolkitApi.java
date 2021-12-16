@@ -21,7 +21,7 @@ import gov.nist.toolkit.simcommon.server.SiteServiceManager;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdsexception.client.ThreadPoolExhaustedException;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ import java.util.Properties;
  */
 
 public class ToolkitApi {
-    static Logger logger = Logger.getLogger(ToolkitApi.class);
+    static Logger logger = Logger.getLogger(ToolkitApi.class.getName());
     private Session session;
     private String environmentName;
     boolean internalUse = true;
@@ -56,7 +56,7 @@ public class ToolkitApi {
         }
         if (!api.internalUse) {
             String msg = "Engine initialized for Service Use - cannot reinitialize for Internal Use";
-            logger.fatal(msg);
+            logger.severe(msg);
             throw new EngineInitializationException(msg);
         }
         return api;
@@ -78,7 +78,7 @@ public class ToolkitApi {
         }
         if (api.internalUse) {
             String msg = "Engine initialized for Internal Use - cannot reinitialize for Service Use";
-            logger.fatal(msg);
+            logger.severe(msg);
             throw new EngineInitializationException(msg);
         }
         return api;
@@ -196,7 +196,7 @@ public class ToolkitApi {
      * @throws Exception
      */
     public Site getActorConfig(String id) throws Exception {
-        logger.debug("ToolkitApi#getActorConfig for ID: " + id);
+        logger.fine("ToolkitApi#getActorConfig for ID: " + id);
         SimId simId = SimDb.simIdBuilder(id);
         return getSiteForSimulator(simId);
     }

@@ -9,7 +9,7 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.xdsexception.client.XdsException;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 public class RetrieveImagingDocSet extends CommonService {
-	static Logger logger = Logger.getLogger(RetrieveImagingDocSet.class);
+	static Logger logger = Logger.getLogger(RetrieveImagingDocSet.class.getName());
 	Session session;
 	
 	public RetrieveImagingDocSet(Session session) throws XdsException {
@@ -25,9 +25,9 @@ public class RetrieveImagingDocSet extends CommonService {
 	}
 	
 	public List<Result> run(SiteSpec site, Uids uids, String studyRequest, String transferSyntax) throws Exception {
-		logger.debug("RetrieveImagingDocSet::run");
-//		logger.debug(" Study Request " + studyRequest);
-		logger.debug(" Session.repUID" + session.repUid);
+		logger.fine("RetrieveImagingDocSet::run");
+//		logger.fine(" Study Request " + studyRequest);
+		logger.fine(" Session.repUID" + session.repUid);
 		session.setSiteSpec(site);
 
 			// the client should fill in the uids details, but for now... 
@@ -39,19 +39,19 @@ public class RetrieveImagingDocSet extends CommonService {
 			
 			// set repository from tool selection
 			for (Uid uid : uids.uids) {
-				logger.debug(" uid.uid: " + uid.uid);
-				logger.debug(" uid.repositoryUniqueId: " + uid.repositoryUniqueId);
+				logger.fine(" uid.uid: " + uid.uid);
+				logger.fine(" uid.repositoryUniqueId: " + uid.repositoryUniqueId);
 				if ((uid.repositoryUniqueId == null || uid.repositoryUniqueId.equals(""))
 						&& session.repUid != null && !session.repUid.equals(""))
 					uid.repositoryUniqueId = session.repUid;
-				logger.debug(" New uid.repositoryUniqueId: " + uid.repositoryUniqueId);
+				logger.fine(" New uid.repositoryUniqueId: " + uid.repositoryUniqueId);
 			}
 
 			TestInstance testInstance = new TestInstance("RetrieveImagingDocSet", session.getTestSession());
 			List<String> sections = new ArrayList<String>();
 			Map<String, String> params = new HashMap<String, String>();
 			if (session.siteSpec.isImagingDocumentSourceActor()) {
-				logger.debug("Actor is Imaging Document Source, assume XDS-I transaction");
+				logger.fine("Actor is Imaging Document Source, assume XDS-I transaction");
 				sections.add("XDSI");
 				params.put("$full_imaging_request$", studyRequest);
 			} 
@@ -60,12 +60,12 @@ public class RetrieveImagingDocSet extends CommonService {
 //				params.put("$home$", site.homeId);
 //			} 
 			else {
-				logger.fatal("Unrecognized SiteSpec actor type. SiteSpec.name = " + session.siteSpec.getName() +
+				logger.severe("Unrecognized SiteSpec actor type. SiteSpec.name = " + session.siteSpec.getName() +
 					" Actor Type (name) = " + session.siteSpec.getActorType().getName());
 
 			}
 //			for (String param : params.keySet()) {
-//			    logger.debug("..." + param + ": " + params.get(param));
+//			    logger.fine("..." + param + ": " + params.get(param));
 //			}
 
 			List<Result> results = session.queryServiceManager().perRepositoryImagingDocSetRetrieve(uids, testInstance, sections, params);

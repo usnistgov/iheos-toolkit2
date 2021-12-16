@@ -1,9 +1,7 @@
 import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.fhir.support.ResDb
 import gov.nist.toolkit.installation.server.Installation
-import org.apache.log4j.ConsoleAppender
-import org.apache.log4j.Logger
-import org.apache.log4j.PatternLayout
+import java.util.logging.*
 
 /**
  *
@@ -12,7 +10,7 @@ class Tk {
 
     static init() {
         Logger rootLogger = Logger.getRootLogger()
-        rootLogger.setLevel(org.apache.log4j.Level.DEBUG)
+        rootLogger.setLevel(Level.FINE)
         PatternLayout layout = new PatternLayout("%d{ISO8601} [%t] %-5p %c %x - %m%n")
         rootLogger.addAppender(new ConsoleAppender(layout))
 

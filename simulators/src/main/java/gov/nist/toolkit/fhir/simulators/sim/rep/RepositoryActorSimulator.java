@@ -22,7 +22,7 @@ import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.validatorsSoapMessage.message.SoapMessageValidator;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -31,7 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class RepositoryActorSimulator extends BaseDsActorSimulator {
-	static final Logger logger = Logger.getLogger(RepositoryActorSimulator.class);
+	static final Logger logger = Logger.getLogger(RepositoryActorSimulator.class.getName());
 
 	RepIndex repIndex;
 //	SimDb db;
@@ -84,7 +84,7 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 	public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
 		GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
 
-		logger.debug("Repository starting transaction " + transactionType);
+		logger.fine("Repository starting transaction " + transactionType);
 
 		if (transactionType.equals(TransactionType.PROVIDE_AND_REGISTER) ||
 				transactionType.equals(TransactionType.XDR_PROVIDE_AND_REGISTER)) {

@@ -1,7 +1,7 @@
 package gov.nist.toolkit.adt;
 
 import gov.nist.toolkit.installation.server.PropertyServiceManager;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -10,7 +10,7 @@ import java.util.Date;
 
 
 public class A43Sender {
-	static Logger logger = Logger.getLogger(A43Sender.class);
+	static Logger logger = Logger.getLogger(A43Sender.class.getName());
 	private static String[] A43 = new String[4];
 	private static DateFormat EVN2_TIMESTAMP = new SimpleDateFormat("yyyyMMddHHmmssZZZZ");
 	private static DateFormat MSG7_DATE_FORMAT = new SimpleDateFormat("yyyyMMddHHmmss");

@@ -25,7 +25,7 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 import java.io.File;
@@ -44,7 +44,7 @@ public class RetrieveImgDocSetTransaction extends BasicTransaction {
                                                                                    // filename
    Metadata reference_metadata = null;
    boolean isXDSI;
-   static Logger logger = Logger.getLogger(RetrieveImgDocSetTransaction.class);
+   static Logger logger = Logger.getLogger(RetrieveImgDocSetTransaction.class.getName());
 
    @Override
    public String toString() {
@@ -99,17 +99,17 @@ public class RetrieveImgDocSetTransaction extends BasicTransaction {
    @Override
    public void run(OMElement request_ele) throws Exception {
 
-      logger.debug("RetrieveImgDocSetTransaction#run");
+      logger.fine("RetrieveImgDocSetTransaction#run");
 
       if (request_ele == null) throw new XdsInternalException("Retrieve transaction - request is null");
 
-      logger.debug(" Request Element: " + request_ele.toString());
+      logger.fine(" Request Element: " + request_ele.toString());
 
       applyLinkage(request_ele);
 
       reportManagerPreRun(request_ele);
 
-      logger.debug(" Repository Unique ID: " + repositoryUniqueId);
+      logger.fine(" Repository Unique ID: " + repositoryUniqueId);
       if (repositoryUniqueId == null) {
          // if managed by ReportManager then need to extract it from request
          try {
@@ -153,10 +153,10 @@ public class RetrieveImgDocSetTransaction extends BasicTransaction {
          rad69.setIsXca(isXDSI);
          rad69.setSoap12(true);
          rad69.setReferenceMetadata(reference_metadata);
-         logger.debug("ImagingDocSetRetrieveTransaction about to call ret_b.run()");
+         logger.fine("ImagingDocSetRetrieveTransaction about to call ret_b.run()");
          OMElement result = rad69.run();
       //   abbreviate(result);
-         logger.debug("ImagingDocSetRetrieveTransaction after rad69.run()");
+         logger.fine("ImagingDocSetRetrieveTransaction after rad69.run()");
          // testLog.add_name_value(instruction_output, "Result", result);
          rad69.validate();
       } catch (XdsPreparsedException e) {
@@ -334,7 +334,7 @@ public class RetrieveImgDocSetTransaction extends BasicTransaction {
          FileUtils.writeStringToFile(new File("/opt/xdsi/last-trans.xml"), str);
       }
       } catch (Exception e) {
-         logger.warn("abbreviate error: " + e.getMessage());
+         logger.warning("abbreviate error: " + e.getMessage());
       }
    }
    /**

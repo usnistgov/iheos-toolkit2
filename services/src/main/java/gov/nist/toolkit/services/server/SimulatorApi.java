@@ -9,7 +9,7 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.util.Properties;
 
@@ -18,7 +18,7 @@ import java.util.Properties;
  */
 public class SimulatorApi {
     Session session;
-    static Logger logger = Logger.getLogger(SimulatorApi.class);
+    static Logger logger = Logger.getLogger(SimulatorApi.class.getName());
 
 
     public SimulatorApi(Session session) {
@@ -68,10 +68,10 @@ public class SimulatorApi {
             logger.info("New simulator for session " + session.id() + ": " + actorTypeName + " ==> " + scl.getIds());
             return scl;
         } catch (EnvironmentNotSelectedException e) {
-            logger.error("Cannot create Simulator - Environment Not Selected");
+            logger.severe("Cannot create Simulator - Environment Not Selected");
             throw e;
         } catch (Exception e) {
-            logger.error("getNewSimulator:\n" + ExceptionUtil.exception_details(e));
+            logger.severe("getNewSimulator:\n" + ExceptionUtil.exception_details(e));
             throw e;
         }
     }

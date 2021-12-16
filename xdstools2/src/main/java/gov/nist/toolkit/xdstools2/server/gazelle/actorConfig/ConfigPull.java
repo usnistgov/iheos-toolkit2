@@ -17,7 +17,7 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HTTP;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -33,7 +33,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
 public class ConfigPull {
-	static Logger logger = Logger.getLogger(ConfigPull.class);
+	static Logger logger = Logger.getLogger(ConfigPull.class.getName());
 	String url;
 	File actorsDir;
 	
@@ -139,7 +139,7 @@ public class ConfigPull {
 	 */
 	public void pull(String systemName) throws Exception {
 		try {
-			logger.debug("Pull from Gazelle(" + systemName + ")");
+			logger.fine("Pull from Gazelle(" + systemName + ")");
 
 			String systemNameTr = systemName.replaceAll(" ", "%20");
 
@@ -167,7 +167,7 @@ public class ConfigPull {
 		
 			Io.bytesToFile(new File(actorsDir + File.separator + systemName + ".csv"), data);
 		} catch (Exception ex) {
-			logger.error("pull - exception + " + ExceptionUtil.exception_details(ex));
+			logger.severe("pull - exception + " + ExceptionUtil.exception_details(ex));
 			throw ex;
 		}
 	}

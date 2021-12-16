@@ -135,7 +135,7 @@ public abstract class DetailDcmContent extends Detail {
          }
       } catch (Exception e) {
          String em = "Evaluation error " + desc + " " + Utility.getEM(e);
-         Utility.getLog().warn(em);
+         Utility.getLog().warning(em);
          errorCount++;
          errorDetails.add(em);
       } finally {

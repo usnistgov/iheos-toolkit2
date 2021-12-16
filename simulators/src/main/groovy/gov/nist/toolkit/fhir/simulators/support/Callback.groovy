@@ -3,20 +3,23 @@ package gov.nist.toolkit.fhir.simulators.support
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.transactionNotificationService.TransactionLogBean
-import groovy.util.logging.Log4j
+//import groovy.util.logging.Log4j
 
 import javax.ws.rs.client.Client
 import javax.ws.rs.client.ClientBuilder
 import javax.ws.rs.client.Entity
 import javax.ws.rs.client.WebTarget
 import javax.ws.rs.core.Response
+import java.util.logging.Logger
+
 /**
  * Send toolkit simulator notify. This announces the arrival of a
  * message of interest from a SUT.
  */
-@Log4j
+//@Log4j
 class Callback {
     def callback(SimDb db, SimId simId, String callbackURI, String callbackClassName) {
+        Logger log = Logger.getLogger("Callback.groovy")
         if (callbackURI) {
             assert callbackURI.startsWith("http")
             TransactionLogBean bean = new TransactionReportBuilder().asBean(db, simId, callbackClassName);

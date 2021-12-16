@@ -1,12 +1,12 @@
 package gov.nist.toolkit.simcommon.server;
 
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.*;
 
 class SimulatorConfigIoJava implements SimulatorConfigIo {
-    static Logger logger = Logger.getLogger(SimulatorConfigIoJava.class);
+    static Logger logger = Logger.getLogger(SimulatorConfigIoJava.class.getName());
 
 	// Should only be called from ActorFactory which figures
 	// out where to save it

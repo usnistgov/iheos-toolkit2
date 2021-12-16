@@ -23,7 +23,7 @@ import gov.nist.toolkit.validatorsSoapMessage.message.SoapMessageValidator;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OddsActorSimulator extends BaseDsActorSimulator {
-	static final Logger logger = Logger.getLogger(OddsActorSimulator.class);
+	static final Logger logger = Logger.getLogger(OddsActorSimulator.class.getName());
 
 	RepIndex repIndex;
 	String repositoryUniqueId;
@@ -77,7 +77,7 @@ public class OddsActorSimulator extends BaseDsActorSimulator {
 	public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
 		GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
 
-		logger.debug("ODDS beginning to process: " + transactionType);
+		logger.fine("ODDS beginning to process: " + transactionType);
 
 		if (transactionType.equals(TransactionType.RETRIEVE)) {
 

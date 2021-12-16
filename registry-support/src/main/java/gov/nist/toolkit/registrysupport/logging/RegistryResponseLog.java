@@ -4,7 +4,7 @@ import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ public class RegistryResponseLog {
 	OMElement resp;
 	boolean success;
 	List<RegistryErrorLog> errors;
-    static Logger logger = Logger.getLogger(RegistryResponseLog.class);
+    static Logger logger = Logger.getLogger(RegistryResponseLog.class.getName());
 
 
     public RegistryResponseLog(OMElement res) throws Exception {

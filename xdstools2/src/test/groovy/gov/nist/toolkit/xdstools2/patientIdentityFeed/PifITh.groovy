@@ -12,7 +12,7 @@ import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.simcommon.client.Simulator
 import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.simcommon.server.SimManager
-import org.apache.log4j.Logger
+import java.util.logging.*
 import spock.lang.Specification
 
 import java.nio.file.Paths
@@ -21,7 +21,7 @@ import java.nio.file.Paths
  * Created by bill on 9/9/15.
  */
 class PifITh extends Specification {
-    static Logger logger = Logger.getLogger(PifITh.class);
+    static Logger logger = Logger.getLogger(PifITh.class.getName());
     def simId1 = 'reg1'
     def pid1 = 'A1^^^&1.2.3&ISO'
     def pid2 = 'A2^^^&1.2.3&ISO'

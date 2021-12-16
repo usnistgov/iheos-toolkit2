@@ -18,7 +18,7 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMNode;
 import org.apache.axiom.om.xpath.AXIOMXPath;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.File;
 import java.util.List;
@@ -32,7 +32,7 @@ import java.util.List;
  */
 public class CommonMessageValidatorFactory implements MessageValidatorFactory2I {
 	static OMElement rootElement ;
-	static Logger logger = Logger.getLogger(CommonMessageValidatorFactory.class);
+	static Logger logger = Logger.getLogger(CommonMessageValidatorFactory.class.getName());
 
 //	static {
 //		// this is needed to manage otherwise circular references
@@ -89,7 +89,7 @@ public class CommonMessageValidatorFactory implements MessageValidatorFactory2I 
 			er.detail(vc.toString());
 		}
 
-		logger.debug("ValidationContext is " + vc.toString());
+		logger.fine("ValidationContext is " + vc.toString());
 
 		String inputString = new String(input).trim();
 

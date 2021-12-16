@@ -15,14 +15,16 @@ import gov.nist.toolkit.simcommon.server.*;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.xdsexception.NoSimulatorException;
-import org.apache.log4j.Logger;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 public class FilterProxyActorFactory extends AbstractActorFactory implements IActorFactory {
-    static Logger logger = Logger.getLogger(FilterProxyActorFactory.class);
+    static Logger logger = Logger.getLogger(FilterProxyActorFactory.class.getName());
 
     static final List<TransactionType> incomingTransactions =
             Arrays.asList(
@@ -60,7 +62,7 @@ public class FilterProxyActorFactory extends AbstractActorFactory implements IAc
         }
 
         if (proxyConfig.getEndpointConfigs().size() != 0) {
-            logger.error("Cannot delete endpoints for " + proxySimId);
+            logger.severe("Cannot delete endpoints for " + proxySimId);
         }
 
         ActorType actorType = ActorType.findActor(proxyConfig.getActorType());
@@ -91,10 +93,10 @@ public class FilterProxyActorFactory extends AbstractActorFactory implements IAc
         try {
             new GenericSimulatorFactory().saveConfiguration(proxyConfig);
         } catch (IOException e) {
-            logger.error("saveSimConfig", e);
+            logger.log(Level.SEVERE, "saveSimConfig", e);
             throw e;
         }
-        logger.debug("save complete");
+        logger.fine("save complete");
     }
 
     @Override

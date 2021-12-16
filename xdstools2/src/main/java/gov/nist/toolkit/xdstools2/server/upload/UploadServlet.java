@@ -20,11 +20,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 public class UploadServlet extends HttpServlet {
 
-	static final Logger logger = Logger.getLogger(UploadServlet.class);
+	static final Logger logger = Logger.getLogger(UploadServlet.class.getName());
 	/**
 	 * 
 	 */
@@ -42,15 +42,15 @@ public class UploadServlet extends HttpServlet {
 			hp = new HttpParser(request, false);
 			byte[] bodybytes = hp.getBody();
 		} catch (HttpParseException e1) {
-			logger.error("HTTPParser parse error: " + e1.getMessage());
+			logger.severe("HTTPParser parse error: " + e1.getMessage());
 			throw new IOException("Parse Error: " + e1.getMessage());
 		}
 		catch (RuntimeException e) {
-			logger.error(ExceptionUtil.exception_details(e));
+			logger.severe(ExceptionUtil.exception_details(e));
 			throw new IOException("Parse Error: " + e.getMessage());
 		}
 		if (hp.isMultipart()) {
-			logger.debug("Parse servlet input - is a multipart");
+			logger.fine("Parse servlet input - is a multipart");
 
 			MultipartParser mp = hp.getMultipartParser();
 			MultipartMessage mm = mp.getMultipartMessage();
@@ -58,10 +58,10 @@ public class UploadServlet extends HttpServlet {
 			contentMap = mm.getContentMap();
 		} else {
 			HttpMessage hm = hp.getHttpMessage();
-//			logger.debug(hm.toString());
+//			logger.fine(hm.toString());
 //			String bdy = hm.getBody();
 //			System.out.println("body=" + bdy);
-			logger.error("Cannot parse servlet input - not a multipart");
+			logger.severe("Cannot parse servlet input - not a multipart");
 			//throw new IOException("Cannot parse servlet input - not a multipart");
 		}
 
@@ -85,7 +85,7 @@ public class UploadServlet extends HttpServlet {
 			}
 
 		} catch (Exception e7) {
-			logger.error("Exception: " + e7.getMessage());
+			logger.severe("Exception: " + e7.getMessage());
 			body = e7.getMessage().getBytes();
 		}
 		response.setStatus(HttpServletResponse.SC_OK);

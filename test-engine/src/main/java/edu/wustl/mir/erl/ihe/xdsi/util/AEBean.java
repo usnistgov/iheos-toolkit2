@@ -264,7 +264,7 @@ public class AEBean {
          bean.setWsdlURL(ini.getString("wsdlURL", null));
          return bean;
       } catch (Exception e) {
-         Utility.getLog().error(Utility.getEM(e));
+         Utility.getLog().severe(Utility.getEM(e));
          System.exit(1);
       }
       return null;

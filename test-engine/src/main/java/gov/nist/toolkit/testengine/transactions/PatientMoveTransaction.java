@@ -8,13 +8,13 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.XdsException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.util.Map;
 
 public class PatientMoveTransaction extends BasicTransaction {
 	
-	private final static Logger logger = Logger.getLogger(PatientMoveTransaction.class);
+	private final static Logger logger = Logger.getLogger(PatientMoveTransaction.class.getName());
 	
 	boolean createNewPID = false;
 	String forcePatientId = null;
@@ -72,7 +72,7 @@ public class PatientMoveTransaction extends BasicTransaction {
 
 		} catch (Exception e) {
 			fail(ExceptionUtil.exception_details(e));
-			logger.error(ExceptionUtil.exception_details(e));
+			logger.severe(ExceptionUtil.exception_details(e));
 		}
 	}
 

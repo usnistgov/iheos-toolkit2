@@ -101,7 +101,7 @@ import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 import gov.nist.toolkit.xdstools2.shared.command.InitializationResponse;
 import gov.nist.toolkit.xdstools2.shared.command.request.*;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -130,7 +130,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     static String schematronHome = null;
     ServletContext context = null;
 
-    static Logger logger = Logger.getLogger(ToolkitServiceImpl.class);
+    static Logger logger = Logger.getLogger(ToolkitServiceImpl.class.getName());
 
     // Individual service requests from browser are delegated to one of these
 
@@ -155,7 +155,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     private void installCommandContext(CommandContext commandContext) throws Exception {
         if (commandContext.getEnvironmentName() == null) {
             return;
-//            logger.error(ExceptionUtil.here("session: " + getSessionId() + " installCommandContext: environment name is null"));
+//            logger.severe(ExceptionUtil.here("session: " + getSessionId() + " installCommandContext: environment name is null"));
 //            throw new Exception("installCommandContext: environment name is null");
         }
         setEnvironment(commandContext.getEnvironmentName());
@@ -1385,7 +1385,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         try {
             return SimDb.getFullSimId(request.getSimId());
         } catch (Exception e) {
-            logger.error("getFullSimId - error - " + e.getMessage());
+            logger.severe("getFullSimId - error - " + e.getMessage());
             throw e;
         }
     }
@@ -1594,7 +1594,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         try {
             return new SimulatorServiceManager(session()).getSimulatorEventRequestAsResult(request.getTransactionInstance());
         } catch (Throwable e) {
-            logger.error(ExceptionUtil.exception_details(e));
+            logger.severe(ExceptionUtil.exception_details(e));
             throw e;
         }
     }
@@ -1604,7 +1604,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         try {
             return new SimulatorServiceManager(session()).getSimulatorEventResponseAsResult(request.getTransactionInstance());
         } catch (Throwable e) {
-            logger.error(ExceptionUtil.exception_details(e));
+            logger.severe(ExceptionUtil.exception_details(e));
             throw e;
         }
     }
@@ -1637,8 +1637,8 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 
     public String setToolkitPropertiesImpl(Map<String, String> props)
             throws Exception {
-        logger.debug(": " + "setToolkitProperties");
-        logger.debug(describeProperties(props));
+        logger.fine(": " + "setToolkitProperties");
+        logger.fine(describeProperties(props));
         try {
             // verify External_Cache points to a writable directory
             String eCache = props.get("External_Cache");
@@ -1915,7 +1915,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
             repIndex.save();
             return true;
         } else {
-            logger.error("setOdSupplyStateIndex Error: StoredDocument is null for the requested DocumentEntry UniqueId:" + request.getDed().getUniqueId());
+            logger.severe("setOdSupplyStateIndex Error: StoredDocument is null for the requested DocumentEntry UniqueId:" + request.getDed().getUniqueId());
         }
 
        return false;
@@ -2024,7 +2024,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<DatasetModel> getAllDatasets(CommandContext context) throws Exception {
         installCommandContext(context);
-        logger.debug(sessionID + ": getAllDatasets()");
+        logger.fine(sessionID + ": getAllDatasets()");
         return DatasetFactory.getAllDatasets();
     }
 
@@ -2032,7 +2032,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<Result> fhirCreate(FhirCreateRequest request) throws Exception {
         installCommandContext(request);
-        logger.debug(sessionID + ": fhirCreate()");
+        logger.fine(sessionID + ": fhirCreate()");
         request.getSite().testSession = request.getTestSession();
         List<Result> results = new FhirServiceManager(session()).create(request.getSite(), request.getDatasetElement());
         return results;
@@ -2044,7 +2044,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<Result> fhirTransaction(FhirTransactionRequest request) throws Exception {
         installCommandContext(request);
-        logger.debug(sessionID + ": fhirTransaction()");
+        logger.fine(sessionID + ": fhirTransaction()");
         request.getSite().testSession = request.getTestSession();
         List<Result> results = new FhirServiceManager(session()).transaction(request.getSite(), request.getDatasetElement());
         return results;
@@ -2053,7 +2053,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<Result> fhirSearch(FhirSearchRequest request) throws Exception {
         installCommandContext(request);
-        logger.debug(sessionID + ": fhirSearch()");
+        logger.fine(sessionID + ": fhirSearch()");
         request.getSite().testSession = request.getTestSession();
         List<Result> results = new FhirServiceManager(session()).search(request.getSite(), request.getResourceTypeName(), request.getCodesSpec());
         return results;
@@ -2062,7 +2062,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<Result> fhirRead(FhirReadRequest request) throws Exception {
         installCommandContext(request);
-        logger.debug(sessionID + ": fhirRead()");
+        logger.fine(sessionID + ": fhirRead()");
         request.getSite().testSession = request.getTestSession();
         List<Result> results = new FhirServiceManager(session()).read(request.getSite(), request.getReference());
         return results;

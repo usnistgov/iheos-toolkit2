@@ -4,7 +4,7 @@ import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.PidBuilder;
 import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.utilities.io.Io;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +15,7 @@ import java.util.List;
  * Manager PIDs within a Simulator
  */
 public class PidDb {
-    static Logger logger = Logger.getLogger(PidDb.class);
+    static Logger logger = Logger.getLogger(PidDb.class.getName());
     private final SimDb simDb;
 
     public PidDb(SimDb simDb) {
@@ -68,7 +68,7 @@ public class PidDb {
     }
 
     public void addPatientId(Pid pid) throws IOException {
-        logger.debug("storing Patient ID " + pid + " to " + getPidFile(pid));
+        logger.fine("storing Patient ID " + pid + " to " + getPidFile(pid));
         if (patientIdExists(pid)) return;
         Io.stringToFile(getPidFile(pid), pid.asString());
     }

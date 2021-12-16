@@ -15,7 +15,7 @@ import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.javatuples.Pair;
 
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class RetrieveImagingDocSetResponseSim extends TransactionSimulator implements RegistryResponseGeneratingSim {
-   static Logger logger = Logger.getLogger(RetrieveImagingDocSetResponseSim.class);
+   static Logger logger = Logger.getLogger(RetrieveImagingDocSetResponseSim.class.getName());
    DsSimCommon dsSimCommon;
    // List<String> documentUids;
    List <Pair<String, String>> imagingDocumentUids;
@@ -81,8 +81,8 @@ public class RetrieveImagingDocSetResponseSim extends TransactionSimulator imple
 
          for (StoredDocument document : documents) {
             String uid = document.getUid();
-            logger.debug("Adding document to response: " + uid);
-            logger.debug("Repository Unique ID: " + repositoryUniqueId);
+            logger.fine("Adding document to response: " + uid);
+            logger.fine("Repository Unique ID: " + repositoryUniqueId);
 
             String compositeUid = imagingUidMap.get(uid);
             String hci = null;
@@ -110,12 +110,12 @@ public class RetrieveImagingDocSetResponseSim extends TransactionSimulator imple
             OMElement docId = MetadataSupport.om_factory.createOMElement(MetadataSupport.document_unique_id_qnamens);
             docId.setText(sd.getUid());
             docResponse.addChild(docId);
-            logger.debug("Setting document ID: " + sd.getUid());
+            logger.fine("Setting document ID: " + sd.getUid());
 
             OMElement mimeType = MetadataSupport.om_factory.createOMElement(MetadataSupport.mimetype_qnamens);
             mimeType.setText(sd.getMimeType());
             docResponse.addChild(mimeType);
-            logger.debug("Setting mimeType: " + sd.getMimeType());
+            logger.fine("Setting mimeType: " + sd.getMimeType());
 
             OMElement doc = MetadataSupport.om_factory.createOMElement(MetadataSupport.document_qnamens);
             docResponse.addChild(doc);

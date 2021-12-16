@@ -29,7 +29,7 @@ import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetSubmissionSetsRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.UpdateDocumentEntryRequest;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,7 +38,7 @@ import java.util.Map;
 
 public class MetadataUpdate {
     Session session;
-    static Logger logger = Logger.getLogger(MetadataUpdate.class);
+    static Logger logger = Logger.getLogger(MetadataUpdate.class.getName());
 
     public MetadataUpdate(Session session) {
         this.session = session;
@@ -63,7 +63,7 @@ public class MetadataUpdate {
             logMapDTO = LogRepository.logIn(originalQueryTi);
         } catch (Exception e) {
             String message = "Logs not available for " + originalQueryTi;
-            logger.error(ExceptionUtil.exception_details(e, message));
+            logger.severe(ExceptionUtil.exception_details(e, message));
             throw new ToolkitRuntimeException(message, e);
         }
 
@@ -74,7 +74,7 @@ public class MetadataUpdate {
             testLogs.testInstance = originalGetDocsTi;
         } catch (Exception e) {
             String details = ExceptionUtil.exception_details(e);
-            logger.error(details);
+            logger.severe(details);
             throw new ToolkitRuntimeException(e);
         }
         */
@@ -148,7 +148,7 @@ public class MetadataUpdate {
                     getSslogMapDTO = LogRepository.logIn(getSsResult.logId);
                 } catch (Exception e) {
                     String message = "Logs not available for " + getSsResult.logId;
-                    logger.error(ExceptionUtil.exception_details(e,message));
+                    logger.severe(ExceptionUtil.exception_details(e,message));
                     throw new ToolkitRuntimeException(message, e);
                 }
 

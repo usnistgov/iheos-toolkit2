@@ -2,7 +2,7 @@ package gov.nist.toolkit.fhir.simulators.sim.reg.store.resource;
 
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.server.SimDb;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.*;
 import java.util.Calendar;
@@ -11,7 +11,7 @@ import java.util.Calendar;
  * Manages ResourceItem into and out of memory.
  */
 public class ResourceIndex implements Serializable {
-    private static Logger logger = Logger.getLogger(ResourceIndex.class);
+    private static Logger logger = Logger.getLogger(ResourceIndex.class.getName());
     private static final long serialVersionUID = 1L;
     private String filename;
     public Calendar cacheExpires;
@@ -27,7 +27,7 @@ public class ResourceIndex implements Serializable {
         try {
 
         } catch (Exception e) {
-            logger.debug("No existing - creating new");
+            logger.fine("No existing - creating new");
             rc = new ResourceCollection();
             rc.init();
             rc.setIndex(this);
@@ -53,7 +53,7 @@ public class ResourceIndex implements Serializable {
     }
 
     private static void save(ResourceCollection mc, String filename) throws IOException {
-        logger.debug("Save Resource Index");
+        logger.fine("Save Resource Index");
         FileOutputStream fos = null;
         ObjectOutputStream out = null;
 

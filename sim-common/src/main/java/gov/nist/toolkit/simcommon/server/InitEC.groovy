@@ -9,7 +9,7 @@ import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException
 class InitEC {
 
     static init() {
-        org.apache.log4j.BasicConfigurator.configure()
+//        org.apache.log4j.BasicConfigurator.configure()
         URL externalCacheMarker = getClass().getResource('/external_cache/external_cache.txt')
         if (externalCacheMarker == null) {
             throw new ToolkitRuntimeException("Cannot locate external cache for test environment")

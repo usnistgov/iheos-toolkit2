@@ -14,7 +14,7 @@ import gov.nist.toolkit.validatorsSoapMessage.message.SoapMessageValidator;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.IOException;
 
@@ -25,7 +25,7 @@ import java.io.IOException;
  * <a href="mailto:moultonr@mir.wustl.edu">moultonr@mir.wustl.edu</a>
  */
 public class IigActorSimulator extends BaseDsActorSimulator {
-   static Logger logger = Logger.getLogger(IigActorSimulator.class);
+   static Logger logger = Logger.getLogger(IigActorSimulator.class.getName());
 
    public IigActorSimulator(SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig simulatorConfig) {
       super(common, dsSimCommon);
@@ -62,7 +62,7 @@ public class IigActorSimulator extends BaseDsActorSimulator {
 
          case RET_IMG_DOC_SET_GW:
 
-            logger.debug("Transaction type: RET_IMG_DOC_SET_GW");
+            logger.fine("Transaction type: RET_IMG_DOC_SET_GW");
             common.vc.isRad69 = true;
             common.vc.isXC = true;
             common.vc.isRequest = true;
@@ -70,16 +70,16 @@ public class IigActorSimulator extends BaseDsActorSimulator {
             common.vc.hasSoap = true;
             common.vc.hasHttp = true;
 
-            logger.debug("dsSimCommon.runInitialValidationsAndFaultIfNecessary()");
+            logger.fine("dsSimCommon.runInitialValidationsAndFaultIfNecessary()");
             if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary()) return false;
 
-            logger.debug("mvc.hasErrors()");
+            logger.fine("mvc.hasErrors()");
             if (mvc.hasErrors()) {
                dsSimCommon.sendErrorsInRegistryResponse(er);
                return false;
             }
 
-            logger.debug("Extract retrieve from validator chain");
+            logger.fine("Extract retrieve from validator chain");
             AbstractMessageValidator mv = dsSimCommon.getMessageValidatorIfAvailable(SoapMessageValidator.class);
             if (mv == null || !(mv instanceof SoapMessageValidator)) {
                er.err(Code.XDSRegistryError, "IG Internal Error - cannot find SoapMessageValidator instance",
@@ -87,16 +87,16 @@ public class IigActorSimulator extends BaseDsActorSimulator {
                dsSimCommon.sendErrorsInRegistryResponse(er);
                return false;
             }
-            logger.debug("Got AbstractMessageValidator");
+            logger.fine("Got AbstractMessageValidator");
             SoapMessageValidator smv = (SoapMessageValidator) mv;
             OMElement retrieveRequest = smv.getMessageBody();
 
-            logger.debug("Process message");
+            logger.fine("Process message");
             XcRetrieveImgSim retSim = new XcRetrieveImgSim(common, dsSimCommon, getSimulatorConfig());
             mvc.addMessageValidator("XcRetrieveImgSim", retSim, er);
             mvc.run();
 
-            logger.debug("wrap response message");
+            logger.fine("wrap response message");
             er.detail("Wrapping response in SOAP Message and sending");
             OMElement env = dsSimCommon.wrapResponseInSoapEnvelope(retSim.getResult());
             dsSimCommon.sendHttpResponse(env, er);

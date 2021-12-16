@@ -12,11 +12,11 @@ import gov.nist.toolkit.xdstools2.scripts.DashboardAccess;
 import java.io.File;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 public class DashboardServiceManager extends CommonService {
 	
-	static Logger logger = Logger.getLogger(DashboardServiceManager.class);
+	static Logger logger = Logger.getLogger(DashboardServiceManager.class.getName());
 	Session session;
 	
 	public DashboardServiceManager(Session session) throws XdsException {
@@ -25,25 +25,25 @@ public class DashboardServiceManager extends CommonService {
 
 	
 	public List<RegistryStatus> getDashboardRegistryData() throws Exception  {
-		logger.debug(session.id() + ": " + "getDashboardRegistryData(" + "" + ")");
+		logger.fine(session.id() + ": " + "getDashboardRegistryData(" + "" + ")");
 		String dashboard = Installation.instance().propertyServiceManager().getPropertyManager().getExternalCache() + File.separator + "Dashboard";
 		try {
 			return new DashboardAccess(dashboard).getRegistryData();
 		} catch (Exception e) {
-			logger.debug("Failed to load Registry Dashboard data from " + dashboard);
-			logger.debug(ExceptionUtil.exception_details(e));
+			logger.fine("Failed to load Registry Dashboard data from " + dashboard);
+			logger.fine(ExceptionUtil.exception_details(e));
 			throw new Exception("getDashBoardRegistryData() failed - " + e.getMessage() , e);
 		}
 	}
 
 	public List<RepositoryStatus> getDashboardRepositoryData() throws Exception {
-		logger.debug(session.id() + ": " + "getDashboardRepositoryData(" + "" + ")");
+		logger.fine(session.id() + ": " + "getDashboardRepositoryData(" + "" + ")");
 		String dashboard = Installation.instance().propertyServiceManager().getPropertyManager().getExternalCache() + File.separator + "Dashboard";
 		try {
 			return new DashboardAccess(dashboard).getRepositoryData();
 		} catch (Exception e) {
-			logger.debug("Failed to load Repository Dashboard data from " + dashboard);
-			logger.debug(ExceptionUtil.exception_details(e));
+			logger.fine("Failed to load Repository Dashboard data from " + dashboard);
+			logger.fine(ExceptionUtil.exception_details(e));
 			throw new Exception("getDashBoardRepositoryData() failed - " + e.getMessage(), e);
 		}
 	}

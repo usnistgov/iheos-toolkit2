@@ -21,7 +21,7 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.XdsParameterException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
@@ -47,7 +47,7 @@ public class XdsTest {
 	private Sites sites;
 	boolean status;
 	TestConfig testConfig;
-	final static Logger logger = Logger.getLogger(XdsTest.class);
+	final static Logger logger = Logger.getLogger(XdsTest.class.getName());
 	private boolean noExit = false;
 	private static String[] configurationOptions = {
 		"-T", "--testkit",

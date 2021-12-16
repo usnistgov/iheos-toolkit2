@@ -2,7 +2,7 @@ package gov.nist.toolkit.fhir.server.resourceMgr
 
 import gov.nist.toolkit.fhir.server.utility.UriBuilder
 import gov.nist.toolkit.installation.server.Installation
-import org.apache.log4j.Logger
+import java.util.logging.*
 import org.hl7.fhir.instance.model.api.IBaseResource
 
 /**
@@ -20,7 +20,7 @@ class ResourceCacheMgr {
     }
 
 
-    private static final Logger logger = Logger.getLogger(ResourceCacheMgr.class)
+    private static final Logger logger = Logger.getLogger(ResourceCacheMgr.class.getName())
     static Map<URI, ResourceCache> caches = [:]  // baseUrl -> cache
 
     ResourceCacheMgr() {}

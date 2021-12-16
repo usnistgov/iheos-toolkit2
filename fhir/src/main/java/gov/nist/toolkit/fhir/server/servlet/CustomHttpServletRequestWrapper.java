@@ -1,6 +1,6 @@
 package gov.nist.toolkit.fhir.server.servlet;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +13,7 @@ import java.io.*;
 
 public class CustomHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
-    private static final Logger logger = Logger.getLogger(CustomHttpServletRequestWrapper.class);
+    private static final Logger logger = Logger.getLogger(CustomHttpServletRequestWrapper.class.getName());
     private final String body;
 
     public CustomHttpServletRequestWrapper(HttpServletRequest request) {
@@ -38,13 +38,13 @@ public class CustomHttpServletRequestWrapper extends HttpServletRequestWrapper {
                 stringBuilder.append("");
             }
         } catch (IOException ex) {
-            logger.error("Error reading the request body...");
+            logger.severe("Error reading the request body...");
         } finally {
             if (bufferedReader != null) {
                 try {
                     bufferedReader.close();
                 } catch (IOException ex) {
-                    logger.error("Error closing bufferedReader...");
+                    logger.severe("Error closing bufferedReader...");
                 }
             }
         }

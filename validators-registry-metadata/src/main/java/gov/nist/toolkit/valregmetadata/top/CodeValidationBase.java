@@ -13,7 +13,7 @@ import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMContainer;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 import java.io.File;
@@ -30,7 +30,7 @@ public class CodeValidationBase {
 	ValidationContext vc = null;
 
 	static String ADConfigError = "ITI TF-3: 4.1.10";
-	static Logger logger = Logger.getLogger(CodeValidationBase.class);
+	static Logger logger = Logger.getLogger(CodeValidationBase.class.getName());
 
 
 	CodeValidationBase() {}
@@ -71,7 +71,7 @@ public class CodeValidationBase {
 		if (codes_string.equals(""))
 			throw new XdsInternalException("CodeValidation.init(): GET codes.xml returned enpty from " + from);
 
-		logger.debug("Codes loaded from " + from);
+		logger.fine("Codes loaded from " + from);
 
 		codes = Util.parse_xml(codes_string);
 		if (codes == null)

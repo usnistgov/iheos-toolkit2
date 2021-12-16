@@ -6,7 +6,7 @@ import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -16,7 +16,7 @@ import java.lang.reflect.InvocationTargetException;
  *
  */
 public class RuntimeManager {
-    static Logger logger = Logger.getLogger(RuntimeManager.class);
+    static Logger logger = Logger.getLogger(RuntimeManager.class.getName());
 
     public static BaseActorSimulator getSimulatorRuntime(SimId simId) throws Exception, IOException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, InstantiationException {
         SimulatorConfig config = GenericSimulatorFactory.getSimConfig(simId);

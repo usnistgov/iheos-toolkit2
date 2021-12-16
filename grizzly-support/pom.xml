@@ -47,10 +47,7 @@
         <!--<groupId>com.sun.grizzly</groupId>-->
         <!--<artifactId>grizzly-webserver</artifactId>-->
         <!--</dependency>-->
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-        </dependency>
+
 <!--        <dependency>-->
 <!--            <groupId>gov.nist.toolkit</groupId>-->
 <!--            <artifactId>fhir</artifactId>-->

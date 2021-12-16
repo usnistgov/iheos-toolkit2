@@ -9,12 +9,14 @@ import gov.nist.toolkit.testenginelogging.client.LogMapDTO;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdsexception.client.XdsException;
-import org.apache.log4j.Logger;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import java.io.File;
 
 public class LogRepository  {
-    static Logger log = Logger.getLogger(LogRepository.class);
+    static Logger log = Logger.getLogger(LogRepository.class.getName());
 
     // Both of these are initialized by LogRepositoryFactory
     ILoggerIO logger;
@@ -68,7 +70,7 @@ public class LogRepository  {
 
     public void logOut(TestInstance id, LogMapDTO logMapDTO)
             throws XdsException {
-        log.debug(String.format("Saving log for %s", id));
+        log.fine(String.format("Saving log for %s", id));
         logger.logOut(id, logMapDTO, logDir(id));
     }
 
@@ -78,7 +80,7 @@ public class LogRepository  {
 
     static public LogMapDTO logIn(TestInstance testInstance) throws Exception {
         if (testInstance == null) {
-            log.error(ExceptionUtil.here("testId is null"));
+            log.log(Level.SEVERE, ExceptionUtil.here("testId is null"));
             return null;
         }
         try {
@@ -104,10 +106,10 @@ public class LogRepository  {
                     testInstance);
 
             File dir = repo.logDir(testInstance);
-            log.debug(String.format("Loading LogMapDTO for test %s from %s", testInstance, dir));
+            log.fine(String.format("Loading LogMapDTO for test %s from %s", testInstance, dir));
             return repo.logger.logIn(testInstance, dir);
         } catch (Exception e) {
-            log.error("Cannot load " + testInstance.describe() + "\n" + ExceptionUtil.exception_details(e));
+            log.log(Level.SEVERE, "Cannot load " + testInstance.describe() + "\n" + ExceptionUtil.exception_details(e));
             throw e;
         }
     }
@@ -142,7 +144,7 @@ public class LogRepository  {
         File dir = new File(
                 location + File.separator + testSession +
                         File.separator + event);
-        log.debug(String.format("Assigning SimResource Dir to test instance %s - %s", testInstance, dir));
+        log.fine(String.format("Assigning SimResource Dir to test instance %s - %s", testInstance, dir));
         testInstance.setEventDir(dir.toString());
         testInstance.setLocation(location.toString());
         testInstance.setTestSession(new TestSession(testSession));

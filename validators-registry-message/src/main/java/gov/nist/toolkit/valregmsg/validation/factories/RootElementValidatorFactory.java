@@ -11,14 +11,14 @@ import gov.nist.toolkit.valsupport.message.MessageBodyContainer;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 /**
  * Run validation based on examining the message and deciding what validators
  * are needed.
  */
 public class RootElementValidatorFactory {
-    static Logger logger = Logger.getLogger(RootElementValidatorFactory.class);
+    static Logger logger = Logger.getLogger(RootElementValidatorFactory.class.getName());
 
     /**
      * Start a new validation on a string input and run the validation inferred from the name of the XML root element

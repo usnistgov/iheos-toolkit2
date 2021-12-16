@@ -1,13 +1,13 @@
 package gov.nist.toolkit.adt;
 
 import gov.nist.toolkit.installation.shared.TestSession;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 /**
  * Created by bill on 9/2/15.
  */
 public class ThreadPoolItem {
-    static Logger logger = Logger.getLogger(ThreadPoolItem.class);
+    static Logger logger = Logger.getLogger(ThreadPoolItem.class.getName());
 
     int port = 0;
 

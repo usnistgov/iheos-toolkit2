@@ -8,14 +8,14 @@ import gov.nist.toolkit.toolkitServicesCommon.SimConfig;
 import gov.nist.toolkit.toolkitServicesCommon.SimId;
 import gov.nist.toolkit.toolkitServicesCommon.resource.SimConfigResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.SimIdResource;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 /**
  * Not for public use.
  */
 
 public class ToolkitFactory {
-    static Logger logger = Logger.getLogger(ToolkitFactory.class);
+    static Logger logger = Logger.getLogger(ToolkitFactory.class.getName());
 
     static public gov.nist.toolkit.simcommon.client.SimId asServerSimId(SimId simId) {
         return new gov.nist.toolkit.simcommon.client.SimId(new TestSession(simId.getUser()), simId.getId(), simId.getActorType(), simId.getEnvironmentName(), false /* simId.isFhir()*/);

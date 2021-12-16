@@ -10,7 +10,7 @@ import gov.nist.toolkit.fhir.simulators.sim.iig.IigActorSimulator;
 import gov.nist.toolkit.fhir.simulators.support.BaseDsActorSimulator;
 import gov.nist.toolkit.fhir.simulators.support.DsSimCommon;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.IOException;
 
@@ -24,7 +24,7 @@ import java.io.IOException;
  */
 public class CigActorSimulator extends BaseDsActorSimulator {
    
-   static final Logger logger = Logger.getLogger(CigActorSimulator.class);
+   static final Logger logger = Logger.getLogger(CigActorSimulator.class.getName());
    
    IgActorSimulator ig;
    IigActorSimulator iig;

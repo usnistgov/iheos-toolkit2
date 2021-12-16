@@ -12,7 +12,7 @@ import gov.nist.toolkit.fhir.simulators.support.BaseHttpActorSimulator;
 import gov.nist.toolkit.fhir.simulators.support.DsSimCommon;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
@@ -30,7 +30,7 @@ import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
  */
 public class IdsHttpActorSimulator extends BaseHttpActorSimulator {
 
-   static Logger logger = Logger.getLogger(IdsHttpActorSimulator.class);
+   static Logger logger = Logger.getLogger(IdsHttpActorSimulator.class.getName());
 
    static List <TransactionType> transactions = new ArrayList <>();
 
@@ -75,18 +75,18 @@ public class IdsHttpActorSimulator extends BaseHttpActorSimulator {
       GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
       DsSimCommon dsSimCommon = new DsSimCommon(simCommon, mvc);
 
-      logger.debug(transactionType);
+      logger.fine(transactionType.toString());
       switch (transactionType) {
          case WADO_RETRIEVE:
             simCommon.vc.isRad55 = true;
             simCommon.vc.isRequest = true;
             
-            logger.debug("dsSimCommon.runInitialValidationsAndFaultIfNecessary()");
+            logger.fine("dsSimCommon.runInitialValidationsAndFaultIfNecessary()");
             if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary()) {
                return false;
             }
 
-            logger.debug("mvc.hasErrors()");
+            logger.fine("mvc.hasErrors()");
             if (mvc.hasErrors()) {
                return false;
             }
@@ -156,7 +156,7 @@ public class IdsHttpActorSimulator extends BaseHttpActorSimulator {
       try {
          simCommon.response.sendError(status, msg);
       } catch (IOException ioe){
-         logger.warn("I/O error attempting to send error response " + ioe.getMessage());
+         logger.warning("I/O error attempting to send error response " + ioe.getMessage());
          return;
       }      
    }

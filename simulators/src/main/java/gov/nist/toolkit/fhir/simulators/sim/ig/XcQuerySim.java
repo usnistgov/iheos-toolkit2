@@ -34,7 +34,7 @@ import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,7 +46,7 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 	AdhocQueryResponse response;
 	Metadata m = new Metadata();
 	Exception startUpException = null;
-	Logger logger = Logger.getLogger(XcQuerySim.class);
+	Logger logger = Logger.getLogger(XcQuerySim.class.getName());
 	static List<String> findQueryIds = Arrays.asList(MetadataSupport.SQ_FindDocuments, MetadataSupport.SQ_FindFolders, MetadataSupport.SQ_FindSubmissionSets, MetadataSupport.SQ_GetAll);
 	boolean isSecure;
 	boolean isAsync;
@@ -270,7 +270,7 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 		String msg = e.getMessage();
 		if (msg == null || msg.equals(""))
 			msg = ExceptionUtil.exception_details(e);
-		logger.error(msg);
+		logger.severe(msg);
 		er.err(XdsErrorCode.Code.XDSRegistryError, msg, this, null);
 	}
 

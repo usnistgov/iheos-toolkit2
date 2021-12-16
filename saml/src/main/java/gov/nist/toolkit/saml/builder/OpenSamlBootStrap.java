@@ -13,8 +13,10 @@ import org.opensaml.common.SAMLException;
 import org.opensaml.xml.ConfigurationException;
 import org.opensaml.xml.Configuration;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * @author Srinivasarao.Eadara
  *
@@ -26,7 +28,7 @@ public class OpenSamlBootStrap {
     public static boolean samlEngineInitialized = false;
    
     public static SAMLCallback samlCallBack = null ;
-    private static Log log = LogFactory.getLog(SamlTokenExtractor.class);
+    private static Logger log = Logger.getLogger(SamlTokenExtractor.class.getName());
     
     
     /**
@@ -60,20 +62,16 @@ public class OpenSamlBootStrap {
      */
     public synchronized static void initSamlEngine() {
         if (!samlEngineInitialized) {
-            if (log.isDebugEnabled()) {
-                log.debug("Initilizing the opensaml2 library...");
-            }
+            log.fine("Initilizing the opensaml2 library...");
             try {
             	DefaultBootstrap.bootstrap();
             	builderFactory = Configuration.getBuilderFactory();
                 marshallerFactory = Configuration.getMarshallerFactory();
                 unmarshallerFactory = Configuration.getUnmarshallerFactory();
                 samlEngineInitialized = true;
-                if (log.isDebugEnabled()) {
-                    log.debug("opensaml2 library bootstrap complete");
-                }
+                log.fine("opensaml2 library bootstrap complete");
             } catch (ConfigurationException e) {
-                log.error(
+                log.log(Level.SEVERE,
                     "Unable to bootstrap the opensaml2 library - all SAML operations will fail", 
                     e
                 );

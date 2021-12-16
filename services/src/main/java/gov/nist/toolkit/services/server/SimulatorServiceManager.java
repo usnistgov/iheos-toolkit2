@@ -39,7 +39,9 @@ import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
-import org.apache.log4j.Logger;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 //import org.hl7.fhir.instance.model.api.IBaseResource;
 
 import java.io.File;
@@ -56,7 +58,7 @@ import java.util.List;
  *
  */
 public class SimulatorServiceManager extends CommonService {
-	static Logger logger = Logger.getLogger(SimulatorServiceManager.class);
+	static Logger logger = Logger.getLogger(SimulatorServiceManager.class.getName());
 
 	Session session;
 
@@ -66,12 +68,12 @@ public class SimulatorServiceManager extends CommonService {
 
 	public List<TransactionInstance> getTransInstances(SimId simid, String xactor, String trans) throws Exception
 	{
-		logger.debug(session.id() + ": " + "getTransInstances : " + simid + " - " + xactor + " - " + trans);
+		logger.fine(session.id() + ": " + "getTransInstances : " + simid + " - " + xactor + " - " + trans);
 		return GenericSimulatorFactory.getTransInstances(simid, xactor, trans);
 	}
 
 	public List<Result> getSelectedMessage(String simFileSpec) {
-		logger.debug(session.id() + ": " + "getSelectedMessage");
+		logger.fine(session.id() + ": " + "getSelectedMessage");
 		List<Result> results = new ArrayList<Result>();
 		Result result = ResultBuilder.RESULT(new TestInstance("getSelectedMessage"));
 		results.add(result);
@@ -91,7 +93,7 @@ public class SimulatorServiceManager extends CommonService {
 	}
 
 	public List<Result> getSelectedMessageResponse(String simFileSpec) {
-		logger.debug(session.id() + ": " + "getSelectedMessageResponse");
+		logger.fine(session.id() + ": " + "getSelectedMessageResponse");
 		List<Result> results = new ArrayList<Result>();
 		Result result = ResultBuilder.RESULT(new TestInstance("getSelectedMessageResponse"));
 		results.add(result);
@@ -111,7 +113,7 @@ public class SimulatorServiceManager extends CommonService {
 	}
 
 	public String getSimulatorEndpoint() {
-		logger.debug(session.id() + ": " + "getSimulatorEndpoint");
+		logger.fine(session.id() + ": " + "getSimulatorEndpoint");
 		return session.getSimBaseEndpoint();
 	}
 
@@ -121,12 +123,12 @@ public class SimulatorServiceManager extends CommonService {
 
 	public void renameSimFile(String simFileSpec, String newSimFileSpec)
 			throws Exception {
-		logger.debug(session.id() + ": " + "renameSimFile");
+		logger.fine(session.id() + ": " + "renameSimFile");
 		GenericSimulatorFactory.renameSimFile(simFileSpec, newSimFileSpec);
 	}
 
 	public MessageValidationResults executeSimMessage(String simFileSpec) {
-		logger.debug(session.id() + ": " + "executeSimMessage");
+		logger.fine(session.id() + ": " + "executeSimMessage");
 		try {
 			SimDb db = new SimDb(session.getDefaultSimId());
 			db.setFileNameBase(simFileSpec);
@@ -173,14 +175,14 @@ public class SimulatorServiceManager extends CommonService {
 	 * @throws Exception
 	 */
 	public List<String> getTransactionsForSimulator(SimId simid) throws Exception  {
-		logger.debug(session.id() + ": " + "getTransactionsForSimulator(" + simid + ")");
+		logger.fine(session.id() + ": " + "getTransactionsForSimulator(" + simid + ")");
 		SimDb simdb = new SimDb(simid);
 		return simdb.getTransactionsForSimulator();
 	}
 
 	public Message getTransactionRequest(SimId simid, String actor,
 										 String trans, String event) {
-		logger.debug(session.id() + ": " + "getTransactionRequest - " + simid + " - " + actor + " - " + trans + " - " + event);
+		logger.fine(session.id() + ": " + "getTransactionRequest - " + simid + " - " + actor + " - " + trans + " - " + event);
 		try {
 			SimDb db = new SimDb(simid, actor, trans, true);
 
@@ -211,7 +213,7 @@ public class SimulatorServiceManager extends CommonService {
 				uri = Io.stringFromFile(uriFile);
 			return subParseMessage(new Message("").add(uri + "\n" + header).add(body));
 		} catch (Throwable e) {
-			logger.error(ExceptionUtil.exception_details(e));
+			logger.severe(ExceptionUtil.exception_details(e));
 			return new Message("").add("Error: " + ExceptionUtil.exception_details(e));
 		}
 	}
@@ -237,7 +239,7 @@ public class SimulatorServiceManager extends CommonService {
 
 	public Message getTransactionResponse(SimId simid, String actor,
 			String trans, String event) {
-		logger.debug(session.id() + ": " + "getTransactionResponse - " + simid + " - " + actor + " - " + trans + " - " + event);
+		logger.fine(session.id() + ": " + "getTransactionResponse - " + simid + " - " + actor + " - " + trans + " - " + event);
 		try {
 			SimDb db = new SimDb(simid, actor, trans, true);
 
@@ -265,14 +267,14 @@ public class SimulatorServiceManager extends CommonService {
 				header = "";
 			return subParseMessage(new Message("").add(header).add(body));
 		} catch (Throwable e) {
-			logger.error(ExceptionUtil.exception_details(e));
+			logger.severe(ExceptionUtil.exception_details(e));
 			return new Message("").add("Error: " + ExceptionUtil.exception_details(e));
 		}
 	}
 
 	public String getTransactionLog(SimId simid, String actor, String trans,
 			String event) {
-		logger.debug(session.id() + ": " + "getTransactionLog - " + simid + " - " + actor + " - " + trans + " - " + event);
+		logger.fine(session.id() + ": " + "getTransactionLog - " + simid + " - " + actor + " - " + trans + " - " + event);
 		try {
 			SimDb db = new SimDb(simid);
 
@@ -288,7 +290,7 @@ public class SimulatorServiceManager extends CommonService {
 	}
 
 	public Simulator getNewSimulator(String actorTypeName, SimId simID, String environment) throws Exception  {
-		logger.debug(session.id() + ": " + "getNewSimulator(type=" + actorTypeName + ")");
+		logger.fine(session.id() + ": " + "getNewSimulator(type=" + actorTypeName + ")");
 		return new SimulatorApi(session).create(actorTypeName, simID, environment);
 	}
 
@@ -301,7 +303,7 @@ public class SimulatorServiceManager extends CommonService {
 	 * @throws Exception
 	 */
 	public List<SimulatorConfig> getSimConfigs(List<SimId> ids) throws Exception  {
-		logger.debug(session.id() + ": " + "getSimConfigs " + ids);
+		logger.fine(session.id() + ": " + "getSimConfigs " + ids);
 
 		GenericSimulatorFactory simFact = new GenericSimulatorFactory(SimCache.getSimManagerForSession(session.id()));
 		List<SimulatorConfig> configs = simFact.loadAvailableSimulators(ids);
@@ -311,7 +313,7 @@ public class SimulatorServiceManager extends CommonService {
 	}
 
 	public List<SimulatorConfig> getAllSimConfigs(TestSession testSession) throws Exception {
-		logger.debug(session.id() + ": " + "getAllSimConfigs for " + testSession);
+		logger.fine(session.id() + ": " + "getAllSimConfigs for " + testSession);
 		if (testSession == null) throw new ToolkitRuntimeException("TestSession is null");
 
 		GenericSimulatorFactory simFact = new GenericSimulatorFactory(SimCache.getSimManagerForSession(session.id()));
@@ -344,15 +346,15 @@ public class SimulatorServiceManager extends CommonService {
 //	}
 
 	public String saveSimConfig(SimulatorConfig config) throws Exception  {
-		logger.debug(session.id() + ": " + "saveSimConfig");
+		logger.fine(session.id() + ": " + "saveSimConfig");
 		try {
 			SimManager simManager = SimCache.getSimManagerForSession(session.id(), true);
 			new GenericSimulatorFactory(simManager).saveConfiguration(config);
 		} catch (IOException e) {
-			logger.error("saveSimConfig", e);
+			logger.log(Level.SEVERE, "saveSimConfig", e);
 			throw e;
 		}
-        logger.debug("save complete");
+        logger.fine("save complete");
 		return "";
 	}
 
@@ -375,7 +377,7 @@ public class SimulatorServiceManager extends CommonService {
 	}
 
 	public String delete(SimulatorConfig config) throws Exception  {
-		logger.debug(session.id() + ": " + "delete " + config.getId());
+		logger.fine(session.id() + ": " + "delete " + config.getId());
         GenericSimulatorFactory.delete(config.getId());
 		SimServlet.deleteSim(config.getId());
 		if (config.get(SimulatorProperties.simulatorGroup) != null) {
@@ -410,23 +412,23 @@ public class SimulatorServiceManager extends CommonService {
 	 * @return
 	 */
 	public List<SimId> getSimIds(String userFilter) {
-		logger.debug(session.id() + ": " + "getSimIds for " + userFilter);
+		logger.fine(session.id() + ": " + "getSimIds for " + userFilter);
 		if (userFilter == null) throw new ToolkitRuntimeException("TestSession is null");
 		return SimDb.getAllSimIds(new TestSession(userFilter));
 	}
 
 	public int removeOldSimulators(TestSession testSession) {
-		logger.debug(session.id() + ": " + "removeOldSimulators");
+		logger.fine(session.id() + ": " + "removeOldSimulators");
 		try {
 			return new SimInstanceTerminator().run(testSession);
 		} catch (Exception e) {
-			logger.error("removeOldSimulators failed", e);
+			logger.log(Level.SEVERE, "removeOldSimulators failed", e);
 			return 0;
 		}
 	}
 
 	public MessageValidationResults validateMessage(ValidationContext vc) throws EnvironmentNotSelectedClientException {
-		logger.debug(session.id() + ": " + "validateMessage");
+		logger.fine(session.id() + ": " + "validateMessage");
 		try {
 			File codesFile = session.getCodesFile();
 			vc.setCodesFilename(codesFile.toString());
@@ -459,7 +461,7 @@ public class SimulatorServiceManager extends CommonService {
 	}
 
    public List <SimulatorStats> getSimulatorStats(List <SimId> simIds) throws IOException, NoSimException {
-      logger.debug(session.id() + ": " + "getSimulatorStats for " + simIds);
+      logger.fine(session.id() + ": " + "getSimulatorStats for " + simIds);
       try {
          List <SimulatorStats> stats = new ArrayList <>();
          for (SimId simId : simIds) {
@@ -492,12 +494,12 @@ public class SimulatorServiceManager extends CommonService {
                stats.add(rep);
             } else {
                stats.add(new SimulatorStats(simId));
-               logger.debug("Cannot collect stats. Don't recognize actorType - " + db.getSimulatorActorType());
+               logger.fine("Cannot collect stats. Don't recognize actorType - " + db.getSimulatorActorType());
             }
          }
          return stats;
       } catch (Exception e) {
-         logger.error(ExceptionUtil.exception_details(e, "getSimulatorStats"));
+         logger.severe(ExceptionUtil.exception_details(e, "getSimulatorStats"));
          throw e;
       }
    }

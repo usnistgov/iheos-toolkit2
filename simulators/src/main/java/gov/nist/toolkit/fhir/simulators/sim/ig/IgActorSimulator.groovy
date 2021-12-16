@@ -17,11 +17,11 @@ import gov.nist.toolkit.valsupport.message.AbstractMessageValidator
 import gov.nist.toolkit.valsupport.message.ForcedErrorMessageValidator
 import groovy.transform.TypeChecked
 import org.apache.axiom.om.OMElement
-import org.apache.log4j.Logger
+import java.util.logging.*
 
 @TypeChecked
 public class IgActorSimulator extends GatewaySimulatorCommon {
-   static Logger logger = Logger.getLogger(IgActorSimulator.class);
+   static Logger logger = Logger.getLogger(IgActorSimulator.class.getName());
    AdhocQueryResponseGenerator sqs;
 
    public IgActorSimulator(SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig simulatorConfig) {

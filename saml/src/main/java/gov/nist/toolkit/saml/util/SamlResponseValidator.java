@@ -1,8 +1,8 @@
 package gov.nist.toolkit.saml.util;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.opensaml.Configuration;
 import org.opensaml.common.SAMLException;
@@ -54,7 +54,7 @@ import org.opensaml.xml.validation.ValidationException;
  */
 public class SamlResponseValidator {
 
-	private Log _logger = null;
+	private Logger _logger = null;
     private Credential _credential = null;
     //private CryptoManager _cryptoManager = null;
     private Organization _organization = null;
@@ -115,7 +115,7 @@ public class SamlResponseValidator {
      * @param requireSignature Indicates if a signature is mandatory
      */
     public SamlResponseValidator(String sEntityID, Organization organization, boolean requireSignature){
-        _logger = LogFactory.getLog(SamlResponseValidator.class);
+        _logger = Logger.getLogger(SamlResponseValidator.class.getName());
         
         //Engine engine = Engine.getInstance();
         //_cryptoManager = engine.getCryptoManager();
@@ -160,13 +160,13 @@ public class SamlResponseValidator {
             }
             catch (Exception e)
             {
-                _logger.debug(
+                _logger.fine(
                     "Could not resolve Metadata provider found for issuer: " + _issuer);
             }
             
             if(mdProvider != null) //Metadata provider available
             {
-                _logger.debug(
+                _logger.fine(
                     "Metadata provider found for issuer: " + _issuer);
                 MetadataCredentialResolver mdCredResolver = 
                     new MetadataCredentialResolver(mdProvider);
@@ -189,7 +189,7 @@ public class SamlResponseValidator {
         }
         catch(Exception e) //No certificate found
         {
-            _logger.debug(
+            _logger.fine(
                 "No trusted certificate found for issuer: " + _issuer);
             //Ignore
         }
@@ -255,7 +255,7 @@ public class SamlResponseValidator {
             }
             catch (SecurityException e) //Internal processing error
             {
-                _logger.error("Processing error evaluating the signature", e);           
+                _logger.log(Level.SEVERE, "Processing error evaluating the signature", e);
                 throw new Exception("Processing error evaluating the signature");
             }
         }   
@@ -291,7 +291,7 @@ public class SamlResponseValidator {
             // -MG: EVB, JRE, RDV: define order of credential resolvers and test
             if(_chainingCredentialResolver.getResolverChain().isEmpty())
             {
-                _logger.warn(
+                _logger.warning(
                     "No trusted certificate or metadata found for issuer: " + _issuer);
                 //bValid = false already    
             }
@@ -320,13 +320,13 @@ public class SamlResponseValidator {
         catch(SecurityPolicyException e)
         {
             // Indicates signature was not cryptographically valid, or possibly a processing error
-            _logger.debug("Invalid signature", e);
+            _logger.log(Level.FINE, "Invalid signature", e);
             bValid = false;    
         }
         catch (ValidationException e) 
         {
             // Indicates signature was not cryptographically valid, or possibly a processing error
-            _logger.debug("Invalid signature", e);
+            _logger.log(Level.FINE, "Invalid signature", e);
             bValid = false;                
         }
         return bValid;
@@ -355,17 +355,17 @@ public class SamlResponseValidator {
         {           
             if (!validateSignature(context))
             {
-                _logger.debug("Invalid XML signature received for message");
+                _logger.fine("Invalid XML signature received for message");
                 throw new Exception("Invalid XML signature received for message");
             }     
             
-            _logger.debug("XML signature validation okay");
+            _logger.fine("XML signature validation okay");
             
         }
         else if (_signatureRequired)
         {
             //no signature, but was required: error:
-            _logger.debug("No signature received for message, which is required");
+            _logger.fine("No signature received for message, which is required");
             throw new Exception("No signature received for message, which is required");
         }
     }

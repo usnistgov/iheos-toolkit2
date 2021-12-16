@@ -5,7 +5,7 @@ import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.installation.shared.TestCollectionCode;
 import gov.nist.toolkit.utilities.io.Io;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class BuildCollections extends HttpServlet {
-    private static Logger logger = Logger.getLogger(BuildCollections.class);
+    private static Logger logger = Logger.getLogger(BuildCollections.class.getName());
     private File testkitIn;
     private File testkitOut;
 
@@ -230,7 +230,7 @@ public class BuildCollections extends HttpServlet {
          try {
             write();
          } catch (Exception e) {
-            logger.error(String.format("Cannot write built collections - %s", e.getMessage()));
+            logger.severe(String.format("Cannot write built collections - %s", e.getMessage()));
          }
       }
    }

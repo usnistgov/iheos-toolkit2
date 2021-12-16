@@ -23,7 +23,7 @@ import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ public class RemoteSqSim  extends TransactionSimulator implements MetadataGenera
 	Metadata m = new Metadata();
 	Exception startUpException = null;
 	OMElement query;
-	Logger logger = Logger.getLogger(SqSim.class);
+	Logger logger = Logger.getLogger(SqSim.class.getName());
 
 	public RemoteSqSim(SimCommon common, DsSimCommon dsSimCommon, GatewaySimulatorCommon gatewayCommon, SimulatorConfig simulatorConfig, OMElement query) {
 		super(common, simulatorConfig);
@@ -111,7 +111,7 @@ public class RemoteSqSim  extends TransactionSimulator implements MetadataGenera
 			String msg = e.getMessage();
 			if (msg == null || msg.equals(""))
 				msg = ExceptionUtil.exception_details(e);
-			logger.error(msg);
+			logger.severe(msg);
 			er.err(XdsErrorCode.Code.XDSRegistryError, msg, this, null);
 
 			return;

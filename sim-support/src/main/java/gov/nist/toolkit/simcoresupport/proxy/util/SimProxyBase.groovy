@@ -26,13 +26,13 @@ import org.apache.http.Header
 import org.apache.http.HttpHost
 import org.apache.http.HttpRequest
 import org.apache.http.HttpResponse
-import org.apache.log4j.Logger
+import java.util.logging.*
 /**
  *
  */
 @TypeChecked
 public class SimProxyBase {
-    static Logger logger = Logger.getLogger(SimProxyBase.class);
+    static Logger logger = Logger.getLogger(SimProxyBase.class.getName());
 
 
     String uri = null

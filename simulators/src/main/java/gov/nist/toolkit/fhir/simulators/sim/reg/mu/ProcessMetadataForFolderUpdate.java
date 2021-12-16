@@ -7,13 +7,13 @@ import gov.nist.toolkit.fhir.simulators.sim.reg.store.*;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProcessMetadataForFolderUpdate implements ProcessMetadataInterface {
-	static Logger log = Logger.getLogger(ProcessMetadataForFolderUpdate.class);
+	static Logger log = Logger.getLogger(ProcessMetadataForFolderUpdate.class.getName());
 	ErrorRecorder er;
 	MetadataCollection mc;
 	MetadataCollection delta;

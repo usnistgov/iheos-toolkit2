@@ -9,7 +9,7 @@ import ca.uhn.fhir.rest.param.StringParam
 import ca.uhn.fhir.rest.server.exceptions.InternalErrorException
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException
 import gov.nist.toolkit.fhir.search.BaseQuery
-import org.apache.log4j.Logger
+import java.util.logging.*
 import org.apache.lucene.index.Term
 import org.apache.lucene.search.BooleanClause
 import org.apache.lucene.search.BooleanQuery
@@ -19,7 +19,7 @@ import org.hl7.fhir.dstu3.model.*
  *
  */
 public class PatientResourceProvider implements IToolkitResourceProvider {
-    static Logger logger = Logger.getLogger(PatientResourceProvider.class);
+    static Logger logger = Logger.getLogger(PatientResourceProvider.class.getName());
 
     /**
      * The getResourceType method comes from IResourceProvider, and must

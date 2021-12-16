@@ -1,6 +1,6 @@
 package gov.nist.toolkit.fhir.server.servlet;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -15,7 +15,7 @@ import java.io.PrintWriter;
  */
 public class CustomHttpServletResponseWrapper extends HttpServletResponseWrapper
 {
-    private static final Logger logger = Logger.getLogger(CustomHttpServletResponseWrapper.class);
+    private static final Logger logger = Logger.getLogger(CustomHttpServletResponseWrapper.class.getName());
     private final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
     private OutputStream outputStream;
 

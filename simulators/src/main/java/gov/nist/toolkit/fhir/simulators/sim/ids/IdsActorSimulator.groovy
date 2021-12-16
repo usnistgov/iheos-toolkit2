@@ -20,7 +20,7 @@ import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
 import groovy.transform.TypeChecked
 import org.apache.axiom.om.OMElement
 import org.apache.commons.lang3.StringUtils
-import org.apache.log4j.Logger
+import java.util.logging.*
 import org.javatuples.Pair
 
 import javax.xml.namespace.QName
@@ -29,7 +29,7 @@ import javax.xml.namespace.QName
 
 @TypeChecked
 public class IdsActorSimulator extends GatewaySimulatorCommon {
-   static Logger logger = Logger.getLogger(IdsActorSimulator.class);
+   static Logger logger = Logger.getLogger(IdsActorSimulator.class.getName());
    AdhocQueryResponseGenerator sqs;
 
    static List<TransactionType> transactions = new ArrayList<>();
@@ -68,7 +68,7 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
 
       switch (transactionType) {
          case TransactionType.RET_IMG_DOC_SET:
-            logger.debug("Transaction type: RET_IMG_DOC_SET");
+            logger.fine("Transaction type: RET_IMG_DOC_SET");
             common.vc.isRet = false;
             common.vc.isRad69 = true;
             common.vc.isXC = false;
@@ -77,20 +77,20 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
             common.vc.hasSoap = true;
             common.vc.hasHttp = true;
 
-            logger.debug("dsSimCommon.runInitialValidationsAndFaultIfNecessary()");
+            logger.fine("dsSimCommon.runInitialValidationsAndFaultIfNecessary()");
             if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary()) {
                returnRetrieveError(mvc);
                return false;
             }
 
-            logger.debug("mvc.hasErrors()");
+            logger.fine("mvc.hasErrors()");
             if (mvc.hasErrors()) {
                returnRetrieveError(mvc);
                return false;
             }
 
          // extract query from validator chain
-            logger.debug("Extract query from validator chain");
+            logger.fine("Extract query from validator chain");
             SoapMessageValidator smv = (SoapMessageValidator) dsSimCommon.getMessageValidatorIfAvailable(SoapMessageValidator.class);
             if (smv == null || !(smv instanceof SoapMessageValidator)) {
                er.err(Code.XDSRegistryError, "IDS Internal Error - cannot find SoapMessageValidator instance",
@@ -98,14 +98,14 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
                returnRetrieveError(mvc);
                return false;
             }
-            logger.debug("Got AbstractMessageValidator");
+            logger.fine("Got AbstractMessageValidator");
             OMElement retrieveRequest = smv.getMessageBody();
 
             List<String> docUids = new ArrayList<String>();
             for (OMElement uidEle : XmlUtil.decendentsWithLocalName(retrieveRequest, "DocumentUniqueId")) {
                String uid = uidEle.getText();
                docUids.add(uid);
-               logger.debug("Document UID: " + uid);
+               logger.fine("Document UID: " + uid);
             }
 
             boolean errors = true;
@@ -116,19 +116,19 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
          prsImgs:
             for (OMElement studyEle : XmlUtil.decendentsWithLocalName(retrieveRequest, "StudyRequest")) {
                String studyUid = studyEle.getAttributeValue(new QName("studyInstanceUID"));
-               logger.debug("Study UID: " + studyUid);
+               logger.fine("Study UID: " + studyUid);
                Iterator<OMElement> seriesIterator = studyEle.getChildElements();
                while (seriesIterator.hasNext()) {
                   OMElement seriesEle = (OMElement)seriesIterator.next();
                   String seriesUid = seriesEle.getAttributeValue(new QName("seriesInstanceUID"));
-                  logger.debug(" Series UID: " + seriesUid);
+                  logger.fine(" Series UID: " + seriesUid);
                   Iterator<OMElement> docIterator = seriesEle.getChildElements();
                   while (docIterator.hasNext()) {
                      OMElement docEle = (OMElement)docIterator.next();
                      OMElement docUidEle = XmlUtil.decendentWithLocalName(docEle, "DocumentUniqueId");
                      String uid = docUidEle.getText().trim();
                      String fullUid=studyUid + ":" + seriesUid + ":" + uid;
-                     logger.debug(fullUid);
+                     logger.fine(fullUid);
                      String hci = null;
                      OMElement hciEle = XmlUtil.onlyChildWithLocalNameNE(docEle, "HomeCommunityId");
                      if (hciEle != null) hci = hciEle.getText();
@@ -153,8 +153,8 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
                String xferSyntaxUid = transferSyntaxEle.getText();
                if (StringUtils.isBlank(xferSyntaxUid)) continue;
                xferSyntaxUid = xferSyntaxUid.trim();
-               logger.debug("Transfer Syntax UID: " + xferSyntaxUid);
-               //logger.debug(" to string: " + transferSyntaxEle.toString());
+               logger.fine("Transfer Syntax UID: " + xferSyntaxUid);
+               //logger.fine(" to string: " + transferSyntaxEle.toString());
                transferSyntaxUids.add(xferSyntaxUid);
             }
             if (transferSyntaxUids.isEmpty()) {
@@ -273,21 +273,21 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
             return false;
             
       case TransactionType.WADO_RETRIEVE:
-         logger.debug("Transaction Type: WADO_RETRIEVE");
+         logger.fine("Transaction Type: WADO_RETRIEVE");
          common.vc.hasHttp = true;
          
-         logger.debug("dsSimCommon.runInitialValidationsAndFaultIfNecessary()");
+         logger.fine("dsSimCommon.runInitialValidationsAndFaultIfNecessary()");
          if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary()) {
             returnRetrieveError(mvc);
             return false;
          }
          
-         logger.debug("mvc.hasErrors()");
+         logger.fine("mvc.hasErrors()");
          if (mvc.hasErrors()) {
             returnRetrieveError(mvc);
             return false;
          }
-         logger.debug("Extract query from validator chain");
+         logger.fine("Extract query from validator chain");
          HttpMessageValidator smv = (HttpMessageValidator) dsSimCommon.getMessageValidatorIfAvailable(HttpMessageValidator.class);
          if (smv == null || !(smv instanceof HttpMessageValidator)) {
             er.err(Code.XDSRegistryError, "IDS Internal Error - cannot find HttpMessageValidator instance",
@@ -295,9 +295,9 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
             returnRetrieveError(mvc);
             return false;
          }
-         logger.debug("Got AbstractMessageValidator");
+         logger.fine("Got AbstractMessageValidator");
          
-         logger.debug("This is as far as we've gotten.");
+         logger.fine("This is as far as we've gotten.");
          
          return true;
 

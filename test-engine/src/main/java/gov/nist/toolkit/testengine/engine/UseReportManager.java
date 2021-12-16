@@ -17,7 +17,7 @@ import gov.nist.toolkit.testkitutilities.TestKitSearchPath;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 import java.io.File;
@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 public class UseReportManager  {
-    private final static Logger logger = Logger.getLogger(UseReportManager.class);
+    private final static Logger logger = Logger.getLogger(UseReportManager.class.getName());
 	List<UseReport> useReports;
 	RetrievedDocumentModel retrievedDocumentModel;
 	ReportManager reportManager; // things reported from query results

@@ -16,7 +16,7 @@ import gov.nist.toolkit.testkitutilities.TestKitSearchPath;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -25,7 +25,7 @@ import java.util.Map;
 
 public class UtilityRunner {
     private final XdsTestServiceManager xdsTestServiceManager;  // this is here only because of an automatic refactoring
-    private static Logger logger = Logger.getLogger(UtilityRunner.class);
+    private static Logger logger = Logger.getLogger(UtilityRunner.class.getName());
     private AssertionResults assertionResults = new AssertionResults();
     private final TestRunType testRunType;
 
@@ -107,7 +107,7 @@ public class UtilityRunner {
                 Sites theSites = new Sites(siteCollection);
                 assignSite(session, theSites);
             } catch (Exception e) {
-                logger.error(ExceptionUtil.exception_details(e));
+                logger.severe(ExceptionUtil.exception_details(e));
                 assertionResults.add(ExceptionUtil.exception_details(e), false);
                 return ResultBuilder.RESULT(testInstance, assertionResults, null, null);
             }
@@ -133,11 +133,11 @@ public class UtilityRunner {
             return getResult(session, params, params2, sections, testInstance, stopOnFirstFailure);
 
         } catch (NullPointerException e) {
-            logger.error(ExceptionUtil.exception_details(e));
+            logger.severe(ExceptionUtil.exception_details(e));
             assertionResults.add(ExceptionUtil.exception_details(e), false);
             return ResultBuilder.RESULT(testInstance, assertionResults, null, null);
         } catch (Throwable e) {
-            logger.error(ExceptionUtil.exception_details(e));
+            logger.severe(ExceptionUtil.exception_details(e));
             assertionResults.add(ExceptionUtil.exception_details(e), false);
             return ResultBuilder.RESULT(testInstance, assertionResults, null, null);
         }
@@ -179,11 +179,11 @@ public class UtilityRunner {
             result.assertions.add(assertionResults);
             return result;
         } catch (EnvironmentNotSelectedException e) {
-            logger.error(ExceptionUtil.exception_details(e));
+            logger.severe(ExceptionUtil.exception_details(e));
             assertionResults.add("Environment not selected", false);
             return ResultBuilder.RESULT(testInstance, assertionResults, null, null);
         } catch (Exception e) {
-            logger.error(ExceptionUtil.exception_details(e));
+            logger.severe(ExceptionUtil.exception_details(e));
             assertionResults.add(ExceptionUtil.exception_details(e), false);
             return ResultBuilder.RESULT(testInstance, assertionResults, null, null);
         }

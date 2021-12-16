@@ -36,8 +36,6 @@ import gov.nist.toolkit.installation.server.PropertyManager;
 import org.apache.commons.httpclient.ConnectTimeoutException;
 import org.apache.commons.httpclient.params.HttpConnectionParams;
 import org.apache.commons.httpclient.protocol.SecureProtocolSocketFactory;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import java.lang.Exception;
 import javax.net.SocketFactory;
@@ -51,12 +49,13 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class AuthSSLProtocolSocketFactory implements SecureProtocolSocketFactory {
 
-    /** Log model for this class. */
-    private static final Log LOG = LogFactory.getLog(AuthSSLProtocolSocketFactory.class);
+    private static final Logger log = Logger.getLogger(AuthSSLProtocolSocketFactory.class.getName());
 
     private URL keystoreUrl = null;
     private String keystorePassword = null;
@@ -94,7 +93,7 @@ public class AuthSSLProtocolSocketFactory implements SecureProtocolSocketFactory
         if (url == null) {
             throw new IllegalArgumentException("Keystore url may not be null");
         }
-        LOG.debug("Initializing key store");
+        log.fine("Initializing key store");
         KeyStore keystore  = KeyStore.getInstance("jks");
         InputStream is = null;
         try {
@@ -112,7 +111,7 @@ public class AuthSSLProtocolSocketFactory implements SecureProtocolSocketFactory
         if (keystore == null) {
             throw new IllegalArgumentException("Keystore may not be null");
         }
-        LOG.debug("Initializing key manager");
+        log.fine("Initializing key manager");
         KeyManagerFactory kmfactory = KeyManagerFactory.getInstance(
             KeyManagerFactory.getDefaultAlgorithm());
         kmfactory.init(keystore, password != null ? password.toCharArray(): null);
@@ -125,13 +124,13 @@ public class AuthSSLProtocolSocketFactory implements SecureProtocolSocketFactory
         if (keystore == null) {
             throw new IllegalArgumentException("Keystore may not be null");
         }
-        LOG.debug("Initializing trust manager");
+        log.fine("Initializing trust manager");
         TrustManagerFactory tmfactory = TrustManagerFactory.getInstance(
             TrustManagerFactory.getDefaultAlgorithm());
         tmfactory.init(keystore);
         TrustManager[] trustmanagers = tmfactory.getTrustManagers();
         
-        LOG.debug("Found " + trustmanagers.length + " trust managers");
+        log.fine("Found " + trustmanagers.length + " trust managers");
         
         for (int i = 0; i < trustmanagers.length; i++) {
             if (trustmanagers[i] instanceof X509TrustManager) {
@@ -150,65 +149,82 @@ public class AuthSSLProtocolSocketFactory implements SecureProtocolSocketFactory
             TrustManager[] trustmanagers = null;
             if (this.keystoreUrl != null) {
                 KeyStore keystore = createKeyStore(this.keystoreUrl, this.keystorePassword);
-                if (LOG.isDebugEnabled()) {
-                    Enumeration aliases = keystore.aliases();
-                    while (aliases.hasMoreElements()) {
-                        String alias = (String)aliases.nextElement();                        
-                        Certificate[] certs = keystore.getCertificateChain(alias);
-                        if (certs != null) {
-                            LOG.debug("Certificate chain '" + alias + "':");
-                            for (int c = 0; c < certs.length; c++) {
-                                if (certs[c] instanceof X509Certificate) {
-                                    X509Certificate cert = (X509Certificate)certs[c];
-                                    LOG.debug(" Certificate " + (c + 1) + ":");
-                                    LOG.debug("  Subject DN: " + cert.getSubjectDN());
-                                    LOG.debug("  Signature Algorithm: " + cert.getSigAlgName());
-                                    LOG.debug("  Valid from: " + cert.getNotBefore() );
-                                    LOG.debug("  Valid until: " + cert.getNotAfter());
-                                    LOG.debug("  Issuer: " + cert.getIssuerDN());
-                                }
-                            }
-                        }
-                    }
-                }
+                getDebugMessage(keystore);
+                log.finer(() -> getDebugMessage(keystore));
                 keymanagers = createKeyManagers(keystore, this.keystorePassword);
             }
             if (this.truststoreUrl != null) {
                 KeyStore keystore = createKeyStore(this.truststoreUrl, this.truststorePassword);
-                if (LOG.isDebugEnabled()) {
-                    Enumeration aliases = keystore.aliases();
-                    while (aliases.hasMoreElements()) {
-                        String alias = (String)aliases.nextElement();
-                        LOG.debug("Trusted certificate '" + alias + "':");
-                        Certificate trustedcert = keystore.getCertificate(alias);
-                        if (trustedcert != null && trustedcert instanceof X509Certificate) {
-                            X509Certificate cert = (X509Certificate)trustedcert;
-                            LOG.debug("  Subject DN: " + cert.getSubjectDN());
-                            LOG.debug("  Signature Algorithm: " + cert.getSigAlgName());
-                            LOG.debug("  Valid from: " + cert.getNotBefore() );
-                            LOG.debug("  Valid until: " + cert.getNotAfter());
-                            LOG.debug("  Issuer: " + cert.getIssuerDN());
-                        }
-                    }
-                }
+                log.finer(() -> getTrustStoreDebugString(keystore));
                 trustmanagers = createTrustManagers(keystore);
             }
             SSLContext sslcontext = SSLContext.getInstance("SSL");
             sslcontext.init(keymanagers, trustmanagers, null);
             return sslcontext;
         } catch (NoSuchAlgorithmException e) {
-            LOG.error(e.getMessage(), e);
+            log.log(Level.SEVERE, e.getMessage(), e);
             throw new IOException("Unsupported algorithm exception: " + e.getMessage());
         } catch (KeyStoreException e) {
-            LOG.error(e.getMessage(), e);
+            log.log(Level.SEVERE, e.getMessage(), e);
             throw new IOException("Keystore exception: " + e.getMessage());
         } catch (GeneralSecurityException e) {
-            LOG.error(e.getMessage(), e);
+            log.log(Level.SEVERE, e.getMessage(), e);
             throw new IOException("Key management exception: " + e.getMessage());
         } catch (IOException e) {
-            LOG.error(e.getMessage(), e);
+            log.log(Level.SEVERE, e.getMessage(), e);
             throw new IOException("I/O error reading keystore/truststore file: " + e.getMessage());
         }
+    }
+
+    private String getTrustStoreDebugString(KeyStore keystore) {
+        StringBuffer sb = new StringBuffer();
+        try {
+            Enumeration aliases = keystore.aliases();
+            while (aliases.hasMoreElements()) {
+                String alias = (String) aliases.nextElement();
+                sb.append("Trusted certificate '" + alias + "':");
+                Certificate trustedcert = keystore.getCertificate(alias);
+                if (trustedcert != null && trustedcert instanceof X509Certificate) {
+                    X509Certificate cert = (X509Certificate) trustedcert;
+                    sb.append("  Subject DN: " + cert.getSubjectDN());
+                    sb.append("  Signature Algorithm: " + cert.getSigAlgName());
+                    sb.append("  Valid from: " + cert.getNotBefore());
+                    sb.append("  Valid until: " + cert.getNotAfter());
+                    sb.append("  Issuer: " + cert.getIssuerDN());
+                }
+            }
+        } catch (Exception ex) {
+            sb.append(ex.toString());
+        }
+        return sb.toString();
+    }
+
+    private String getDebugMessage(KeyStore keystore) {
+        StringBuffer sb = new StringBuffer();
+        try {
+            Enumeration aliases = keystore.aliases();
+            while (aliases.hasMoreElements()) {
+                String alias = (String) aliases.nextElement();
+                Certificate[] certs = keystore.getCertificateChain(alias);
+                if (certs != null) {
+                    sb.append("Certificate chain '" + alias + "':");
+                    for (int c = 0; c < certs.length; c++) {
+                        if (certs[c] instanceof X509Certificate) {
+                            X509Certificate cert = (X509Certificate) certs[c];
+                            sb.append(" Certificate " + (c + 1) + ":");
+                            sb.append("  Subject DN: " + cert.getSubjectDN());
+                            sb.append("  Signature Algorithm: " + cert.getSigAlgName());
+                            sb.append("  Valid from: " + cert.getNotBefore());
+                            sb.append("  Valid until: " + cert.getNotAfter());
+                            sb.append("  Issuer: " + cert.getIssuerDN());
+                        }
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            sb.append(ex.toString());
+        }
+            return sb.toString();
     }
 
     public SSLContext getSSLContext() throws IOException {
@@ -328,20 +344,20 @@ public class AuthSSLProtocolSocketFactory implements SecureProtocolSocketFactory
 
     private SSLSocket setEnabledSSLProtocols(SSLSocket socket)
     {
-        LOG.error("setEnabledSSLProtocols");
+        log.info("setEnabledSSLProtocols");
         PropertyManager propertyManager = Installation.instance().propertyServiceManager().getPropertyManager();
         String[] sslProtocols = propertyManager.getClientSSLProtocols();
         if (sslProtocols == null)
         {
-            LOG.debug("No Client SSL Protocols retrieved from runtime properties file; SSL Socket is unchanged");
+            log.fine("No Client SSL Protocols retrieved from runtime properties file; SSL Socket is unchanged");
             return socket;
         }
         try {
             socket.setEnabledProtocols(sslProtocols);
-            LOG.debug("socket.setEnabledProtocols completed successfully");
+            log.fine("socket.setEnabledProtocols completed successfully");
         } catch ( java.lang.Exception e) {
-            LOG.error("Unable to complete operation: socket.setEnabledProtocols");
-            LOG.error(e.toString());
+            log.severe("Unable to complete operation: socket.setEnabledProtocols");
+            log.severe(e.toString());
         }
         return socket;
 
@@ -349,13 +365,13 @@ public class AuthSSLProtocolSocketFactory implements SecureProtocolSocketFactory
 
     private SSLSocket setEnabledCipherSuites(SSLSocket socket)
     {
-      LOG.debug("setEnabledCipherSuites");
+      log.fine("setEnabledCipherSuites");
       PropertyManager propertyManager = Installation.instance().propertyServiceManager().getPropertyManager();
       String[] cipherSuites = propertyManager.getClientCipherSuites();
-      LOG.debug("Got cipherSuites");
+      log.fine("Got cipherSuites");
       if (cipherSuites == null)
       {
-         LOG.debug("No Client Cipher Suites retrieved from runtime properties file; SSL Socket is unchanged");
+         log.fine("No Client Cipher Suites retrieved from runtime properties file; SSL Socket is unchanged");
          return socket;
       }
       String[] supportedCipherSuites = socket.getSupportedCipherSuites();
@@ -365,8 +381,8 @@ public class AuthSSLProtocolSocketFactory implements SecureProtocolSocketFactory
           supportedSet.add(c);
           builder.append(c).append(',');
       }
-      LOG.debug("Supported CipherSuites" + builder.toString());
-      LOG.debug("Count of supported CipherSuites: " + supportedSet.size());
+      log.fine("Supported CipherSuites" + builder.toString());
+      log.fine("Count of supported CipherSuites: " + supportedSet.size());
 
       HashSet<String> enabledCipherSuites = new HashSet<>();
       builder = new StringBuilder();
@@ -375,11 +391,11 @@ public class AuthSSLProtocolSocketFactory implements SecureProtocolSocketFactory
               enabledCipherSuites.add(c);
               builder.append(c).append(',');
           } else {
-              LOG.debug("User requested ciphersuite not supported by JVM: " + c);
+              log.fine("User requested ciphersuite not supported by JVM: " + c);
           }
       }
-      LOG.debug("Final set of requested / accepted CipherSuites: " + builder.toString());
-      LOG.debug("Final count of requested / accepted CipherSuites: " + enabledCipherSuites.size());
+      log.fine("Final set of requested / accepted CipherSuites: " + builder.toString());
+      log.fine("Final count of requested / accepted CipherSuites: " + enabledCipherSuites.size());
 
       String[] finalCipherSuites = new String[enabledCipherSuites.size()];
       int i = 0;
@@ -389,38 +405,38 @@ public class AuthSSLProtocolSocketFactory implements SecureProtocolSocketFactory
 
       try {
           socket.setEnabledCipherSuites(finalCipherSuites);
-          LOG.debug("socket.setEnabledCipherSuites completed successfully");
+          log.fine("socket.setEnabledCipherSuites completed successfully");
       } catch ( java.lang.Exception e) {
-          LOG.error("Unable to complete operation: socket.setEnabledCipherSuites");
-          LOG.error(e.toString());
+          log.severe("Unable to complete operation: socket.setEnabledCipherSuites");
+          log.severe(e.toString());
       }
       return socket;
     }
 
     private void logParameters(SSLSocket s) {
-        LOG.debug("Logging parameters for SSL Socket (Client Side)");
+        log.fine("Logging parameters for SSL Socket (Client Side)");
         String[] p = s.getSupportedCipherSuites();
-        LOG.debug("\nSupported Cipher Suites (Client Side)");
+        log.fine("\nSupported Cipher Suites (Client Side)");
         for (String px: p) {
-            LOG.debug(" " + px);
+            log.fine(" " + px);
         }
 
         p = s.getEnabledCipherSuites();
-        LOG.debug("\nEnabled Cipher Suites (Client Side)");
+        log.fine("\nEnabled Cipher Suites (Client Side)");
         for (String px: p) {
-            LOG.debug(" " + px);
+            log.fine(" " + px);
         }
 
-        LOG.debug("\nSupported SSL Protocols (Client Side)");
+        log.fine("\nSupported SSL Protocols (Client Side)");
         p = s.getSupportedProtocols();
         for (String px: p) {
-            LOG.debug(" " + px);
+            log.fine(" " + px);
         }
 
-        LOG.debug("\nEnabled SSL Protocols (Client Side)");
+        log.fine("\nEnabled SSL Protocols (Client Side)");
         p = s.getEnabledProtocols();
         for (String px: p) {
-            LOG.debug(" " + px);
+            log.fine(" " + px);
         }
     }
 }

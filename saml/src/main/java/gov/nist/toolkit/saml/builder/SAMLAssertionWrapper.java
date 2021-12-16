@@ -62,6 +62,7 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.opensaml.xml.*;
 import org.opensaml.xml.io.*;
@@ -80,8 +81,7 @@ public class SAMLAssertionWrapper {
 	 /**
      * Field log
      */
-    private static final org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(SAMLAssertionWrapper.class);
+    private static final Logger log = Logger.getLogger(SAMLAssertionWrapper.class.getName());
 
     /**
      * Raw SAML assertion data
@@ -136,7 +136,7 @@ public class SAMLAssertionWrapper {
             this.saml2 = (org.opensaml.saml2.core.Assertion) xmlObject;
             samlVersion = SAMLVersion.VERSION_20;
         } else {
-            log.error(
+            log.severe(
                 "AssertionWrapper: found unexpected type " 
                 + (xmlObject != null ? xmlObject.getClass().getName() : xmlObject)
             );
@@ -170,7 +170,7 @@ public class SAMLAssertionWrapper {
             this.saml2 = (org.opensaml.saml2.core.Assertion) xmlObject;
             samlVersion = SAMLVersion.VERSION_20;
         } else {
-            log.error(
+            log.severe(
                 "AssertionWrapper: found unexpected type " 
                 + (xmlObject != null ? xmlObject.getClass().getName() : xmlObject)
             );
@@ -261,7 +261,7 @@ public class SAMLAssertionWrapper {
             signableObject.releaseDOM();
             signableObject.releaseChildrenDOM(true);
         } else {
-            log.error("Attempt to sign an unsignable model " + xmlObject.getClass().getName());
+            log.severe("Attempt to sign an unsignable model " + xmlObject.getClass().getName());
         }
     }
     
@@ -275,7 +275,7 @@ public class SAMLAssertionWrapper {
         QName qName = Signature.DEFAULT_ELEMENT_NAME;
         XMLObjectBuilder<Signature> builder = OpenSamlBootStrap.getBuilderFactory().getBuilder(qName);
         if (builder == null) {
-            log.error(
+            log.severe(
                 "Unable to retrieve builder for model QName "
                 + qName
             );
@@ -325,9 +325,7 @@ public class SAMLAssertionWrapper {
 
         String sigAlgo = SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1;
         String pubKeyAlgo = issuerCerts.getPublicKey().getAlgorithm();
-        if (log.isDebugEnabled()) {
-            log.debug("automatic sig algo detection: " + pubKeyAlgo);
-        }
+        log.fine("automatic sig algo detection: " + pubKeyAlgo);
         if (pubKeyAlgo.equalsIgnoreCase("DSA")) {
             sigAlgo = SignatureConstants.ALGO_ID_SIGNATURE_DSA;
         }
@@ -419,10 +417,10 @@ public class SAMLAssertionWrapper {
         if (saml2 != null) {
             id = saml2.getID();
         } else {
-            log.error("AssertionWrapper: unable to return ID - no saml assertion model");
+            log.severe("AssertionWrapper: unable to return ID - no saml assertion model");
         }
         if (id == null || id.length() == 0) {
-            log.error("AssertionWrapper: ID was null, seeting a new ID value");
+            log.severe("AssertionWrapper: ID was null, seeting a new ID value");
             id = UUIDGenerator.getUUID();
             if (saml2 != null) {
                 saml2.setID(id);
@@ -440,7 +438,7 @@ public class SAMLAssertionWrapper {
         if (saml2 != null && saml2.getIssuer() != null) {
             return saml2.getIssuer().getValue();
         }
-        log.error(
+        log.severe(
             "AssertionWrapper: unable to return Issuer string - no saml assertion "
             + "model or issuer is null"
         );
@@ -490,7 +488,7 @@ public class SAMLAssertionWrapper {
             signableObject.releaseDOM();
             signableObject.releaseChildrenDOM(true);
         } else {
-            log.error("Attempt to sign an unsignable model " + xmlObject.getClass().getName());
+            log.severe("Attempt to sign an unsignable model " + xmlObject.getClass().getName());
         }
     }
     
@@ -502,11 +500,9 @@ public class SAMLAssertionWrapper {
     public SAMLVersion getSamlVersion() {
         if (samlVersion == null) {
             // Try to set the version.
-            if (log.isDebugEnabled()) {
-                log.debug(
-                    "The SAML version was null in getSamlVersion(). Recomputing SAML version..."
-                );
-            }
+            log.fine(
+                "The SAML version was null in getSamlVersion(). Recomputing SAML version..."
+            );
             if (saml2 != null) {
                 samlVersion = SAMLVersion.VERSION_20;
             } else {
@@ -586,9 +582,7 @@ public class SAMLAssertionWrapper {
                 (org.opensaml.saml2.core.Assertion) xmlObject;
             // if there is a signature, but it hasn't already been signed
             if (saml2.getSignature() != null) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Signing SAML v2.0 assertion...");
-                }
+                log.fine("Signing SAML v2.0 assertion...");
                 try {
                     Signer.signObject(saml2.getSignature());
                 } catch (SignatureException ex) {
@@ -601,9 +595,7 @@ public class SAMLAssertionWrapper {
         // with the user-supplied document in the future (for example, when we want to add this
         // element that dom).
         if (doc != null) {
-            if (log.isDebugEnabled()) {
-                log.debug("Reparenting the SAML token dom to type: " + doc.getClass().getName());
-            }
+            log.fine("Reparenting the SAML token dom to type: " + doc.getClass().getName());
             Node importedNode = doc.importNode(element, true);
             element = (Element) importedNode;
         }

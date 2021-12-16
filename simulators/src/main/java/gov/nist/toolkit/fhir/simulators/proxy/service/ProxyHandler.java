@@ -26,7 +26,7 @@ import org.apache.http.protocol.HttpCoreContext;
 import org.apache.http.protocol.HttpProcessor;
 import org.apache.http.protocol.HttpRequestExecutor;
 import org.apache.http.protocol.HttpRequestHandler;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 //import org.hl7.fhir.dstu3.model.OperationOutcome;
 
 import java.io.IOException;
@@ -36,7 +36,7 @@ import java.net.Socket;
  *
  */
 class ProxyHandler implements HttpRequestHandler {
-    static private final Logger logger = Logger.getLogger(ProxyHandler.class);
+    static private final Logger logger = Logger.getLogger(ProxyHandler.class.getName());
     private final HttpProcessor httpproc;
     private final HttpRequestExecutor httpexecutor;
     private final ConnectionReuseStrategy connStrategy;
@@ -82,7 +82,7 @@ class ProxyHandler implements HttpRequestHandler {
         catch (final Throwable e) {
             response.setStatusCode(HttpStatus.SC_NOT_FOUND);
             response.setReasonPhrase(e.getMessage());
-            logger.error(ExceptionUtil.exception_details(e));
+            logger.severe(ExceptionUtil.exception_details(e));
             return;
         }
 
@@ -209,7 +209,7 @@ class ProxyHandler implements HttpRequestHandler {
          */
             response.setStatusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
             response.setReasonPhrase("SimProxy error - " + e.getMessage().replaceAll("\n", "|"));
-        logger.error(ExceptionUtil.exception_details(e));
+        logger.severe(ExceptionUtil.exception_details(e));
         clientLogger.logResponse(response);  // just logs the header
     }
 

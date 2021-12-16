@@ -2,7 +2,7 @@ package gov.nist.toolkit.grizzlySupport;
 
 import gov.nist.toolkit.adt.ListenerFactory;
 import gov.nist.toolkit.installation.server.Installation;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -16,7 +16,7 @@ import java.io.PrintWriter;
  * This servlet is installed for testing purposes only.
  */
 public class TestEnvPidPortServlet extends HttpServlet {
-    static private Logger logger = Logger.getLogger(TestEnvPidPortServlet.class);
+    static private Logger logger = Logger.getLogger(TestEnvPidPortServlet.class.getName());
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

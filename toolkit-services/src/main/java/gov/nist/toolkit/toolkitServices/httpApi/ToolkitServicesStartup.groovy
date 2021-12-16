@@ -2,7 +2,7 @@ package gov.nist.toolkit.toolkitServices.httpApi
 
 
 import groovy.transform.TypeChecked
-import org.apache.log4j.Logger
+import java.util.logging.*
 
 import javax.servlet.ServletConfig
 import javax.servlet.ServletException
@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse
  */
 @TypeChecked
 class ToolkitServicesStartup extends HttpServlet {
-    static Logger logger = Logger.getLogger(ToolkitServicesStartup.class);
+    static Logger logger = Logger.getLogger(ToolkitServicesStartup.class.getName());
     static boolean isDeferred = false
 
     class Init extends Thread {
@@ -46,8 +46,8 @@ class ToolkitServicesStartup extends HttpServlet {
                     }
                     logger.info("FHIR Support Server was ${startStatus}")
                 }  catch (Throwable e) {
-                    logger.fatal("Failed to launch FHIR Support Server: ${e.getMessage()}")
-                    logger.fatal("${e}")
+                    logger.severe("Failed to launch FHIR Support Server: ${e.getMessage()}")
+                    logger.severe("${e}")
                     e.printStackTrace()
                 }
              */

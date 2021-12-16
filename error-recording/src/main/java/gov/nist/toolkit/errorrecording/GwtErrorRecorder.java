@@ -6,7 +6,7 @@ import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem.ReportingLevel;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 	private List<ValidatorErrorItem> errMsgs = new ArrayList<>();
 	int lastErrCount = 0;
 	
-	static Logger logger = Logger.getLogger(GwtErrorRecorder.class);
+	static Logger logger = Logger.getLogger(GwtErrorRecorder.class.getName());
 
 	
 	public String toString() {
@@ -94,7 +94,7 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 	public void err(Code code, String msg, String location, String resource) {
 		if (msg == null || msg.trim().equals(""))
 			return;
-//		logger.debug(ExceptionUtil.here("err - " + msg));
+//		logger.fine(ExceptionUtil.here("err - " + msg));
 		ValidatorErrorItem ei = new ValidatorErrorItem();
 		ei.level = ValidatorErrorItem.ReportingLevel.ERROR;
 		ei.msg = msg;
@@ -110,7 +110,7 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 	// propagate error labeling to previous CHALLENGE
 	// so context of error is sent/viewed
 	private void propagateError() {
-		logger.debug("propagating errors");
+		logger.fine("propagating errors");
 		for (int i=errMsgs.size()-2; i>=0; i--) {
 			ValidatorErrorItem ei = errMsgs.get(i);
 			if (ei.level == ReportingLevel.SECTIONHEADING)
@@ -120,7 +120,7 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 				break; // done
 			}
 		}
-		logger.debug("Results\n" + toString());
+		logger.fine("Results\n" + toString());
 	}
 
 	public void err(Code code, Exception e) {
@@ -229,7 +229,7 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 			String resource) {
 		if (msg == null || msg.trim().equals(""))
 			return;
-		logger.debug(ExceptionUtil.here("err - " + msg));
+		logger.fine(ExceptionUtil.here("err - " + msg));
 		if (severity != null && severity.indexOf("Error") != -1)
 			logger.info("Got Error");
 		boolean isWarning = (severity == null) ? false : ((severity.indexOf("Warning") != -1));

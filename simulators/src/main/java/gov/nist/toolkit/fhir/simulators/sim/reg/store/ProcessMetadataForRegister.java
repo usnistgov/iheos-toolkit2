@@ -10,13 +10,13 @@ import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegIndex.AssocType;
 import gov.nist.toolkit.valregmetadata.top.SubmissionStructure;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProcessMetadataForRegister implements ProcessMetadataInterface {
-	static Logger log = Logger.getLogger(ProcessMetadataForRegister.class);
+	static Logger log = Logger.getLogger(ProcessMetadataForRegister.class.getName());
 	ErrorRecorder er;
 	MetadataCollection mc;
 	MetadataCollection delta;
@@ -35,7 +35,7 @@ public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 			if ( ! (m.isDocument(id) || m.isFolder(id) || m.isSubmissionSet(id))  ) 
 				continue;
 
-			log.debug("Processing metadata model " + m.getId(ele));
+			log.fine("Processing metadata model " + m.getId(ele));
 			String uid = null;
 			try {
 				uid = m.getUniqueIdValue(ele);
@@ -44,7 +44,7 @@ public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 				continue;
 			}
 			if (uid == null) {
-				log.error("Processing metadata model " + m.getId(ele) + " - Unable to extract uniqueId from model");
+				log.severe("Processing metadata model " + m.getId(ele) + " - Unable to extract uniqueId from model");
 				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "Unable to extract uniqueId from model " + m.getId(ele), this, null);
 				continue;
 			}
@@ -256,7 +256,7 @@ public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 	// verify that no associations are being added that:
 	//     link objects with different patient ids (except for special cases)
 	public void associationPatientIdRules() {
-		log.debug("Checking Association PID rules for " + delta.assocCollection.getAll());
+		log.fine("Checking Association PID rules for " + delta.assocCollection.getAll());
 		for (Assoc a : delta.assocCollection.getAll()) {
 			String fromId = a.getFrom();
 			String toId = a.getTo();

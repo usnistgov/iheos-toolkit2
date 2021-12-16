@@ -10,7 +10,7 @@ import gov.nist.toolkit.configDatatypes.client.PidBuilder
 import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.SimDb
-import org.apache.log4j.Logger
+import java.util.logging.*
 import spock.lang.Specification
 
 import java.nio.file.Paths
@@ -19,7 +19,7 @@ import java.nio.file.Paths
  * Created by bill on 9/2/15.
  */
 class ListenerFactoryITh extends Specification {
-    static Logger logger = Logger.getLogger(ListenerFactoryITh.class);
+    static Logger logger = Logger.getLogger(ListenerFactoryITh.class.getName());
     def simId1 = new SimId('reg1')
     Pid pid1 = PidBuilder.createPid('A1^^^&1.2.3&ISO')
     Pid pid2 = PidBuilder.createPid('A2^^^&1.2.3&ISO')

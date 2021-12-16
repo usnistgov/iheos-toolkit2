@@ -10,7 +10,7 @@ import gov.nist.toolkit.fhir.simulators.support.BaseDsActorSimulator;
 import gov.nist.toolkit.fhir.simulators.support.DsSimCommon;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.IOException;
 
@@ -19,7 +19,7 @@ import java.io.IOException;
  */
 
 public class RegRepActorSimulator extends BaseDsActorSimulator {
-    static final Logger logger = Logger.getLogger(RegRepActorSimulator.class);
+    static final Logger logger = Logger.getLogger(RegRepActorSimulator.class.getName());
     RegistryActorSimulator reg;
     RepositoryActorSimulator rep;
 

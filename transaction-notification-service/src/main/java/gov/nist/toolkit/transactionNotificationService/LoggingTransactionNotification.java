@@ -1,12 +1,12 @@
 package gov.nist.toolkit.transactionNotificationService;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 /**
  * Created by bill on 10/11/15.
  */
 public class LoggingTransactionNotification implements TransactionNotification {
-    static final Logger logger = Logger.getLogger(LoggingTransactionNotification.class);
+    static final Logger logger = Logger.getLogger(LoggingTransactionNotification.class.getName());
 
     @Override
     public void notify(TransactionLog log) {

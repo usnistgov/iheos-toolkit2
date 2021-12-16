@@ -9,7 +9,7 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMNode;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.axiom.om.util.XPathEvaluator;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
@@ -22,7 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class Util {
-    static Logger logger = Logger.getLogger(Util.class);
+    static Logger logger = Logger.getLogger(Util.class.getName());
 
 
 	public static OMElement parse_xml(Object o) throws FactoryConfigurationError, XdsInternalException {

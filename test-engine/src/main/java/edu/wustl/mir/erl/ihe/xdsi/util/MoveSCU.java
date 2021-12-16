@@ -22,7 +22,7 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.ElementDictionary;
 import org.dcm4che3.data.Tag;
@@ -152,9 +152,9 @@ public class MoveSCU {
 
     public void addKey(int tag, String... ss) {
     	log = Utility.getLog();
-    	log.debug("MoveSCU::addKey tag=" + Integer.toHexString(tag));
+    	log.fine("MoveSCU::addKey tag=" + Integer.toHexString(tag));
     	for (String s: ss) {
-    		log.debug(" Value=" + s);
+    		log.fine(" Value=" + s);
     	}
         VR vr = ElementDictionary.vrOf(tag, keys.getPrivateCreator(tag));
         keys.setString(tag, vr, ss);
@@ -238,7 +238,7 @@ public class MoveSCU {
    public static void moveStudy(String sourceAE, String peerAE, String destAE, 
       String studyUID, String seriesUID, String imageUID) throws Exception {
 	   log = Utility.getLog();
-	   log.debug("MoveSCU::moveStudy enter method peerAE=" + peerAE +
+	   log.fine("MoveSCU::moveStudy enter method peerAE=" + peerAE +
 			   " destAE=" + destAE);
        List<String> arguments = new ArrayList<>();
        String level="STUDY";
@@ -255,14 +255,14 @@ public class MoveSCU {
        arguments.add("-m");
        //arguments.add("StudyInstanceUID=\"" + studyUID + "\"");
        arguments.add("StudyInstanceUID=" + studyUID);
-       log.debug(" Study Instance UID=" + studyUID);
+       log.fine(" Study Instance UID=" + studyUID);
        if (StringUtils.isNotBlank(seriesUID)) {
-    	  log.debug("Series Instance UID=" + seriesUID);
+    	  log.fine("Series Instance UID=" + seriesUID);
           arguments.add("SeriesInstanceUID=" + seriesUID);
           level="SERIES";
        }
        if (StringUtils.isNotBlank(imageUID)) {
-    	   log.debug("SOPInstanceUID=" + imageUID);
+    	   log.fine("SOPInstanceUID=" + imageUID);
           arguments.add("SOPInstanceUID=" + imageUID);
           level="IMAGE";
        }
@@ -328,11 +328,11 @@ public class MoveSCU {
 
     private static void configureKeys(MoveSCU main, CommandLine cl) {
     	log = Utility.getLog();
-    	log.debug("MoveSCU::configureKeys enter method");
+    	log.fine("MoveSCU::configureKeys enter method");
         if (cl.hasOption("m")) {
             String[] keys = cl.getOptionValues("m");
             for (int i = 1; i < keys.length; i++, i++) {
-            	log.debug(" Key=" + CLIUtils.toTag(keys[i-1]) +
+            	log.fine(" Key=" + CLIUtils.toTag(keys[i-1]) +
             			" Value=" + StringUtils.split(keys[i], '/'));
                 main.addKey(CLIUtils.toTag(keys[i - 1]), StringUtils.split(keys[i], '/'));
             }
@@ -342,7 +342,7 @@ public class MoveSCU {
         if (cl.hasOption("i"))
             main.setInputFilter(CLIUtils.toTags(cl.getOptionValues("i")));
         
-        log.debug("MoveSCU::configureKeys exit method");
+        log.fine("MoveSCU::configureKeys exit method");
     }
 
     private static InformationModel informationModelOf(CommandLine cl) throws ParseException {
@@ -479,7 +479,7 @@ public class MoveSCU {
 
          log.info(cmd + " test completed");
       } catch (Exception e) {
-         log.fatal(cmd + " test failed");
+         log.severe(cmd + " test failed");
          e.printStackTrace();
       }
    }

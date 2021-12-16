@@ -6,7 +6,7 @@ import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimIdFactory;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.util.*;
 
@@ -19,7 +19,7 @@ import java.util.*;
  *
  */
 public class SimCache {
-    static private Logger logger = Logger.getLogger(SimCache.class);
+    static private Logger logger = Logger.getLogger(SimCache.class.getName());
 
     static public Collection<Site> getAllSites(TestSession testSession) throws Exception {
         Set<Site> sitesSet = new HashSet<>();

@@ -6,13 +6,16 @@ import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.utilities.io.Io
 import gov.nist.toolkit.xdsexception.ExceptionUtil
 import groovy.transform.TypeChecked
-import org.apache.log4j.Logger
 import org.apache.lucene.document.Document
 import org.apache.lucene.index.DirectoryReader
 import org.apache.lucene.index.IndexReader
 import org.apache.lucene.index.IndexableField
 import org.apache.lucene.search.IndexSearcher
 import org.apache.lucene.store.FSDirectory
+
+import org.apache.logging.log4j.Logger
+import org.apache.logging.log4j.LogManager
+
 /**
  * Create Lucene index of a simulator
  * Supported index types have an indexer class
@@ -25,7 +28,7 @@ import org.apache.lucene.store.FSDirectory
  */
 @TypeChecked
 class SimIndexer implements Closeable {
-    static private final Logger logger = Logger.getLogger(SimIndexer.class);
+    static private final Logger logger = Logger.getLogger(SimIndexer.class.getName());
     File indexFile = null  // the directory within the Sim for holding the index
     ResDbIndexer indexer = null
     SimId simId
@@ -66,7 +69,7 @@ class SimIndexer implements Closeable {
         }
         catch (Exception e) {
             def error = "Error flushing index:\n${ExceptionUtil.exception_details(e)}"
-            logger.error(error)
+            logger.severe(error)
             throw new Exception("Error flushing index", e)
         }
         finally {

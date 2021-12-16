@@ -7,13 +7,13 @@ import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.simcommon.client.SimIdFactory;
 import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 /**
  *
  */
 public class PifHandler implements PifCallback {
-    static Logger logger = Logger.getLogger(PifHandler.class);
+    static Logger logger = Logger.getLogger(PifHandler.class.getName());
 
     @Override
     public void addPatient(String simId, String patientId, TestSession testSession) {

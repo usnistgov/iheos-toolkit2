@@ -8,7 +8,7 @@ import groovy.transform.TypeChecked
 import org.apache.http.HttpStatus
 import org.apache.http.NameValuePair
 import org.apache.http.client.utils.URLEncodedUtils
-import org.apache.log4j.Logger
+import java.util.logging.*
 
 import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
@@ -29,25 +29,25 @@ import javax.servlet.http.HttpServletResponse
  */
 @TypeChecked
 class CasSessionBuilderServlet extends HttpServlet {
-    static private Logger logger = Logger.getLogger(CasSessionBuilderServlet.class);
+    static private Logger logger = Logger.getLogger(CasSessionBuilderServlet.class.getName());
 
     @Override
     void doGet(HttpServletRequest request, HttpServletResponse response) {
         if (!Installation.instance().propertyServiceManager().casMode) {
-            logger.error("Received Gazelle CAS request - not running in Gazelle mode")
+            logger.severe("Received Gazelle CAS request - not running in Gazelle mode")
             response.sendError(HttpStatus.SC_SERVICE_UNAVAILABLE, 'Toolkit not running in CAS Mode')
             return
         }
 
         if (!Installation.instance().propertyServiceManager().multiuserMode) {
-            logger.error("Received Gazelle CAS request - not running in MultiUser mode")
+            logger.severe("Received Gazelle CAS request - not running in MultiUser mode")
             response.sendError(HttpStatus.SC_SERVICE_UNAVAILABLE, 'Toolkit not running in MultiUser Mode')
             return
         }
 
         String gazelleBaseUrl = Installation.instance().propertyServiceManager().propertyManager.getToolkitGazelleConfigURL()
         if (!gazelleBaseUrl) {
-            logger.error("Received Gazelle CAS request - Gazelle Base URL not configured in toolkit.properties")
+            logger.severe("Received Gazelle CAS request - Gazelle Base URL not configured in toolkit.properties")
             response.sendError(HttpStatus.SC_SERVICE_UNAVAILABLE, 'Toolkit not configured with Gazelle Base Address')
             return
         }
@@ -66,13 +66,13 @@ class CasSessionBuilderServlet extends HttpServlet {
         }
 
         if (!gazelleSessionId) {
-            logger.error("Received Gazelle CAS request - Gazelle Session Id parameter missing")
+            logger.severe("Received Gazelle CAS request - Gazelle Session Id parameter missing")
             response.sendError(HttpStatus.SC_BAD_REQUEST, 'Did not receive testingSessionId parameter')
             return
         }
 
         if (!systemName) {
-            logger.error('Received Gazelle CAS request - Gazelle systemName parameter missing')
+            logger.severe('Received Gazelle CAS request - Gazelle systemName parameter missing')
             response.sendError(HttpStatus.SC_BAD_REQUEST, 'Did not receive systemName parameter')
             return
         }
@@ -86,7 +86,7 @@ class CasSessionBuilderServlet extends HttpServlet {
             mgr.setTestSession(testSession)
             mgr.reloadSystemFromGazelle(systemName);
         } catch (Exception e) {
-            logger.error("Received Gazelle CAS request - trying to load system configurations - ${e.getMessage()}")
+            logger.severe("Received Gazelle CAS request - trying to load system configurations - ${e.getMessage()}")
             response.sendError(HttpStatus.SC_BAD_REQUEST, e.getMessage())
             return
         }

@@ -169,31 +169,31 @@ transactionLoop: for (OMElement t : e) {
                if (name.isEmpty()) {
                   assertionError = true;
                   name = "[none]";
-                  log.warn("Assertion with missing/empty name attribute");
+                  log.warning("Assertion with missing/empty name attribute");
                }
                String m = "Assertion name=" + name + " ";
                TYPE typ = TYPE.forThis(type);
                if (typ == null) {
                   assertionError = true;
-                  log.warn(m + " has invalid type value [" + type + "]");
+                  log.warning(m + " has invalid type value [" + type + "]");
                }
                if (xpth.isEmpty() && typ.needsXpath == true) {
                   assertionError = true;
-                  log.warn(m + " has missing/empty xpath attribute");
+                  log.warning(m + " has missing/empty xpath attribute");
                }
                if (typ == TYPE.CONSTANT && value.isEmpty()) {
                   assertionError = true;
-                  log.warn(m + " has missing/empty value attribute");
+                  log.warning(m + " has missing/empty value attribute");
                }
                CAT cat = CAT.forThis(success);
                if (cat == null) {
                   assertionError = true;
-                  log.warn(m + " has invalid success category value [" + success + "]");
+                  log.warning(m + " has invalid success category value [" + success + "]");
                }
                cat = CAT.forThis(failure);
                if (cat == null) {
                   assertionError = true;
-                  log.warn(m + " has invalid failure category value [" + failure + "]");
+                  log.warning(m + " has invalid failure category value [" + failure + "]");
                }
             } // EO pass Assertion elements
             if (assertionError) throw new Exception("one or more assertion errors found.");
@@ -205,7 +205,7 @@ transactionLoop: for (OMElement t : e) {
       
       } catch (Exception e) {
          String em = "Error loading " + msg + " - " + e.getMessage();
-         log.warn(em);
+         log.warning(em);
          throw new Exception(em);
       }
    }

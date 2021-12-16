@@ -37,7 +37,7 @@ public class RunCommand {
          out = readStream(pr.getInputStream());
          err = readStream(pr.getErrorStream());
       } catch (Exception e) {
-         Utility.getLog().warn(Utility.getEM(e));
+         Utility.getLog().warning(Utility.getEM(e));
       }
       return returnStatus;
    }

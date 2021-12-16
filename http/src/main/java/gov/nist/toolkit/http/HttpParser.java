@@ -11,7 +11,7 @@ import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 public class HttpParser {
 	byte[] input;
@@ -22,7 +22,7 @@ public class HttpParser {
 	HttpMessage message = new HttpMessage();
 	MultipartParser multiparser;
 	boolean appendixV = true;
-	static final Logger logger = Logger.getLogger(HttpParser.class);
+	static final Logger logger = Logger.getLogger(HttpParser.class.getName());
 
 	
 	public MultipartParser getMultipartParser() {
@@ -107,18 +107,18 @@ public class HttpParser {
 
 	public HttpParser(HttpServletRequest request) throws IOException, HttpParseException {
 		// This is the default toString() since it shows an model id (helps understand recursion)
-		logger.debug("new HttpParser(" + this.toString() + ")");
+		logger.fine("new HttpParser(" + this.toString() + ")");
 		init(request);
 	}
 
 	public HttpParser(HttpServletRequest request, boolean appendixV) throws IOException, HttpParseException {
-		logger.debug("new HttpParser(" + this.toString() + ")");
+		logger.fine("new HttpParser(" + this.toString() + ")");
 		this.appendixV = appendixV;
 		init(request);
 	}
 
 	public HttpParser(HttpServletRequest request, ErrorRecorder er) throws IOException, HttpParseException {
-		logger.debug("new HttpParser(" + this.toString() + ")");
+		logger.fine("new HttpParser(" + this.toString() + ")");
 		this.er = er;
 		init(request);
 	}
@@ -143,19 +143,19 @@ public class HttpParser {
 	}
 
 	public HttpParser(byte[] msg) throws HttpParseException, HttpHeaderParseException, ParseException {
-	//	logger.debug("new HttpParser(" + this.toString() + ")");
+	//	logger.fine("new HttpParser(" + this.toString() + ")");
 		er = null;
 		init(msg, null, er);
 	}
 
 	public HttpParser(byte[] msg, ErrorRecorder er) throws HttpParseException, HttpHeaderParseException, ParseException  {
-		logger.debug("new HttpParser(" + this.toString() + ")");
+		logger.fine("new HttpParser(" + this.toString() + ")");
 		this.er = er;
 		init(msg, null, er);
 	}
 	
 	public HttpParser(byte[] msg, ErrorRecorder er, boolean appendixV) throws HttpParseException, HttpHeaderParseException, ParseException  {
-		logger.debug("new HttpParser(" + this.toString() + ")");
+		logger.fine("new HttpParser(" + this.toString() + ")");
 		this.er = er;
 		this.appendixV = appendixV;
 		init(msg, null, er);
@@ -192,7 +192,7 @@ public class HttpParser {
 		try {
 			multiparser = new MultipartParser(this, er, appendixV);
 			message.multipart = multiparser.message;
-			logger.debug("HttpParser(" + this.toString() + ") - isMultipart=" + isMultipart() );
+			logger.fine("HttpParser(" + this.toString() + ") - isMultipart=" + isMultipart() );
 		} catch (ParseException e) {
 			// not a multipart
 			logger.info(ExceptionUtil.exception_details(e));
@@ -316,7 +316,7 @@ public class HttpParser {
 		}
 
 		String contentTypeString = message.getHeader("content-type");
-		logger.debug("HttpParser(" + this.toString() + ") - content-type=" + contentTypeString);
+		logger.fine("HttpParser(" + this.toString() + ") - content-type=" + contentTypeString);
 
 		HttpHeader contentTypeHeader = new HttpHeader(contentTypeString);
 

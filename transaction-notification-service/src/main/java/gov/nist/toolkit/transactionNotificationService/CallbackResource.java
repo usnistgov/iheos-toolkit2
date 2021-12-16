@@ -1,6 +1,6 @@
 package gov.nist.toolkit.transactionNotificationService;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
 
@@ -14,7 +14,7 @@ import javax.ws.rs.core.Response;
 
 @Path("toolkitcallback")
 public class CallbackResource {
-    static final Logger logger = Logger.getLogger(CallbackResource.class);
+    static final Logger logger = Logger.getLogger(CallbackResource.class.getName());
 
     public CallbackResource() {
         logger.info("CallbackResouce loaded");
@@ -53,7 +53,7 @@ public class CallbackResource {
             logger.info("...Done");
         }
         catch (Exception e) {
-            logger.error("Callback error - " + e.getClass().getName());
+            logger.severe("Callback error - " + e.getClass().getName());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
         return Response.status(Response.Status.OK).build();

@@ -40,7 +40,7 @@ import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -58,7 +58,7 @@ import java.util.Set;
 public class SimulatorsController {
     ToolkitApi api;
 
-    static Logger logger = Logger.getLogger(SimulatorsController.class);
+    static Logger logger = Logger.getLogger(SimulatorsController.class.getName());
 
     public SimulatorsController() {
         api = ToolkitApi.forServiceUse();
@@ -180,7 +180,7 @@ public class SimulatorsController {
             return r;
         }
         catch (Exception e) {
-           logger.warn(e.getMessage());
+           logger.warning(e.getMessage());
            return new ResultBuilder().mapExceptionToResponse(e, simId.toString(), ResponseType.RESPONSE);
         }
     }
@@ -276,7 +276,7 @@ public class SimulatorsController {
             } else
                 return Response.notModified().build();
         } catch (Throwable e) {
-            logger.error(ExceptionUtil.exception_details(e));
+            logger.severe(ExceptionUtil.exception_details(e));
             return new ResultBuilder().mapExceptionToResponse(e, simId.toString(), ResponseType.RESPONSE);
         }
     }

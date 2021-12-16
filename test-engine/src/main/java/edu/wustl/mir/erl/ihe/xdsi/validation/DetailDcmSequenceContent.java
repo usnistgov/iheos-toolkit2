@@ -260,7 +260,7 @@ public abstract class DetailDcmSequenceContent extends Detail {
          }
       } catch (Exception e) {
          String em = "Evaluation error " +  Utility.getEM(e);
-         Utility.getLog().warn(em);
+         Utility.getLog().warning(em);
          errorCount++;
          errorDetails.add(em);
       }
@@ -351,7 +351,7 @@ public abstract class DetailDcmSequenceContent extends Detail {
             }
             return (String) o;
          } catch (Exception e) {
-            log.warn("getValue(" + a + ") - " + e.getMessage());
+            log.warning("getValue(" + a + ") - " + e.getMessage());
             return "error";
          }
       }

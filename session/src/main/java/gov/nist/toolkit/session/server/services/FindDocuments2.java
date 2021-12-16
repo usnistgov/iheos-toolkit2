@@ -9,7 +9,7 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.xdsexception.client.XdsException;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +22,7 @@ import java.util.Map;
  * Service class for the new Find Documents tab.
  */
 public class FindDocuments2 extends CommonService {
-    static Logger logger = Logger.getLogger(FindDocuments2.class);
+    static Logger logger = Logger.getLogger(FindDocuments2.class.getName());
     Session session;
 
     public FindDocuments2(Session session) throws XdsException {

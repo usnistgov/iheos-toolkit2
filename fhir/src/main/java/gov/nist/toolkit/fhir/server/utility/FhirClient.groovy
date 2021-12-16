@@ -13,14 +13,14 @@ import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.HttpClientBuilder
 import org.apache.http.impl.client.HttpClients
 import org.apache.http.message.BasicStatusLine
-import org.apache.log4j.Logger
+import java.util.logging.*
 import org.hl7.fhir.dstu3.model.Bundle
 import org.hl7.fhir.instance.model.api.IBaseResource
 /**
  *
  */
 class FhirClient implements IFhirSearch {
-    static private final Logger logger = Logger.getLogger(FhirClient.class);
+    static private final Logger logger = Logger.getLogger(FhirClient.class.getName());
 
     /**
      * Send an HTTP POST
@@ -59,7 +59,7 @@ class FhirClient implements IFhirSearch {
 
             return [statusLine, content, locationHeader, error]
         } catch (Exception e) {
-            logger.error(ExceptionUtil.exception_details(e))
+            logger.severe(ExceptionUtil.exception_details(e))
             BasicStatusLine statusLine = new BasicStatusLine(new ProtocolVersion('http', 1, 1), 400, e.getMessage())
             return [statusLine, null, null, null]
         } finally {
@@ -122,7 +122,7 @@ class FhirClient implements IFhirSearch {
             return [statusLine, Io.getStringFromInputStream(response.getEntity().content)]
         }
         catch (Throwable e) {
-            logger.error("GET from ${uri} for content type ${contentType} failed: ${e.getMessage()}")
+            logger.severe("GET from ${uri} for content type ${contentType} failed: ${e.getMessage()}")
             throw new Exception("GET from ${uri} for content type ${contentType} failed.", e)
         }
     }
@@ -139,7 +139,7 @@ class FhirClient implements IFhirSearch {
             return [statusLine, returnContentType, Io.getBytesFromInputStream(response.getEntity().content)]
         }
         catch (Throwable e) {
-            logger.error("GET from ${uri} for content type ${contentType} failed: ${e.getMessage()}")
+            logger.severe("GET from ${uri} for content type ${contentType} failed: ${e.getMessage()}")
             throw new Exception("GET from ${uri} for content type ${contentType} failed.", e)
         }
     }
@@ -185,7 +185,7 @@ class FhirClient implements IFhirSearch {
 //            throw new Exception("returned resource of type ${theBundle.class.name}")
         }
         catch (Throwable e) {
-            logger.error("...${e.getMessage()}")
+            logger.severe("...${e.getMessage()}")
             throw e
         }
     }

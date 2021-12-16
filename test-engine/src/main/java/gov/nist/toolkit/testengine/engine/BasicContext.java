@@ -4,7 +4,7 @@ import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 import java.util.HashMap;
@@ -15,7 +15,7 @@ public class BasicContext  {
 	BasicContext parent_context;
 	HashMap atts;
 	OmLogger testLog = new TestLogFactory().getLogger();
-	static Logger logger = Logger.getLogger(BasicContext.class);
+	static Logger logger = Logger.getLogger(BasicContext.class.getName());
 
 	public BasicContext(BasicContext parent_context) {
 		this.parent_context = parent_context;
@@ -23,7 +23,7 @@ public class BasicContext  {
 	}
 
 	public void set(String attname, Object attvalue) {
-		logger.debug("BasicContext set " + attname + " ==> " + attvalue);
+		logger.fine(()->"BasicContext set " + attname + " ==> " + attvalue);
 		if (atts == null) atts = new HashMap();
 		atts.put(attname, attvalue);
 	}
@@ -32,7 +32,7 @@ public class BasicContext  {
 		if (atts == null) atts = new HashMap();
 		Object value = atts.get(attname);
 		if (value != null) {
-            logger.debug("BasicContext getRetrievedDocumentsModel " + attname + " ==> " + value);
+            logger.fine(()->"BasicContext getRetrievedDocumentsModel " + attname + " ==> " + value);
             return value;
         }
 		if (parent_context != null)

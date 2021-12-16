@@ -17,7 +17,7 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.XdsException;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +26,7 @@ import java.util.Map;
 
 public class QueryServiceManager extends CommonService {
 
-	private static Logger logger = Logger.getLogger(QueryServiceManager.class);
+	private static Logger logger = Logger.getLogger(QueryServiceManager.class.getName());
 	private Session session;
 	private TestSession testSession;
 
@@ -40,7 +40,7 @@ public class QueryServiceManager extends CommonService {
 	}
 
 	public List<Result> registerAndQuery(TestInstance testInstance, SiteSpec site, String pid)  {
-		logger.debug(session.id() + ": " + "registerAndQuery");
+		logger.fine(session.id() + ": " + "registerAndQuery");
 		try {
 			return new RegisterAndQuery(session).run(testInstance, site, pid);
 		} catch (XdsException e) {
@@ -49,7 +49,7 @@ public class QueryServiceManager extends CommonService {
 	}
 
 	public List<Result> lifecycleValidation(SiteSpec site, String pid)  {
-		logger.debug(session.id() + ": " + "lifecycleValidation");
+		logger.fine(session.id() + ": " + "lifecycleValidation");
 		try {
 			return new LifecycleValidation(session).run(site, pid);
 		} catch (XdsException e) {
@@ -58,7 +58,7 @@ public class QueryServiceManager extends CommonService {
 	}
 
 	public List<Result> folderValidation(SiteSpec site, String pid)  {
-		logger.debug(session.id() + ": " + "folderValidation");
+		logger.fine(session.id() + ": " + "folderValidation");
 		try {
 			return new FolderValidation(session).run(site, pid);
 		} catch (XdsException e) {
@@ -68,7 +68,7 @@ public class QueryServiceManager extends CommonService {
 
 	public List<Result> submitRegistryTestdata(SiteSpec site,
 											   String datasetName, String pid)  {
-		logger.debug(session.id() + ": " + "submitRegistryTestdata");
+		logger.fine(session.id() + ": " + "submitRegistryTestdata");
 		try {
 			session.setTestSession(testSession);
 			return new SubmitRegistryTestdata(session).run(site, datasetName, pid);
@@ -79,7 +79,7 @@ public class QueryServiceManager extends CommonService {
 
 	public List<Result> submitRepositoryTestdata(SiteSpec site,
 												 String datasetName, String pid)  {
-		logger.debug(session.id() + ": " + "submitRepositoryTestdata");
+		logger.fine(session.id() + ": " + "submitRepositoryTestdata");
 		try {
 			session.setTestSession(testSession);
 			return new SubmitRepositoryTestdata(session).run(site, datasetName, pid);
@@ -90,7 +90,7 @@ public class QueryServiceManager extends CommonService {
 
 	public List<Result> submitXDRTestdata(SiteSpec site,
 			String datasetName, String pid)  {
-		logger.debug(session.id() + ": " + "submitXDRTestdata");
+		logger.fine(session.id() + ": " + "submitXDRTestdata");
 		try {
 			session.setTestSession(testSession);
 			return new SubmitXDRTestdata(session).run(site, datasetName, pid);
@@ -100,7 +100,7 @@ public class QueryServiceManager extends CommonService {
 	}
 
 	public List<Result> provideAndRetrieve(SiteSpec site, String pid) {
-		logger.debug(session.id() + ": " + "provideAndRetrieve");
+		logger.fine(session.id() + ": " + "provideAndRetrieve");
 		try {
 			return new ProvideAndRetrieve(session).run(site, pid);
 		} catch (XdsException e) {
@@ -109,7 +109,7 @@ public class QueryServiceManager extends CommonService {
 	}
 
 	public List<Result> findDocuments(SiteSpec site, String pid, boolean onDemand) {
-		logger.debug(session.id() + ": " + "findDocuments");
+		logger.fine(session.id() + ": " + "findDocuments");
 		try {
 			return new FindDocuments(session).run(site, pid, onDemand);
 		} catch (XdsException e) {
@@ -118,7 +118,7 @@ public class QueryServiceManager extends CommonService {
 	}
 
 	public List<Result> findDocumentsByRefId(SiteSpec site, String pid, List<String> refIds) {
-		logger.debug(session.id() + ": " + "findDocumentsByRefId");
+		logger.fine(session.id() + ": " + "findDocumentsByRefId");
 		try {
 			return new FindDocumentsByRefId(session).run(site, pid, refIds);
 		} catch (XdsException e) {
@@ -127,7 +127,7 @@ public class QueryServiceManager extends CommonService {
 	}
 
 	public List<Result> getDocuments(SiteSpec site, AnyIds aids) {
-		logger.debug(session.id() + ": " + "getDocuments");
+		logger.fine(session.id() + ": " + "getDocuments");
 		if (site == null) site = session.siteSpec;
 		try {
 			return new GetDocuments(session).run(site, aids);
@@ -137,7 +137,7 @@ public class QueryServiceManager extends CommonService {
 	}
 
 	public List<Result> findFolders(SiteSpec site, String pid) {
-		logger.debug(session.id() + ": " + "findFolders");
+		logger.fine(session.id() + ": " + "findFolders");
 		try {
 			return new FindFolders(session).run(site, pid);
 		} catch (XdsException e) {
@@ -146,7 +146,7 @@ public class QueryServiceManager extends CommonService {
 	}
 
 	public List<Result> getFolders(SiteSpec site, AnyIds aids) {
-		logger.debug(session.id() + ": " + "getFolders");
+		logger.fine(session.id() + ": " + "getFolders");
 		if (site == null) site = session.siteSpec;
 		try {
 			return new GetFolders(session).run(site, aids);
@@ -156,7 +156,7 @@ public class QueryServiceManager extends CommonService {
 	}
 
 	public List<Result> getFoldersForDocument(SiteSpec site, AnyIds aids) {
-		logger.debug(session.id() + ": " + "getFoldersForDocument");
+		logger.fine(session.id() + ": " + "getFoldersForDocument");
 		if (site == null) site = session.siteSpec;
 		try {
 			return new GetFoldersForDocument(session).run(site, aids);
@@ -166,7 +166,7 @@ public class QueryServiceManager extends CommonService {
 	}
 
 	public List<Result> getFolderAndContents(SiteSpec site, AnyIds aids) {
-		logger.debug(session.id() + ": " + "getFolderAndContents");
+		logger.fine(session.id() + ": " + "getFolderAndContents");
 		if (site == null) site = session.siteSpec;
 		try {
 			return new GetFolderAndContents(session).run(site, aids);
@@ -177,7 +177,7 @@ public class QueryServiceManager extends CommonService {
 
 
 	public List<Result> getAssociations(SiteSpec site, ObjectRefs ids) {
-		logger.debug(session.id() + ": " + "getAssociations");
+		logger.fine(session.id() + ": " + "getAssociations");
 		if (site == null) site = session.siteSpec;
 		try {
 			return new GetAssociations(session).run(site, ids);
@@ -187,8 +187,8 @@ public class QueryServiceManager extends CommonService {
 	}
 
 	public List<Result> getObjects(SiteSpec site, ObjectRefs ids) {
-		logger.debug(session.id() + ": " + "getObjects " + ids + " from " + site);
-		if (site == null) { site = session.siteSpec; logger.debug("default site is " + site); }
+		logger.fine(session.id() + ": " + "getObjects " + ids + " from " + site);
+		if (site == null) { site = session.siteSpec; logger.fine("default site is " + site); }
 		try {
 			return new GetObjects(session).run(site, ids);
 		} catch (XdsException e) {
@@ -198,7 +198,7 @@ public class QueryServiceManager extends CommonService {
 	
 	public List<Result> getRelated(SiteSpec site, ObjectRef or,
 			List<String> assocs) {
-		logger.debug(session.id() + ": " + "getRelated");
+		logger.fine(session.id() + ": " + "getRelated");
 		if (site == null) site = session.siteSpec;
 		try {
 			return new GetRelated(session).run(site, or, assocs);
@@ -208,7 +208,7 @@ public class QueryServiceManager extends CommonService {
 	}
 
 	public List<Result> getSubmissionSets(SiteSpec site, AnyIds aids) {
-		logger.debug(session.id() + ": " + "getSubmissionSets");
+		logger.fine(session.id() + ": " + "getSubmissionSets");
 		if (site == null) site = session.siteSpec;
 		try {
 			return new GetSubmissionSets(session).run(site, aids);
@@ -218,7 +218,7 @@ public class QueryServiceManager extends CommonService {
 	}
 
 	public List<Result> getSSandContents(SiteSpec site, String ssid, Map<String, List<String>> codeSpec) {
-		logger.debug(session.id() + ": " + "getSSandContents");
+		logger.fine(session.id() + ": " + "getSSandContents");
 		try {
 			return new GetSSandContents(session).run(site, ssid, codeSpec);
 		} catch (XdsException e) {
@@ -227,7 +227,7 @@ public class QueryServiceManager extends CommonService {
 	}
 
 	public List<Result> srcStoresDocVal(SiteSpec site, String ssid) {
-		logger.debug(session.id() + ": " + "srcStoresDocVal");
+		logger.fine(session.id() + ": " + "srcStoresDocVal");
 		try {
 			return new SrcStoresDocVal(session).run(site, ssid);
 		} catch (XdsException e) {
@@ -236,13 +236,13 @@ public class QueryServiceManager extends CommonService {
 	}
 
 	public List<Result> retrieveDocument(SiteSpec site, Uids uids) throws Exception {
-		logger.debug(session.id() + ": " + "retrieveDocument");
+		logger.fine(session.id() + ": " + "retrieveDocument");
 		if (site == null) site = session.siteSpec;
 		return new RetrieveDocument(session).run(site, uids);
 	}
 
 	public List<Result> retrieveImagingDocSet(SiteSpec site, Uids uids, String studyRequest, String transferSyntax) throws Exception {
-		logger.debug(session.id() + ": " + "retrieveImagingDocSet");
+		logger.fine(session.id() + ": " + "retrieveImagingDocSet");
 		if (site == null) site = session.siteSpec;
 		return new RetrieveImagingDocSet(session).run(site, uids, studyRequest, transferSyntax);
 	}
@@ -256,7 +256,7 @@ public class QueryServiceManager extends CommonService {
 			String workPhone, String principleCareProvider, String pob,
 			String pobAddress1, String pobAddress2, String pobCity,
 			String pobState, String pobZip, String pobCountry) {
-		logger.debug(session.id() + ": " + "findPatient");
+		logger.fine(session.id() + ": " + "findPatient");
 		try {
 			return new FindPatient(session).run(site, firstName, secondName,  lastName, suffix, gender, dob, ssn, pid,  
 					homeAddress1, homeAddress2, homeCity, homeState, homeZip, homeCountry,
@@ -271,7 +271,7 @@ public class QueryServiceManager extends CommonService {
 	public List<Result> mpqFindDocuments(SiteSpec site, String pid,
 			List<String> classCodes, List<String> hcftCodes,
 			List<String> eventCodes) {
-		logger.debug(session.id() + ": " + "mpqFindDocuments");
+		logger.fine(session.id() + ": " + "mpqFindDocuments");
 		try {
 			return new MpqFindDocuments(session).run(site, pid, classCodes, hcftCodes,
 					eventCodes);
@@ -281,7 +281,7 @@ public class QueryServiceManager extends CommonService {
 	}
 
 	public List<Result> mpqFindDocuments(SiteSpec site, String pid, Map<String, List<String>> selectedCodes) {
-		logger.debug(session.id() + ": " + "mpqFindDocuments");
+		logger.fine(session.id() + ": " + "mpqFindDocuments");
 		List<String> classCodes = selectedCodes.get(CodesConfiguration.ClassCode);
 		List<String> hcftCodes = selectedCodes.get(CodesConfiguration.HealthcareFacilityTypeCode);
 		List<String> eventCodes = selectedCodes.get(CodesConfiguration.EventCodeList);
@@ -295,7 +295,7 @@ public class QueryServiceManager extends CommonService {
 	}
 
 	public List<Result> getAll(SiteSpec site, String pid, Map<String, List<String>> selectedCodes) {
-		logger.debug(session.id() + ": " + "getAll");
+		logger.fine(session.id() + ": " + "getAll");
 
 		try {
 			return new GetAll(session).run(site, pid, selectedCodes);
@@ -312,7 +312,7 @@ public class QueryServiceManager extends CommonService {
      * @return a list of documents
      */
 	public List<Result> findDocuments2(SiteSpec site, String pid, Map<String, List<String>> selectedCodes) {
-		logger.debug(session.id() + ": " + "findDocuments2");
+		logger.fine(session.id() + ": " + "findDocuments2");
 
 		try {
 			return new FindDocuments2(session).run(site, pid, selectedCodes);
@@ -322,7 +322,7 @@ public class QueryServiceManager extends CommonService {
 	}
 
 	public List<Result> getLastMetadata() {
-		logger.debug(session.id() + ": " + "getLastMetadata");
+		logger.fine(session.id() + ": " + "getLastMetadata");
 		List<Result> results = new ArrayList<Result>();
 		Result result = ResultBuilder.RESULT(new TestInstance("getLastMetadata", testSession));
 		results.add(result);
@@ -391,9 +391,9 @@ public class QueryServiceManager extends CommonService {
 			} else {
 				Map<String, String> myparams = dup(params);
 				myparams.put("$home$", org.get(repuid).uids.get(0).home);
-				logger.debug("ToolkitServiceImpl#buildPerRepositoryImagingDocSetRetrieve: parameter dump");
+				logger.fine("ToolkitServiceImpl#buildPerRepositoryImagingDocSetRetrieve: parameter dump");
 				for (String param : myparams.keySet()) {
-				    logger.debug("..." + param + ": " + myparams.get(param));
+				    logger.fine("..." + param + ": " + myparams.get(param));
 				}
 				results.add(session.xdsTestServiceManager().xdstest(testInstance, sections, myparams, null, null, false));
 			}

@@ -2,7 +2,7 @@ package gov.nist.toolkit.envSetting;
 
 import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.File;
 import java.util.HashMap;
@@ -16,7 +16,7 @@ public class EnvSetting {
 	String envName;
 	File envDir;
 	
-	static Logger logger = Logger.getLogger(EnvSetting.class);
+	static Logger logger = Logger.getLogger(EnvSetting.class.getName());
 
 	static public EnvSetting getEnvSetting(String sessionId) throws EnvironmentNotSelectedException {
         EnvSetting s = getEnvSettingForSession(sessionId);
@@ -102,7 +102,7 @@ public class EnvSetting {
 		File f = new File(envDir + File.separator + "codes.xml");
 		if (f.exists())
 			return f;
-		logger.warn("Codes file " + f + " does not exist");
+		logger.warning("Codes file " + f + " does not exist");
 		return null;
 	}
 

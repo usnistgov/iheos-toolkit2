@@ -28,7 +28,7 @@ import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.HttpClients
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager
 import org.apache.http.ssl.SSLContexts
-import org.apache.log4j.Logger
+import java.util.logging.*
 
 import javax.net.ssl.SSLContext
 import java.security.KeyManagementException
@@ -36,7 +36,7 @@ import java.security.NoSuchAlgorithmException
 
 @TypeChecked
 class FilterProxySimulator extends BaseDsActorSimulator  {
-    private static Logger logger = Logger.getLogger(FilterProxySimulator.class);
+    private static Logger logger = Logger.getLogger(FilterProxySimulator.class.getName());
 
     protected ErrorRecorder er = null
     SimulatorConfig simulatorConfig = null
@@ -132,7 +132,7 @@ class FilterProxySimulator extends BaseDsActorSimulator  {
         try {
             response = httpclient.execute(post)
         } catch (Exception e) {
-            logger.error("POST to ${endpoint} failed", e)
+            logger.log(Level.SEVERE, "POST to ${endpoint} failed", e)
             throw e
         }
         Header[] hs = response.allHeaders

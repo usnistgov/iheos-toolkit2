@@ -7,9 +7,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Vector;
- 	
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.opensaml.saml2.metadata.provider.ChainingMetadataProvider;
 import org.opensaml.saml2.metadata.provider.FilesystemMetadataProvider;
 import org.opensaml.saml2.metadata.provider.HTTPMetadataProvider;
@@ -26,7 +26,7 @@ public class Organization implements Serializable
  	    private static final long serialVersionUID = 37094603463569L;
  	    private static final int HTTP_METADATA_REQUEST_TIMEOUT = 5000;
 	 	   
- 	    private Log _logger;
+ 	    private Logger _logger;
 	   
 	    private String _sID;
  	    private byte[] _baSourceID;
@@ -50,7 +50,7 @@ public class Organization implements Serializable
 	 	    public Organization(String sID, byte[] baSourceID, String sFriendlyName,
 	 	        String sMetadataFile, String sMetadataURL,
 	 	        int iMetadataTimeout) throws Exception{
-	 	        _logger = LogFactory.getLog(Organization.class);
+	 	        _logger = Logger.getLogger(Organization.class.getName());
 	 	       
 	 	        _sID = sID;
 	 	        _baSourceID = baSourceID;
@@ -63,7 +63,7 @@ public class Organization implements Serializable
 	 	                sbError.append(_sID);
 	 	                sbError.append("' doesn't exist: ");
 	 	                sbError.append(_sMetadataFile);
-	 	                _logger.error(sbError.toString());
+	 	                _logger.severe(sbError.toString());
 	 	                throw new Exception("Supplied metadata file for organization doesn't exit");
 	 	            }
 	 	        }
@@ -77,7 +77,7 @@ public class Organization implements Serializable
 	 	                sbError.append(_sID);
 	 	                sbError.append("': ");
 	 	                sbError.append(_sMetadataURL);
-	 	                _logger.error(sbError.toString(), e);
+	 	                _logger.log(Level.SEVERE, sbError.toString(), e);
 	 	                throw new Exception("Invalid metadata URL supplied for organization");
 	 	            }
 	 	        }
@@ -90,7 +90,7 @@ public class Organization implements Serializable
 	 	            sbDebug.append(_sID);
 	 	            sbDebug.append("' is smaller then zero, using default: ");
 	 	            sbDebug.append(_iMetadataTimeout);
-	 	            _logger.debug(sbDebug.toString());
+	 	            _logger.fine(sbDebug.toString());
 	 	        }
 	 	    }
 	 	       
@@ -184,7 +184,7 @@ public class Organization implements Serializable
 	 	            }
 	 	        }
 	 	        catch (Exception e){
-	 	            _logger.fatal("Internal error while creating metadata providers", e);
+	 	            _logger.log(Level.SEVERE, "Internal error while creating metadata providers", e);
 	 	            throw new Exception("Internal error while creating metadata providers");
 	 	        }
 	 	        return chainingMetadataProvider;
@@ -203,7 +203,7 @@ public class Organization implements Serializable
 	 	        try{
 	 	            urlTarget = new URL(sMetadataURL);
 	 	        }catch (MalformedURLException e){
-	 	            _logger.error(
+	 	            _logger.log(Level.SEVERE,
 	 	                "Invalid 'url' item in 'http' section found in configuration: "
 	 	                + sMetadataURL, e);
 	 	            throw new Exception( "Invalid 'url' item in 'http' section found in configuration: "
@@ -213,7 +213,7 @@ public class Organization implements Serializable
 	 	        try{
 	 	            urlTarget.openConnection().connect();
 	 	        }catch (IOException e){
-	 	            _logger.warn(
+	 	            _logger.log(Level.WARNING,
 	 	                "Could not connect to metadata url: " + sMetadataURL, e);
 	 	        }
 	 	       
@@ -227,7 +227,7 @@ public class Organization implements Serializable
 	 	            sbDebug.append("No metadata available at configured URL '");
 	 	            sbDebug.append(sMetadataURL);
 	 	            sbDebug.append("': Disabling http metadata for this requestor");
-	 	            _logger.warn(sbDebug.toString(), e);
+	 	            _logger.log(Level.WARNING, sbDebug.toString(), e);
 	 	           
 	 	            urlProvider = null;
 	 	        }
@@ -245,7 +245,7 @@ public class Organization implements Serializable
 	 	
 	 	        File fMetadata = new File(sMetadataFile);
 	 	        if (!fMetadata.exists()){
-	 	            _logger.error("Configured metadata 'file' doesn't exist: "
+	 	            _logger.severe("Configured metadata 'file' doesn't exist: "
 	 	                + sMetadataFile);
 	 	            throw new Exception("Configured metadata 'file' doesn't exist: "
 		 	                + sMetadataFile);
@@ -254,7 +254,7 @@ public class Organization implements Serializable
 	 	        try{
 	 	            fileProvider = new FilesystemMetadataProvider(fMetadata);
 	 	        }catch (MetadataProviderException e){
-	 	            _logger.error("No metadata available in configured file: "
+	 	            _logger.log(Level.SEVERE, "No metadata available in configured file: "
 	 	                + sMetadataFile, e);
 	 	            throw new Exception("No metadata available in configured file: "
 		 	                + sMetadataFile, e);
@@ -264,7 +264,7 @@ public class Organization implements Serializable
 	 	        try{
 	 	            fileProvider.initialize();
 	 	        }catch (MetadataProviderException e){
-	 	            _logger.error("No metadata available in configured file: "
+	 	            _logger.log(Level.SEVERE, "No metadata available in configured file: "
 	 	                + sMetadataFile, e);
 	 	            throw new Exception("No metadata available in configured file: "
 		 	                + sMetadataFile, e);

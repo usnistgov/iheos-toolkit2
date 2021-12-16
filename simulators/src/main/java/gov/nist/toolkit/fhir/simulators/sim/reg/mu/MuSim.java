@@ -14,13 +14,13 @@ import gov.nist.toolkit.valregmetadata.coding.Uuid;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MuSim extends RegRSim {
-	static Logger log = Logger.getLogger(MuSim.class);
+	static Logger log = Logger.getLogger(MuSim.class.getName());
 	String ssId;
 
 	public MuSim(SimCommon common, DsSimCommon dsSimCommon, SimulatorConfig asc) {

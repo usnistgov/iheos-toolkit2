@@ -5,7 +5,9 @@ import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.server.SimCommon;
 import gov.nist.toolkit.simcommon.server.SimDb;
-import org.apache.log4j.Logger;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import java.util.Date;
 import java.util.List;
@@ -16,7 +18,7 @@ import java.util.List;
  *
  */
 public class SimInstanceTerminator {
-	static Logger logger = Logger.getLogger(SimInstanceTerminator.class);
+	static Logger logger = Logger.getLogger(SimInstanceTerminator.class.getName());
 
 	public int run(TestSession testSession) throws Exception  {
 		Date now = new Date();
@@ -33,7 +35,7 @@ public class SimInstanceTerminator {
 					deleted++;
 				}
 			} catch (Exception e) {
-				logger.error("Cannot load Simulator Config for id " + simId, e);
+				logger.log(Level.SEVERE, "Cannot load Simulator Config for id " + simId, e);
 			}
 		}
 		return deleted;

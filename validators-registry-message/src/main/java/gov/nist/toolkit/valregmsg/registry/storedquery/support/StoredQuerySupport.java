@@ -6,7 +6,7 @@ import gov.nist.toolkit.registrysupport.logging.LogMessage;
 import gov.nist.toolkit.valregmsg.registry.SQCodeAnd;
 import gov.nist.toolkit.valregmsg.registry.SQCodedTerm;
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.QueryReturnType;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.util.ArrayList;
 
@@ -21,7 +21,7 @@ public class StoredQuerySupport {
 	public boolean has_alternate_validation_errors = false;
 	public boolean is_secure;
 	public boolean runEndProcessing = true;
-	private final static Logger logger = Logger.getLogger(StoredQuerySupport.class);
+	private final static Logger logger = Logger.getLogger(StoredQuerySupport.class.getName());
 	public void noEndProcessing() {
 		runEndProcessing = false;
 	}

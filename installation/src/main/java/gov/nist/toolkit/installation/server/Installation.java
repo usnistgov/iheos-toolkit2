@@ -7,7 +7,7 @@ import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import org.apache.http.annotation.Obsolete;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import gov.nist.toolkit.installation.shared.TestSession;
 
 import javax.servlet.ServletContext;
@@ -27,10 +27,9 @@ public class Installation {
 
     public final static String DEFAULT_ENVIRONMENT_NAME = "default";
     private final static String LOG_ARCHIVE_DIRECTORY = "archive";
-    private final static Logger LOGGER=Logger.getLogger(Installation.class.getName());
 
     private PropertyServiceManager propertyServiceMgr = null;
-    private static Logger logger = Logger.getLogger(Installation.class);
+    private static Logger logger = Logger.getLogger(Installation.class.getName());
 
     static Installation me = null;
     static private boolean testIsRunning = false;
@@ -113,13 +112,13 @@ public class Installation {
         }
         logger.info("V2 - Installation - war home set to " + warHome);
         if (warHome == null)
-            logger.error(ExceptionUtil.here("warhome is null"));
+            logger.severe(ExceptionUtil.here("warhome is null"));
         this.warHome = warHome;
 //        propertyServiceMgr = null;
         propertyServiceManager();  // initialize
         String ec = propertyServiceManager().getPropertyManager().getExternalCache();
 
-        if (ec == null || ec.equals("")) logger.fatal("EC not found in toolkit.properties");
+        if (ec == null || ec.equals("")) logger.severe("EC not found in toolkit.properties");
 
         logger.info("External Cache as reported by toolkit.properties");
 		if (externalCache == null) { // this can be different in a unit test situation
@@ -127,7 +126,7 @@ public class Installation {
         }
 		logger.info("Installation: External Cache set to " + externalCache);
 		if (!externalCache.exists()) {
-            logger.fatal("External Cache does not exist at " + externalCache);
+            logger.severe("External Cache does not exist at " + externalCache);
             externalCache = null;
             return;
         }
@@ -204,7 +203,7 @@ public class Installation {
 		try {
 			tkProps = TkLoader.tkProps(instance().getTkPropsFile()); //TkLoader.tkProps(new File(Installation.instance().externalCache() + File.separator + "tk_props.txt"));
 		} catch (Exception e) {
-//			logger.warn("Cannot load tk_props.txt file from External Cache");
+//			logger.warning("Cannot load tk_props.txt file from External Cache");
             tkProps = new TkProps();
         }
     }
@@ -356,7 +355,7 @@ public class Installation {
                 // path to the user's testkit (based on the name of the test session)
                 usrTestkit = new File(environmentTestkitsFile, testSession.getValue());
             }else {
-                LOGGER.info("Mesa session name is null");
+                logger.info("Mesa session name is null");
             }
             // path to the environment specific testkit (generated from Code Update)
             File environmentDefaultTestkit = new File(environmentTestkitsFile, "default");
@@ -366,7 +365,7 @@ public class Installation {
                 testkits.add(environmentDefaultTestkit);
             }
         }else{
-            LOGGER.info("Environment name is null");
+            logger.info("Environment name is null");
         }
         // toolkit default testkit
         if (!propertyServiceMgr.getIgnoreInternalTestkit())

@@ -21,7 +21,7 @@ import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.xdsexception.XDSMissingDocumentException;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.File;
 import java.util.HashMap;
@@ -32,7 +32,7 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 	DsSimCommon dsSimCommon;
 	Metadata m = null;
 //	SimulatorConfig simulatorConfig;
-	static Logger logger = Logger.getLogger(RepPnRSim.class);
+	static Logger logger = Logger.getLogger(RepPnRSim.class.getName());
 	private boolean forward = true;
 
 	public RepPnRSim(SimCommon common, DsSimCommon dsSimCommon, SimulatorConfig simulatorConfig) {
@@ -182,8 +182,8 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 				byte[] content2 = Io.bytesFromFile(location);
 				logger.info("Verifying storage...");
 				if (content.length != content2.length) {
-					logger.error("Repository: stored " + content.length + " bytes");
-					logger.error("         read back " + content2.length + " bytes");
+					logger.severe("Repository: stored " + content.length + " bytes");
+					logger.severe("         read back " + content2.length + " bytes");
 				}
 				int working_size = (content.length < content2.length) ? content.length : content2.length;
 				try {
@@ -192,7 +192,7 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 							throw new Exception("Byte " + i + " differs");
 					}
 				} catch (Exception e) {
-					logger.error(e.getMessage());
+					logger.severe(e.getMessage());
 				}
 			}
 
@@ -209,7 +209,7 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 				} catch (Exception e) {
 				}
 				if (endpoint == null || endpoint.equals("")) {
-					logger.error("No register endpoint configured");
+					logger.severe("No register endpoint configured");
 					er.err(Code.XDSRepositoryError, "No register endpoint configured", this, "");
 					return;
 				}

@@ -17,7 +17,7 @@ import java.util.Set;
 import javax.mail.internet.MimeBodyPart;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.soap.util.mime.ByteArrayDataSource;
 
 
@@ -28,7 +28,7 @@ import org.apache.soap.util.mime.ByteArrayDataSource;
 public class MultipartMap {
     javax.mail.internet.MimeMultipart mp;
     HashMap map, typemap;
-    private final static Logger logger = Logger.getLogger(MultipartMap.class);
+    private final static Logger logger = Logger.getLogger(MultipartMap.class.getName());
     
     String stripQuotes(String s) {
         if (s == null) return s;

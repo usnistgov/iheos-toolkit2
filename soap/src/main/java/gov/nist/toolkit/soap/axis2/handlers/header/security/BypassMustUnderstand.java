@@ -6,12 +6,12 @@ import org.apache.axiom.soap.SOAPHeaderBlock;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.handlers.AbstractHandler;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.util.Iterator;
 
 public class BypassMustUnderstand extends AbstractHandler {
-    private static Logger logger = Logger.getLogger(BypassMustUnderstand.class);
+    private static Logger logger = Logger.getLogger(BypassMustUnderstand.class.getName());
 
     @Override
     public InvocationResponse invoke(MessageContext messageContext) throws AxisFault {
@@ -38,7 +38,7 @@ public class BypassMustUnderstand extends AbstractHandler {
             }
         }
         catch(Exception e){
-            logger.warn(e.toString());
+            logger.warning(e.toString());
         }
 
         return InvocationResponse.CONTINUE;

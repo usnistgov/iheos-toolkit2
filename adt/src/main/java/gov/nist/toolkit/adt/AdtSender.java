@@ -1,6 +1,7 @@
 package gov.nist.toolkit.adt;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,7 +12,7 @@ import java.net.UnknownHostException;
 
 
 public class AdtSender {
-    private static Logger logger = Logger.getLogger(AdtSender.class);
+    private static Logger logger = Logger.getLogger(AdtSender.class.getName());
     private static String HL7_ACK_ACCEPTED = "AA";
     private static int MLLP_END_BLOCK = (char) 0x1c; //28
     
@@ -30,7 +31,7 @@ public class AdtSender {
     }
 
     public void send(String pid) throws IOException, AdtMessageParseException, AdtMessageRejectedException {
-        logger.debug("Sending Patient ID " + pid + " to " + server + ":" + port + "...");
+        logger.fine("Sending Patient ID " + pid + " to " + server + ":" + port + "...");
         Socket echoSocket = null;
         PrintWriter out = null;
         BufferedReader in = null;
@@ -40,12 +41,12 @@ public class AdtSender {
             out = new PrintWriter(echoSocket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(
                     echoSocket.getInputStream()));
-            logger.debug("...no errors");
+            logger.fine("...no errors");
         } catch (UnknownHostException e) {
-            logger.error("Don't know about host: " + server);
+            logger.severe("Don't know about host: " + server);
             throw e;
         } catch (IOException e) {
-            logger.error("Couldn't get I/O for "
+            logger.log(Level.SEVERE, "Couldn't get I/O for "
                     + "the connection to: " + server + " at port: " + port, e);
             throw e;
         }
@@ -63,8 +64,8 @@ public class AdtSender {
 
         out.print(buf.toString().replace("$pid$", pid));
         
-        logger.debug("Sending ADT message...");
-        logger.debug(buf.toString());
+        logger.fine("Sending ADT message...");
+        logger.fine(buf.toString());
 
         c = 0x1c;
         out.print(c);
@@ -79,8 +80,8 @@ public class AdtSender {
         in.close();
         echoSocket.close();
         
-        logger.debug("ADT message response...");
-        logger.debug(output);
+        logger.fine("ADT message response...");
+        logger.fine(()->output);
  
         isSuccessful(output);
     }
@@ -117,7 +118,7 @@ public class AdtSender {
 			}
 		}
 		
-		logger.debug(sb.toString());
+		logger.fine(sb::toString);
 
 		return sb.toString();
 	}

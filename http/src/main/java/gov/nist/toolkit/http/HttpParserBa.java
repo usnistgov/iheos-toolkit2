@@ -7,7 +7,7 @@ import gov.nist.toolkit.utilities.io.Io;
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.gwt.validation.client.impl.Validation;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.IOException;
 import java.util.Enumeration;
@@ -26,7 +26,7 @@ public class HttpParserBa {
 	MultipartParserBa multiparser;
 	boolean appendixV = true;
 	String [] httpMethods = {"POST"};
-	private final static Logger logger = Logger.getLogger(HttpParserBa.class);
+	private final static Logger logger = Logger.getLogger(HttpParserBa.class.getName());
 	public MultipartParserBa getMultipartParser() {
 		return multiparser;
 	}

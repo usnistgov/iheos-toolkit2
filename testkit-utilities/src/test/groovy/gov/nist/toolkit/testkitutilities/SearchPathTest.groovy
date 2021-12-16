@@ -18,7 +18,7 @@ class SearchPathTest extends Specification {
     TestSession testSession = new TestSession('default')
 
     def setup() {
-        org.apache.log4j.BasicConfigurator.configure()
+//        org.apache.log4j.BasicConfigurator.configure()
         Path externalCacheMarker = Paths.get(getClass().getResource('/').toURI()).resolve('external_cache/external_cache.txt')
         if (externalCacheMarker == null) {
             throw new ToolkitRuntimeException("Cannot locate external cache for test environment")

@@ -9,7 +9,7 @@ import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.fhir.simulators.support.Callback;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.Map;
 
 public class SimServletFilter implements Filter {
-	static Logger logger = Logger.getLogger(SimServletFilter.class);
+	static Logger logger = Logger.getLogger(SimServletFilter.class.getName());
 
 	@Override
    public void destroy() {
@@ -30,7 +30,7 @@ public class SimServletFilter implements Filter {
 			FilterChain chain) throws IOException, ServletException {
 		SimServletResponseWrapper wrapper = new SimServletResponseWrapper((HttpServletResponse) response);
 
-        logger.debug("in SimServletFilter");
+        logger.fine("in SimServletFilter");
 		if (request instanceof HttpServletRequest) {
 		    HttpServletRequest r = (HttpServletRequest) request;
 		    logger.info(r.getRequestURI());
@@ -41,12 +41,12 @@ public class SimServletFilter implements Filter {
 
 		SimDb db = (SimDb) request.getAttribute("SimDb");
 		if (db == null) {
-			logger.error("SimServletFilter - request.getAttribute(\"SimDb\") failed");
+			logger.severe("SimServletFilter - request.getAttribute(\"SimDb\") failed");
 			return;
 		}
         SimulatorConfig config = (SimulatorConfig) request.getAttribute("SimulatorConfig");
         if (config == null) {
-            logger.error("SimServletFilter - request.getAttribute(\"SimulatorConfig\") failed");
+            logger.severe("SimServletFilter - request.getAttribute(\"SimulatorConfig\") failed");
             return;
         }
 

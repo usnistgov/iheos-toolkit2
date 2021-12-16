@@ -1,6 +1,6 @@
 package gov.nist.toolkit.soap.wsseToolkitAdapter;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 /**
  * Temporary adapter between toolkit legacy validation code and the wsse module
@@ -27,7 +27,7 @@ import org.apache.log4j.Logger;
 
 public class WsseHeaderValidatorAdapter /*extends AbstractMessageValidator*/ {
 
-	private static Logger log = Logger.getLogger(WsseHeaderValidatorAdapter.class);
+	private static Logger log = Logger.getLogger(WsseHeaderValidatorAdapter.class.getName());
 
 	/**
 	 * Validate our own generated message!

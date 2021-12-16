@@ -6,7 +6,7 @@ package edu.wustl.mir.erl.ihe.xdsi.util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import org.apache.axiom.om.OMElement;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 import javax.xml.xpath.XPathExpression;
@@ -49,15 +49,15 @@ public class PidDateFilenameFilter implements FilenameFilter {
    @Override
    public boolean accept(File dir, String name) {
       try {
-    	 log.debug("PidDateFilenameFilter::accept " + dir.toString() + " " + name + " reference Patient ID " + pid);
+    	 log.fine("PidDateFilenameFilter::accept " + dir.toString() + " " + name + " reference Patient ID " + pid);
          if (new File(dir, name).isDirectory() == false) return false;
          Date dirDate = new SimpleDateFormat(DATE_DIR_FORMAT).parse(name);
          if (date != null && dirDate.before(date)) {
-        	 log.debug("Folder rejected on date criteria: reference date " + date.toString() + " folder date " + dirDate.toString());
+        	 log.fine("Folder rejected on date criteria: reference date " + date.toString() + " folder date " + dirDate.toString());
         	 return false;
          }
          if (StringUtils.isBlank(pid)) {
-        	 log.debug("Folder accepted, no reference PID supplied");
+        	 log.fine("Folder accepted, no reference PID supplied");
         	 return true;
          }
          String mds = PrsSimLogs.getSOAPMetaData(dir.toPath().resolve(name));
@@ -80,12 +80,12 @@ public class PidDateFilenameFilter implements FilenameFilter {
             }
          }
          if (md == null) {
-        	 log.debug("No metadata element found with objectType urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1");
+        	 log.fine("No metadata element found with objectType urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1");
         	 return false;
          }
          elements = XmlUtil.childrenWithLocalName(md, "ExternalIdentifier");
          if (elements == null) {
-        	 log.debug("Found objectType urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1, no elements named ExternalIdentifier");
+        	 log.fine("Found objectType urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1, no elements named ExternalIdentifier");
          }
          md = null;
          String rawPid = null;
@@ -93,23 +93,23 @@ public class PidDateFilenameFilter implements FilenameFilter {
         	 String identificationScheme = element.getAttributeValue(new QName("identificationScheme"));
         	 if (identificationScheme.equals("urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427")) {
         		 rawPid = element.getAttributeValue(new QName("value"));
-        		 log.debug("Found ExternalIdentifier with identification scheme urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427 " + rawPid);
+        		 log.fine("Found ExternalIdentifier with identification scheme urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427 " + rawPid);
         	 } else {
-        		 log.debug("External identifier ignored, identificationScheme is NOT urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427, identificationScheme from metadata is " + identificationScheme);
+        		 log.fine("External identifier ignored, identificationScheme is NOT urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427, identificationScheme from metadata is " + identificationScheme);
         	 }
          }
          if (rawPid == null) {
-        	 log.debug("No ExternalIdentifier elements found with proper identificationScheme");
+        	 log.fine("No ExternalIdentifier elements found with proper identificationScheme");
         	 return false;
          }
          if (rawPid.equals(pid)) {
-        	 log.debug("External Patient ID in this folder matches reference Patient ID " + pid);
+        	 log.fine("External Patient ID in this folder matches reference Patient ID " + pid);
         	 return true;
          }
-         log.debug("External Patient ID in this folder (" + rawPid + ") does not match reference Patient ID: " + pid);
+         log.fine("External Patient ID in this folder (" + rawPid + ") does not match reference Patient ID: " + pid);
          return false;
       } catch (Exception e) {}
-      log.debug("Exiting method because of an exception; returning false");
+      log.fine("Exiting method because of an exception; returning false");
       return false;
    }
 

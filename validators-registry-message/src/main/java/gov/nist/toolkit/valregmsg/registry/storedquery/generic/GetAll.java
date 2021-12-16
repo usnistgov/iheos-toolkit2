@@ -12,7 +12,7 @@ import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.client.XdsException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,7 @@ import java.util.List;
  * Created by bill on 8/13/15.
  */
 abstract public class GetAll extends StoredQuery {
-    static final Logger logger = Logger.getLogger(GetAll.class);
+    static final Logger logger = Logger.getLogger(GetAll.class.getName());
     /**
      * Method required in subclasses (implementation specific class) to define specific
      * linkage to local database

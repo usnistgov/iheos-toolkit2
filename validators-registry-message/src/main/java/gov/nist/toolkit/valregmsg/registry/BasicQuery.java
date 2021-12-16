@@ -4,10 +4,10 @@ import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 public class BasicQuery {
-	protected final static Logger logger = Logger.getLogger(BasicQuery.class);
+	protected final static Logger logger = Logger.getLogger(BasicQuery.class.getName());
 //	static Properties properties = null;
 	
 //	static {

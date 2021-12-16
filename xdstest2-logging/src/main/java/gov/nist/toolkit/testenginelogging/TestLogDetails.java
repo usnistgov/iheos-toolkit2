@@ -9,7 +9,7 @@ import gov.nist.toolkit.testkitutilities.SectionTestPlanFileMap;
 import gov.nist.toolkit.testkitutilities.TestDefinition;
 import gov.nist.toolkit.utilities.io.LinesOfFile;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +30,7 @@ public class TestLogDetails {
 	public SectionLogMapDTO sectionLogMapDTO;
 	private String[] areas;
 
-	private static Logger logger = Logger.getLogger(TestLogDetails.class);
+	private static Logger logger = Logger.getLogger(TestLogDetails.class.getName());
 
 
 

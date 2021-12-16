@@ -2,7 +2,7 @@ package gov.nist.toolkit.adt;
 
 import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.installation.server.PropertyServiceManager;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.IOException;
 import java.util.Date;
@@ -11,7 +11,7 @@ import java.util.Date;
  *
  */
 public class A01Sender {
-    static Logger logger = Logger.getLogger(A01Sender.class);
+    static Logger logger = Logger.getLogger(A01Sender.class.getName());
     private static String[] A01 = new String[4];
     static {
         A01[0] = "MSH|^~\\&|$MSH3$|$MSH4$|$MSH5$|$MSH6$|201301011226||ADT^A01|HL7MSG00001|P|2.3.1|";

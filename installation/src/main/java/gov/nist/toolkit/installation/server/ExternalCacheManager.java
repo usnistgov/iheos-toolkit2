@@ -2,7 +2,7 @@ package gov.nist.toolkit.installation.server;
 
 import gov.nist.toolkit.xdsexception.client.XdsException;
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import gov.nist.toolkit.installation.shared.TestSession;
 
 import java.io.File;
@@ -13,7 +13,7 @@ import java.util.Arrays;
  * Initialize External Cache
  */
 public class ExternalCacheManager {
-    static Logger logger = Logger.getLogger(ExternalCacheManager.class);
+    static Logger logger = Logger.getLogger(ExternalCacheManager.class.getName());
 
     /**
      * initialize external cache to location.  If external cache location is already initialized this will be ignored.
@@ -68,7 +68,7 @@ public class ExternalCacheManager {
                 FileUtils.copyDirectory(Installation.instance().internalDatasetsFile(), new File(externalCache, "datasets"));
             } catch (IOException e) {
                 String msg = "Cannot initialize datasets area of External Cache at " + externalCache + " - " + e.getMessage();
-                logger.error(msg);
+                logger.severe(msg);
             }
 
             logger.info("Initializing resource cache in " + externalCache);
@@ -76,7 +76,7 @@ public class ExternalCacheManager {
                 FileUtils.copyDirectory(Installation.instance().internalResourceCacheFile(), new File(externalCache, "resourceCache"));
             } catch (IOException e) {
                 String msg = "Cannot initialize resourceCache area of External Cache at " + externalCache + " - " + e.getMessage();
-                logger.error(msg);
+                logger.severe(msg);
             }
     }
 
@@ -110,7 +110,7 @@ public class ExternalCacheManager {
         String error = initialize(location);
         if (error != null) {
             String msg = "External cache location " + location + " does not exist, is not writeable or is not a directory";
-            logger.error(msg);
+            logger.severe(msg);
             //throw new XdsException(msg, null);
         }
         initializeDefaultSites();

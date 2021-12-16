@@ -122,6 +122,11 @@
 
 
         <!-- These two needed by dcm4che -->
+        <!--
+        Regarding log4j usage and the CVE2021-44228,
+        See http://www.slf4j.org/docs.html
+        and http://www.slf4j.org/log4shell.html
+        -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>

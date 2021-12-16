@@ -9,7 +9,7 @@ import gov.nist.toolkit.xdsexception.SchemaValidationException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 /**
  * Run XML Schema validation on the provided XML. 
@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
  */
 public class SchemaValidator extends AbstractMessageValidator {
 	OMElement xml;
-	private final static Logger logger = Logger.getLogger(SchemaValidator.class);
+	private final static Logger logger = Logger.getLogger(SchemaValidator.class.getName());
 
 	public SchemaValidator(ValidationContext vc, OMElement xml) {
 		super(vc);

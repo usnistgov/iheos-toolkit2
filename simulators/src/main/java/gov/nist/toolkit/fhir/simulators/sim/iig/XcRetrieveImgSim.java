@@ -27,7 +27,7 @@ import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import groovy.transform.TypeChecked;
 import org.apache.axiom.om.OMElement;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import javax.xml.stream.XMLStreamException;
 import java.util.Iterator;
@@ -49,7 +49,7 @@ class XcRetrieveImgSim extends AbstractMessageValidator {
    
    private static final TransactionType rad75 = TransactionType.XC_RET_IMG_DOC_SET;
    
-   Logger logger = Logger.getLogger(XcRetrieveImgSim.class);
+   Logger logger = Logger.getLogger(XcRetrieveImgSim.class.getName());
 
    SimCommon common;
    DsSimCommon dsSimCommon;
@@ -273,7 +273,7 @@ class XcRetrieveImgSim extends AbstractMessageValidator {
       String msg = e.getMessage();
       if (msg == null || msg.equals(""))
          msg = ExceptionUtil.exception_details(e);
-      logger.error(msg);
+      logger.severe(msg);
       er.err(XdsErrorCode.Code.XDSRepositoryError, msg, this, null);
    }
 

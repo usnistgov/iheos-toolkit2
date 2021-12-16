@@ -12,7 +12,7 @@ import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.ServiceRequestContainer;
 import gov.nist.toolkit.xdsexception.client.XdsException;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,7 +39,7 @@ public class SimCommon {
 	public OutputStream os = null;
 	public boolean faultReturned = false;
 	public boolean responseSent = false;
-	private static Logger logger = Logger.getLogger(SimCommon.class);
+	private static Logger logger = Logger.getLogger(SimCommon.class.getName());
 	public MessageValidatorEngine mvc;
 	public TransactionType transactionType;
 	public ActorType actorType;
@@ -151,7 +151,7 @@ public class SimCommon {
 	   try {
          response.sendError(status, em);
       } catch (IOException e) {
-         logger.warn("IO error sending http response");
+         logger.warning("IO error sending http response");
       }
 	}
 

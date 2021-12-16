@@ -1,10 +1,10 @@
 package gov.nist.toolkit.testenginelogging.logrepository;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 public class SessionRepository  {
 	LogRepository log;
-	Logger logger = Logger.getLogger(SessionRepository.class);
+	Logger logger = Logger.getLogger(SessionRepository.class.getName());
 
 //	public SessionRepository(String user) throws IOException {
 //		log = new LogRepositoryFactory().getLogRepository(Installation.instance().sessionCache(), user, LogRepositoryFactory.IO_format.JAVA_SERIALIZATION, LogRepositoryFactory.Id_type.TIME_ID, null);

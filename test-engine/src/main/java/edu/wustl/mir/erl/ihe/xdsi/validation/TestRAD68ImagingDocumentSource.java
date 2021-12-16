@@ -7,7 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import gov.nist.toolkit.testengine.engine.SimulatorTransaction;
 
@@ -205,21 +205,21 @@ public class TestRAD68ImagingDocumentSource extends Test {
 	}
 	
 	private void deleteIfExists(Path p, String filename) throws Exception {
-		log.debug("TestRAD68ImagingDocumentSource::deleteIfExists start method " + p.toString() + " " + filename);
+		log.fine("TestRAD68ImagingDocumentSource::deleteIfExists start method " + p.toString() + " " + filename);
 		Path filePath = p.resolve(filename);
 		File f = filePath.toFile();
 		if (f.exists()) {
-			log.debug("File does exist and will be deleted");
+			log.fine("File does exist and will be deleted");
 			f.delete();
 		}
 	}
 	
 	private void fileMustExist(Path p, String filename) throws Exception {
-		log.debug("TestRAD68ImagingDocumentSource::fileMustExist start method " + p.toString() + " " + filename);
+		log.fine("TestRAD68ImagingDocumentSource::fileMustExist start method " + p.toString() + " " + filename);
 		File f = p.resolve(filename).toFile();
 		if (! f.exists()) {
 			String s = p.resolve(filename).toString();
-			log.error("File does not exist; fileMustExist method throwing an exception: " + s);
+			log.severe("File does not exist; fileMustExist method throwing an exception: " + s);
 			throw new Exception("File is missing and is required for operation: " + s);
 		}
 	}
@@ -294,7 +294,7 @@ public class TestRAD68ImagingDocumentSource extends Test {
 
          log.info(cmd + " test completed");
       } catch (Exception e) {
-         log.fatal(cmd + " test failed");
+         log.severe(cmd + " test failed");
          e.printStackTrace();
       }
       */
