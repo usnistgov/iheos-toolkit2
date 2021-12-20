@@ -38,6 +38,12 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import org.apache.axiom.om.OMElement;
 import org.apache.commons.io.FileUtils;
+
+import java.io.*;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletConfig;
@@ -46,12 +52,46 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.*;
 
 public class SimServlet  extends HttpServlet {
+	static {
+		String systemProperty = "java.util.logging.config.file";
+		String loggingPropertiesFp = System.getProperty(systemProperty);
+		if (loggingPropertiesFp == null) {
+			String loggingPropertiesFileName = "logging.properties";
+			try {
+				Path loggingPropertiesPath = Paths.get(SimServlet.class.getResource("/").toURI()).resolve(loggingPropertiesFileName).toAbsolutePath();
+				/*
+				Setting the Java system environment allows automatic reload by call to LogManager.readConfiguration(<no-params>).
+				 */
+				if (loggingPropertiesPath.toFile().exists()) {
+					System.setProperty(systemProperty, loggingPropertiesPath.toString());
+				}
+				/*
+				This direct-read method may prevent future calls to LogManger.readConfiguration(<no-params>) to reload logging configuration changes.
+				System.out.println(String.format("Reading %s", loggingPropertiesPath.toString()));
+				try (InputStream stream = new FileInputStream(loggingPropertiesPath.toFile())) {
+					if (stream != null) {
+						LogManager.getLogManager().readConfiguration(stream);
+						System.out.println(String.format("Logging properties: %s loaded from classpath.", loggingPropertiesFileName));
+					} else {
+						System.out.println(String.format("Using JVM default %s", loggingPropertiesFileName));
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				*/
+			} catch (URISyntaxException ex) {
+			    System.err.println(ex.toString());
+			}
+			if (System.getProperty(systemProperty)==null) {
+				System.out.println(String.format("Using JVM default %s", loggingPropertiesFileName));
+			}
+		} else {
+			System.out.println(String.format("Logging properties: loaded from system property: %s.", systemProperty));
+		}
+	}
 	static Logger logger = Logger.getLogger(SimServlet.class.getName());
 
 	private static final long serialVersionUID = 1L;
@@ -171,6 +211,11 @@ public class SimServlet  extends HttpServlet {
 				handleCodesDownload(response, parts);
 				return;
 			}
+			if (uri.endsWith("/loggingProperties")) {
+				logger.info("working on loggingProperties")	;
+				handleLoggingProperties(response);
+				return;
+			}
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		} catch (Exception e) {
@@ -180,6 +225,25 @@ public class SimServlet  extends HttpServlet {
 		}
 
 
+	}
+
+	private void handleLoggingProperties(HttpServletResponse response) {
+		try {
+			File loggingPropertiesFile = "";
+			if (!loggingPropertiesFile.exists()) {
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				return;
+			}
+			String codesContent = Io.stringFromFile(loggingPropertiesFile);
+			response.setContentType("text/xml");
+			response.getOutputStream().print(codesContent);
+			response.getOutputStream().close();
+			response.addHeader("Content-Disposition", "attachment; filename=" + "codes.xml");
+		} catch (Exception e) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			return;
+		}
+		response.setStatus(HttpServletResponse.SC_OK);
 	}
 
 	private void handleDelete(HttpServletResponse response, String[] parts) {

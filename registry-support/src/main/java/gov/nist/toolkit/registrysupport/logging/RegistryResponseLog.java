@@ -92,7 +92,8 @@ public class RegistryResponseLog {
 				errs.add(re);
 		}
 
-        logger.info("Found Errors " + errs);
+		if (errs.size() > 0)
+        logger.info("Found Errors " + errs.toString());
 
         return errs;
 	}

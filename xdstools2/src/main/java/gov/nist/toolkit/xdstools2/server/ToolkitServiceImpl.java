@@ -79,6 +79,7 @@ import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.tk.TkLoader;
 import gov.nist.toolkit.tk.client.TkProps;
+import gov.nist.toolkit.utilities.io.Sha1x;
 import gov.nist.toolkit.utilities.xml.XmlFormatter;
 import gov.nist.toolkit.valregmsg.message.SchemaValidation;
 import gov.nist.toolkit.valregmsg.validation.factories.CommonMessageValidatorFactory;
@@ -101,6 +102,8 @@ import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 import gov.nist.toolkit.xdstools2.shared.command.InitializationResponse;
 import gov.nist.toolkit.xdstools2.shared.command.request.*;
+
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
@@ -198,7 +201,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         response.setEnvironments(Session.getEnvironmentNames());
         response.setTestSessions(TestSessionServiceManager.INSTANCE.getNames());
         response.setServletContextName(getServletContextName());
-        PropertyServiceManager props = Installation.instance().propertyServiceManager();
+        PropertyServiceManager propertySvcManager = Installation.instance().propertyServiceManager();
         String contextName = Installation.instance().getServletContextName();
         logger.info("contextName is " + contextName);
         if (contextName == null)
@@ -210,7 +213,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         response.setToolkitBaseUrl(Installation.instance().getToolkitBaseUrl());
         logger.info("Toolkit Base URL is " + response.getToolkitBaseUrl());
         response.setWikiBaseUrl(Installation.instance().wikiBaseAddress());
-        response.setTkPropMap(props.getToolkitProperties());
+        response.setTkPropMap(propertySvcManager.getToolkitProperties());
         return response;
     }
 
@@ -1220,6 +1223,21 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
 
     @Override
+    public Map<String, String> getAdminToolkitProperties(GetAdminToolkitPropertiesRequest request)  throws Exception {
+        try {
+            GetAdminPasswordHashRequest hashRequest = new GetAdminPasswordHashRequest(request, request.getHash());
+            String hash = getAdminPasswordHash(hashRequest);
+            if (request.getHash().equals(hash)) {
+                return Installation.instance().propertyServiceManager().getAdminToolkitProperties();
+            }
+        } catch (Throwable t) {
+            throw new Exception(t.getMessage());
+        }
+        logger.warning("bad getAdminToolkitProperties request");
+        return null;
+    }
+
+    @Override
     public Map<String, String> getOrchestrationProperties(GetOrchestrationPropertiesRequest request) throws Exception {
        installCommandContext(request);
        File orchestrationPropFile = Installation.instance().orchestrationPropertiesFile(request.getTestSession(), request.getActorTypeShortName());
@@ -1279,12 +1297,26 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public String setToolkitProperties(SetToolkitPropertiesRequest request) throws Exception {
 //        installCommandContext(request);
-        return setToolkitPropertiesImpl(request.getProperties());
+        return setToolkitPropertiesImpl(request);
     }
 
+    /*
     @Override
     public boolean isAdminPasswordValid(IsAdminPasswordValidRequest request) throws Exception {
         return (request.getPasswordToValidate().equals(Installation.instance().propertyServiceManager().getAdminPassword()));
+    }
+     */
+
+    @Override
+    public String getAdminPasswordHash(GetAdminPasswordHashRequest request) throws Exception {
+         if (request != null && request.getPassword() != null && !"".equals(request.getPassword())) {
+             String adminPassword = Installation.instance().propertyServiceManager().getAdminPassword();
+             String hash = Sha1x.SHA256(request.getPassword());
+             if (hash.equals(Sha1x.SHA256(adminPassword))) {
+                 return hash;
+             }
+         }
+         return "";
     }
 
     @Override
@@ -1635,40 +1667,54 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 
     // Other support calls
 
-    public String setToolkitPropertiesImpl(Map<String, String> props)
+    public String setToolkitPropertiesImpl(SetToolkitPropertiesRequest request)
             throws Exception {
+        Map<String, String> props = request.getProperties();
         logger.fine(": " + "setToolkitProperties");
-        logger.fine(describeProperties(props));
-        try {
-            // verify External_Cache points to a writable directory
-            String eCache = props.get("External_Cache");
-            File eCacheFile = new File(eCache);
-            if (!eCacheFile.exists() || !eCacheFile.isDirectory())
-                throw new IOException("Cannot save toolkit properties: property External_Cache does not point to an existing directory");
-            if (!eCacheFile.canWrite())
-                throw new IOException("Cannot save toolkit properties: property External_Cache points to a directory that is not writable");
+
+        GetAdminPasswordHashRequest hashRequest = new GetAdminPasswordHashRequest(request, request.getHash());
+        String hash = getAdminPasswordHash(hashRequest);
+        if (request.getHash().equals(hash)) {
+            logger.fine(describeProperties(props));
+            try {
+                // verify External_Cache points to a writable directory
+                String eCache = props.get("External_Cache");
+                File eCacheFile = new File(eCache);
+                if (!eCacheFile.exists() || !eCacheFile.isDirectory())
+                    throw new IOException("Cannot save toolkit properties: property External_Cache does not point to an existing directory");
+                if (!eCacheFile.canWrite())
+                    throw new IOException("Cannot save toolkit properties: property External_Cache points to a directory that is not writable");
 
 //            File warhome = Installation.instance().warHome();
-            new PropertyServiceManager().getPropertyManager().update(props);
-            reloadPropertyFile();
+                new PropertyServiceManager().getPropertyManager().update(props);
+                logger.info("toolkit.properties file was updated.");
+                reloadPropertyFile();
 //		Installation.instance().externalCache(eCacheFile);
-            ExternalCacheManager.reinitialize(eCacheFile);
-            try {
-                TkLoader.tkProps(Installation.instance().getTkPropsFile());
-            } catch (Throwable t) {
+                ExternalCacheManager.reinitialize(eCacheFile);
+                try {
+                    TkLoader.tkProps(Installation.instance().getTkPropsFile());
+                } catch (Throwable t) {
 
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new Exception(ExceptionUtil.exception_details(e));
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new Exception(ExceptionUtil.exception_details(e));
+
+        } else {
+            logger.warning("setToolkitPropertiesImpl Hash does not match.");
         }
+
         return "";
     }
 
     String describeProperties(Map<String, String> props) {
         StringBuilder buf = new StringBuilder();
 
-        for (String key : props.keySet()) buf.append(key).append(" = ").append(props.get(key)).append("\n");
+        for (String key : props.keySet()) {
+            if (! key.equals(PropertyManager.ADMIN_PASSWORD))
+            buf.append(key).append(" = ").append(props.get(key)).append("\n");
+        }
 
         return buf.toString();
     }
@@ -2182,4 +2228,14 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return clientMc;
     }
 
+    @Override
+    public boolean readLoggingConfiguration() {
+        try {
+            LogManager.getLogManager().readConfiguration();
+            return true;
+        } catch (IOException ioex) {
+            System.err.println(ioex.toString());
+            return false;
+        }
+    }
 }

@@ -68,7 +68,8 @@ public interface ToolkitServiceAsync {
     void reloadSystemFromGazelle(ReloadSystemFromGazelleRequest request, AsyncCallback<String> callback);
     void getSiteNamesWithRG(CommandContext context,AsyncCallback<List<String>> callback);
     void getSiteNamesByTranType(GetSiteNamesByTranTypeRequest request, AsyncCallback<List<String>> callback);
-    void isAdminPasswordValid(IsAdminPasswordValidRequest request, AsyncCallback<Boolean> callback);
+//    void isAdminPasswordValid(IsAdminPasswordValidRequest request, AsyncCallback<Boolean> callback);
+    void getAdminPasswordHash(GetAdminPasswordHashRequest request, AsyncCallback<String> callback);
 
     void getDashboardRegistryData(CommandContext context, AsyncCallback<List<RegistryStatus>> callback);
     void getDashboardRepositoryData(CommandContext context, AsyncCallback<List<RepositoryStatus>> callback);
@@ -167,6 +168,7 @@ public interface ToolkitServiceAsync {
     void getImplementationVersion(CommandContext context,AsyncCallback<String> callback);
 
     void getToolkitProperties(CommandContext context,AsyncCallback<Map<String, String>> callback);
+    void getAdminToolkitProperties(GetAdminToolkitPropertiesRequest request, AsyncCallback<Map<String,String>> callback);
     void setToolkitProperties(SetToolkitPropertiesRequest request, AsyncCallback<String> callback);
     void reloadPropertyFile(AsyncCallback<Boolean> callback);
 
@@ -303,4 +305,6 @@ public interface ToolkitServiceAsync {
     void getTestSessionStats(CommandContext commandContext, AsyncCallback<List<TestSessionStats>> async);
 
     void getMetadataFromRegIndex(GetMetadataFromRegIndexRequest request, AsyncCallback<MetadataCollection> callback);
+
+    void reloadToolkitLogging(CommandContext commandContext, AsyncCallback<Boolean> callback);
 }

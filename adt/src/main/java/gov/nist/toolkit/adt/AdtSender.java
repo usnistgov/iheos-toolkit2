@@ -41,7 +41,7 @@ public class AdtSender {
             out = new PrintWriter(echoSocket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(
                     echoSocket.getInputStream()));
-            logger.fine("...no errors");
+            logger.finer("...no errors");
         } catch (UnknownHostException e) {
             logger.severe("Don't know about host: " + server);
             throw e;
@@ -65,7 +65,7 @@ public class AdtSender {
         out.print(buf.toString().replace("$pid$", pid));
         
         logger.fine("Sending ADT message...");
-        logger.fine(buf.toString());
+        logger.finer(buf.toString());
 
         c = 0x1c;
         out.print(c);
@@ -81,7 +81,7 @@ public class AdtSender {
         echoSocket.close();
         
         logger.fine("ADT message response...");
-        logger.fine(()->output);
+        logger.finer(()->output);
  
         isSuccessful(output);
     }
@@ -134,7 +134,9 @@ public class AdtSender {
 		AdtMessage adtMessage = new AdtMessage(message);
 		String ackCode = adtMessage.getACKCode();
 		if (!ackCode.equals(HL7_ACK_ACCEPTED)) {
-			throw new AdtMessageRejectedException("Application returned code: '" + ackCode + "'");
+		    String errorMessage = "Application returned code: '" + ackCode + "'";
+		    logger.severe(errorMessage);
+			throw new AdtMessageRejectedException(message);
 		}
 	}
 

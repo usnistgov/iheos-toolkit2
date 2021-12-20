@@ -616,9 +616,10 @@
 					<include>toolkit.properties</include>
 				</includes>
 			</resource>
-			<resource>
-				<directory>src/test/resources</directory>
-			</resource>
+			<!-- Following resource brings in unwanted test files into main resources. This should not be required. -->
+<!--			<resource>-->
+<!--				<directory>src/test/resources</directory>-->
+<!--			</resource>-->
 			<resource>
 				<directory>src/main/resources</directory>
 			</resource>

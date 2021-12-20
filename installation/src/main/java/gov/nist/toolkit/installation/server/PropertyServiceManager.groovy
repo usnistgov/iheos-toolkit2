@@ -336,9 +336,16 @@ public class PropertyServiceManager {
 		return f;
 	}
 
-	public Map<String, String> getToolkitProperties() {
-		logger.fine(": " + "getToolkitProperties");
+	public Map<String, String> getAdminToolkitProperties() {
 		return getPropertyManager().getPropertyMap();
+	}
+
+
+	public Map<String, String> getToolkitProperties() {
+		logger.fine(": " + "getToolkitProperties for a normal user");
+		Map<String,String> map = getPropertyManager().getPropertyMap();
+		map.remove(PropertyManager.ADMIN_PASSWORD);
+		return map;
 	}
 
 	public boolean reloadPropertyFile() {

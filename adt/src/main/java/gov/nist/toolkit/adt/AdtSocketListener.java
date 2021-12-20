@@ -65,11 +65,11 @@ public class AdtSocketListener implements Runnable{
         try {
             while (true) {
                 try {
-//                    logger.finest(()->"accept - timeout is " + server.getSoTimeout());
+                    logger.finest(()->"accept - timeout (ms) is " + threadPoolItem.timeoutInMilli);
                     socket = server.accept();
                     handle(socket);
                 } catch (SocketTimeoutException e) {
-//                    logger.fine("SocketTimeoutException on port " + threadPoolItem.port);
+                    logger.finest("SocketTimeoutException on port " + threadPoolItem.port);
                     if (Thread.interrupted())
                         throw new InterruptedException("");
                 }

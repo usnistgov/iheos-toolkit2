@@ -12,7 +12,7 @@ public class PropertyManager {
 
 	static private Logger logger = Logger.getLogger(PropertyManager.class.getName());
 
-	static private final String ADMIN_PASSWORD      = "Admin_password";
+	static public final String ADMIN_PASSWORD      = "Admin_password";
 	static private final String TOOLKIT_HOST        = "Toolkit_Host";
 	static private final String TOOLKIT_PORT        = "Toolkit_Port";
 	static private final String TOOLKIT_TLS_PORT    = "Toolkit_TLS_Port";

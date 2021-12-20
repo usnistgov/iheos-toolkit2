@@ -6,6 +6,6 @@ import gov.nist.toolkit.xdstools2.shared.command.request.IsAdminPasswordValidReq
 public abstract class IsAdminPasswordValidCommand extends GenericCommand<IsAdminPasswordValidRequest, Boolean>{
     @Override
     public void run(IsAdminPasswordValidRequest request) {
-        ClientUtils.INSTANCE.getToolkitServices().isAdminPasswordValid(request, this);
+//        ClientUtils.INSTANCE.getToolkitServices().isAdminPasswordValid(request, this);
     }
 }

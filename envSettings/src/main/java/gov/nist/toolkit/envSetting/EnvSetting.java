@@ -35,7 +35,7 @@ public class EnvSetting {
     private static void addSetting(String sessionId, EnvSetting envSetting) {
 	    settings.put(sessionId, envSetting);
         if (settings.keySet().size() == 3)
-            logger.info("third setting");
+            logger.fine("third setting");
     }
 
     static public EnvSetting getEnvSettingForSession(String sessionId) {

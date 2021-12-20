@@ -380,14 +380,14 @@ public class Utility {
     */
    public static void invoked(Logger lg) {
       if (lg == null) lg = getLog();
-      lg.finest(callingClass(3) + "." + callingMethod(3) + " invoked");
+      lg.finer(callingClass(3) + "." + callingMethod(3) + " invoked");
    }
 
    /**
     * Logs standard class method invoked message to system Logger
     */
    public static void invoked() {
-      getLog().finest(callingClass(3) + "." + callingMethod(3) + " invoked");
+      getLog().finer(callingClass(3) + "." + callingMethod(3) + " invoked");
    }
    
    /**
