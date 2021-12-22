@@ -8,6 +8,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import gov.nist.toolkit.xdstools2.client.util.ClientFactoryImpl;
 import gov.nist.toolkit.xdstools2.client.util.HtmlUtil;
 
 /**
@@ -98,7 +99,7 @@ public class TestSectionView implements IsWidget {
         @Override
         public void labelFailure() {
             super.labelFailure();
-            statusIcon = new Image("icons/ic_warning_black_24dp_1x.png");
+            statusIcon = new Image(ClientFactoryImpl.getIconsResources().getWarningIcon());
             statusIcon.addStyleName("right");
             statusIcon.addStyleName("iconStyle");
         }

@@ -25,6 +25,7 @@ import gov.nist.toolkit.xdstools2.client.event.SimulatorUpdatedEvent;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.*;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.intf.SimConfigMgrIntf;
+import gov.nist.toolkit.xdstools2.client.util.ClientFactoryImpl;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.request.*;
@@ -61,14 +62,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
     static String choose = "-- Choose --";
 //    Button refreshSupplyState = new Button("<span style=\"font-size:8px;color:blue\">Refresh</span>");
 
-    interface OddsResources extends ClientBundle {
-        public static final OddsResources INSTANCE = GWT.create(OddsResources.class);
-
-        @Source("icons/ic_refresh_black_24dp_1x.png")
-        ImageResource getRefreshIcon();
-    }
-    Image refreshImg = new Image(((OddsResources)GWT.create(OddsResources.class)).getRefreshIcon());
-
+    Image refreshImg = new Image(ClientFactoryImpl.getIconsResources().getRefreshIcon());
 
     public OddsSimConfigMgr(SimulatorControlTab simulatorControlTab, FlowPanel panel, SimulatorConfig config, String testSession) {
 

@@ -7,15 +7,15 @@ import com.google.gwt.safecss.shared.SafeStylesUtils;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
-import gov.nist.toolkit.xdstools2.client.resources.TestsOverviewResources;
+import gov.nist.toolkit.xdstools2.client.resources.IconsResources;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.Utils;
+import gov.nist.toolkit.xdstools2.client.util.ClientFactoryImpl;
 
 /**
  * Created by Diane Azais local on 11/25/2015.
  */
 public class StatusCell extends AbstractSafeHtmlCell<String> {
-
-    TestsOverviewResources RESOURCES = TestsOverviewResources.INSTANCE;
+    IconsResources RESOURCES = ClientFactoryImpl.getIconsResources();
 
     private SafeHtml NOT_RUN_ICON = Utils.makeImage(RESOURCES.getRemoveIconWhite24());
     private SafeHtml HAS_WARNINGS_ICON = Utils.makeImage(RESOURCES.getInfoIconWhite24());

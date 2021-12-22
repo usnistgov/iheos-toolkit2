@@ -12,8 +12,9 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.text.shared.SafeHtmlRenderer;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
 import com.google.gwt.user.client.ui.Button;
-import gov.nist.toolkit.xdstools2.client.resources.TestsOverviewResources;
+import gov.nist.toolkit.xdstools2.client.resources.IconsResources;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.Utils;
+import gov.nist.toolkit.xdstools2.client.util.ClientFactoryImpl;
 
 
 /**
@@ -22,7 +23,7 @@ import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.Utils;
  * Custom cell to display the TestButtonsWidget.
  */
 public class CommandsCell extends AbstractSafeHtmlCell<String> {
-    TestsOverviewResources RESOURCES = TestsOverviewResources.INSTANCE;
+    IconsResources RESOURCES = ClientFactoryImpl.getIconsResources();
 
     public static String PLAY_ICON_NAME = "PLAY_BUTTON";
     public static String REMOVE_ICON_NAME = "REMOVE_BUTTON";

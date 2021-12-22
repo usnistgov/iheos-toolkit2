@@ -526,9 +526,11 @@
 				</executions>
 				<configuration>
                     <failOnError>true</failOnError>
-					<!--<logLevel>ALL</logLevel>-->
+					<!-- Use logLevel only to see GWT compiler messages, this is very verbose on the command line output. -->
+<!--					<logLevel>ALL</logLevel>-->
+					<!-- Use Style for source formatting in the web browser. -->
 					<style>OBFUSCATED</style>
-                    <!--<style>DETAILED</style>-->
+<!--                    <style>DETAILED</style>-->
 					<compileSourcesArtifacts>
 						<compileSourcesArtifact>${project.groupId}:installation</compileSourcesArtifact>
 						<compileSourcesArtifact>${project.groupId}:tk</compileSourcesArtifact>

@@ -9,6 +9,7 @@ import gov.nist.toolkit.xdstools2.client.inspector.mvp.InspectorActivity;
 import gov.nist.toolkit.xdstools2.client.inspector.mvp.SimIndexInspector;
 import gov.nist.toolkit.xdstools2.client.inspector.mvp.SimIndexInspectorActivity;
 import gov.nist.toolkit.xdstools2.client.inspector.mvp.ResultInspector;
+import gov.nist.toolkit.xdstools2.client.resources.IconsResources;
 import gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab.SubmitResourceActivity;
 import gov.nist.toolkit.xdstools2.client.tabs.fhirSearchTab.FhirSearchActivity;
 import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewer;
@@ -33,7 +34,11 @@ public class ClientFactoryImpl implements ClientFactory {
 //    private static final SimMsgViewerActivity MSG_VIEWER_ACTIVITY = GWT.create(SimMsgViewerActivity.class);
     private static final SubmitResourceActivity SUBMIT_RESOURCE_ACTIVITY = GWT.create(SubmitResourceActivity.class);
     private static final FhirSearchActivity FHIR_SEARCH_ACTIVITY = GWT.create(FhirSearchActivity.class);
+    private static final IconsResources IconsResources = GWT.create(IconsResources.class);
 
+    public static IconsResources getIconsResources() {
+        return IconsResources;
+    }
 
     @Override
     public EventBus getEventBus() {
