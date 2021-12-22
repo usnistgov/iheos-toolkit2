@@ -1225,15 +1225,14 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public Map<String, String> getAdminToolkitProperties(GetAdminToolkitPropertiesRequest request)  throws Exception {
         try {
-            GetAdminPasswordHashRequest hashRequest = new GetAdminPasswordHashRequest(request, request.getHash());
-            String hash = getAdminPasswordHash(hashRequest);
-            if (request.getHash().equals(hash)) {
+            String hash = getAdminPasswordHash();
+            if (! "".equals(hash)  && hash.equals(request.getHash())) {
                 return Installation.instance().propertyServiceManager().getAdminToolkitProperties();
             }
         } catch (Throwable t) {
             throw new Exception(t.getMessage());
         }
-        logger.warning("bad getAdminToolkitProperties request");
+        logger.warning("getAdminToolkitProperties request hash did not match original.");
         return null;
     }
 
@@ -1310,13 +1309,18 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public String getAdminPasswordHash(GetAdminPasswordHashRequest request) throws Exception {
          if (request != null && request.getPassword() != null && !"".equals(request.getPassword())) {
-             String adminPassword = Installation.instance().propertyServiceManager().getAdminPassword();
              String hash = Sha1x.SHA256(request.getPassword());
-             if (hash.equals(Sha1x.SHA256(adminPassword))) {
+             if (hash.equals(getAdminPasswordHash())) {
                  return hash;
              }
          }
+         logger.warning("getAdminPasswordHash: hash value did not match.");
          return "";
+    }
+
+    private String getAdminPasswordHash() throws Exception {
+        String adminPassword = Installation.instance().propertyServiceManager().getAdminPassword();
+        return Sha1x.SHA256(adminPassword);
     }
 
     @Override
@@ -1672,9 +1676,8 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         Map<String, String> props = request.getProperties();
         logger.fine(": " + "setToolkitProperties");
 
-        GetAdminPasswordHashRequest hashRequest = new GetAdminPasswordHashRequest(request, request.getHash());
-        String hash = getAdminPasswordHash(hashRequest);
-        if (request.getHash().equals(hash)) {
+        String hash = getAdminPasswordHash();
+        if (! "".equals(hash) && hash.equals(request.getHash())) {
             logger.fine(describeProperties(props));
             try {
                 // verify External_Cache points to a writable directory
@@ -2229,12 +2232,12 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
 
     @Override
-    public boolean readLoggingConfiguration() {
+    public boolean reloadToolkitLogging(CommandContext context) {
         try {
-            LogManager.getLogManager().readConfiguration();
+            SimServlet.initToolkitLoggingProperties();
             return true;
-        } catch (IOException ioex) {
-            System.err.println(ioex.toString());
+        } catch (Exception ex) {
+            System.err.println("reloadToolkitLogging Exception: " + ex.toString());
             return false;
         }
     }

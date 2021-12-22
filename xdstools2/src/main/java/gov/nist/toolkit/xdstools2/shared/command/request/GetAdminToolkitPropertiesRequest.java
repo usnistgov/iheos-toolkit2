@@ -5,6 +5,9 @@ import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 public class GetAdminToolkitPropertiesRequest extends CommandContext {
     String hash;
 
+    public GetAdminToolkitPropertiesRequest() {
+    }
+
     public GetAdminToolkitPropertiesRequest(CommandContext commandContext, String hash) {
         copyFrom(commandContext);
         this.hash = hash;
@@ -13,4 +16,5 @@ public class GetAdminToolkitPropertiesRequest extends CommandContext {
     public String getHash() {
         return hash;
     }
+
 }

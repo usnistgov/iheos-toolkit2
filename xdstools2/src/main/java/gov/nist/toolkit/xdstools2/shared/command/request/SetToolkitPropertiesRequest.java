@@ -25,4 +25,12 @@ public class SetToolkitPropertiesRequest extends CommandContext{
     public String getHash() {
         return hash;
     }
+
+    public void setHash(String hash) {
+        this.hash = hash;
+    }
+
+    public void setProperties(Map<String, String> properties) {
+        this.properties = properties;
+    }
 }

@@ -5,6 +5,9 @@ import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 public class GetAdminPasswordHashRequest extends CommandContext {
     private String password;
 
+    public GetAdminPasswordHashRequest() {
+    }
+
     public GetAdminPasswordHashRequest(CommandContext commandContext, String password) {
         copyFrom(commandContext);
         this.password = password;
@@ -13,4 +16,5 @@ public class GetAdminPasswordHashRequest extends CommandContext {
     public String getPassword() {
         return password;
     }
+
 }

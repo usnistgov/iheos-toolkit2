@@ -346,5 +346,5 @@ public interface ToolkitService extends RemoteService  {
 
     MetadataCollection getMetadataFromRegIndex(GetMetadataFromRegIndexRequest request) throws Exception;
 
-    boolean readLoggingConfiguration();
+    boolean reloadToolkitLogging(CommandContext context) throws Exception;
 }

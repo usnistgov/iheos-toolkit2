@@ -2,11 +2,6 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.http.client.Request;
-import com.google.gwt.http.client.RequestBuilder;
-import com.google.gwt.http.client.RequestCallback;
-import com.google.gwt.http.client.RequestException;
-import com.google.gwt.http.client.Response;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
@@ -18,9 +13,7 @@ import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.NullSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
-import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.util.InformationLink;
-import gov.nist.toolkit.xdstools2.client.util.SimpleCallbackT;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.TestkitConfigTool;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetAdminToolkitPropertiesRequest;
@@ -111,6 +104,16 @@ public class ToolConfigTab extends GenericQueryTab {
         }.run(new GetTestSessionStatsRequest(getCommandContext()));
         container.add(new HTML("<hr />"));
 
+        addLoggingPropertiesPane(container);
+
+        return container;
+	}
+
+    private void addLoggingPropertiesPane(FlowPanel container) {
+        HTML loggingSubtitle1 = new HTML();
+        loggingSubtitle1.setHTML("<h2>Logging Properties</h2>");
+        container.add(loggingSubtitle1);
+
         Anchor loggingPropertiesAnchor = new Anchor("Logging Properties");
         loggingPropertiesAnchor.addClickHandler(new ClickHandler() {
             @Override
@@ -119,15 +122,17 @@ public class ToolConfigTab extends GenericQueryTab {
             }
         });
         container.add(loggingPropertiesAnchor);
+
+        HTML loggingSeparator = new HTML();
+        loggingSeparator.setHTML("<br/>");
+        container.add(loggingSeparator);
+
         Button reloadLoggingPropertiesButton = new Button("Reload Logging Properties");
         reloadLoggingPropertiesButton.addClickHandler(new ReloadLoggingProperties());
         container.add(reloadLoggingPropertiesButton);
+    }
 
-
-        return container;
-	}
-
-	@Override
+    @Override
 	protected void bindUI() {
 		loadPropertyFile();
 	}
@@ -177,8 +182,12 @@ public class ToolConfigTab extends GenericQueryTab {
         new GetAdminToolkitPropertiesCommand(){
             @Override
             public void onComplete(Map<String, String> result) {
-                props = result;
-                loadPropertyGrid();
+                if (result != null) {
+                    props = result;
+                    loadPropertyGrid();
+                } else {
+                    new PopupMessage("Properties could not be retrieved.");
+                }
             }
         }.run(new GetAdminToolkitPropertiesRequest(getCommandContext(), PasswordManagement.hash));
     }

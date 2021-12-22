@@ -51,6 +51,7 @@ public class SignInSelector implements IsWidget {
         signOut.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent clickEvent) {
+                PasswordManagement.hash = "";
                 PasswordManagement.isSignedIn = false;
                 updateDisplay();
                 //switchTestSession("");
