@@ -716,7 +716,7 @@ public class Soap implements SoapInterface {
 
 		// operationClient.reset();
 
-        logger.info("soepCall done");
+        logger.info("soapCall done");
 		return result;
 
 	}

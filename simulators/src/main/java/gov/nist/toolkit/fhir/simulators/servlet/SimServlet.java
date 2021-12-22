@@ -55,43 +55,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 public class SimServlet  extends HttpServlet {
-	static {
-		String systemProperty = "java.util.logging.config.file";
-		String loggingPropertiesFp = System.getProperty(systemProperty);
-		if (loggingPropertiesFp == null) {
-			String loggingPropertiesFileName = "logging.properties";
-			try {
-				Path loggingPropertiesPath = Paths.get(SimServlet.class.getResource("/").toURI()).resolve(loggingPropertiesFileName).toAbsolutePath();
-				/*
-				Setting the Java system environment allows automatic reload by call to LogManager.readConfiguration(<no-params>).
-				 */
-				if (loggingPropertiesPath.toFile().exists()) {
-					System.setProperty(systemProperty, loggingPropertiesPath.toString());
-				}
-				/*
-				This direct-read method may prevent future calls to LogManger.readConfiguration(<no-params>) to reload logging configuration changes.
-				System.out.println(String.format("Reading %s", loggingPropertiesPath.toString()));
-				try (InputStream stream = new FileInputStream(loggingPropertiesPath.toFile())) {
-					if (stream != null) {
-						LogManager.getLogManager().readConfiguration(stream);
-						System.out.println(String.format("Logging properties: %s loaded from classpath.", loggingPropertiesFileName));
-					} else {
-						System.out.println(String.format("Using JVM default %s", loggingPropertiesFileName));
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				*/
-			} catch (URISyntaxException ex) {
-			    System.err.println(ex.toString());
-			}
-			if (System.getProperty(systemProperty)==null) {
-				System.out.println(String.format("Using JVM default %s", loggingPropertiesFileName));
-			}
-		} else {
-			System.out.println(String.format("Logging properties: loaded from system property: %s.", systemProperty));
-		}
-	}
+	public static String TOOLKIT_LOGGING_PROPERTIES_SYSTEM_PROPERTY_NAME = "LOGGING_PROPERTIES";
+	/**
+	 * Less control as to who initially sets this Java system property. Tomcat may already set this property which is not what Toolkit wants.
+	 */
+	private static String JAVA_LOGGING_PROPERTIES_SYSTEM_PROPERTY_NAME = "java.util.logging.config.file";
+//	static {
+//		initToolkitLoggingProperties();
+//	}
 	static Logger logger = Logger.getLogger(SimServlet.class.getName());
 
 	private static final long serialVersionUID = 1L;
@@ -144,6 +115,42 @@ public class SimServlet  extends HttpServlet {
 			logger.severe("Proxy startup on port " +  Thread.currentThread().getId()  + " failed - " + ExceptionUtil.exception_details(e));
 			throw new ServletException(e);
 		}
+	}
+
+	public static void initToolkitLoggingProperties() {
+		File loggingProperties = getLoggingPropertiesFile();
+		if (loggingProperties != null && loggingProperties.exists()) {
+			LogManager.getLogManager().reset();
+			System.out.println(String.format("Reading %s", loggingProperties.toString()));
+			try (InputStream stream = new FileInputStream(loggingProperties)) {
+				LogManager.getLogManager().readConfiguration(stream);
+				System.out.println(String.format("Loaded logging properties from CLASSPATH: %s.", loggingProperties.toString()));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			System.out.println("Using JVM system property for logging.properties.");
+		}
+
+		return;
+	}
+
+	private static File getLoggingPropertiesFile() {
+		File loggingProperties = null;
+		String toolkitLoggingPropertiesFp = System.getProperty(TOOLKIT_LOGGING_PROPERTIES_SYSTEM_PROPERTY_NAME);
+		if (toolkitLoggingPropertiesFp != null) {
+			loggingProperties = new File(toolkitLoggingPropertiesFp);
+		} else {
+			// Load logging.properties from classpath
+			String loggingPropertiesFileName = "logging.properties";
+			try {
+				Path loggingPropertiesPath = Paths.get(SimServlet.class.getResource("/").toURI()).resolve(loggingPropertiesFileName).toAbsolutePath();
+				loggingProperties = loggingPropertiesPath.toFile();
+			} catch (URISyntaxException ex) {
+				System.err.println(ex.toString());
+			}
+		}
+		return loggingProperties;
 	}
 
 	@Override
@@ -213,7 +220,7 @@ public class SimServlet  extends HttpServlet {
 			}
 			if (uri.endsWith("/loggingProperties")) {
 				logger.info("working on loggingProperties")	;
-				handleLoggingProperties(response);
+				handleReadLoggingProperties(response);
 				return;
 			}
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -227,18 +234,18 @@ public class SimServlet  extends HttpServlet {
 
 	}
 
-	private void handleLoggingProperties(HttpServletResponse response) {
+	private void handleReadLoggingProperties(HttpServletResponse response) {
 		try {
-			File loggingPropertiesFile = "";
-			if (!loggingPropertiesFile.exists()) {
+			File loggingPropertiesFile = getLoggingPropertiesFile();
+			if (! loggingPropertiesFile.exists()) {
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 				return;
 			}
-			String codesContent = Io.stringFromFile(loggingPropertiesFile);
-			response.setContentType("text/xml");
-			response.getOutputStream().print(codesContent);
+			String loggingPropertiesText = Io.stringFromFile(loggingPropertiesFile);
+			response.setContentType("text/plain");
+			response.getOutputStream().print(loggingPropertiesText);
 			response.getOutputStream().close();
-			response.addHeader("Content-Disposition", "attachment; filename=" + "codes.xml");
+			response.addHeader("Content-Disposition", "attachment; filename=" + loggingPropertiesFile.getName());
 		} catch (Exception e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
