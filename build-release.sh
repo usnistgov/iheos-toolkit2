@@ -34,5 +34,8 @@ mvn clean install -P SunilUbuntu -D skipTests
 
 bash pre-release.sh
 
+echo "Running Patch log4j script."
+bash patch-log4j.sh
+
 bash package-release.sh $PROPERTIESNAME
 
