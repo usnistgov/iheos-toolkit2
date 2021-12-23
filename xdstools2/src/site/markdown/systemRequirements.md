@@ -6,8 +6,8 @@ solved.  If you experience any problems running windows please report it.
 
 The basic system requirements are:
 
-* Java (version 7 or later)
-* Tomcat (version 7 or later)
+* Java (version 8 or later)
+* Tomcat (version 9 or later)
 
 Many people use Servlet containers other than Tomcat but we develop on Tomcat
 and do not have experience with the many alternatives.
