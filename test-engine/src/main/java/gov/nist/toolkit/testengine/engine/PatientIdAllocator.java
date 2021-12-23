@@ -3,7 +3,7 @@ package gov.nist.toolkit.testengine.engine;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.common.datatypes.Hl7Date;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.IOException;
 
@@ -15,7 +15,7 @@ import java.io.IOException;
 public class PatientIdAllocator extends IdAllocator {
 	private static String current_pid = null;
 
-	static Logger logger = Logger.getLogger(PatientIdAllocator.class);
+	static Logger logger = Logger.getLogger(PatientIdAllocator.class.getName());
 
 	static public void reset() {
 		current_pid = null;  // done at end of each test step

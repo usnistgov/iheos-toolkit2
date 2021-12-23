@@ -4,7 +4,7 @@ import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.interactionmodel.shared.TransactionSequenceNotFoundException;
 import gov.nist.toolkit.utilities.xml.Util;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 import java.io.File;
@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 
 public class InteractionSequences {
-    private final static Logger logger = Logger.getLogger(InteractionSequences.class);
+    private final static Logger logger = Logger.getLogger(InteractionSequences.class.getName());
 
     static final ConcurrentHashMap<String,List<InteractingEntity>> interactingEntityMap = new ConcurrentHashMap<>();
     static boolean initialized = false;

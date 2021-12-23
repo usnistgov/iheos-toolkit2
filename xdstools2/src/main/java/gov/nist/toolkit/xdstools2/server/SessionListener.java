@@ -8,7 +8,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 /**
  * Create and delete the SessionCache as the servlet is created/destroyed
@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
  *
  */
 public class SessionListener implements HttpSessionListener {
-	static Logger logger = Logger.getLogger(SessionListener.class);
+	static Logger logger = Logger.getLogger(SessionListener.class.getName());
 			
 	void init(HttpSessionEvent arg0) {
 	}

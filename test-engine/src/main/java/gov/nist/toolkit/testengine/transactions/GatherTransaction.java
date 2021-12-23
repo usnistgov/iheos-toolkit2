@@ -6,7 +6,7 @@ import gov.nist.toolkit.testenginelogging.client.ReportDTO;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.util.Map;
 
@@ -14,7 +14,7 @@ import java.util.Map;
  * This "gathers" inputs from the Conformance test UI and represents them as Reports
  */
 public class GatherTransaction extends BasicTransaction {
-    private final static Logger logger = Logger.getLogger(GatherTransaction.class);
+    private final static Logger logger = Logger.getLogger(GatherTransaction.class.getName());
 
     public GatherTransaction(StepContext s_ctx, OMElement instruction, OMElement instruction_output) {
         super(s_ctx, instruction, instruction_output);

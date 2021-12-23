@@ -12,7 +12,9 @@ import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simcommon.server.GenericSimulatorFactory;
 import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
-import org.apache.log4j.Logger;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -25,7 +27,7 @@ import java.util.List;
  * Created by bill on 9/8/15.
  */
 public class PatientIdentityFeedServlet extends HttpServlet {
-    static Logger logger = Logger.getLogger(PatientIdentityFeedServlet.class);
+    static Logger logger = Logger.getLogger(PatientIdentityFeedServlet.class.getName());
 //    File warHome;
 //    File simDbDir;
 
@@ -55,9 +57,9 @@ public class PatientIdentityFeedServlet extends HttpServlet {
 
 //            generateCurrentlyConfiguredListeners();
         } catch (ToolkitRuntimeException e) {
-            logger.fatal("Cannot start listeners: ", e);
+            logger.log(Level.SEVERE, "Cannot start listeners: ", e);
         } catch (Exception e) {
-            logger.fatal("Cannot start listeners: ", e);
+            logger.log(Level.SEVERE, "Cannot start listeners: ", e);
         }
 
         logger.info("AdtServlet initialized");
@@ -126,7 +128,7 @@ public class PatientIdentityFeedServlet extends HttpServlet {
         try {
             terminateCurrentlyConfiguredListeners();
         } catch (Exception e) {
-            logger.fatal("Cannot terminate listeners: ", e);
+            logger.log(Level.SEVERE, "Cannot terminate listeners: ", e);
         }
     }
 

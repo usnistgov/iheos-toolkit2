@@ -60,10 +60,10 @@ public class TestkitConfigTool extends Composite {
         "in the environment directory of the External Cache so that local tests can be add during development. " +
         "Remember to Reindex (above) after adding new tests so the Conformance Tool sees them."));
         container.add(new Button("Create testkit structure",new TestkitConfigTool.CreateTestkitStructureHandler()));
-        container.add(new HTML("<br /><hr /><br />"));
+        container.add(new HTML("<br/><hr/>"));
 //        container.add(buttonsContainer);
         container.add(indexStatus);
-        container.add(new HTML("<br /><br /><br />"));
+        container.add(new HTML("<br/><br/>"));
 
         initWidget(container);
     }

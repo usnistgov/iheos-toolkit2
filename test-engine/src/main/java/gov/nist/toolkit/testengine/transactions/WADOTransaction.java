@@ -35,7 +35,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.util.EntityUtils;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 import java.io.File;
@@ -95,7 +95,7 @@ import java.util.Map;
  */
 public class WADOTransaction extends BasicTransaction {
    
-   static Logger log = Logger.getLogger(WADOTransaction.class);
+   static Logger log = Logger.getLogger(WADOTransaction.class.getName());
    
    static private QName RetrieveDocumentSetResponse =
       new QName("urn:ihe:iti:xds-b:2007", "RetrieveDocumentSetResponse", "xdsb");
@@ -225,7 +225,7 @@ public class WADOTransaction extends BasicTransaction {
       for (Map.Entry<String, String> header :headers.entrySet()) {
          httpGet.addHeader(header.getKey(), header.getValue());
       }
-      log.debug(httpGet.toString());
+      log.fine(httpGet.toString());
       
       // Log Request Header
       StringBuilder h = new StringBuilder(httpGet.toString());
@@ -375,7 +375,7 @@ public class WADOTransaction extends BasicTransaction {
             parseTargetInstruction(part);
             break;
          default:
-            log.warn("Unrecognized testplan child " + part.getLocalName() + " ignored.");
+            log.warning("Unrecognized testplan child " + part.getLocalName() + " ignored.");
       }
    }
    

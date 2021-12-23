@@ -15,7 +15,7 @@ import java.util.List;
  *
  */
 public class PasswordManagement {
-	static public String adminPassword = "";  // loaded when this tab is created (at launch)
+	static public String hash = "";
 	static public boolean isSignedIn = false;
 	static private List<AsyncCallback<Boolean>> signInCallbacks = new ArrayList<AsyncCallback<Boolean>>();
 	static public SignInSelector signInSelector;

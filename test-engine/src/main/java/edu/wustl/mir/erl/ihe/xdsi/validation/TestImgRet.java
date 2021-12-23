@@ -11,7 +11,7 @@ import javax.xml.namespace.QName;
 import org.apache.axiom.om.OMElement;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.w3c.dom.Element;
 
 import gov.nist.toolkit.utilities.xml.XmlUtil;

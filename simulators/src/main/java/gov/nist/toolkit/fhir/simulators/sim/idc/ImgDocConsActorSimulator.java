@@ -16,7 +16,7 @@ import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.registrymsg.repository.RetrieveImageRequestGenerator;
@@ -42,7 +42,7 @@ public class ImgDocConsActorSimulator extends BaseDsActorSimulator {
    }
 
    static private final Logger logger =
-      Logger.getLogger(ImgDocConsActorSimulator.class);
+      Logger.getLogger(ImgDocConsActorSimulator.class.getName());
    private List <OMElement> extraSoapHeaderElements = new ArrayList <>();
 
    /** boolean, is transaction to use TLS connection */

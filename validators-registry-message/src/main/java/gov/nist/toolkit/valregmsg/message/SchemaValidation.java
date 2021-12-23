@@ -9,7 +9,7 @@ import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.utilities.xml.MyErrorHandler;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.xerces.parsers.DOMParser;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -19,7 +19,7 @@ import java.io.PrintStream;
 import java.io.StringReader;
 
 public class SchemaValidation extends MetadataTypes {
-	static Logger logger = Logger.getLogger(SchemaValidation.class);
+	static Logger logger = Logger.getLogger(SchemaValidation.class.getName());
 
 	static public String toolkitSchemaLocation = null;
 
@@ -34,7 +34,7 @@ public class SchemaValidation extends MetadataTypes {
 		MyErrorHandler errors = null;
 		DOMParser p = null;
 
-		logger.debug("Local Schema to be found at " + localSchema);
+		logger.fine("Local Schema to be found at " + localSchema);
 		String host = "";
         String portString = "";
 		boolean noRim = false;

@@ -5,7 +5,7 @@ import gov.nist.toolkit.installation.shared.TestCollectionCode;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.utilities.io.Io;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +19,7 @@ import java.util.*;
 public class TestKit {
 	private File	testKit;
 
-	static Logger logger = Logger.getLogger(TestKit.class);
+	static Logger logger = Logger.getLogger(TestKit.class.getName());
 
 	public TestKit(File testKit  /*, String sessionId  */) {
 		this.testKit = testKit;
@@ -188,7 +188,7 @@ public class TestKit {
 		File collectionDir = new File(testKit, collectionSetName);
 		if (!collectionDir.exists() || !collectionDir.isDirectory()) {
 			String msg = "Test collection set name " + collectionSetName + " does not exist";
-			logger.warn(msg + " in " + collectionDir);
+			logger.warning(msg + " in " + collectionDir);
 			throw new Exception(msg); // protect directory from user
 		}
 		for (File collectionFile : collectionDir.listFiles()) {

@@ -3,16 +3,16 @@ package gov.nist.toolkit.installation.server;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.client.TkNotFoundException;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.*;
 import java.util.*;
 
 public class PropertyManager {
 
-	static private Logger logger = Logger.getLogger(PropertyManager.class);
+	static private Logger logger = Logger.getLogger(PropertyManager.class.getName());
 
-	static private final String ADMIN_PASSWORD      = "Admin_password";
+	static public final String ADMIN_PASSWORD      = "Admin_password";
 	static private final String TOOLKIT_HOST        = "Toolkit_Host";
 	static private final String TOOLKIT_PORT        = "Toolkit_Port";
 	static private final String TOOLKIT_TLS_PORT    = "Toolkit_TLS_Port";

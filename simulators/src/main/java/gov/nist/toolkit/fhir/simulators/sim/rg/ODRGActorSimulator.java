@@ -12,7 +12,7 @@ import gov.nist.toolkit.fhir.simulators.sim.rep.od.OddsActorSimulator;
 import gov.nist.toolkit.fhir.simulators.support.BaseDsActorSimulator;
 import gov.nist.toolkit.fhir.simulators.support.DsSimCommon;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.IOException;
 
@@ -20,7 +20,7 @@ import java.io.IOException;
  *
  */
 public class ODRGActorSimulator extends BaseDsActorSimulator {
-    static final Logger logger = Logger.getLogger(ODRGActorSimulator.class);
+    static final Logger logger = Logger.getLogger(ODRGActorSimulator.class.getName());
     RegistryActorSimulator reg;
     OddsActorSimulator odds;
     RGActorSimulator rg;

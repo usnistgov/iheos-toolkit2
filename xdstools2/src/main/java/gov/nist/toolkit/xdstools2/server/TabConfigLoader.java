@@ -3,7 +3,7 @@ package gov.nist.toolkit.xdstools2.server;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TabConfig;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 import java.io.File;
@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by skb1 on 7/18/2017.
  */
 public class TabConfigLoader {
-    private static final Logger logger = Logger.getLogger(TabConfigLoader.class);
+    private static final Logger logger = Logger.getLogger(TabConfigLoader.class.getName());
     private static final ConcurrentHashMap<String,TabConfig> initMap = new ConcurrentHashMap<>();
 
     private TabConfigLoader() {}

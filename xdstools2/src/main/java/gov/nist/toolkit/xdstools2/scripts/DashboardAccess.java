@@ -9,10 +9,10 @@ import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 public class DashboardAccess {
-	static Logger logger = Logger.getLogger(DashboardAccess.class);
+	static Logger logger = Logger.getLogger(DashboardAccess.class.getName());
 
 	String dashboard = "";
 
@@ -30,17 +30,17 @@ public class DashboardAccess {
 	public List<RepositoryStatus> getRepositoryData() throws Exception {
 		List<RepositoryStatus> repStatus = new ArrayList<RepositoryStatus>();
 		File repDir = new File(getDashboardDirectory() + File.separator + "Repository");
-		logger.debug("Looking for Repository data in " + repDir.toString());
+		logger.fine("Looking for Repository data in " + repDir.toString());
 		File[] repStatusFiles = repDir.listFiles();
 		if (repStatusFiles != null) {
 			for (int i=0; i<repStatusFiles.length; i++) {
 				String filename = repStatusFiles[i].toString();
-				logger.debug("getRepositoryData from " + filename);
+				logger.fine("getRepositoryData from " + filename);
 				RepositoryStatus reposStatus = loadRepositoryStatus(filename);
 				repStatus.add(reposStatus);
 			}
 			for (RepositoryStatus rStatus : repStatus) {
-				logger.debug(rStatus);
+				logger.fine(rStatus::toString);
 			}
 		}
 		return repStatus;
@@ -49,17 +49,17 @@ public class DashboardAccess {
 	public List<RegistryStatus> getRegistryData() throws Exception {
 		List<RegistryStatus> regStatus = new ArrayList<RegistryStatus>();
 		File regDir = new File(getDashboardDirectory() + File.separator + "Registry");
-		logger.debug("Looking for Registry data in " + regDir.toString());
+		logger.fine("Looking for Registry data in " + regDir.toString());
 		File[] regStatusFiles = regDir.listFiles();
 		if (regStatusFiles != null) {
 			for (int i=0; i<regStatusFiles.length; i++) {
 				String filename = regStatusFiles[i].toString();
-				logger.debug("getRegistryData from " + filename);
+				logger.fine("getRegistryData from " + filename);
 				RegistryStatus rStatus = loadRegistryStatus(filename);
 				regStatus.add(rStatus);
 			}
 			for (RegistryStatus rStatus : regStatus) {
-				logger.debug(rStatus);
+				logger.fine(rStatus::toString);
 			}
 		}
 		return regStatus;

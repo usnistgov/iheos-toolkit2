@@ -12,7 +12,8 @@ import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.log4j.Logger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.codehaus.plexus.util.StringUtils;
 
 import javax.xml.namespace.QName;
@@ -24,7 +25,7 @@ import java.util.*;
  */
 public class AssertionEngine {
 
-   private final static Logger logger = Logger.getLogger(AssertionEngine.class);
+   private final static Logger logger = Logger.getLogger(AssertionEngine.class.getName());
 
    /**
     * All {@code <DataRef>} elements from test step {@code <Assertions>}

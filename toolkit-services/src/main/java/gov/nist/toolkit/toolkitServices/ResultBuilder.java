@@ -12,7 +12,7 @@ import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.client.ThreadPoolExhaustedException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axis2.AxisFault;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -22,7 +22,7 @@ import java.io.IOException;
  *
  */
 public class ResultBuilder {
-    static Logger logger = Logger.getLogger(ResultBuilder.class);
+    static Logger logger = Logger.getLogger(ResultBuilder.class.getName());
 
     protected Response mapExceptionToResponse(Throwable e, String simId, ResponseType responseType) {
         Response.Status status = null;
@@ -105,7 +105,7 @@ public class ResultBuilder {
         result.setReason(reason);
         result.setStackTrace(stackTrace);
 
-        logger.info(result);
+        logger.info(result.toString());
 
         if (responseType == ResponseType.THROW) throw new WebApplicationException(result.asResponse().build());
 

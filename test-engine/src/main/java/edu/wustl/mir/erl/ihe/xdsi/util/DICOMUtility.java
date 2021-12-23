@@ -23,7 +23,7 @@ import java.util.*;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.dcm4che3.data.*;
 import org.dcm4che3.io.DicomInputStream;
 import org.dcm4che3.io.DicomOutputStream;
@@ -44,7 +44,7 @@ public class DICOMUtility {
     */
    public static final String fs = System.getProperty("file.separator");
    
-   private static Logger log = null;
+   private static Logger log = Logger.getLogger(DICOMUtility.class.getName());
 
    /**
     * Generates a DICOM Key Object Selection (KOS) document for the dicom images
@@ -108,7 +108,7 @@ public class DICOMUtility {
 	      for (String s : filesFolders) a.add(s);
 	      StoreSCU.main(a.toArray(new String[0]));
 	   } catch (Exception e) {
-	      log.error(e.getMessage());
+	      log.severe(e.getMessage());
 	      e.printStackTrace();
 	   }
 	}
@@ -556,13 +556,13 @@ public class DICOMUtility {
 //        	 }
 //        	 dicomUtility.KOSToRad69(args[1], args[2], args[3], args[4]);
 //         } else {
-//        	 log.fatal("DICOMUtility: Unrecognized command: " + cmd);
+//        	 log.severe("DICOMUtility: Unrecognized command: " + cmd);
 //         }
 //        	 
 //
 //         log.info(cmd + " test completed");
 //      } catch (Exception e) {
-//         log.fatal(cmd + " DICOMUtility:main failed");
+//         log.severe(cmd + " DICOMUtility:main failed");
 //         e.printStackTrace();
 //      }
 //   }

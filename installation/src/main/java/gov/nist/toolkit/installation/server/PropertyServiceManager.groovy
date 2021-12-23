@@ -3,7 +3,7 @@ package gov.nist.toolkit.installation.server
 import gov.nist.toolkit.utilities.io.Io
 import gov.nist.toolkit.xdsexception.ExceptionUtil
 import groovy.transform.TypeChecked
-import org.apache.log4j.Logger
+import java.util.logging.*
 
 import java.nio.file.Paths
 
@@ -20,7 +20,7 @@ public class PropertyServiceManager {
         this.overrideToolkitPort = overrideToolkitPort;
     }
 
-    static Logger logger = Logger.getLogger(PropertyServiceManager.class);
+    static Logger logger = Logger.getLogger(PropertyServiceManager.class.getName());
 	
 //	public PropertyServiceManager(File warHome)  {
 //		this.warHome = warHome;
@@ -44,42 +44,42 @@ public class PropertyServiceManager {
 	}
 
 	public boolean getArchiveLogs() {
-		logger.debug(": getArchiveLogs");
+		logger.fine(": getArchiveLogs");
 		return getPropertyManager().archiveLogs();
 	}
 
 	public String getMSH3() {
-		logger.debug(": " + "getMSH3");
+		logger.fine(": " + "getMSH3");
 		return getPropertyManager().getMSH3();
 	}
 
 	public String getMSH4() {
-		logger.debug(": " + "getMSH4");
+		logger.fine(": " + "getMSH4");
 		return getPropertyManager().getMSH4();
 	}
 
 	public String getMSH5() {
-		logger.debug(": " + "getMSH5");
+		logger.fine(": " + "getMSH5");
 		return getPropertyManager().getMSH5();
 	}
 
 	public String getMSH6() {
-		logger.debug(": " + "getMSH6");
+		logger.fine(": " + "getMSH6");
 		return getPropertyManager().getMSH6();
 	}
 
 	public boolean getCacheDisabled() {
-		logger.debug(": " + "getCacheDisabled");
+		logger.fine(": " + "getCacheDisabled");
 		return "true".equals(getPropertyManager().getCacheDisabled());
 	}
 
 	public String getAdminPassword() {
-//		logger.debug(": " + "getAdminPassword");
+//		logger.fine(": " + "getAdminPassword");
 		return getPropertyManager().getPassword();
 	}
 
 	public String getToolkitHost() {
-//		logger.debug(": " + "getToolkitHost");
+//		logger.fine(": " + "getToolkitHost");
 		return getPropertyManager().getToolkitHost();
 	}
 
@@ -92,7 +92,7 @@ public class PropertyServiceManager {
 	}
 
 	public String getToolkitPort() {
-//		logger.debug(": " + "getToolkitPort");
+//		logger.fine(": " + "getToolkitPort");
         if (overrideToolkitPort != null) {
 //            logger.info("Overriding toolkit port -> " + overrideToolkitPort);
             return overrideToolkitPort;
@@ -101,7 +101,7 @@ public class PropertyServiceManager {
 	}
 
 	public String getToolkitTlsPort() {
-//		logger.debug(": " + "getToolkitTlsPort");
+//		logger.fine(": " + "getToolkitTlsPort");
 		return getPropertyManager().getToolkitTlsPort();
 	}
 
@@ -134,7 +134,7 @@ public class PropertyServiceManager {
 	}
 
 	public List<String> getListenerPortRange() {
-//		logger.debug(": " + "getListenerPortRange");
+//		logger.fine(": " + "getListenerPortRange");
 		return getPropertyManager().getListenerPortRange();
 	}
 
@@ -143,12 +143,12 @@ public class PropertyServiceManager {
 	}
 
 	public String getToolkitEnableAllCiphers() {
-		logger.debug(": " + "getToolkitEnableAllCiphers");
+		logger.fine(": " + "getToolkitEnableAllCiphers");
 		return getPropertyManager().getToolkitEnableAllCiphers();
 	}
 
 	public File getActorsFileName() {
-		logger.debug(": " + "getActorsFileName");
+		logger.fine(": " + "getActorsFileName");
 		return new File(Installation.instance().externalCache(), "actors.xml");
 	}
 
@@ -162,12 +162,12 @@ public class PropertyServiceManager {
 
 
 	public String getDefaultEnvironmentName() {
-		logger.debug(": " + "getDefaultEnvironmentName");
+		logger.fine(": " + "getDefaultEnvironmentName");
 		return getPropertyManager().getDefaultEnvironmentName();
 	}
 
 	public String getDefaultAssigningAuthority() {
-		logger.debug(": " + "getDefaultAssigningAuthority");
+		logger.fine(": " + "getDefaultAssigningAuthority");
 		return getPropertyManager().getDefaultAssigningAuthority();
 	}
 
@@ -213,7 +213,7 @@ public class PropertyServiceManager {
 				location = Paths.get(getClass().getResource('/').toURI()).resolve('toolkit.properties').toFile()
 			}
 			location = location.replaceAll("%20", " ");
-			logger.debug("*** getting toolkit.properties file:" + location);
+			logger.fine("*** getting toolkit.properties file:" + location);
 
 			setPropertiesFile(location);
 
@@ -266,7 +266,7 @@ public class PropertyServiceManager {
 				}
 			}
 		} catch(IOException ioex) {
-			logger.error(ioex.toString())
+			logger.severe(ioex.toString())
 		}
 
 		// This removes the dependency that
@@ -292,7 +292,7 @@ public class PropertyServiceManager {
         // First make sure EC is workable
         String excuse = ExternalCacheManager.validate();
         if (excuse != null) {
-            logger.error(excuse);
+            logger.severe(excuse);
             throw new IOException(excuse);
         }
 
@@ -305,7 +305,7 @@ public class PropertyServiceManager {
             String msg = "Cannot access Test Log Cache [" + testLogCache + "] - either it doesn't exist, isn't a directory or isn't writable. " +
                     "Open Toolkit Configuration, edit External Cache location (if necessary) and save. If your External Cache location is ok " +
                     " you may only need to update your External Cache.  The SAVE will do that update.";
-			logger.warn(msg);
+			logger.warning(msg);
 			throw new IOException(msg);
 		}
 
@@ -330,19 +330,26 @@ public class PropertyServiceManager {
 
 		if (!( f.exists() && f.isDirectory() && f.canWrite()  )) {
 			String msg = "Cannot access Attribute Cache [" + attributeCache + "] - either it doesn't exist, isn't a directory or isn't writable";
-			logger.fatal(msg);
+			logger.severe(msg);
 			throw new Exception(msg);
 		}
 		return f;
 	}
 
-	public Map<String, String> getToolkitProperties() {
-		logger.debug(": " + "getToolkitProperties");
+	public Map<String, String> getAdminToolkitProperties() {
 		return getPropertyManager().getPropertyMap();
 	}
 
+
+	public Map<String, String> getToolkitProperties() {
+		logger.fine(": " + "getToolkitProperties for a normal user");
+		Map<String,String> map = getPropertyManager().getPropertyMap();
+		map.remove(PropertyManager.ADMIN_PASSWORD);
+		return map;
+	}
+
 	public boolean reloadPropertyFile() {
-		logger.debug(": " + "reloadPropertyFile");
+		logger.fine(": " + "reloadPropertyFile");
 		propertyManager = null;
 		getPropertyManager();
 		return true;
@@ -354,7 +361,7 @@ public class PropertyServiceManager {
 	}
 
 	public String getImplementationVersion() {
-		logger.debug(": " + "getImplementationVersion");
+		logger.fine(": " + "getImplementationVersion");
         assert Installation.instance().warHome()
 		File f = new File(Installation.instance().warHome(), "build.num");
 		String ver = null;
@@ -367,7 +374,7 @@ public class PropertyServiceManager {
 	}
 
 	public String getDefaultEnvironment() {
-		logger.debug(": " + "getDefaultEnvironment()");
+		logger.fine(": " + "getDefaultEnvironment()");
 		return getPropertyManager().getDefaultEnvironmentName();
 	}
 

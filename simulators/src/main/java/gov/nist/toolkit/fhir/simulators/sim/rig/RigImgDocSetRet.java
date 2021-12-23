@@ -23,7 +23,7 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import groovy.transform.TypeChecked;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.util.List;
 import java.util.Map;
@@ -40,7 +40,7 @@ public class RigImgDocSetRet extends AbstractMessageValidator {
    // static Properties
    //***************************************************************
    
-   static Logger log = Logger.getLogger(RigImgDocSetRet.class);
+   static Logger log = Logger.getLogger(RigImgDocSetRet.class.getName());
 
    private static final TransactionType type = TransactionType.XC_RET_IMG_DOC_SET;
 
@@ -203,7 +203,7 @@ public class RigImgDocSetRet extends AbstractMessageValidator {
       String msg = e.getMessage();
       if (msg == null || msg.equals(""))
          msg = ExceptionUtil.exception_details(e);
-      log.error(msg);
+      log.severe(msg);
       er.err(XdsErrorCode.Code.XDSRepositoryError, msg, this, null);
    }
    

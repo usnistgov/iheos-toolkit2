@@ -8,11 +8,11 @@ import gov.nist.toolkit.simcommon.client.SimulatorConfig
 import gov.nist.toolkit.utilities.xml.Util
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
 import groovy.transform.TypeChecked
-import org.apache.log4j.Logger
+import java.util.logging.*
 
 @TypeChecked
 class FixedReplySimulator extends BaseDsActorSimulator {
-    static Logger logger = Logger.getLogger(FixedReplySimulator.class)
+    static Logger logger = Logger.getLogger(FixedReplySimulator.class.getName())
 
     static List<TransactionType> transactions = new ArrayList<>();
 

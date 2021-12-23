@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 public class TkPropsServer {
-	static Logger logger = Logger.getLogger(TkPropsServer.class);
+	static Logger logger = Logger.getLogger(TkPropsServer.class.getName());
 
 	public List<Ps> p;
 	public String prefix = "";
@@ -109,15 +109,15 @@ public class TkPropsServer {
 	public TkPropsServer rmPrefix(String prefix) {
 		List<Ps> ps = new ArrayList<Ps>();
 
-		logger.debug("TkPropsServer#rmPrefix(" + prefix + ")");
-		logger.debug(toString());
-		logger.debug("\n");
+		logger.fine("TkPropsServer#rmPrefix(" + prefix + ")");
+		logger.fine(toString());
+		logger.fine("\n");
 
 		for (Ps x : p) {
-			logger.debug("name is " + x.name);
+			logger.fine("name is " + x.name);
 			if (x.name.startsWith(prefix)) {
 				String n = x.name.substring(prefix.length() + 1);
-				logger.debug("n is " + n);
+				logger.fine("n is " + n);
 				Ps nx = new Ps(n, x.value);
 				ps.add(nx);
 			}

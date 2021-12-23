@@ -8,7 +8,7 @@ import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
@@ -16,7 +16,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class MetadataParser {
-	static final Logger logger = Logger.getLogger(MetadataParser.class);
+	static final Logger logger = Logger.getLogger(MetadataParser.class.getName());
 
 	public MetadataParser() {
 	}
@@ -84,16 +84,16 @@ public class MetadataParser {
 		for (int i=0; i<10; i++) { // try to skip past header junk to find real xml
 			try {
 				String x = data.substring(index);
-				logger.debug("Trying to parse - " + x.substring(0, 30));
+				logger.fine("Trying to parse - " + x.substring(0, 30));
 				ele = Util.parse_xml(x);
 			} catch (XdsInternalException e) {
-				logger.debug("Parse Failed");
+				logger.fine("Parse Failed");
 				index = data.indexOf('<', index+1);
 				if (index == -1)
 					throw new XdsInternalException("Cannot XML parse metadata " + ((metadata_file == null) ? "" : metadata_file));
 				continue;
 			}
-			logger.debug("Parse succeeded");
+			logger.fine("Parse succeeded");
 			return parseNonSubmission(ele);
 		}
 		throw new XdsInternalException("Cannot XML parse file " + metadata_file);

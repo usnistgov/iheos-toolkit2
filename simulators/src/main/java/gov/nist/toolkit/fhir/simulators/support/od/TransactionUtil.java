@@ -19,7 +19,7 @@ import gov.nist.toolkit.testkitutilities.TestKitSearchPath;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ import java.util.Map;
  */
 public class TransactionUtil {
     public static final int ALL_OD_DOCS_SUPPLIED = -1;
-    static Logger logger = Logger.getLogger(TransactionUtil.class);
+    static Logger logger = Logger.getLogger(TransactionUtil.class.getName());
 
 
     /**
@@ -65,7 +65,7 @@ public class TransactionUtil {
 
         } catch (Exception ex) {
             ex.printStackTrace();
-            logger.error(ex.toString());
+            logger.severe(ex.toString());
         }
 
         return null;
@@ -362,7 +362,7 @@ public class TransactionUtil {
                                 repIndex.getDocumentCollection().update(sd);
                                 repIndex.save();
                             } else {
-                                logger.error("PersistenceOption Error: SD is null! Id:" + ded.getUniqueId());
+                                logger.severe("PersistenceOption Error: SD is null! Id:" + ded.getUniqueId());
                             }
 
                         }
@@ -386,7 +386,7 @@ public class TransactionUtil {
                     repIndex.getDocumentCollection().update(sd);
                     repIndex.save();
                 } else {
-                    logger.error("SD is null! Id:" + ded.getUniqueId());
+                    logger.severe("SD is null! Id:" + ded.getUniqueId());
                 }
 
 

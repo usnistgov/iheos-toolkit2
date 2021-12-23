@@ -9,6 +9,7 @@ import elemental.client.Browser;
 import elemental.html.Selection;
 import elemental.ranges.Range;
 import gov.nist.toolkit.xdstools2.client.resources.IconsResources;
+import gov.nist.toolkit.xdstools2.client.util.ClientFactoryImpl;
 
 /**
  * Class that creates a GWT Push button with a copy icon that copies the content of an IDed element
@@ -23,7 +24,7 @@ public class CopyButton extends PushButton {
      * @param elementIdToCopy id of the element whose content needs to be copied.
      */
     public CopyButton(String elementIdToCopy){
-        super(new Image(IconsResources.INSTANCE.copyButton()));
+        super(new Image(ClientFactoryImpl.getIconsResources().copyButton()));
         // add tooltip to the button
         setTitle("Copy PID");
         // add custom css style to the button

@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
 
@@ -19,7 +19,7 @@ import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
  */
 public class HttpSimServletResponseWrapper extends HttpServletResponseWrapper {
    
-   static Logger logger = Logger.getLogger(HttpSimServletResponseWrapper.class);
+   static Logger logger = Logger.getLogger(HttpSimServletResponseWrapper.class.getName());
 
    static final String nl = Utility.nl;
    
@@ -148,7 +148,7 @@ public class HttpSimServletResponseWrapper extends HttpServletResponseWrapper {
          str.append("contents " + contentLength + " bytes");
       return str.toString();
       } catch (Exception e) {
-         logger.warn("getResponseBody error: " + e.getMessage());
+         logger.warning("getResponseBody error: " + e.getMessage());
       }
       return "";
     }

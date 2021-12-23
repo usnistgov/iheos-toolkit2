@@ -1,9 +1,9 @@
-import groovy.util.logging.Log4j
+//import groovy.util.logging.Log4j
 import spock.lang.Specification
 
 import java.nio.file.Paths
 
-@Log4j
+//@Log4j
 class CodeValidationTestCase extends Specification{
     def m
     def codeValidation

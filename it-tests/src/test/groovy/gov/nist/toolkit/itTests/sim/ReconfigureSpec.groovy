@@ -12,7 +12,7 @@ import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
 import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.client.Simulator
 import gov.nist.toolkit.simcommon.client.SimulatorConfig
-import org.apache.log4j.BasicConfigurator
+//import org.apache.log4j.BasicConfigurator
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -27,7 +27,7 @@ class ReconfigureSpec extends Specification {
     @Shared String testSessionName =  'bill' + TestSessionFactory.nonce()
 
     def setupSpec() {
-        BasicConfigurator.configure()
+//        BasicConfigurator.configure()
     }
 
     def setup() {

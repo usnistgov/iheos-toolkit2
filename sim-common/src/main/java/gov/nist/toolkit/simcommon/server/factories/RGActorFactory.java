@@ -17,7 +17,7 @@ import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.NoSimulatorException;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class RGActorFactory extends AbstractActorFactory implements IActorFactory {
-   static private final Logger logger = Logger.getLogger(RGActorFactory.class);
+   static private final Logger logger = Logger.getLogger(RGActorFactory.class.getName());
 
    SimId newID = null;
 
@@ -160,7 +160,7 @@ public class RGActorFactory extends AbstractActorFactory implements IActorFactor
          return site;
       } catch (Throwable t) {
          sc.isExpired(true);
-         logger.error(ExceptionUtil.exception_details(t));
+         logger.severe(ExceptionUtil.exception_details(t));
          throw new NoSimulatorException("Not Defined", t);
       }
    }

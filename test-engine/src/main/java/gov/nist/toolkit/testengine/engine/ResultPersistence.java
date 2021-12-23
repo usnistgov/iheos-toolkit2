@@ -6,13 +6,13 @@ import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.client.XdsException;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.*;
 import java.util.List;
 
 public class ResultPersistence {
-	static Logger logger = Logger.getLogger(ResultPersistence.class);
+	static Logger logger = Logger.getLogger(ResultPersistence.class.getName());
 
 	public void write(Result result, TestSession testSession) throws IOException, XdsException {
 

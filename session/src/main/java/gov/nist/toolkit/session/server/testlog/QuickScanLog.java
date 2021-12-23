@@ -26,14 +26,14 @@ import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.client.TkNotFoundException;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.xpath.AXIOMXPath;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import static gov.nist.toolkit.session.server.testlog.TestOverviewBuilder.stripHeaderMarkup;
 
 public class QuickScanLog {
 
     private Session session;
-    private static Logger logger = Logger.getLogger(QuickScanLog.class);
+    private static Logger logger = Logger.getLogger(QuickScanLog.class.getName());
 
     public QuickScanLog(Session session) {
         this.session = session;
@@ -46,7 +46,7 @@ public class QuickScanLog {
                 try {
                     results.add(quickScanLog(testSession, testInstance, quickScanAttributes));
                 } catch (Exception e) {
-                    logger.error("Test " + testInstance + " does not exist");
+                    logger.severe("Test " + testInstance + " does not exist");
                 }
             }
         } catch (Exception e) {

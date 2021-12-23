@@ -2,34 +2,21 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.http.client.Request;
-import com.google.gwt.http.client.RequestBuilder;
-import com.google.gwt.http.client.RequestCallback;
-import com.google.gwt.http.client.RequestException;
-import com.google.gwt.http.client.Response;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.session.client.TestSessionStats;
 import gov.nist.toolkit.session.client.TestSessionStatsTool;
 import gov.nist.toolkit.xdstools2.client.LoadGazelleConfigsClickHandler;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
-import gov.nist.toolkit.xdstools2.client.command.command.GetTestSessionStatsCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.GetToolkitPropertiesCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.RemoveOldSimulatorsCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.SetToolkitPropertiesCommand;
+import gov.nist.toolkit.xdstools2.client.command.command.*;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.NullSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.util.InformationLink;
-import gov.nist.toolkit.xdstools2.client.util.SimpleCallbackT;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.TestkitConfigTool;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetAdminToolkitPropertiesRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetTestSessionStatsRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.SetToolkitPropertiesRequest;
 
@@ -40,8 +27,9 @@ import java.util.Map;
 public class ToolConfigTab extends GenericQueryTab {
     // Special handling for these properties
     private static List<String> specialProperties = new ArrayList<>();
+    private static String ExternalCache = "External_Cache";
     static {
-        specialProperties.add("External_Cache");
+        specialProperties.add(ExternalCache);
         specialProperties.add("Toolkit_Host");
         specialProperties.add("Toolkit_Port");
         specialProperties.add("Toolkit_TLS_Port");
@@ -117,10 +105,40 @@ public class ToolConfigTab extends GenericQueryTab {
         }.run(new GetTestSessionStatsRequest(getCommandContext()));
         container.add(new HTML("<hr />"));
 
-		return container;
+        addLoggingPropertiesPane(container);
+        container.add(new HTML("<hr />"));
+
+        return container;
 	}
 
-	@Override
+    private void addLoggingPropertiesPane(FlowPanel container) {
+        HTML loggingSubtitle1 = new HTML();
+        loggingSubtitle1.setHTML("<h2>Logging Properties</h2>");
+        container.add(loggingSubtitle1);
+
+        Anchor loggingPropertiesAnchor = new Anchor("Logging Properties");
+        loggingPropertiesAnchor.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent clickEvent) {
+                Window.open(Xdstools2.servletContextName + "/sim/loggingProperties", "_blank","");
+            }
+        });
+        container.add(loggingPropertiesAnchor);
+
+        HTML loggingSeparator = new HTML();
+        loggingSeparator.setHTML("<br/>");
+        container.add(loggingSeparator);
+
+        // Reload is not effective in Tomcat container, which has its own LogManager class, and does not use the Java Util Logging directly
+        /*
+        Button reloadLoggingPropertiesButton = new Button("Reload Logging Properties");
+        reloadLoggingPropertiesButton.addClickHandler(new ReloadLoggingProperties());
+        container.add(reloadLoggingPropertiesButton);
+         */
+        container.add(new HTML("<br/>"));
+    }
+
+    @Override
 	protected void bindUI() {
 		loadPropertyFile();
 	}
@@ -133,6 +151,11 @@ public class ToolConfigTab extends GenericQueryTab {
     @Override
     public String getWindowShortName() {
         return "toolconfig";
+    }
+
+    void addPropertyHint(String htmlText) {
+	    grid.setHTML(gridRow, 0, htmlText);
+	    gridRow++;
     }
 
     void addPropertyToGrid(String key) {
@@ -159,6 +182,9 @@ public class ToolConfigTab extends GenericQueryTab {
         gridRow = 0;
 		for (String key : specialProperties) {
 			addPropertyToGrid(key);
+			if (ExternalCache.equals(key)) {
+                addPropertyHint("<span style='font-size:smaller'>File path convention differs depending on operating system. On Windows, use /C:/path/to/ec. On Unix-like, use /path/to/ec.</span>");
+            }
 		}
         for (String key : props.keySet()) {
 			if (specialProperties.contains(key)) continue;
@@ -167,13 +193,17 @@ public class ToolConfigTab extends GenericQueryTab {
     }
 
     void loadPropertyFile() {
-        new GetToolkitPropertiesCommand(){
+        new GetAdminToolkitPropertiesCommand(){
             @Override
             public void onComplete(Map<String, String> result) {
-                props = result;
-                loadPropertyGrid();
+                if (result != null) {
+                    props = result;
+                    loadPropertyGrid();
+                } else {
+                    new PopupMessage("Properties could not be retrieved.");
+                }
             }
-        }.run(getCommandContext());
+        }.run(new GetAdminToolkitPropertiesRequest(getCommandContext(), PasswordManagement.hash));
     }
 
     void savePropertyFile() {
@@ -224,7 +254,7 @@ public class ToolConfigTab extends GenericQueryTab {
                     t.schedule(1);
                      */
                 }
-            }.run(new SetToolkitPropertiesRequest(getCommandContext(), props));
+            }.run(new SetToolkitPropertiesRequest(getCommandContext(), PasswordManagement.hash, props));
         } else {
             new PopupMessage("You must be signed in as admin");
         }
@@ -258,6 +288,22 @@ public class ToolConfigTab extends GenericQueryTab {
 
     };
 
+    class ReloadLoggingProperties implements ClickHandler {
+        @Override
+        public void onClick(ClickEvent clickEvent) {
+            new ReloadToolkitLoggingPropertiesCommand() {
+                @Override
+                public void onComplete(Boolean result) {
+                    if (result.booleanValue()) {
+                        new PopupMessage("Reloaded.");
+                    } else {
+                        new PopupMessage("Failed.");
+                    }
+                }
+            }.run(getCommandContext());
+        }
+    }
+
     class Saver implements ClickHandler {
 
         public void onClick(ClickEvent event) {
@@ -280,6 +326,7 @@ public class ToolConfigTab extends GenericQueryTab {
         }
     }
 
+    /*
     private void fhirSupportServerStatus(String cmd, final SimpleCallbackT<Response> callback) {
         String url = Xdstools2.servletContextName + "/init?cmd="+cmd;
 
@@ -296,6 +343,8 @@ public class ToolConfigTab extends GenericQueryTab {
         } catch (RequestException e) {
         }
     }
+
+     */
 
 	class RmOldSimsClickHandler implements ClickHandler {
 

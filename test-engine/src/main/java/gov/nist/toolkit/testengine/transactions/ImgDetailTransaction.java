@@ -25,7 +25,7 @@ import org.apache.axiom.om.util.AXIOMUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.io.DicomInputStream;
@@ -50,7 +50,7 @@ public class ImgDetailTransaction extends BasicTransaction {
 
    private OMElement step;
    private PropertyManager pMgr;
-   private Logger log = Logger.getLogger(ImgDetailTransaction.class);
+   private Logger log = Logger.getLogger(ImgDetailTransaction.class.getName());
 
    /*
     * These are the DICOM tags currently supported for evaluation tasks. New
@@ -223,7 +223,7 @@ public class ImgDetailTransaction extends BasicTransaction {
          for (OMElement transactionE : XmlUtil.childrenWithLocalName(std, "Transactions")) {
             String id = XmlUtil.getAttributeValue(transactionE, "id");
             String codeS = XmlUtil.getAttributeValue(transactionE, "code");
-            log.debug("Transactions id=[" + id + "] code=[" + codeS + "].");
+            log.fine("Transactions id=[" + id + "] code=[" + codeS + "].");
             if (StringUtils.isBlank(id)) throw new Exception("empty id");
             Integer code = Integer.parseInt(codeS);
             for (String tok : id.split(",")) {

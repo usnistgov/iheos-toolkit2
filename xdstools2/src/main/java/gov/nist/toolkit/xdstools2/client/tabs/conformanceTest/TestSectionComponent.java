@@ -18,6 +18,7 @@ import gov.nist.toolkit.xdstools2.client.command.command.GetTestLogDetailsComman
 import gov.nist.toolkit.xdstools2.client.command.command.LoadTestPartContentCommand;
 import gov.nist.toolkit.xdstools2.client.sh.BrushFactory;
 import gov.nist.toolkit.xdstools2.client.sh.SyntaxHighlighter;
+import gov.nist.toolkit.xdstools2.client.util.ClientFactoryImpl;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
@@ -73,7 +74,7 @@ public class TestSectionComponent implements IsWidget {
             Image status = (sectionOverview.isPass()) ?
                     new Image("icons2/correct-16.png")
                     :
-                    new Image("icons/ic_warning_black_24dp_1x.png");
+                    new Image(ClientFactoryImpl.getIconsResources().getWarningIcon());
             status.addStyleName("right");
             status.addStyleName("iconStyle");
             header.add(status);

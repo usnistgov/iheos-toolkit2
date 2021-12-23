@@ -13,7 +13,7 @@ import org.apache.axiom.om.OMElement;
 import org.apache.commons.codec.Charsets;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -130,7 +130,7 @@ public class PrsSimLogs {
                trn.setRequestHeader(header);
             } catch (Exception e)  {
                String em = "SOAP Request Header error: " + e.getMessage();
-               log.warn(em);
+               log.warning(em);
             }
             try {
                List<OMElement> bodyElement = XmlUtil.childrenWithLocalName(reqElement, "Body"); 
@@ -148,15 +148,15 @@ public class PrsSimLogs {
                trn.setRequestBody(body);
             } catch (Exception e)  {
                String em = "SOAP Request Body error: " + e.getMessage();
-               log.warn(em);
+               log.warning(em);
             }
          } catch (Exception e)  {
             String em = "Error parsing SOAP Request: " + e.getMessage();
-            log.warn(em);
+            log.warning(em);
          }
       } catch (Exception e) {
          String em = "Error reading SOAP Request: " + e.getMessage();
-         log.warn(em);
+         log.warning(em);
       }
       
       // SOAP Response
@@ -179,7 +179,7 @@ public class PrsSimLogs {
                trn.setResponseHeader(header);
             } catch (Exception e)  {
                String em = "SOAP Response Header error: " + e.getMessage();
-               log.warn(em);
+               log.warning(em);
             }
             try {
                List<OMElement> bodyElement = XmlUtil.childrenWithLocalName(respElement, "Body"); 
@@ -198,15 +198,15 @@ public class PrsSimLogs {
                trn.setResponseBody(body);
             } catch (Exception e)  {
                String em = "SOAP Response Body error: " + e.getMessage();
-               log.warn(em);
+               log.warning(em);
             }
          } catch (Exception e)  {
             String em = "Error parsing SOAP Response: " + e.getMessage();
-            log.warn(em);
+            log.warning(em);
          }
       } catch (Exception e) {
          String em = "Error reading SOAP Response: " + e.getMessage();
-         log.warn(em);
+         log.warning(em);
       }
       
       Path repDir = path.resolve("Repository");
@@ -347,7 +347,7 @@ public class PrsSimLogs {
          String str = getSOAPRequest(dir);
          int p = str.indexOf(tag);
          if (p < 0) {
-            log.debug("getSOAPMetaData: No SubmitObjectsRequest element found");
+            log.fine("getSOAPMetaData: No SubmitObjectsRequest element found");
             return null;
          }
          while (str.substring(p).startsWith("<") == false)
@@ -398,14 +398,14 @@ public class PrsSimLogs {
          String[] logDirs = base.toFile().list(filter);
          Arrays.sort(logDirs);
          if (logDirs.length == 0) {
-            log.debug("No metadata folder found for actor " + simulatorType + " Patient ID " + pid);
+            log.fine("No metadata folder found for actor " + simulatorType + " Patient ID " + pid);
             return null;
          }
          if (mostRecentTransaction) {
-            log.debug("Found " + logDirs.length + " folder matching search criteria; will return most recent folder");
+            log.fine("Found " + logDirs.length + " folder matching search criteria; will return most recent folder");
             return base.resolve(logDirs[logDirs.length - 1]);
          } else {
-            log.debug("Found " + logDirs.length + " folder matching search criteria; will return earliest folder");
+            log.fine("Found " + logDirs.length + " folder matching search criteria; will return earliest folder");
             return base.resolve(logDirs[0]);  // The earliest transaction would be the first one after sorting.
          }
       } catch (Exception e) {
@@ -512,7 +512,7 @@ public class PrsSimLogs {
 //            log.info(methodToTest + " test completed");
 //         }
 //      } catch (Exception e) {
-//         log.fatal("test failed" + e.getMessage());
+//         log.severe("test failed" + e.getMessage());
 //         e.printStackTrace();
 //      }
 //   }

@@ -2,7 +2,7 @@ package gov.nist.toolkit.simcommon.server;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.File;
 
@@ -10,7 +10,7 @@ import java.io.File;
  *
  */
 public class SimulatorConfigIoJackson implements SimulatorConfigIo{
-        static Logger logger = Logger.getLogger(SimulatorConfigIoJava.class);
+        static Logger logger = Logger.getLogger(SimulatorConfigIoJava.class.getName());
 
         public void save(SimulatorConfig sc, String filename) throws Exception {
             try {

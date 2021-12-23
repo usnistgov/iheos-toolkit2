@@ -17,7 +17,7 @@ import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMNamespace;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 import java.io.ByteArrayOutputStream;
@@ -41,7 +41,7 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 	protected OMNamespace ebRIMns;
 	protected OMNamespace ebQns;
 	boolean format_for_html = false;
-	private final static Logger logger = Logger.getLogger(RegistryErrorListGenerator.class);
+	private final static Logger logger = Logger.getLogger(RegistryErrorListGenerator.class.getName());
 	boolean verbose = true;
 	boolean log;
 	boolean isXCA = false;
@@ -278,7 +278,7 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 
 			OMElement registry_error_2 = Util.deep_copy(registry_error);
 
-			logger.error("registry_error2 is \n" + registry_error_2.toString());
+			logger.severe("registry_error2 is \n" + registry_error_2.toString());
 
 			if (this.getVersion() == RegistryErrorListGenerator.version_3)
 				registry_error_2.setNamespace(MetadataSupport.ebRSns3);

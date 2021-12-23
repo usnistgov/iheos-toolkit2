@@ -14,7 +14,7 @@ import gov.nist.toolkit.simcommon.server.SimManager;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,7 +25,7 @@ import java.util.List;
  *
  */
 public class OnDemandDocumentSourceActorFactory extends AbstractActorFactory implements IActorFactory {
-	static Logger logger = Logger.getLogger(OnDemandDocumentSourceActorFactory.class);
+	static Logger logger = Logger.getLogger(OnDemandDocumentSourceActorFactory.class.getName());
 
 	static final String repositoryUniqueIdBase = "1.1.4567248.1."; // This arbitrary value is different from the regular repository unique id.
 	static int repositoryUniqueIdIncr = 1;
@@ -46,7 +46,7 @@ public class OnDemandDocumentSourceActorFactory extends AbstractActorFactory imp
 	@Override
 	public Simulator buildNew(SimManager simm, SimId simId, String environment, boolean configureBase) throws Exception {
 		ActorType actorType = ActorType.ONDEMAND_DOCUMENT_SOURCE;
-//		logger.debug("Creating " + actorType.getName() + " with id " + simId);
+//		logger.fine("Creating " + actorType.getName() + " with id " + simId);
 		SimulatorConfig sc;
 		if (configureBase)
 			sc = configureBaseElements(actorType, simId, simId.getTestSession(), environment);

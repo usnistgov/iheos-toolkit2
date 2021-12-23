@@ -22,14 +22,22 @@ public class Sha1x {
 		return buf.toString();
 	}
 
-	public static String SHA1(String text) 
-	throws NoSuchAlgorithmException, UnsupportedEncodingException  {
+	public static String SHA1(String text) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+		return mdAlg("SHA-1", text);
+	}
+
+	public static String SHA256(String text) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+		return mdAlg("SHA-256", text);
+	}
+
+
+	private static String mdAlg(String alg, String text)
+	throws NoSuchAlgorithmException, UnsupportedEncodingException {
 		MessageDigest md;
-		md = MessageDigest.getInstance("SHA-1");
-		byte[] sha1hash = new byte[40];
+		md = MessageDigest.getInstance(alg);
 		md.update(text.getBytes("iso-8859-1"), 0, text.length());
-		sha1hash = md.digest();
-		return convertToHex(sha1hash);
+		byte[] hashByteArray = md.digest();
+		return convertToHex(hashByteArray);
 	}
 
 	public static void main(String[] argv) throws Exception {

@@ -10,7 +10,7 @@ import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.installation.server.Installation;
@@ -34,7 +34,7 @@ public class Validator {
 	boolean error = false;
 	OMElement test_assertions;
 	ArrayList<OMElement> use_id = new ArrayList<OMElement>();
-	private final static Logger logger = Logger.getLogger(Validator.class);
+	private final static Logger logger = Logger.getLogger(Validator.class.getName());
 
 	TestConfig testConfig = null;
 

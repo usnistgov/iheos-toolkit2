@@ -4,7 +4,7 @@ import gov.nist.toolkit.http.httpclient.HttpClient;
 import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.xdsexception.client.ThreadPoolExhaustedException;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
  * Created by bill on 9/1/15.
  */
 public class ListenerFactory {
-    private static Logger logger = Logger.getLogger(ListenerFactory.class);
+    private static Logger logger = Logger.getLogger(ListenerFactory.class.getName());
 
 
     private static int firstPort = 0;
@@ -103,7 +103,7 @@ public class ListenerFactory {
                             + ":"
                             + Installation.instance().propertyServiceManager().getToolkitPort()
                             + "/testEnvPidPort?cmd=allocate&simId=" + simId;
-                   logger.debug("Requesting new port from " + endpoint);
+                   logger.fine("Requesting new port from " + endpoint);
                    String pidPort = HttpClient.httpGet(endpoint);
                    pidPort = pidPort.trim();
                    return Integer.parseInt(pidPort);
@@ -130,7 +130,7 @@ public class ListenerFactory {
                                     + ":"
                                     + Installation.instance().propertyServiceManager().getToolkitPort()
                                     + "/testEnvPidPort?cmd=terminate&simId=" + simId;
-                    logger.debug("Requesting terminate port from " + endpoint);
+                    logger.fine("Requesting terminate port from " + endpoint);
                     HttpClient.httpGet(endpoint);
                     return;
                 } catch (Exception e) {

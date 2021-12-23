@@ -8,7 +8,7 @@ import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.jaxen.JaxenException;
 
 import javax.xml.namespace.QName;
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ReportManager {
-   private final static Logger logger = Logger.getLogger(ReportManager.class);
+   private final static Logger logger = Logger.getLogger(ReportManager.class.getName());
    List <ReportDTO> reportDTOs;
    OMElement root;
    Map <String, OMElement> sections;
@@ -90,7 +90,7 @@ public class ReportManager {
             
             OMElement section = getSection(reportDTO.getSection());
             if (section == null) {
-               logger.error("Section " + reportDTO.getName() + " is not defined");
+               logger.severe("Section " + reportDTO.getName() + " is not defined");
                throw new XdsInternalException("Section " + reportDTO.getName() + " is not defined");
             }
 //            logger.info("Got section: " + section.toString());

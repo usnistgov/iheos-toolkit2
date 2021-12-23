@@ -10,7 +10,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.xpath.AXIOMXPath;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.jaxen.JaxenException;
 
 import gov.nist.toolkit.registrymetadata.Metadata;
@@ -48,7 +48,7 @@ public class ImagingDocSetRetrieveTransaction extends BasicTransaction {
 	boolean useIG = false;
 	boolean removeHomeFromRequest = false;
 	boolean clean_params = false;
-	static Logger logger = Logger.getLogger(ImagingDocSetRetrieveTransaction.class);
+	static Logger logger = Logger.getLogger(ImagingDocSetRetrieveTransaction.class.getName());
 	@Override
    public String toString() {
 
@@ -98,8 +98,8 @@ public class ImagingDocSetRetrieveTransaction extends BasicTransaction {
    @Override
    public void run(OMElement request_ele)
 	throws Exception {
-	logger.debug("ImagingDocSetRetrieveTransaction#run");
-	logger.debug(" Request Element: " + request_ele.getText());
+	logger.fine("ImagingDocSetRetrieveTransaction#run");
+	logger.fine(" Request Element: " + request_ele.getText());
 
         if (request_ele == null)
             fatal("Retrieve transaction - request is null");
@@ -141,7 +141,7 @@ public class ImagingDocSetRetrieveTransaction extends BasicTransaction {
 
 			reportManagerPreRun(request_ele);
 
-			logger.debug(" Repository Unique ID: " + repositoryUniqueId);
+			logger.fine(" Repository Unique ID: " + repositoryUniqueId);
 			if (repositoryUniqueId == null) {
 				// if managed by ReportManager then need to extract it from request
 				try {
@@ -211,7 +211,7 @@ public class ImagingDocSetRetrieveTransaction extends BasicTransaction {
 					}
 
 				}
-				logger.debug("Repository Unique ID (after xpath step): " + repositoryUniqueId);
+				logger.fine("Repository Unique ID (after xpath step): " + repositoryUniqueId);
 
 				testLog.add_name_value(instruction_output, "InputMetadata", Util.deep_copy(request_ele));
 
@@ -249,9 +249,9 @@ public class ImagingDocSetRetrieveTransaction extends BasicTransaction {
 				rad69.setIsXca(is_xca);
 				rad69.setSoap12(soap_1_2);
 				rad69.setReferenceMetadata(reference_metadata);
-				logger.debug("ImagingDocSetRetrieveTransaction about to call ret_b.run()");
+				logger.fine("ImagingDocSetRetrieveTransaction about to call ret_b.run()");
 				OMElement result = rad69.run();
-				logger.debug("ImagingDocSetRetrieveTransaction after rad69.run()");
+				logger.fine("ImagingDocSetRetrieveTransaction after rad69.run()");
 //				testLog.add_name_value(instruction_output, "Result", result);
 				rad69.validate();
 			}

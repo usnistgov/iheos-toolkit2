@@ -19,7 +19,7 @@ import groovy.transform.TypeChecked
 import org.apache.commons.io.comparator.NameFileComparator
 import org.apache.commons.io.filefilter.PrefixFileFilter
 import org.apache.http.annotation.Obsolete
-import org.apache.log4j.Logger
+import java.util.logging.*
 import org.dcm4che3.hl7.HL7Parser
 
 import javax.xml.transform.OutputKeys
@@ -50,7 +50,7 @@ public class SimDb {
 	private String actor = null;
 	private String transaction = null;
 	private File transactionDir = null;
-	static private final Logger logger = Logger.getLogger(SimDb.class);
+	static private final Logger logger = Logger.getLogger(SimDb.class.getName());
 	static String luceneIndexDirectoryName = 'simindex'
 	private TestSession testSession = null;
 	static String simTypeFilename = 'sim_type.txt'
@@ -82,7 +82,7 @@ public class SimDb {
 		String ipdir = simId.toString();
 		simDir = new File(dbRoot.toString()  /*.getAbsolutePath()*/ + File.separatorChar + ipdir);
 		if (!simDir.exists()) {
-			logger.error("Simulator " + simId + " does not exist (" + simDir + ")");
+			logger.severe("Simulator " + simId + " does not exist (" + simDir + ")");
 			throw new NoSimException("Simulator " + simId + " does not exist (" + simDir + ")");
 		}
 
@@ -143,7 +143,7 @@ public class SimDb {
 		File simActorDir = new File(dbRoot.getAbsolutePath() + File.separatorChar + simid + File.separatorChar + actor);
 		simActorDir.mkdirs();
 		if (!simActorDir.exists()) {
-			logger.error("Simulator " + simid + ", " + actor + " cannot be created");
+			logger.severe("Simulator " + simid + ", " + actor + " cannot be created");
 			throw new IOException("Simulator " + simid + ", " + actor + " cannot be created");
 		}
 
@@ -264,7 +264,7 @@ public class SimDb {
 		try {
 			Io.stringToFile(simSafetyFile(), simId.toString());
 		} catch (Exception e) {
-			logger.fatal("Cannot create safety file for simulator ${simId} - \n${ExceptionUtil.exception_details(e)}")
+			logger.severe("Cannot create safety file for simulator ${simId} - \n${ExceptionUtil.exception_details(e)}")
 		}
 	}
 
@@ -543,7 +543,7 @@ public class SimDb {
 				}
 				*/
 		} catch (Exception ex) {
-			logger.error(ex.toString())
+			logger.severe(ex.toString())
 		} finally {
 			if (dir)
 				dir.close()
@@ -569,7 +569,7 @@ public class SimDb {
 
 		String dayOffset = ExtendedPropertyManager.getProperty(controllingClass, "expiration");
 		if (dayOffset == null) {
-//			logger.error("Extended Property expiration of class " + controllingClass + " is not defined");
+//			logger.severe("Extended Property expiration of class " + controllingClass + " is not defined");
 			dayOffset = "1";
 		}
 		newExpiration.add(Calendar.DAY_OF_MONTH, Integer.parseInt(dayOffset));
@@ -753,7 +753,7 @@ public class SimDb {
 					actor=actorTemp;
 				}
 			} catch (IOException ex) {
-				logger.warn(ex.toString());
+				logger.warning(ex.toString());
 			}
 		}
 	}
@@ -927,7 +927,7 @@ public class SimDb {
 
 					TransactionInstance t = buildTransactionInstance(actor, inst, name)
 
-					//logger.debug("Found " + t);
+					//logger.fine("Found " + t);
 					if (!t.isPif)
 						transList.add(t);
 				}
@@ -940,7 +940,7 @@ public class SimDb {
 
 		event = event_save;
 		transactionDir = transDir_save;
-//		logger.debug("returning " + transList);
+//		logger.fine("returning " + transList);
 		return transList;
 	}
 
@@ -965,7 +965,7 @@ public class SimDb {
 		t.messageId = inst.getName();
 		t.trans = name;
 		transactionDir = new File(actor, name);
-		//logger.debug("transaction dir is " + transactionDir);
+		//logger.fine("transaction dir is " + transactionDir);
 		event = t.messageId;
 		Date date = null;
 		try {
@@ -1459,7 +1459,7 @@ public class SimDb {
 		File simActorDir = new File(dbRoot.getAbsolutePath() + File.separatorChar + simid + File.separatorChar + actor);
 		simActorDir.mkdirs();
 		if (!simActorDir.exists()) {
-			logger.error("Fhir Simulator " + simid + ", " + actor + " cannot be created");
+			logger.severe("Fhir Simulator " + simid + ", " + actor + " cannot be created");
 			throw new IOException("Fhir Simulator " + simid + ", " + actor + " cannot be created");
 		}
 

@@ -35,7 +35,7 @@ import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axis2.AxisFault;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
@@ -91,7 +91,7 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 	public boolean defaultEndpointProcessing = true;
 
 	protected String repositoryUniqueId = null;
-	private final static Logger logger = Logger.getLogger(BasicTransaction.class);
+	private final static Logger logger = Logger.getLogger(BasicTransaction.class.getName());
 	Map<String, String> nameUuidMap = null;
 	private Soap soap;
 
@@ -708,7 +708,7 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 				xds_version = xds_b;
 			}
 			if (testConfig.site == null) {
-				logger.error(ExceptionUtil.here("testConfig.site is null"));
+				logger.severe(ExceptionUtil.here("testConfig.site is null"));
 				throw new XdsInternalException("BasicTransaction#parseEndpoint: TestConfig.site not configured");
 			}
 			if (trans.usesTraditionalTransactions()) {
@@ -855,7 +855,7 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 
 	Metadata prepareMetadata() throws XdsInternalException, XdsInternalException, MetadataException, FactoryConfigurationError {
 		Metadata metadata = null;
-        logger.debug("metadata_filename is " + metadata_filename);
+        logger.fine("metadata_filename is " + metadata_filename);
         if (metadata_filename != null && !metadata_filename.equals(""))
             request_element = Util.parse_xml(new File(metadata_filename));
 
@@ -1449,7 +1449,7 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 			testLog.add_name_value(instruction_output, "InHeader", soap.getInHeader());
 			testLog.add_name_value(instruction_output, "Result", soap.getResult());
 		} catch (Exception e) {
-			logger.error("Cannot log soap request");
+			logger.severe("Cannot log soap request");
 			e.printStackTrace();
 		}
 	}

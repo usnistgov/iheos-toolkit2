@@ -4,18 +4,18 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
+//import org.apache.log4j.BasicConfigurator;
+import java.util.logging.Logger;
 
 
 
 public class Properties {
 	java.util.Properties properties = null;
-	private final static Logger logger = Logger.getLogger(Properties.class);
+	private final static Logger logger = Logger.getLogger(Properties.class.getName());
 	private static Properties properties_object = null;
 
 	static {
-		BasicConfigurator.configure();
+//		BasicConfigurator.configure();
 	}
 	
 	private Properties() {  init(); }
@@ -27,13 +27,13 @@ public class Properties {
 	
 	void init() {
 		InputStream is = this.getClass().getClassLoader().getResourceAsStream("xds.properties");
-		if (is == null) { logger.fatal("Cannot load xds.properties" ); return; }
+		if (is == null) { logger.severe("Cannot load xds.properties" ); return; }
 		properties = new java.util.Properties();
 		try {
 			properties.load(is);
 		}
 		catch (Exception e) {
-			logger.fatal(exception_details(e));
+			logger.severe(exception_details(e));
 		}
 	}
 

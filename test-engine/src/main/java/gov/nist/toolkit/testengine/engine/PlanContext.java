@@ -13,7 +13,7 @@ import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.client.XdsException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -53,7 +53,7 @@ public class PlanContext extends BasicContext {
 	
 	public void setPreviousSectionLogs(SectionLogMapDTO previousLogs) {
 		previousSectionLogs = previousLogs;
-        logger.debug(previousLogs.describe());
+        logger.fine(previousLogs.describe());
 	}
 	
 	public SectionLogMapDTO getPreviousSectionLogs() {
@@ -68,7 +68,7 @@ public class PlanContext extends BasicContext {
         buf.append("ExtraLinkage...\n");
         for (String key : linkage.keySet())
             buf.append("...").append(key).append(" ==> ").append(linkage.get(key)).append("\n");
-        logger.debug(buf.toString());
+        logger.fine(buf.toString());
 		externalLinkage = linkage;
 	}
 	
@@ -108,7 +108,7 @@ public class PlanContext extends BasicContext {
 	boolean status = true;
 	String test_num = "0";
 	ArrayList<OMElement> phone_home_log_files = null;
-	private final static Logger logger = Logger.getLogger(PlanContext.class);
+	private final static Logger logger = Logger.getLogger(PlanContext.class.getName());
 	boolean writeLogFiles = true;
 
 	public void setWriteLogFiles(boolean write) {
@@ -278,7 +278,7 @@ public class PlanContext extends BasicContext {
 		catch (XdsException e) {  
 			String errorDetails = ExceptionUtil.exception_details(e);
 			testLog.add_name_value(results_document, "FatalError", errorDetails);
-            logger.error(errorDetails);
+            logger.severe(errorDetails);
 			status = false;
 			set_status_in_output();
 			transactionSettings.res.add(e.getMessage(), "", false);
@@ -318,9 +318,9 @@ public class PlanContext extends BasicContext {
 				}
 
 			} catch (FileNotFoundException e) {
-				logger.fatal("Cannot create file log.xml (" + logFile + ")");
+				logger.severe("Cannot create file log.xml (" + logFile + ")");
 			} catch (IOException e) {
-				logger.fatal("Cannot write to file log.xml (" + logFile + ")");
+				logger.severe("Cannot write to file log.xml (" + logFile + ")");
 			}
 		}
 

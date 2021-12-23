@@ -5,13 +5,13 @@ import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.results.client.LogIdIOFormat;
 import gov.nist.toolkit.results.client.LogIdType;
 import gov.nist.toolkit.results.client.TestInstance;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.File;
 import java.io.IOException;
 
 public class LogRepositoryFactory {
-	static Logger logger = Logger.getLogger(LogRepositoryFactory.class);
+	static Logger logger = Logger.getLogger(LogRepositoryFactory.class.getName());
 
 	static public LogRepository getLogRepository(File location, TestSession testSession, LogIdIOFormat format, LogIdType idType, TestInstance id) throws IOException {
 		LogRepository impl = new LogRepository(location, testSession, format, idType, id);

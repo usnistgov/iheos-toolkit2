@@ -2,7 +2,7 @@
 
 # package.sh
 
-# The parts are all build - now load them into a final WAR file
+# The parts are all built - now load them into a final WAR file
 
 function usage() {
 	echo "Usage: $SCRIPTNAME configuration-name"

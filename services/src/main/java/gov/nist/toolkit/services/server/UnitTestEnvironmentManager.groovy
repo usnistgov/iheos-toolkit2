@@ -6,7 +6,7 @@ import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException
 import groovy.transform.TypeChecked
-import org.apache.log4j.Logger
+import java.util.logging.*
 
 import java.nio.file.Paths
 
@@ -19,7 +19,7 @@ import java.nio.file.Paths
 @TypeChecked
 public class UnitTestEnvironmentManager {
     static String envName = null;
-    static Logger logger = Logger.getLogger(UnitTestEnvironmentManager.class);
+    static Logger logger = Logger.getLogger(UnitTestEnvironmentManager.class.getName());
     private Session session;
     File warHomeDir;
     File ecDir;
@@ -53,14 +53,14 @@ public class UnitTestEnvironmentManager {
         logger.info("UnitTestEnvironmentManager")
         File warMarker = Paths.get(new UnitTestEnvironmentManager().getClass().getResource('/').toURI()).resolve('war/war.txt').toFile()
         if (warMarker == null) {
-            logger.fatal("Cannot locate WAR marker file for test environment")
+            logger.severe("Cannot locate WAR marker file for test environment")
             throw new ToolkitRuntimeException("Cannot locate WAR root for test environment")
         }
         File warHome = warMarker.parentFile
         isWarHome(warHome)
         File externalCacheMarker = Paths.get(new UnitTestEnvironmentManager().getClass().getResource('/').toURI()).resolve('external_cache/external_cache.txt').toFile()
         if (externalCacheMarker == null) {
-            logger.fatal("Cannot locate external cache marker file for test environment")
+            logger.severe("Cannot locate external cache marker file for test environment")
             throw new ToolkitRuntimeException("Cannot locate external cache for test environment")
         }
 

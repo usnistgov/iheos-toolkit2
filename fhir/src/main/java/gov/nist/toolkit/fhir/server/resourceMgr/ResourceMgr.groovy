@@ -5,14 +5,14 @@ import gov.nist.toolkit.errorrecording.client.XdsErrorCode
 import gov.nist.toolkit.fhir.server.utility.FhirClient
 import gov.nist.toolkit.fhir.server.utility.UriBuilder
 import gov.nist.toolkit.utilities.id.UuidAllocator
-import org.apache.log4j.Logger
+import java.util.logging.*
 import org.hl7.fhir.dstu3.model.*
 import org.hl7.fhir.instance.model.api.IBaseResource
 /**
  *
  */
 class ResourceMgr {
-    static private final Logger logger1 = Logger.getLogger(ResourceMgr.class);
+    static private final Logger logger1 = Logger.getLogger(ResourceMgr.class.getName());
     Bundle bundle = null
     // Object is some Resource type
     Map<URI, IBaseResource> resources = [:]   // url -> resource
@@ -40,15 +40,15 @@ class ResourceMgr {
             er?.detail(msg)
         }
         def error(String msg) {
-            logger.error(msg)
+            logger.severe(msg)
             er?.err(XdsErrorCode.Code.NoCode, msg, "", "")
         }
         def warn(String msg) {
-            logger.warn(msg)
+            logger.warning(msg)
             er?.warning(XdsErrorCode.Code.NoCode, msg, "", "")
         }
         def fatal(String msg) {
-            logger.fatal(msg)
+            logger.severe(msg)
             er?.err(XdsErrorCode.Code.NoCode, msg, "", "")
         }
     }
@@ -259,7 +259,7 @@ class ResourceMgr {
             }
             def isRelativeReference = isRelative(referenceUrl)
             if (config.relativeReferenceRequired && !isRelativeReference) {
-                logger.warn("Resolver: ...relative reference required - not relative")
+                logger.warning("Resolver: ...relative reference required - not relative")
                 return [null, null]
             }
             def type = resourceTypeFromUrl(referenceUrl)
@@ -327,11 +327,11 @@ class ResourceMgr {
                 }
             }
             catch (Exception e) {
-                logger.warn("Resolver: ${referenceUrl} ...not available")
+                logger.warning("Resolver: ${referenceUrl} ...not available")
             }
         }
 
-        logger.warn("Resolver: ...failed")
+        logger.warning("Resolver: ...failed")
         [null, null]
     }
 

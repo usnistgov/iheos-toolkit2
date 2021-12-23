@@ -4,7 +4,7 @@ import gov.nist.toolkit.testengine.engine.StepContext;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,7 +13,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class SocketTransaction extends BasicTransaction {
-	static final Logger logger = Logger.getLogger(SocketTransaction.class);
+	static final Logger logger = Logger.getLogger(SocketTransaction.class.getName());
 	String host = null;
 	int port = 0;
 	Socket socket = null;
@@ -35,7 +35,7 @@ public class SocketTransaction extends BasicTransaction {
 			s_ctx.set_error("Port parameter not set for SocketTransaction");
 			return;
 		}
-		logger.debug("Opening socket to " + host + ":" + port + "...");
+		logger.fine("Opening socket to " + host + ":" + port + "...");
 		try {
 			socket = new Socket(host, port);
 		} catch (UnknownHostException e) {
@@ -45,7 +45,7 @@ public class SocketTransaction extends BasicTransaction {
 			s_ctx.set_error("Error connecting to " + host + ":" + port + " - " + e.getMessage());
 			return;
 		}
-		logger.debug("\t...Success");
+		logger.fine("\t...Success");
 		
 		
 		

@@ -4,13 +4,13 @@ import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.simcommon.client.NoSimException;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimulatorStats;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.*;
 import java.util.Calendar;
 
 public class RepIndex implements Serializable {
-	static Logger logger = Logger.getLogger(RepIndex.class);
+	static Logger logger = Logger.getLogger(RepIndex.class.getName());
 
 	private static final long serialVersionUID = 1L;
 	public DocumentCollection dc;
@@ -46,7 +46,7 @@ public class RepIndex implements Serializable {
 	}
 
 	static DocumentCollection restoreRepository(String filename) throws Exception {
-		logger.debug("Restore Repository Index");
+		logger.fine("Restore Repository Index");
 		FileInputStream fis = null;
 		ObjectInputStream in = null;
 		DocumentCollection dc;
@@ -55,7 +55,7 @@ public class RepIndex implements Serializable {
 			in = new ObjectInputStream(fis);
 			dc = (DocumentCollection) in.readObject();
 		} catch (Throwable e) {
-			logger.fatal("Failed to restore Repository Index from " + filename);
+			logger.severe("Failed to restore Repository Index from " + filename);
 			throw e;
 		} finally {
 			if (in!=null)
@@ -77,7 +77,7 @@ public class RepIndex implements Serializable {
 	}
 
 	private static void saveRepository(DocumentCollection dc, String filename) throws IOException {
-		logger.debug("Save Repository Index");
+		logger.fine("Save Repository Index");
 		FileOutputStream fos = null;
 		ObjectOutputStream out = null;
 

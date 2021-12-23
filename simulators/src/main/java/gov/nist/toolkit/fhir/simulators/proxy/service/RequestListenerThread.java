@@ -23,7 +23,7 @@ import org.apache.http.protocol.ResponseContent;
 import org.apache.http.protocol.ResponseDate;
 import org.apache.http.protocol.ResponseServer;
 import org.apache.http.protocol.UriHttpRequestHandlerMapper;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -36,7 +36,7 @@ import java.nio.charset.CharsetEncoder;
  * this is a singleton
  */
 public class RequestListenerThread extends Thread {
-    private static Logger logger = Logger.getLogger(RequestListenerThread.class);
+    private static Logger logger = Logger.getLogger(RequestListenerThread.class.getName());
     private final ServerSocket serversocket;
     private final HttpService httpService;
     private boolean running = false;

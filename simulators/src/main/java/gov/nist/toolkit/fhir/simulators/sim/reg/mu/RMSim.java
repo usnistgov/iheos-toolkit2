@@ -9,14 +9,14 @@ import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.valregmsg.message.MetadataContainer;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class RMSim extends TransactionSimulator {
-    static Logger log = Logger.getLogger(RMSim.class);
+    static Logger log = Logger.getLogger(RMSim.class.getName());
     protected MessageValidatorEngine mvc;
     protected DsSimCommon dsSimCommon;
     protected Metadata m = null;

@@ -14,7 +14,7 @@ import gov.nist.toolkit.testengine.engine.ResultPersistence;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepositoryFactory;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.util.List;
 import java.util.Map;
@@ -23,7 +23,7 @@ import java.util.Map;
 
 public class TestRunner {
     private final XdsTestServiceManager xdsTestServiceManager;
-    private static Logger logger = Logger.getLogger(TestRunner.class);
+    private static Logger logger = Logger.getLogger(TestRunner.class.getName());
 
     public TestRunner(XdsTestServiceManager xdsTestServiceManager) {
         this.xdsTestServiceManager = xdsTestServiceManager;

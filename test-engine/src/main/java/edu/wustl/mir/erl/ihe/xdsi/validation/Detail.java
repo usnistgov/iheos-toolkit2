@@ -3,7 +3,7 @@ package edu.wustl.mir.erl.ihe.xdsi.validation;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
 

@@ -11,12 +11,12 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.XdsException;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.util.List;
 
 public class ProcessMetadataForDocumentEntryUpdate implements ProcessMetadataInterface {
-	static Logger log = Logger.getLogger(ProcessMetadataForDocumentEntryUpdate.class);
+	static Logger log = Logger.getLogger(ProcessMetadataForDocumentEntryUpdate.class.getName());
 	ErrorRecorder er;
 	MetadataCollection mc;
 	MetadataCollection delta;

@@ -5,14 +5,16 @@ import java.net.UnknownHostException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * UUID generator (taken from Axis2)
  */
 public class UUIDGenerator {
 
-    private static final org.apache.commons.logging.Log log = 
-        org.apache.commons.logging.LogFactory.getLog(UUIDGenerator.class);
+    private static final Logger log =
+        Logger.getLogger(UUIDGenerator.class.getName());
 
     private static String baseUUID = null;
     private static long incrementingValue = 0;
@@ -61,9 +63,7 @@ public class UUIDGenerator {
         try {
             md5 = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e) {
-            if (log.isDebugEnabled()) {
-                log.debug(e.getMessage(), e);
-            }
+            log.log(Level.FINE, e.getMessage(), e);
             // have to be properly handled
         }
         md5.update(sb.toString().getBytes());

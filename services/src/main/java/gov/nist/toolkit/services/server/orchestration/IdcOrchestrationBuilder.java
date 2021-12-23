@@ -19,7 +19,7 @@ import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.codehaus.plexus.util.StringUtils;
 
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ import java.util.List;
  * Build environment for testing Imaging Document Consumer SUT.
  */
 public class IdcOrchestrationBuilder extends AbstractOrchestrationBuilder {
-   static Logger log = Logger.getLogger(IdsOrchestrationBuilder.class);
+   static Logger log = Logger.getLogger(IdsOrchestrationBuilder.class.getName());
 
    public static final String rrSimulatorName = "rr";
 
@@ -63,7 +63,7 @@ public class IdcOrchestrationBuilder extends AbstractOrchestrationBuilder {
                api.deleteSimulatorIfItExists(simId);
             }
             if (!api.simulatorExists(simId)) {
-            log.debug("Creating " + simId.toString());
+            log.fine("Creating " + simId.toString());
             simConfig = api.createSimulator(simId).getConfig(0);
             // plug our special parameter values
             for (SimulatorConfigElement chg : sim.elements) {
@@ -155,7 +155,7 @@ public class IdcOrchestrationBuilder extends AbstractOrchestrationBuilder {
                return new String[] { SimulatorProperties.retrieveEndpoint, SimulatorProperties.storedQueryEndpoint,
                   SimulatorProperties.repositoryUniqueId, };
             default:
-               log.error("Unknown ActorType");
+               log.severe("Unknown ActorType");
          }
          return new String[0];
       }

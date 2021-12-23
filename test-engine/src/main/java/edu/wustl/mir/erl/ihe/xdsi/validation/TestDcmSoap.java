@@ -6,7 +6,7 @@ package edu.wustl.mir.erl.ihe.xdsi.validation;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import edu.wustl.mir.erl.ihe.xdsi.util.PfnType;
 import edu.wustl.mir.erl.ihe.xdsi.util.Utility;
@@ -82,7 +82,7 @@ public class TestDcmSoap extends Test {
          throw new Exception(Utility.classMethod() + 
             " error: less than " + numberOfArguments + " arguments passed");
       if (args.length > 4) 
-         log.warn(Utility.classMethod() + " called with " + args.length + 
+         log.warning(Utility.classMethod() + " called with " + args.length +
             " parameters. Only " + numberOfArguments + " needed.");
       nameOfTest = args[0];
       
@@ -110,7 +110,7 @@ public class TestDcmSoap extends Test {
          stdDcmDirPath = stdDirPath.resolve("attachments");
          Utility.isValidPfn(nameOfTest + " std dcm files directory", stdDcmDirPath, PfnType.DIRECTORY, "r");
       } catch (Exception e) {
-         log.debug("No std attachments, so no dcm match step.");
+         log.fine("No std attachments, so no dcm match step.");
          return;
       }
       testDcmDirPath = testDirPath.resolve("attachments");

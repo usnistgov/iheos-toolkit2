@@ -12,14 +12,14 @@ import gov.nist.toolkit.xdstools2.server.gazelle.actorConfig.GazelleConfigs;
 import gov.nist.toolkit.xdstools2.server.gazelle.actorConfig.GazelleEntryFactory;
 import gov.nist.toolkit.xdstools2.server.gazelle.sysconfig.GenerateSingleSystem;
 import gov.nist.toolkit.xdstools2.server.gazelle.sysconfig.GenerateSystemShell;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.File;
 import java.util.Collection;
 
 public class GazelleServiceManager extends CommonService {
 
-    static Logger logger = Logger.getLogger(GazelleServiceManager.class);
+    static Logger logger = Logger.getLogger(GazelleServiceManager.class.getName());
 
     Session session;
     String gazelleUrl;
@@ -70,7 +70,7 @@ public class GazelleServiceManager extends CommonService {
     public String reloadSystemFromGazelle(String systemName) throws Exception {
         try {
             String id = (session == null) ? "42" : session.id();
-            logger.debug(id + ": " + "reloadSystemFromGazelle(" + systemName + ")");
+            logger.fine(id + ": " + "reloadSystemFromGazelle(" + systemName + ")");
             String conflicts;
 
             if (!initDone) {
@@ -116,7 +116,7 @@ public class GazelleServiceManager extends CommonService {
             logger.info(log);
             return "<pre>\n" + log + "\n</pre>";
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.severe(e.getMessage());
             throw new Exception("Load failed.", e);
         }
 
@@ -124,7 +124,7 @@ public class GazelleServiceManager extends CommonService {
 
 //    public String reloadSystemFromGazelle(String systemName) throws Exception {
 //        String id = (session == null) ? "42" : session.id();
-//        logger.debug(id + ": " + "reloadSystemFromGazelle(" + systemName + ")");
+//        logger.fine(id + ": " + "reloadSystemFromGazelle(" + systemName + ")");
 //        String conflicts;
 //
 //        if (!initDone) {

@@ -2,6 +2,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
+import gov.nist.toolkit.xdstools2.client.util.ClientFactoryImpl;
 
 /**
  *
@@ -136,7 +137,7 @@ class TestsHeaderView {
         if (good) {
             status = new Image("icons2/correct-32.png");
         } else {
-            status = new Image("icons/ic_warning_black_24dp_1x.png");
+            status = new Image(ClientFactoryImpl.getIconsResources().getWarningIcon());
         }
         status.addStyleName("right");
         status.addStyleName("iconStyle");

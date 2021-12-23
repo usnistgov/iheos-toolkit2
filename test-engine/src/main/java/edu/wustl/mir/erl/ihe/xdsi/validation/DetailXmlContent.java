@@ -90,7 +90,7 @@ public abstract class DetailXmlContent extends Detail {
          try {
             testElement = XmlUtil.strToOM(testXmlOrPfn);
          } catch (Exception e) {
-            Utility.getLog().warn("XML Parse error: " + e.getMessage());
+            Utility.getLog().warning("XML Parse error: " + e.getMessage());
          }
          if (testElement == null) {
             Path testPath = Paths.get(testXmlOrPfn);
@@ -100,7 +100,7 @@ public abstract class DetailXmlContent extends Detail {
          try {
             stdElement = XmlUtil.strToOM(stdXmlOrPfn);
          } catch (Exception e) {
-            Utility.getLog().warn("XML Parse error: " + e.getMessage());
+            Utility.getLog().warning("XML Parse error: " + e.getMessage());
          }
          if (stdElement == null) {
             Path stdPath = Paths.get(stdXmlOrPfn);
@@ -151,7 +151,7 @@ public abstract class DetailXmlContent extends Detail {
 
       } catch (Exception e) {
          String em = "Evaluation error " + desc + " " + Utility.getEM(e);
-         Utility.getLog().warn(em);
+         Utility.getLog().warning(em);
          errorCount++ ;
          errorDetails.add(em);
       } finally {
@@ -478,7 +478,7 @@ public abstract class DetailXmlContent extends Detail {
             }
             return xp;
          } catch (JaxenException e) {
-            Utility.getLog().error(Utility.getEM(e));
+            Utility.getLog().severe(Utility.getEM(e));
          }
          return null;
       }

@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * Manage HTTP only transactions, for example: 
@@ -73,6 +74,7 @@ import java.util.Map;
  * processed in the usual way.</ol>
  */
 public class HTTPTransaction extends BasicTransaction {
+    private static Logger logger = Logger.getLogger(HTTPTransaction.class.getName());
     private static final String DEFAULT_STS_USERNAME = "valid";
     Map<String, List<String>> headers = new HashMap<>();
     File file;
@@ -110,14 +112,14 @@ public class HTTPTransaction extends BasicTransaction {
         * value) must match one of the transaction type names of a 
         * TransactionType value.
         */
-        System.out.println("HTTPTransaction::run");
+        logger.info("HTTPTransaction::run");
         if (endpoint == null || endpoint.equals("")) {
             if (transType == null)
                 throw new XdsInternalException("HttpTransaction - type is null");
             TransactionType ttype = TransactionType.find(transType);
             if (ttype == null)
                 throw new XdsInternalException("HttpTransaction - transaction type " + transType + " does not map to a defined transaction type");
-            System.out.println("HTTPTransaction::run");
+            logger.info("HTTPTransaction::run parseEndpoint");
             parseEndpoint(ttype);
 
             if (endpoint == null || endpoint.equals(""))
@@ -151,14 +153,14 @@ public class HTTPTransaction extends BasicTransaction {
             HttpResponse response = httpClient.execute(httpPost);
 
                 try {
-                    System.out.println("----------------------------------------");
+                    logger.info("----------------------------------------");
                     StatusLine statusLine = response.getStatusLine();
-                    System.out.println(statusLine);
+                    logger.info(statusLine.toString());
                     testLog.add_name_value(instruction_output, "InHeader", statusLine.toString());
                     Header[] responseHeaders = response.getAllHeaders();
                     HttpEntity responseEntity = response.getEntity();
                     String responseString = EntityUtils.toString(responseEntity);
-                    System.out.println(responseString);
+                    logger.fine(() -> responseString);
                     testLog.add_name_value(instruction_output, "Result", responseString);
 
                     if (Transactions.ProvideAndRegister_b.equals(transType)) {

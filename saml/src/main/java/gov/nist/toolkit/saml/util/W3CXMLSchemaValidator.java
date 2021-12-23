@@ -20,7 +20,7 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -34,7 +34,7 @@ import org.xml.sax.SAXParseException;
  */
 public class W3CXMLSchemaValidator implements SchemaValidatorInterface {
 	
-	private static Logger logger = Logger.getLogger(W3CXMLSchemaValidator.class);
+	private static Logger logger = Logger.getLogger(W3CXMLSchemaValidator.class.getName());
 
 	private static final String SCHEMA_LANGUAGE = XMLConstants.W3C_XML_SCHEMA_NS_URI;
 	private Schema schema;
@@ -76,9 +76,7 @@ public class W3CXMLSchemaValidator implements SchemaValidatorInterface {
 		
 		SchemaFactory schemaFactory = SchemaFactory.newInstance(SCHEMA_LANGUAGE);
 		String defaultSchemaLocation = getDefaultSchemaLocation();
-		if (logger.isDebugEnabled()) {
-			logger.debug("Found schema location " + defaultSchemaLocation);
-		}
+		logger.fine("Found schema location " + defaultSchemaLocation);
 		if (new File(defaultSchemaLocation).isAbsolute()) {
 			File schemaFile = new File(defaultSchemaLocation+"oasis-wss-wssecurity-secext-1.1.xsd");
 			schema = schemaFactory.newSchema(new StreamSource(schemaFile));
@@ -87,10 +85,8 @@ public class W3CXMLSchemaValidator implements SchemaValidatorInterface {
 			schema = schemaFactory.newSchema(new StreamSource(schemaInputStream));
 		}
 		
-		if (logger.isDebugEnabled()) {
-			logger.debug("W3CXMLSchemaValidator succesfully constructed using "
+		logger.fine("W3CXMLSchemaValidator succesfully constructed using "
 					+ "schema " + defaultSchemaLocation);
-		}
 	}
 
 
@@ -147,9 +143,7 @@ public class W3CXMLSchemaValidator implements SchemaValidatorInterface {
 	 * @throws java.io.IOException Thrown on IO error
 	 */
 	public void validate(Reader r) throws SAXException, IOException {
-		if (logger.isDebugEnabled()) {
-			logger.debug("validate with Reader argument called");
-		}
+		logger.fine("validate with Reader argument called");
 		schema.newValidator().validate(new StreamSource(r));
 	}
 
@@ -162,9 +156,7 @@ public class W3CXMLSchemaValidator implements SchemaValidatorInterface {
 	 * @throws java.io.IOException Thrown on IO error
 	 */
 	public void validate(Node r) throws SAXException, IOException {
-		if (logger.isDebugEnabled()) {
-			logger.debug("validate with Node argument called");
-		}
+		logger.fine("validate with Node argument called");
 		schema.newValidator().validate(new DOMSource(r));
 	}
 
@@ -177,9 +169,7 @@ public class W3CXMLSchemaValidator implements SchemaValidatorInterface {
 	 * @throws java.io.IOException Thrown on IO error
 	 */
 	public void validate(Source source) throws SAXException, IOException {
-		if (logger.isDebugEnabled()) {
-			logger.debug("validate with Source argument called");
-		}
+		logger.fine("validate with Source argument called");
 		schema.newValidator().validate(source);
 	}
 

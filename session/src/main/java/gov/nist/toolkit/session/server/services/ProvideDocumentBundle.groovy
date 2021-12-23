@@ -8,13 +8,13 @@ import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager
 import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import gov.nist.toolkit.xdsexception.ExceptionUtil
-import org.apache.log4j.Logger
+import java.util.logging.*
 
 import static gov.nist.toolkit.results.CommonService.asList
 import static gov.nist.toolkit.results.CommonService.buildExtendedResultList
 
 public class ProvideDocumentBundle {
-    static private final Logger logger = Logger.getLogger(ProvideDocumentBundle.class);
+    static private final Logger logger = Logger.getLogger(ProvideDocumentBundle.class.getName());
     Session session;
 
     public ProvideDocumentBundle(Session session) {
@@ -40,7 +40,7 @@ public class ProvideDocumentBundle {
 
             return asList(new XdsTestServiceManager(session).xdstest(testInstance, sections, params, null, null, true));
         } catch (Throwable e) {
-            logger.error("ProvideDocumentBundle: ${ExceptionUtil.exception_details(e)}")
+            logger.severe("ProvideDocumentBundle: ${ExceptionUtil.exception_details(e)}")
             return buildExtendedResultList(e);
         } finally {
             session.clear();

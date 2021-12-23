@@ -159,7 +159,6 @@
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
-<!--                <version>9.2.21.v20170120</version>-->
                 <version>9.4.9.v20180320</version>
                 <configuration>
                     <!-- Enter any systemProperties here. -->
@@ -177,6 +176,12 @@
                             <name>jetty.logs</name>
                             <value>${basedir}/target</value>
                         </systemProperty>
+                        <!-- The following Java Logging system variable does not seem to take effect in Jetty.
+                        Need to revisit this logging property configuration in future -->
+<!--                        <systemProperty>-->
+<!--                            <name>java.util.logging.config.file</name>-->
+<!--                            <value>${basedir}/../logging.properties</value>-->
+<!--                        </systemProperty>-->
                     </systemProperties>
                 </configuration>
                 <executions>

@@ -10,7 +10,7 @@ import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.client.XdsException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ abstract public class GetSubmissionSets extends StoredQuery {
 	 */
 	abstract protected Metadata runImplementation() throws MetadataException, XdsException, LoggerException;
 	
-	private final static Logger logger = Logger.getLogger(GetSubmissionSets.class);
+	private final static Logger logger = Logger.getLogger(GetSubmissionSets.class.getName());
 
 	/**
 	 * Basic constructor
@@ -55,14 +55,14 @@ abstract public class GetSubmissionSets extends StoredQuery {
 	
 	boolean isRpBroken(OMElement ele) throws MetadataException, MetadataValidationException {
 		Metadata m = MetadataParser.parseNonSubmission(ele);
-		logger.fatal("rpBroken: " + m.structure());
+		logger.severe("rpBroken: " + m.structure());
 		return m.isRegistryPackageClassificationBroken();
 	}
 
 	boolean isRpBroken2(OMElement ele) throws MetadataException, MetadataValidationException {
 		Metadata m = new Metadata();
 		m.addMetadata(ele, false);
-		logger.fatal("rpBroken2: " + m.structure());
+		logger.severe("rpBroken2: " + m.structure());
 		return m.isRegistryPackageClassificationBroken();
 	}
 	

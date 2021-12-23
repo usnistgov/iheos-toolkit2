@@ -99,7 +99,7 @@
     <servlet>
         <servlet-name>buildCollectionsServlet</servlet-name>
         <servlet-class>gov.nist.toolkit.testengine.scripts.BuildCollections</servlet-class>
-        <load-on-startup>1</load-on-startup>
+        <load-on-startup>2</load-on-startup>
     </servlet>
 
     <servlet>
@@ -135,13 +135,13 @@
     <servlet>
         <servlet-name>httpSimulatorServlet</servlet-name>
         <servlet-class>gov.nist.toolkit.fhir.simulators.servlet.HttpSimServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
+        <load-on-startup>3</load-on-startup>
     </servlet>
 
     <servlet>
 		<servlet-name>Reconfigure Simulators</servlet-name>
 		<servlet-class>gov.nist.toolkit.fhir.simulators.servlet.ReconfigureSimulators</servlet-class>
-		<load-on-startup>2</load-on-startup>
+		<load-on-startup>4</load-on-startup>
 	</servlet>
 	
 	<!--<servlet>-->

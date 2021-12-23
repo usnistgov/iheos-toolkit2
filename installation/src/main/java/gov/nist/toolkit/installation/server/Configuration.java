@@ -1,6 +1,6 @@
 package gov.nist.toolkit.installation.server;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,7 +12,7 @@ import java.util.Properties;
  * editable.
  */
 public class Configuration {
-    static Logger logger = Logger.getLogger(Configuration.class);
+    static Logger logger = Logger.getLogger(Configuration.class.getName());
     static Properties properties = new Properties();
 
     static {

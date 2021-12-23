@@ -9,7 +9,7 @@ import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMException;
 import org.apache.axiom.om.OMNode;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -17,7 +17,7 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 public class OmLogger implements ILogger {
-	static Logger logger = Logger.getLogger(OmLogger.class);
+	static Logger logger = Logger.getLogger(OmLogger.class.getName());
 
 	/* (non-Javadoc)
 	 * @see gov.nist.toolkit.testengine.ILogger#add_simple_element(org.apache.axiom.om.OMElement, java.lang.String)

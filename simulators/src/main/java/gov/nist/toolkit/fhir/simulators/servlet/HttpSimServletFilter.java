@@ -9,7 +9,7 @@ import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.engine.ValidationStep;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -22,14 +22,14 @@ import java.util.Enumeration;
  */
 public class HttpSimServletFilter implements Filter {
 
-   static Logger logger = Logger.getLogger(HttpSimServletFilter.class);
+   static Logger logger = Logger.getLogger(HttpSimServletFilter.class.getName());
 
    @Override
    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
       throws IOException, ServletException {
       HttpSimServletResponseWrapper wrapper = new HttpSimServletResponseWrapper((HttpServletResponse) response);
 
-      logger.debug("in HttpSimServletFilter");
+      logger.fine("in HttpSimServletFilter");
       if (request instanceof HttpServletRequest) {
          HttpServletRequest r = (HttpServletRequest) request;
          logger.info(r.getRequestURI());
@@ -40,12 +40,12 @@ public class HttpSimServletFilter implements Filter {
 
       SimDb db = (SimDb) request.getAttribute("SimDb");
       if (db == null) {
-         logger.error("HttpSimServletFilter - request.getAttribute(\"SimDb\") failed");
+         logger.severe("HttpSimServletFilter - request.getAttribute(\"SimDb\") failed");
          return;
       }
       MessageValidatorEngine mvc = (MessageValidatorEngine) request.getAttribute("mvc");
       if (mvc == null) {
-         logger.error("HttpSimServletFilter - request.getAttribute(\"mvc\") failed");
+         logger.severe("HttpSimServletFilter - request.getAttribute(\"mvc\") failed");
          return;
       }
 

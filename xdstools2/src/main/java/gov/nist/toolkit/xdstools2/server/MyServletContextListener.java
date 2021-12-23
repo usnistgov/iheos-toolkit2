@@ -1,14 +1,14 @@
 package gov.nist.toolkit.xdstools2.server;
 
 import gov.nist.toolkit.utilities.io.Io;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import java.io.File;
 
 public class MyServletContextListener implements ServletContextListener {
-	static Logger logger = Logger.getLogger(MyServletContextListener.class);
+	static Logger logger = Logger.getLogger(MyServletContextListener.class.getName());
 
 	public void contextDestroyed(ServletContextEvent arg0) {
 		cleanup(arg0);

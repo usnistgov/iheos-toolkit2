@@ -4,7 +4,7 @@ import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.interactionmodel.client.Interaction;
 import gov.nist.toolkit.interactionmodel.client.InteractionIdentifierTerm;
 import gov.nist.toolkit.interactionmodel.client.InteractionLog;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 public class InteractionMapper {
-    private final static Logger logger = Logger.getLogger(InteractionMapper.class);
+    private final static Logger logger = Logger.getLogger(InteractionMapper.class.getName());
 
     public InteractingEntity map(InteractingEntity model) throws Exception {
 

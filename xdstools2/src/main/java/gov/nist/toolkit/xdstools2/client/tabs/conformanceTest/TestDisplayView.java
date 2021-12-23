@@ -5,6 +5,7 @@ import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.*;
+import gov.nist.toolkit.xdstools2.client.util.ClientFactoryImpl;
 import gov.nist.toolkit.xdstools2.client.util.HtmlUtil;
 
 import java.util.ArrayList;
@@ -154,7 +155,7 @@ public class TestDisplayView extends FlowPanel implements TestStatusDisplay {
     @Override
     public void labelFailure() {
         header.labelFailure();
-        statusIcon = new Image("icons/ic_warning_black_24dp_1x.png");
+        statusIcon = new Image(ClientFactoryImpl.getIconsResources().getWarningIcon());
         statusIcon.addStyleName("right");
         statusIcon.addStyleName("iconStyle");
     }

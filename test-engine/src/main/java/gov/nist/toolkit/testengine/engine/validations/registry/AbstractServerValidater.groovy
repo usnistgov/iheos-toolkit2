@@ -3,10 +3,10 @@ package gov.nist.toolkit.testengine.engine.validations.registry
 import gov.nist.toolkit.errorrecording.ErrorRecorder
 import gov.nist.toolkit.registrymetadata.Metadata
 import gov.nist.toolkit.testengine.engine.AbstractValidater
-import org.apache.log4j.Logger
+import java.util.logging.*
 
 abstract class AbstractServerValidater extends AbstractValidater<Object> {
-    static Logger logger = Logger.getLogger(AbstractServerValidater.class);
+    static Logger logger = Logger.getLogger(AbstractServerValidater.class.getName());
     String filterDescription
     ErrorRecorder er
 

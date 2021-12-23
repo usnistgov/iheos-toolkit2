@@ -10,7 +10,7 @@ import gov.nist.toolkit.testengine.engine.TestLogFactory;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ public class EdgeServerTransaction  extends BasicTransaction {
 
     private OMElement step;
     private PropertyManager pMgr;
-    private Logger log = Logger.getLogger(ImgDetailTransaction.class);
+    private Logger log = Logger.getLogger(ImgDetailTransaction.class.getName());
 
 
     /**

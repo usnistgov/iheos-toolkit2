@@ -10,12 +10,14 @@ import gov.nist.toolkit.simcommon.client.SimId
 import gov.nist.toolkit.simcommon.server.SimDb
 import gov.nist.toolkit.utilities.io.Io
 import groovy.transform.TypeChecked
-import org.apache.log4j.Logger
+
+import java.util.logging.Level
+import java.util.logging.Logger
 
 @TypeChecked
 class TestSessionServiceManager {
     public static final TestSessionServiceManager INSTANCE = new TestSessionServiceManager();
-    private static final Logger logger = Logger.getLogger(TestSessionServiceManager.class);
+    private static final Logger logger = Logger.getLogger(TestSessionServiceManager.class.getName());
 
     // create with a nonce name
     static TestSession create() {
@@ -71,7 +73,7 @@ class TestSessionServiceManager {
             if (name.any { String x -> x >= 'A' && x <= 'Z'})
                 throw new Exception("Test Session Name cannot contain upper case")
         } catch (Exception e) {
-            logger.error("addMesaTestSession", e);
+            logger.log(Level.SEVERE, "addMesaTestSession", e);
             throw new Exception(e.getMessage());
         }
         TestSessionFactory.initialize(testSession)
@@ -96,7 +98,7 @@ class TestSessionServiceManager {
             if (testSession == null)
                 return false;
         } catch (Exception e) {
-            logger.error("delMesaTestSession", e);
+            logger.log(Level.SEVERE, "delMesaTestSession", e);
             throw new Exception(e.getMessage());
         }
         File dir = new File(cache.toString() + File.separator + testSession.getValue());

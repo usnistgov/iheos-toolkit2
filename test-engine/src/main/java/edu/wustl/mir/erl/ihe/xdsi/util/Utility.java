@@ -12,12 +12,12 @@ import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 /**
@@ -42,7 +42,7 @@ public class Utility {
     */
    public static final Charset utf8 = Charset.forName("UTF-8");
    
-   private static Logger log = Logger.getLogger(Utility.class);
+   private static Logger log = Logger.getLogger(Utility.class.getName());
 
    /**
     * @return String XDSI root directory path
@@ -220,7 +220,7 @@ public class Utility {
     * @param em error message to log.
     */
    public static void exit(String em) {
-      Utility.getLog().fatal(em);
+      Utility.getLog().severe(em);
       System.exit(1);
    }
    
@@ -229,7 +229,7 @@ public class Utility {
     * @param e Exception to treat as fatal.
     */
    public static void exit(Exception e) {
-      Utility.getLog().fatal(Utility.getEM(e));
+      Utility.getLog().severe(Utility.getEM(e));
       System.exit(1);
    }
    /**
@@ -380,14 +380,14 @@ public class Utility {
     */
    public static void invoked(Logger lg) {
       if (lg == null) lg = getLog();
-      lg.trace(callingClass(3) + "." + callingMethod(3) + " invoked");
+      lg.finer(callingClass(3) + "." + callingMethod(3) + " invoked");
    }
 
    /**
     * Logs standard class method invoked message to system Logger
     */
    public static void invoked() {
-      getLog().trace(callingClass(3) + "." + callingMethod(3) + " invoked");
+      getLog().finer(callingClass(3) + "." + callingMethod(3) + " invoked");
    }
    
    /**

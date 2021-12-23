@@ -79,6 +79,7 @@ import gov.nist.toolkit.testkitutilities.client.SectionDefinitionDAO;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.tk.TkLoader;
 import gov.nist.toolkit.tk.client.TkProps;
+import gov.nist.toolkit.utilities.io.Sha1x;
 import gov.nist.toolkit.utilities.xml.XmlFormatter;
 import gov.nist.toolkit.valregmsg.message.SchemaValidation;
 import gov.nist.toolkit.valregmsg.validation.factories.CommonMessageValidatorFactory;
@@ -101,7 +102,9 @@ import gov.nist.toolkit.xdstools2.shared.RepositoryStatus;
 import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 import gov.nist.toolkit.xdstools2.shared.command.InitializationResponse;
 import gov.nist.toolkit.xdstools2.shared.command.request.*;
-import org.apache.log4j.Logger;
+
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -130,7 +133,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     static String schematronHome = null;
     ServletContext context = null;
 
-    static Logger logger = Logger.getLogger(ToolkitServiceImpl.class);
+    static Logger logger = Logger.getLogger(ToolkitServiceImpl.class.getName());
 
     // Individual service requests from browser are delegated to one of these
 
@@ -155,7 +158,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     private void installCommandContext(CommandContext commandContext) throws Exception {
         if (commandContext.getEnvironmentName() == null) {
             return;
-//            logger.error(ExceptionUtil.here("session: " + getSessionId() + " installCommandContext: environment name is null"));
+//            logger.severe(ExceptionUtil.here("session: " + getSessionId() + " installCommandContext: environment name is null"));
 //            throw new Exception("installCommandContext: environment name is null");
         }
         setEnvironment(commandContext.getEnvironmentName());
@@ -198,7 +201,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         response.setEnvironments(Session.getEnvironmentNames());
         response.setTestSessions(TestSessionServiceManager.INSTANCE.getNames());
         response.setServletContextName(getServletContextName());
-        PropertyServiceManager props = Installation.instance().propertyServiceManager();
+        PropertyServiceManager propertySvcManager = Installation.instance().propertyServiceManager();
         String contextName = Installation.instance().getServletContextName();
         logger.info("contextName is " + contextName);
         if (contextName == null)
@@ -210,7 +213,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         response.setToolkitBaseUrl(Installation.instance().getToolkitBaseUrl());
         logger.info("Toolkit Base URL is " + response.getToolkitBaseUrl());
         response.setWikiBaseUrl(Installation.instance().wikiBaseAddress());
-        response.setTkPropMap(props.getToolkitProperties());
+        response.setTkPropMap(propertySvcManager.getToolkitProperties());
         return response;
     }
 
@@ -1220,6 +1223,20 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     }
 
     @Override
+    public Map<String, String> getAdminToolkitProperties(GetAdminToolkitPropertiesRequest request)  throws Exception {
+        try {
+            String hash = getAdminPasswordHash();
+            if (! "".equals(hash)  && hash.equals(request.getHash())) {
+                return Installation.instance().propertyServiceManager().getAdminToolkitProperties();
+            }
+        } catch (Throwable t) {
+            throw new Exception(t.getMessage());
+        }
+        logger.warning("getAdminToolkitProperties request hash did not match original.");
+        return null;
+    }
+
+    @Override
     public Map<String, String> getOrchestrationProperties(GetOrchestrationPropertiesRequest request) throws Exception {
        installCommandContext(request);
        File orchestrationPropFile = Installation.instance().orchestrationPropertiesFile(request.getTestSession(), request.getActorTypeShortName());
@@ -1279,12 +1296,31 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public String setToolkitProperties(SetToolkitPropertiesRequest request) throws Exception {
 //        installCommandContext(request);
-        return setToolkitPropertiesImpl(request.getProperties());
+        return setToolkitPropertiesImpl(request);
     }
 
+    /*
     @Override
     public boolean isAdminPasswordValid(IsAdminPasswordValidRequest request) throws Exception {
         return (request.getPasswordToValidate().equals(Installation.instance().propertyServiceManager().getAdminPassword()));
+    }
+     */
+
+    @Override
+    public String getAdminPasswordHash(GetAdminPasswordHashRequest request) throws Exception {
+         if (request != null && request.getPassword() != null && !"".equals(request.getPassword())) {
+             String hash = Sha1x.SHA256(request.getPassword());
+             if (hash.equals(getAdminPasswordHash())) {
+                 return hash;
+             }
+         }
+         logger.warning("getAdminPasswordHash: hash value did not match.");
+         return "";
+    }
+
+    private String getAdminPasswordHash() throws Exception {
+        String adminPassword = Installation.instance().propertyServiceManager().getAdminPassword();
+        return Sha1x.SHA256(adminPassword);
     }
 
     @Override
@@ -1385,7 +1421,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         try {
             return SimDb.getFullSimId(request.getSimId());
         } catch (Exception e) {
-            logger.error("getFullSimId - error - " + e.getMessage());
+            logger.severe("getFullSimId - error - " + e.getMessage());
             throw e;
         }
     }
@@ -1594,7 +1630,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         try {
             return new SimulatorServiceManager(session()).getSimulatorEventRequestAsResult(request.getTransactionInstance());
         } catch (Throwable e) {
-            logger.error(ExceptionUtil.exception_details(e));
+            logger.severe(ExceptionUtil.exception_details(e));
             throw e;
         }
     }
@@ -1604,7 +1640,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         try {
             return new SimulatorServiceManager(session()).getSimulatorEventResponseAsResult(request.getTransactionInstance());
         } catch (Throwable e) {
-            logger.error(ExceptionUtil.exception_details(e));
+            logger.severe(ExceptionUtil.exception_details(e));
             throw e;
         }
     }
@@ -1635,40 +1671,53 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 
     // Other support calls
 
-    public String setToolkitPropertiesImpl(Map<String, String> props)
+    public String setToolkitPropertiesImpl(SetToolkitPropertiesRequest request)
             throws Exception {
-        logger.debug(": " + "setToolkitProperties");
-        logger.debug(describeProperties(props));
-        try {
-            // verify External_Cache points to a writable directory
-            String eCache = props.get("External_Cache");
-            File eCacheFile = new File(eCache);
-            if (!eCacheFile.exists() || !eCacheFile.isDirectory())
-                throw new IOException("Cannot save toolkit properties: property External_Cache does not point to an existing directory");
-            if (!eCacheFile.canWrite())
-                throw new IOException("Cannot save toolkit properties: property External_Cache points to a directory that is not writable");
+        Map<String, String> props = request.getProperties();
+        logger.fine(": " + "setToolkitProperties");
+
+        String hash = getAdminPasswordHash();
+        if (! "".equals(hash) && hash.equals(request.getHash())) {
+            logger.fine(describeProperties(props));
+            try {
+                // verify External_Cache points to a writable directory
+                String eCache = props.get("External_Cache");
+                File eCacheFile = new File(eCache);
+                if (!eCacheFile.exists() || !eCacheFile.isDirectory())
+                    throw new IOException("Cannot save toolkit properties: property External_Cache does not point to an existing directory");
+                if (!eCacheFile.canWrite())
+                    throw new IOException("Cannot save toolkit properties: property External_Cache points to a directory that is not writable");
 
 //            File warhome = Installation.instance().warHome();
-            new PropertyServiceManager().getPropertyManager().update(props);
-            reloadPropertyFile();
+                new PropertyServiceManager().getPropertyManager().update(props);
+                logger.info("toolkit.properties file was updated.");
+                reloadPropertyFile();
 //		Installation.instance().externalCache(eCacheFile);
-            ExternalCacheManager.reinitialize(eCacheFile);
-            try {
-                TkLoader.tkProps(Installation.instance().getTkPropsFile());
-            } catch (Throwable t) {
+                ExternalCacheManager.reinitialize(eCacheFile);
+                try {
+                    TkLoader.tkProps(Installation.instance().getTkPropsFile());
+                } catch (Throwable t) {
 
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new Exception(ExceptionUtil.exception_details(e));
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new Exception(ExceptionUtil.exception_details(e));
+
+        } else {
+            logger.warning("setToolkitPropertiesImpl Hash does not match.");
         }
+
         return "";
     }
 
     String describeProperties(Map<String, String> props) {
         StringBuilder buf = new StringBuilder();
 
-        for (String key : props.keySet()) buf.append(key).append(" = ").append(props.get(key)).append("\n");
+        for (String key : props.keySet()) {
+            if (! key.equals(PropertyManager.ADMIN_PASSWORD))
+            buf.append(key).append(" = ").append(props.get(key)).append("\n");
+        }
 
         return buf.toString();
     }
@@ -1915,7 +1964,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
             repIndex.save();
             return true;
         } else {
-            logger.error("setOdSupplyStateIndex Error: StoredDocument is null for the requested DocumentEntry UniqueId:" + request.getDed().getUniqueId());
+            logger.severe("setOdSupplyStateIndex Error: StoredDocument is null for the requested DocumentEntry UniqueId:" + request.getDed().getUniqueId());
         }
 
        return false;
@@ -2024,7 +2073,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<DatasetModel> getAllDatasets(CommandContext context) throws Exception {
         installCommandContext(context);
-        logger.debug(sessionID + ": getAllDatasets()");
+        logger.fine(sessionID + ": getAllDatasets()");
         return DatasetFactory.getAllDatasets();
     }
 
@@ -2032,7 +2081,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<Result> fhirCreate(FhirCreateRequest request) throws Exception {
         installCommandContext(request);
-        logger.debug(sessionID + ": fhirCreate()");
+        logger.fine(sessionID + ": fhirCreate()");
         request.getSite().testSession = request.getTestSession();
         List<Result> results = new FhirServiceManager(session()).create(request.getSite(), request.getDatasetElement());
         return results;
@@ -2044,7 +2093,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<Result> fhirTransaction(FhirTransactionRequest request) throws Exception {
         installCommandContext(request);
-        logger.debug(sessionID + ": fhirTransaction()");
+        logger.fine(sessionID + ": fhirTransaction()");
         request.getSite().testSession = request.getTestSession();
         List<Result> results = new FhirServiceManager(session()).transaction(request.getSite(), request.getDatasetElement());
         return results;
@@ -2053,7 +2102,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<Result> fhirSearch(FhirSearchRequest request) throws Exception {
         installCommandContext(request);
-        logger.debug(sessionID + ": fhirSearch()");
+        logger.fine(sessionID + ": fhirSearch()");
         request.getSite().testSession = request.getTestSession();
         List<Result> results = new FhirServiceManager(session()).search(request.getSite(), request.getResourceTypeName(), request.getCodesSpec());
         return results;
@@ -2062,7 +2111,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public List<Result> fhirRead(FhirReadRequest request) throws Exception {
         installCommandContext(request);
-        logger.debug(sessionID + ": fhirRead()");
+        logger.fine(sessionID + ": fhirRead()");
         request.getSite().testSession = request.getTestSession();
         List<Result> results = new FhirServiceManager(session()).read(request.getSite(), request.getReference());
         return results;
@@ -2182,4 +2231,14 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return clientMc;
     }
 
+    @Override
+    public boolean reloadToolkitLogging(CommandContext context) {
+        try {
+            SimServlet.initToolkitLoggingProperties();
+            return true;
+        } catch (Exception ex) {
+            System.err.println("reloadToolkitLogging Exception: " + ex.toString());
+            return false;
+        }
+    }
 }

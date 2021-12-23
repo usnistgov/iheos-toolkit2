@@ -1,13 +1,13 @@
 package gov.nist.toolkit.restTools
 
-import org.apache.log4j.Logger
+import java.util.logging.*
 
 import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 class RestMessageDisplayServlet extends HttpServlet {
-    static logger = Logger.getLogger(RestMessageDisplayServlet);
+    static logger = Logger.getLogger(RestMessageDisplayServlet.class.getName());
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) {

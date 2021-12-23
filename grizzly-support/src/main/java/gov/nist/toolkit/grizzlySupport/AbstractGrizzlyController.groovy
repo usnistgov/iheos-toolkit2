@@ -7,7 +7,7 @@ import gov.nist.toolkit.fhir.simulators.servlet.HttpSimServlet
 import gov.nist.toolkit.fhir.simulators.servlet.SimServlet
 
 import groovy.transform.TypeChecked
-import org.apache.log4j.Logger
+import java.util.logging.*
 import org.glassfish.grizzly.http.server.HttpServer
 import org.glassfish.grizzly.servlet.ServletRegistration
 import org.glassfish.grizzly.servlet.WebappContext
@@ -24,7 +24,7 @@ import org.glassfish.jersey.server.model.ResourceMethod
  */
 @TypeChecked
 abstract public class AbstractGrizzlyController {
-    static Logger logger = Logger.getLogger(AbstractGrizzlyController.class);
+    static Logger logger = Logger.getLogger(AbstractGrizzlyController.class.getName());
     // Base URI the Grizzly HTTP server will listen on
     public static final String BASE_URI = "http://localhost:%s/xdstools2/rest/";
     HttpServer server = null;
@@ -50,14 +50,14 @@ abstract public class AbstractGrizzlyController {
         for (Resource r : config.getResources()) {
             for (ResourceMethod m : r.getAllMethods()) {
                 loaded = true;
-                logger.info(m);
+                logger.info(m.toString());
             }
         }
         for (Class<?> c : rc.getClasses()) {
             loaded = true;
             logger.info("Resource Loaded - " + c.getName());
         }
-        if (!loaded) logger.fatal("No resources loaded");
+        if (!loaded) logger.severe("No resources loaded");
         logger.info("Started...");
         return this;
     }

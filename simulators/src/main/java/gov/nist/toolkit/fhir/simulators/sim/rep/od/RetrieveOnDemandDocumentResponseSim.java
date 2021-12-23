@@ -23,12 +23,12 @@ import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.util.*;
 
 public class RetrieveOnDemandDocumentResponseSim extends TransactionSimulator implements RegistryResponseGeneratingSim {
-	static Logger logger = Logger.getLogger(RetrieveOnDemandDocumentResponseSim.class);
+	static Logger logger = Logger.getLogger(RetrieveOnDemandDocumentResponseSim.class.getName());
 	DsSimCommon dsSimCommon;
 	List<String> documentUids;
 	List<String> dynamicDocumentUids = new ArrayList<String>();
@@ -87,7 +87,7 @@ public class RetrieveOnDemandDocumentResponseSim extends TransactionSimulator im
 
 			for (StoredDocument document : documents) {
 				if (document.getEntryDetail()==null) {
-					logger.error("Null document entry in ODDS!  StoredDocument Uid: " + document.getUid());
+					logger.severe("Null document entry in ODDS!  StoredDocument Uid: " + document.getUid());
 					break;
 				}
 

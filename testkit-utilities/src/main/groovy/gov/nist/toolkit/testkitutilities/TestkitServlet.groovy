@@ -2,8 +2,7 @@ package gov.nist.toolkit.testkitutilities
 
 import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.installation.shared.TestSession
-import org.apache.log4j.BasicConfigurator
-import org.apache.log4j.Logger
+import java.util.logging.*
 
 import javax.servlet.ServletConfig
 import javax.servlet.ServletException
@@ -14,7 +13,7 @@ import javax.servlet.http.HttpServletResponse
  *
  */
 class TestkitServlet extends HttpServlet {
-    static final Logger logger = Logger.getLogger(TestkitServlet.class);
+    static final Logger logger = Logger.getLogger(TestkitServlet.class.getName());
     ServletConfig config
     def environment = 'default'
     def testSession = 'default'
@@ -25,7 +24,7 @@ class TestkitServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         this.config = config
 
-        BasicConfigurator.configure();
+//        BasicConfigurator.configure();
 
 
         //this.init()
@@ -50,7 +49,7 @@ class TestkitServlet extends HttpServlet {
 //            }
 //            Installation.instance().warHome(warHome)
 //        } catch (Throwable e) {
-//            logger.fatal(ExceptionUtil.exception_details(e, 'Initialization failed'))
+//            logger.severe(ExceptionUtil.exception_details(e, 'Initialization failed'))
 //        }
 
         searchPath = new TestKitSearchPath(environment, new TestSession(testSession))

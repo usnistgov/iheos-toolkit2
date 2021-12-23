@@ -42,7 +42,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.commons.httpclient.protocol.Protocol;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -69,11 +69,8 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class Soap implements SoapInterface {
-	// TODO: Two loggers ??
 
-    static Logger logger = Logger.getLogger(Soap.class);
-
-	private static Logger log = Logger.getLogger(Soap.class);
+    private static Logger logger = Logger.getLogger(Soap.class.getName());
 
 	int timeout = 1000 * 60 * 60;
 	ServiceClient serviceClient = null;
@@ -559,7 +556,7 @@ public class Soap implements SoapInterface {
 
 
 
-		log.info(String.format("******************************** BEFORE SOAP SEND to %s ****************************", endpoint));
+		logger.info(String.format("******************************** BEFORE SOAP SEND to %s ****************************", endpoint));
         AxisFault soapFault = null;
 		OMException networkFault = null;
         long start = 0;
@@ -567,15 +564,15 @@ public class Soap implements SoapInterface {
 		   start = System.nanoTime();
 			operationClient.execute(block); // execute sync or async
         } catch (AxisFault e) {
-           logger.debug("$$$$$ AxisFault: with timeout of " + timeout + ", Elapsed time: " + TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start) / 1000.0 + " milliseconds");
+           logger.fine("$$$$$ AxisFault: with timeout of " + timeout + ", Elapsed time: " + TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start) / 1000.0 + " milliseconds");
            soapFault = e;
-           logger.debug(ExceptionUtil.exception_details(soapFault));
+           logger.fine(ExceptionUtil.exception_details(soapFault));
             MessageContext inMsgCtx = getInputMessageContext();
             OMElement soapBody = inMsgCtx.getEnvelope().getBody();
             result = soapBody.getFirstElement();
             logger.info(new OMFormatter(result).toString());
         } catch (OMException e) {
-			logger.debug("org.apache.axiom.om.OMException fault: " + e.toString());
+			logger.fine("org.apache.axiom.om.OMException fault: " + e.toString());
 			networkFault = e;
 			SOAPEnvelope myEnvelope = getInputMessageContext().getEnvelope();
 			OMElement soapBody = myEnvelope.getBody();
@@ -585,7 +582,7 @@ public class Soap implements SoapInterface {
 			//			logger.info(new OMFormatter(result).toString());
         }
         finally {
-			log.info(String.format("******************************** AFTER SOAP SEND to %s ****************************", endpoint));
+			logger.info(String.format("******************************** AFTER SOAP SEND to %s ****************************", endpoint));
 
 			if (async)
 				waitTillDone();
@@ -611,7 +608,7 @@ public class Soap implements SoapInterface {
 			try {
 				inMsgCtx.getEnvelope().build();
 			} catch (NullPointerException e) {
-            	log.error(e);
+            	logger.throwing("Soap", "soapCallWithWSSEC", e);
 				throw new XdsInternalException("Toolkit Exception: TLS handshake failed or service not available on this host:port (" + endpoint + ")", e);
 			}
 
@@ -719,7 +716,7 @@ public class Soap implements SoapInterface {
 
 		// operationClient.reset();
 
-        logger.info("soepCall done");
+        logger.info("soapCall done");
 		return result;
 
 	}

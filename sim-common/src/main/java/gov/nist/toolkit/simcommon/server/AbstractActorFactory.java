@@ -22,7 +22,7 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.NoSimulatorException;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import org.apache.http.annotation.Obsolete;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +37,7 @@ import java.util.*;
  *
  */
 public abstract class AbstractActorFactory {
-	static Logger logger = Logger.getLogger(AbstractActorFactory.class);
+	static Logger logger = Logger.getLogger(AbstractActorFactory.class.getName());
 
 	/*
 	 *
@@ -73,7 +73,7 @@ public abstract class AbstractActorFactory {
 				logger.info("Loading ActorType " + actorType.getName());
 				theFactories.put(actorType.getName(), inf);
 			} catch (Throwable t) {
-				logger.fatal("AbstractActorFactory: Cannot load factory class for Actor Type " + actorType.getName() + " - " + ExceptionUtil.exception_details(t));
+				logger.severe("AbstractActorFactory: Cannot load factory class for Actor Type " + actorType.getName() + " - " + ExceptionUtil.exception_details(t));
 			}
 		}
 		initialized = true;
@@ -380,13 +380,13 @@ public abstract class AbstractActorFactory {
         } catch (NoSimException e) {
 			return;
 		} catch (ClassNotFoundException e) {
-			logger.error(ExceptionUtil.exception_details(e));
+			logger.severe(ExceptionUtil.exception_details(e));
 		} catch (InvocationTargetException e) {
-			logger.error(ExceptionUtil.exception_details(e));
+			logger.severe(ExceptionUtil.exception_details(e));
 		} catch (InstantiationException e) {
-			logger.error(ExceptionUtil.exception_details(e));
+			logger.severe(ExceptionUtil.exception_details(e));
 		} catch (IllegalAccessException e) {
-			logger.error(ExceptionUtil.exception_details(e));
+			logger.severe(ExceptionUtil.exception_details(e));
 		}
 
 //		AbstractActorFactory actorFactory = getActorFactory(config);

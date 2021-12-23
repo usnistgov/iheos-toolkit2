@@ -119,7 +119,7 @@ class MessageConsumerThread implements Runnable
      */
     public static void main(String[] args)
     {
-        System.setProperty("FFMQ_BASE", "..");
+        System.setProperty("FFMQ_BASE", "src/main");
        try { 
 
 

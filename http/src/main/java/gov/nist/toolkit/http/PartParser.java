@@ -1,6 +1,6 @@
 package gov.nist.toolkit.http;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
@@ -9,18 +9,18 @@ import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 
 public class PartParser extends HttpParser {
 	Part part = new Part();
-	static final Logger logger = Logger.getLogger(PartParser.class);
+	static final Logger logger = Logger.getLogger(PartParser.class.getName());
 	
 	public PartParser(byte[] msg) throws HttpParseException, HttpHeaderParseException, ParseException {
 //		super(msg);
-		logger.debug("new PartParser(" + this.toString() + ")");
+		logger.fine("new PartParser(" + this.toString() + ")");
 		init(msg, part, er);
 		initPart();
 	}
 	
 	public PartParser(byte[] msg, ErrorRecorder er, boolean appendixV) throws HttpParseException, HttpHeaderParseException, ParseException {
 //		super(msg,er);
-		logger.debug("new PartParser(" + this.toString() + ")");
+		logger.fine("new PartParser(" + this.toString() + ")");
 		this.er = er;
 		this.appendixV = appendixV;
 		String msgAsString = new String(msg);
@@ -35,7 +35,7 @@ public class PartParser extends HttpParser {
 		try {
 			HttpHeader contentIDHeader = new HttpHeader(contentIDHeaderString, er);
 			part.contentID = contentIDHeader.getValue();
-			logger.debug("new PartParser(" + this.toString() + ") - contentId = " + part.contentID);
+			logger.fine("new PartParser(" + this.toString() + ") - contentId = " + part.contentID);
 			if (part.contentID == null || part.contentID.equals(""))
 				throw new HttpParseException("Part has no Content-ID header");
 			part.contentID = part.contentID.trim();

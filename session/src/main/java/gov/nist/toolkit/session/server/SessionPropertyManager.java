@@ -1,6 +1,6 @@
 package gov.nist.toolkit.session.server;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.*;
 import java.util.HashMap;
@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Properties;
 
 public class SessionPropertyManager {
-	static Logger logger = Logger.getLogger(SessionPropertyManager.class);
+	static Logger logger = Logger.getLogger(SessionPropertyManager.class.getName());
 
 	String propFile;
 	Properties properties = null;

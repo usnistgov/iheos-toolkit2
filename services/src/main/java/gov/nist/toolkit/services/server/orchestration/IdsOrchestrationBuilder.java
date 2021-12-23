@@ -13,7 +13,7 @@ import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.codehaus.plexus.util.StringUtils;
 
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ import java.util.List;
 */
 
 class IdsOrchestrationBuilder extends AbstractOrchestrationBuilder {
-   static Logger log = Logger.getLogger(IdsOrchestrationBuilder.class);   
+   static Logger log = Logger.getLogger(IdsOrchestrationBuilder.class.getName());
 
    static final String sutSimulatorName = "simulator_ids";
    public static final String rrSimulatorName = "rr";
@@ -56,7 +56,7 @@ class IdsOrchestrationBuilder extends AbstractOrchestrationBuilder {
                  SimId simId = new SimId(testSession, sim.name(), sim.actorType.getName(), env);
                  if (!request.isUseExistingSimulator() || !api.simulatorExists(simId)) {
                  api.deleteSimulatorIfItExists(simId);
-                 log.debug("Creating " + simId.toString());
+                 log.fine("Creating " + simId.toString());
                  simConfig = api.createSimulator(simId).getConfig(0);
                  // plug our special parameter values
                  for (SimulatorConfigElement chg : sim.elements) {
@@ -144,7 +144,7 @@ class IdsOrchestrationBuilder extends AbstractOrchestrationBuilder {
                        SimulatorProperties.storedQueryEndpoint,
                     };
                     default:
-                       log.error("Unknown ActorType");
+                       log.severe("Unknown ActorType");
               }
               return new String[0];
            }

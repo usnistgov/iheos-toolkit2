@@ -17,7 +17,7 @@ import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,7 +56,7 @@ public class MetadataCollection implements RegistryValidationInterface, Serializ
 		folCollection.setDeleting(ids);
 	}
 
-	private Logger logger() { return Logger.getLogger(MetadataCollection.class); }
+	private Logger logger() { return Logger.getLogger(MetadataCollection.class.getName()); }
 
 	// create a delta for this collection
 	public MetadataCollection mkDelta() {
@@ -573,7 +573,7 @@ public class MetadataCollection implements RegistryValidationInterface, Serializ
 		String id = Metadata.getId(ele);
 		Ro ro = getRo(id);
 		if (ro == null) {
-			logger().debug("model " + id + " not found in metadata index");
+			logger().severe("model " + id + " not found in metadata index");
 			throw new XdsInternalException("MetadataCollection#storeMetadata: index corrupted");
 		}
 

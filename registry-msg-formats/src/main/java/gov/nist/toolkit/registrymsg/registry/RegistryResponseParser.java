@@ -7,7 +7,7 @@ import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.xpath.AXIOMXPath;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.jaxen.JaxenException;
 
 import javax.xml.namespace.QName;
@@ -18,7 +18,7 @@ import java.util.List;
 public class RegistryResponseParser {
 	OMElement response_element;
 	RegistryResponse response;
-	static Logger logger = Logger.getLogger(RegistryResponseParser.class);
+	static Logger logger = Logger.getLogger(RegistryResponseParser.class.getName());
 
 	public class RegistryResponse {
 		boolean success;

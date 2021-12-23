@@ -59,7 +59,9 @@ import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
@@ -83,17 +85,13 @@ import java.util.Set;
 public class XdsTestServiceManager extends CommonService {
 	private CodesConfiguration codesConfiguration = null;
 	public Session session;
-	static Logger logger = Logger.getLogger(XdsTestServiceManager.class);
+	static Logger logger = Logger.getLogger(XdsTestServiceManager.class.getName());
 	static boolean allCiphersEnabled = false;
 
 	public XdsTestServiceManager(Session session)  {
 		this.session = session;
 //		if (session != null)
 //			logger.info("XdsTestServiceManager: using session " + session.getId());
-	}
-
-	public static Logger getLogger() {
-		return logger;
 	}
 
 
@@ -275,7 +273,7 @@ public class XdsTestServiceManager extends CommonService {
 	 */
 	public Map<String, Result> getTestResults(List<TestInstance> testInstances, String environmentName, TestSession testSession) {
 		if (session != null)
-			logger.debug(session.id() + ": " + "getTestResults() ids=" + testInstances + " testSession=" + testSession);
+			logger.fine(session.id() + ": " + "getTestResults() ids=" + testInstances + " testSession=" + testSession);
 
 		Map<String, Result> map = new HashMap<String, Result>();
 
@@ -305,7 +303,7 @@ public class XdsTestServiceManager extends CommonService {
 	public List<TestOverviewDTO> delTestResults(List<TestInstance> testInstances, String environmentName, TestSession testSession) {
 		List<TestOverviewDTO> testOverviewDTOs = new ArrayList<>();
 		if (session != null)
-			logger.debug(session.id() + ": " + "delTestResults() ids=" + testInstances + " testSession=" + testSession);
+			logger.fine(session.id() + ": " + "delTestResults() ids=" + testInstances + " testSession=" + testSession);
 		TestKitSearchPath testKitSearchPath = new TestKitSearchPath(environmentName, testSession);
 		ResultPersistence rp = new ResultPersistence();
 		for (TestInstance testInstance : testInstances) {
@@ -345,17 +343,17 @@ public class XdsTestServiceManager extends CommonService {
 	 */
 	public TestLogs getRawLogs(TestInstance testInstance) {
 		if (testInstance == null) {
-			logger.error("XdsTestServiceManager:getRawLogs() for testInstance null");
+			logger.severe("XdsTestServiceManager:getRawLogs() for testInstance null");
 			return new TestLogs();
 		}
 		if (session != null)
-			logger.debug(session.id() + ": " + "getRawLogs for " + testInstance.describe());
+			logger.fine(session.id() + ": " + "getRawLogs for " + testInstance.describe());
 
 		LogMapDTO logMapDTO;
 		try {
 			logMapDTO = LogRepository.logIn(testInstance);
 		} catch (Exception e) {
-			logger.error(ExceptionUtil.exception_details(e, "Logs not available for " + testInstance));
+			logger.severe(ExceptionUtil.exception_details(e, "Logs not available for " + testInstance));
 			TestLogs testLogs = new TestLogs();
 			testLogs.testInstance = testInstance;
 			testLogs.assertionResult = new AssertionResult(
@@ -371,7 +369,7 @@ public class XdsTestServiceManager extends CommonService {
 		} catch (Exception e) {
 			TestLogs testLogs = new TestLogs();
 			String details = ExceptionUtil.exception_details(e);
-			logger.error(details);
+			logger.severe(details);
 			testLogs.assertionResult = new AssertionResult(details,false);
 			return testLogs;
 		}
@@ -445,7 +443,7 @@ public class XdsTestServiceManager extends CommonService {
 
 	public Map<String, String> getCollection(String collectionSetName, TestCollectionCode testCollectionId) throws Exception  {
 		if (session != null)
-			logger.debug(session.id() + ": " + "getCollection " + collectionSetName + ":" + testCollectionId);
+			logger.fine(session.id() + ": " + "getCollection " + collectionSetName + ":" + testCollectionId);
 		try {
 			System.out.println("ENVIRONMENT: "+session.getCurrentEnvName()+", SESSION: "+session.getTestSession());
 			Map<String,String> collection=new HashMap<String,String>();
@@ -464,7 +462,7 @@ public class XdsTestServiceManager extends CommonService {
 				}
 			}
 		} catch (Exception e) {
-			logger.error("getCollection", e);
+			logger.log(Level.SEVERE,"getCollection", e);
 			throw new Exception(e.getMessage());
 		}
 		// collection was not found -- oops
@@ -483,11 +481,11 @@ public class XdsTestServiceManager extends CommonService {
 	public List<TestInstance> getCollectionMembers(String collectionSetName, TestCollectionCode testCollectionId) throws Exception {
 		try {
 			if (session != null)
-				logger.debug(session.id() + ": " + "getCollectionMembers " + collectionSetName + ":" + testCollectionId);
+				logger.fine(session.id() + ": " + "getCollectionMembers " + collectionSetName + ":" + testCollectionId);
 			TestKitSearchPath searchPath = session.getTestkitSearchPath();
 			Collection<String> collec =  searchPath.getCollectionMembers(collectionSetName, testCollectionId);
 			if (session != null)
-				logger.debug("Return " + collec.size() + " tests");
+				logger.fine("Return " + collec.size() + " tests");
 
 			List<TestInstance> tis = new ArrayList<>();
 			for (String testId : collec) {
@@ -520,7 +518,7 @@ public class XdsTestServiceManager extends CommonService {
 			}
 			return tis;
 		} catch (Exception e) {
-			logger.error(ExceptionUtil.exception_details(e, "getCollectionsMembers error: "));
+			logger.severe(ExceptionUtil.exception_details(e, "getCollectionsMembers error: "));
 			throw e;
 		}
 	}
@@ -531,19 +529,19 @@ public class XdsTestServiceManager extends CommonService {
 	}
 
 	public String getTestReadme(String test) throws Exception {
-		logger.debug(session.id() + ": " + "getTestReadme " + test);
+		logger.fine(session.id() + ": " + "getTestReadme " + test);
 		try {
 			TestDefinition tt = session.getTestkitSearchPath().getTestDefinition(test);
 			return tt.getFullTestReadme();
 		} catch (Exception e) {
-			logger.error("getTestReadme", e);
+			logger.log(Level.SEVERE, "getTestReadme", e);
 			throw new Exception(e.getMessage());
 		}
 	}
 
 	public List<String> getTestSections(String test) throws Exception   {
 //		if (session != null)
-//			logger.debug(session.id() + ": " + "getTestSectionsReferencedInUseReports " + test);
+//			logger.fine(session.id() + ": " + "getTestSectionsReferencedInUseReports " + test);
 		TestKitSearchPath searchPath = session.getTestkitSearchPath();
 		TestDefinition def = session.getTestkitSearchPath().getTestDefinition(test);
 		return def.getSectionIndex();
@@ -577,7 +575,7 @@ public class XdsTestServiceManager extends CommonService {
 
 	public boolean isPrivateMesaTesting() {
 		if (session != null)
-			logger.debug(session.id() + ": " + "isPrivateMesaTesting");
+			logger.fine(session.id() + ": " + "isPrivateMesaTesting");
 		return Installation.instance().propertyServiceManager().isTestLogCachePrivate();
 	}
 
@@ -604,7 +602,7 @@ public class XdsTestServiceManager extends CommonService {
 	public TestPartFileDTO getTestplanDTO(TestInstance testInstance, String section) throws Exception {
 		try {
 			if (session != null)
-				logger.debug(session.id() + ": " + "getTestplanAsText");
+				logger.fine(session.id() + ": " + "getTestplanAsText");
 
 			File tsFile;
 			OMElement testPlanEle;
@@ -707,7 +705,7 @@ public class XdsTestServiceManager extends CommonService {
 
 	public List<TestInstance> getTestlogListing(String sessionName) throws Exception {
 		if (session != null)
-			logger.debug(session.id() + ": " + "getTestlogListing(" + sessionName + ")");
+			logger.fine(session.id() + ": " + "getTestlogListing(" + sessionName + ")");
 
 		if (Installation.instance().propertyServiceManager().isMultiuserMode())
 			throw new ToolkitRuntimeException("Function getTestlogListing() not available in MulitUserMode");
@@ -741,7 +739,7 @@ public class XdsTestServiceManager extends CommonService {
 				try {
 					results.add(getTestOverview(testSession, testInstance));
 				} catch (Exception e) {
-					logger.error("Test " + testInstance + " does not exist");
+					logger.severe("Test " + testInstance + " does not exist");
 				}
 			}
 		} catch (Exception e) {
@@ -765,7 +763,7 @@ public class XdsTestServiceManager extends CommonService {
 	public TestOverviewDTO getTestOverview(TestSession testSession, TestInstance testInstance) throws Exception {
 		try {
 			//if (session != null)
-			//logger.debug(session.id() + ": " + "getTestOverview(" + testInstance + ")");
+			//logger.fine(session.id() + ": " + "getTestOverview(" + testInstance + ")");
 
 			testInstance.setTestSession(testSession);
 
@@ -816,7 +814,7 @@ public class XdsTestServiceManager extends CommonService {
 	public LogFileContentDTO getTestLogDetails(TestSession testSession, TestInstance testInstance) throws Exception {
 		try {
 			if (session != null)
-				logger.debug(session.id() + ": " + "getTestOverview(" + testInstance + ")");
+				logger.fine(session.id() + ": " + "getTestOverview(" + testInstance + ")");
 
 			testInstance.setTestSession(testSession);
 
@@ -951,7 +949,7 @@ public class XdsTestServiceManager extends CommonService {
 
 	public CodesResult getCodesConfiguration() {
 		if (session != null)
-			logger.debug(session.id() + ": " + "currentCodesConfiguration");
+			logger.fine(session.id() + ": " + "currentCodesConfiguration");
 
 		CodesResult codesResult = new CodesResult();
 
@@ -1082,7 +1080,7 @@ public class XdsTestServiceManager extends CommonService {
 									}
 //								}
 						} catch (Exception e) {
-							logger.warn("Cannot convert logs for section " + section + " for UI");
+							logger.warning("Cannot convert logs for section " + section + " for UI");
 						}
 
 						boolean inResponse = false;
@@ -1103,7 +1101,7 @@ public class XdsTestServiceManager extends CommonService {
 //								}
 								inResponse = true;
 							} catch (Exception e) {
-								logger.warn("Cannot convert logs for section " + section + " for UI");
+								logger.warning("Cannot convert logs for section " + section + " for UI");
 							}
 						}
 
@@ -1130,7 +1128,7 @@ public class XdsTestServiceManager extends CommonService {
 											String rrStatusValue = XmlUtil.firstDecendentWithLocalName(rdsr, "RegistryResponse").getAttributeValue(new QName("status"));
 											stepResult.setRegistryResponseStatus(rrStatusValue);
 										} catch (Throwable t) {
-											logger.error(t.toString());
+											logger.severe(t.toString());
 										}
 
 										RetrievedDocumentsModel rdm = new RetrieveResponseParser(rdsr).get();
@@ -1193,14 +1191,14 @@ public class XdsTestServiceManager extends CommonService {
 
 
 	public List<String> getTestdataSetListing(String environmentName,TestSession testSession,String testdataSetName) {
-		logger.debug(session.id() + ": " + "getTestdataSetListing:" + testdataSetName);
+		logger.fine(session.id() + ": " + "getTestdataSetListing:" + testdataSetName);
 		TestKitSearchPath searchPath = new TestKitSearchPath(environmentName, testSession);
 		Collection<String> listing = searchPath.getTestdataSetListing(testdataSetName);
 		return new ArrayList<String>(listing);
 	}
 
 	public Map<String, String> getCollectionNames(String collectionSetName) throws Exception  {
-		logger.debug(session.id() + ": " + "getCollectionNames(" + collectionSetName + ")");
+		logger.fine(session.id() + ": " + "getCollectionNames(" + collectionSetName + ")");
 		Map<String,String> collectionNames=new HashMap<String,String>();
 		List<File> testkitsFiles=Installation.instance().testkitFiles(session.getCurrentEnvName(),session.getTestSession());
 		for (File testkitFile:testkitsFiles){
@@ -1217,7 +1215,7 @@ public class XdsTestServiceManager extends CommonService {
 
 	public List<Result> sendPidToRegistry(SiteSpec site, List<Pid> pid, String environmentName, TestSession testSession) throws Exception {
 		if (session != null)
-			logger.debug(session.id() + ": " + "sendPidToRegistry(" + pid + ")");
+			logger.fine(session.id() + ": " + "sendPidToRegistry(" + pid + ")");
 
 		List<Result> results = new ArrayList<>();
 		session.setSiteSpec(site);
@@ -1258,14 +1256,14 @@ public class XdsTestServiceManager extends CommonService {
 //		// ----- Retrieve list of test instance numbers -----
 //		// TODO is there a case where sessionName might not be found in the system (bug?)
 //		if (sessionName == null) {
-//			logger.error("Could not retrieve the list of test instance numbers because the user session is null");
+//			logger.severe("Could not retrieve the list of test instance numbers because the user session is null");
 //			// TODO throw new TestRetrievalException
 //		}
 //		else { testList = getTestlogListing(sessionName); }
 //
 //		// ----- Retrieve test log results for each test instance -----
 //		if (testList == null){
-//			logger.error("Could not retrieve the log results");
+//			logger.severe("Could not retrieve the log results");
 //			// TODO throw new TestRetrievalException
 //			}
 //		else {

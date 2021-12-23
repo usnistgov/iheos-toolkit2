@@ -16,7 +16,7 @@ import gov.nist.toolkit.testkitutilities.TestDefinition;
 import gov.nist.toolkit.testkitutilities.TestKit;
 import gov.nist.toolkit.testkitutilities.TestKitSearchPath;
 import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import javax.net.ssl.*;
 import javax.security.cert.CertificateException;
@@ -46,7 +46,7 @@ public class Xdstest2 {
 	private List<TestLogDetails> testLogDetails;
 	private SecurityParams tki;
 	public boolean involvesMetadata = false;   // affects logging
-	static Logger logger = Logger.getLogger(Xdstest2.class);
+	static Logger logger = Logger.getLogger(Xdstest2.class.getName());
 
 
 	/**
@@ -262,7 +262,7 @@ public class Xdstest2 {
 	 */
 	public boolean run(Map<String, String> externalLinkage, Map<String, Object> externalLinkage2,  boolean stopOnFirstFailure, TransactionSettings ts) throws Exception {
 		xt.stopOnFirstFailure = stopOnFirstFailure;
-		logger.debug("Running " + testInstance.getId());
+		logger.fine("Running " + testInstance.getId());
 		testLogDetails = xt.runAndReturnLogs(externalLinkage, externalLinkage2, ts, ts.writeLogs);
 		if (testLogDetails == null)
 			throw new Exception("Xdstest2#run: runAndReturnLogs return null (testSpecs)");

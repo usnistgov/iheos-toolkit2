@@ -1,7 +1,7 @@
 package gov.nist.toolkit.adt;
 
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -9,7 +9,7 @@ import java.util.List;
 
 public class AdtMessage {
     String input;
-    static Logger logger = Logger.getLogger(AdtSocketListener.class);
+    static Logger logger = Logger.getLogger(AdtSocketListener.class.getName());
 
     static public byte[] end = { 0x1c, 0x0d };
 

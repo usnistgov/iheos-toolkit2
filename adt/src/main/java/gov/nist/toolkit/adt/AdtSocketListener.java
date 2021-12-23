@@ -5,7 +5,9 @@ import ca.uhn.hl7v2.model.*;
 import ca.uhn.hl7v2.parser.PipeParser;
 import ca.uhn.hl7v2.util.Terser;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import org.apache.log4j.Logger;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,7 +25,7 @@ import java.util.Random;
  * This should only be invoked from ListenerFactory.
  */
 public class AdtSocketListener implements Runnable{
-    static Logger logger = Logger.getLogger(AdtSocketListener.class);
+    static Logger logger = Logger.getLogger(AdtSocketListener.class.getName());
     private static String[] ackTemplate = new String[2];
     static {
         ackTemplate[0] = "MSH|^~\\&|LABADT|DH|EPICADT|DH|$timestamp$||ACK^A01^ACK |HL7ACK00001|P|2.3";
@@ -46,7 +48,7 @@ public class AdtSocketListener implements Runnable{
             }
             listenSocket();
         } catch (Exception e) {
-            logger.error("*********************************************\n\nListen on socket " + threadPoolItem.port + " failed - " + e.getMessage() + "\n\n********************************************");
+            logger.severe("*********************************************\n\nListen on socket " + threadPoolItem.port + " failed - " + e.getMessage() + "\n\n********************************************");
         } finally {
             try {
                 server.close();
@@ -63,29 +65,29 @@ public class AdtSocketListener implements Runnable{
         try {
             while (true) {
                 try {
-//                    logger.debug("accept - timeout is " + server.getSoTimeout());
+                    logger.finest(()->"accept - timeout (ms) is " + threadPoolItem.timeoutInMilli);
                     socket = server.accept();
                     handle(socket);
                 } catch (SocketTimeoutException e) {
-//                    logger.debug("SocketTimeoutException on port " + threadPoolItem.port);
+                    logger.finest("SocketTimeoutException on port " + threadPoolItem.port);
                     if (Thread.interrupted())
                         throw new InterruptedException("");
                 }
             }
         } catch (InterruptedException e) {
             // This is the signal to shutdown the patientIdentityFeed
-            logger.debug("Interrupted (port " + threadPoolItem.port + ")");
+            logger.fine("Interrupted (port " + threadPoolItem.port + ")");
             threadPoolItem.release();
             logger.info("Available ports are " + ListenerFactory.availablePorts());
             return;
         } catch (IOException e) {
-            logger.fatal("Error while listening for connection.", e);
+            logger.log(Level.SEVERE, "Error while listening for connection.", e);
             return;
         } catch (Exception e) {
-            logger.fatal("Exception waiting for socket accept", e);
+            logger.log(Level.SEVERE, "Exception waiting for socket accept", e);
             return;
         } catch (Throwable e) {
-            logger.fatal("Throwable waiting for socket accept", e);
+            logger.log(Level.SEVERE, "Throwable waiting for socket accept", e);
             return;
         }
 
@@ -95,7 +97,7 @@ public class AdtSocketListener implements Runnable{
     void handle(Socket socket) {
         boolean sendError = false;
         try {
-            logger.debug("Have incoming request");
+            logger.fine("Have incoming request");
             InputStream is = null;
             OutputStream os = null;
             PrintWriter writer = null;
@@ -107,7 +109,7 @@ public class AdtSocketListener implements Runnable{
                 // in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             } catch (IOException e) {
 //                sendError = true;
-                logger.fatal("Error creating InputStream/OutputStream/PrintWriter", e);
+                logger.log(Level.SEVERE, "Error creating InputStream/OutputStream/PrintWriter", e);
                 return;
             }
             StringBuffer input = new StringBuffer();
@@ -127,7 +129,7 @@ public class AdtSocketListener implements Runnable{
                 }
             } catch (IOException e) {
                 sendError = true;
-                logger.error(e);
+                logger.throwing(AdtSocketListener.class.getName(),"handle", e);
             }
             try {
                 InetAddress address = socket.getInetAddress();
@@ -136,7 +138,7 @@ public class AdtSocketListener implements Runnable{
                 logger.info("Connection from: " + addressString);
             } catch (Exception e) {
                 sendError = true;
-                logger.error(e);
+                logger.throwing(AdtSocketListener.class.getName(), "handle", e);
             }
 
                     AdtMessage message = null;
@@ -167,10 +169,10 @@ public class AdtSocketListener implements Runnable{
 //                    Adt.addPatientId(threadPoolItem.simId, patientId);
                         } catch (AdtMessageParseException e) {
                             sendError = true;
-                            logger.error(e);
+                            logger.throwing(AdtSocketListener.class.getName(), "handle", e);
                         } catch (Exception e) {
                             sendError = true;
-                            logger.fatal(ExceptionUtil.exception_details(e));
+                            logger.severe(ExceptionUtil.exception_details(e));
                         }
                         if (sendError)
                             writer.write(message.getNack());
@@ -193,11 +195,11 @@ public class AdtSocketListener implements Runnable{
                         socket.shutdownOutput();
                         socket.close();
                     } catch (IOException e) {
-                        logger.error("Problem closing socket connection (already closed?)", e);
+                        logger.log(Level.SEVERE, "Problem closing socket connection (already closed?)", e);
                     }
 
         } catch (Exception e)   {
-            logger.error("Cannot save anything (log or adt).  Cannot send ACK response.", e);
+            logger.log(Level.SEVERE, "Cannot save anything (log or adt).  Cannot send ACK response.", e);
         }
     }
 

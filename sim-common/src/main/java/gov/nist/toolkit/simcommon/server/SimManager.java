@@ -8,7 +8,7 @@ import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdsexception.NoSimulatorException;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,7 +27,7 @@ import java.util.List;
 
 public class SimManager {
 	private String sessionId;  // this is never used internally.  Other classes use it through the getter.
-	private static Logger logger = Logger.getLogger(SimManager.class);
+	private static Logger logger = Logger.getLogger(SimManager.class.getName());
 
 
 	public SimManager(String sessionId) {
@@ -45,7 +45,7 @@ public class SimManager {
 		Site site = af.getActorSite(config, null);
 		if (site == null) {
 			String err = "Simulator " + config.getId() + "(type " + af.getClass().getName() + ") threw error when asked to generate site object";
-			logger.error(err);
+			logger.severe(err);
 			throw new ToolkitRuntimeException(err);
 		}
 		return site.setSimulator(true);

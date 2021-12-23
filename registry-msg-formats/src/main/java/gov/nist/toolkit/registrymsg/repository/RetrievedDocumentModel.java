@@ -2,12 +2,12 @@ package gov.nist.toolkit.registrymsg.repository;
 
 import gov.nist.toolkit.utilities.io.Sha1Bean;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.util.Arrays;
 
 public class RetrievedDocumentModel {
-	static Logger logger = Logger.getLogger(RetrievedDocumentModel.class);
+	static Logger logger = Logger.getLogger(RetrievedDocumentModel.class.getName());
 
 	protected String doc_uid;
 	protected String rep_uid;

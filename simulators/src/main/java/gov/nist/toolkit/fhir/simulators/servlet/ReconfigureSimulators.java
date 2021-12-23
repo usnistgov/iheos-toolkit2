@@ -12,7 +12,7 @@ import gov.nist.toolkit.simcommon.server.AbstractActorFactory;
 import gov.nist.toolkit.simcommon.server.GenericSimulatorFactory;
 import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServlet;
@@ -38,7 +38,7 @@ public class ReconfigureSimulators extends HttpServlet {
     private String overrideProxyPort = null;
     private String overrideContext = null;
 
-    private static Logger logger = Logger.getLogger(ReconfigureSimulators.class);
+    private static Logger logger = Logger.getLogger(ReconfigureSimulators.class.getName());
 
     public void init(ServletConfig sConfig) {
         configuredHost = Installation.instance().propertyServiceManager().getToolkitHost();
@@ -59,7 +59,7 @@ public class ReconfigureSimulators extends HttpServlet {
                 try {
                     reconfigure(simId);
                 } catch (Throwable e) {
-                    logger.fatal("Reconfigure of sim " + simId + " failed - " + ExceptionUtil.exception_details(e));
+                    logger.severe("Reconfigure of sim " + simId + " failed - " + ExceptionUtil.exception_details(e));
                 }
             }
         }
@@ -75,19 +75,19 @@ public class ReconfigureSimulators extends HttpServlet {
         try {
             AbstractActorFactory.updateSimConfiguration(simId);
         } catch (Exception e) {
-            logger.error("    updateSimConfiguration failed: " + ExceptionUtil.exception_details(e, 5));
+            logger.severe("    updateSimConfiguration failed: " + ExceptionUtil.exception_details(e, 5));
         }
 
         try {
             config = new SimDb().getSimulator(simId);
         } catch (Exception e) {
-            logger.error("    Cannot load " + ExceptionUtil.exception_details(e, 5));
+            logger.severe("    Cannot load " + ExceptionUtil.exception_details(e, 5));
             return;
         }
 
         ActorType actorType = ActorType.findActor(config.getActorType());
         if (actorType == null) {
-            logger.error("ERROR: Simulator " + simId + " of ActorType " + config.getActorType() + " - actor type does not exist");
+            logger.severe("ERROR: Simulator " + simId + " of ActorType " + config.getActorType() + " - actor type does not exist");
             return;
         }
 
@@ -100,7 +100,7 @@ public class ReconfigureSimulators extends HttpServlet {
             logger.info("From " + existingEndpoint);
             if (!ep.validate()) {
                 error = true;
-                logger.error("    " + ele.getName() + ": " + existingEndpoint + " - does not validate - " + ep.getError());
+                logger.severe("    " + ele.getName() + ": " + existingEndpoint + " - does not validate - " + ep.getError());
                 continue;
             }
 
@@ -156,7 +156,7 @@ public class ReconfigureSimulators extends HttpServlet {
             if (updated)
                 new GenericSimulatorFactory(null).saveConfiguration(config);
         } catch (Exception e) {
-            logger.error("    Error saving updates: " + e.getMessage());
+            logger.severe("    Error saving updates: " + e.getMessage());
         }
 
         if (!error && !updated)

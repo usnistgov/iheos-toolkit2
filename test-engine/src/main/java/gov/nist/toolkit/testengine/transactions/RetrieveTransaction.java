@@ -20,7 +20,7 @@ import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.apache.axis2.AxisFault;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.jaxen.JaxenException;
 
 import javax.xml.namespace.QName;
@@ -43,7 +43,7 @@ public class RetrieveTransaction extends BasicTransaction {
 	boolean useIG = false;
 	boolean removeHomeFromRequest = false;
 	boolean clean_params = false;
-	static Logger logger = Logger.getLogger(RetrieveTransaction.class);
+	static Logger logger = Logger.getLogger(RetrieveTransaction.class.getName());
 	@Override
    public String toString() {
 

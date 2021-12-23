@@ -8,7 +8,7 @@ import gov.nist.toolkit.installation.server.Installation;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.File;
 import java.nio.charset.Charset;
@@ -17,7 +17,7 @@ import java.nio.charset.Charset;
  * The table loaded here contains all the errors defined by transactions.
  */
 public class TransactionErrorCodeDbLoader {
-    static Logger logger = Logger.getLogger(TransactionErrorCodeDbLoader.class);
+    static Logger logger = Logger.getLogger(TransactionErrorCodeDbLoader.class.getName());
 
     static public TransactionErrorCodesDb LOAD() throws Exception {
         File file = new File(Installation.instance().toolkitxFile(), "TransactionDefinedErrorCodes.txt");
@@ -31,7 +31,7 @@ public class TransactionErrorCodeDbLoader {
         try {
             parser = CSVParser.parse(db, Charset.defaultCharset(), CSVFormat.RFC4180.withHeader());
         } catch (Exception e) {
-            logger.error("ProfileErrorCodesDb.LOAD: " + e.getMessage());
+            logger.severe("ProfileErrorCodesDb.LOAD: " + e.getMessage());
             throw e;
         }
         for (CSVRecord record : parser) {

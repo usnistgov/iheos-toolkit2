@@ -7,7 +7,7 @@ import gov.nist.toolkit.toolkitServicesCommon.resource.*;
 import gov.nist.toolkit.toolkitServicesCommon.resource.xdm.XdmReport;
 import gov.nist.toolkit.toolkitServicesCommon.resource.xdm.XdmReportResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.xdm.XdmRequest;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.glassfish.jersey.client.ClientConfig;
 //import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.jackson.JacksonFeature;
@@ -45,7 +45,7 @@ public class EngineSpi {
         Client c = ClientBuilder.newClient(cc);
 //        c.register(new LoggingFilter(java.util.logging.Logger.getLogger("SYSTEM"), true));
         Configuration conf = c.getConfiguration();
-        logger.info(conf.getPropertyNames());
+        logger.info(conf.getPropertyNames().toString());
         logger.info("target is " + urlRoot + "/rest/");
         target = c.target(urlRoot + "/rest/");
     }
@@ -63,9 +63,9 @@ public class EngineSpi {
                 .post(Entity.json(bean));
         exceptionOnNot200(response);
 //        if (response.getStatus() != 200) {
-//            logger.error("status is " + response.getStatus());
+//            logger.severe("status is " + response.getStatus());
 //            for (String key : response.getHeaders().keySet()) {
-//                logger.error(key + ": " + response.getHeaderString(key));
+//                logger.severe(key + ": " + response.getHeaderString(key));
 //            }
 //            throw new ToolkitServiceException(response.readEntity(OperationResultResource.class));
 //        }
@@ -75,9 +75,9 @@ public class EngineSpi {
 
     private void exceptionOnNot200(Response response) throws ToolkitServiceException {
         if (response.getStatus() != 200) {
-            logger.error("status is " + response.getStatus());
+            logger.severe("status is " + response.getStatus());
             for (String key : response.getHeaders().keySet()) {
-                logger.error(key + ": " + response.getHeaderString(key));
+                logger.severe(key + ": " + response.getHeaderString(key));
             }
             throw new ToolkitServiceException(response.readEntity(OperationResultResource.class));
         }
@@ -103,7 +103,7 @@ public class EngineSpi {
             return response.readEntity(SimConfigResource.class);
         if (status == Response.Status.NOT_MODIFIED.getStatusCode())
             return null;
-        logger.error("Update returned " + response.getStatusInfo());
+        logger.severe("Update returned " + response.getStatusInfo());
         throw new ToolkitServiceException(response);
     }
 
@@ -134,9 +134,9 @@ public class EngineSpi {
                     .post(Entity.json(bean));
             exceptionOnNot200(response);
 //            if (response.getStatus() != 200) {
-//                logger.error("status is " + response.getStatus());
+//                logger.severe("status is " + response.getStatus());
 //                for (String key : response.getHeaders().keySet()) {
-//                    logger.error(key + ": " + response.getHeaderString(key));
+//                    logger.severe(key + ": " + response.getHeaderString(key));
 //                }
 //                throw new ToolkitServiceException(response.readEntity(OperationResultResource.class));
 //            }

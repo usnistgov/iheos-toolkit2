@@ -25,8 +25,8 @@ public class ValidationContextValidationFactory {
     public static MessageValidatorEngine validateBasedOnValidationContext(
             ErrorRecorderBuilder erBuilder, OMElement xml,
             MessageValidatorEngine mvc, ValidationContext vc, RegistryValidationInterface rvi) {
-        RootElementValidatorFactory.logger.debug("messageValidatorEngine#validateBasedOnValidationContext");
-        RootElementValidatorFactory.logger.debug(" VC: " + vc.toString());
+        RootElementValidatorFactory.logger.fine("messageValidatorEngine#validateBasedOnValidationContext");
+        RootElementValidatorFactory.logger.fine(" VC: " + vc.toString());
 
         String rootElementName = null;
 

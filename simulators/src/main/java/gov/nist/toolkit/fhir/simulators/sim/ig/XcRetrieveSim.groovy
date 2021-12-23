@@ -20,7 +20,7 @@ import gov.nist.toolkit.valsupport.message.AbstractMessageValidator
 import gov.nist.toolkit.xdsexception.ExceptionUtil
 import groovy.transform.TypeChecked
 import org.apache.axiom.om.OMElement
-import org.apache.log4j.Logger
+import java.util.logging.*
 
 /**
  *
@@ -30,7 +30,7 @@ public class XcRetrieveSim extends AbstractMessageValidator {
     SimCommon common;
     DsSimCommon dsSimCommon;
     Exception startUpException = null;
-    Logger logger = Logger.getLogger(XcRetrieveSim);
+    Logger logger = Logger.getLogger(XcRetrieveSim.class.getName());
     boolean isSecure;
     boolean isAsync;
     SimulatorConfig asc;
@@ -171,7 +171,7 @@ public class XcRetrieveSim extends AbstractMessageValidator {
         String msg = e.getMessage();
         if (msg == null || msg.equals(""))
             msg = ExceptionUtil.exception_details(e);
-        logger.error(msg);
+        logger.severe(msg);
         er.err(XdsErrorCode.Code.XDSRepositoryError, msg, this, null);
     }
 

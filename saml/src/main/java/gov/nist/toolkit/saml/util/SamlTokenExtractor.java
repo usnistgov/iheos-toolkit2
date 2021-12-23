@@ -23,9 +23,11 @@ import org.opensaml.xml.validation.ValidationException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SamlTokenExtractor {
-	private static Log log = LogFactory.getLog(SamlTokenExtractor.class);
+	private static Logger log = Logger.getLogger(SamlTokenExtractor.class.getName());
     private static final String X509_FORMAT = "urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName";
     private static final String EMPTY_STRING = "";
     public static boolean samlEngineInitialized = false;
@@ -37,17 +39,13 @@ public class SamlTokenExtractor {
      */
     public synchronized static void initSamlEngine() {
         if (!samlEngineInitialized) {
-            if (log.isDebugEnabled()) {
-                log.debug("Initilizing the opensaml2 library...");
-            }
+            log.fine("Initilizing the opensaml2 library...");
             try {
             	DefaultBootstrap.bootstrap();
                 samlEngineInitialized = true;
-                if (log.isDebugEnabled()) {
-                    log.debug("opensaml2 library bootstrap complete");
-                }
+                log.fine("opensaml2 library bootstrap complete");
             } catch (ConfigurationException e) {
-                log.error(
+                log.log(Level.SEVERE,
                     "Unable to bootstrap the opensaml2 library - all SAML operations will fail", 
                     e
                 );
@@ -58,7 +56,7 @@ public class SamlTokenExtractor {
     
    /* Not used
    public static AssertionType CreateAssertion(OMElement  element  ) throws Exception {
-        log.debug("Entering SamlTokenExtractor.CreateAssertion...");
+        log.fine("Entering SamlTokenExtractor.CreateAssertion...");
 
         AssertionType assertion = initializeAssertion();
 
@@ -105,7 +103,7 @@ public class SamlTokenExtractor {
             assertion = null;
         } 
 
-        log.debug("Exiting SamlTokenExtractor.CreateAssertion");
+        log.fine("Exiting SamlTokenExtractor.CreateAssertion");
         return assertion;
     }
 
@@ -122,10 +120,10 @@ public class SamlTokenExtractor {
     * @param assertOut The Assertion element being written to
     */
    private static void extractAuthnStatement(AuthnStatement authnStatement, AssertionType assertOut) {
-       log.debug("Entering SamlTokenExtractor.extractAuthnStatement...");
+       log.fine("Entering SamlTokenExtractor.extractAuthnStatement...");
 
        if (authnStatement == null) {
-           log.debug("authnStatement is null: ");
+           log.fine("authnStatement is null: ");
            return;         // nothing to do...
        }
 
@@ -135,25 +133,25 @@ public class SamlTokenExtractor {
        //-------------
        if (authnStatement.getAuthnInstant() != null) {
            samlAuthnStatement.setAuthInstant(authnStatement.getAuthnInstant().toString());
-           log.debug("Assertion.samlAuthnStatement.authnInstant = " + samlAuthnStatement.getAuthInstant());
+           log.fine("Assertion.samlAuthnStatement.authnInstant = " + samlAuthnStatement.getAuthInstant());
        }
 
        // SessionIndex
        if (authnStatement.getSessionIndex() != null) {
            samlAuthnStatement.setSessionIndex(authnStatement.getSessionIndex());
-           log.debug("Assertion.samlAuthnStatement.sessionIndex = " + samlAuthnStatement.getSessionIndex());
+           log.fine("Assertion.samlAuthnStatement.sessionIndex = " + samlAuthnStatement.getSessionIndex());
        }
 
        // AuthContextClassRef
        //--------------------
        if ((authnStatement.getAuthnContext() != null) &&
                (authnStatement.getAuthnContext().getAuthnContextClassRef() != null)) {
-    	   //log.debug("authnContext has " + authnStatement.getAuthnContext().getAuthnContextClassRef().size() + " content entries. ");
+    	   //log.fine("authnContext has " + authnStatement.getAuthnContext().getAuthnContextClassRef().size() + " content entries. ");
     	   samlAuthnStatement.setAuthContextClassRef(authnStatement.getAuthnContext().getAuthnContextClassRef().getAuthnContextClassRef());
-           log.debug("Assertion.samlAuthnStatement.authContextClassRef = " + samlAuthnStatement.getAuthContextClassRef());
+           log.fine("Assertion.samlAuthnStatement.authContextClassRef = " + samlAuthnStatement.getAuthContextClassRef());
     	   
     	   
-         log.debug("authnContext has " + authnStatement.getAuthnContext().getAuthenticatingAuthorities().size() + " content entries. ");
+         log.fine("authnContext has " + authnStatement.getAuthnContext().getAuthenticatingAuthorities().size() + " content entries. ");
            List<AuthenticatingAuthority> contents = authnStatement.getAuthnContext().getAuthenticatingAuthorities();
            if ((contents != null) &&
                    (contents.size() > 0)) {
@@ -170,7 +168,7 @@ public class SamlTokenExtractor {
                    if (jaxElem1.toString() instanceof String) {
                        String sValue = (String) jaxElem1.toString();
                        samlAuthnStatement.setAuthContextClassRef(sValue);
-                       log.debug("Assertion.samlAuthnStatement.authContextClassRef = " + samlAuthnStatement.getAuthContextClassRef());
+                       log.fine("Assertion.samlAuthnStatement.authContextClassRef = " + samlAuthnStatement.getAuthContextClassRef());
                    }   // if (jaxElem1.getValue() instanceof AuthnContext)
                }   // for (JAXBElement jaxElem1 : contents)
            }   // if ((contents != null) &&*/
@@ -182,7 +180,7 @@ public class SamlTokenExtractor {
                (authnStatement.getSubjectLocality().getAddress() != null) &&
                (authnStatement.getSubjectLocality().getAddress().length() > 0)) {
            samlAuthnStatement.setSubjectLocalityAddress(authnStatement.getSubjectLocality().getAddress());
-           log.debug("Assertion.samlAuthnStatement.subjectlocalityAddress = " + samlAuthnStatement.getSubjectLocalityAddress());
+           log.fine("Assertion.samlAuthnStatement.subjectlocalityAddress = " + samlAuthnStatement.getSubjectLocalityAddress());
        }
 
        // SubjectLocalityDNSName
@@ -191,10 +189,10 @@ public class SamlTokenExtractor {
                (authnStatement.getSubjectLocality().getDNSName() != null) &&
                (authnStatement.getSubjectLocality().getDNSName().length() > 0)) {
            samlAuthnStatement.setSubjectLocalityDNSName(authnStatement.getSubjectLocality().getDNSName());
-           log.debug("Assertion.samlAuthnStatement.subjectlocalityDNSName = " + samlAuthnStatement.getSubjectLocalityDNSName());
+           log.fine("Assertion.samlAuthnStatement.subjectlocalityDNSName = " + samlAuthnStatement.getSubjectLocalityDNSName());
        }
 
-       log.debug("Exiting SamlTokenExtractor.extractAuthnStatement...");
+       log.fine("Exiting SamlTokenExtractor.extractAuthnStatement...");
    }
    
    /**
@@ -207,7 +205,7 @@ public class SamlTokenExtractor {
  * @throws Exception 
     */
    private static void extractDecisionInfo(AuthzDecisionStatement authzState, AssertionType assertOut) throws Exception {
-       log.debug("Entering SamlTokenExtractor.extractDecisionInfo...");
+       log.fine("Entering SamlTokenExtractor.extractDecisionInfo...");
 
        SamlAuthzDecisionStatementType oSamlAuthzDecision = assertOut.getSamlAuthzDecisionStatement();
 
@@ -216,14 +214,14 @@ public class SamlTokenExtractor {
        if ((authzState.getDecision() != null) &&
                (authzState.getDecision() != null)) {
            oSamlAuthzDecision.setDecision(authzState.getDecision().toString());
-           log.debug("Assertion.SamlAuthzDecisionStatement.Decision = " + oSamlAuthzDecision.getDecision());
+           log.fine("Assertion.SamlAuthzDecisionStatement.Decision = " + oSamlAuthzDecision.getDecision());
        }
 
        // @Resource
        //----------
        if (authzState.getResource() != null) {
            oSamlAuthzDecision.setResource(authzState.getResource());
-           log.debug("Assertion.SamlAuthzDecisionStatement.Resource = " + oSamlAuthzDecision.getResource());
+           log.fine("Assertion.SamlAuthzDecisionStatement.Resource = " + oSamlAuthzDecision.getResource());
        }
 
        // Action
@@ -236,7 +234,7 @@ public class SamlTokenExtractor {
                (authzState.getActions().get(0).getAction() != null)) {
            oSamlAuthzDecision.setAction(authzState.getActions().get(0).getAction());
            oSamlAuthzDecision.setActionNameSpace(authzState.getActions().get(0).getNamespace());
-           log.debug("Assertion.SamlAuthzDecisionStatement.Action = " + oSamlAuthzDecision.getAction());
+           log.fine("Assertion.SamlAuthzDecisionStatement.Action = " + oSamlAuthzDecision.getAction());
        }
 
        // Evidence
@@ -245,7 +243,7 @@ public class SamlTokenExtractor {
        extractEvidence(evid, assertOut);
        
 
-       log.debug("Exiting SamlTokenExtractor.extractDecisionInfo...");
+       log.fine("Exiting SamlTokenExtractor.extractDecisionInfo...");
    }
    
    /**
@@ -257,7 +255,7 @@ public class SamlTokenExtractor {
  * @throws Exception 
     */
    private static void extractEvidence(Evidence evidence, AssertionType assertOut) throws Exception {
-       log.debug("Entering SamlTokenExtractor.extractEvidence...");
+       log.fine("Entering SamlTokenExtractor.extractEvidence...");
        SamlAuthzDecisionStatementEvidenceAssertionType oSamlEvidAssert = assertOut.getSamlAuthzDecisionStatement().getEvidence().getAssertion();
 
        List<Assertion> oaAsserts = evidence.getAssertions();
@@ -272,21 +270,21 @@ public class SamlTokenExtractor {
                    //----
                    if (oElement.getID() != null) {
                        oSamlEvidAssert.setId(oElement.getID());
-                       log.debug("Assertion.SamlAuthzDecisionStatement.Evidence.Assertion.Id = " + oSamlEvidAssert.getId());
+                       log.fine("Assertion.SamlAuthzDecisionStatement.Evidence.Assertion.Id = " + oSamlEvidAssert.getId());
                    }
 
                    // Issue Instant
                    //--------------
                    if (oElement.getIssueInstant() != null) {
                        oSamlEvidAssert.setIssueInstant(oElement.getIssueInstant().toString());
-                       log.debug("Assertion.SamlAuthzDecisionStatement.Evidence.Assertion.IssueInstant = " + oElement.getIssueInstant());
+                       log.fine("Assertion.SamlAuthzDecisionStatement.Evidence.Assertion.IssueInstant = " + oElement.getIssueInstant());
                    }
 
                    // Version
                    //--------
                    if (oElement.getVersion() != null) {
                        oSamlEvidAssert.setVersion(oElement.getVersion().toString());
-                       log.debug("Assertion.SamlAuthzDecisionStatement.Evidence.Assertion.Version = " + oSamlEvidAssert.getVersion());
+                       log.fine("Assertion.SamlAuthzDecisionStatement.Evidence.Assertion.Version = " + oSamlEvidAssert.getVersion());
                    }
 
                    // Issuer Format
@@ -294,7 +292,7 @@ public class SamlTokenExtractor {
                    if ((oElement.getIssuer() != null) &&
                            (oElement.getIssuer().getFormat() != null)) {
                        oSamlEvidAssert.setIssuerFormat(oElement.getIssuer().getFormat());
-                       log.debug("Assertion.SamlAuthzDecisionStatement.Evidence.Assertion.IssuerFormat = " + oSamlEvidAssert.getIssuerFormat());
+                       log.fine("Assertion.SamlAuthzDecisionStatement.Evidence.Assertion.IssuerFormat = " + oSamlEvidAssert.getIssuerFormat());
                    }
 
                    // Issuer
@@ -302,7 +300,7 @@ public class SamlTokenExtractor {
                    if ((oElement.getIssuer() != null) &&
                            (oElement.getIssuer().getValue() != null)) {
                        oSamlEvidAssert.setIssuer(oElement.getIssuer().getValue());
-                       log.debug("Assertion.SamlAuthzDecisionStatement.Evidence.Assertion.Issuer = " + oSamlEvidAssert.getIssuer());
+                       log.fine("Assertion.SamlAuthzDecisionStatement.Evidence.Assertion.Issuer = " + oSamlEvidAssert.getIssuer());
                    }
 
                    extractConditionsInfo(assertOut, oElement.getConditions());
@@ -317,15 +315,15 @@ public class SamlTokenExtractor {
                            }
                        }
                    } else {
-                       log.error("Evidence Statements are missing.");
+                       log.severe("Evidence Statements are missing.");
                    }
                
            }
        } else {
-           log.error("Evidence assertion is empty: " + oaAsserts);
+           log.severe("Evidence assertion is empty: " + oaAsserts);
        }
 
-       log.debug("Exiting SamlTokenExtractor.extractEvidence...");
+       log.fine("Exiting SamlTokenExtractor.extractEvidence...");
    }
 
    /**
@@ -336,7 +334,7 @@ public class SamlTokenExtractor {
     * @param conditions The Evidence's Conditions element
     */
    private static void extractConditionsInfo(AssertionType assertOut, Conditions conditions) {
-       log.debug("Entering SamlTokenExtractor.extractConditionsInfo...");
+       log.fine("Entering SamlTokenExtractor.extractConditionsInfo...");
 
        SamlAuthzDecisionStatementEvidenceAssertionType oSamlEvidAssert = assertOut.getSamlAuthzDecisionStatement().getEvidence().getAssertion();
 
@@ -349,7 +347,7 @@ public class SamlTokenExtractor {
 
                if (NullChecker.isNotNullish(formBegin)) {
                    oSamlEvidAssert.getConditions().setNotBefore(formBegin);
-                   log.debug("Assertion.SamlAuthzDecisionStatement.Evidence.Assertion.Conditions.NotBefore = " + oSamlEvidAssert.getConditions().getNotBefore());
+                   log.fine("Assertion.SamlAuthzDecisionStatement.Evidence.Assertion.Conditions.NotBefore = " + oSamlEvidAssert.getConditions().getNotBefore());
                }
            }
 
@@ -360,11 +358,11 @@ public class SamlTokenExtractor {
 
                if (NullChecker.isNotNullish(formEnd)) {
                    oSamlEvidAssert.getConditions().setNotOnOrAfter(formEnd);
-                   log.debug("Assertion.SamlAuthzDecisionStatement.Evidence.Assertion.Conditions.NotOnOrAfter = " + oSamlEvidAssert.getConditions().getNotOnOrAfter());
+                   log.fine("Assertion.SamlAuthzDecisionStatement.Evidence.Assertion.Conditions.NotOnOrAfter = " + oSamlEvidAssert.getConditions().getNotOnOrAfter());
                }
            }
        }
-       log.debug("Exiting SamlTokenExtractor.extractConditionsInfo...");
+       log.fine("Exiting SamlTokenExtractor.extractConditionsInfo...");
    }
     /**
      * Initializes the assertion model to contain empty strings for all values.
@@ -607,47 +605,47 @@ public class SamlTokenExtractor {
                     String nameAttr = attrib.getName();
                     if (nameAttr != null) {
                         if (nameAttr.equals(SamlConstants.USER_ROLE_ATTR)) {
-                            log.debug("Extracting Assertion.userInfo.roleCoded:");
+                            log.fine("Extracting Assertion.userInfo.roleCoded:");
                             assertOut.getUserInfo().setRoleCoded(extractNhinCodedElement(attrib, SamlConstants.USER_ROLE_ATTR));
                         } else if (nameAttr.equals(SamlConstants.PURPOSE_ROLE_ATTR)) {
-                            log.debug("Extracting Assertion.purposeOfDisclosure:");
+                            log.fine("Extracting Assertion.purposeOfDisclosure:");
                             assertOut.setPurposeOfDisclosureCoded(extractNhinCodedElement(attrib, SamlConstants.PURPOSE_ROLE_ATTR));
                         } else if (nameAttr.equals(SamlConstants.USERNAME_ATTR)) {
                             extractNameParts(attrib, assertOut);
                         } else if (nameAttr.equals(SamlConstants.USER_ORG_ATTR)) {
                             String sUserOrg = AttributeUtil.extractAttributeValueValue(attrib);
                             assertOut.getUserInfo().getOrg().setName(sUserOrg);
-                            log.debug("Assertion.userInfo.org.Name = " + sUserOrg);
+                            log.fine("Assertion.userInfo.org.Name = " + sUserOrg);
                         } else if (nameAttr.equals(SamlConstants.USER_ORG_ID_ATTR)) {
                             String sUserOrgId = AttributeUtil.extractAttributeValueValue(attrib);
                             assertOut.getUserInfo().getOrg().setHomeCommunityId(sUserOrgId);
-                            log.debug("Assertion.userInfo.org.homeCommunityId = " + sUserOrgId);
+                            log.fine("Assertion.userInfo.org.homeCommunityId = " + sUserOrgId);
                         } else if (nameAttr.equals(SamlConstants.HOME_COM_ID_ATTR)) {
                             String sHomeComId = AttributeUtil.extractAttributeValueValue(attrib);
                             assertOut.getHomeCommunity().setHomeCommunityId(sHomeComId);
-                            log.debug("Assertion.homeCommunity.homeCommunityId = " + sHomeComId);
+                            log.fine("Assertion.homeCommunity.homeCommunityId = " + sHomeComId);
                         } else if (nameAttr.equals(SamlConstants.PATIENT_ID_ATTR)) {
                             String sPatientId = AttributeUtil.extractAttributeValueValue(attrib);
                             assertOut.getUniquePatientId().add(sPatientId);
-                            log.debug("Assertion.uniquePatientId = " + sPatientId);
+                            log.fine("Assertion.uniquePatientId = " + sPatientId);
                         } else if (nameAttr.equals(SamlConstants.ACCESS_CONSENT_ATTR)) {
                             String sAccessConsentId = AttributeUtil.extractAttributeValueValue(attrib);
                             assertOut.getSamlAuthzDecisionStatement().getEvidence().getAssertion().setAccessConsentPolicy(sAccessConsentId);
-                            log.debug("Assertion.SamlAuthzDecisionStatement.Evidence.Assertion.AccessConsentPolicy = " + sAccessConsentId);
+                            log.fine("Assertion.SamlAuthzDecisionStatement.Evidence.Assertion.AccessConsentPolicy = " + sAccessConsentId);
                         } else if (nameAttr.equals(SamlConstants.INST_ACCESS_CONSENT_ATTR)) {
                             String sInstAccessConsentId = AttributeUtil.extractAttributeValueValue(attrib);
                             assertOut.getSamlAuthzDecisionStatement().getEvidence().getAssertion().setInstanceAccessConsentPolicy(sInstAccessConsentId);
-                            log.debug("Assertion.SamlAuthzDecisionStatement.Evidence.Assertion.InstanceAccessConsentPolicy = " + sInstAccessConsentId);
+                            log.fine("Assertion.SamlAuthzDecisionStatement.Evidence.Assertion.InstanceAccessConsentPolicy = " + sInstAccessConsentId);
                         } else {
-                            log.warn("Unrecognized Name Attribute: " + nameAttr);
+                            log.warning("Unrecognized Name Attribute: " + nameAttr);
                         }
                     } else {
-                        log.warn("Improperly formed Name Attribute: " + nameAttr);
+                        log.warning("Improperly formed Name Attribute: " + nameAttr);
                     }
                 }
             }
         } else {
-            log.error("Expected Attributes are missing.");
+            log.severe("Expected Attributes are missing.");
         }
     }
 
@@ -791,7 +789,7 @@ public class SamlTokenExtractor {
             }
             assertOut.setPersonName(personName);
         } else {
-            log.error("User Name attribute is empty: " + attrVals);
+            log.severe("User Name attribute is empty: " + attrVals);
         }
 
         //System.out.println("SamlTokenExtractor.extractNameParts() -- End");

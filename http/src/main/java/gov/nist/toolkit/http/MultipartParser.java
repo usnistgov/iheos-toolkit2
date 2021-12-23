@@ -3,7 +3,7 @@ package gov.nist.toolkit.http;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.util.List;
 
@@ -13,16 +13,16 @@ public class MultipartParser {
 	ErrorRecorder er = null;
 	boolean appendixV = true;
 	MultipartMessage message = new MultipartMessage();
-	static final Logger logger = Logger.getLogger(HttpParser.class);
+	static final Logger logger = Logger.getLogger(HttpParser.class.getName());
 
 	public MultipartParser(HttpParser hp) throws ParseException, HttpHeaderParseException, HttpParseException {
-		logger.debug("new MultipartParser(" + this.toString() + ")");
+		logger.fine("new MultipartParser(" + this.toString() + ")");
 		this.hp = hp;
 		parse();
 	}
 
 	public MultipartParser(HttpParser hp, ErrorRecorder er, boolean appendixV) throws ParseException, HttpHeaderParseException, HttpParseException {
-		logger.debug("new MultipartParser(" + this.toString() + ")");
+		logger.fine("new MultipartParser(" + this.toString() + ")");
 		this.hp = hp;
 		this.er = er;
 		this.appendixV = appendixV;
@@ -122,7 +122,7 @@ public class MultipartParser {
 //			throw new ParseException("Not a Multipart");
 		boolean multi = isMultipart();
 		message.boundary = contentTypeHeader.getParam("boundary");
-		logger.debug("MultipartParser(" + this.toString() + ") - boundary = " + message.boundary);
+		logger.fine("MultipartParser(" + this.toString() + ") - boundary = " + message.boundary);
 		if (er != null) {
 			er.detail(contentTypeHeader.asString());
 			er.detail("boundary = " + message.boundary);

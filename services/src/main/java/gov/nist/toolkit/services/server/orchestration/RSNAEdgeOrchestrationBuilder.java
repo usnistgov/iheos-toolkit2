@@ -15,7 +15,7 @@ import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.simcommon.client.SimId;
 import gov.nist.toolkit.simcommon.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,7 @@ import java.util.List;
  *
  */
 public class RSNAEdgeOrchestrationBuilder extends AbstractOrchestrationBuilder {
-   static Logger log = Logger.getLogger(RSNAEdgeOrchestrationBuilder.class);
+   static Logger log = Logger.getLogger(RSNAEdgeOrchestrationBuilder.class.getName());
 
    static final String sutSimulatorName = "simulator_rsnaedge";
 

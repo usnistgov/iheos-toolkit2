@@ -24,7 +24,7 @@ import gov.nist.toolkit.xdsexception.client.XdsException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -39,7 +39,7 @@ public class RegRSim extends TransactionSimulator   {
     protected DsSimCommon dsSimCommon;
 	private AbstractCustomMetadataValidator customMetadataValidator = null;
 
-	static Logger log = Logger.getLogger(RegRSim.class);
+	static Logger log = Logger.getLogger(RegRSim.class.getName());
 
 
 	public RegRSim(SimCommon common, DsSimCommon dsSimCommon, SimulatorConfig simulatorConfig) {
@@ -61,7 +61,7 @@ public class RegRSim extends TransactionSimulator   {
 
 		// Verify patient id against patient identity feed
 		if (vc.validateAgainstPatientIdentityFeed) {
-			log.debug("validating patient id ");
+			log.fine("validating patient id ");
 			// this MetadataCollection is separate from delta and only used for PID validation
 			MetadataCollection submission = new MetadataCollection();
 			try {
@@ -309,13 +309,13 @@ public class RegRSim extends TransactionSimulator   {
 	public void save(Metadata m, boolean buildIndex) {
 		try {
 			if (m.getSubmissionSet() != null)
-				log.debug("Save SubmissionSet(" + m.getSubmissionSetId() + ")");
+				log.fine("Save SubmissionSet(" + m.getSubmissionSetId() + ")");
 			for (OMElement ele : m.getExtrinsicObjects())
-				log.debug("Save DocEntry(" + Metadata.getId(ele) + ")");
+				log.fine("Save DocEntry(" + Metadata.getId(ele) + ")");
 			for (OMElement ele : m.getFolders())
-				log.debug("Save Folder(" + Metadata.getId(ele) + ")");
+				log.fine("Save Folder(" + Metadata.getId(ele) + ")");
 			for (OMElement ele : m.getAssociations())
-				log.debug("Save Assoc(" + Metadata.getId(ele) + ")("+ Metadata.getAssocSource(ele) + ", " + Metadata.getAssocTarget(ele) + ", " + m.getSimpleAssocType(ele) + ")");
+				log.fine("Save Assoc(" + Metadata.getId(ele) + ")("+ Metadata.getAssocSource(ele) + ", " + Metadata.getAssocTarget(ele) + ", " + m.getSimpleAssocType(ele) + ")");
 		} catch (Exception e) {}
 
 		if (vc.isRMU) {

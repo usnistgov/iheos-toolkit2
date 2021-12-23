@@ -6,13 +6,13 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 public class SimServletResponseWrapper extends HttpServletResponseWrapper {
 	HttpServletResponse response;
 	Map<String, String> headers = new HashMap<String, String>();
 	String contentType = null;
-	static Logger logger = Logger.getLogger(SimServletResponseWrapper.class);
+	static Logger logger = Logger.getLogger(SimServletResponseWrapper.class.getName());
 
 	
 	public SimServletResponseWrapper(HttpServletResponse response) {
@@ -21,19 +21,19 @@ public class SimServletResponseWrapper extends HttpServletResponseWrapper {
 	}
 	
 	public void setHeader(String name, String value) {
-//		logger.fatal(name + " => " + value);
+		logger.finest(name + " => " + value);
 		headers.put(name, value);
 		response.setHeader(name, value);
 	}
 	
 	public void addHeader(String name, String value) {
-//		logger.fatal(name + " => " + value);
+		logger.finest(name + " => " + value);
 		headers.put(name, value);
 		response.addHeader(name, value);
 	}
 
 	public void setContentType(String type) {
-		logger.fatal("ContentType => " + type);
+		logger.info("ContentType => " + type);
 		response.setContentType(type);
 		contentType = type;
 	}

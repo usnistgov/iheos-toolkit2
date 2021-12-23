@@ -38,7 +38,13 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import org.apache.axiom.om.OMElement;
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+
+import java.io.*;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -46,13 +52,18 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.*;
 
 public class SimServlet  extends HttpServlet {
-	static Logger logger = Logger.getLogger(SimServlet.class);
+	public static String TOOLKIT_LOGGING_PROPERTIES_SYSTEM_PROPERTY_NAME = "LOGGING_PROPERTIES";
+	/**
+	 * Less control as to who initially sets this Java system property. Tomcat may already set this property which is not what Toolkit wants.
+	 */
+	private static String JAVA_LOGGING_PROPERTIES_SYSTEM_PROPERTY_NAME = "java.util.logging.config.file";
+//	static {
+//		initToolkitLoggingProperties();
+//	}
+	static Logger logger = Logger.getLogger(SimServlet.class.getName());
 
 	private static final long serialVersionUID = 1L;
 
@@ -101,9 +112,45 @@ public class SimServlet  extends HttpServlet {
 			logger.info("Proxy Operation: start proxy from SimServlet on thread " + id + " port " + Installation.instance().propertyServiceManager().getProxyPort());
 			proxyThread = ElementalReverseProxy.start(Installation.instance().propertyServiceManager().getProxyPort());
 		} catch (Exception e) {
-			logger.fatal("Proxy startup on port " +  Thread.currentThread().getId()  + " failed - " + ExceptionUtil.exception_details(e));
+			logger.severe("Proxy startup on port " +  Thread.currentThread().getId()  + " failed - " + ExceptionUtil.exception_details(e));
 			throw new ServletException(e);
 		}
+	}
+
+	public static void initToolkitLoggingProperties() {
+		File loggingProperties = getLoggingPropertiesFile();
+		if (loggingProperties != null && loggingProperties.exists()) {
+			LogManager.getLogManager().reset();
+			System.out.println(String.format("Reading %s", loggingProperties.toString()));
+			try (InputStream stream = new FileInputStream(loggingProperties)) {
+				LogManager.getLogManager().readConfiguration(stream);
+				System.out.println(String.format("Loaded logging properties from CLASSPATH: %s.", loggingProperties.toString()));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			System.out.println("Using JVM system property for logging.properties.");
+		}
+
+		return;
+	}
+
+	private static File getLoggingPropertiesFile() {
+		File loggingProperties = null;
+		String toolkitLoggingPropertiesFp = System.getProperty(TOOLKIT_LOGGING_PROPERTIES_SYSTEM_PROPERTY_NAME);
+		if (toolkitLoggingPropertiesFp != null) {
+			loggingProperties = new File(toolkitLoggingPropertiesFp);
+		} else {
+			// Load logging.properties from classpath
+			String loggingPropertiesFileName = "logging.properties";
+			try {
+				Path loggingPropertiesPath = Paths.get(SimServlet.class.getResource("/").toURI()).resolve(loggingPropertiesFileName).toAbsolutePath();
+				loggingProperties = loggingPropertiesPath.toFile();
+			} catch (URISyntaxException ex) {
+				System.err.println(ex.toString());
+			}
+		}
+		return loggingProperties;
 	}
 
 	@Override
@@ -171,15 +218,39 @@ public class SimServlet  extends HttpServlet {
 				handleCodesDownload(response, parts);
 				return;
 			}
+			if (uri.endsWith("/loggingProperties")) {
+				logger.info("working on loggingProperties")	;
+				handleReadLoggingProperties(response);
+				return;
+			}
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		} catch (Exception e) {
-			logger.error(ExceptionUtil.exception_details(e));
+			logger.severe(ExceptionUtil.exception_details(e));
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		}
 
 
+	}
+
+	private void handleReadLoggingProperties(HttpServletResponse response) {
+		try {
+			File loggingPropertiesFile = getLoggingPropertiesFile();
+			if (! loggingPropertiesFile.exists()) {
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				return;
+			}
+			String loggingPropertiesText = Io.stringFromFile(loggingPropertiesFile);
+			response.setContentType("text/plain");
+			response.getOutputStream().print(loggingPropertiesText);
+			response.getOutputStream().close();
+			response.addHeader("Content-Disposition", "attachment; filename=" + loggingPropertiesFile.getName());
+		} catch (Exception e) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			return;
+		}
+		response.setStatus(HttpServletResponse.SC_OK);
 	}
 
 	private void handleDelete(HttpServletResponse response, String[] parts) {
@@ -208,7 +279,7 @@ public class SimServlet  extends HttpServlet {
 		}
 
 		if (actor == null || actor.equals("null")) {
-			logger.debug("No actor name found");
+			logger.fine("No actor name found");
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		}
@@ -257,14 +328,14 @@ public class SimServlet  extends HttpServlet {
 			}
 
 			for (String uid : docUids) {
-				logger.debug("Delete document from index " + uid);
+				logger.fine("Delete document from index " + uid);
 				repIndex.dc.delete(uid);
 			}
 
 		}
 
 
-		logger.debug("Delete event " + simid + "/" + actor + "/" + transaction + "/" + message);
+		logger.fine("Delete event " + simid + "/" + actor + "/" + transaction + "/" + message);
 		File transEventFile = db.getTransactionEvent(simid, actor, transaction, message);
 		db.delete();
 
@@ -300,7 +371,7 @@ public class SimServlet  extends HttpServlet {
 		}
 
 		if (actor == null || actor.equals("null")) {
-			logger.debug("No actor name found");
+			logger.fine("No actor name found");
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		}
@@ -329,7 +400,7 @@ public class SimServlet  extends HttpServlet {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		}
-		logger.debug("site download of " + simid);
+		logger.fine("site download of " + simid);
 
 		if (simid == null || simid.trim().equals("")) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -344,7 +415,7 @@ public class SimServlet  extends HttpServlet {
 			Site site = SimManager.getSite(config);
 			OMElement siteEle = new SeparateSiteLoader(simId.getTestSession()).siteToXML(site);
 			String siteString = new OMFormatter(siteEle).toString();
-			logger.debug(siteString);
+			logger.fine(siteString);
 
 			response.setContentType("text/xml");
 			response.getOutputStream().print(siteString);
@@ -367,7 +438,7 @@ public class SimServlet  extends HttpServlet {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		}
-		logger.debug("codes download of " + envName);
+		logger.fine("codes download of " + envName);
 
 		if (envName == null || envName.trim().equals("")) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -418,7 +489,7 @@ public class SimServlet  extends HttpServlet {
 		}
 
 		if (actor == null || actor.equals("null")) {
-			logger.debug("No actor name found");
+			logger.fine("No actor name found");
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		}
@@ -542,8 +613,8 @@ public class SimServlet  extends HttpServlet {
 		}
 
 		TransactionType transactionType = ATFactory.findTransactionByShortName(transaction);
-		logger.debug("Incoming transaction is " + transaction);
-		logger.debug("... which is " + transactionType);
+		logger.fine("Incoming transaction is " + transaction);
+		logger.fine("... which is " + transactionType);
 		if (transactionType == null) {
 			sendSoapFault(response, "Simulator: Do not understand the transaction requested by this endpoint (" + transaction + ") in http://" + request.getLocalName() + ":" + request.getLocalPort() + uri + endpointFormat, mvc, vc);
 			return;
@@ -659,63 +730,63 @@ public class SimServlet  extends HttpServlet {
 		}
 		catch (Throwable e) {
 			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
-			logger.error(ExceptionUtil.exception_details(e));
+			logger.severe(ExceptionUtil.exception_details(e));
 			responseSent = true;
 		}
 //		catch (InvocationTargetException e) {
 //			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
-//			logger.error(ExceptionUtil.exception_details(e));
+//			logger.severe(ExceptionUtil.exception_details(e));
 //			responseSent = true;
 //		}
 //		catch (IllegalAccessException e) {
 //			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
-//			logger.error(ExceptionUtil.exception_details(e));
+//			logger.severe(ExceptionUtil.exception_details(e));
 //			responseSent = true;
 //		}
 //		catch (InstantiationException e) {
 //			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
-//			logger.error(ExceptionUtil.exception_details(e));
+//			logger.severe(ExceptionUtil.exception_details(e));
 //			responseSent = true;
 //		}
 //		catch (RuntimeException e) {
 //			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
-//			logger.error(ExceptionUtil.exception_details(e));
+//			logger.severe(ExceptionUtil.exception_details(e));
 //			responseSent = true;
 //		}
 //		catch (IOException e) {
 //			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
-//			logger.error(ExceptionUtil.exception_details(e));
+//			logger.severe(ExceptionUtil.exception_details(e));
 //			responseSent = true;
 //		}
 //		catch (HttpHeaderParseException e) {
 //			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
-//			logger.error(ExceptionUtil.exception_details(e));
+//			logger.severe(ExceptionUtil.exception_details(e));
 //			responseSent = true;
 //		} catch (ClassNotFoundException e) {
 //			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
-//			logger.error(ExceptionUtil.exception_details(e));
+//			logger.severe(ExceptionUtil.exception_details(e));
 //			responseSent = true;
 //		} catch (XdsException e) {
 //			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
-//			logger.error(ExceptionUtil.exception_details(e));
+//			logger.severe(ExceptionUtil.exception_details(e));
 //			responseSent = true;
 //		} catch (NoSimException e) {
 //			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
-//			logger.error(ExceptionUtil.exception_details(e));
+//			logger.severe(ExceptionUtil.exception_details(e));
 //			responseSent = true;
 //		} catch (ParseException e) {
 //			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
-//			logger.error(ExceptionUtil.exception_details(e));
+//			logger.severe(ExceptionUtil.exception_details(e));
 //			responseSent = true;
 //		}
 //		catch (Exception e) {
 //			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
-//			logger.error(ExceptionUtil.exception_details(e));
+//			logger.severe(ExceptionUtil.exception_details(e));
 //			responseSent = true;
 //		}
 //		catch (AssertionError e) {
 //			sendSoapFault(response, ExceptionUtil.exception_details(e), mvc, vc);
-//			logger.error(ExceptionUtil.exception_details(e));
+//			logger.severe(ExceptionUtil.exception_details(e));
 //			responseSent = true;
 //		}
 		finally {
@@ -785,8 +856,8 @@ public class SimServlet  extends HttpServlet {
 			e.printStackTrace();
 		}
 
-		logger.debug(regCacheCount + " items left in the Registry Index cache");
-		logger.debug(repCacheCount + " items left in the Repository Index cache");
+		logger.fine(regCacheCount + " items left in the Registry Index cache");
+		logger.fine(repCacheCount + " items left in the Repository Index cache");
 
 	} // EO doPost method
 
@@ -807,7 +878,7 @@ public class SimServlet  extends HttpServlet {
 				}
 			}
 		} catch (Exception e) {
-			logger.fatal(ExceptionUtil.exception_details(e));
+			logger.severe(ExceptionUtil.exception_details(e));
 		}
 	}
 
@@ -828,7 +899,7 @@ public class SimServlet  extends HttpServlet {
 				}
 			}
 		} catch (Exception e) {
-			logger.fatal(ExceptionUtil.exception_details(e));
+			logger.severe(ExceptionUtil.exception_details(e));
 		}
 	}
 
@@ -842,12 +913,12 @@ public class SimServlet  extends HttpServlet {
 		synchronized(config) {
 			regIndex = (RegIndex) servletContext.getAttribute("Reg_" + simid);
 			if (regIndex == null) {
-				logger.debug("Creating new RegIndex for " + simid + " in in-memory cache");
+				logger.fine("Creating new RegIndex for " + simid + " in in-memory cache");
 				regIndex = new RegIndex(registryIndexFile, simid);
 				regIndex.setSimDb(db);
 				servletContext.setAttribute("Reg_" + simid, regIndex);
 			} else
-				logger.debug("Using cached RegIndex: " + simid + " db loc:" + regIndex.getSimDb().getRegistryIndexFile().toString());
+				logger.fine("Using cached RegIndex: " + simid + " db loc:" + regIndex.getSimDb().getRegistryIndexFile().toString());
 
 			regIndex.cacheExpires = getNewExpiration();
 		}
@@ -916,7 +987,7 @@ public class SimServlet  extends HttpServlet {
 			OMElement soapEnv = dsSimCommon.wrapResponseInSoapEnvelope(faultEle);
 			dsSimCommon.sendHttpResponse(soapEnv, SimCommon.getUnconnectedErrorRecorder(), false);
 		} catch (Exception e) {
-			logger.error(ExceptionUtil.exception_details(e));
+			logger.severe(ExceptionUtil.exception_details(e));
 		}
 	}
 
@@ -925,7 +996,7 @@ public class SimServlet  extends HttpServlet {
 		SoapFault sf = new SoapFault(SoapFault.FaultCodes.Sender, message);
 		dsSimCommon.sendFault(sf);
 //        } catch (Exception e) {
-//            logger.error(ExceptionUtil.exception_details(e));
+//            logger.severe(ExceptionUtil.exception_details(e));
 //        }
 	}
 

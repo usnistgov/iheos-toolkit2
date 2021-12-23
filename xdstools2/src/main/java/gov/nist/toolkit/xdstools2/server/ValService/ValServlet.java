@@ -22,10 +22,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 public class ValServlet extends HttpServlet {
-	static Logger logger = Logger.getLogger(ValServlet.class);
+	static Logger logger = Logger.getLogger(ValServlet.class.getName());
 
 	private static final long serialVersionUID = 1L;
 
@@ -53,7 +53,7 @@ public class ValServlet extends HttpServlet {
 //			dbPath = tk.propertyServiceManager.getMessageDatabaseFile().toString();
 //		}
 		String uri  = request.getRequestURI().toLowerCase();
-		logger.debug("uri is " + uri);
+		logger.fine("uri is " + uri);
 		ServletContext servletContext = config.getServletContext(); 
 		
 		String[] uriParts = uri.split("\\/");

@@ -89,7 +89,8 @@ public interface ToolkitService extends RemoteService  {
 	boolean addTestSession(CommandContext context) throws Exception;
 	boolean deleteTestSession(CommandContext context) throws Exception;
 
-	boolean isAdminPasswordValid(IsAdminPasswordValidRequest request) throws Exception;
+//	boolean isAdminPasswordValid(IsAdminPasswordValidRequest request) throws Exception;
+	String getAdminPasswordHash(GetAdminPasswordHashRequest request) throws Exception;
 
 	/* Simulator Management */
 	List<String> getActorTypeNames(CommandContext context) throws Exception;
@@ -110,6 +111,7 @@ public interface ToolkitService extends RemoteService  {
 
 	String setToolkitProperties(SetToolkitPropertiesRequest request) throws Exception;
 	Map<String, String> getToolkitProperties(CommandContext context) throws Exception;
+	Map<String, String> getAdminToolkitProperties(GetAdminToolkitPropertiesRequest request) throws Exception;
 	boolean reloadPropertyFile() throws NoServletSessionException;
 
 	Map<String, String> getOrchestrationProperties(GetOrchestrationPropertiesRequest request) throws Exception;
@@ -343,4 +345,6 @@ public interface ToolkitService extends RemoteService  {
     String promote(PromoteRequest request);
 
     MetadataCollection getMetadataFromRegIndex(GetMetadataFromRegIndexRequest request) throws Exception;
+
+    boolean reloadToolkitLogging(CommandContext context) throws Exception;
 }

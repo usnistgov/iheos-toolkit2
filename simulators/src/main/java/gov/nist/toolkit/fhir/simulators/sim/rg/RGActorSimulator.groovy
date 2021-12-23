@@ -35,12 +35,12 @@ import gov.nist.toolkit.valsupport.message.AbstractMessageValidator
 import gov.nist.toolkit.valsupport.message.ForcedErrorMessageValidator
 import groovy.transform.TypeChecked
 import org.apache.axiom.om.OMElement
-import org.apache.log4j.Logger
+import java.util.logging.*
 
 @TypeChecked
 public class RGActorSimulator extends GatewaySimulatorCommon implements MetadataGeneratingSim {
    SimDb db;
-   static Logger logger = Logger.getLogger(RegistryActorSimulator.class);
+   static Logger logger = Logger.getLogger(RegistryActorSimulator.class.getName());
    Metadata m;
    MessageValidatorEngine mvc;
 

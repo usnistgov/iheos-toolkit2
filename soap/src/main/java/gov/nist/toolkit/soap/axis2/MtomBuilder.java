@@ -6,13 +6,13 @@ import gov.nist.toolkit.soap.DocumentMap;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMText;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 /**
  *
  */
 public class MtomBuilder {
-    static final Logger logger = Logger.getLogger(MtomBuilder.class);
+    static final Logger logger = Logger.getLogger(MtomBuilder.class.getName());
     OMElement metadataEle;
     // id ==> Document Content
     // ids must be represented in metadata as ExtrinsicObjects
@@ -24,7 +24,7 @@ public class MtomBuilder {
         OMElement sor = MetadataSupport.firstChildWithLocalName(metadataEle, "SubmitObjectsRequest");
         if (sor == null) {
             String msg = "MtomBuilder: cannot find SubmitObjectsRequest child in PnR";
-            logger.error(msg);
+            logger.severe(msg);
             throw new ToolkitRuntimeException(msg);
         }
         for (String id : documentMap.getIds()) {

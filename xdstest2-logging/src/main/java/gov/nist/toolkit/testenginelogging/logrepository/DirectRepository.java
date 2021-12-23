@@ -1,9 +1,9 @@
 package gov.nist.toolkit.testenginelogging.logrepository;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 public class DirectRepository {
-	Logger logger = Logger.getLogger(DirectRepository.class);
+	Logger logger = Logger.getLogger(DirectRepository.class.getName());
 	LogRepository log;
 	
 //	public DirectRepository(String user) throws IOException {

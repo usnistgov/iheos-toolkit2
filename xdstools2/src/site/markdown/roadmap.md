@@ -1,5 +1,19 @@
 # Project Road Map #
 
+As of December 2021
+
+Apache Log4j server side logging framework was replaced with Java Util Logging. See https://github.com/usnistgov/iheos-toolkit2/wiki/XDS-Toolkit-Server-Logging-Configuration
+The logging replacement is a back-end server change only, it does not modify any profile test related Toolkit features.
+
+NIST XDS Toolkit users should report bugs and features requests through the XDS Toolkit GitHub Project Issues page in https://github.com/usnistgov/iheos-toolkit2/issues
+
+DSUB, XPID, and Async features are put on hold until this can be discussed by the IHE Testing and Tools Committee.
+
+General IHE XDS Profile questions should be posted to
+XDS Implementers mailing list
+ihe-xds-implementors@googlegroups.com
+
+# Roadmap History
 As of November 2015
 
 ## Short term ##

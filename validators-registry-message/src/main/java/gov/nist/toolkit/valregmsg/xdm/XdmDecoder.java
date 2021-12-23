@@ -15,7 +15,7 @@ import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -29,7 +29,7 @@ import java.util.zip.ZipException;
 public class XdmDecoder extends AbstractMessageValidator {
 	InputStream in;
 	ErrorRecorderBuilder erBuilder;
-	static Logger logger = Logger.getLogger(XdmDecoder.class);
+	static Logger logger = Logger.getLogger(XdmDecoder.class.getName());
 
 
 	public XdmDecoder(ValidationContext vc, ErrorRecorderBuilder erBuilder, InputStream zipInputStream) {
@@ -86,7 +86,7 @@ public class XdmDecoder extends AbstractMessageValidator {
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc)  {
 		er.registerValidator(this);
 
-		logger.debug("running");
+		logger.fine("running");
 		if (!decode(er)) {
 			logger.info("Did not decode zip properly");
 			er.unRegisterValidator(this);

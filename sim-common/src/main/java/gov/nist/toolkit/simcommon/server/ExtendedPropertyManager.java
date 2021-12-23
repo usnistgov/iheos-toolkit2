@@ -1,6 +1,7 @@
 package gov.nist.toolkit.simcommon.server;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,7 +9,7 @@ import java.util.Properties;
 
 public class ExtendedPropertyManager {
 
-	static Logger logger = Logger.getLogger(ExtendedPropertyManager.class);
+	static Logger logger = Logger.getLogger(ExtendedPropertyManager.class.getName());
 	static Properties properties = null;
 	
 	
@@ -28,7 +29,7 @@ public class ExtendedPropertyManager {
 	static public String getProperty(String propName)  {
 		if (properties == null) {
 			RuntimeException e = new RuntimeException("Extended properties not loaded");
-			logger.error("Extended Properties queried before they are loaded", e);
+			logger.log(Level.SEVERE, "Extended Properties queried before they are loaded", e);
 			throw e;
 		}
 		return properties.getProperty(propName);

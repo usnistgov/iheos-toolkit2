@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.widgets;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -12,8 +13,10 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
+import gov.nist.toolkit.xdstools2.client.command.command.GetAdminPasswordHashCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.IsAdminPasswordValidCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
+import gov.nist.toolkit.xdstools2.shared.command.request.GetAdminPasswordHashRequest;
 import gov.nist.toolkit.xdstools2.shared.command.request.IsAdminPasswordValidRequest;
 
 public class AdminPasswordDialogBox extends DialogBox {
@@ -64,6 +67,31 @@ public class AdminPasswordDialogBox extends DialogBox {
 			String password = passBox.getText();
 			AdminPasswordDialogBox.this.hide();
 
+			new GetAdminPasswordHashCommand() {
+				@Override
+				public void onComplete(String result) {
+					GWT.log("GetAdminPasswordHash result is: " + result);
+					boolean isValid = result != null && !"".equals(result);
+					PasswordManagement.isSignedIn = isValid;
+					if (PasswordManagement.isSignedIn) {
+						PasswordManagement.hash = result;
+						PasswordManagement.callSignInCallbacks();
+					}
+					else {
+						new PopupMessage("Sorry");
+						PasswordManagement.clearSignInCallbacks();
+					}
+
+				}
+				@Override
+				public void onFailure(Throwable throwable) {
+					PasswordManagement.isSignedIn = false;
+					PasswordManagement.clearSignInCallbacks();
+				}
+
+			}.run(new GetAdminPasswordHashRequest(ClientUtils.INSTANCE.getCommandContext(), password));
+
+			/*
 			new IsAdminPasswordValidCommand() {
 				@Override
 				public void onComplete(Boolean isValid) {
@@ -85,7 +113,7 @@ public class AdminPasswordDialogBox extends DialogBox {
 				}
 			}.run(new IsAdminPasswordValidRequest(ClientUtils.INSTANCE.getCommandContext(), password));
 
-
+			 */
 		}
 		
 	}

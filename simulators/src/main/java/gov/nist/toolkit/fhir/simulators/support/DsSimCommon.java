@@ -42,7 +42,9 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.XdsException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -68,7 +70,7 @@ public class DsSimCommon {
     Map<String, StoredDocument> documentsToAttach = null;  // cid => document
     RegistryErrorListGenerator registryErrorListGenerator = null;
 
-    static Logger logger = Logger.getLogger(DsSimCommon.class);
+    static Logger logger = Logger.getLogger(DsSimCommon.class.getName());
 
     public DsSimCommon(SimCommon simCommon, RegIndex regIndex, RepIndex repIndex, MessageValidatorEngine mvc) throws IOException, XdsException {
         this.simCommon = simCommon;
@@ -206,9 +208,9 @@ public class DsSimCommon {
         if (lastValidationStep != null) {
             lastValidationStep.getErrorRecorder().detail
                     (stepsWithErrors + " steps with errors");
-            logger.debug(stepsWithErrors + " steps with errors");
+            logger.fine(stepsWithErrors + " steps with errors");
         } else {
-            logger.debug("no steps with errors");
+            logger.fine("no steps with errors");
         }
     }
 
@@ -364,7 +366,7 @@ public class DsSimCommon {
             }
             addDocumentAttachments(uids, er);
         } catch (Exception e) {
-            logger.error("Cannot extract DocumentEntry.uniqueId from metadata stored in simulator", e);
+            logger.log(Level.SEVERE, "Cannot extract DocumentEntry.uniqueId from metadata stored in simulator", e);
             er.err(XdsErrorCode.Code.XDSRepositoryError, "SimCommon#addDocumentAttachment: Cannot extract DocumentEntry.uniqueId from metadata stored in simulator", this, "Internal Error");
         }
     }
@@ -404,14 +406,14 @@ public class DsSimCommon {
      * @param er                  ErrorRecorder to store errors found during processing.
      */
     public void addImagingDocumentAttachments(List<String> imagingDocumentUids, List<String> transferSyntaxUids, ErrorRecorder er) {
-        logger.debug("DsSimComon#addImagingDocumentAttachments");
+        logger.fine("DsSimComon#addImagingDocumentAttachments");
         for (String uid : imagingDocumentUids) {
             StoredDocument sd = this.getStoredImagingDocument(uid, transferSyntaxUids);
-            logger.debug(" uid=" + uid);
+            logger.fine(" uid=" + uid);
             if (sd == null)
                 continue;
             addDocumentAttachment(sd);
-            logger.debug(" Added document for this uid");
+            logger.fine(" Added document for this uid");
         }
     }
 
@@ -481,7 +483,7 @@ public class DsSimCommon {
 //     * @return
 //     */
 //    public StringBuffer wrapSoapEnvelopeInMultipartResponse(OMElement env, ErrorRecorder er) {
-//        logger.debug("DsSimCommon#wrapSoapEnvelopeInMultipartResponse");
+//        logger.fine("DsSimCommon#wrapSoapEnvelopeInMultipartResponse");
 //
 //        er.detail("Wrapping in Multipart");
 //
@@ -530,7 +532,7 @@ public class DsSimCommon {
 //                    } else {
 //                        contents = new String(sd.getContent());
 //                    }
-//                    logger.debug("Attaching " + cid + " length " + contents.length());
+//                    logger.fine("Attaching " + cid + " length " + contents.length());
 //                    body.append(contents);
 //                } catch (Exception e) {
 //                    er.err(XdsErrorCode.Code.XDSRepositoryError, e);
@@ -553,7 +555,7 @@ public class DsSimCommon {
      * @return
      */
     public StringBuffer wrapSoapEnvelopeInMultipartResponseBinary(OMElement env, ErrorRecorder er) {
-        logger.debug("DsSimCommon#wrapSoapEnvelopeInMultipartResponseBinary");
+        logger.fine("DsSimCommon#wrapSoapEnvelopeInMultipartResponseBinary");
 
         er.detail("Wrapping in Multipart");
 
@@ -602,7 +604,7 @@ public class DsSimCommon {
                     } else {
                         contents = new String(sd.getContent());
                     }
-		    logger.debug("Attaching " + cid + " length " + contents.length());
+		    logger.fine("Attaching " + cid + " length " + contents.length());
                     body.append(contents);
                 } catch (Exception e) {
                     er.err(XdsErrorCode.Code.XDSRepositoryError, e);
@@ -642,7 +644,7 @@ public class DsSimCommon {
     public void sendHttpResponse(OMElement env, ErrorRecorder er, boolean multipartOk) {
         if (simCommon.responseSent) {
             // this should never happen
-            logger.fatal(ExceptionUtil.here("Attempted to send second response"));
+            logger.severe(ExceptionUtil.here("Attempted to send second response"));
             return;
         }
         simCommon.responseSent = true;
@@ -677,7 +679,7 @@ public class DsSimCommon {
 //                }
 //            }
         } catch (IOException e) {
-            logger.fatal(ExceptionUtil.exception_details(e));
+            logger.severe(ExceptionUtil.exception_details(e));
         }
     }
 
@@ -705,7 +707,7 @@ public class DsSimCommon {
             }
 
         } catch (Exception e) {
-            logger.fatal(ExceptionUtil.exception_details(e));
+            logger.severe(ExceptionUtil.exception_details(e));
         }
     }
 
@@ -834,7 +836,7 @@ public class DsSimCommon {
     SoapFault getFaultFromMessageValidator(Class clas) {
         AbstractMessageValidator mv = getMessageValidatorIfAvailable(clas);
         if (mv == null) {
-            logger.debug("MessageValidator for " + clas.getName() + " not found");
+            logger.fine("MessageValidator for " + clas.getName() + " not found");
             return null;
         }
 
@@ -844,13 +846,13 @@ public class DsSimCommon {
             return fault;
         }
 
-        logger.debug("Found error recorder for " + clas.getName());
+        logger.fine("Found error recorder for " + clas.getName());
         GwtErrorRecorder ger = (GwtErrorRecorder) er;
         if (ger.hasErrorsOrContext()) {
-            logger.debug("has errors or context");
+            logger.fine("has errors or context");
             SoapFault fault = new SoapFault(SoapFault.FaultCodes.Sender, "Header/Format Validation errors reported by " + clas.getSimpleName());
             for (ValidatorErrorItem vei : ger.getValidatorErrorItems()) {
-                logger.debug(vei.toString());
+                logger.fine(vei.toString());
                 String resource = vei.resource;
                 if (!vei.isErrorOrContext())
                     continue;
@@ -886,7 +888,7 @@ public class DsSimCommon {
      * be returned.
      */
     public StoredDocument getStoredImagingDocument(String compositeUid, List<String> transferSyntaxUids) {
-        logger.debug("DsSimCommon#getStoredImagingDocument: " + compositeUid);
+        logger.fine("DsSimCommon#getStoredImagingDocument: " + compositeUid);
         String[] uids = compositeUid.split(":");
       /*
        * The image cache is in the IDS Simulator config, absolute, or relative
@@ -896,17 +898,17 @@ public class DsSimCommon {
         File idsRepositoryDir = Installation.instance().imageCache("sim" + File.separator + simCache);
         Path idsRepositoryPath = idsRepositoryDir.toPath();
         if (!idsRepositoryDir.exists() || !idsRepositoryDir.isDirectory()) {
-            logger.warn("Could not file image cache directory " + idsRepositoryDir);
+            logger.warning("Could not file image cache directory " + idsRepositoryDir);
             er.err(XdsErrorCode.Code.XDSRepositoryError,
                     "Could not find image cache [" + idsRepositoryPath + "] ",
                     uids[2], MetadataSupport.error_severity, "Internal error");
             return null;
         }
         Path folderPath = idsRepositoryPath.resolve(uids[0]).resolve(uids[1]).resolve(uids[2]);
-        logger.debug(" " + folderPath);
+        logger.fine(" " + folderPath);
         File folder = folderPath.toFile();
         if (!folder.exists()) {
-            logger.debug("Could not find file folder for composite UID: " + compositeUid);
+            logger.fine("Could not find file folder for composite UID: " + compositeUid);
             er.err(XdsErrorCode.Code.XDSDocumentUniqueIdError,
                     "No document matching composite UID [" + compositeUid + "] ",
                     uids[2], MetadataSupport.error_severity, "ITI TF-3 Table 4.2.4.1-2");
@@ -922,26 +924,26 @@ public class DsSimCommon {
             if (finalPath.toFile().exists()) {
                 found = true;
             } else {
-		logger.error("Was searching for file with this path, but the file is not present: " + finalPath.toString());
+		logger.severe("Was searching for file with this path, but the file is not present: " + finalPath.toString());
             }
         }
         StoredDocument sd = null;
         if (found) {
-            logger.debug("Found path to file: " + finalPath);
+            logger.fine("Found path to file: " + finalPath);
             StoredDocumentInt sdi = new StoredDocumentInt();
             sdi.pathToDocument = finalPath.toString();
             sdi.uid = uids[2];
-            logger.debug(" Instance UID: " + sdi.uid);
+            logger.fine(" Instance UID: " + sdi.uid);
             sdi.mimeType = (xferSyntax.equals("export.jpg")) ? "image/jpeg" : "application/dicom";
             sdi.charset = "UTF-8";
             sdi.content = null;
             sd = new StoredDocument(repIndex, sdi);
         } else {
-            logger.debug("Did not find an image file that matched transfer syntax");
-            logger.debug(" Composite UID: " + compositeUid);
+            logger.fine("Did not find an image file that matched transfer syntax");
+            logger.fine(" Composite UID: " + compositeUid);
             it = transferSyntaxUids.iterator();
             while (it.hasNext()) {
-                logger.debug("  Xfer syntax: " + it.next());
+                logger.fine("  Xfer syntax: " + it.next());
             }
             er.err(XdsErrorCode.Code.XDSRepositoryError,
                     "IDS cannot encode the pixel data using any of the requested transfer syntaxes",

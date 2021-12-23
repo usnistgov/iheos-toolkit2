@@ -21,19 +21,19 @@ import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 /**
  *
  */
 public class SoapMessageValidatorFactory implements MessageValidatorFactory2I {
-    static Logger logger = Logger.getLogger(SoapMessageValidatorFactory.class);
+    static Logger logger = Logger.getLogger(SoapMessageValidatorFactory.class.getName());
 
     public static MessageValidatorEngine validateBasedOnValidationContext(
             ErrorRecorderBuilder erBuilder, OMElement xml,
             MessageValidatorEngine mvc, ValidationContext vc, RegistryValidationInterface rvi, TestSession testSession) {
-        logger.debug("messageValidatorEngine#validateBasedOnValidationContext");
-        logger.debug(" VC: " + vc.toString());
+        logger.fine("messageValidatorEngine#validateBasedOnValidationContext");
+        logger.fine(" VC: " + vc.toString());
 
         String rootElementName = null;
 
@@ -249,7 +249,7 @@ public class SoapMessageValidatorFactory implements MessageValidatorFactory2I {
             er.detail(vc.toString());
         }
 
-        logger.debug("ValidationContext is " + vc.toString());
+        logger.fine("ValidationContext is " + vc.toString());
 
         String inputString = new String(input).trim();
 

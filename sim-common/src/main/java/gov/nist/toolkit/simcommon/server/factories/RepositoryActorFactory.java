@@ -41,7 +41,7 @@ public class RepositoryActorFactory extends AbstractActorFactory implements IAct
 
 	public Simulator buildNew(SimManager simm, SimId simId, String environment, boolean configureBase) throws Exception {
 		ActorType actorType = ActorType.REPOSITORY;
-//		logger.debug("Creating " + actorType.getName() + " with id " + simId);
+//		logger.fine("Creating " + actorType.getName() + " with id " + simId);
 		SimulatorConfig sc;
 		if (configureBase)
 			sc = configureBaseElements(actorType, simId, simId.getTestSession(), environment);

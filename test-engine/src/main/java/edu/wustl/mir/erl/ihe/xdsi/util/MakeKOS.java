@@ -16,7 +16,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Sequence;
 import org.dcm4che3.data.Tag;
@@ -60,10 +60,10 @@ public class MakeKOS {
        try {
           URL url = MakeKOS.class.getResource("MakeKOS_SubmitObjectsRequest_Metadata_Template.xml");
           url = MakeKOS.class.getResource("metadata-smm.xml");
-          Utility.getLog().debug(url.toString());
+          Utility.getLog().fine(url.toString());
           submitObjectsRequestMetadataTemplate = IOUtils.toString(url, "UTF-8");
        } catch (IOException e) {
-          log.error(Utility.getEM(e));
+          log.severe(Utility.getEM(e));
           System.exit(1);
        }
     }
@@ -275,7 +275,7 @@ public class MakeKOS {
        List<String> imgFileNames = new ArrayList<String>();
        for (File imgFile : imgFiles) 
           imgFileNames.add(imgFile.getAbsolutePath());
-       log.debug("Scanning DICOM files");
+       log.fine("Scanning DICOM files");
        DicomFiles.scan(imgFileNames, new DicomFiles.Callback() {
           @Override
          public boolean dicomFile(File f, Attributes fmi,
@@ -347,12 +347,12 @@ public class MakeKOS {
     }
     
    private void createSubmitObjectsRequestMetadata(String departmentalQualifier, String patientIdentifierAffinityDomain) throws Exception {
-	  log.debug("MakeKOS::createSubmitObjectsRequestMetadata enter method");
-	  log.debug(" Patient Identifier Affinity Domain: " + patientIdentifierAffinityDomain);
-	  log.debug(" PID Affinity Domain, XML escaped:   " + StringEscapeUtils.escapeXml(patientIdentifierAffinityDomain));
+	  log.fine("MakeKOS::createSubmitObjectsRequestMetadata enter method");
+	  log.fine(" Patient Identifier Affinity Domain: " + patientIdentifierAffinityDomain);
+	  log.fine(" PID Affinity Domain, XML escaped:   " + StringEscapeUtils.escapeXml(patientIdentifierAffinityDomain));
 	  String patientIdentifierDepartment = kos.getString(Tag.PatientID) + departmentalQualifier;
-	  log.debug(" Patient Identifier Department: " + patientIdentifierDepartment);
-	  log.debug(" PID Dept, XML escaped:         " + StringEscapeUtils.escapeXml(patientIdentifierDepartment));
+	  log.fine(" Patient Identifier Department: " + patientIdentifierDepartment);
+	  log.fine(" PID Dept, XML escaped:         " + StringEscapeUtils.escapeXml(patientIdentifierDepartment));
       String now = new SimpleDateFormat("yyyyMMddHHmmss").format((new Date()));
       File submitObjectsRequestMetadataFile =
          Utility.getRunDirectoryPath().resolve(kosDirectory).resolve(submitObjectsRequestMetadataFileName).toFile();
@@ -373,7 +373,7 @@ public class MakeKOS {
 //         .set("submissionSetOid", Identifiers.generateUniqueOID())
 //         .set("uid", Identifiers.generateUniqueOID())
          .get(submitObjectsRequestMetadataFile, false);
-      log.debug("MakeKOS::createSubmitObjectsRequestMetadata exit method");
+      log.fine("MakeKOS::createSubmitObjectsRequestMetadata exit method");
    }
 
     private Attributes createKOS(Attributes inst) {

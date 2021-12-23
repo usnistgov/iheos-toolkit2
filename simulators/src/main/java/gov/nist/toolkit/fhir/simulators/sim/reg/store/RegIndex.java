@@ -9,7 +9,7 @@ import gov.nist.toolkit.simcommon.server.DbObjectType;
 import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -19,7 +19,7 @@ import java.util.Calendar;
 import java.util.List;
 
 public class RegIndex implements RegistryValidationInterface, Serializable {
-	private static Logger logger = Logger.getLogger(RegIndex.class);
+	private static Logger logger = Logger.getLogger(RegIndex.class.getName());
 
 	private static final long serialVersionUID = 1L;
 	public MetadataCollection mc;
@@ -54,12 +54,12 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 		this.filename = filename;
 		this.simId = simId;
 		try {
-			logger.debug("Restore Registry Index for " + simId.toString() + " from " + filename);
+			logger.fine("Restore Registry Index for " + simId.toString() + " from " + filename);
 			restore();
 			mc.regIndex = this;
 			mc.setDirty(false);
 		} catch (Exception e) {
-			logger.debug("Creating new Registry Index for " + simId.toString() + " at " + filename);
+			logger.fine("Creating new Registry Index for " + simId.toString() + " at " + filename);
 			mc = new MetadataCollection();
 			mc.init();
 			mc.regIndex = this;
@@ -177,7 +177,7 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 	}
 
 	private static void saveRegistry(MetadataCollection mc, String filename) throws IOException {
-		logger.debug("Save Registry Index");
+		logger.fine("Save Registry Index");
 		FileOutputStream fos = null;
 		ObjectOutputStream out = null;
 

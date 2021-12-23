@@ -26,7 +26,7 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.text.StrSubstitutor;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 /**
  * Utility class, replaces variables of form ${varName} in string with values
@@ -133,7 +133,7 @@ public class Plug implements Serializable {
 			if (value == null)
 				throw new Exception("k=" + key.toString() + " has null value");
 		} catch (Exception e) {
-			log.warn(Utility.getEM(e));
+			log.warning(Utility.getEM(e));
 		}
 		String k = smish(key);
 		String v = smish(value);

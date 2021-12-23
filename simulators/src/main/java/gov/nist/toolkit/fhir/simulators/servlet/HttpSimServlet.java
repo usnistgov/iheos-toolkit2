@@ -30,7 +30,7 @@ import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -50,7 +50,7 @@ public class HttpSimServlet extends HttpServlet {
    
    private static String nl = Utility.nl;
    
-   static Logger logger = Logger.getLogger(SimServlet.class);
+   static Logger logger = Logger.getLogger(SimServlet.class.getName());
    static ServletConfig config;
    Map<String, String> headers = new HashMap<String, String>();
    String contentType;
@@ -109,7 +109,7 @@ public class HttpSimServlet extends HttpServlet {
          transactionType = ATFactory.findTransactionByShortName(transaction);
          if (transactionType == null) 
             throw new Exception("invalid transaction [" + transaction + "]");
-         logger.debug("Incoming transaction [" + transaction + "], which is " + transactionType);
+         logger.fine("Incoming transaction [" + transaction + "], which is " + transactionType);
          
       } catch (Exception e) {
          try {
@@ -118,7 +118,7 @@ public class HttpSimServlet extends HttpServlet {
             response.sendError(400, em);
             return;
          } catch (IOException e1) {
-            logger.warn("I/O error attempting to send error response " + e1.getMessage());
+            logger.warning("I/O error attempting to send error response " + e1.getMessage());
             return;
          }
       }
@@ -158,7 +158,7 @@ public class HttpSimServlet extends HttpServlet {
          try {
             response.sendError(400, e.getMessage());
          } catch (IOException e1) {
-            logger.warn("I/O error attempting to send error response " + e1.getMessage());
+            logger.warning("I/O error attempting to send error response " + e1.getMessage());
             return;
          }
       }
@@ -209,7 +209,7 @@ public class HttpSimServlet extends HttpServlet {
             }
          }
       } catch (Exception e) {
-         logger.fatal(ExceptionUtil.exception_details(e));
+         logger.severe(ExceptionUtil.exception_details(e));
       }
    }
 
@@ -227,7 +227,7 @@ public class HttpSimServlet extends HttpServlet {
             }
          }
       } catch (Exception e) {
-         logger.fatal(ExceptionUtil.exception_details(e));
+         logger.severe(ExceptionUtil.exception_details(e));
       }
    }
    

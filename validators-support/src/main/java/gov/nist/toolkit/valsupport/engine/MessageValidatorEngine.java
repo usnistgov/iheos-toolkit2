@@ -5,7 +5,7 @@ import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.valsupport.message.ServiceRequestContainer;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -19,7 +19,7 @@ import java.util.List;
  *
  */
 public class MessageValidatorEngine {
-	static protected Logger logger = Logger.getLogger(MessageValidatorEngine.class);
+	static protected Logger logger = Logger.getLogger(MessageValidatorEngine.class.getName());
 
 	protected List<ValidationStep> validationSteps = new ArrayList<ValidationStep>();
 	private boolean isPartialSuccess = false;

@@ -16,14 +16,14 @@ import gov.nist.toolkit.utilities.xml.XmlUtil
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
 import groovy.transform.TypeChecked
 import org.apache.axiom.om.OMElement
-import org.apache.log4j.Logger
+import java.util.logging.*
 
 /**
  *
  */
 @TypeChecked
 public class DocConsActorSimulator extends BaseDsActorSimulator  {
-    static final Logger logger = Logger.getLogger(DocConsActorSimulator.class);
+    static final Logger logger = Logger.getLogger(DocConsActorSimulator.class.getName());
     List<OMElement> extraSoapHeaderElements = new ArrayList<>();
     boolean tls;
 

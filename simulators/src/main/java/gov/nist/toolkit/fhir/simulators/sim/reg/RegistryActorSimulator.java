@@ -25,14 +25,14 @@ import gov.nist.toolkit.valregmsg.message.MetadataContainer;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.ForcedErrorMessageValidator;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class RegistryActorSimulator extends BaseDsActorSimulator {
-	private static Logger logger = Logger.getLogger(RegistryActorSimulator.class);
+	private static Logger logger = Logger.getLogger(RegistryActorSimulator.class.getName());
 	private boolean updateEnabled = false;
 	private boolean rmuEnabled = false;
 	private boolean rmEnabled = false;
@@ -133,7 +133,7 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 		AdhocQueryResponseGenerator queryResponseGenerator;
 		RegistryResponseGeneratorSim registryResponseGenerator;
 
-        logger.info(getSimulatorConfig());
+        logger.info(getSimulatorConfig().toString());
 
         List<String> errors = getSimulatorConfig().get(SimulatorProperties.errors).asList();
         if (errors != null && !errors.isEmpty()) {

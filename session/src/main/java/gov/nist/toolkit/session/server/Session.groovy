@@ -30,7 +30,7 @@ import gov.nist.toolkit.xdsexception.client.EnvironmentNotSelectedException
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException
 import gov.nist.toolkit.xdsexception.client.XdsInternalException
 import groovy.transform.TypeChecked
-import org.apache.log4j.Logger
+import java.util.logging.*
 
 /**
  * The session model is used in one of four ways depending on the context:
@@ -94,7 +94,7 @@ public class Session implements SecurityParams {
 	// environment name ==> codes configuration
 	static Map<String, CodesConfiguration> codesConfigurations = new Hashtable<>();
 
-	static final Logger logger = Logger.getLogger(Session.class);
+	static final Logger logger = Logger.getLogger(Session.class.getName());
 	
 	public boolean isTls() {
 		return siteSpec && siteSpec.isTls;
@@ -169,7 +169,7 @@ public class Session implements SecurityParams {
 			}
 
 		} catch (Exception e) {
-			logger.warn(e.toString());
+			logger.warning(e.toString());
 //			throw e;
 		}
 
@@ -457,7 +457,7 @@ public class Session implements SecurityParams {
 	}
 	
 	static public List<String> getEnvironmentNames() {
-		logger.debug( ": " + "getEnvironmentNames");
+		logger.fine( ": " + "getEnvironmentNames");
 		List<String> names = new ArrayList<String>();
 		
 		File k = Installation.instance().environmentFile();     //propertyServiceManager().getPropertyManager().getExternalCache() + File.separator + "environment");
@@ -508,7 +508,7 @@ public class Session implements SecurityParams {
 			throw new ToolkitRuntimeException(error);
 		}
 		if (currentEnvName != null && currentEnvName != name)
-			logger.debug(getId() + ": " + "Environment set to " + k);
+			logger.fine(getId() + ": " + "Environment set to " + k);
 		currentEnvName = name;
 		System.setProperty("XDSCodesFile", k.toString() + File.separator + "codes.xml");
 		new EnvSetting(sessionId, name, k);
@@ -539,7 +539,7 @@ public class Session implements SecurityParams {
 	}
 	
 	public Map<String, String> getSessionPropertiesAsMap() {
-		logger.debug(": " + "getSessionProperties()");
+		logger.fine(": " + "getSessionProperties()");
 		return getSessionProperties().asMap();
 	}
 

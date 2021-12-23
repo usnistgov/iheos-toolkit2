@@ -14,7 +14,7 @@ import gov.nist.toolkit.fhir.simulators.support.TransactionSimulator;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletOutputStream;
 import java.io.IOException;
@@ -28,7 +28,7 @@ import java.util.Map;
  */
 public class WadoRetrieveResponseSim extends TransactionSimulator {
    
-   private static Logger logger = Logger.getLogger(WadoRetrieveResponseSim.class);
+   private static Logger logger = Logger.getLogger(WadoRetrieveResponseSim.class.getName());
    // maps contentType to acceptable transfer syntax UIDs.
    private static Map<String, String> typesMap;
    // list of WADO HTTP parameters currently supported by sim
@@ -112,7 +112,7 @@ public class WadoRetrieveResponseSim extends TransactionSimulator {
       os.close();
       } catch (IOException ioe) {
          String em = "IOException during write: " + ioe.getMessage();
-         logger.warn(em);
+         logger.warning(em);
          err("IOException during write: " + ioe.getMessage());
          returnError(mvc, 500, "Error on server");
       } 
@@ -127,7 +127,7 @@ public class WadoRetrieveResponseSim extends TransactionSimulator {
       try {
          common.response.sendError(status, msg);
       } catch (IOException ioe){
-         logger.warn("I/O error attempting to send error response " + ioe.getMessage());
+         logger.warning("I/O error attempting to send error response " + ioe.getMessage());
          return;
       }      
    }

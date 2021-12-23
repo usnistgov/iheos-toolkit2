@@ -6,7 +6,7 @@ import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.xpath.AXIOMXPath;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.jaxen.JaxenException;
 
 import javax.xml.parsers.FactoryConfigurationError;
@@ -19,7 +19,7 @@ import java.io.File;
  */
 public class ErrorScan extends TestkitWalker {
 	static boolean debug = false;
-	private final static Logger logger = Logger.getLogger(ErrorScan.class);
+	private final static Logger logger = Logger.getLogger(ErrorScan.class.getName());
 
 	void evalTestPlan(File testplan, String expectedTestLabel) throws XdsInternalException, FactoryConfigurationError, JaxenException {
 		testPlanCount++;

@@ -18,7 +18,7 @@ import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.ds.ByteArrayDataSource;
 import org.apache.axis2.AxisFault;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ import java.util.Map;
  *
  */
 public class XdrDocSrcActorSimulator extends BaseDsActorSimulator {
-    static final Logger logger = Logger.getLogger(XdrDocSrcActorSimulator.class);
+    static final Logger logger = Logger.getLogger(XdrDocSrcActorSimulator.class.getName());
     OMElement messageBody = null;
     DocumentMap documentMap = null;
     List<OMElement> extraSoapHeaderElements = new ArrayList<>();
@@ -84,7 +84,7 @@ public class XdrDocSrcActorSimulator extends BaseDsActorSimulator {
     public OMElement run(SimulatorConfig config, TransactionType transactionType, DocumentMap documentMap, boolean isTls, String environmentName) throws AxisFault, LoadKeystoreException, XdsInternalException, XdsFormatException, XdsConfigurationException {
         GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
 
-        logger.debug("XDR Doc Src starting transaction " + transactionType);
+        logger.fine("XDR Doc Src starting transaction " + transactionType);
 
         if (!transactionType.equals(TransactionType.XDR_PROVIDE_AND_REGISTER))
             throw new XdsConfigurationException(String.format("Do not understand transaction type %s", transactionType), "");

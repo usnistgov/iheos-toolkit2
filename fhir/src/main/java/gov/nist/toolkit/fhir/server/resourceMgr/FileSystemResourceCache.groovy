@@ -3,13 +3,13 @@ package gov.nist.toolkit.fhir.server.resourceMgr
 import ca.uhn.fhir.context.FhirContext
 import gov.nist.toolkit.fhir.server.utility.UriBuilder
 import gov.nist.toolkit.utilities.io.Io
-import org.apache.log4j.Logger
+import java.util.logging.*
 import org.hl7.fhir.instance.model.api.IBaseResource
 /**
  * Local cache of FHIR resources
  */
 class FileSystemResourceCache implements ResourceCache {
-    private static final Logger logger = Logger.getLogger(FileSystemResourceCache.class)
+    private static final Logger logger = Logger.getLogger(FileSystemResourceCache.class.getName())
     static FhirContext ctx = FhirContext.forDstu3()
 
     private File cacheDir

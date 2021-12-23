@@ -19,7 +19,7 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 import java.util.HashSet;
 import java.util.List;
@@ -31,7 +31,7 @@ public class SqSim  extends TransactionSimulator implements MetadataGeneratingSi
 	AdhocQueryResponse response;
 	Metadata m = new Metadata();
 	Exception startUpException = null;
-	Logger logger = Logger.getLogger(SqSim.class);
+	Logger logger = Logger.getLogger(SqSim.class.getName());
 
 	public SqSim(SimCommon common, DsSimCommon dsSimCommon) {
 		super(common, null);
@@ -98,7 +98,7 @@ public class SqSim  extends TransactionSimulator implements MetadataGeneratingSi
 			String msg = e.getMessage();
 			if (msg == null || msg.equals(""))
 				msg = ExceptionUtil.exception_details(e);
-			logger.error(msg);
+			logger.severe(msg);
 			er.err(XdsErrorCode.Code.XDSRegistryError, msg, this, null);
 		}
 
