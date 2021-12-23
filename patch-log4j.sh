@@ -33,5 +33,4 @@ else
   fi
 fi
 
-cd xdstools2
-
+# end
