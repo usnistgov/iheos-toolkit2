@@ -263,6 +263,10 @@
                 <version>2.20</version>
                 <configuration>
                     <skipTests>true</skipTests> <!-- We are using Failsafe instead of Surefire, so just set skipTests to true. Otherwise Surefire likes to automatically run all tests that have *Test in the class names in the Unit test phase. -->
+                    <systemPropertyVariables>
+                        <propertyName>java.util.logging.config.file</propertyName>
+                        <propertyValue>${basedir}/../logging.properties</propertyValue>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
 
