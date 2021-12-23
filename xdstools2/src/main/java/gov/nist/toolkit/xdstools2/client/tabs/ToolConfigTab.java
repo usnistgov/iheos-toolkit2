@@ -105,6 +105,7 @@ public class ToolConfigTab extends GenericQueryTab {
         container.add(new HTML("<hr />"));
 
         addLoggingPropertiesPane(container);
+        container.add(new HTML("<hr />"));
 
         return container;
 	}
@@ -127,9 +128,13 @@ public class ToolConfigTab extends GenericQueryTab {
         loggingSeparator.setHTML("<br/>");
         container.add(loggingSeparator);
 
+        // Reload is not effective in Tomcat container, which has its own LogManager class, and does not use the Java Util Logging directly
+        /*
         Button reloadLoggingPropertiesButton = new Button("Reload Logging Properties");
         reloadLoggingPropertiesButton.addClickHandler(new ReloadLoggingProperties());
         container.add(reloadLoggingPropertiesButton);
+         */
+        container.add(new HTML("<br/>"));
     }
 
     @Override
