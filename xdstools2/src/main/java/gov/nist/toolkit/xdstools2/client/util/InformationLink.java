@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.util;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
@@ -22,6 +23,8 @@ public class InformationLink implements IsWidget {
     public InformationLink(String title, String wikiPageName) {
         wikiPageName = wikiPageName.replaceAll(" ", "-");
         final String pageName = (wikiPageName.startsWith("/")) ? wikiPageName : "/" + wikiPageName;
+        infoImage.getElement().getStyle().setMarginLeft(4, Style.Unit.PX);
+        infoImage.getElement().getStyle().setMarginRight(4, Style.Unit.PX);
         infoImage.setTitle(title);
         infoImage.addClickHandler(new ClickHandler() {
             @Override
