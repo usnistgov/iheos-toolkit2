@@ -1,6 +1,5 @@
 package gov.nist.toolkit.fhir.simulators.sim.rg
 
-import ca.uhn.hl7v2.util.StringUtil
 import gov.nist.toolkit.actortransaction.client.Severity
 import gov.nist.toolkit.commondatatypes.MetadataSupport
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties

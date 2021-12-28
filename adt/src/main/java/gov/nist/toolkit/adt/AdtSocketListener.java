@@ -1,13 +1,6 @@
 package gov.nist.toolkit.adt;
 
-
-import ca.uhn.hl7v2.model.*;
-import ca.uhn.hl7v2.parser.PipeParser;
-import ca.uhn.hl7v2.util.Terser;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,9 +10,8 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This should only be invoked from ListenerFactory.
