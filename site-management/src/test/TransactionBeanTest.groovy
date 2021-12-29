@@ -1,4 +1,3 @@
-package gov.nist.toolkit.sitemanagement.test
 
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.sitemanagement.client.TransactionBean

@@ -1,4 +1,4 @@
-package gov.nist.toolkit.valregmetadata.model.test.direct
+package direct
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder
 import gov.nist.toolkit.errorrecording.TextErrorRecorder

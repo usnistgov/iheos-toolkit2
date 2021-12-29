@@ -1,4 +1,3 @@
-package gov.nist.toolkit.sitemanagement.test
 
 import gov.nist.toolkit.actortransaction.shared.ActorType
 import gov.nist.toolkit.configDatatypes.client.TransactionType

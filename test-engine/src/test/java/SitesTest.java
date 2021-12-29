@@ -1,4 +1,3 @@
-package gov.nist.toolkit.testengine.test;
 
 import gov.nist.toolkit.sitemanagement.CombinedSiteLoader;
 import gov.nist.toolkit.sitemanagement.Sites;
