@@ -1,4 +1,3 @@
-package gov.nist.toolkit.sitemanagement.test;
 
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.sitemanagement.CombinedSiteLoader;

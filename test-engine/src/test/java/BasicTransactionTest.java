@@ -1,4 +1,3 @@
-package gov.nist.toolkit.testengine.test;
 
 import gov.nist.toolkit.testengine.engine.StepContext;
 import gov.nist.toolkit.xdsexception.client.XdsException;

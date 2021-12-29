@@ -1,4 +1,3 @@
-package gov.nist.toolkit.valregmetadata.field;
 
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;

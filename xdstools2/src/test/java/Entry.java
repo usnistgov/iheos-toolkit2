@@ -1,9 +1,8 @@
-package gov.nist.toolkit.xdstools2.server.gazelle.actorConfig.java.test;
+
+import gov.nist.toolkit.xdstools2.server.gazelle.actorConfig.CSVEntry;
+import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
-import gov.nist.toolkit.xdstools2.server.gazelle.actorConfig.CSVEntry;
-
-import org.junit.Test;
 
 public class Entry {
 
