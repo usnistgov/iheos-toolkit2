@@ -865,7 +865,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     @Override
     public TabConfig getToolTabConfig(GetTabConfigRequest request) throws Exception {
         String toolId = request.getToolId();
-        TabConfigLoader.init(Installation.instance().getToolTabConfigFile(toolId));
+        String environmentName = request.getEnvironmentName();
+        String testSessionName = request.getTestSessionName();
+//        TabConfigLoader.init(Installation.instance().getToolTabConfigFile(toolId));
+        TabConfigLoader.init(Installation.instance().getToolTabConfigFile(environmentName, testSessionName, toolId));
         TabConfig tabConfigRoot = TabConfigLoader.getTabConfig(toolId);
         return tabConfigRoot;
     }
@@ -875,7 +878,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         installCommandContext(request);
 
         String toolId = request.getToolId();
-        TabConfigLoader.init(Installation.instance().getToolTabConfigFile(toolId));
+        String environmentName = request.getEnvironmentName();
+        String testSessionName = request.getTestSessionName();
+//        TabConfigLoader.init(Installation.instance().getToolTabConfigFile(toolId));
+        TabConfigLoader.init(Installation.instance().getToolTabConfigFile(environmentName, testSessionName, toolId));
         TabConfig tabConfigRoot = TabConfigLoader.getTabConfig(toolId);
 
         GetCollectionRequest getCollectionRequest = new GetCollectionRequest(request, "actorcollections");

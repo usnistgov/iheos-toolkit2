@@ -508,9 +508,61 @@ public class Installation {
         return new File(toolkitxFile(), "interaction-sequences" + sep + "InteractionSequences.xml");
     }
 
+    /*
+        Return the Tool Tab Configuration file that is located in the default folder: $ToolkitFolder/tool-tab-configs.
+        File name is created by a concatenation:  toolId + "Tabs.xml"
+     */
     public File getToolTabConfigFile(String toolId) {
         if (toolId!=null)
             return new File(toolkitxFile(), "tool-tab-configs" + sep + toolId + "Tabs.xml");
+        return null;
+    }
+
+    /*
+        This method is called when the user wants to search for the Tool Tab Configuration file
+        in the (current) environment folder of the external cache. If that file does not exist, then
+        drop back and return the confguration file from the default folder.
+        If successful, file path is: "$external_cache/$environment/tool-tab-configs/$toolId" + "Tabs.xml"
+     */
+    public File getToolTabConfigFile(String environment, String toolId) {
+        if (environment == null || environment.equals("")) {
+            return getToolTabConfigFile(toolId);
+        }
+        if (toolId!=null) {
+            File environmentsRootFile=environmentFile();
+            File f = new File(environmentFile().getAbsolutePath() + sep + environment + sep + "tool-tab-configs" + sep + toolId + "Tabs.xml");
+            if (f.exists()) {
+                return f;
+            } else {
+                return getToolTabConfigFile(toolId);
+            }
+        }
+        return null;
+    }
+
+    /*
+        This method is called when the user wants to search for the Tool Tab Configuration file
+        in the test session folder of the external cache. If that file does not exist, then try
+        looking in the environment folder.
+        If successful, file path is: "$external_cache/$environment/testkits/$test_session/tool-tab-configs/$toolId" + "Tabs.xml"
+     */
+
+    public File getToolTabConfigFile(String environment, String testSession, String toolId) {
+        if (environment == null || environment.equals("")) {
+            return getToolTabConfigFile(testSession);
+        }
+        if (testSession == null || testSession.equals("")) {
+            return getToolTabConfigFile(environment, toolId);
+        }
+        if (toolId!=null) {
+            File environmentsRootFile=environmentFile();
+            File f = new File(environmentFile().getAbsolutePath() + sep + environment + sep + "testkits" +sep + testSession + sep + "tool-tab-configs" + sep + toolId + "Tabs.xml");
+            if (f.exists()) {
+                return f;
+            } else {
+                return getToolTabConfigFile(environment, toolId);
+            }
+        }
         return null;
     }
 
