@@ -92,5 +92,10 @@ public class TabConfigLoader {
     public static TabConfig getTabConfig(String toolId) {
         return TabConfig.clone(initMap.get(toolId + "Tabs.xml"));
     }
+/*
+    public static TabConfig getTabConfig(String environment, String testSession, String toolId) {
+        return TabConfig.clone(initMap.get(toolId + "Tabs.xml"));
+    }
+ */
 
 }
