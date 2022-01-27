@@ -1,6 +1,5 @@
 package gov.nist.toolkit.xdstools2.client.widgets;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -14,10 +13,8 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.command.command.GetAdminPasswordHashCommand;
-import gov.nist.toolkit.xdstools2.client.command.command.IsAdminPasswordValidCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetAdminPasswordHashRequest;
-import gov.nist.toolkit.xdstools2.shared.command.request.IsAdminPasswordValidRequest;
 
 public class AdminPasswordDialogBox extends DialogBox {
 	PasswordTextBox passBox;
@@ -70,7 +67,7 @@ public class AdminPasswordDialogBox extends DialogBox {
 			new GetAdminPasswordHashCommand() {
 				@Override
 				public void onComplete(String result) {
-					GWT.log("GetAdminPasswordHash result is: " + result);
+//					GWT.log("GetAdminPasswordHash result is: " + result);
 					boolean isValid = result != null && !"".equals(result);
 					PasswordManagement.isSignedIn = isValid;
 					if (PasswordManagement.isSignedIn) {
