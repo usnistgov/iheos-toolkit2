@@ -153,10 +153,6 @@ public class ToolConfigTab extends GenericQueryTab {
         return "toolconfig";
     }
 
-    void addPropertyHint(String htmlText) {
-	    grid.setHTML(gridRow, 0, htmlText);
-	    gridRow++;
-    }
 
     void addPropertyToGrid(String key) {
         // create the label for each row
@@ -182,9 +178,6 @@ public class ToolConfigTab extends GenericQueryTab {
         gridRow = 0;
 		for (String key : specialProperties) {
 			addPropertyToGrid(key);
-			if (ExternalCache.equals(key)) {
-                addPropertyHint("<span style='font-size:smaller'>File path convention differs depending on operating system. On Windows, use /C:/path/to/ec. On Unix-like, use /path/to/ec.</span>");
-            }
 		}
         for (String key : props.keySet()) {
 			if (specialProperties.contains(key)) continue;
