@@ -19,6 +19,7 @@ import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.factories.TextErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.TextErrorRecorder;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
+import gov.nist.toolkit.valregmetadata.coding.Code;
 
 
 import javax.xml.namespace.QName;
@@ -560,6 +561,187 @@ public class Validator {
 			return true;
 		err("Found " + count + " Approved ExtrinsicObjects instead of one");
 		return false;
+	}
+
+	/*
+	    This is the public method that is called to compare the value in a metadata field
+	    to an expected value provided by the caller.
+	    The argument metadataField is a string of the form:
+	       SubmimssionSet.xxx
+	       DocumentEntry.xxx
+	    where the xxx labels correspond to the metadata field names as documented in ITI TF 3:4.1.3.
+	    For example: DocumentEntry.classCode
+	 */
+	public boolean namedMetadataCompare(String metadataField, String expectedValue) throws MetadataException {
+		String submittedValue = extractNamedMetadata(metadataField);
+		boolean rtn = true;
+		if (!expectedValue.equals(submittedValue)) {
+			err("Metadata Content Failure, key: " + metadataField + ", expectedValue: " + expectedValue + ", submittedValue: " + submittedValue);
+			rtn = false;
+		}
+		return rtn;
+	}
+
+	/*
+	    This is the public method that is called to compare the CODED value in a metadata field
+	    to an expected value provided by the caller.
+	    The argument metadataField is a string of the form:
+	       SubmimssionSet.xxx
+	       DocumentEntry.xxx
+	    where the xxx labels correspond to the metadata field names as documented in ITI TF 3:4.1.3.
+	    For example: DocumentEntry.classCode
+	 */
+	public boolean namedMetadataCompareCode(String metadataField, String expectedCodeValue,
+										String expectedCodingScheme,
+										String expectedCodeDisplayName) throws MetadataException {
+		Code expectedCode = new Code(expectedCodeValue, expectedCodingScheme, expectedCodeDisplayName);
+		Code submittedCode = extractNamedMetadataCoded(metadataField);
+
+		boolean rtn = expectedCode.equals(submittedCode);
+		if (!rtn) {
+			err("Metadata Content Failure / Single Coded Value, key: " + metadataField +
+					", expected/submitted code: " + expectedCodeValue + "/" + submittedCode.getCode() +
+					", expected/submitted scheme: " + expectedCodingScheme + "/" + submittedCode.getScheme());
+		}
+		return rtn;
+	}
+
+	/*
+	    Similar to namedMetadataCompareCode.
+	    This method accepts one coded value from the caller and returns true if any of the items
+	    in the list of codes in the metadata field match the code supplied by the caller.
+	    For example, DocumentEntry.eventCodeList might contain 3 coded entries. Call this method
+	    to determine if coded item A is found in any of those 3 coded entries.
+	 */
+	public boolean namedMetadataContainsCode(String metadataField, String expectedCodeValue,
+											String expectedCodingScheme,
+											String expectedCodeDisplayName) throws MetadataException {
+		Code expectedCode = new Code(expectedCodeValue, expectedCodingScheme, expectedCodeDisplayName);
+		List<Code> submittedCodeList = extractNamedMetadataCodedList(metadataField);
+
+		boolean rtn = false;
+		for (Code submittedCode: submittedCodeList) {
+			if (expectedCode.equals(submittedCode)) {
+				rtn = true; break;
+			}
+		}
+
+		if (!rtn) {
+			err("Metadata Content Failure / Contains Coded Value, key: " + metadataField +
+					", expected/submitted code: " + expectedCodeValue + "/" +
+					", expected/submitted scheme: " + expectedCodingScheme + "/");
+		}
+		return rtn;
+	}
+
+	private String extractNamedMetadata(String metadataField) throws MetadataException {
+		String rtn = "";
+		OMElement oe;
+		HashMap<String, OMElement> map;
+		switch(metadataField) {
+			case "SubmissionSet.patientId":
+				rtn = m.getSubmissionSetPatientId();
+				break;
+			case "SubmissionSet.sourceId":
+				OMElement e = m.getSubmissionSet();
+				rtn = m.getSourceIdValue(e);
+				break;
+			case "DocumentEntry.mimeType":
+				oe = getSingleDocumentEntry();
+				rtn = m.getMimeType(oe);
+				break;
+			case "DocumentEntry.homeCommunityId":
+				oe = getSingleDocumentEntry();
+				rtn = m.getHome(oe);
+				break;
+			case "DocumentEntry.objectType":
+				oe = getSingleDocumentEntry();
+				rtn = m.getObjectType(oe);
+				break;
+			case "DocumentEntry.patientId":
+				oe = getSingleDocumentEntry();
+				rtn = m.getPatientId(oe);
+				break;
+
+			default:
+				break;
+		}
+		return rtn;
+	}
+
+	private OMElement getSingleDocumentEntry() throws MetadataException {
+		HashMap<String, OMElement> map = m.getDocumentUidMap();
+		String uid = (String) map.keySet().toArray()[0];
+		OMElement oe = map.get(uid);
+		return oe;
+	}
+
+	private Code extractNamedMetadataCoded(String metadataField) throws MetadataException {
+		Code code = new Code("","","");
+		OMElement e;
+		switch(metadataField) {
+			case "SubmissionSet.contentTypeCode":
+				e = m.getSubmissionSet();
+				code = extractNamedMetadataCoded(e, "urn:uuid:aa543740-bdda-424e-8c96-df4873be8500");
+				break;
+			case "DocumentEntry.classCode":
+				e = getSingleDocumentEntry();
+				code = extractNamedMetadataCoded(e, "urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a");
+				break;
+			case "DocumentEntry.formatCode":
+				e = getSingleDocumentEntry();
+				code = extractNamedMetadataCoded(e, "urn:uuid:a09d5840-386c-46f2-b5ad-9c3699a4309d");
+				break;
+			case "DocumentEntry.typeCode":
+				e = getSingleDocumentEntry();
+				code = extractNamedMetadataCoded(e, "urn:uuid:f0306f51-975f-434e-a61c-c59651d33983");
+				break;
+			default:
+				break;
+		}
+		return code;
+	}
+
+
+	private List<Code> extractNamedMetadataCodedList(String metadataField) throws MetadataException {
+		List<Code> codeList = new ArrayList<>();
+		OMElement e;
+		switch(metadataField) {
+			case "DocumentEntry.eventCodeList":
+				e = getSingleDocumentEntry();
+				codeList = extractNamedMetadataCodedList(e, "urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4");
+				break;
+			default:
+				break;
+		}
+		return codeList;
+	}
+
+	private Code extractNamedMetadataCoded(OMElement e, String classificationScheme) throws MetadataException {
+        Code code = new Code("", "", "");
+		List<OMElement> omElements = m.findClassifications(e, classificationScheme);
+		int x = omElements.size();
+		OMElement element = omElements.get(0);
+		String cValue        = m.getClassificationValue(element);
+		String cCodingScheme = m.getClassificationScheme(element);
+		String cDisplayName  = m.getNameValue(element);
+		code = new Code (cValue, cCodingScheme, cDisplayName);
+		return code;
+	}
+
+	private List<Code> extractNamedMetadataCodedList(OMElement e, String classificationScheme) throws MetadataException {
+		List<Code> codeList = new ArrayList<>();
+		List<OMElement> omElements = m.findClassifications(e, classificationScheme);
+		int x = omElements.size();
+		for (int i = 0; i < omElements.size(); i++) {
+			OMElement element = omElements.get(i);
+			Code code = new Code(
+				m.getClassificationValue(element),
+				m.getClassificationScheme(element),
+				m.getNameValue(element));
+			codeList.add(code);
+		}
+		return codeList;
 	}
 
 	public void run_test_assertions(OMElement xml, OMElement instruction_output)  throws MetadataException, XdsInternalException, MetadataValidationException {
