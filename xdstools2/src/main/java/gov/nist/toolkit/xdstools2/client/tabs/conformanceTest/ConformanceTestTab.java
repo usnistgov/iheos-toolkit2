@@ -753,7 +753,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 					int expectedTestCount = tor.getTestInstances().size();
 					int testCount = testOverviews.size();
 					if (tor.getTestInstances().size() != testOverviews.size()) {
-					    showPopupMessage("Error: Number of test count: " + testCount + " does not equal expected test count: " + expectedTestCount);
+					    showPopupMessage("Error: Number of test count: " + testCount + " does not equal expected test count: " + expectedTestCount + ". Check if missing test(s) have invalid TestLogCache log.xml content.");
 					}
 				}
 
