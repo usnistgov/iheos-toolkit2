@@ -9,17 +9,20 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMNode;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.axiom.om.util.XPathEvaluator;
-import java.util.logging.Logger;
 
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class Util {
     static Logger logger = Logger.getLogger(Util.class.getName());
@@ -131,13 +134,20 @@ public class Util {
 //		return parse_xml(buf.toString());
 //	}
 
-	// I guess this is a "deep copy" for the purpose of pretty-printing. - Sunil
+	// OMFormatter may change contents, returned OMElement might not really be an exact "copy".
 	public static OMElement deep_copy(OMElement in) throws XdsInternalException {
 		String str = new OMFormatter(in).toString();
 //		String str = in.toString();
 		OMElement res = parse_xml(str);
         return res;
 	}
+
+	/*
+	This method has problems with duplicate namespaces.
+	public static OMElement cloneOMElement(OMElement in) throws Exception {
+		return MultirefHelper.getClonedOMElement(in, MetadataSupport.om_factory);
+	}
+	 */
 
 	private static void removeProcessingInstructions(StringBuffer buf) {
 		boolean running = true;
