@@ -4,12 +4,16 @@ import gov.nist.toolkit.docref.MetadataTables;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
+import gov.nist.toolkit.simcommon.server.SimDb;
+import gov.nist.toolkit.simcommon.server.SimDbEvent;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
+
+import java.nio.file.Path;
 import java.util.logging.Logger;
 
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -19,9 +23,15 @@ import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.factories.TextErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.TextErrorRecorder;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
+import gov.nist.toolkit.valregmetadata.coding.Code;
+import org.apache.axiom.om.OMException;
+import org.w3c.dom.Document;
 
 
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -560,6 +570,355 @@ public class Validator {
 			return true;
 		err("Found " + count + " Approved ExtrinsicObjects instead of one");
 		return false;
+	}
+
+	/*
+	    This is the public method that is called to compare the value in a metadata field
+	    to an expected value provided by the caller.
+	    The argument metadataField is a string of the form:
+	       SubmimssionSet.xxx
+	       DocumentEntry.xxx
+	    where the xxx labels correspond to the metadata field names as documented in ITI TF 3:4.1.3.
+	    For example: DocumentEntry.classCode
+	 */
+	public boolean namedMetadataCompare(String metadataField, String expectedValue) throws MetadataException {
+		String submittedValue = extractNamedMetadata(metadataField);
+		boolean rtn = true;
+		if (!expectedValue.equals(submittedValue)) {
+			err("Metadata Content Failure, key: " + metadataField + ", expectedValue: " + expectedValue + ", submittedValue: " + submittedValue);
+			rtn = false;
+		}
+		return rtn;
+	}
+
+	public boolean attachmentFileFound(SoapSimulatorTransaction sst) throws MetadataException {
+		String uniqueId = extractNamedMetadata("DocumentEntry.uniqueId");
+
+		Path py = pathToAttachment(sst);
+		File fx = py.toFile();
+
+		boolean rtn = true;
+		if (! fx.exists()) {
+			err("Document Content Failure: Document Unique ID: " + uniqueId + ", Did not find expected file in simulator log: " + fx.getAbsolutePath());
+			err(" This means that the simulator did not process the DocumentEntry successfully. The simulator software did not find/understand the Document Unique ID, was not able to extract the attachment, or was not able to write the attachment in the path listed.");
+			rtn = false;
+		}
+		return rtn;
+	}
+
+	public boolean attachmentIsParsableXML(SoapSimulatorTransaction sst) throws MetadataException {
+		String uniqueId = extractNamedMetadata("DocumentEntry.uniqueId");
+		File fx = pathToAttachment(sst).toFile();
+
+		boolean rtn = true;
+		if (! fx.exists()) {
+			err("Document Content Failure: Document Unique ID: " + uniqueId + ", Did not find expected file in simulator log: " + fx.getAbsolutePath());
+			err(" This means that the simulator did not process the DocumentEntry successfully. The simulator software did not find/understand the Document Unique ID, was not able to extract the attachment, or was not able to write the attachment in the path listed.");
+			rtn = false;
+		} else {
+			DocumentBuilderFactory dbFactory;
+			DocumentBuilder dBuilder;
+			Document doc;
+			try {
+				// Try to parse the document. If the parser throws an exception, we know the document is not well formed.
+				dbFactory = DocumentBuilderFactory.newInstance();
+				dBuilder = dbFactory.newDocumentBuilder();
+				doc = dBuilder.parse(fx);
+
+				// You would uncomment for debugging. No reason to do this in production.
+//				String x = doc.toString();
+
+			} catch (Exception e) {
+				err("Document Content Failure: Document Unique ID: " + uniqueId + ", XML parser was not able to parse file in simulator log: " + fx.getAbsolutePath());
+				err("This exception was thrown when parsing the file: " + e.getMessage());
+				rtn = false;
+			} finally {
+				dbFactory = null;
+				dBuilder = null;
+				doc = null;
+			}
+		}
+		return rtn;
+	}
+
+	public boolean namedXMLDocumentCompare(SoapSimulatorTransaction sst, String documentField, String expectedValue) throws MetadataException{
+		String submittedValue = extractedNamedDocumentValue_xml(sst, documentField);
+		boolean rtn = true;
+		if (!expectedValue.equals(submittedValue)) {
+			err("Document Content Failure, key: " + documentField + ", expectedValue: " + expectedValue + ", submittedValue: " + submittedValue);
+			rtn = false;
+		}
+		return rtn;
+	}
+
+	private String extractedNamedDocumentValue_xml(SoapSimulatorTransaction sst, String documentField) throws MetadataException{
+		String rtn = null;
+
+		OMElement documentRoot = safeXMLParse(pathToAttachment(sst));
+		if (documentRoot == null) {
+			err("Was not able to parse this document. That should have been tested previously with a different assertion.");
+			return rtn;
+		}
+		String elementName = null;
+		switch (documentField) {
+			case "Header.typeId":
+				elementName="typeId";
+				break;
+			default:
+				err("Did not recognize this field to extract from an XML document: " + documentField);
+				break;
+		}
+		if (elementName != null) {
+			Iterator<OMElement> iterator = documentRoot.getChildrenWithLocalName(elementName);
+			try {
+				// Because of the parser we are using, there can be instances where it finds <templateId> elements
+				// even in a poorly formatted XML document. In the while loop below, do not bail out if we find
+				// a templateId that matches. This forces the iterator over the entire document. If something did not
+				// parse properly, this will pick it up.
+				while (iterator.hasNext()) {
+					OMElement e = iterator.next();
+					rtn = e.getAttributeValue(new QName("root"));
+				}
+			} catch (Exception e) {
+				// A prior comparison might have found a match. Override here to make sure we return false.
+				// TODO: There is another edge condition to cover, but that should really not happen.
+				// A prior step in the test plan really should have determined if the document was legal XML.
+				err("Was not able to iterate through elements with LocalName " + elementName + " and grab attribute 'root'. This could be a coding issue or some wrong with the document under review.");
+				err(e.getMessage());
+				rtn = null;
+			}
+		}
+
+
+		return rtn;
+	}
+
+
+	public boolean containsTemplateId(SoapSimulatorTransaction sst, String templateId) throws MetadataException {
+		OMElement documentRoot = safeXMLParse(pathToAttachment(sst));
+
+		boolean rtn = false;	// Assume failure because of the logic below
+		if (documentRoot == null) {
+			err("Was not able to parse this document. That should have been tested previously with a different assertion.");
+		} else {
+			Iterator<OMElement> iterator = documentRoot.getChildrenWithLocalName("templateId");
+			try {
+				// Because of the parser we are using, there can be instances where it finds <templateId> elements
+				// even in a poorly formatted XML document. In the while loop below, do not bail out if we find
+				// a templateId that matches. This forces the iterator over the entire document. If something did not
+				// parse properly, this will pick it up.
+				while (iterator.hasNext()) {
+					OMElement e = iterator.next();
+					String templateIdInDocument = e.getAttributeValue(new QName("root"));
+					if (templateId.equals(templateIdInDocument)) {
+						rtn = true;
+					}
+				}
+			} catch (Exception e) {
+				// A prior comparison might have found a match. Override here to make sure we return false.
+				// TODO: There is another edge condition to cover, but that should really not happen.
+				// A prior step in the test plan really should have determined if the document was legal XML.
+				err("Was not able to iterate through elements with LocalName 'templateId' and grab attribute 'root'. This could be a coding issue or some wrong with the document under review.");
+				err(e.getMessage());
+				rtn = false;
+			}
+			if (!rtn) {
+				err("Did not find any (templateId root) attributes that match expected value: " + templateId);
+			}
+		}
+
+		return rtn;
+	}
+
+	private OMElement safeXMLParse(Path path) {
+		OMElement documentRoot = null;
+
+		try {
+			documentRoot = Util.parse_xml(path.toFile());
+		} catch (Exception e) {
+			documentRoot = null;
+		} finally {
+		}
+		return documentRoot;
+	}
+
+	private Path pathToAttachment(SoapSimulatorTransaction sst) throws MetadataException {
+		Path path = sst.getSimDbEvent().getRequestBodyFile().getParentFile().toPath();
+		String uniqueId = extractNamedMetadata("DocumentEntry.uniqueId");
+		String expectedAttachmentFileName = oidToFilename(uniqueId) + ".bin";
+
+		return path.resolve("Repository").resolve(expectedAttachmentFileName);
+	}
+
+	private String oidToFilename(String oid) {
+		return oid.replaceAll("\\.", "_");
+	}
+
+	/*
+	    This is the public method that is called to compare the CODED value in a metadata field
+	    to an expected value provided by the caller.
+	    The argument metadataField is a string of the form:
+	       SubmimssionSet.xxx
+	       DocumentEntry.xxx
+	    where the xxx labels correspond to the metadata field names as documented in ITI TF 3:4.1.3.
+	    For example: DocumentEntry.classCode
+	 */
+	public boolean namedMetadataCompareCode(String metadataField, String expectedCodeValue,
+										String expectedCodingScheme,
+										String expectedCodeDisplayName) throws MetadataException {
+		Code expectedCode = new Code(expectedCodeValue, expectedCodingScheme, expectedCodeDisplayName);
+		Code submittedCode = extractNamedMetadataCoded(metadataField);
+
+		boolean rtn = expectedCode.equals(submittedCode);
+		if (!rtn) {
+			err("Metadata Content Failure / Single Coded Value, key: " + metadataField +
+					", expected/submitted code: " + expectedCodeValue + "/" + submittedCode.getCode() +
+					", expected/submitted scheme: " + expectedCodingScheme + "/" + submittedCode.getScheme());
+		}
+		return rtn;
+	}
+
+	/*
+	    Similar to namedMetadataCompareCode.
+	    This method accepts one coded value from the caller and returns true if any of the items
+	    in the list of codes in the metadata field match the code supplied by the caller.
+	    For example, DocumentEntry.eventCodeList might contain 3 coded entries. Call this method
+	    to determine if coded item A is found in any of those 3 coded entries.
+	 */
+	public boolean namedMetadataContainsCode(String metadataField, String expectedCodeValue,
+											String expectedCodingScheme,
+											String expectedCodeDisplayName) throws MetadataException {
+		Code expectedCode = new Code(expectedCodeValue, expectedCodingScheme, expectedCodeDisplayName);
+		List<Code> submittedCodeList = extractNamedMetadataCodedList(metadataField);
+
+		boolean rtn = false;
+		for (Code submittedCode: submittedCodeList) {
+			if (expectedCode.equals(submittedCode)) {
+				rtn = true;
+				break;
+			}
+		}
+
+		if (!rtn) {
+			err("Metadata Content Failure / Contains Coded Value, key: " + metadataField +
+					", expected/submitted code: " + expectedCodeValue + "/" +
+					", expected/submitted scheme: " + expectedCodingScheme + "/");
+		}
+		return rtn;
+	}
+
+	private String extractNamedMetadata(String metadataField) throws MetadataException {
+		String rtn = "";
+		OMElement oe;
+		HashMap<String, OMElement> map;
+		switch(metadataField) {
+			case "SubmissionSet.patientId":
+				rtn = m.getSubmissionSetPatientId();
+				break;
+			case "SubmissionSet.sourceId":
+				OMElement e = m.getSubmissionSet();
+				rtn = m.getSourceIdValue(e);
+				break;
+			case "DocumentEntry.mimeType":
+				oe = getSingleDocumentEntry();
+				rtn = m.getMimeType(oe);
+				break;
+			case "DocumentEntry.homeCommunityId":
+				oe = getSingleDocumentEntry();
+				rtn = m.getHome(oe);
+				break;
+			case "DocumentEntry.objectType":
+				oe = getSingleDocumentEntry();
+				rtn = m.getObjectType(oe);
+				break;
+			case "DocumentEntry.patientId":
+				oe = getSingleDocumentEntry();
+				rtn = m.getPatientId(oe);
+				break;
+			case "DocumentEntry.uniqueId":
+				oe = getSingleDocumentEntry();
+				rtn = m.getUniqueIdValue(oe);
+				break;
+
+			default:
+				break;
+		}
+		return rtn;
+	}
+
+	private OMElement getSingleDocumentEntry() throws MetadataException {
+		HashMap<String, OMElement> map = m.getDocumentUidMap();
+		String uid = (String) map.keySet().toArray()[0];
+		OMElement oe = map.get(uid);
+		return oe;
+	}
+
+	private Code extractNamedMetadataCoded(String metadataField) throws MetadataException {
+		Code code = new Code("","","");
+		OMElement e;
+		switch(metadataField) {
+			case "SubmissionSet.contentTypeCode":
+				e = m.getSubmissionSet();
+				code = extractNamedMetadataCoded(e, "urn:uuid:aa543740-bdda-424e-8c96-df4873be8500");
+				break;
+			case "DocumentEntry.classCode":
+				e = getSingleDocumentEntry();
+				code = extractNamedMetadataCoded(e, "urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a");
+				break;
+			case "DocumentEntry.formatCode":
+				e = getSingleDocumentEntry();
+				code = extractNamedMetadataCoded(e, "urn:uuid:a09d5840-386c-46f2-b5ad-9c3699a4309d");
+				break;
+			case "DocumentEntry.typeCode":
+				e = getSingleDocumentEntry();
+				code = extractNamedMetadataCoded(e, "urn:uuid:f0306f51-975f-434e-a61c-c59651d33983");
+				break;
+			default:
+				break;
+		}
+		return code;
+	}
+
+
+	private List<Code> extractNamedMetadataCodedList(String metadataField) throws MetadataException {
+		List<Code> codeList = new ArrayList<>();
+		OMElement e;
+		switch(metadataField) {
+			case "DocumentEntry.eventCodeList":
+				e = getSingleDocumentEntry();
+				codeList = extractNamedMetadataCodedList(e, "urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4");
+				break;
+			default:
+				break;
+		}
+		return codeList;
+	}
+
+	private Code extractNamedMetadataCoded(OMElement e, String classificationScheme) throws MetadataException {
+        Code code = new Code("", "", "");
+		List<OMElement> omElements = m.findClassifications(e, classificationScheme);
+		int x = omElements.size();
+		OMElement element = omElements.get(0);
+		String cValue        = m.getClassificationValue(element);
+		String cCodingScheme = m.getClassificationScheme(element);
+		String cDisplayName  = m.getNameValue(element);
+		code = new Code (cValue, cCodingScheme, cDisplayName);
+		return code;
+	}
+
+	private List<Code> extractNamedMetadataCodedList(OMElement e, String classificationScheme) throws MetadataException {
+		List<Code> codeList = new ArrayList<>();
+		List<OMElement> omElements = m.findClassifications(e, classificationScheme);
+		int x = omElements.size();
+		for (int i = 0; i < omElements.size(); i++) {
+			OMElement element = omElements.get(i);
+			Code code = new Code(
+				m.getClassificationValue(element),
+				m.getClassificationScheme(element),
+				m.getNameValue(element));
+			codeList.add(code);
+		}
+		return codeList;
 	}
 
 	public void run_test_assertions(OMElement xml, OMElement instruction_output)  throws MetadataException, XdsInternalException, MetadataValidationException {

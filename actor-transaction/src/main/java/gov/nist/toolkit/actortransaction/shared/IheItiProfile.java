@@ -11,6 +11,7 @@ public enum IheItiProfile  implements IsSerializable, Serializable {
     XCA_I("xca-i"),
     XDS_I("xds-i"),
     XCA("xca"),
+    XCDR("xcdr"),
     FHIRINIT("fhir-init");
 
     private String code;
