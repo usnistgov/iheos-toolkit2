@@ -6,7 +6,7 @@
 
     <groupId>gov.nist.toolkit</groupId>
     <artifactId>tk-deps</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+    <version>7.8.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>tk-deps</name>
@@ -32,7 +32,7 @@
             <groovyVersion>2.6.0-alpha-2</groovyVersion>
         -->
         <!-- This one works with IntelliJ/Jetty/Windows. -->
-<!--        <groovyVersion>2.5.0</groovyVersion>-->
+        <!--        <groovyVersion>2.5.0</groovyVersion>-->
         <!-- This one is more compatible with Windows and Linux -->
         <groovyVersion>2.4.13</groovyVersion>
         <!--<groovyVersion>2.4.5</groovyVersion>-->
@@ -117,157 +117,157 @@
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>sim-proxy</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>datasets</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>config-datatypes</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>it-support</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>transaction-notification-service</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>toolkit-services-common</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>toolkit-api</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>services</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>toolkit-services</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>rest-tools</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>validators-soap-message</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>simulators</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>sim-support</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>adt</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>envSettings</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>sim-common</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>session</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>actorfactory</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>test-engine</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>saml</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>message-validator-factory2</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>testkit-utilities</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>soap</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>validators-registry-metadata</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>validators-registry-message</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>xdstest2-logging</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>installation</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>common</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>registry-msg-formats</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>site-management</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>http</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>xml-security</groupId>
@@ -277,78 +277,78 @@
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>results</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>docref</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>dsig</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>security-common</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>tk</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>validators-support</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>xds-exceptions</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>error-recording</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>utilities</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>registry-metadata</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>registry-support</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>common-datatypes</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>grizzly-support</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>actor-transaction</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
-<!--            <dependency>-->
-<!--                <groupId>gov.nist.toolkit</groupId>-->
-<!--                <artifactId>fhir</artifactId>-->
-<!--                <version></version>-->
-<!--            </dependency>-->
+            <!--            <dependency>-->
+            <!--                <groupId>gov.nist.toolkit</groupId>-->
+            <!--                <artifactId>fhir</artifactId>-->
+            <!--                <version></version>-->
+            <!--            </dependency>-->
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>wsseTool</artifactId>
@@ -436,13 +436,12 @@
             </dependency>
 
 
-
             <!--  Jersey Core -->
-<!--            <dependency>-->
-<!--                <groupId>org.glassfish.jersey.core</groupId>-->
-<!--                <artifactId>jersey-common</artifactId>-->
-<!--                <version>${jersey.version}</version>-->
-<!--            </dependency>-->
+            <!--            <dependency>-->
+            <!--                <groupId>org.glassfish.jersey.core</groupId>-->
+            <!--                <artifactId>jersey-common</artifactId>-->
+            <!--                <version>${jersey.version}</version>-->
+            <!--            </dependency>-->
             <dependency>
                 <groupId>org.glassfish.jersey.core</groupId>
                 <artifactId>jersey-client</artifactId>
@@ -495,10 +494,10 @@
             </dependency>
 
             <!--            <dependency>-->
-<!--                <groupId>org.glassfish.jersey.bundles.repackaged</groupId>-->
-<!--                <artifactId>jersey-asm</artifactId>-->
-<!--                <version>${jersey.version}</version>   &lt;!&ndash;     2.6 &ndash;&gt;-->
-<!--            </dependency>-->
+            <!--                <groupId>org.glassfish.jersey.bundles.repackaged</groupId>-->
+            <!--                <artifactId>jersey-asm</artifactId>-->
+            <!--                <version>${jersey.version}</version>   &lt;!&ndash;     2.6 &ndash;&gt;-->
+            <!--            </dependency>-->
 
             <dependency>
                 <groupId>soap</groupId>
@@ -534,32 +533,32 @@
             </dependency>
             <!-- The following was used along with spock version 0.7-groovy-2.0.
             See http://stackoverflow.com/questions/15526510/junit-maven-parallel-test-execution-error for details -->
-<!--            <dependency>-->
-<!--                <groupId>org.spockframework</groupId>-->
-<!--                <artifactId>spock-maven</artifactId>-->
-<!--                <version>${spock.version}</version>-->
-<!--                <exclusions>-->
-<!--                    <exclusion>  &lt;!&ndash; exclude so we can pick up surefire-junit4 2.17 version for failsafe integration tests  &ndash;&gt;-->
-<!--                        <groupId>org.apache.maven.surefire</groupId>-->
-<!--                        <artifactId>surefire-junit47</artifactId>-->
-<!--                    </exclusion>-->
-<!--                </exclusions>-->
-<!--            </dependency>-->
+            <!--            <dependency>-->
+            <!--                <groupId>org.spockframework</groupId>-->
+            <!--                <artifactId>spock-maven</artifactId>-->
+            <!--                <version>${spock.version}</version>-->
+            <!--                <exclusions>-->
+            <!--                    <exclusion>  &lt;!&ndash; exclude so we can pick up surefire-junit4 2.17 version for failsafe integration tests  &ndash;&gt;-->
+            <!--                        <groupId>org.apache.maven.surefire</groupId>-->
+            <!--                        <artifactId>surefire-junit47</artifactId>-->
+            <!--                    </exclusion>-->
+            <!--                </exclusions>-->
+            <!--            </dependency>-->
             <dependency>
                 <groupId>org.apache.maven.surefire</groupId>
                 <artifactId>surefire-junit4</artifactId>
                 <version>2.17</version>
             </dependency>
-<!--            <dependency>-->
-<!--                <groupId>org.apache.logging.log4j</groupId>-->
-<!--                <artifactId>log4j-api</artifactId>-->
-<!--                <version>2.16.0</version>-->
-<!--            </dependency>-->
-<!--            <dependency>-->
-<!--                <groupId>org.apache.logging.log4j</groupId>-->
-<!--                <artifactId>log4j-core</artifactId>-->
-<!--                <version>2.16.0</version>-->
-<!--            </dependency>-->
+            <!--            <dependency>-->
+            <!--                <groupId>org.apache.logging.log4j</groupId>-->
+            <!--                <artifactId>log4j-api</artifactId>-->
+            <!--                <version>2.16.0</version>-->
+            <!--            </dependency>-->
+            <!--            <dependency>-->
+            <!--                <groupId>org.apache.logging.log4j</groupId>-->
+            <!--                <artifactId>log4j-core</artifactId>-->
+            <!--                <version>2.16.0</version>-->
+            <!--            </dependency>-->
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
@@ -710,16 +709,16 @@
                 <artifactId>groovy-all</artifactId>
                 <version>${groovyVersion}</version>
             </dependency>
-<!--            <dependency>-->
-<!--                <groupId>com.smartgwt</groupId>-->
-<!--                <artifactId>smartgwt</artifactId>-->
-<!--                <version>4.1p</version>-->
-<!--            </dependency>-->
-<!--            <dependency>-->
-<!--                <groupId>com.smartgwt</groupId>-->
-<!--                <artifactId>smartgwt-skins</artifactId>-->
-<!--                <version>4.1p</version>-->
-<!--            </dependency>-->
+            <!--            <dependency>-->
+            <!--                <groupId>com.smartgwt</groupId>-->
+            <!--                <artifactId>smartgwt</artifactId>-->
+            <!--                <version>4.1p</version>-->
+            <!--            </dependency>-->
+            <!--            <dependency>-->
+            <!--                <groupId>com.smartgwt</groupId>-->
+            <!--                <artifactId>smartgwt-skins</artifactId>-->
+            <!--                <version>4.1p</version>-->
+            <!--            </dependency>-->
             <dependency>
                 <groupId>net.jcip</groupId>
                 <artifactId>jcip-annotations</artifactId>
@@ -793,27 +792,27 @@
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>interaction-model</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>interaction-mapper</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>interaction-diagram</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>plugin-support</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>plugins</artifactId>
-<version>7.8.0-SNAPSHOT</version>
+                <version>7.8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.vectomatic</groupId>
@@ -855,21 +854,21 @@
             also need to include a logging library. Logback is used here, but log4j
             would also be fine.
             -->
-<!--            <dependency>-->
-<!--                <groupId>ch.qos.logback</groupId>-->
-<!--                <artifactId>logback-classic</artifactId>-->
-<!--                <version>1.2.0</version>-->
-<!--            </dependency>-->
+            <!--            <dependency>-->
+            <!--                <groupId>ch.qos.logback</groupId>-->
+            <!--                <artifactId>logback-classic</artifactId>-->
+            <!--                <version>1.2.0</version>-->
+            <!--            </dependency>-->
 
             <!--
             If you are using HAPI narrative generation, you will need to include Thymeleaf
             as well. Otherwise the following can be omitted.
             -->
-<!--            <dependency>-->
-<!--                <groupId>org.thymeleaf</groupId>-->
-<!--                <artifactId>thymeleaf</artifactId>-->
-<!--                <version>${thymeleaf-version}</version>-->
-<!--            </dependency>-->
+            <!--            <dependency>-->
+            <!--                <groupId>org.thymeleaf</groupId>-->
+            <!--                <artifactId>thymeleaf</artifactId>-->
+            <!--                <version>${thymeleaf-version}</version>-->
+            <!--            </dependency>-->
 
             <!-- Used for CORS support -->
             <dependency>
@@ -887,38 +886,38 @@
 
         </dependencies>
 
-        </dependencyManagement>
+    </dependencyManagement>
 
-        <distributionManagement>
-            <!--<repository>-->
-                <!--<id>deployment</id>-->
-                <!--<name>gazelle 3rd party</name>-->
-                <!--<url>https://gazelle.ihe.net/nexus/content/repositories/thirdparty</url>-->
-            <!--</repository>-->
-            <!--<snapshotRepository>-->
-                <!--<id>internal</id>-->
-                <!--<name>Internal Releases</name>-->
-                <!--<url>https://gazelle.ihe.net/nexus/content/repositories/snapshots/</url>-->
-            <!--</snapshotRepository>-->
-        </distributionManagement>
+    <distributionManagement>
+        <!--<repository>-->
+        <!--<id>deployment</id>-->
+        <!--<name>gazelle 3rd party</name>-->
+        <!--<url>https://gazelle.ihe.net/nexus/content/repositories/thirdparty</url>-->
+        <!--</repository>-->
+        <!--<snapshotRepository>-->
+        <!--<id>internal</id>-->
+        <!--<name>Internal Releases</name>-->
+        <!--<url>https://gazelle.ihe.net/nexus/content/repositories/snapshots/</url>-->
+        <!--</snapshotRepository>-->
+    </distributionManagement>
 
-        <build>
-            <plugins>
-                <plugin>
-                    <groupId>org.codehaus.groovy</groupId>
-                    <artifactId>groovy-eclipse-compiler</artifactId>
-                    <version>${groovy-eclipse-compiler.version}</version>
-                    <extensions>true</extensions>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>${maven-compiler-plugin.version}</version>
-                    <configuration>
-                        <source>1.8</source>
-                        <target>1.8</target>
-                    </configuration>
-                </plugin>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.groovy</groupId>
+                <artifactId>groovy-eclipse-compiler</artifactId>
+                <version>${groovy-eclipse-compiler.version}</version>
+                <extensions>true</extensions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
 
-            </plugins>
-        </build>
-    </project>
+        </plugins>
+    </build>
+</project>

@@ -42,7 +42,6 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.commons.httpclient.protocol.Protocol;
-import java.util.logging.Logger;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -55,6 +54,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 
 
@@ -564,15 +564,15 @@ public class Soap implements SoapInterface {
 		   start = System.nanoTime();
 			operationClient.execute(block); // execute sync or async
         } catch (AxisFault e) {
-           logger.fine("$$$$$ AxisFault: with timeout of " + timeout + ", Elapsed time: " + TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start) / 1000.0 + " milliseconds");
+           logger.warning("$$$$$ AxisFault: with timeout of " + timeout + ", Elapsed time: " + TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start) / 1000.0 + " milliseconds");
            soapFault = e;
-           logger.fine(ExceptionUtil.exception_details(soapFault));
+           logger.warning(ExceptionUtil.exception_details(soapFault));
             MessageContext inMsgCtx = getInputMessageContext();
             OMElement soapBody = inMsgCtx.getEnvelope().getBody();
             result = soapBody.getFirstElement();
             logger.info(new OMFormatter(result).toString());
         } catch (OMException e) {
-			logger.fine("org.apache.axiom.om.OMException fault: " + e.toString());
+			logger.warning("org.apache.axiom.om.OMException fault: " + e.toString());
 			networkFault = e;
 			SOAPEnvelope myEnvelope = getInputMessageContext().getEnvelope();
 			OMElement soapBody = myEnvelope.getBody();
@@ -957,7 +957,14 @@ public class Soap implements SoapInterface {
 			return;
 
 		inHeader = Util.deep_copy(in.getEnvelope().getHeader());
-        logger.info("incoming header loaded");
+		/*
+        try {
+			inHeader = Util.cloneOMElement(in.getEnvelope().getHeader());
+			logger.info("incoming header loaded");
+		} catch (Exception ex) {
+        	logger.severe("loadInHeader exception: " + ex.toString());
+		}
+		 */
 	}
 
 	void loadOutHeader() throws XdsInternalException {
@@ -973,6 +980,15 @@ public class Soap implements SoapInterface {
 			return;
 
 		outHeader = Util.deep_copy(out.getEnvelope().getHeader());
+		/*
+		try {
+			outHeader = Util.cloneOMElement(out.getEnvelope().getHeader());
+			logger.info("out header loaded");
+		} catch (Exception ex) {
+			logger.severe("loadOutHeader exception: " + ex.toString());
+		}
+		 */
+
 	}
 
 	/*

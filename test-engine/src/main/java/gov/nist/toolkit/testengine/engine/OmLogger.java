@@ -9,12 +9,11 @@ import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMException;
 import org.apache.axiom.om.OMNode;
-import java.util.logging.Logger;
-
-import java.util.ArrayList;
-import java.util.Map;
 
 import javax.xml.namespace.QName;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.logging.Logger;
 
 public class OmLogger implements ILogger {
 	static Logger logger = Logger.getLogger(OmLogger.class.getName());
@@ -129,6 +128,14 @@ public class OmLogger implements ILogger {
 		if (val == null)
 			val = MetadataSupport.om_factory.createOMElement("None", null);
 		else {
+			/*
+			Util.deep_copy caused this problem given some SOAP response headers...
+			Caused by: com.ctc.wstx.exc.WstxParsingException: Undeclared namespace prefix "wsu" (for attribute "Id")
+			                at gov.nist.toolkit.utilities.xml.OMFormatter.toString(OMFormatter.java:63)
+			                ...
+                at gov.nist.toolkit.utilities.xml.Util.deep_copy(Util.java:136)
+                at gov.nist.toolkit.testengine.engine.OmLogger.add_name_value(OmLogger.java:136)
+			 */
 			try {
 //				if (name.equals("InputMetadata")) {
 //					System.out.println("InputMetadata:\n" + new OMFormatter(value).toString());
@@ -139,6 +146,16 @@ public class OmLogger implements ILogger {
 				Util.mkElement("Exception", value.toString(), ele);
 				return ele;
 			}
+		    /*
+		    Use Axis2 clone method directly instead of OMFormatter to avoid the Exception stated above.
+			try {
+				val = Util.cloneOMElement(value);
+			} catch (Exception e) {
+				Util.mkElement("MultirefHelper Exception", OMFormatter.encodeAmp(ExceptionUtil.exception_details(e)), ele);
+				return ele;
+			}
+		     */
+
 		}
 		try {
 			ele.addChild(val);
