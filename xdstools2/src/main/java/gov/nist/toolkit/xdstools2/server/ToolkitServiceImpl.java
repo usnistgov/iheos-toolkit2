@@ -103,9 +103,6 @@ import gov.nist.toolkit.xdstools2.shared.command.CommandContext;
 import gov.nist.toolkit.xdstools2.shared.command.InitializationResponse;
 import gov.nist.toolkit.xdstools2.shared.command.request.*;
 
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
-
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -124,6 +121,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 //import gov.nist.toolkit.session.server.serviceManager.FhirServiceManager;
 
@@ -911,7 +909,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
             for (TabConfig tabConfig : tabConfigRoot.getChildTabConfigs()) {
                 ActorOption actorOption = new ActorOption(tcd.getCollectionID());
                 if (tabConfig.getTcCode().equals(actorOption.actorTypeId)) {
-                    tabConfig.setLabel(tcd.getCollectionTitle());
+                    if (tabConfig.getLabel() == null || "".equals(tabConfig.getLabel())) {
+                        tabConfig.setLabel(tcd.getCollectionTitle());
+                    }
                     // Prune empty options
                     TabConfig profiles = tabConfig.getFirstChildTabConfig();
                     if ("Profiles".equals(profiles.getLabel())) {

@@ -12,11 +12,25 @@ Permanent labels:
 	"Actors"
 	"Profiles"
 	"Options"
-Temporary labels:
-	At the actor level, the Tab Label attribute value is for tab organization purposes only. Before this Tab file was introduced,
-	the value of testkit\actorcollections\[tcCode].txt is used as the tab name. To preserve this feature,
-	the actor label is reset to the value that of the text file.
+Actor labels:
+	Background
+	Before this Tab file was introduced, the value of testkit\actorcollections\[tcCode].txt is used as the tab name.
+	The actor label can be reset to the value that of the text file.
 	See "tabConfig.setLabel(tcd.getCollectionTitle());".
+
+	How actor label works:
+	If the label XML attribute is defined on the tab type="actor", then this value is used for display purposes in the Conformance Tool Tab.
+	For example:
+		<tab label="Registry" type="actor" tcCode="reg" displayColorCode="#D0E4F6">
+	Expect "Registry" to be displayed for the actor label in the Conformance Test Tool.
+
+	If the label XML attribute is not defined on the tab type="actor", then the value is pulled from the Test Collection Actor Name
+	as per the toolkitx/testkit/actorcollections/[actorCode].txt.
+	For example, notice the missing XML label attribute below for the XML tab element below:
+		<tab type="actor" tcCode="reg" displayColorCode="#D0E4F6">
+	This implies toolkitx/testkit/actorcollections/[actorCode].txt will be used for the label value.
+	 If reg.txt contains the text "Document Registry",
+	 Then Expect "Document Registry" to displayed in the Conformance Tool Tab for the "reg" actor code.
 
 type:
 Defines the tab type and correlates to a permanent label.
