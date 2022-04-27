@@ -525,11 +525,14 @@ public enum ActorType implements IsSerializable, Serializable {
         return shortName;
    }
 
+   /*
+   Not needed after Asbestos was introduced.
    public boolean isProxy() {
         if (proxyTransforms == null) return false;
         if (proxyTransforms.size() == 0) return false;
         return true;
    }
+    */
 
    public boolean isFhir() { return isFhir; }
 
@@ -755,6 +758,10 @@ public enum ActorType implements IsSerializable, Serializable {
            return shortName;
        else
             return actorCode;
+    }
+
+    public boolean isFilterProxy() {
+        return this.equals(FILTER_PROXY);
     }
 
 

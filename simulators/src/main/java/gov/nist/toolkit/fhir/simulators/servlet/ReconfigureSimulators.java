@@ -91,7 +91,7 @@ public class ReconfigureSimulators extends HttpServlet {
             return;
         }
 
-        boolean isProxy = actorType.isProxy();
+//        boolean isProxy = actorType.isProxy();
 
         for (SimulatorConfigElement ele : config.getEndpointConfigs()) {
             boolean isTls = SimulatorProperties.isTlsEndpoint(ele.getName());
@@ -108,6 +108,7 @@ public class ReconfigureSimulators extends HttpServlet {
             String port = ep.getPort();
             String context = ep.getContext();
 
+            /*
             if (isProxy) {
                 if (!isTls) {
                     if (!port.equals(getConfiguredPort())) {
@@ -117,6 +118,11 @@ public class ReconfigureSimulators extends HttpServlet {
                         updated = true;
                     }
                 }
+            } else {
+             */
+            if (actorType.isFilterProxy()) {
+                // Issue #547
+                logger.info("...endpoint not updated.");
             } else {
                 if (isTls) {
                     if (!host.equals(getConfiguredHost()) || !port.equals(getConfiguredTlsPort())) {
@@ -140,7 +146,6 @@ public class ReconfigureSimulators extends HttpServlet {
                     ele.setStringValue(ep.getEndpoint());
                     updated = true;
                 }
-            }
 
             /* Fix Issue #436: This block is not needed since simulators cannot be renamed.
             if (!ep.getSimId().equals(simIdString)) {
@@ -150,6 +155,7 @@ public class ReconfigureSimulators extends HttpServlet {
                 updated = true;
             }
             */
+            }
         }
 
         try {
