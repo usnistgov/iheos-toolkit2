@@ -14,7 +14,7 @@ Metadata by either
 	Accepting, storing and returning the extra metadata in query
 	responses
 	
-The two sections align with these two approaches the Registy actor
+The two sections align with these two approaches the Registry actor
 can support.  Only one of the will succeed (they are mutually
 exclusive). When logging results in Gazelle, upload the results
 for both sections. 

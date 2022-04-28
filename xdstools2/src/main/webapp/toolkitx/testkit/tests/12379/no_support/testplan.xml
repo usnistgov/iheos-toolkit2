@@ -5,7 +5,7 @@
     <Rule>
       <Assertion>This step should pass with a warning if Extra Metadata cannot be saved.</Assertion>
     </Rule>
-    <ExpectedStatus>Warning</ExpectedStatus>
+    <ExpectedStatus>Success</ExpectedStatus>
     <ExpectedErrorCode>XDSExtraMetadataNotSaved</ExpectedErrorCode>
     <RegisterTransaction>
       <XDSb/>

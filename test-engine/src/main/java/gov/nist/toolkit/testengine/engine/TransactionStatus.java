@@ -4,7 +4,11 @@ import gov.nist.toolkit.commondatatypes.MetadataSupport;
 
 public class TransactionStatus {
 
-	static enum StatusValue { Success, Failure, Warning, PartialSuccess, FAULT, UNKNOWN };
+	/**
+	 * See ITI TF 3 Error codes table 4.2.4.2-#
+	 * https://profiles.ihe.net/ITI/TF/Volume3/ch-4.2.html#4.2.4.2
+	 */
+	static enum StatusValue { Success, Failure, /* Warning, */ PartialSuccess, FAULT, UNKNOWN };
 
 	StatusValue value = StatusValue.UNKNOWN;
 	String fullValue = "";
