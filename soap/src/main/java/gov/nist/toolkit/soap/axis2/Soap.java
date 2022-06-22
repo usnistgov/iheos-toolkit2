@@ -107,6 +107,9 @@ public class Soap implements SoapInterface {
 	// so they can be logged by the caller
 	OMElement inHeader = null;
 	OMElement outHeader = null;
+	// To circumvent wsuId namespace issues
+	String outHeaderRawString = null;
+	String outHeaderClonedString = null;
 
 	public void setSecurityParams(SecurityParams securityParams) {
 		this.securityParams = securityParams;
@@ -979,6 +982,16 @@ public class Soap implements SoapInterface {
 		if (out == null)
 			return;
 
+		try {
+			outHeaderRawString = out.getEnvelope().getHeader().toString();
+		} catch (Exception ex) {
+			logger.warning("Raw string error: " + ex.toString());
+		}
+		try {
+			outHeaderClonedString = out.getEnvelope().getHeader().cloneOMElement().toString();
+		} catch (Exception ex) {
+			logger.warning("Clone string error: " + ex.toString());
+		}
 		outHeader = Util.deep_copy(out.getEnvelope().getHeader());
 		/*
 		try {
