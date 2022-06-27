@@ -5,6 +5,8 @@ import gov.nist.toolkit.utilities.xml.Util
 import org.apache.axiom.om.OMElement
 import spock.lang.Specification
 
+import javax.xml.namespace.QName
+
 class OMLoggerTest extends Specification {
 
     def msg = '''
@@ -40,5 +42,16 @@ class OMLoggerTest extends Specification {
 
         then:
         true
+    }
+
+    def 'test soap header' () {
+        when:
+        OMElement o = Util.parse_xml(msg)
+        then:
+        OMElement header = o.getChildrenWithLocalName("Header").next()
+        String headerString = header.toString() //.replace('xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"')
+        println 'orig header extract: ' + new OMFormatter(headerString).toString()
+        OMElement headerCopy = Util.deep_copy(header)
+        println 'copied header: ' + Util.deep_copy(headerCopy).toString()
     }
 }
