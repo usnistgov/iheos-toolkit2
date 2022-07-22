@@ -121,11 +121,6 @@
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
-                <artifactId>datasets</artifactId>
-                <version>7.8.0-SNAPSHOT</version><!-- xdstk -->
-            </dependency>
-            <dependency>
-                <groupId>gov.nist.toolkit</groupId>
                 <artifactId>config-datatypes</artifactId>
                 <version>7.8.0-SNAPSHOT</version><!-- xdstk -->
             </dependency>

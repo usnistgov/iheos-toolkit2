@@ -63,6 +63,9 @@ public class ExternalCacheManager {
             logger.info("Environments exist - not updating.");
         }
 
+        /*
+        Removed because of #553
+        Obsoleted by FHIR Toolkit
             logger.info("Initializing datasets in " + externalCache);
             try {
                 FileUtils.copyDirectory(Installation.instance().internalDatasetsFile(), new File(externalCache, "datasets"));
@@ -70,6 +73,7 @@ public class ExternalCacheManager {
                 String msg = "Cannot initialize datasets area of External Cache at " + externalCache + " - " + e.getMessage();
                 logger.severe(msg);
             }
+         */
 
             logger.info("Initializing resource cache in " + externalCache);
             try {

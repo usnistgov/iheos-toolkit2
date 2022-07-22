@@ -12,8 +12,6 @@ import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.PidSet;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.datasets.server.DatasetFactory;
-import gov.nist.toolkit.datasets.shared.DatasetModel;
 import gov.nist.toolkit.fhir.simulators.servlet.SimServlet;
 import gov.nist.toolkit.fhir.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.fhir.simulators.sim.reg.store.StatusValue;
@@ -2083,12 +2081,6 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return true;
     }
 
-    @Override
-    public List<DatasetModel> getAllDatasets(CommandContext context) throws Exception {
-        installCommandContext(context);
-        logger.fine(sessionID + ": getAllDatasets()");
-        return DatasetFactory.getAllDatasets();
-    }
 
     /*
     @Override
@@ -2132,14 +2124,14 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 
      */
 
-    @Override
-    public String getDatasetContent(GetDatasetElementContentRequest request)  {
-        try {
-            return DatasetFactory.getContentForDisplay(request.getDatasetElement());
-        } catch (Exception e) {
-            return e.getMessage();
-        }
-    }
+//    @Override
+//    public String getDatasetContent(GetDatasetElementContentRequest request)  {
+//        try {
+//            return DatasetFactory.getContentForDisplay(request.getDatasetElement());
+//        } catch (Exception e) {
+//            return e.getMessage();
+//        }
+//    }
 
     @Override
     public String promote(PromoteRequest request) {

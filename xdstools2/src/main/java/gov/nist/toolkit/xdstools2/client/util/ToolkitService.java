@@ -5,7 +5,6 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.Pid;
-import gov.nist.toolkit.datasets.shared.DatasetModel;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
@@ -324,13 +323,12 @@ public interface ToolkitService extends RemoteService  {
     RawResponse buildRecTestOrchestration(BuildRecTestOrchestrationRequest request) throws Exception;
 
 
-	List<DatasetModel> getAllDatasets(CommandContext context) throws Exception;
 
 //    List<Result> fhirCreate(FhirCreateRequest request) throws Exception;
 
 //	List<Result> fhirTransaction(FhirTransactionRequest request) throws Exception;
 
-    String getDatasetContent(GetDatasetElementContentRequest var1);
+//    String getDatasetContent(GetDatasetElementContentRequest var1);
 
 	RawResponse buildDocAdminTestOrchestration(BuildDocAdminTestOrchestrationRequest request) throws Exception;
     RawResponse buildSrcTestOrchestration(BuildSrcTestOrchestrationRequest request) throws Exception;

@@ -90,7 +90,7 @@
         <module>itsupport</module>
  <!-- unused fhir -->
 <!--        <module>fhir</module>-->
-        <module>datasets</module>
+<!--        <module>datasets</module>-->
         <!-- proxy -->
         <module>sim-proxy</module>
         <module>proxy</module>

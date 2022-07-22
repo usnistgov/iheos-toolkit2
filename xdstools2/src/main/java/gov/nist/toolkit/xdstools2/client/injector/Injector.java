@@ -8,10 +8,6 @@ import gov.nist.toolkit.xdstools2.client.abstracts.ToolkitAppDisplayer;
 import gov.nist.toolkit.xdstools2.client.event.Xdstools2EventBus;
 import gov.nist.toolkit.xdstools2.client.inspector.mvp.InspectorPresenter;
 import gov.nist.toolkit.xdstools2.client.inspector.mvp.InspectorView;
-import gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab.SubmitResourcePresenter;
-import gov.nist.toolkit.xdstools2.client.tabs.SubmitResourceTab.SubmitResourceView;
-import gov.nist.toolkit.xdstools2.client.tabs.fhirSearchTab.FhirSearchPresenter;
-import gov.nist.toolkit.xdstools2.client.tabs.fhirSearchTab.FhirSearchView;
 import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewerMVP;
 import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewerPresenter;
 import gov.nist.toolkit.xdstools2.client.tabs.simMsgViewerTab.SimMsgViewerView;
@@ -34,11 +30,11 @@ public interface Injector extends Ginjector {
     ToolkitAppDisplayer getToolkitAppDisplayer();
 
 
-    SubmitResourcePresenter getSubmitResourcePresenter();
-    SubmitResourceView getSubmitResourceView();
-
-    FhirSearchPresenter getFhirSearchPresenter();
-    FhirSearchView getFhirSearchView();
+//    SubmitResourcePresenter getSubmitResourcePresenter();
+//    SubmitResourceView getSubmitResourceView();
+//
+//    FhirSearchPresenter getFhirSearchPresenter();
+//    FhirSearchView getFhirSearchView();
 
     InspectorPresenter getInspectorPresenter();
     InspectorView getInspectorView();

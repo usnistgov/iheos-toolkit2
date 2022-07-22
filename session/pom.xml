@@ -13,10 +13,6 @@
     <dependencies>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
-            <artifactId>datasets</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
             <artifactId>actorfactory</artifactId>
         </dependency>
         <dependency>

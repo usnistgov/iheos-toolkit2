@@ -3,7 +3,6 @@ package gov.nist.toolkit.xdstools2.client.util;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.Pid;
-import gov.nist.toolkit.datasets.shared.DatasetModel;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.interactionmodel.client.InteractingEntity;
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
@@ -274,7 +273,6 @@ public interface ToolkitServiceAsync {
 
     void setAssignedSiteForTestSession(SetAssignedSiteForTestSessionRequest request, AsyncCallback<Void> async);
 
-    void getAllDatasets(CommandContext context, AsyncCallback<List<DatasetModel>> callback);
 
 //    void fhirCreate(FhirCreateRequest request, AsyncCallback<List<Result>> async);
 
@@ -286,7 +284,7 @@ public interface ToolkitServiceAsync {
     void getToolTabConfig(GetTabConfigRequest request, AsyncCallback<TabConfig> callback);
     void getPrunedToolTabConfig(GetTabConfigRequest request, AsyncCallback<UserTestCollection> callback);
 
-    void getDatasetContent(GetDatasetElementContentRequest var1, AsyncCallback<String> callback);
+//    void getDatasetContent(GetDatasetElementContentRequest var1, AsyncCallback<String> callback);
 
     void buildDocAdminTestOrchestration(BuildDocAdminTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
     void buildSrcTestOrchestration(BuildSrcTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
