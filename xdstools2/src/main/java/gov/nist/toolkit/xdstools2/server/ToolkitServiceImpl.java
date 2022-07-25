@@ -1995,7 +1995,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 
     public String getStsSamlAssertion(GetStsSamlAssertionRequest request) throws Exception {
         installCommandContext(request);
-        XdsTestServiceManager xtsm = session().getXdsTestServiceManager();
+        XdsTestServiceManager xtsm = session().xdsTestServiceManager();
         String step = "issue";
         String query = request.getTestInstance().getSection();
         String stsActor = Installation.instance().propertyServiceManager().getStsActorName();

@@ -9,6 +9,7 @@ import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.StepResult;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.testengine.transactions.RetrieveTransaction;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
@@ -21,6 +22,7 @@ import org.apache.axiom.om.OMNamespace;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * We use only a single security header.
@@ -37,6 +39,7 @@ public class StsSamlValidator extends AbstractMessageValidator {
     MessageValidatorEngine mvc;
     RegistryValidationInterface rvi;
     TestSession testSession;
+    static Logger logger = Logger.getLogger(StsSamlValidator.class.getName());
 
     public StsSamlValidator(ValidationContext vc, ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, RegistryValidationInterface rvi, final OMElement header, TestSession testSession) {
         super(vc);
@@ -72,11 +75,21 @@ public class StsSamlValidator extends AbstractMessageValidator {
                         OMElement samlAssertion = assertionEls.get(0);
                         validateNs(er, samlAssertion, "urn:oasis:names:tc:SAML:2.0:assertion");
 
-                        String samlAssertionStr = samlAssertion.toString().replaceAll("[\t\r\n\f\n]",""); // Strip whitespace/newlines as per Gazelle Picketlink STS requirement. Whitespace should be already taken care of by OMElement.toString.
-                        samlAssertionStr = samlAssertionStr.replaceAll(">\\s*<", "><");
+                        String samlAssertionStr = null;
+                        boolean isRemoveWhitespace = Installation.instance().propertyServiceManager().isStsRemoveWhitespace();
+                        if (isRemoveWhitespace) {
+                            logger.fine("Removing whitespace from assertion string.");
+                            samlAssertionStr = samlAssertion.toString().replaceAll("[\t\r\n\f\n]", ""); // Strip whitespace/newlines as per Gazelle Picketlink STS requirement. Whitespace should be already taken care of by OMElement.toString.
+                            samlAssertionStr = samlAssertionStr.replaceAll(">\\s*<", "><");
+                        } else {
+                            logger.fine("Not removing whitespace from assertion string.");
+                            samlAssertionStr = samlAssertion.toString();
+                        }
 
                         Map<String, String> params = new HashMap<>();
-                        params.put("$saml-assertion$", samlAssertionStr.replace("&amp;","&")); // Params replacement will take care of this by restoring it to proper format
+                        logger.fine("SAML assertion: " + samlAssertionStr);
+                        samlAssertionStr = samlAssertionStr.replace("&amp;","&");
+                        params.put("$saml-assertion$", samlAssertionStr); // Params replacement will take care of this by restoring it to proper format
 
                         String query = "samlassertion-validate";
 

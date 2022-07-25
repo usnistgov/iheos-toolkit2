@@ -125,6 +125,10 @@ public class PropertyServiceManager {
 		getPropertyManager().stsTpName
 	}
 
+	boolean isStsRemoveWhitespace() {
+		getPropertyManager().isStsRemoveWhitespace()
+	}
+
 	int getNonceSize() {
 		getPropertyManager().nonceSize
 	}

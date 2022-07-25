@@ -26,6 +26,7 @@ public class PropertyManager {
 	 */
 	static public  final String STS_ACTOR_NAME = "Sts_ActorName";
 	static public  final String STS_TESTPLAN_NAME = "Sts_TpName";
+	static public  final String STS_REMOVE_WHITESPACE = "Sts_RemoveWhitespace";
 	static private final String TESTKIT             = "Testkit";
 	static private final String LISTENER_PORT_RANGE = "Listener_Port_Range";
 	static private final String AUTO_INIT_CONFORMANCE_TOOL = "Auto_init_conformance_tool";
@@ -217,6 +218,15 @@ public class PropertyManager {
 			return value;
 		}
 		throw new TkNotFoundException(STS_TESTPLAN_NAME + " is not configured.", "toolkit.properties");
+	}
+
+	public boolean isStsRemoveWhitespace() {
+		loadProperties();
+		String use = (String) toolkitProperties.get(STS_REMOVE_WHITESPACE);
+		if (use == null)
+			return false;
+		use = use.trim().toLowerCase();
+		return "true".compareToIgnoreCase(use) == 0;
 	}
 
 	public boolean isBypassSecurityHeaderMuOnResponse() {
