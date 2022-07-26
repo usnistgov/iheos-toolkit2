@@ -53,6 +53,7 @@ public class TabConfigLoader {
                    String tcCode = tabEl.getAttributeValue(new QName("tcCode"));
                    String externalStartStr = tabEl.getAttributeValue(new QName("externalStart"));
                    String displayColorCode = tabEl.getAttributeValue(new QName("displayColorCode"));
+                   String testSorterClass  = tabEl.getAttributeValue(new QName("testSorterClass"));
                    Boolean externalStart = null;
 
                    if (externalStartStr!=null) {
@@ -65,6 +66,9 @@ public class TabConfigLoader {
                     }
                     if (displayColorCode!=null) {
                         tabConfig.setDisplayColorCode(displayColorCode);
+                    }
+                    if (testSorterClass!= null) {
+                        tabConfig.setTestSorterClass(testSorterClass);
                     }
 
                    parent.getChildTabConfigs().add(tabConfig);

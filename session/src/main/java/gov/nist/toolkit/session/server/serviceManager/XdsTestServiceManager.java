@@ -60,6 +60,7 @@ import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -69,14 +70,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 //import gov.nist.toolkit.testengine.fhir.FhirSupport;
 //import org.hl7.fhir.instance.model.api.IBaseResource;
@@ -493,10 +486,13 @@ public class XdsTestServiceManager extends CommonService {
 				tis.add(ti);
 			}
 
+			TreeMap<String, TestInstance> sortedTestInstances = new TreeMap<>();
 			for (TestInstance ti : tis) {
 				TestDefinition def = null;
 				try {
 					def = session.getTestkitSearchPath().getTestDefinition(ti.getId());
+					String sort = def.getSortString(testCollectionId.getCode());
+					sortedTestInstances.put(sort, ti);
 				} catch (Exception e) {
 					throw new XdsInternalException("Unable to load test definition  for " + ti.getId(), e);
 				}
@@ -516,6 +512,7 @@ public class XdsTestServiceManager extends CommonService {
 				}
 				ti.setSutInitiated(sutInitiated);
 			}
+			tis = new ArrayList<TestInstance>(sortedTestInstances.values());
 			return tis;
 		} catch (Exception e) {
 			logger.severe(ExceptionUtil.exception_details(e, "getCollectionsMembers error: "));

@@ -761,7 +761,20 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 				// save in testsPerActorOption so they run in this order as well
                 try {
 					List<TestInstance> testInstances1 = new ArrayList<>();
-					testOverviews = new TestSorter().sort(testOverviews);
+					TabConfig tabConfig = currentActorOption.getTabConfig();
+					String testSorterClass = (tabConfig.getTestSorterClass()==null) ? "TestSorterClass" : tabConfig.getTestSorterClass();
+					switch (testSorterClass) {
+						case "noTestSorter":
+							// Rely on the sort order done by the backend
+							break;
+						// The cases below are the most likely/common.	Relying on the back end to sort the test cases
+						// requires someone to modify the ConfTestsTabs.xml file.
+						case "":
+						case "TestSorterClass":
+						default:
+							testOverviews = new TestSorter().sort(testOverviews);
+							break;
+					}
 					for (TestOverviewDTO dto : testOverviews) {
 						testInstances1.add(dto.getTestInstance());
 					}
