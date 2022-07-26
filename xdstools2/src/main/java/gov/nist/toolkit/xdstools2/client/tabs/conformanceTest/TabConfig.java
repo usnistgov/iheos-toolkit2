@@ -19,6 +19,7 @@ public class TabConfig implements Serializable, IsSerializable {
     private Boolean externalStart;
     private String displayColorCode;
     private boolean isVisible;
+    private String testSorterClass="";
 
     private List<TabConfig> childTabConfigs = new ArrayList<TabConfig>();
 
@@ -39,7 +40,9 @@ public class TabConfig implements Serializable, IsSerializable {
                 .append(" tcCode=")
                 .append(tcCode)
                 .append(" externalStart=")
-                .append(externalStart);
+                .append(externalStart)
+                .append(" testSorterClass=")
+                .append(testSorterClass);
 
         return buf.toString();
     }
@@ -56,11 +59,12 @@ public class TabConfig implements Serializable, IsSerializable {
         this.tcCode = tcCode;
     }
 
-    public TabConfig(String label, String type, String tcCode, Boolean externalStart) {
+    public TabConfig(String label, String type, String tcCode, Boolean externalStart, String testSorterClass) {
         this.label = label;
         this.type = type;
         this.tcCode = tcCode;
         this.externalStart = externalStart;
+        this.testSorterClass = testSorterClass;
     }
 
     public String getLabel() {
@@ -97,6 +101,14 @@ public class TabConfig implements Serializable, IsSerializable {
 
     public void setExternalStart(Boolean externalStart) {
         this.externalStart = externalStart;
+    }
+
+    public String getTestSorterClass() {
+        return testSorterClass;
+    }
+
+    public void setTestSorterClass(String testSorterClass) {
+        this.testSorterClass = testSorterClass;
     }
 
     public List<TabConfig> getChildTabConfigs() {
@@ -151,6 +163,7 @@ public class TabConfig implements Serializable, IsSerializable {
        dest.externalStart = src.externalStart;
        dest.displayColorCode = src.displayColorCode;
        dest.isVisible = src.isVisible;
+       dest.testSorterClass = src.testSorterClass;
 
        if (src.hasChildren()) {
             List<TabConfig> children = src.getChildTabConfigs();

@@ -18,14 +18,11 @@ import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 
 import javax.xml.namespace.QName;
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 
 public class TestDefinition {
 	private File testDir;
@@ -445,6 +442,39 @@ public class TestDefinition {
 
 	public String getTestKitSection() {
 		return getTestDir().getParentFile().getName();
+	}
+
+	/**
+	 * Compute a string that is used to sort the tests when presented to a user
+	 * @return
+
+	 */
+	public String getSortString ( String testCollectionId) {
+		String baseName = getId();
+		String prefix = "zzlast:";		// This assumes the case where a sort file does not exist
+		try {
+			if (Files.exists(Paths.get(testDir.getAbsolutePath(), "sort.txt"))) {
+				BufferedReader br = new BufferedReader(new FileReader(new File(testDir.getAbsolutePath(), "sort.txt")));
+				String line;
+				while ((line = br.readLine()) != null) {
+					if (line.startsWith("#") || line.isEmpty()) {
+						continue;
+					}
+					String[] tokens = line.split("\t");
+					if (tokens != null && tokens.length == 2) {
+						if (testCollectionId.equals(tokens[0])) {
+							prefix = tokens[1] + ":";
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			// TODO Add logging
+			// If we get an exception, we can fall back to default case
+		}
+
+		return (prefix + baseName).toLowerCase(Locale.ROOT);
+
 	}
 }
 
