@@ -17,6 +17,7 @@ import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMException;
+import org.apache.axiom.om.OMNamespace;
 import org.apache.axiom.soap.SOAP11Constants;
 import org.apache.axiom.soap.SOAP12Constants;
 import org.apache.axiom.soap.SOAPEnvelope;
@@ -107,9 +108,6 @@ public class Soap implements SoapInterface {
 	// so they can be logged by the caller
 	OMElement inHeader = null;
 	OMElement outHeader = null;
-	// To circumvent wsuId namespace issues
-	String outHeaderRawString = null;
-	String outHeaderClonedString = null;
 
 	public void setSecurityParams(SecurityParams securityParams) {
 		this.securityParams = securityParams;
@@ -959,15 +957,23 @@ public class Soap implements SoapInterface {
 		if (in.getEnvelope().getHeader() == null)
 			return;
 
-		inHeader = Util.deep_copy(in.getEnvelope().getHeader());
-		/*
-        try {
-			inHeader = Util.cloneOMElement(in.getEnvelope().getHeader());
-			logger.info("incoming header loaded");
+		try {
+			inHeader = Util.deep_copy(in.getEnvelope().getHeader());
 		} catch (Exception ex) {
-        	logger.severe("loadInHeader exception: " + ex.toString());
+			SOAPFactory fac;
+			if (this.soap12)
+				fac = OMAbstractFactory.getSOAP12Factory();
+			else
+				fac = OMAbstractFactory.getSOAP11Factory();
+
+//			"http://www.w3.org/2003/05/soap-envelope"
+			OMNamespace ns = fac.createOMNamespace(in.getEnvelope().getDefaultNamespace().toString(), in.getEnvelope().getDefaultNamespace().getPrefix());
+			outHeader = fac.createOMElement("Header", ns);
+			logger.warning("inHeader value could not be set: " + ex.toString());
+			logger.info("Empty SOAP IN Header was created.");
+
 		}
-		 */
+			logger.info("incoming header loaded");
 	}
 
 	void loadOutHeader() throws XdsInternalException {
@@ -983,25 +989,20 @@ public class Soap implements SoapInterface {
 			return;
 
 		try {
-			outHeaderRawString = out.getEnvelope().getHeader().toString();
+			outHeader = Util.deep_copy(out.getEnvelope().getHeader());
 		} catch (Exception ex) {
-			logger.warning("Raw string error: " + ex.toString());
-		}
-		try {
-			outHeaderClonedString = out.getEnvelope().getHeader().cloneOMElement().toString();
-		} catch (Exception ex) {
-			logger.warning("Clone string error: " + ex.toString());
-		}
-		outHeader = Util.deep_copy(out.getEnvelope().getHeader());
-		/*
-		try {
-			outHeader = Util.cloneOMElement(out.getEnvelope().getHeader());
-			logger.info("out header loaded");
-		} catch (Exception ex) {
-			logger.severe("loadOutHeader exception: " + ex.toString());
-		}
-		 */
+			SOAPFactory fac;
+			if (this.soap12)
+				fac = OMAbstractFactory.getSOAP12Factory();
+			else
+				fac = OMAbstractFactory.getSOAP11Factory();
 
+//			"http://www.w3.org/2003/05/soap-envelope"
+			OMNamespace ns = fac.createOMNamespace(out.getEnvelope().getDefaultNamespace().toString(), out.getEnvelope().getDefaultNamespace().getPrefix());
+			outHeader = fac.createOMElement("Header", ns);
+			logger.warning("outHeader value could not be set: " + ex.toString());
+			logger.info("Empty SOAP OUT Header was created.");
+		}
 	}
 
 	/*
