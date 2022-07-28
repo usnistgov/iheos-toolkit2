@@ -8,9 +8,8 @@ import org.apache.axiom.om.OMNamespace;
 
 import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
+import java.util.logging.Logger;
 
 public class OMFormatter {
 	OMElement ele;
@@ -26,8 +25,7 @@ public class OMFormatter {
 	int lineLengthLimit = 50;
 	boolean recurse = true;
 	boolean leadingNl = true;
-	private List<OMNamespace> topLevelNsList = new ArrayList<>();
-	private List<OMNamespace> immediateParentNsList = new ArrayList<>();
+	private static Logger logger = Logger.getLogger(OMFormatter.class.getName());
 
 	public OMFormatter(OMElement ele) {
 		this.ele = ele;
@@ -153,17 +151,6 @@ public class OMFormatter {
 			name = prefix + ":" + name;
 		buf.append(lt).append(name);
 
-		if (parent != null) {
-			immediateParentNsList.clear();
-			Iterator<OMNamespace> it = parent.getAllDeclaredNamespaces();
-			while (it != null && it.hasNext()) {
-				OMNamespace ns = it.next();
-				if (! ns.getNamespaceURI().equals(parentsDefaultNamespaceUri)) {
-					immediateParentNsList.add(ns);
-				}
-			}
-		}
-
 		attributes(ele);
 
 		if (addDefaultNSDef) {
@@ -172,20 +159,7 @@ public class OMFormatter {
 			.append("=\"").append(defaultNamespace.getNamespaceURI()).append("\"");
 		}
 
-		if (isTop) {
-			Iterator<OMNamespace> it = ele.getAllDeclaredNamespaces();
-			while (it != null && it.hasNext()) {
-				OMNamespace ns = it.next();
-				if (! ns.getNamespaceURI().equals(defaultNamespaceUri)) {
-					topLevelNsList.add(ns);
-					buf.append(space).append("xmlns:").append(ns.getPrefix())
-							.append("=\"").append(ns.getNamespaceURI()).append("\"");
-				}
-			}
-		}
-
-
-		if (addMyNamespace && !"xml".equals(myNamespace.getPrefix()) && ! topLevelNsList.contains(myNamespace)) {
+		if (addMyNamespace && !"xml".equals(myNamespace.getPrefix())) {
 			addIndentation();
 			String prefixNs = (myNamespace.getPrefix() ==null || "".equals(myNamespace.getPrefix())?"":":"+myNamespace.getPrefix());
 			buf.append(space).append("xmlns").append(prefixNs)
@@ -262,18 +236,11 @@ public class OMFormatter {
 			String  attrParentLocalName = ele.getLocalName() == null ? "" : ele.getLocalName(); 
 
 			if(!attrName.equals("") && attrName.trim().equalsIgnoreCase("wsu:Id") && 
-					(!attrParentLocalName.equals("") && attrParentLocalName.trim().equalsIgnoreCase("Timestamp")) && !topLevelNsList.contains(attNamespace) && !immediateParentNsList.contains(attNamespace) )
+					(!attrParentLocalName.equals("") && attrParentLocalName.trim().equalsIgnoreCase("Timestamp")))
 			{
-				/*
-				System.out.println("************* Skipped adding Namespace for '"+attrName+"' under the element 'wsu:"+attrParentLocalName+"' *******");
+				logger.info("************* Skipped adding Namespace for '"+attrName+"' under the element 'wsu:"+attrParentLocalName+"' *******");
 				//vbeera: added to skip the duplication of wsu namespace.
-				 */
-				if (attNamespace != null) {
-					if (nsman == null)
-						nsman = new NamespaceManager();
-					nsman.add(attNamespace);
-				}
-			}else if(!attrName.equals("") && attrName.trim().equalsIgnoreCase("ITSVersion") && !topLevelNsList.contains(attNamespace) && !immediateParentNsList.contains(attNamespace)){
+			} else if(!attrName.equals("") && attrName.trim().equalsIgnoreCase("ITSVersion")){
 				if (attNamespace != null) {
 					if (nsman == null)
 						nsman = new NamespaceManager();
@@ -286,7 +253,7 @@ public class OMFormatter {
 					}
 				}
 				/////////////discuss with BILL
-			}else if(!attrName.equals("") && attrName.trim().equalsIgnoreCase("xsi:schemaLocation") && !topLevelNsList.contains(attNamespace) && !immediateParentNsList.contains(attNamespace)) {
+			}else if(!attrName.equals("") && attrName.trim().equalsIgnoreCase("xsi:schemaLocation")) {
 				xsiAttNameSpace = attNamespace;
 				//vbeera: added below code for undeclared 'xsi' prefix namespace exception
 				if (attNamespace != null) {
@@ -296,7 +263,7 @@ public class OMFormatter {
 				}
 				//vbeera code end
 			}
-			else if ( !topLevelNsList.contains(attNamespace) && !immediateParentNsList.contains(attNamespace))
+			else
 			{
 				if (attNamespace != null) {
 					if (nsman == null)

@@ -128,14 +128,6 @@ public class OmLogger implements ILogger {
 		if (val == null)
 			val = MetadataSupport.om_factory.createOMElement("None", null);
 		else {
-			/*
-			Util.deep_copy caused this problem given some SOAP response headers...
-			Caused by: com.ctc.wstx.exc.WstxParsingException: Undeclared namespace prefix "wsu" (for attribute "Id")
-			                at gov.nist.toolkit.utilities.xml.OMFormatter.toString(OMFormatter.java:63)
-			                ...
-                at gov.nist.toolkit.utilities.xml.Util.deep_copy(Util.java:136)
-                at gov.nist.toolkit.testengine.engine.OmLogger.add_name_value(OmLogger.java:136)
-			 */
 			try {
 //				if (name.equals("InputMetadata")) {
 //					System.out.println("InputMetadata:\n" + new OMFormatter(value).toString());
@@ -143,19 +135,10 @@ public class OmLogger implements ILogger {
 				val = Util.deep_copy(value);
 			} catch (Exception e) {
 				// added to understand Undeclared namespace prefix "wsu" (for attribute "Id") issue
-				Util.mkElement("Exception", value.toString(), ele);
+                // value argument is simply not available any more at this point
+				Util.mkElement("Exception", e.toString(), ele);
 				return ele;
 			}
-		    /*
-		    Use Axis2 clone method directly instead of OMFormatter to avoid the Exception stated above.
-			try {
-				val = Util.cloneOMElement(value);
-			} catch (Exception e) {
-				Util.mkElement("MultirefHelper Exception", OMFormatter.encodeAmp(ExceptionUtil.exception_details(e)), ele);
-				return ele;
-			}
-		     */
-
 		}
 		try {
 			ele.addChild(val);
@@ -163,7 +146,7 @@ public class OmLogger implements ILogger {
 		catch (OMException e) {
 			// updated to understand Undeclared namespace prefix "wsu" (for attribute "Id") issue
 			Util.mkElement("Exception", "Exception writing log content\n" + OMFormatter.encodeAmp(ExceptionUtil.exception_details(e))
-					+ "\n" + value.toString(), ele);
+					+ "\n" + e.toString(), ele);
 		}
 		parent.addChild(ele);
 		return ele;
