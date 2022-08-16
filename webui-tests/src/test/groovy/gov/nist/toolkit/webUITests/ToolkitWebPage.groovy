@@ -44,7 +44,7 @@ abstract class ToolkitWebPage extends Specification  {
 
         if (webClient!=null) webClient.close()
 
-        webClient = new WebClient(BrowserVersion.FIREFOX_52)
+        webClient = new WebClient(BrowserVersion.BEST_SUPPORTED)
         page = webClient.getPage(url)
         webClient.getCache().clear()
         webClient.getOptions().setJavaScriptEnabled(true)

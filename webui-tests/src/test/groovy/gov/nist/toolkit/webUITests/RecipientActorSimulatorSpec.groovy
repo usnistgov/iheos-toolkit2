@@ -56,17 +56,17 @@ class RecipientActorSimulatorSpec extends ConformanceActor {
 
     def 'Check Conformance page loading status and its title.'() {
         when:
-        while(page.asText().contains("Initializing...")){
+        while(page.getVisibleText().contains("Initializing...")){
             webClient.waitForBackgroundJavaScript(ToolkitWebPage.maxWaitTimeInMills)
         }
 
-        while(!page.asText().contains("Initialization complete")){
+        while(!page.getVisibleText().contains("Initialization complete")){
             webClient.waitForBackgroundJavaScript(500)
         }
 
         then:
         "XDS Toolkit" == page.getTitleText()
-        page.asText().contains("Initialization complete")
+        page.getVisibleText().contains("Initialization complete")
     }
 
     def 'Click Reset (or Initialize) Environment using defaults.'() {
@@ -111,12 +111,12 @@ class RecipientActorSimulatorSpec extends ConformanceActor {
         page = initializeBtn.click(false,false,false)
         webClient.waitForBackgroundJavaScript(ToolkitWebPage.maxWaitTimeInMills)
 
-        while(!page.asText().contains("Initialization complete")){
+        while(!page.getVisibleText().contains("Initialization complete")){
             webClient.waitForBackgroundJavaScript(500)
         }
 
         then:
-        page.asText().contains("Initialization complete")
+        page.getVisibleText().contains("Initialization complete")
 
         when:
         List<HtmlDivision> elementList = page.getByXPath("//div[contains(@class, 'orchestrationTestMc') and contains(@class, 'testOverviewHeaderFail')]")  // Substring match, other CSS class must not contain this string.
@@ -169,7 +169,7 @@ class RecipientActorSimulatorSpec extends ConformanceActor {
 
         when:
         boolean waitingMessageFound = false
-        while(page.asText().contains("Initializing...") || page.asText().contains("Loading...")){
+        while(page.getVisibleText().contains("Initializing...") || page.getVisibleText().contains("Loading...")){
             waitingMessageFound = true
             webClient.waitForBackgroundJavaScript(500)
         }
@@ -177,7 +177,7 @@ class RecipientActorSimulatorSpec extends ConformanceActor {
         if (!waitingMessageFound) {
 //            print page.asXml()
             println "waitingMessage is not Found. Retrying"
-            while(!page.asText().contains("Testing Environment") && page.asText().contains("Option")){
+            while(!page.getVisibleText().contains("Testing Environment") && page.getVisibleText().contains("Option")){
                 webClient.waitForBackgroundJavaScript(1000)
             }
             print "done."
@@ -185,15 +185,15 @@ class RecipientActorSimulatorSpec extends ConformanceActor {
 
         // now iterate
 
-//        println "begin page.asText()"
-//        println page.asText()
+//        println "begin page.getVisibleText()"
+//        println page.getVisibleText()
 //        println "end."
 
         NodeList imgNl = page.getElementsByTagName("img")
         final Iterator<HtmlImage> nodesIterator = imgNl.iterator()
         println "Test statistics before Run All"
-        int failuresIdx = page.asText().indexOf("Failures")
-        println page.asText().substring(failuresIdx,failuresIdx+20)
+        int failuresIdx = page.getVisibleText().indexOf("Failures")
+        println page.getVisibleText().substring(failuresIdx,failuresIdx+20)
 
         boolean runAllButtonWasFound = false
         boolean runAllButtonWasClicked = false

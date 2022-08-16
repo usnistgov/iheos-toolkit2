@@ -30,7 +30,7 @@ class A2_Run_TestContextSpec extends ToolkitWebPage {
         loadPage(String.format("%s/#Tool:toolId=Simulators;env=default;testSession=%s;",toolkitBaseUrl, ToolkitWebPage.testSessionName))
 
         then:
-        page.asText().contains(ToolkitWebPage.testSessionName)
+        page.getVisibleText().contains(ToolkitWebPage.testSessionName)
     }
 
     def 'Select the test session manually'() {
@@ -44,8 +44,8 @@ class A2_Run_TestContextSpec extends ToolkitWebPage {
 
     def 'Check if Simulators page contains the newly created actor sim.'() {
         expect:
-        page.asText().contains("Simulator Manager") and page.asText().contains("Add new simulator to this test session")
-        page.asText().contains(getSimId())
+        page.getVisibleText().contains("Simulator Manager") and page.getVisibleText().contains("Add new simulator to this test session")
+        page.getVisibleText().contains(getSimId())
     }
 
 
@@ -75,7 +75,7 @@ class A2_Run_TestContextSpec extends ToolkitWebPage {
         webClient.waitForBackgroundJavaScript(2000)
 
         then:
-        page.asText().contains("Test Context")
+        page.getVisibleText().contains("Test Context")
 
     }
 
@@ -113,7 +113,7 @@ class A2_Run_TestContextSpec extends ToolkitWebPage {
         page = testContextDiv.click()
 
         then:
-        page.asText().contains("Conformance test context")
+        page.getVisibleText().contains("Conformance test context")
 
     }
 
@@ -195,7 +195,7 @@ class A2_Run_TestContextSpec extends ToolkitWebPage {
     def 'Verify SUT selection'() {
         expect:
         "XDS Toolkit" == page.getTitleText()
-        final String pageText = page.asText()
+        final String pageText = page.getVisibleText()
         pageText.contains("Test Context")
         pageText.contains("Environment: default")
         pageText.contains("TestSession: " + ToolkitWebPage.testSessionName)
@@ -213,7 +213,7 @@ class A2_Run_TestContextSpec extends ToolkitWebPage {
     def 'Verify SUT selection again (x1)'() {
         expect:
         "XDS Toolkit" == page.getTitleText()
-        final String pageText = page.asText()
+        final String pageText = page.getVisibleText()
         pageText.contains("Test Context")
         pageText.contains("Environment: default")
         pageText.contains("TestSession: " + ToolkitWebPage.testSessionName)

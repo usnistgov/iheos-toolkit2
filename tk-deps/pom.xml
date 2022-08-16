@@ -24,6 +24,7 @@
 <!--        <jackson.version>2.11.3</jackson.version>   -->
         <!-- end -->
         <jackson.version>2.12.6.1</jackson.version>
+        <jacksonauxilary.version>2.12.6</jacksonauxilary.version>
         <grizzly.version>2.4.4</grizzly.version>  <!-- 2.3.22  -->
         <!--
         This Jackson version has runtime class conflicts/problems.
@@ -560,7 +561,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
-                <version>${jackson.version}</version>
+                <version>${jacksonauxilary.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
@@ -570,12 +571,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml</groupId>
-                <artifactId>jackson-xml-databind</artifactId>
-                <version>${jackson.version}</version>
+                <version>${jacksonauxilary.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.codehaus.jackson</groupId>

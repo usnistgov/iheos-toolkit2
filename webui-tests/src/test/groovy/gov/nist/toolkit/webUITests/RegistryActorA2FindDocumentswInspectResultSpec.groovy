@@ -26,17 +26,17 @@ class RegistryActorA2FindDocumentswInspectResultSpec extends ToolkitWebPage {
 
     def 'Check Conformance page loading status and its title.'() {
         when:
-        while(page.asText().contains("Initializing...")){
+        while(page.getVisibleText().contains("Initializing...")){
             webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
         }
 
-        while(!page.asText().contains("complete")){
+        while(!page.getVisibleText().contains("complete")){
             webClient.waitForBackgroundJavaScript(500)
         }
 
         then:
         "XDS Toolkit" == page.getTitleText()
-        page.asText().contains("complete")
+        page.getVisibleText().contains("complete")
     }
 
     def 'Find the Patient Id Div and Extract the Id text.'() {
@@ -67,7 +67,7 @@ class RegistryActorA2FindDocumentswInspectResultSpec extends ToolkitWebPage {
         loadPage(String.format("%s/#Tool:toolId=FindDocuments;env=default;testSession=%s;",toolkitBaseUrl, testSessionName))
 
         then:
-        page.asText().contains('Find Documents Stored Query')
+        page.getVisibleText().contains('Find Documents Stored Query')
     }
 
     def 'Find Patient Id text box and paste Patient Id into the text box.'() {
@@ -113,12 +113,12 @@ class RegistryActorA2FindDocumentswInspectResultSpec extends ToolkitWebPage {
         page = runButton.click()
         webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
 
-        while(!page.asText().contains("Status: Success")){
+        while(!page.getVisibleText().contains("Status: Success")){
             webClient.waitForBackgroundJavaScript(500)
         }
 
         then:
-        page.asText().contains("Status: Pass")
+        page.getVisibleText().contains("Status: Pass")
     }
 
     def 'Find and click Inspect Results button'() {
@@ -137,7 +137,7 @@ class RegistryActorA2FindDocumentswInspectResultSpec extends ToolkitWebPage {
 
 
         then:
-        page.asText().contains("ResultInspector") // Tab name
+        page.getVisibleText().contains("ResultInspector") // Tab name
 
     }
     def 'Click load logs link and load full log'() {
@@ -174,7 +174,7 @@ class RegistryActorA2FindDocumentswInspectResultSpec extends ToolkitWebPage {
         webClient.waitForBackgroundJavaScript(maxWaitTimeInMills)
 
         then:
-        page.asText().contains("<TestStep id=\"FindDocumentsbyObjectRef\" status=\"Pass\">")
+        page.getVisibleText().contains("<TestStep id=\"FindDocumentsbyObjectRef\" status=\"Pass\">")
 
     }
 

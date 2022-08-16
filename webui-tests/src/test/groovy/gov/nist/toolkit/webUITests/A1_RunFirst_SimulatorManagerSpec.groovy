@@ -46,7 +46,7 @@ class A1_RunFirst_SimulatorManagerSpec extends ToolkitWebPage {
 
     def 'Check sim man page title'() {
         expect:
-        page.asText().contains("Simulator Manager") and page.asText().contains("Add new simulator to this test session")
+        page.getVisibleText().contains("Simulator Manager") and page.getVisibleText().contains("Add new simulator to this test session")
     }
 
 
@@ -132,13 +132,13 @@ Error: This simulator type could not be created --> webuitest__ris
                         addedSims++
                     }
 
-//                    if (page.asText().contains(simId)) { This method doesn't take into consideration that Simulator list can span multiple pages
+//                    if (page.getVisibleText().contains(simId)) { This method doesn't take into consideration that Simulator list can span multiple pages
 //                    }
                 }
             }
         }
         if (addedSims==0)
-            println page.asText()
+            println page.getVisibleText()
 
         then:
         addedSims == actorCt - defectCt // If this failed, a good place to check is the log for "ThreadPoolExhaustedException". In this case, increase your Listener_Port_Range setting in Toolkit.properties.

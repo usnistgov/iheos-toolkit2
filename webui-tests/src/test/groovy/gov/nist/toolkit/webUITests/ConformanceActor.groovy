@@ -34,9 +34,9 @@ abstract class ConformanceActor extends ToolkitWebPage {
         page != null
 
         "XDS Toolkit" == page.getTitleText()
-        page.asText().contains("complete")
+        page.getVisibleText().contains("complete")
 
-        page.asText().contains("SUT: " + getSimIdAsString())
+        page.getVisibleText().contains("SUT: " + getSimIdAsString())
     }
 
 }

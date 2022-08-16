@@ -54,17 +54,17 @@ class RepositoryActorSimulatorSpec extends ConformanceActor {
 
     def 'Check Conformance page loading status and its title.'() {
         when:
-        while(page.asText().contains("Initializing...")){
+        while(page.getVisibleText().contains("Initializing...")){
             webClient.waitForBackgroundJavaScript(ToolkitWebPage.maxWaitTimeInMills)
         }
 
-        while(!page.asText().contains("Initialization complete")){
+        while(!page.getVisibleText().contains("Initialization complete")){
             webClient.waitForBackgroundJavaScript(500)
         }
 
         then:
         "XDS Toolkit" == page.getTitleText()
-        page.asText().contains("Initialization complete")
+        page.getVisibleText().contains("Initialization complete")
     }
 
     def 'Click Reset (or Initialize) Environment using defaults.'() {
@@ -109,12 +109,12 @@ class RepositoryActorSimulatorSpec extends ConformanceActor {
         page = initializeBtn.click(false, false, false)
         webClient.waitForBackgroundJavaScript(ToolkitWebPage.maxWaitTimeInMills)
 
-        while (!page.asText().contains("Initialization complete")) {
+        while (!page.getVisibleText().contains("Initialization complete")) {
             webClient.waitForBackgroundJavaScript(500)
         }
 
         then:
-        page.asText().contains("Initialization complete")
+        page.getVisibleText().contains("Initialization complete")
 
         // There are no tests for repository orchestration tests to look for.
     }
@@ -133,10 +133,10 @@ class RepositoryActorSimulatorSpec extends ConformanceActor {
         HtmlTable supportingEnvironmentConfiguration = tableList.get(0)
         for (HtmlTableRow row : supportingEnvironmentConfiguration.getRows()) {
             for (HtmlTableCell cell : row.getCells()) {
-                if (cell.asText()!=null) {
-                    if (cell.asText() == "Register") {
+                if (cell.getVisibleText()!=null) {
+                    if (cell.getVisibleText() == "Register") {
                         if (row.getCell(2) != null) {
-                           registerEndpoint = row.getCell(2).asText() // Index 2 should have the HTTP endpoint
+                           registerEndpoint = row.getCell(2).getVisibleText() // Index 2 should have the HTTP endpoint
                            break
                        }
                     } else {
@@ -219,7 +219,7 @@ class RepositoryActorSimulatorSpec extends ConformanceActor {
         webClient.waitForBackgroundJavaScript(ToolkitWebPage.maxWaitTimeInMills)
 
         then:
-        page.asText().contains("Initialization complete")
+        page.getVisibleText().contains("Initialization complete")
 
         // There are no tests for repository orchestration tests to look for.
     }
@@ -248,7 +248,7 @@ class RepositoryActorSimulatorSpec extends ConformanceActor {
 
         when:
         boolean waitingMessageFound = false
-        while(page.asText().contains("Initializing...") || page.asText().contains("Loading...")){
+        while(page.getVisibleText().contains("Initializing...") || page.getVisibleText().contains("Loading...")){
             waitingMessageFound = true
             webClient.waitForBackgroundJavaScript(500)
         }
@@ -256,7 +256,7 @@ class RepositoryActorSimulatorSpec extends ConformanceActor {
         if (!waitingMessageFound) {
 //            print page.asXml()
             println "waitingMessage is not Found. Retrying"
-            while(!page.asText().contains("Testing Environment") && page.asText().contains("Option")){
+            while(!page.getVisibleText().contains("Testing Environment") && page.getVisibleText().contains("Option")){
                 webClient.waitForBackgroundJavaScript(1000)
             }
             print "done."
@@ -264,15 +264,15 @@ class RepositoryActorSimulatorSpec extends ConformanceActor {
 
         // now iterate
 
-//        println "begin page.asText()"
-//        println page.asText()
+//        println "begin page.getVisibleText()"
+//        println page.getVisibleText()
 //        println "end."
 
         NodeList imgNl = page.getElementsByTagName("img")
         final Iterator<HtmlImage> nodesIterator = imgNl.iterator()
         println "Test statistics before Run All"
-        int failuresIdx = page.asText().indexOf("Failures")
-        println page.asText().substring(failuresIdx,failuresIdx+20)
+        int failuresIdx = page.getVisibleText().indexOf("Failures")
+        println page.getVisibleText().substring(failuresIdx,failuresIdx+20)
 
         boolean runAllButtonWasFound = false
         boolean runAllButtonWasClicked = false
