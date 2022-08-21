@@ -243,7 +243,9 @@ public interface ToolkitServiceAsync {
 	void runSingleTest(RunSingleTestRequest request, AsyncCallback<Test> callback);
 	void getTransactionErrorCodeRefs(GetTransactionErrorCodeRefsRequest request, AsyncCallback<List<String>> callback);
 	void buildIgTestOrchestration(BuildIgTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+    void buildIgxTestOrchestration(BuildIgxTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 	void buildRgTestOrchestration(BuildRgTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+    void buildRgxTestOrchestration(BuildRgxTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 	void buildIigTestOrchestration(BuildIigTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 	void buildRigTestOrchestration(BuildRigTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 	void buildIdsTestOrchestration(BuildIdsTestOrchestrationRequest request, AsyncCallback<RawResponse> callback);

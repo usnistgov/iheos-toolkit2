@@ -224,9 +224,11 @@ public interface ToolkitService extends RemoteService  {
 	String getAttributeValue(String username, String attName) throws Exception;
 	void setAttributeValue(String username, String attName, String attValue) throws Exception;
 	RawResponse buildIgTestOrchestration(BuildIgTestOrchestrationRequest request) throws Exception;
+	RawResponse buildIgxTestOrchestration(BuildIgxTestOrchestrationRequest request) throws Exception;
 	RawResponse buildIigTestOrchestration(BuildIigTestOrchestrationRequest request)throws Exception;
 	RawResponse buildRigTestOrchestration(BuildRigTestOrchestrationRequest request) throws Exception;
 	RawResponse buildRgTestOrchestration(BuildRgTestOrchestrationRequest request) throws Exception;
+	RawResponse buildRgxTestOrchestration(BuildRgxTestOrchestrationRequest request) throws Exception;
 	RawResponse buildIdsTestOrchestration(BuildIdsTestOrchestrationRequest request) throws Exception;
 	RawResponse buildRepTestOrchestration(BuildRepTestOrchestrationRequest request) throws Exception;
 	RawResponse buildRegTestOrchestration(BuildRegTestOrchestrationRequest request) throws Exception;

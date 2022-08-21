@@ -27,6 +27,20 @@ class OrchestrationManager {
         }
     }
 
+    public RawResponse buildIgxTestEnvironment(Session session, IgxOrchestrationRequest request) {
+        try {
+            ToolkitApi api
+            if(Installation.instance().warHome()) {
+                api = ToolkitApi.forNormalUse(session)
+            } else {
+                api = ToolkitApi.forInternalUse()
+            }
+            return new IgxOrchestrationBuilder(api, session, request).buildTestEnvironment()
+        } catch (Exception e) {
+            return RawResponseBuilder.build(e);
+        }
+    }
+
     public RawResponse buildIigTestEnvironment(Session session, IigOrchestrationRequest request) {
         try {
             ToolkitApi api
@@ -50,6 +64,20 @@ class OrchestrationManager {
                 api = ToolkitApi.forInternalUse()
             }
             return new RgOrchestrationBuilder(api, session, request).buildTestEnvironment()
+        } catch (Exception e) {
+            return RawResponseBuilder.build(e);
+        }
+    }
+
+    public RawResponse buildRgxTestEnvironment(Session session, RgxOrchestrationRequest request) {
+        try {
+            ToolkitApi api
+            if(Installation.instance().warHome()) {
+                api = ToolkitApi.forNormalUse(session)
+            } else {
+                api = ToolkitApi.forInternalUse()
+            }
+            return new RgxOrchestrationBuilder(api, session, request).buildTestEnvironment()
         } catch (Exception e) {
             return RawResponseBuilder.build(e);
         }

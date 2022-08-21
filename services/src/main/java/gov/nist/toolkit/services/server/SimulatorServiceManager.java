@@ -482,7 +482,7 @@ public class SimulatorServiceManager extends CommonService {
                SimulatorStats reg = RegistryActorSimulator.getSimulatorStats(simId);
                rep.add(reg);
                stats.add(rep);
-            } else if (db.getSimulatorActorType() == ActorType.RESPONDING_GATEWAY) {
+            } else if (db.getSimulatorActorType() == ActorType.RESPONDING_GATEWAY || db.getSimulatorActorType() == ActorType.RESPONDING_GATEWAY_X) {
                SimulatorStats rep = RepositoryActorSimulator.getSimulatorStats(simId);
                SimulatorStats reg = RegistryActorSimulator.getSimulatorStats(simId);
                rep.add(reg);
