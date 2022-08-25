@@ -31,20 +31,6 @@ class RgxOrchestrationBuilder extends AbstractOrchestrationBuilder {
     }
 
     RawResponse buildTestEnvironment() {
-        buildTestEnvironment_V2Pif()
-
-/*        PifType p = request.getPifType();
-        switch (request.getPifType()) {
-            case PifType.NONE:
-                buildTestEnvironment_NoPif()
-                break
-            case PifType.V2:
-                buildTestEnvironment_V2Pif()
-                break
-        }*/
-    }
-
-    RawResponse buildTestEnvironment_V2Pif() {
         boolean sutSaml = false
         SimId sutSimId = null
         try {
@@ -63,19 +49,21 @@ class RgxOrchestrationBuilder extends AbstractOrchestrationBuilder {
 
             TestInstance testInstanceRG_Init = new TestInstance('RG.Init', request.testSession)
             MessageItem itemRG_Init = response.addMessage(testInstanceRG_Init, true, "")
-            // Submit test data / request
-            try {
-                // TODO This is not coming through when setting up System Under Test Configuration
-                // Need to figure out why not.
-                rrSite.isTls = request.isUseTls()
-                rrSite.isTls = true
-                session.isTls = true
-                Pid dummyPid = new Pid("NA", "NA");
-                util.submit(request.testSession.value, rrSite, testInstanceRG_Init, dummyPid, home)
-                itemRG_Init.setSuccess(api.getTestLogs(testInstanceRG_Init).isSuccess())
-            } catch (Exception e) {
-                itemRG_Init.setMessage("Initialization of " + request.siteUnderTest.name + " failed:\n" + e.getMessage())
-                itemRG_Init.setSuccess(false)
+            if (!request.isUseExistingState()) {
+                // Submit test data / request
+                try {
+                    // TODO This is not coming through when setting up System Under Test Configuration
+                    // Need to figure out why not.
+                    rrSite.isTls = request.isUseTls()
+                    rrSite.isTls = true
+                    session.isTls = true
+                    Pid dummyPid = new Pid("NA", "NA");
+                    util.submit(request.testSession.value, rrSite, testInstanceRG_Init, dummyPid, home)
+                    itemRG_Init.setSuccess(api.getTestLogs(testInstanceRG_Init).isSuccess())
+                } catch (Exception e) {
+                    itemRG_Init.setMessage("Initialization of " + request.siteUnderTest.name + " failed:\n" + e.getMessage())
+                    itemRG_Init.setSuccess(false)
+                }
             }
 
             if (orchProps)
@@ -92,8 +80,5 @@ class RgxOrchestrationBuilder extends AbstractOrchestrationBuilder {
             }
         }
     }
-
-
-
 }
 
