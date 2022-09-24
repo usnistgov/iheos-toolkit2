@@ -85,11 +85,17 @@ public class SiteSpec implements Serializable, IsSerializable {
 	public boolean isIG() {
 		return (actorType != null) && actorType.isIGActor();
 	}
-	
+
+	public boolean isIGX() { return (actorType != null) && actorType.isIGXActor(); }
+
 	public boolean isRG() {
 		return (actorType != null) && actorType.isRGActor();
 	}
-	
+
+	public boolean isRGX() {
+		return (actorType != null) && actorType.isRGXActor();
+	}
+
 	public boolean isImagingDocumentSourceActor() {
 		return (actorType != null) && actorType.isImagingDocumentSourceActor();
 	}

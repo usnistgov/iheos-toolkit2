@@ -47,6 +47,10 @@ public enum SimulatorActorType {
      */
     RESPONDING_GATEWAY("rg"),
     /**
+     * Responding Gateway X
+     */
+    RESPONDING_GATEWAY_X("rgx"),
+    /**
      * Responding Gateway - with ODDS and registry
      */
     ON_DEMAND_RESPONDING_GATEWAY("odrg"),
@@ -59,7 +63,7 @@ public enum SimulatorActorType {
      */
     IMAGE_DOCUMENT_SOURCE("ids"),
     /**
-     * Image Document Source
+     * Image Document Consumer
      */
     IMAGE_DOCUMENT_CONSUMER("idc"),
     /**
@@ -67,7 +71,11 @@ public enum SimulatorActorType {
      */
     INITIATING_GATEWAY("ig"),
     /**
-     * Initiating Gateway
+     * Initiating Gateway X
+     */
+    INITIATING_GATEWAY_X("igx"),
+    /**
+     * Initiating Imaging Gateway
      */
     INITIATING_IMAGING_GATEWAY("iig"),
 
