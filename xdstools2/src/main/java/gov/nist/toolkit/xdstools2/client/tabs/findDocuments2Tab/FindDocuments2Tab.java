@@ -31,11 +31,8 @@ public class FindDocuments2Tab extends GenericQueryTab {
     static List<TransactionType> transactionTypes = new ArrayList<TransactionType>();
     static {
         transactionTypes.add(TransactionType.STORED_QUERY);
-        // TODO complete supported transactions
-        // the following two types are not supported at the moment. Their testplan section needs to be added
-        // under webapp/toolkitx/testkit/utilities/FindDocuments2
-        //transactionTypes.addTest(TransactionType.IG_QUERY);
-        //transactionTypes.addTest(TransactionType.XC_QUERY);
+        transactionTypes.add(TransactionType.IG_QUERY);
+        transactionTypes.add(TransactionType.XC_QUERY);
     }
     static CoupledTransactions couplings = new CoupledTransactions();
 
