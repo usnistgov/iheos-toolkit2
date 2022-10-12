@@ -380,17 +380,17 @@ public class SimulatorProperties {
      */
     public static final String locked = "Locked";
 
-    public static final String pdbEndpoint = "Provide DocumentBundle Endpoint";
+//    public static final String pdbEndpoint = "Provide DocumentBundle Endpoint";
+//
+//    public static final String pdbTlsEndpoint = "Provide DocumentBundle TLS Endpoint";
 
-    public static final String pdbTlsEndpoint = "Provide DocumentBundle TLS Endpoint";
+//    public static final String fhirTlsEndpoint = "FHIR TLS Endpoint";
+//
+//    public static final String fhirEndpoint = "FHIR Endpoint";
 
-    public static final String fhirTlsEndpoint = "FHIR TLS Endpoint";
-
-    public static final String fhirEndpoint = "FHIR Endpoint";
-
-    public static final String fdrEndpoint = "Find Document Reference Endpoint";
-
-    public static final String fdrTlsEndpoint = "Find Document Reference Endpoint";
+//    public static final String fdrEndpoint = "Find Document Reference Endpoint";
+//
+//    public static final String fdrTlsEndpoint = "Find Document Reference Endpoint";
 
     public static final String rdrEndpoint = "Read Document Reference Endpoint";
 

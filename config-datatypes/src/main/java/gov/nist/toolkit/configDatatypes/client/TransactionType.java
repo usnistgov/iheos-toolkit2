@@ -41,13 +41,13 @@ public enum TransactionType implements Serializable, IsSerializable {
     REMOVE_METADATA("ITI-62", "Remove Metadata", "rm", "rm.b", "rm.b.as", false, "urn:ihe:iti:2010:DeleteDocumentSet", "urn:ihe:iti:2010:DeleteDocumentSetResponse", false, SimulatorProperties.removeMetadataEndpoint, SimulatorProperties.removeMetadataTlsEndpoint, false),
     REMOVE_DOCUMENTS("ITI-86", "Remove Documents", "rd", "rd.b", "rd.b.as", false, "urn:ihe:iti:2017:RemoveDocuments", "urn:ihe:iti:2017:RemoveDocumentsResponse", false, SimulatorProperties.removeDocumentsEndpoint, SimulatorProperties.removeDocumentsTlsEndpoint, false),
 	//    ANY("ANY", "ANY", "any", "any", "any.as", false, "any", "any", false, null, null, false),
-    FHIR("FHIR", "FHIR", "fhir", "fhir", "fhir.as", true, "fhir", "fhir", true, SimulatorProperties.fhirEndpoint, SimulatorProperties.fhirTlsEndpoint, true, FhirVerb.NONE),
-    PROV_DOC_BUNDLE("ITI-65", "Provide Document Bundle", "pdb", "pdb", "pdb.as", false, "fhir", "fhir", false, SimulatorProperties.pdbEndpoint, SimulatorProperties.pdbTlsEndpoint, true, FhirVerb.TRANSACTION),
+//    FHIR("FHIR", "FHIR", "fhir", "fhir", "fhir.as", true, "fhir", "fhir", true, SimulatorProperties.fhirEndpoint, SimulatorProperties.fhirTlsEndpoint, true, FhirVerb.NONE),
+//    PROV_DOC_BUNDLE("ITI-65", "Provide Document Bundle", "pdb", "pdb", "pdb.as", false, "fhir", "fhir", false, SimulatorProperties.pdbEndpoint, SimulatorProperties.pdbTlsEndpoint, true, FhirVerb.TRANSACTION),
     // for these FHIR types, the name field here matches the resource type
     // should only be looked for with the FhirVerb option on find()
-    FIND_DOC_REFS("ITI-67", "Find DocumentReference", "fdr", "fdr", "fdr.as", false, "fhir", "fhir", false, SimulatorProperties.fdrEndpoint, SimulatorProperties.fdrTlsEndpoint, true, FhirVerb.QUERY),
-    READ_DOC_REF("ITI-67", "Read DocumentReference", "rdr", "rdr", "rdr.as", false, "fhir", "fhir", false, SimulatorProperties.rdrEndpoint, SimulatorProperties.rdrTlsEndpoint, true, FhirVerb.READ),
-    READ_BINARY("ITI-68", "Binary", "br", "br", "br.as", false, "fhir", "fhir", false, SimulatorProperties.rdBinaryEndpoint, SimulatorProperties.rdBinaryTlsEndpoint, true, FhirVerb.READ),
+//    FIND_DOC_REFS("ITI-67", "Find DocumentReference", "fdr", "fdr", "fdr.as", false, "fhir", "fhir", false, SimulatorProperties.fdrEndpoint, SimulatorProperties.fdrTlsEndpoint, true, FhirVerb.QUERY),
+//    READ_DOC_REF("ITI-67", "Read DocumentReference", "rdr", "rdr", "rdr.as", false, "fhir", "fhir", false, SimulatorProperties.rdrEndpoint, SimulatorProperties.rdrTlsEndpoint, true, FhirVerb.READ),
+//    READ_BINARY("ITI-68", "Binary", "br", "br", "br.as", false, "fhir", "fhir", false, SimulatorProperties.rdBinaryEndpoint, SimulatorProperties.rdBinaryTlsEndpoint, true, FhirVerb.READ),
     /*
     Reuse ITI-38 and ITI-39 for Sequoia's QD and RD. A new UseSequoiaHeader test plan parameter dynamically adds security related headers.
 	QD("QD", "Sequoia Query Document", "qd", "qd", "qd.as", false, "urn:ihe:iti:2007:CrossGatewayQuery", "urn:ihe:iti:2007:CrossGatewayQueryResponse", false, SimulatorProperties.xcqEndpoint, SimulatorProperties.xcqTlsEndpoint),

@@ -99,6 +99,7 @@ class GenerateSingleSystem {
 
             recipientSite.addTransaction(transactionId, endpoint, isSecure, isAsync)
 
+            /*
             if (transactionType == TransactionType.FIND_DOC_REFS) {
                 [TransactionType.READ_DOC_REF, TransactionType.READ_BINARY]
                         .each { TransactionType tt ->
@@ -106,6 +107,7 @@ class GenerateSingleSystem {
                     recipientSite.addTransaction(tt.shortName, endpoint, isSecure, isAsync)
                 }
             }
+             */
         }
 
         //*************************************************************
