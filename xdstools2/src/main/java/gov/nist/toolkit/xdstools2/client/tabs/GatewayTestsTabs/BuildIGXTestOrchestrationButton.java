@@ -97,7 +97,7 @@ public class BuildIGXTestOrchestrationButton extends AbstractOrchestrationButton
         new BuildIGXTestOrchestrationCommand(){
             @Override
             public void onComplete(RawResponse rawResponse) {
-                if (handleError(rawResponse, IgxOrchestrationResponse.class)) return;
+//                if (handleError(rawResponse, IgxOrchestrationResponse.class)) return;
                 IgxOrchestrationResponse orchResponse = (IgxOrchestrationResponse) rawResponse;
                 testTab.setOrchestrationResponse(orchResponse);
                 SiteSpec siteUnderTest = siteUnderTest(orchResponse);
@@ -120,9 +120,9 @@ public class BuildIGXTestOrchestrationButton extends AbstractOrchestrationButton
 
                 handleMessages(initializationResultsPanel, orchResponse);
 
-                initializationResultsPanel.add(new HTML("<br />"));
+                initializationResultsPanel.add(new HTML("<br />XYZX<br />"));
 
-//                initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testContext, testContextView, testRunner, testTab ));
+                initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testContext, testContextView, testRunner, testTab ));
 
                 initializationResultsPanel.add(new HTML("<br />"));
 

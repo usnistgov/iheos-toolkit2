@@ -2,18 +2,21 @@ package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.docref.MetadataTables;
 import gov.nist.toolkit.registrymetadata.Metadata;
+import gov.nist.toolkit.registrymsg.registry.AdhocQueryRequest;
+import gov.nist.toolkit.registrymsg.repository.RetrieveItemRequestModel;
+import gov.nist.toolkit.registrymsg.repository.RetrieveRequestModel;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
-import gov.nist.toolkit.simcommon.server.SimDb;
-import gov.nist.toolkit.simcommon.server.SimDbEvent;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
+import gov.nist.toolkit.valregmsg.registry.storedquery.support.SqParams;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 
 import java.nio.file.Path;
+import java.util.*;
 import java.util.logging.Logger;
 
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -24,22 +27,19 @@ import gov.nist.toolkit.errorrecording.factories.TextErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.TextErrorRecorder;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valregmetadata.coding.Code;
-import org.apache.axiom.om.OMException;
 import org.w3c.dom.Document;
 
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 
 public class Validator {
 	Metadata m;
+	AdhocQueryRequest request;
+	SqParams storedQueryParams;
+	RetrieveRequestModel retrieveRequestModel;
 	StringBuffer errs = new StringBuffer();
 	boolean error = false;
 	OMElement test_assertions;
@@ -73,6 +73,21 @@ public class Validator {
 
 	public Validator setM(Metadata m) {
 		this.m = m;
+		return this;
+	}
+
+	public Validator setRequest(AdhocQueryRequest request) {
+		this.request = request;
+		return this;
+	}
+
+	public Validator setStoredQueryParams(SqParams storedQueryParams) {
+		this.storedQueryParams = storedQueryParams;
+		return this;
+	}
+
+	public Validator setRetrieveRequestModel(RetrieveRequestModel retrieveRequestModel) {
+		this.retrieveRequestModel = retrieveRequestModel;
 		return this;
 	}
 
@@ -839,12 +854,18 @@ public class Validator {
 				oe = getSingleDocumentEntry();
 				rtn = m.getUniqueIdValue(oe);
 				break;
+			// Cases below are taken from Stored Queries
+			case "AdhocQuery.DocumentEntry.patientId":
+				rtn = request.getPatientId();
+				break;
 
 			default:
 				break;
 		}
 		return rtn;
 	}
+
+
 
 	private OMElement getSingleDocumentEntry() throws MetadataException {
 		HashMap<String, OMElement> map = m.getDocumentUidMap();
@@ -920,6 +941,103 @@ public class Validator {
 		}
 		return codeList;
 	}
+
+	/*
+    This is the public method that is called to compare the value in a field in an adhoc query.
+    to an expected value provided by the caller.
+    The argument field is a string of the form:
+       AdhocQuery.SubmimssionSet.xxx
+       AdhocQuery.DocumentEntry.xxx
+    where the xxx labels correspond to ..
+    TODO fix above
+    For example: AdhocQuery.DocumentEntry.xx
+ */
+	public boolean namedFieldCompare(String field, String expectedValue) throws MetadataException {
+		String submittedValue = extractNamedField(field);
+		boolean rtn = true;
+		if (!expectedValue.equals(submittedValue)) {
+			err("Metadata Content Failure, key: " + field + ", expectedValue: " + expectedValue + ", submittedValue: " + submittedValue);
+			rtn = false;
+		}
+		return rtn;
+	}
+
+	public boolean namedFieldContains(String field, String expectedValue) throws XdsInternalException, MetadataException {
+		boolean rtn = true;
+		List<String> stringList = extractNamedFieldAsList(field);
+		if (stringList != null) {
+			Set<String> set = new HashSet<>(stringList);
+			if (!set.contains(expectedValue)) {
+				err("Named Field Failure for field: " + field + ". Did not find " + expectedValue + " in list of values.");
+				rtn = false;
+			}
+		} else {
+			err("Named Field Failure for field: " + field + ". There was no value for this field/key.");
+			rtn = false;
+		}
+
+		return rtn;
+	}
+
+	private List<String> extractNamedFieldAsList(String field) throws XdsInternalException, MetadataException {
+		List<String> rtn = null;
+		switch(field) {
+			case "AdhocQuery.DocumentEntry.objectType":
+				rtn = storedQueryParams.getListParm("$XDSDocumentEntryType");
+				break;
+			case "AdhocQuery.DocumentEntry.availabilityStatus":
+				rtn = storedQueryParams.getListParm("$XDSDocumentEntryStatus");
+				break;
+		}
+		return rtn;
+	}
+
+	private String extractNamedField(String field) throws MetadataException {
+		String rtn = "";
+		List<RetrieveItemRequestModel> models;
+		switch(field) {
+			case "AdhocQuery.DocumentEntry.patientId":
+				rtn = request.getPatientId();
+				break;
+			case "AdhocQuery.returnType":
+				//TODO fix how we get the ResponseOption element
+				OMElement x = request.getAdhocQueryRequestElement();
+				OMElement y = x.getFirstElement();
+//				OMElement z = x.getFirstChildWithName(new QName("{urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0}ResponseOption"));
+//				OMElement e = request.getAdhocQueryRequestElement().getFirstChildWithName(new QName("ResponseOption"));
+				rtn = y.getAttributeValue(new QName("returnType"));
+				break;
+				//TODO this was moved to the list section
+			case "AdhocQuery.DocumentEntry.objectType":
+				rtn = firstValue(request.getDocumentEntryObjectTypeList());
+				break;
+			case "XCR.homeCommunityId":
+				models = retrieveRequestModel.getModels();
+				rtn = models.get(0).getHomeId();
+				break;
+			case "XCR.repositoryUniqueId":
+				models = retrieveRequestModel.getModels();
+				rtn = models.get(0).getRepositoryId();
+				break;
+			case "XCR.documentId":
+				models = retrieveRequestModel.getModels();
+				rtn = models.get(0).getDocumentId();
+				break;
+			default:
+				break;
+		}
+		return rtn;
+	}
+
+	private String firstValue(List<String> valueList) {
+		String rtn = "";
+		if (valueList != null && valueList.size() > 0) {
+			rtn = valueList.get(0);
+		}
+		return rtn;
+	}
+
+
 
 	public void run_test_assertions(OMElement xml, OMElement instruction_output)  throws MetadataException, XdsInternalException, MetadataValidationException {
 		Metadata m = new Metadata(xml);

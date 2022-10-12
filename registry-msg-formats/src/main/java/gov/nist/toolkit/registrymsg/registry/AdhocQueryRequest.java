@@ -3,6 +3,8 @@ package gov.nist.toolkit.registrymsg.registry;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 
+import java.util.List;
+
 public class AdhocQueryRequest {
 	String home;
 	String queryId;
@@ -10,6 +12,7 @@ public class AdhocQueryRequest {
 	OMElement adhocQueryRequestElement;
 	OMAttribute homeAtt;
     String patientId = null;
+	List<String> documentEntryObjectTypeList = null;
 
     public String getHome() {
 		return home;
@@ -27,7 +30,11 @@ public class AdhocQueryRequest {
 		return homeAtt;
 	}
     public String getPatientId() { return patientId; }
-	
+
+	public List<String> getDocumentEntryObjectTypeList() {
+		return documentEntryObjectTypeList;
+	}
+
 	public String toString() {
 		return "AdhocQueryRequest: queryId=" + queryId + " home=" + home;
 	}
