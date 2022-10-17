@@ -7,6 +7,8 @@ import gov.nist.toolkit.registrymsg.repository.RetrieveItemRequestModel;
 import gov.nist.toolkit.registrymsg.repository.RetrieveRequestModel;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
+import gov.nist.toolkit.simcommon.server.SimDb;
+import gov.nist.toolkit.simcommon.server.SimDbEvent;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.SqParams;
@@ -15,8 +17,19 @@ import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
-import java.util.*;
+import java.nio.file.Paths;
+import java.nio.file.Files;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.logging.Logger;
 
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -27,13 +40,14 @@ import gov.nist.toolkit.errorrecording.factories.TextErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.TextErrorRecorder;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valregmetadata.coding.Code;
+import org.apache.axiom.om.OMException;
 import org.w3c.dom.Document;
 
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
+import javax.xml.parsers.FactoryConfigurationError;
 
 public class Validator {
 	Metadata m;
@@ -818,6 +832,58 @@ public class Validator {
 			err("Metadata Content Failure / Contains Coded Value, key: " + metadataField +
 					", expected/submitted code: " + expectedCodeValue + "/" +
 					", expected/submitted scheme: " + expectedCodingScheme + "/");
+		}
+		return rtn;
+	}
+
+	public boolean namedMetadataCodeFromValueSet(String metadataField, String environment, String valueSetOID) throws MetadataException {
+		boolean rtn = false;
+		Code submittedCode = extractNamedMetadataCoded(metadataField);
+
+		Installation i = Installation.instance();
+		File f = i.environmentFile(environment);
+		Path p = Paths.get(f.getAbsolutePath(), "value_sets", valueSetOID + ".txt");
+		f = p.toFile();
+		if (! f.exists()) {
+			err("The value set file does not exist in environment: " +
+					environment +
+					". and Value Set OID: " +
+					valueSetOID);
+		} else {
+			List<String> valueSetList = readTextFile(p);
+			Iterator<String> it = valueSetList.iterator();
+			while (it.hasNext() && !rtn) {
+				String[] tokens = it.next().split("\t");
+				if (tokens.length >= 3) {
+					Code code = new Code(tokens[0], tokens[1], tokens[2]);
+					if (submittedCode.equals(code)) {
+						rtn = true;
+					}
+				}
+			}
+			if (!rtn) {
+				err("Did not find the submitted coded value (" +
+						submittedCode.toString() +
+						") in value set: " + valueSetOID +
+						". Value set contains " +
+						valueSetList.size() +
+						" item(s).");
+			}
+
+		}
+
+
+		return rtn;
+	}
+
+	private List<String> readTextFile(Path path) {
+		List<String> rtn = new ArrayList<>();
+
+		try (Stream<String> stream = Files.lines(path)) {
+			rtn = stream
+					.filter(line -> !line.startsWith("#"))
+					.collect(Collectors.toList());
+		} catch (IOException e) {
 		}
 		return rtn;
 	}

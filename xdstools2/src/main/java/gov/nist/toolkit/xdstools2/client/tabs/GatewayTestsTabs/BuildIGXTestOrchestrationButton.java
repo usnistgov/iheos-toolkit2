@@ -120,8 +120,6 @@ public class BuildIGXTestOrchestrationButton extends AbstractOrchestrationButton
 
                 handleMessages(initializationResultsPanel, orchResponse);
 
-                initializationResultsPanel.add(new HTML("<br />XYZX<br />"));
-
                 initializationResultsPanel.add(new OrchestrationSupportTestsDisplay(orchResponse, testContext, testContextView, testRunner, testTab ));
 
                 initializationResultsPanel.add(new HTML("<br />"));

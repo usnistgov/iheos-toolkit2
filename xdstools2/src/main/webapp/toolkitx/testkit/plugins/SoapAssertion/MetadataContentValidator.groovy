@@ -1,5 +1,7 @@
 package war.toolkitx.testkit.plugins.SoapAssertion
 
+import gov.nist.toolkit.installation.server.Installation
+
 import gov.nist.toolkit.testengine.engine.SimReference
 import gov.nist.toolkit.testengine.engine.SoapSimulatorTransaction
 import gov.nist.toolkit.testengine.engine.validations.ValidaterResult
@@ -39,6 +41,7 @@ class MetadataContentValidator extends AbstractSoapValidater {
     String codeValue
     String codingScheme
     String codeDisplayName
+    String valueSetOID
 
     /**
      * Optional parameter
@@ -80,6 +83,14 @@ class MetadataContentValidator extends AbstractSoapValidater {
                             break;
                         case "containsCode":
                             if (!v.namedMetadataContainsCode(key, codeValue, codingScheme, codeDisplayName)) {
+                                errors = v.getErrors()
+                            }
+                            break;
+                        case "isFromValueSet":
+                            String env = sst.simReference.simId.environmentName
+                            Installation i = Installation.instance();
+                            File f = i.environmentFile(env)
+                            if (!v.namedMetadataCodeFromValueSet(key, env, valueSetOID)) {
                                 errors = v.getErrors()
                             }
                             break;
