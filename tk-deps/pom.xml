@@ -23,7 +23,7 @@
         <!--   begin before security update   -->
 <!--        <jackson.version>2.11.3</jackson.version>   -->
         <!-- end -->
-        <jackson.version>2.12.6.1</jackson.version>
+        <jackson.version>2.12.7.1</jackson.version>
         <jacksonauxilary.version>2.12.6</jacksonauxilary.version>
         <grizzly.version>2.4.4</grizzly.version>  <!-- 2.3.22  -->
         <!--
