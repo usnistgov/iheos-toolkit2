@@ -146,10 +146,10 @@ class IgxOrchestrationBuilder extends AbstractOrchestrationBuilder {
             rgSimConfig1.getConfigEle(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED).setBooleanValue(false)
 
             // set fixed homeCommunityId
-            rgSimConfig1.getConfigEle(SimulatorProperties.homeCommunityId).setStringValue('urn:oid:1.2.34.567.8.1')
+            rgSimConfig1.getConfigEle(SimulatorProperties.homeCommunityId).setStringValue('urn:oid:2.16.840.1.113883.3.7204.1.3.1.2.3.1')
 
             // set fixed repositoryUniqueId
-            rgSimConfig1.getConfigEle(SimulatorProperties.repositoryUniqueId).setStringValue('1.2.34.567.10.101')
+            rgSimConfig1.getConfigEle(SimulatorProperties.repositoryUniqueId).setStringValue('2.16.840.1.113883.3.7204.1.3.1.2.3.1.100')
 
             api.saveSimulator(rgSimConfig1)
 
@@ -157,10 +157,10 @@ class IgxOrchestrationBuilder extends AbstractOrchestrationBuilder {
             rgSimConfig2.getConfigEle(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED).setBooleanValue(false)
 
             // set fixed homeCommunityId
-            rgSimConfig2.getConfigEle(SimulatorProperties.homeCommunityId).setStringValue('urn:oid:1.2.34.567.8.2')
+            rgSimConfig2.getConfigEle(SimulatorProperties.homeCommunityId).setStringValue('urn:oid:2.16.840.1.113883.3.7204.1.3.1.2.3.2')
             // set fixed repositoryUniqueId
 
-            rgSimConfig1.getConfigEle(SimulatorProperties.repositoryUniqueId).setStringValue('1.2.34.567.10.102')
+            rgSimConfig2.getConfigEle(SimulatorProperties.repositoryUniqueId).setStringValue('2.16.840.1.113883.3.7204.1.3.1.2.3.2.100')
 
             api.saveSimulator(rgSimConfig2)
         }
