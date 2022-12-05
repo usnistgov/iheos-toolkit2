@@ -12,6 +12,7 @@ import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
 import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
 import gov.nist.toolkit.saml.util.UUIDGenerator;
 import gov.nist.toolkit.securityCommon.SecurityParams;
+import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.soap.axis2.Soap;
 import gov.nist.toolkit.testengine.assertionEngine.Assertion;
 import gov.nist.toolkit.testengine.assertionEngine.AssertionEngine;
@@ -719,6 +720,19 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 							" and secure = " + testConfig.secure +
 							" on site " + testConfig.site.getSiteName() + "\nactor config is " + testConfig.site.toString());
 				testLog.add_name_value(instruction_output, "Endpoint", endpoint);
+				if (repositoryUniqueId != null) {
+					testLog.add_name_value(instruction_output, "RepositoryUniqueId", repositoryUniqueId);
+				}
+				try {
+					String homeCommunityId = testConfig.site.getHome();
+					if (homeCommunityId != null) {
+						testLog.add_name_value(instruction_output, "Home", homeCommunityId);
+					}
+				} catch (Exception e) {
+					// Ignore if we are not able to get homeCommunityId
+				}
+
+
 			}
 		} else {
 			if (testConfig.verbose)
@@ -773,6 +787,8 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 				}
 		}
 		testLog.add_name_value(instruction_output, "Endpoint", endpoint);
+		System.out.println("\n\n Home " + home + "\n\n");
+		testLog.add_name_value(instruction_output, "Home", home);
 		showEndpoint();
 	}
 
