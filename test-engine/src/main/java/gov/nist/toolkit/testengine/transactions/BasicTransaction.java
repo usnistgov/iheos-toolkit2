@@ -787,7 +787,6 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 				}
 		}
 		testLog.add_name_value(instruction_output, "Endpoint", endpoint);
-		System.out.println("\n\n Home " + home + "\n\n");
 		testLog.add_name_value(instruction_output, "Home", home);
 		showEndpoint();
 	}
