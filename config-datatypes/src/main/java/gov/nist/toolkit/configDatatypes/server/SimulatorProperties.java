@@ -211,6 +211,19 @@ public class SimulatorProperties {
      * Endpoint to use to send the indicated transaction to this Simulator.
      * Updates to this property are ignored.
      */
+    public static final String                            xcdrEndpoint = "XCDR_endpoint";
+
+    /**
+     * Endpoint to use to send the indicated transaction to this Simulator.
+     * Updates to this property are ignored.
+     */
+    public static final String                         xcdrTlsEndpoint = "XCDR_TLS_endpoint";
+
+
+    /**
+     * Endpoint to use to send the indicated transaction to this Simulator.
+     * Updates to this property are ignored.
+     */
     public static final String                            xcirEndpoint = "XCIR_endpoint";
 
     /**

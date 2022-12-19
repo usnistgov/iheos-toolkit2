@@ -32,9 +32,7 @@ import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
-import org.apache.axiom.om.OMAbstractFactory;
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMFactory;
+import org.apache.axiom.om.*;
 import org.apache.axis2.AxisFault;
 import java.util.logging.Logger;
 
@@ -53,6 +51,10 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 	boolean step_failure = false;
 	boolean no_convert = false;
 	boolean isSaml = false ;
+	// This will be set by a subclass if needed.
+	// The baseline Provide and Register transaction does not include HCID in the header.
+	protected boolean headerRequiresHomeCommunityId = false;
+	protected String homeCommunityId = "";
 	public boolean parse_metadata = true;
 	// metadata building linkage
 	protected ArrayList<OMElement> use_id;
@@ -220,6 +222,8 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 			if (defaultEndpointProcessing && ttype != null)
 				parseEndpoint(ttype);
 
+			lookupAndRecordHCID();
+
 			Metadata metadata = prepareMetadata();
 			if (metadata != null)
 				request_element = metadata.getRoot();
@@ -305,6 +309,7 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 		linkage = new Linkage(testConfig, instruction_output, metadata);
 		linkage.addLinkage("$now$", new Hl7Date().now());
 		linkage.addLinkage("$lastyear$", new Hl7Date().lastyear());
+		linkage.addLinkage("$homeCommunityId$",  homeCommunityId);
 //		linkage.addLinkage("$AlternatePatientId$", new PatientIdAllocator(testConfig).getAltPatientId());
 		linkage.compileLinkage();
 	}
@@ -700,6 +705,14 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 
 	}
 
+	protected void lookupAndRecordHCID( )  {
+		homeCommunityId = testConfig.site.getHome();
+		if (homeCommunityId==null || homeCommunityId.isEmpty()) {
+			homeCommunityId = "No HCID configured for " + testConfig.site.getName();
+		}
+		testLog.add_name_value(instruction_output, "Home", homeCommunityId);
+	}
+
 	protected void parseEndpoint(TransactionType trans) throws Exception {
 		endpoint = this.s_ctx.getRegistryEndpoint();   // this is busted, always returns null
 		if (endpoint == null || endpoint.equals("") || testConfig.endpointOverride) {			//boolean async = false;
@@ -723,15 +736,6 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 				if (repositoryUniqueId != null) {
 					testLog.add_name_value(instruction_output, "RepositoryUniqueId", repositoryUniqueId);
 				}
-				try {
-					String homeCommunityId = testConfig.site.getHome();
-					if (homeCommunityId != null) {
-						testLog.add_name_value(instruction_output, "Home", homeCommunityId);
-					}
-				} catch (Exception e) {
-					// Ignore if we are not able to get homeCommunityId
-				}
-
 
 			}
 		} else {
@@ -1355,7 +1359,17 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 				throw new XdsInternalException("Cannot build Sequoia security header: " + e.getMessage(), e);
 			}
 		} else /* normal STS assertion */ {
-			String wsse = "<wsse:Security soapenv:mustUnderstand=\"true\" xmlns:soapenv=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:wsse=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\">"
+//			String wsse = "<wsse:Security  xmlns:soapenv=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:wsse=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\" soapenv:mustUnderstand=\"true\">"
+
+			// TODO Need to fix this. This was a shortcut for some testing and is not correct.
+			String wsse = "" +
+			"<wsse:Security" +
+			" xmlns:wsse=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\"" +
+			" xmlns=\"http://www.w3.org/2003/05/soap-envelope\"" +
+			" xmlns:ns0=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\"" +
+			" xmlns:ns1=\"http://www.w3.org/2003/05/soap-envelope\"" +
+			" ns0:Id=\"_7e39374c-7830-11ed-a1eb-0242ac120002\"" +
+			" ns1:mustUnderstand=\"true\">"
 			+ assertionStr
 			+ "</wsse:Security>";
 			return Util.parse_xml(wsse);
@@ -1381,6 +1395,7 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 		}
 		soap.setAsync(async);
 		soap.setUseSaml(testConfig.saml);
+		addHomeCommunityIdIfNeeded(soap);
 
 
 		if (additionalHeaders != null) {
@@ -1434,6 +1449,17 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 		logSoapRequest(soap);
 
 		scanResponseForErrors();
+	}
+
+	private void addHomeCommunityIdIfNeeded(Soap soap) {
+		if (headerRequiresHomeCommunityId) {
+			OMNamespace namespace = XmlUtil.om_factory.createOMNamespace("urn:ihe:iti:xdr:2014", "xdr");
+			OMElement block = XmlUtil.createElement("homeCommunityBlock", namespace);
+			OMElement hcid = XmlUtil.createElement("homeCommunityId", namespace);
+			hcid.setText(homeCommunityId);
+			block.addChild(hcid);
+			soap.addHeader(block);
+		}
 	}
 
 

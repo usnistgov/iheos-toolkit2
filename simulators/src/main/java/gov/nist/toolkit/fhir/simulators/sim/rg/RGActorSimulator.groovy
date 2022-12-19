@@ -6,6 +6,8 @@ import gov.nist.toolkit.configDatatypes.server.SimulatorProperties
 import gov.nist.toolkit.configDatatypes.client.*
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code
+import gov.nist.toolkit.fhir.simulators.sim.reg.RegistryResponseGeneratorSim
+import gov.nist.toolkit.fhir.simulators.sim.rep.RepPnRSim
 import gov.nist.toolkit.registrymetadata.Metadata
 import gov.nist.toolkit.registrymetadata.MetadataParser
 import gov.nist.toolkit.registrymsg.registry.AdhocQueryRequest
@@ -34,6 +36,9 @@ import gov.nist.toolkit.valsupport.message.AbstractMessageValidator
 import gov.nist.toolkit.valsupport.message.ForcedErrorMessageValidator
 import groovy.transform.TypeChecked
 import org.apache.axiom.om.OMElement
+import org.apache.axiom.om.OMNamespace
+import javax.xml.namespace.QName
+
 import java.util.logging.*
 
 @TypeChecked
@@ -82,7 +87,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
                return false;    // SOAP Fault generated
 
             if (mvc.hasErrors()) {
-               returnRetrieveError();
+               returnRetrieveError(mvc);
                return false;
             }
 
@@ -90,7 +95,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
             AbstractMessageValidator mv = dsSimCommon.getMessageValidatorIfAvailable(SoapMessageValidator.class);
             if (mv == null || !(mv instanceof SoapMessageValidator)) {
                er.err(Code.XDSRegistryError, "RG Internal Error - cannot find SoapMessageValidator instance", "RespondingGatewayActorSimulator", "");
-               returnRetrieveError();
+               returnRetrieveError(mvc);
                return false;
             }
 
@@ -100,7 +105,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
             SimulatorConfigElement asce = getSimulatorConfig().getUserByName(SimulatorProperties.homeCommunityId);
             if (asce == null) {
                er.err(Code.XDSUnknownCommunity, "RG Internal Error - homeCommunityId not configured", this, "");
-               returnRetrieveError();
+               returnRetrieveError(mvc);
                return false;
             }
             String configuredHomeCommunityId = asce.asString();
@@ -167,7 +172,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
          }
 
             if (mvc.hasErrors()) {
-               returnRetrieveError();
+               returnRetrieveError(mvc);
                return false;
             }
 
@@ -193,14 +198,14 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 
          case TransactionType.XC_QUERY:
 
-            ValidationContext vc = common.vc;
-            vc.isRequest = true;
-            vc.isSimpleSoap = true;
-            vc.isSQ = true;
-            vc.isXC = true;
-            vc.xds_b = true;
-            vc.hasSoap = true;
-            vc.hasHttp = true;
+//            ValidationContext vc = common.vc;
+            common.vc.isRequest = true;
+            common.vc.isSimpleSoap = true;
+            common.vc.isSQ = true;
+            common.vc.isXC = true;
+            common.vc.xds_b = true;
+            common.vc.hasSoap = true;
+            common.vc.hasHttp = true;
 
             // run validations on message
             er.challenge("Scheduling initial validations");
@@ -298,6 +303,62 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 
             return true; // no updates anyway
 
+         case TransactionType.XC_PROVIDE:
+//            ValidationContext vc = common.vc;
+            common.vc.isRequest = true;
+            common.vc.isSimpleSoap = true;
+            common.vc.isXC    = true;
+            common.vc.isRMU   = false;
+            common.vc.xds_b   = true;
+            common.vc.hasSoap = true;
+            common.vc.hasHttp = true;
+            common.vc.isPnR   = true;
+            common.vc.isXCDR  = true;
+
+            if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
+               return false;  // returns if SOAP Fault was generated
+
+            boolean b = mvc.hasErrors();
+            int     bx= mvc.iterator().size();
+
+            if (mvc.hasErrors()) {
+               dsSimCommon.sendErrorsInRegistryResponse(er);
+               return false;
+            }
+            RepPnRSim pnrSim = new RepPnRSim(common, dsSimCommon, getSimulatorConfig());
+            pnrSim.setForward(false);
+
+            mvc.addMessageValidator("PnR", pnrSim, er);
+
+            RegistryResponseGeneratorSim rrg = new RegistryResponseGeneratorSim(common, dsSimCommon);
+
+            mvc.addMessageValidator("Attach Errors", rrg, er);
+
+            // wrap in soap wrapper and http wrapper
+            // auto-detects need for multipart/MTOM
+            mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, dsSimCommon, rrg), er);
+
+            // validate homeCommunityId - must match local configuration
+
+            String configuredHome = getSimulatorConfig().get(SimulatorProperties.homeCommunityId).asString();
+            AbstractMessageValidator mv = dsSimCommon.getMessageValidatorIfAvailable(SoapMessageValidator.class);
+            if (mv == null || !(mv instanceof SoapMessageValidator)) {
+               er.err(Code.XDSRegistryError, "RG Internal Error - cannot find SoapMessageValidator instance", "RespondingGatewayActorSimulator", "");
+               dsSimCommon.sendErrorsInRegistryResponse(er);
+               return false;
+            }
+
+            SoapMessageValidator smv = (SoapMessageValidator) mv;
+            OMElement soapHeader = smv.getHeader();
+            String submittedHomeCommunityId = getHomeCommunityId(soapHeader);
+            if (!configuredHome.equals(submittedHomeCommunityId)) {
+               er.err(Code.XDSUnknownCommunity, "HomeCommunityId submitted in header (" + submittedHomeCommunityId + ") does not equal the HCID of this RG simulator: " + configuredHome, "RGActorSimulator", "");
+               dsSimCommon.sendErrorsInRegistryResponse(er);
+               return false;
+            }
+            mvc.run();
+            return true;
+
          case TransactionType.XCRMU:
             ValidationContext vc = common.vc;
             vc.isRequest = true;
@@ -356,6 +417,26 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 
    }
 
+   private String getHomeCommunityId(OMElement parent) {
+      String rtn = ""
+
+      OMNamespace namespace = XmlUtil.om_factory.createOMNamespace("urn:ihe:iti:xdr:2014", "xdr")
+      Iterator<OMElement> iterator = parent.getChildrenWithName(new QName("urn:ihe:iti:xdr:2014","homeCommunityBlock"))
+      // Zero items is obviously a failure. If by chance they send more than one homeCommunityId in the header,
+      // the code below will concatenate them. At some point later in the chain, this will generate
+      // an error that the client will see
+      while (iterator.hasNext()) {
+         OMElement element = iterator.next();
+         Iterator<OMElement> iteratorHCID = element.getChildrenWithName(new QName("urn:ihe:iti:xdr:2014", "homeCommunityId"))
+         while (iteratorHCID.hasNext()) {
+            OMElement e = iteratorHCID.next();
+            rtn += e.getText();
+         }
+      }
+      return rtn
+   }
+
+
    // uid -> retrieved model
    private Map<String, RetrievedDocumentModel> singleRetrieve(String endpoint, RetrieveItemRequestModel requestModel) {
       Soap soap = new Soap();
@@ -373,7 +454,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
          result = soap.soapCall(request, endpoint, true, true, true, SoapActionFactory.ret_b_action, SoapActionFactory.getResponseAction(SoapActionFactory.ret_b_action));
       } catch (Exception e) {
          er.err(Code.XDSRegistryError, e);
-         returnRetrieveError();
+         returnRetrieveError(mvc);
          return null;
       }
 
@@ -385,7 +466,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
          docMap = retb.parse_rep_response(result).getMap();
       } catch (Exception e) {
          er.err(Code.XDSRegistryError, e);
-         returnRetrieveError();
+         returnRetrieveError(mvc);
          return null;  // indicates error
       }
 
@@ -408,7 +489,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
       return repositorySiteMap
    }
 
-   private void returnRetrieveError() {
+   private void returnRetrieveError(MessageValidatorEngine mvc) {
       mvc.run();
       Response response = null;
       try {
