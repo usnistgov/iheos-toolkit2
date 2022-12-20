@@ -35,7 +35,7 @@ public class MetadataTypes {
 			names[11] = "METADATA_TYPE_RODDE";
     		names[12] = "METADATA_TYPE_RAD69";
 			names[13] = "METADATA_TYPE_RD";
-			names[14] = "METADATA_TYPE_RD";
+			names[14] = "METADATA_TYPE_XCDR";
     	}
     	
     	if (type < names.length)

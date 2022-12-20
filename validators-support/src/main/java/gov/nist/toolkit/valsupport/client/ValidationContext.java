@@ -566,7 +566,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	}
 
 	public boolean isSubmit() {
-		return isR || isRODDE || isMU || isRMU || isRM || isPnR || isXDR || isXDM;
+		return isR || isRODDE || isMU || isRMU || isRM || isPnR || isXDR || isXCDR || isXDM;
 	}
 
 	public boolean availabilityStatusRequired() {

@@ -1029,7 +1029,7 @@ public class Validator {
 
 		List<String> stringList = extractSlotValues(e, slotName);
 		for (String x: stringList) {
-			rtn += x + delimiter;
+			rtn += delimiter + x;
 			delimiter = ":";
 		}
 		return rtn;

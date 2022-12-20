@@ -270,7 +270,7 @@ public class SoapMessageValidator extends AbstractMessageValidator {
             vc.isPnR = true;
             vc.isXC = true;
             vc.isXCDR = true;
-        } else if (wsaction.equals("urn:ihe:iti:2015:CrossGatewayDocumentProvideResponsee")) {
+        } else if (wsaction.equals("urn:ihe:iti:2015:CrossGatewayDocumentProvideResponse")) {
             vc.isResponse = true;
             vc.isPnR = true;
             vc.isXC = true;
