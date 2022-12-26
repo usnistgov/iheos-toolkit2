@@ -1359,19 +1359,9 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 				throw new XdsInternalException("Cannot build Sequoia security header: " + e.getMessage(), e);
 			}
 		} else /* normal STS assertion */ {
-//			String wsse = "<wsse:Security  xmlns:soapenv=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:wsse=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\" soapenv:mustUnderstand=\"true\">"
-
-			// TODO Need to fix this. This was a shortcut for some testing and is not correct.
-			String wsse = "" +
-			"<wsse:Security" +
-			" xmlns:wsse=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\"" +
-			" xmlns=\"http://www.w3.org/2003/05/soap-envelope\"" +
-			" xmlns:ns0=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\"" +
-			" xmlns:ns1=\"http://www.w3.org/2003/05/soap-envelope\"" +
-			" ns0:Id=\"_7e39374c-7830-11ed-a1eb-0242ac120002\"" +
-			" ns1:mustUnderstand=\"true\">"
-			+ assertionStr
-			+ "</wsse:Security>";
+			String wsse = "<wsse:Security soapenv:mustUnderstand=\"true\" xmlns:soapenv=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:wsse=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\">"
+					+ assertionStr
+					+ "</wsse:Security>";
 			return Util.parse_xml(wsse);
 		}
 	}
