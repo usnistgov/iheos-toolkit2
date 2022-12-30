@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rs:SubmitObjectsRequest xmlns:rs="urn:oasis:names:tc:ebxml-regrep:registry:xsd:3.0">
-   <rim:LeafRegistryObjectList xmlns:rim="urn:oasis:names:tc:ebxml-regrep:rim:xsd:3.0">
+   <rim:LeafRegistryObjectList xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"><!-- 575 -->
       <rim:ExtrinsicObject id="Document01" objectType="urn:uuid:34268e47-fdf5-41a6-ba33-82133c465248"
          lid="$lid$"
             mimeType="text/plain">
