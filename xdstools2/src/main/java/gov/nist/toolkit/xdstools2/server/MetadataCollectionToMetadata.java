@@ -1,12 +1,16 @@
 package gov.nist.toolkit.xdstools2.server;
 
+import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrymetadata.client.*;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.results.MetadataToMetadataCollectionParser;
+import gov.nist.toolkit.testengine.transactions.BasicTransaction;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
+import gov.nist.toolkit.utilities.xml.Util;
+import gov.nist.toolkit.valregmsg.message.SchemaValidation;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 
@@ -274,39 +278,85 @@ public class MetadataCollectionToMetadata {
 		Metadata m = null;
 		
 		try {
-			m = MetadataParser.parseNonSubmission(inFile);
+//			m = MetadataParser.parseNonSubmission(inFile);
+			/*
+			 * When parseNonSubmission is used to translate to a v3 metadata file,
+			 * the v3 Association registry object structure is not preserved properly.
+			 * Certain types of Association object structure are corrupted.
+			 * Example  associationType="urn:ihe:iti:2010:AssociationType:UpdateAvailabilityStatus"
+			 * Corruption happens when some test metadata input files have mixed content: v2 (detected as any namespace non-v3) rim XML namespace with v3 Association objects.
+			 *
+			 * When metadata files are attempted to translate into v3 using this main method or the parse_xml (unlike the parseNonSubmission) method,
+			 * the first translate call changes all registry object namespaces to v3, and when the v3 Association structure is translated it is kept intact because the namespace is v3 by that time.
+			 *
+			 *
+			 */
+
+
+			OMElement e = Util.parse_xml(inFile);
+			validateMetadata("Input", e, MetadataTypes.METADATA_TYPE_Rb);
+
+			m = MetadataParser.parse(e);
+			OMElement x = null;
+			if (metadataV2) {
+				x = m.getV2SubmitObjectsRequest();
+			} else {
+			 	x =	m.getV3SubmitObjectsRequest();
+				try {
+					validateMetadata("Output", x, MetadataTypes.METADATA_TYPE_Rb);
+					Io.stringToFile(outFile, new OMFormatter(x).toString());
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+
+			}
+
 		} 
 		catch (Exception e) {
 			e.printStackTrace();
 			System.exit(0);
 		} 
-		
+
+		/*
 		MetadataCollection mc = MetadataToMetadataCollectionParser.buildMetadataCollection(m, "test");
 		
 		Metadata m2 = MetadataCollectionToMetadata.buildMetadata(mc, true);
 		
 		List<OMElement> eles = null;
-		
+
+		OMElement x = null;
 		try {
 		    if (metadataV2) {
 		    	eles = m2.getV2();
+				x = MetadataSupport.om_factory.createOMElement("Metadata", null);
+				for (OMElement e : eles)
+					x.addChild(e);
 			} else
-				eles = m2.getV3();
+//				eles = m2.getV3(); // Misses the SubmitObjectsRequest wrapper if it existed
+				x = m2.getV3SubmitObjectsRequest(); // assume SubmitObjectsRequest was present
 		} catch (XdsInternalException e1) {
 			e1.printStackTrace();
 			System.exit(1);
 		}
 		
-		OMElement x = MetadataSupport.om_factory.createOMElement("Metadata", null);
-		
-		for (OMElement e : eles)
-			x.addChild(e);
-		
+
+
 		try {
 			Io.stringToFile(outFile, new OMFormatter(x).toString());
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
+		*/
+	}
+
+	private static void validateMetadata(String label, OMElement e, int metadata_type) throws Exception {
+		String schemaLocation ="C:\\Users\\skb1\\myprojects\\iheos-toolkit2\\xdstools2\\src\\test\\resources\\war\\toolkitx\\schema";
+		String errors = SchemaValidation.validate(schemaLocation, e, metadata_type);
+		System.out.println(
+				String.format("%s XML Validation error(s) ? %s",
+						label,
+						("".equals(errors) ? "None." : errors)));
+
 	}
 
 }

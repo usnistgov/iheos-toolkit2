@@ -332,6 +332,11 @@ public class TestkitStructure extends TestkitWalker {
 		System.out.println("Wrote " + outfile);
 	}
 
+	@Override
+	protected void doTransaction(File testPlanFile, OMElement stepEle, String testStepElementName, String stepElementName) throws JaxenException {
+
+	}
+
 	public static void main(String[] args) {
 		if (args.length != 3) {
 			System.err.println("Usage: testkitstructure <toolkit_location> <testkit_location> <output_dir>");

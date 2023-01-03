@@ -24,12 +24,23 @@ public class SchemaValidation extends MetadataTypes {
 	static public String toolkitSchemaLocation = null;
 
 	public static String validate(OMElement ele, int metadataType)  throws XdsInternalException {
-		return validate(ele.toString(), metadataType);
+		return validate(null, ele.toString(), metadataType);
+	}
+	public static String validate(String schemaLocation, OMElement ele, int metadataType)  throws XdsInternalException {
+		return validate(schemaLocation, ele.toString(), metadataType);
 	}
 
-	// empty string as result means no errors
-	static private String validate(String metadata, int metadataType) throws XdsInternalException {
-        String localSchema = Installation.instance().schemaFile().toString();
+	/**
+	 *
+	 * @param extSchemaLocation
+	 * @param metadata
+	 * @param metadataType
+	 * @return
+	 * empty string as result means no errors
+	 * @throws XdsInternalException
+	 */
+	public static String validate(String extSchemaLocation, String metadata, int metadataType) throws XdsInternalException {
+        String localSchema = (extSchemaLocation == null ? Installation.instance().schemaFile().toString() : extSchemaLocation);
 		localSchema = localSchema.replaceAll(" ", "%20");
 		MyErrorHandler errors = null;
 		DOMParser p = null;

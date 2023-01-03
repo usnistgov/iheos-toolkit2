@@ -4,11 +4,13 @@ import gov.nist.toolkit.utilities.xml.Util;
 
 import java.io.File;
 import java.util.List;
+import java.util.regex.Matcher;
 
 import javax.xml.parsers.FactoryConfigurationError;
 
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import org.apache.axiom.om.OMElement;
+import org.jaxen.JaxenException;
 
 abstract public class TestkitWalker {
 	protected   String testkitPathName;
@@ -60,7 +62,7 @@ abstract public class TestkitWalker {
 
 	public void walkTree(File testkit) throws FactoryConfigurationError, Exception {
 		testkitPathName = testkit.toString();
-		testkitPathNameSize = testkitPathName.split("\\/").length;
+		testkitPathNameSize = testkitPathName.split(Matcher.quoteReplacement(File.separator)).length;
 		testkitPathElementsToIgnore = testkitPathNameSize + 1;
 
 
@@ -78,6 +80,11 @@ abstract public class TestkitWalker {
 			System.out.println("Scanning " + area);
 
 			File areaDir = new File(testkit.toString() + File.separator + area);
+			if (!areaDir.isDirectory() || !areaDir.exists()) {
+				System.out.println("Scan area does not exist. Skipping.");
+				continue;
+			}
+
 			if (debug)
 				System.out.println("Area: " + areaDir);
 
@@ -150,14 +157,30 @@ abstract public class TestkitWalker {
 	void walkTestPlan(File testPlanFile) throws FactoryConfigurationError, Exception {
 		OMElement testplanEle = Util.parse_xml(testPlanFile);
 
-		List<OMElement> steps = XmlUtil.childrenWithLocalName(testplanEle, "TestStep");
+		String testStepElementName = "TestStep";
+		List<OMElement> steps = XmlUtil.childrenWithLocalName(testplanEle, testStepElementName);
 
 		for(int i=0; i<steps.size(); i++) {
 			OMElement stepEle = steps.get(i);
-			doStep(stepEle.getLocalName());
+			String stepElementName = stepEle.getLocalName();
+			doStep(stepElementName);
+
+			List<OMElement> testStepChildrenElements = XmlUtil.children(stepEle);
+			for(int j=0; j<testStepChildrenElements.size(); j++) {
+				OMElement testStepChildEle = testStepChildrenElements.get(j);
+				String testStepChildEleLocalName = testStepChildEle.getLocalName();
+
+				if (testStepChildEleLocalName.endsWith("Transaction")) {
+					doTransaction(testPlanFile, testStepChildEle, testStepElementName, testStepChildEleLocalName);
+				}
+			}
+
 		}
 
 	}
+
+	protected abstract void doTransaction(File testPlanFile, OMElement stepEle, String testStepElementName, String stepElementName) throws JaxenException;
+
 	protected String join(String[] parts, int first, int last, String separator) {
 		StringBuffer buf = new StringBuffer();
 
