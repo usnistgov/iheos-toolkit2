@@ -920,12 +920,19 @@ public class Validator {
 				oe = getSingleDocumentEntry();
 				rtn = m.getUniqueIdValue(oe);
 				break;
+			// RequestSlotList.homeCommunityId is not in the traditional metadata area
+			// We have to pull from a different spot
+			case "RequestSlotList.homeCommunityId":
+				oe = m.getSubmitObjectsRequestRequestSlotList();
+				rtn = extractSingleSlotValue(oe, "homeCommunityId");
+				break;
 			// Cases below are taken from Stored Queries
 			case "AdhocQuery.DocumentEntry.patientId":
 				rtn = request.getPatientId();
 				break;
 
 			default:
+				rtn = "Validator::extractNamedMetadata does not understand: " + metadataField;
 				break;
 		}
 		return rtn;
@@ -1006,6 +1013,52 @@ public class Validator {
 			codeList.add(code);
 		}
 		return codeList;
+	}
+
+	/*
+        extractSingleSlotValue
+        Extracts and returns all Slot values in a SlotList as a single string
+        This is used when the caller is expecting a single Slot in the list.
+        If there are multiple slots, the method will concatenate the values.
+        We could throw an exception or return just the first value, but this
+        will get the attention of someone reviewing validation logs.
+	 */
+	private String extractSingleSlotValue(OMElement e, String slotName) throws MetadataException{
+		String rtn = "";
+		String delimiter = "";
+
+		List<String> stringList = extractSlotValues(e, slotName);
+		for (String x: stringList) {
+			rtn += delimiter + x;
+			delimiter = ":";
+		}
+		return rtn;
+	}
+
+	/*
+        extractSlotValues
+        Extracts and returns a list of all Slot values found in a SlotList.
+	 */
+	private List<String> extractSlotValues(OMElement e, String slotName) throws MetadataException {
+		List<String> rtn = new ArrayList<>();
+
+		if (e != null) {
+			Iterator<OMElement> iterator = e.getChildElements();
+			while (iterator.hasNext()) {
+				OMElement slot = iterator.next();
+				String name = slot.getAttributeValue(new QName("name"));
+				if ((!(name == null)) && name.equals(slotName)) {
+					OMElement valueList = slot.getFirstElement();
+					Iterator<OMElement> itValues = valueList.getChildElements();
+					while (itValues.hasNext()) {
+						OMElement value = itValues.next();
+						String x = value.getText();
+						rtn.add(x);
+					}
+				}
+			}
+		}
+		return rtn;
 	}
 
 	/*
