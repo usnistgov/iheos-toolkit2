@@ -16,6 +16,7 @@ import org.apache.axiom.om.OMElement;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 public class MetadataCollectionToMetadata {
@@ -261,25 +262,72 @@ public class MetadataCollectionToMetadata {
 		File inFile = null;
 		File outFile = null;
 		boolean metadataV2 = false;
+		int inMetadataType = MetadataTypes.METADATA_TYPE_Rb;
+		int outMetadataType = MetadataTypes.METADATA_TYPE_Rb;
+		boolean replaceInputFileIfNoConversionErrors = false;
 
-		if (args.length==3) {
+		if (args.length == 0) {
+			inFile = new File("/Users/bill/dev/testkit/tests/11966/submit/single_doc.xml");
+			outFile = new File("/Users/bill/tmp/submission.xml");
+			translateMetadata(inFile, outFile, metadataV2, inMetadataType, outMetadataType);
+		} else if (args.length == 1) {
+			// auto replace from text file
+
+			try {
+				String bulkParametersRecords = Io.stringFromFile(new File(args[0]));
+				List<String> bulkParameterRecord = Arrays.asList(bulkParametersRecords.split("\n"));
+				for (String r : bulkParameterRecord) {
+					if ("".equals(r))
+						continue;
+					String[] parameters = r.split(" ");
+					inFile = new File(parameters[0]);
+					outFile = inFile;
+					inMetadataType = Integer.parseInt(parameters[1]);
+					outMetadataType = MetadataTypes.METADATA_TYPE_Rb;
+					String out = convertMetadataFile(inFile, metadataV2, inMetadataType, outMetadataType, false, true);
+					if (outFile != null) {
+						out += "\r\n<!-- Issue 575 -->\r\n";
+						Io.stringToFile(inFile, out);
+					} else {
+						System.out.println("Error: no output for file " + inFile);
+					}
+				}
+
+			} catch (Exception ioex) {
+				ioex.printStackTrace();
+				System.exit(1);
+			}
+			return;
+
+		} else if (args.length>2) {
 			try {
 				inFile = new File(args[0]);
 				outFile = new File(args[1]);
-				metadataV2 = Boolean.parseBoolean(args[2]);
+//				metadataV2 = Boolean.parseBoolean(args[2]);
+				if (args.length > 2) {
+					inMetadataType = Integer.parseInt( args[2] );
+					if (args.length > 3) {
+						outMetadataType = Integer.parseInt(args[3]);
+					}
+				}
+				translateMetadata(inFile, outFile, metadataV2, inMetadataType, outMetadataType);
 			} catch (Exception ex) {
-				throw new IllegalArgumentException(ex);
+			    ex.printStackTrace();
+			    System.exit(2);
 			}
-		} else {
-		 	inFile = new File("/Users/bill/dev/testkit/tests/11966/submit/single_doc.xml");
-		 	outFile = new File("/Users/bill/tmp/submission.xml");
 		}
+	}
 
-		Metadata m = null;
-		
+	private static void translateMetadata(File inFile, File outFile, boolean metadataV2, int inMetadataType, int outMetadataType) {
+		System.out.println(String.format("In MetadataType=%d is set to %s." , inMetadataType, MetadataTypes.getMetadataTypeName(inMetadataType)));
+		System.out.println(String.format("Out MetadataType=%d is set to %s." , outMetadataType, MetadataTypes.getMetadataTypeName(outMetadataType)));
+
+//		Metadata m = null;
+
 		try {
 //			m = MetadataParser.parseNonSubmission(inFile);
 			/*
+			Part 1 of 2
 			 * When parseNonSubmission is used to translate to a v3 metadata file,
 			 * the v3 Association registry object structure is not preserved properly.
 			 * Certain types of Association object structure are corrupted.
@@ -293,35 +341,24 @@ public class MetadataCollectionToMetadata {
 			 */
 
 
-			OMElement e = Util.parse_xml(inFile);
-			validateMetadata("Input", e, MetadataTypes.METADATA_TYPE_Rb);
-
-			m = MetadataParser.parse(e);
-			OMElement x = null;
-			if (metadataV2) {
-				x = m.getV2SubmitObjectsRequest();
-			} else {
-			 	x =	m.getV3SubmitObjectsRequest();
-				try {
-					validateMetadata("Output", x, MetadataTypes.METADATA_TYPE_Rb);
-					Io.stringToFile(outFile, new OMFormatter(x).toString());
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-
+			String out = convertMetadataFile(inFile, metadataV2, inMetadataType, outMetadataType, true, true);
+			if (outFile != null) {
+				Io.stringToFile(outFile, out);
 			}
+			System.out.println("NOTE: XML metadata comments do not carry over when original metadata is being converted in to a separate file. XML comments must be added back manually.");
 
-		} 
+		}
 		catch (Exception e) {
 			e.printStackTrace();
-			System.exit(0);
-		} 
+			System.exit(2);
+		}
 
 		/*
+		Part 2 of 2
 		MetadataCollection mc = MetadataToMetadataCollectionParser.buildMetadataCollection(m, "test");
-		
+
 		Metadata m2 = MetadataCollectionToMetadata.buildMetadata(mc, true);
-		
+
 		List<OMElement> eles = null;
 
 		OMElement x = null;
@@ -338,7 +375,7 @@ public class MetadataCollectionToMetadata {
 			e1.printStackTrace();
 			System.exit(1);
 		}
-		
+
 
 
 		try {
@@ -349,14 +386,42 @@ public class MetadataCollectionToMetadata {
 		*/
 	}
 
-	private static void validateMetadata(String label, OMElement e, int metadata_type) throws Exception {
+	private static String convertMetadataFile(File inFile, boolean metadataV2, int inMetadataType, int outMetadataType, boolean checkInput, boolean checkOutput) throws Exception {
+		Metadata m;
+		OMElement e = Util.parse_xml(inFile);
+		if (checkInput) {
+			validateMetadata("Input", e, inMetadataType);
+		}
+
+		m = MetadataParser.parse(e);
+		OMElement x = null;
+		if (metadataV2) {
+			x = m.getV2SubmitObjectsRequest(); // v2 output is not really needed
+		} else {
+			 x =	m.getV3SubmitObjectsRequest();
+			try {
+				if (checkOutput) {
+					if (! validateMetadata("Output", x, outMetadataType)) {
+					    return null;
+					}
+				}
+				return new OMFormatter(x).toString();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		}
+		throw new RuntimeException("Unexpected return");
+	}
+
+	private static boolean validateMetadata(String label, OMElement e, int metadata_type) throws Exception {
 		String schemaLocation ="C:\\Users\\skb1\\myprojects\\iheos-toolkit2\\xdstools2\\src\\test\\resources\\war\\toolkitx\\schema";
 		String errors = SchemaValidation.validate(schemaLocation, e, metadata_type);
+		boolean isSuccess = "".equals(errors);
 		System.out.println(
 				String.format("%s XML Validation error(s) ? %s",
 						label,
-						("".equals(errors) ? "None." : errors)));
-
+						(isSuccess ? "None." : errors)));
+		return isSuccess;
 	}
 
 }

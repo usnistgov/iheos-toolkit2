@@ -4,6 +4,7 @@ import gov.nist.toolkit.utilities.xml.Util;
 
 import java.io.File;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 
 import javax.xml.parsers.FactoryConfigurationError;
@@ -45,6 +46,8 @@ abstract public class TestkitWalker {
 
 	protected File testkit;
 
+	private final static Logger logger = Logger.getLogger(TestkitWalker.class.getName());
+
 	public File getTestkit() {
 		return testkit;
 	}
@@ -66,7 +69,7 @@ abstract public class TestkitWalker {
 		testkitPathElementsToIgnore = testkitPathNameSize + 1;
 
 
-		System.out.println("Scanning testkit at " + testkit);
+		logger.info("Scanning testkit at " + testkit);
 
 		setTestkit(testkit);
 
@@ -77,16 +80,16 @@ abstract public class TestkitWalker {
 
 		for (String area : areas) {
 			this.area = area;
-			System.out.println("Scanning " + area);
+			logger.info("Scanning " + area);
 
 			File areaDir = new File(testkit.toString() + File.separator + area);
 			if (!areaDir.isDirectory() || !areaDir.exists()) {
-				System.out.println("Scan area does not exist. Skipping.");
+				logger.warning("Scan area does not exist. Skipping.");
 				continue;
 			}
 
 			if (debug)
-				System.out.println("Area: " + areaDir);
+				logger.fine("Area: " + areaDir);
 
 			startSection(areaDir);
 
@@ -95,7 +98,7 @@ abstract public class TestkitWalker {
 					continue;
 
 				if (debug)
-					System.out.println("Test: " + test);
+					logger.info("Test: " + test);
 
 				if (!test.isDirectory())
 					continue;
@@ -112,7 +115,7 @@ abstract public class TestkitWalker {
 						continue;
 
 					if (debug)
-						System.out.println("Part: " + part);
+						logger.info("Part: " + part);
 
 					if (part.isFile()) {
 						if (part.getName().equals("testplan.xml")) {
@@ -128,7 +131,7 @@ abstract public class TestkitWalker {
 								continue;
 
 							if (debug)
-								System.out.println("Subelement: " + subelement);
+								logger.info("Subelement: " + subelement);
 
 							startPart(part);
 
