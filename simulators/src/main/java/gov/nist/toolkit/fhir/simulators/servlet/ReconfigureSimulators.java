@@ -1,8 +1,8 @@
 package gov.nist.toolkit.fhir.simulators.servlet;
 
 import gov.nist.toolkit.actortransaction.client.ParamType;
-import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.actortransaction.server.EndpointParser;
+import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.installation.server.Installation;
@@ -15,10 +15,11 @@ import gov.nist.toolkit.simcommon.server.GenericSimulatorFactory;
 import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.simcommon.server.factories.RGActorFactory;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServlet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Reconfigure simulators based on updates to
@@ -95,7 +96,7 @@ public class ReconfigureSimulators extends HttpServlet {
         }
 
         if (actorType == ActorType.RESPONDING_GATEWAY || actorType == ActorType.RESPONDING_GATEWAY_X) {
-            addXCDRToRespondingGateway(config);
+            updated = addXCDRToRespondingGateway(config);
         }
 
 //        boolean isProxy = actorType.isProxy();
@@ -188,8 +189,9 @@ public class ReconfigureSimulators extends HttpServlet {
         will try to obtain these two endpoints and throw an exception when they are not found.
         The method will not add the endpoints if they already exist.
      */
-    private void addXCDRToRespondingGateway(SimulatorConfig config) {
+    private boolean addXCDRToRespondingGateway(SimulatorConfig config) {
         ActorType actorType = ActorType.findActor(config.getActorType());
+        boolean added = false;
         if (actorType == ActorType.RESPONDING_GATEWAY || actorType == ActorType.RESPONDING_GATEWAY_X) {
             RGActorFactory actorFactory = null;
             try {
@@ -202,6 +204,7 @@ public class ReconfigureSimulators extends HttpServlet {
                     String endpoint = actorFactory.mkEndpoint(config, ele, false);
                     ele.setStringValue(endpoint);
                     config.add(ele);
+                    added = true;
                 }
                 if (!config.hasConfig(SimulatorProperties.xcdrTlsEndpoint)) {
                     SimulatorConfigElement ele = new SimulatorConfigElement();
@@ -212,11 +215,14 @@ public class ReconfigureSimulators extends HttpServlet {
                     String endpoint = actorFactory.mkEndpoint(config, ele, true);
                     ele.setStringValue(endpoint);
                     config.add(ele);
+                    added = true;
                 }
+                return added;
             } catch (Exception e) {
-
+                logger.log(Level.WARNING, "addXCDRToRespondingGateway method failed.", e);
             }
         }
+        return false;
     }
 
     public void setOverrideHost(String overrideHost) {
