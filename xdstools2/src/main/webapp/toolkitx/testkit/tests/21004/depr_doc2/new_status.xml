@@ -1,6 +1,6 @@
 
-<rs:SubmitObjectsRequest xmlns:rs="urn:oasis:names:tc:ebxml-regrep:registry:xsd:3.0">
-   <rim:LeafRegistryObjectList xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"><!-- 575 -->
+<rs:SubmitObjectsRequest xmlns:rs="urn:oasis:names:tc:ebxml-regrep:registry:xsd:2.1">
+   <rim:LeafRegistryObjectList xmlns:rim="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"><!-- Issue 575 -->
       <rim:RegistryPackage id="SubmissionSet01">
          <rim:Name>
             <rim:LocalizedString value="Test 21004"/>

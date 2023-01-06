@@ -1,5 +1,5 @@
 <lcm:SubmitObjectsRequest xmlns:lcm="urn:oasis:names:tc:ebxml-regrep:xsd:lcm:3.0">
-    <rim:RegistryObjectList xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"><!-- 575 --><!-- Translated -->
+    <rim:RegistryObjectList xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"><!-- Issue 575 --><!-- Translated -->
         <rim:RegistryPackage id="SubmissionSet01" objectType="urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:RegistryPackage">
             <rim:Slot name="submissionTime">
                 <rim:ValueList>
