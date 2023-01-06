@@ -1,7 +1,9 @@
 package gov.nist.toolkit.fhir.simulators.servlet;
 
+import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.actortransaction.server.EndpointParser;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.configDatatypes.server.SimulatorProperties;
 import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.installation.shared.TestSession;
@@ -11,6 +13,7 @@ import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simcommon.server.AbstractActorFactory;
 import gov.nist.toolkit.simcommon.server.GenericSimulatorFactory;
 import gov.nist.toolkit.simcommon.server.SimDb;
+import gov.nist.toolkit.simcommon.server.factories.RGActorFactory;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import java.util.logging.Logger;
 
@@ -91,6 +94,10 @@ public class ReconfigureSimulators extends HttpServlet {
             return;
         }
 
+        if (actorType == ActorType.RESPONDING_GATEWAY || actorType == ActorType.RESPONDING_GATEWAY_X) {
+            addXCDRToRespondingGateway(config);
+        }
+
 //        boolean isProxy = actorType.isProxy();
 
         for (SimulatorConfigElement ele : config.getEndpointConfigs()) {
@@ -169,6 +176,47 @@ public class ReconfigureSimulators extends HttpServlet {
             logger.info("    ok");
         if (!error && updated)
             logger.info("    updated");
+    }
+
+
+    /*
+        addXCDRToRespondingGateway
+        This method will add the XCDR endpoints to a SimulatorConfig object that represents
+        an Responding Gateway or Responding Gateway X simulator.
+        This was added to support the XCDR transaction for simulators that were created before
+        this software was added. Without this update, the RGActorFactory and RGXActorFactory classes
+        will try to obtain these two endpoints and throw an exception when they are not found.
+        The method will not add the endpoints if they already exist.
+     */
+    private void addXCDRToRespondingGateway(SimulatorConfig config) {
+        ActorType actorType = ActorType.findActor(config.getActorType());
+        if (actorType == ActorType.RESPONDING_GATEWAY || actorType == ActorType.RESPONDING_GATEWAY_X) {
+            RGActorFactory actorFactory = null;
+            try {
+                if (!config.hasConfig(SimulatorProperties.xcdrEndpoint)) {
+                    SimulatorConfigElement ele = new SimulatorConfigElement();
+                    ele.setName(SimulatorProperties.xcdrEndpoint);
+                    ele.type = ParamType.ENDPOINT;
+                    ele.transType = TransactionType.XC_PROVIDE;
+                    actorFactory = new RGActorFactory();
+                    String endpoint = actorFactory.mkEndpoint(config, ele, false);
+                    ele.setStringValue(endpoint);
+                    config.add(ele);
+                }
+                if (!config.hasConfig(SimulatorProperties.xcdrTlsEndpoint)) {
+                    SimulatorConfigElement ele = new SimulatorConfigElement();
+                    ele.setName(SimulatorProperties.xcdrTlsEndpoint);
+                    ele.type = ParamType.ENDPOINT;
+                    ele.transType = TransactionType.XC_PROVIDE;
+                    actorFactory = (actorFactory != null) ? actorFactory : new RGActorFactory();
+                    String endpoint = actorFactory.mkEndpoint(config, ele, true);
+                    ele.setStringValue(endpoint);
+                    config.add(ele);
+                }
+            } catch (Exception e) {
+
+            }
+        }
     }
 
     public void setOverrideHost(String overrideHost) {

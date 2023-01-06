@@ -289,7 +289,7 @@ public abstract class AbstractActorFactory {
         }
 	}
 
-	String mkEndpoint(SimulatorConfig asc, SimulatorConfigElement ele, boolean isTLS) throws Exception {
+	public String mkEndpoint(SimulatorConfig asc, SimulatorConfigElement ele, boolean isTLS) throws Exception {
 		return mkEndpoint(asc, ele, asc.getActorType().toLowerCase(), isTLS);
 	}
 
