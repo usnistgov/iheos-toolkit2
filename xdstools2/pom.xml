@@ -23,6 +23,15 @@
 
 	<profiles>
 		<profile>
+			<id>Andrew</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<build.profile.id>Andrew</build.profile.id>
+			</properties>
+		</profile>
+		<profile>
 			<id>Bill</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
@@ -31,7 +40,6 @@
 				<build.profile.id>Bill</build.profile.id>
 			</properties>
 		</profile>
-
 		<profile>
 			<id>UbuntuCmdBill</id>
 			<properties>
@@ -592,6 +600,7 @@
 					</systemPropertyVariables>
 				</configuration>
 			</plugin>
+			<!--
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reportBuilders-plugin</artifactId>
@@ -601,6 +610,7 @@
 					<dependencyLocationsEnabled>false</dependencyLocationsEnabled>
 				</configuration>
 			</plugin>
+			-->
 		</plugins>
 		<!-- Begin profile part 2/2 -->
 		<resources>
