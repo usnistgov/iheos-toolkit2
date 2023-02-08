@@ -225,7 +225,7 @@ public class TransactionSelectionManager {
 		
 		if (selections.size() == 1) {
 			RbSite r = selections.get(0);
-			//ss.actorType = ActorType.getActorType(r.actorTran.tt);
+			ss.actorType = ActorType.getActorType(r.actorTran.tt);
 			try {
 				ss.actorType = r.site.determineActorTypeByTransactionsInSite(r.actorTran.tt);
 			} catch (TkActorNotFoundException tke) {
@@ -242,7 +242,7 @@ public class TransactionSelectionManager {
 		if (selections.size() == 2) { // First is IG second is RG
 			// Return site info from IG with home of RG
 			RbSite r = selections.get(0);
-			//ss.actorType = ActorType.getActorType(r.actorTran.tt);
+			ss.actorType = ActorType.getActorType(r.actorTran.tt);
 			try {
 				ss.actorType = r.site.determineActorTypeByTransactionsInSite(r.actorTran.tt);
 			} catch (TkActorNotFoundException tke) {
