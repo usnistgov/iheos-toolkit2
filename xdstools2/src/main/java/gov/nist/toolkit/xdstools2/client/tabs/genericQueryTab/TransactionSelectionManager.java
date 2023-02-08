@@ -1,11 +1,14 @@
 package gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.RadioButton;
 import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import gov.nist.toolkit.xdsexception.client.TkActorNotFoundException;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.ObjectSort;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
@@ -223,6 +226,11 @@ public class TransactionSelectionManager {
 		if (selections.size() == 1) {
 			RbSite r = selections.get(0);
 			ss.actorType = ActorType.getActorType(r.actorTran.tt);
+			try {
+				ss.actorType = r.site.determineActorTypeByTransactionsInSite(r.actorTran.tt);
+			} catch (TkActorNotFoundException tke) {
+				GWT.log("TransactionSelectionManager error: " + tke.toString());
+			}
 			ss.name = r.site.getName();
 			ss.homeId = r.site.home;
 			ss.isSaml = genericQueryTab.isSaml();
@@ -235,6 +243,11 @@ public class TransactionSelectionManager {
 			// Return site info from IG with home of RG
 			RbSite r = selections.get(0);
 			ss.actorType = ActorType.getActorType(r.actorTran.tt);
+			try {
+				ss.actorType = r.site.determineActorTypeByTransactionsInSite(r.actorTran.tt);
+			} catch (TkActorNotFoundException tke) {
+				GWT.log("TransactionSelectionManager error: " + tke.toString());
+			}
 			ss.name = r.site.getName();
 			RbSite r2 = selections.get(1);
 			ss.isSaml = genericQueryTab.isSaml();

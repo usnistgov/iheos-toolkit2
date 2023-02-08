@@ -25,7 +25,6 @@ public class DocRetrieveTab extends GenericQueryTab {
 		transactionTypes.add(TransactionType.RETRIEVE);
 		transactionTypes.add(TransactionType.XC_RETRIEVE);
 		transactionTypes.add(TransactionType.ODDS_RETRIEVE);
-//		transactionTypes.addTest(TransactionType.ISR_RETRIEVE);
 	}
 	
 	static CoupledTransactions couplings = new CoupledTransactions();
