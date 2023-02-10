@@ -9,6 +9,7 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.xdsexception.client.XdsException;
+
 import java.util.logging.Logger;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ import java.util.Map;
 
 /**
  * Created by Diane Azais local on 10/7/2015.
- *
+ * <p>
  * Service class for the new Find Documents tab.
  */
 public class FindDocuments2 extends CommonService {
@@ -119,125 +120,124 @@ public class FindDocuments2 extends CommonService {
             }
 
 
-
             // PID
             if (pid != null && !pid.equals(""))
                 params.put("$patient_id$", pid);
 
             // DocumentEntryType
-            int i=0;
+            int i = 0;
             for (String codeDef : deType) {
                 params.put("$ot" + String.valueOf(i) + "$", codeDef);
                 i++;
             }
 
             // DocumentEntryStatus
-            i=0;
+            i = 0;
             for (String codeDef : deStatus) {
                 params.put("$dst" + String.valueOf(i) + "$", codeDef);
                 i++;
             }
 
             // ClassCode
-            i=0;
+            i = 0;
             for (String codeDef : classCodes) {
                 params.put("$clc" + String.valueOf(i) + "$", new Code(codeDef).getNoDisplay());
                 i++;
             }
 
             // TypeCode
-            i=0;
+            i = 0;
             for (String codeDef : typeCodes) {
                 params.put("$tc" + String.valueOf(i) + "$", new Code(codeDef).getNoDisplay());
                 i++;
             }
 
             // FormatCode
-            i=0;
+            i = 0;
             for (String codeDef : formatCodes) {
                 params.put("$fc" + String.valueOf(i) + "$", new Code(codeDef).getNoDisplay());
                 i++;
             }
 
             // HealthcareFacilityTypeCode
-            i=0;
+            i = 0;
             for (String codeDef : healthcareFacilityTypeCodes) {
                 params.put("$hftc" + String.valueOf(i) + "$", new Code(codeDef).getNoDisplay());
                 i++;
             }
 
             // PracticeSettingCode
-            i=0;
+            i = 0;
             for (String codeDef : practiceSettingCodes) {
                 params.put("$psc" + String.valueOf(i) + "$", new Code(codeDef).getNoDisplay());
                 i++;
             }
 
             // ConfidentialityCode
-            i=0;
+            i = 0;
             for (String codeDef : confCodes) {
                 params.put("$cc" + String.valueOf(i) + "$", new Code(codeDef).getNoDisplay());
                 i++;
             }
 
             // EventCodeList
-            i=0;
+            i = 0;
             for (String codeDef : eventCodeList) {
                 params.put("$ecl" + String.valueOf(i) + "$", new Code(codeDef).getNoDisplay());
                 i++;
             }
 
             // CreationTimeFrom
-            i=0;
+            i = 0;
             for (String codeDef : creationTimeFrom) {
                 params.put("$ctf" + String.valueOf(i) + "$", codeDef);
                 i++;
             }
 
             // CreationTimeTo
-            i=0;
+            i = 0;
             for (String codeDef : creationTimeTo) {
                 params.put("$ctt" + String.valueOf(i) + "$", codeDef);
                 i++;
             }
 
             // ServiceStartTimeFrom
-            i=0;
+            i = 0;
             for (String codeDef : serviceStartTimeFrom) {
                 params.put("$sstf" + String.valueOf(i) + "$", codeDef);
                 i++;
             }
 
             // ServiceStartTimeTo
-            i=0;
+            i = 0;
             for (String codeDef : serviceStartTimeTo) {
                 params.put("$sstt" + String.valueOf(i) + "$", codeDef);
                 i++;
             }
 
             // ServiceStopTimeFrom
-            i=0;
+            i = 0;
             for (String codeDef : serviceStopTimeFrom) {
                 params.put("$sttf" + String.valueOf(i) + "$", codeDef);
                 i++;
             }
 
             // ServiceStopTimeTo
-            i=0;
+            i = 0;
             for (String codeDef : serviceStopTimeTo) {
                 params.put("$sttt" + String.valueOf(i) + "$", codeDef);
                 i++;
             }
 
             // AuthorPerson
-            i=0;
+            i = 0;
             for (String codeDef : authorPerson) {
                 params.put("$ap" + String.valueOf(i) + "$", codeDef);
                 i++;
             }
 
             // ReturnType
-            i=0;
+            i = 0;
             for (String codeDef : returnsType) {
                 params.put("$rt" + String.valueOf(i) + "$", codeDef);
                 i++;

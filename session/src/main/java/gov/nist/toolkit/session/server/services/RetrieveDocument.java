@@ -17,62 +17,46 @@ import java.util.List;
 import java.util.Map;
 
 public class RetrieveDocument extends CommonService {
-	Session session;
+    Session session;
 
-	public RetrieveDocument(Session session) throws XdsException {
-		this.session = session;
-	}
+    public RetrieveDocument(Session session) throws XdsException {
+        this.session = session;
+    }
 
-	public List<Result> run(SiteSpec site, Uids uids) throws Exception {
-		session.setSiteSpec(site);
+    public List<Result> run(SiteSpec site, Uids uids) throws Exception {
+        session.setSiteSpec(site);
 
-		// the client should fill in the uids details, but for now...
-		// eventually, the client request for getRepositoryNames needs to change to
-		// getRepositories and the repuid and home are included. Then
-		// the client can send back a complete uid
-		AnyIds aids = session.queryServiceManager().fillInHome(new AnyIds(uids));
-		uids = new Uids(aids);
+        // the client should fill in the uids details, but for now...
+        // eventually, the client request for getRepositoryNames needs to change to
+        // getRepositories and the repuid and home are included. Then
+        // the client can send back a complete uid
+        AnyIds aids = session.queryServiceManager().fillInHome(new AnyIds(uids));
+        uids = new Uids(aids);
 
-		// set repository from tool selection
-		for (Uid uid : uids.uids) {
-			if ((uid.repositoryUniqueId == null || uid.repositoryUniqueId.equals(""))
-					&& session.repUid != null && !session.repUid.equals(""))
-				uid.repositoryUniqueId = session.repUid;
-		}
+        // set repository from tool selection
+        for (Uid uid : uids.uids) {
+            if ((uid.repositoryUniqueId == null || uid.repositoryUniqueId.equals(""))
+                    && session.repUid != null && !session.repUid.equals(""))
+                uid.repositoryUniqueId = session.repUid;
+        }
 
-		TestInstance testInstance = new TestInstance("RetrieveDocumentSet", session.getTestSession());
-		List<String> sections = new ArrayList<String>();
-		Map<String, String> params = new HashMap<String, String>();
+        TestInstance testInstance = new TestInstance("RetrieveDocumentSet", session.getTestSession());
+        List<String> sections = new ArrayList<String>();
+        Map<String, String> params = new HashMap<String, String>();
 
-			if (session.siteSpec.isRG()) {
-				sections.add("XCA");
-				params.put("$home$", site.homeId);
-			} 
-			else if (session.siteSpec.isIG()) {
-				sections.add("IG");
-				params.put("$home$", site.homeId);
-			} 
-			else {
-				sections.add("XDS");
-			}
+        if (session.siteSpec.isRG()) {
+            sections.add("XCA");
+            params.put("$home$", site.homeId);
+        } else if (session.siteSpec.isIG()) {
+            sections.add("IG");
+            params.put("$home$", site.homeId);
+        } else {
+            sections.add("XDS");
+        }
 
-		/*
-		if (session.siteSpec.actorType.equals(ActorType.REGISTRY))
-			sections.add("XDS");
-		else if (session.siteSpec.actorType.equals(ActorType.INITIATING_GATEWAY))
-			sections.add("IG");
-		else {
-			sections.add("XCA");
-			String home = site.homeId;
-			if (home != null && !home.equals("")) {
-				params.put("$home$", home);
-			}
-		}
-		*/
-
-		List<Result> results = session.queryServiceManager().perRepositoryRetrieve(uids, testInstance, sections, params);
-		return results;
-	}
+        List<Result> results = session.queryServiceManager().perRepositoryRetrieve(uids, testInstance, sections, params);
+        return results;
+    }
 
 
 }
