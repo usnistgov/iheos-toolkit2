@@ -68,6 +68,10 @@ public class RGXActorFactory extends AbstractActorFactory implements IActorFacto
          TransactionType.XC_RETRIEVE, false);
       addFixedEndpoint(sc, SimulatorProperties.xcrTlsEndpoint, actorType,
          TransactionType.XC_RETRIEVE, true);
+      addFixedEndpoint(sc, SimulatorProperties.xcdrEndpoint, actorType,
+              TransactionType.XC_PROVIDE, false);
+      addFixedEndpoint(sc, SimulatorProperties.xcdrTlsEndpoint, actorType,
+              TransactionType.XC_PROVIDE, true);
 
 
       addFixedEndpoint(sc, SimulatorProperties.xcRmuEndpoint, actorType,
@@ -160,6 +164,16 @@ public class RGXActorFactory extends AbstractActorFactory implements IActorFacto
             TransactionType.XC_RETRIEVE.getCode(), RepositoryType.NONE,
             sc.get(SimulatorProperties.xcrTlsEndpoint).asString(), true,
             isAsync));
+
+         site.addTransaction(new TransactionBean(
+                 TransactionType.XC_PROVIDE.getCode(), RepositoryType.NONE,
+                 sc.get(SimulatorProperties.xcdrEndpoint).asString(), false,
+                 isAsync));
+         site.addTransaction(new TransactionBean(
+                 TransactionType.XC_PROVIDE.getCode(), RepositoryType.NONE,
+                 sc.get(SimulatorProperties.xcdrTlsEndpoint).asString(), true,
+                 isAsync));
+
          site.addTransaction(new TransactionBean(
                  TransactionType.XCRMU.getCode(),
                  RepositoryType.NONE,

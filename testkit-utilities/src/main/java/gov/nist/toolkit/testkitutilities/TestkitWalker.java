@@ -4,11 +4,14 @@ import gov.nist.toolkit.utilities.xml.Util;
 
 import java.io.File;
 import java.util.List;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
 
 import javax.xml.parsers.FactoryConfigurationError;
 
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import org.apache.axiom.om.OMElement;
+import org.jaxen.JaxenException;
 
 abstract public class TestkitWalker {
 	protected   String testkitPathName;
@@ -43,6 +46,8 @@ abstract public class TestkitWalker {
 
 	protected File testkit;
 
+	private final static Logger logger = Logger.getLogger(TestkitWalker.class.getName());
+
 	public File getTestkit() {
 		return testkit;
 	}
@@ -60,11 +65,11 @@ abstract public class TestkitWalker {
 
 	public void walkTree(File testkit) throws FactoryConfigurationError, Exception {
 		testkitPathName = testkit.toString();
-		testkitPathNameSize = testkitPathName.split("\\/").length;
+		testkitPathNameSize = testkitPathName.split(Matcher.quoteReplacement(File.separator)).length;
 		testkitPathElementsToIgnore = testkitPathNameSize + 1;
 
 
-		System.out.println("Scanning testkit at " + testkit);
+		logger.info("Scanning testkit at " + testkit);
 
 		setTestkit(testkit);
 
@@ -75,11 +80,16 @@ abstract public class TestkitWalker {
 
 		for (String area : areas) {
 			this.area = area;
-			System.out.println("Scanning " + area);
+			logger.info("Scanning " + area);
 
 			File areaDir = new File(testkit.toString() + File.separator + area);
+			if (!areaDir.isDirectory() || !areaDir.exists()) {
+				logger.warning("Scan area does not exist. Skipping.");
+				continue;
+			}
+
 			if (debug)
-				System.out.println("Area: " + areaDir);
+				logger.fine("Area: " + areaDir);
 
 			startSection(areaDir);
 
@@ -88,7 +98,7 @@ abstract public class TestkitWalker {
 					continue;
 
 				if (debug)
-					System.out.println("Test: " + test);
+					logger.info("Test: " + test);
 
 				if (!test.isDirectory())
 					continue;
@@ -105,7 +115,7 @@ abstract public class TestkitWalker {
 						continue;
 
 					if (debug)
-						System.out.println("Part: " + part);
+						logger.info("Part: " + part);
 
 					if (part.isFile()) {
 						if (part.getName().equals("testplan.xml")) {
@@ -121,7 +131,7 @@ abstract public class TestkitWalker {
 								continue;
 
 							if (debug)
-								System.out.println("Subelement: " + subelement);
+								logger.info("Subelement: " + subelement);
 
 							startPart(part);
 
@@ -150,14 +160,30 @@ abstract public class TestkitWalker {
 	void walkTestPlan(File testPlanFile) throws FactoryConfigurationError, Exception {
 		OMElement testplanEle = Util.parse_xml(testPlanFile);
 
-		List<OMElement> steps = XmlUtil.childrenWithLocalName(testplanEle, "TestStep");
+		String testStepElementName = "TestStep";
+		List<OMElement> steps = XmlUtil.childrenWithLocalName(testplanEle, testStepElementName);
 
 		for(int i=0; i<steps.size(); i++) {
 			OMElement stepEle = steps.get(i);
-			doStep(stepEle.getLocalName());
+			String stepElementName = stepEle.getLocalName();
+			doStep(stepElementName);
+
+			List<OMElement> testStepChildrenElements = XmlUtil.children(stepEle);
+			for(int j=0; j<testStepChildrenElements.size(); j++) {
+				OMElement testStepChildEle = testStepChildrenElements.get(j);
+				String testStepChildEleLocalName = testStepChildEle.getLocalName();
+
+				if (testStepChildEleLocalName.endsWith("Transaction")) {
+					doTransaction(testPlanFile, testStepChildEle, testStepElementName, testStepChildEleLocalName);
+				}
+			}
+
 		}
 
 	}
+
+	protected abstract void doTransaction(File testPlanFile, OMElement stepEle, String testStepElementName, String stepElementName) throws JaxenException;
+
 	protected String join(String[] parts, int first, int last, String separator) {
 		StringBuffer buf = new StringBuffer();
 

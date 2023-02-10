@@ -1,17 +1,22 @@
 package gov.nist.toolkit.xdstools2.server;
 
+import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrymetadata.client.*;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.results.MetadataToMetadataCollectionParser;
+import gov.nist.toolkit.testengine.transactions.BasicTransaction;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
+import gov.nist.toolkit.utilities.xml.Util;
+import gov.nist.toolkit.valregmsg.message.SchemaValidation;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 public class MetadataCollectionToMetadata {
@@ -257,56 +262,166 @@ public class MetadataCollectionToMetadata {
 		File inFile = null;
 		File outFile = null;
 		boolean metadataV2 = false;
+		int inMetadataType = MetadataTypes.METADATA_TYPE_Rb;
+		int outMetadataType = MetadataTypes.METADATA_TYPE_Rb;
+		boolean replaceInputFileIfNoConversionErrors = false;
 
-		if (args.length==3) {
+		if (args.length == 0) {
+			inFile = new File("/Users/bill/dev/testkit/tests/11966/submit/single_doc.xml");
+			outFile = new File("/Users/bill/tmp/submission.xml");
+			translateMetadata(inFile, outFile, metadataV2, inMetadataType, outMetadataType);
+		} else if (args.length == 1) {
+			// auto replace from text file
+
+			try {
+				String bulkParametersRecords = Io.stringFromFile(new File(args[0]));
+				List<String> bulkParameterRecord = Arrays.asList(bulkParametersRecords.split("\n"));
+				for (String r : bulkParameterRecord) {
+					if ("".equals(r))
+						continue;
+					String[] parameters = r.split(" ");
+					inFile = new File(parameters[0]);
+					outFile = inFile;
+					inMetadataType = Integer.parseInt(parameters[1]);
+					outMetadataType = MetadataTypes.METADATA_TYPE_Rb;
+					String out = convertMetadataFile(inFile, metadataV2, inMetadataType, outMetadataType, false, true);
+					if (outFile != null) {
+						out += "\r\n<!-- Issue 575 -->\r\n";
+						Io.stringToFile(inFile, out);
+					} else {
+						System.out.println("Error: no output for file " + inFile);
+					}
+				}
+
+			} catch (Exception ioex) {
+				ioex.printStackTrace();
+				System.exit(1);
+			}
+			return;
+
+		} else if (args.length>2) {
 			try {
 				inFile = new File(args[0]);
 				outFile = new File(args[1]);
-				metadataV2 = Boolean.parseBoolean(args[2]);
+//				metadataV2 = Boolean.parseBoolean(args[2]);
+				if (args.length > 2) {
+					inMetadataType = Integer.parseInt( args[2] );
+					if (args.length > 3) {
+						outMetadataType = Integer.parseInt(args[3]);
+					}
+				}
+				translateMetadata(inFile, outFile, metadataV2, inMetadataType, outMetadataType);
 			} catch (Exception ex) {
-				throw new IllegalArgumentException(ex);
+			    ex.printStackTrace();
+			    System.exit(2);
 			}
-		} else {
-		 	inFile = new File("/Users/bill/dev/testkit/tests/11966/submit/single_doc.xml");
-		 	outFile = new File("/Users/bill/tmp/submission.xml");
 		}
+	}
 
-		Metadata m = null;
-		
+	private static void translateMetadata(File inFile, File outFile, boolean metadataV2, int inMetadataType, int outMetadataType) {
+		System.out.println(String.format("In MetadataType=%d is set to %s." , inMetadataType, MetadataTypes.getMetadataTypeName(inMetadataType)));
+		System.out.println(String.format("Out MetadataType=%d is set to %s." , outMetadataType, MetadataTypes.getMetadataTypeName(outMetadataType)));
+
+//		Metadata m = null;
+
 		try {
-			m = MetadataParser.parseNonSubmission(inFile);
-		} 
+//			m = MetadataParser.parseNonSubmission(inFile);
+			/*
+			Part 1 of 2
+			 * When parseNonSubmission is used to translate to a v3 metadata file,
+			 * the v3 Association registry object structure is not preserved properly.
+			 * Certain types of Association object structure are corrupted.
+			 * Example  associationType="urn:ihe:iti:2010:AssociationType:UpdateAvailabilityStatus"
+			 * Corruption happens when some test metadata input files have mixed content: v2 (detected as any namespace non-v3) rim XML namespace with v3 Association objects.
+			 *
+			 * When metadata files are attempted to translate into v3 using this main method or the parse_xml (unlike the parseNonSubmission) method,
+			 * the first translate call changes all registry object namespaces to v3, and when the v3 Association structure is translated it is kept intact because the namespace is v3 by that time.
+			 *
+			 *
+			 */
+
+
+			String out = convertMetadataFile(inFile, metadataV2, inMetadataType, outMetadataType, true, true);
+			if (outFile != null) {
+				Io.stringToFile(outFile, out);
+			}
+			System.out.println("NOTE: XML metadata comments do not carry over when original metadata is being converted in to a separate file. XML comments must be added back manually.");
+
+		}
 		catch (Exception e) {
 			e.printStackTrace();
-			System.exit(0);
-		} 
-		
+			System.exit(2);
+		}
+
+		/*
+		Part 2 of 2
 		MetadataCollection mc = MetadataToMetadataCollectionParser.buildMetadataCollection(m, "test");
-		
+
 		Metadata m2 = MetadataCollectionToMetadata.buildMetadata(mc, true);
-		
+
 		List<OMElement> eles = null;
-		
+
+		OMElement x = null;
 		try {
 		    if (metadataV2) {
 		    	eles = m2.getV2();
+				x = MetadataSupport.om_factory.createOMElement("Metadata", null);
+				for (OMElement e : eles)
+					x.addChild(e);
 			} else
-				eles = m2.getV3();
+//				eles = m2.getV3(); // Misses the SubmitObjectsRequest wrapper if it existed
+				x = m2.getV3SubmitObjectsRequest(); // assume SubmitObjectsRequest was present
 		} catch (XdsInternalException e1) {
 			e1.printStackTrace();
 			System.exit(1);
 		}
-		
-		OMElement x = MetadataSupport.om_factory.createOMElement("Metadata", null);
-		
-		for (OMElement e : eles)
-			x.addChild(e);
-		
+
+
+
 		try {
 			Io.stringToFile(outFile, new OMFormatter(x).toString());
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
+		*/
+	}
+
+	private static String convertMetadataFile(File inFile, boolean metadataV2, int inMetadataType, int outMetadataType, boolean checkInput, boolean checkOutput) throws Exception {
+		Metadata m;
+		OMElement e = Util.parse_xml(inFile);
+		if (checkInput) {
+			validateMetadata("Input", e, inMetadataType);
+		}
+
+		m = MetadataParser.parse(e);
+		OMElement x = null;
+		if (metadataV2) {
+			x = m.getV2SubmitObjectsRequest(); // v2 output is not really needed
+		} else {
+			 x =	m.getV3SubmitObjectsRequest();
+			try {
+				if (checkOutput) {
+					if (! validateMetadata("Output", x, outMetadataType)) {
+					    return null;
+					}
+				}
+				return new OMFormatter(x).toString();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		}
+		throw new RuntimeException("Unexpected return");
+	}
+
+	private static boolean validateMetadata(String label, OMElement e, int metadata_type) throws Exception {
+		String schemaLocation ="C:\\Users\\skb1\\myprojects\\iheos-toolkit2\\xdstools2\\src\\test\\resources\\war\\toolkitx\\schema";
+		String errors = SchemaValidation.validate(schemaLocation, e, metadata_type);
+		boolean isSuccess = "".equals(errors);
+		System.out.println(
+				String.format("%s XML Validation error(s) ? %s",
+						label,
+						(isSuccess ? "None." : errors)));
+		return isSuccess;
 	}
 
 }

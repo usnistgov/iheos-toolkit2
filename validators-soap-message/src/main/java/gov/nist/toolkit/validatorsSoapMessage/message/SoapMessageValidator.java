@@ -15,8 +15,10 @@ import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMNamespace;
+import javax.xml.namespace.QName;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -43,6 +45,18 @@ public class SoapMessageValidator extends AbstractMessageValidator {
 
     public String getMessageId() {
         return reqMessageId;
+    }
+
+    public OMElement getEnvelope() {
+        return envelope;
+    }
+
+    public OMElement getHeader() {
+        return header;
+    }
+
+    public OMElement getBody() {
+        return body;
     }
 
     void err(String msg, String ref) {
@@ -251,6 +265,15 @@ public class SoapMessageValidator extends AbstractMessageValidator {
             vc.isResponse = true;
             vc.isRet = true;
             vc.isXC = true;
+        } else if (wsaction.equals("urn:ihe:iti:2015:CrossGatewayDocumentProvide")) {
+            vc.isRequest = true;
+            vc.isPnR = true;
+            vc.isXC = true;
+            vc.isXCDR = true;
+        } else if (wsaction.equals("urn:ihe:iti:2015:CrossGatewayDocumentProvideResponse")) {
+            vc.isResponse = true;
+            vc.isPnR = true;
+            vc.isXC = true;
         } else if (wsaction.equals("urn:ihe:iti:2009:MultiPatientStoredQuery")) {
             vc.isRequest = true;
             vc.isSQ = true;
@@ -272,7 +295,8 @@ public class SoapMessageValidator extends AbstractMessageValidator {
     }
 
     static String wsaddresingNamespace = "http://www.w3.org/2005/08/addressing";
-    static String wsaddressingRef = "http://www.w3.org/TR/ws-addr-core/";
+    static String wsaddressingRef      = "http://www.w3.org/TR/ws-addr-core/";
+    static String xdrNamespace         = "urn:ihe:iti:xdr:2014";
 
     void validateWSAddressing() {
         if (header == null)
@@ -374,6 +398,39 @@ public class SoapMessageValidator extends AbstractMessageValidator {
         }
     }
 
+    void validateHomeCommunityBlock() {
+        if (header == null)
+            return;
+
+        if (! vc.isXCDR)
+            return;
+
+        List<OMElement> homeCommunityBlocks = XmlUtil.childrenWithLocalName(header, "homeCommunityBlock");
+
+        int errCount = er.getNbErrors();
+        validateNamespace(homeCommunityBlocks, xdrNamespace);
+        if (errCount == er.getNbErrors())
+            er.report("Namespace on xdr:homeCommunityBlock", "No errors");
+
+        boolean foundOneHCID = false;
+        er.test(homeCommunityBlocks.size() > 0, "", "homeCommunityBlock header cardinality", Integer.toString(homeCommunityBlocks.size()), "0 or 1", "XCDR Supplement: Vol 2, 3.80.1");
+        Iterator<OMElement> iterator = homeCommunityBlocks.iterator();
+        while (iterator.hasNext()) {
+            OMElement hcBlock  = iterator.next();
+            Iterator<OMElement> childIterator = hcBlock.getChildElements();
+            while (childIterator.hasNext()) {
+                OMElement childElement = childIterator.next();
+                if (childElement.getQName().equals(new QName("urn:ihe:iti:xdr:2014", "homeCommunityId"))) {
+                    String a = childElement.getText();  // This is just for debugging
+                    foundOneHCID = true;
+                }
+            }
+        }
+        if (! foundOneHCID) {
+            err("Did not find xdr:homeCommunityId element within xdr:homeCommunityBlock for XCDR transaction", "XCDR Supplement: Vol 2, 3.80.1");
+        }
+    }
+
     boolean mustUnderstandValueOk(String value) {
         if ("1".equals(value)) return true;
         if ("true".equalsIgnoreCase("true")) return true;
@@ -448,6 +505,7 @@ public class SoapMessageValidator extends AbstractMessageValidator {
         er.test(soapEnvelopeNamespace.equals(uri), "", "SOAP Header Namespace", uri, soapEnvelopeNamespace, "http://www.w3.org/TR/soap12-part1/#soapenvelope");
 
         validateWSAddressing();
+        validateHomeCommunityBlock();
 
         OMElement metadataLevel = XmlUtil.firstChildWithLocalName(header, "metadata-level");
         if (metadataLevel != null) {

@@ -1,6 +1,5 @@
 
-<rs:SubmitObjectsRequest xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:3.0"
-      xmlns:rs="urn:oasis:names:tc:ebxml-regrep:registry:xsd:3.0">
+<rs:SubmitObjectsRequest xmlns="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" xmlns:rs="urn:oasis:names:tc:ebxml-regrep:registry:xsd:3.0"><!-- Issue 575 -->
    <LeafRegistryObjectList>
       <ObjectRef id="urn:uuid:7edca82f-054d-47f2-a032-9b2a5b518fff"/>
       <ObjectRef id="urn:uuid:a54d6aa5-d40d-43f9-88c5-b4633d873bdd"/>
