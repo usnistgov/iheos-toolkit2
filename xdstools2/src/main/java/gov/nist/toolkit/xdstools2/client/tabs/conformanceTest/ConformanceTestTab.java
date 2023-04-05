@@ -911,7 +911,14 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 			if (testContext.getSiteUnderTest() != null)
 				siteToIssueTestAgainst = testContext.getSiteUnderTestAsSiteSpec();
 		}
-		orchInit.setXuaOption(orchInit.XUA_OPTION.equals(currentActorOption.getOptionId()));
+		// This is a subtle change. The original comparison required the exact phrase (xua).
+		// The current comparison is checking for the phrase to be anywhere in the string.
+		//orchInit.setXuaOption(orchInit.XUA_OPTION.equals(currentActorOption.getOptionId()));
+		orchInit.setXuaOption(nullSafe(currentActorOption.getOptionId()).contains(orchInit.XUA_OPTION));
+	}
+
+	private String nullSafe(String in) {
+		return (in == null) ? "" : in;
 	}
 
 	private void displayActorsTabBar(TabBar actorTabBar) {
@@ -951,7 +958,10 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 		if (parts.length>1) {
 			return parts[parts.length-1];
 		} else {
-			showPopupMessage("Test Id needs be suffixed with '_username' like so: testId_username.");
+			// Comment out the popup message.
+			// The previous assumption was that all test plans when the XUA option was invoked
+			// were of the form XXX_YYY ( _ is the delimiter).
+//			showPopupMessage("Test Id needs be suffixed with '_username' like so: testId_username.");
 			return null;
 		}
 	}
