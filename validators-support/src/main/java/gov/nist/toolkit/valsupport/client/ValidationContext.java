@@ -39,6 +39,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	 */
 	public boolean isRet	 = false;
 	public boolean isXDR	 = false;
+	public boolean isXCDR    = false;	// ITI-80, Cross-Gateway Document Provide
 	public boolean isXDRLimited = false;   // IHE version
 	public boolean isXDRMinimal = false;   // Direct version
 	public boolean isXDM     = false;
@@ -212,13 +213,14 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	}
 
 	public boolean requiresMtom() {
-		return isPnR || isRet || isXDR || (isSQ && isEpsos) || forceMtom || isRad69;
+		return isPnR || isRet || isXDR || isXCDR || (isSQ && isEpsos) || forceMtom || isRad69;
 	}
 
 	public boolean containsDocuments() {
 		if (!hasHttp) return false;
 		if (isPnR && isRequest) return true;
 		if (isXDR && isRequest && !isR) return true;
+		if (isXCDR && isRequest) return true;
 		if (isRet && isResponse) return true;
 		if (isRad69 && isResponse) return true;
 		return false;
@@ -237,6 +239,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 						isRD == v.isRD &&
 				isRad69 == v.isRad69 &&
 				//			isXDR == v.isXDR &&     // not sure how this needs to work
+				isXCDR == v.isXCDR &&
 				isDIRECT == v.isDIRECT &&
 				isCCDA == v.isCCDA &&
 				isSQ == v.isSQ &&
@@ -279,6 +282,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 		isRD = v.isRD;
 		isRad69 = v.isRad69;
 		isXDR = v.isXDR;
+		isXCDR = v.isXCDR;
 		isXDRLimited = v.isXDRLimited;
 		isXDRMinimal =  v.isXDRMinimal;
 		isXDM = v.isXDM;
@@ -313,6 +317,10 @@ public class ValidationContext  implements Serializable, IsSerializable {
 		if (isSQ && isResponse) return true;
 		return false;
 	}
+
+	// TODO The XCDR transaction is also labelled as isPNR. For now, this will
+	// just process as if the XCDR transaction is the same as the PnR transaction.
+	// Need to review if this needs an adjustment.
 
 	public String getTransactionName() {
 		if (isPnR) {
@@ -492,6 +500,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 		if (isRD) buf.append(";RD");
 		if (isRad69) buf.append(";RAD69");
 		if (isXDR) buf.append(";XDR");
+		if (isXCDR) buf.append(";XCDR");
 		if (isXDM) buf.append(";XDM");
 		if (isSQ) buf.append(";SQ");
 
@@ -541,7 +550,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	}
 
 	public boolean isTransactionKnown() {
-		return isR || isRODDE || isMU || isRMU || isRM || isPnR || isRet || isRD || isXDR || isXDM || isSQ || isRad69 || isRad55;
+		return isR || isRODDE || isMU || isRMU || isRM || isPnR || isRet || isRD || isXDR  || isXCDR || isXDM || isSQ || isRad69 || isRad55;
 	}
 
 	public boolean isMessageTypeKnown() {
@@ -557,7 +566,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	}
 
 	public boolean isSubmit() {
-		return isR || isRODDE || isMU || isRMU || isRM || isPnR || isXDR || isXDM;
+		return isR || isRODDE || isMU || isRMU || isRM || isPnR || isXDR || isXCDR || isXDM;
 	}
 
 	public boolean availabilityStatusRequired() {
@@ -569,6 +578,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 		if (isXDR) return false;
 		if (isXDM) return true;
 		if (isPnR) return false;
+		if (isXCDR) return false;
 		if (isR && isRequest) return true;
 		if (isRODDE && isRequest) return false;
 		if (isMU && isRequest) return true;

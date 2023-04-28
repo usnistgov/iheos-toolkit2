@@ -9,6 +9,7 @@
     <documentation xml:lang="en">The schema for OASIS ebXML Registry Services</documentation>
   </annotation>
   <!-- Import the rim.xsd file with XML schema mappaing from RIM -->
+  <import namespace="urn:ihe:iti:rmd:2017" schemaLocation="rmd.xsd"/>
   <import namespace="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" schemaLocation="rim.xsd"/>
   <!-- Import the rs.xsd file with XML schema for base rs related schema -->
   <import namespace="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0" schemaLocation="rs.xsd"/>

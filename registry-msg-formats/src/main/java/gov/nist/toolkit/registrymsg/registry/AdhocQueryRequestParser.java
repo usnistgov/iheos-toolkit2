@@ -5,6 +5,9 @@ import gov.nist.toolkit.utilities.xml.XmlUtil;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.xpath.AXIOMXPath;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AdhocQueryRequestParser {
     OMElement ele;
     AdhocQueryRequest request = new AdhocQueryRequest();
@@ -46,5 +49,21 @@ public class AdhocQueryRequestParser {
         if (text.startsWith("'")) text = text.substring(1);
         if (text.endsWith("'")) text = text.substring(0, text.length() - 1);
         request.patientId = text;
+        request.documentEntryObjectTypeList = parseValueList(ele, "//*[local-name()='Slot'][@name = '$XDSDocumentEntryType']/*[local-name()='ValueList']/*[local-name()='Value']");
+    }
+
+    List<String> parseValueList(OMElement e, String xpath) throws Exception {
+        ArrayList<String> rtn = new ArrayList<>();
+
+        AXIOMXPath xpathExpression = new AXIOMXPath (xpath);
+        List<Object> objectList =  xpathExpression.selectNodes(ele);
+        if (objectList != null) {
+            for (Object o: objectList) {
+                OMElement omEle = (OMElement) o;
+                String text = omEle.getText();
+                rtn.add(text);
+            }
+        }
+        return rtn;
     }
 }

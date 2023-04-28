@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!--
-    Version: 2021.01
+    Version: 2021.11
+    Update 11/2/2021 by Patrick Peer - Fixed DCM vs DCMUID and added Anatomic Regions with Code Values instead of SNOMED-RT IDs as code
     Update 1/28/2021 by Lynn Felhofer
         formatCode - fix the system value for IHE codes.  See https://profiles.ihe.net/fhir/ihe.formatcode.fhir/ValueSet-formatcode.html
         formatCode - align "display" value for changes made by IHE; see https://profiles.ihe.net/fhir/ihe.formatcode.fhir/CodeSystem-formatcode.html vs https://profiles.ihe.net/fhir/ihe.formatcode.fhir/ValueSet-formatcode.html
@@ -72,58 +73,58 @@
         <Code code="1.2.840.10065.1.12.1.16" display="Modification Signature" codingScheme="1.2.840.10065.1.12" system="urn:oid:1.2.840.10065.12"/>
         <Code code="1.2.840.10065.1.12.1.17" display="Administrative (Error/Edit) Signature" codingScheme="1.2.840.10065.1.12" system="urn:oid:1.2.840.10065.12"/>
         <Code code="1.2.840.10065.1.12.1.18" display="Timestamp Signature" codingScheme="1.2.840.10065.1.12" system="urn:oid:1.2.840.10065.12"/>
-        <Code code="AR" display="Autorefraction" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="BI" display="Biomagnetic Imaging" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="BMD" display="Bone Mineral Densitometry" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="EPS" display="Cardiac Electrophysiology" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="CR" display="Computed Radiography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="CT" display="Computed Tomography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="DMS" display="Dermoscopy" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="DG" display="Diaphanography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="DX" display="Digital Radiography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="ECG" display="Electrocardiography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="EEG" display="Electrooculography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="EMG" display="Electromyography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="EOG" display="Electrooculography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="ES" display="Endoscopy" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="XC" display="External-camera Photography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="GM" display="General Microscopy" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="HD" display="Hemodynamic Waveform" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="IO" display="Intra-oral Radiography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="IVOCT" display="Intravascular Optical Coherence Tomography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="IVUS" display="Intravascular Ultrasound" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="KER" display="Keratometry" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="LS" display="Laser Scan" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="LEN" display="Lensometry" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="MR" display="Magnetic Resonance" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="MG" display="Mammography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="NM" display="Nuclear Medicine" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="OAM" display="Ophthalmic Axial Measurements" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="OCT" display="Optical Coherence Tomography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="OPM" display="Ophthalmic Mapping" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="OP" display="Ophthalmic Photography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="OPT" display="Ophthalmic Tomography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="OPTBSV" display="Ophthalmic Tomography B-scan Volume Analysis" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="OPTENF" display="Ophthalmic Tomography En Face" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="OPV" display="Ophthalmic Visual Field" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="OSS" display="Optical Surface Scanner" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="OT" display="Other Modality" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="PX" display="Panoramic X-Ray" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="POS" display="Position Sensor" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="PT" display="Positron emission tomography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="RF" display="Radiofluoroscopy" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="RG" display="Radiographic imaging" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="RESP" display="Respiratory Waveform" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="RTIMAGE" display="RT Image" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="SM" display="Slide Microscopy" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="SR" display="Structured Report Document" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="SRF" display="Subjective Refraction" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="TG" display="Thermography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="US" display="Ultrasound" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="BDUS" display="Ultrasound Bone Densitometry" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="VA" display="Visual Acuity" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="XA" display="X-Ray Angiography" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
-        <Code code="113681" display="Phantom" codingScheme="1.2.840.10008.2.6.1" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="AR" display="Autorefraction" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="BI" display="Biomagnetic Imaging" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="BMD" display="Bone Mineral Densitometry" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="EPS" display="Cardiac Electrophysiology" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="CR" display="Computed Radiography" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="CT" display="Computed Tomography" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="DMS" display="Dermoscopy" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="DG" display="Diaphanography" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="DX" display="Digital Radiography" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="ECG" display="Electrocardiography" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="EEG" display="Electrooculography" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="EMG" display="Electromyography" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="EOG" display="Electrooculography" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="ES" display="Endoscopy" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="XC" display="External-camera Photography" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="GM" display="General Microscopy" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="HD" display="Hemodynamic Waveform" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="IO" display="Intra-oral Radiography" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="IVOCT" display="Intravascular Optical Coherence Tomography" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="IVUS" display="Intravascular Ultrasound" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="KER" display="Keratometry" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="LS" display="Laser Scan" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="LEN" display="Lensometry" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="MR" display="Magnetic Resonance" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="MG" display="Mammography" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="NM" display="Nuclear Medicine" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="OAM" display="Ophthalmic Axial Measurements" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="OCT" display="Optical Coherence Tomography" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="OPM" display="Ophthalmic Mapping" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="OP" display="Ophthalmic Photography" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="OPT" display="Ophthalmic Tomography" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="OPTBSV" display="Ophthalmic Tomography B-scan Volume Analysis" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="OPTENF" display="Ophthalmic Tomography En Face" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="OPV" display="Ophthalmic Visual Field" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="OSS" display="Optical Surface Scanner" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="OT" display="Other Modality" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="PX" display="Panoramic X-Ray" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="POS" display="Position Sensor" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="PT" display="Positron emission tomography" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="RF" display="Radiofluoroscopy" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="RG" display="Radiographic imaging" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="RESP" display="Respiratory Waveform" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="RTIMAGE" display="RT Image" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="SM" display="Slide Microscopy" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="SR" display="Structured Report Document" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="SRF" display="Subjective Refraction" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="TG" display="Thermography" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="US" display="Ultrasound" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="BDUS" display="Ultrasound Bone Densitometry" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="VA" display="Visual Acuity" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="XA" display="X-Ray Angiography" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
+        <Code code="113681" display="Phantom" codingScheme="1.2.840.10008.2.16.4" system="http://dicom.nema.org/resources/ontology/DCM"/>
         <Code code="T-D4000" display="Abdomen" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
         <Code code="T-A0100" display="Brain" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
         <Code code="T-04000" display="Breast" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
@@ -155,6 +156,315 @@
         <Code code="T-25000" display="Trachea" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
         <Code code="T-D8000" display="Upper limb" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
         <Code code="T-83000" display="Uterus" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        
+        <!-- Additional Anatomic Regions with Code Value instead of SNOMED-RT ID as code -->
+        <Code code="818981001" display="Abdomen" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="818982008" display="Abdomen and Pelvis" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="7832008" display="Abdominal aorta" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="85856004" display="Acromioclavicular joint" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="23451007" display="Adrenal gland" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="77012006" display="Amniotic fluid" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="70258002" display="Ankle joint" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="128553008" display="Antecubital vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="194996006" display="Anterior cardiac vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="60176003" display="Anterior cerebral artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="8012006" display="Anterior communicating artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="17388009" display="Anterior spinal artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="68053000" display="Anterior tibial artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="110612005" display="Anus, rectum and sigmoid colon" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="15825003" display="Aorta" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="57034009" display="Aortic arch" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="66754008" display="Appendix" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="51114001" display="Artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="54247002" display="Ascending aorta" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="9040008" display="Ascending colon" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="91470000" display="Axilla" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="67937003" display="Axillary Artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="68705008" display="Axillary vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="72107004" display="Azygos vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="77568009" display="Back" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="59011009" display="Basilar artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="28273000" display="Bile duct" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="34707002" display="Biliary tract" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="89837001" display="Bladder" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="110837003" display="Bladder and urethra" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="17137000" display="Brachial artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="20115005" display="Brachial vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="12738006" display="Brain" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="76752008" display="Breast" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="955009" display="Bronchus" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="46862004" display="Buttock" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="80144004" display="Calcaneus" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="53840002" display="Calf of leg" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="69105007" display="Carotid Artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="21479005" display="Carotid bulb" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="57850000" display="Celiac artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="20699002" display="Cephalic vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="113305005" display="Cerebellum" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="88556005" display="Cerebral artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="372073000" display="Cerebral hemisphere" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="122494005" display="Cervical spine" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="297171002" display="Cervico-thoracic spine" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="71252005" display="Cervix" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="60819002" display="Cheek" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="43799004" display="Chest" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="416775004" display="Chest, Abdomen and Pelvis" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="416550000" display="Chest and Abdomen" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="80621003" display="Choroid plexus" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="11279006" display="Circle of Willis" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="51299004" display="Clavicle" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="64688005" display="Coccyx" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="71854001" display="Colon" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="79741001" display="Common bile duct" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="32062004" display="Common carotid artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="181347005" display="Common femoral artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="397363009" display="Common femoral vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="73634005" display="Common iliac artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="46027005" display="Common iliac vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="28726007" display="Cornea" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="41801008" display="Coronary artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="90219004" display="Coronary sinus" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="32672002" display="Descending aorta" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="32622004" display="Descending colon" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="38848004" display="Duodenum" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="117590005" display="Ear" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="16953009" display="Elbow joint" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="51114001" display="Endo-arterial" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="80891009" display="Endo-cardiac" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="32849002" display="Endo-esophageal" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="2739003" display="Endometrium" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="53342003" display="Endo-nasal" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="18962004" display="Endo-nasopharyngeal" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="34402009" display="Endo-rectal" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="64033007" display="Endo-renal" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="87953007" display="Endo-ureteric" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="13648007" display="Endo-urethral" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="76784001" display="Endo-vaginal" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="59820001" display="Endo-vascular" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="29092000" display="Endo-venous" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="48367006" display="Endo-vesical" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="38266002" display="Entire body" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="87644002" display="Epididymis" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="27947004" display="Epigastric region" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="32849002" display="Esophagus" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="84301002" display="External auditory canal" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="22286001" display="External carotid artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="113269004" display="External iliac artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="63507001" display="External iliac vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="71585003" display="External jugular vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="81745001" display="Eye" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="80243003" display="Eyelid" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="89545001" display="Face" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="23074001" display="Facial artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="7657000" display="Femoral artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="83419000" display="Femoral vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="71341001" display="Femur" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="87342007" display="Fibula" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="7569003" display="Finger" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="58602004" display="Flank" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="79361005" display="Fontanel of skull" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="56459004" display="Foot" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="14975008" display="Forearm" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="35918002" display="Fourth ventricle" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="28231008" display="Gallbladder" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="110568007" display="Gastric vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="128559007" display="Genicular artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="300571009" display="Gestational sac" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="46862004" display="Gluteal region" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="60734001" display="Great saphenous vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="85562004" display="Hand" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="69536005" display="Head" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="774007" display="Head and Neck" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="80891009" display="Heart" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="76015000" display="Hepatic artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="8993003" display="Hepatic vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="24136001" display="Hip joint" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="85050009" display="Humerus" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="11708003" display="Hypogastric region" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="81502006" display="Hypopharynx" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="34516001" display="Ileum" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="10293006" display="Iliac artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="244411005" display="Iliac vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="22356005" display="Ilium" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="33795007" display="Inferior mesenteric artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="64131007" display="Inferior vena cava" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="26893007" display="Inguinal region" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="12691009" display="Innominate artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="8887007" display="Innominate vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="361078006" display="Internal Auditory Canal" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="86117002" display="Internal carotid artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="90024005" display="Internal iliac artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="12123001" display="Internal jugular vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="69327007" display="Internal mammary artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="1101003" display="Intracranial" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="661005" display="Jaw region" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="21306003" display="Jejunum" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="39352004" display="Joint" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="64033007" display="Kidney" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="72696002" display="Knee" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="59749000" display="Lacrimal artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="14742008" display="Large intestine" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="4596009" display="Larynx" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="66720007" display="Lateral Ventricle" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="82471001" display="Left atrium" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="113270003" display="Left femoral artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="273202007" display="Left hepatic vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="133945003" display="Left hypochondriac region" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="85119005" display="Left inguinal region" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="68505006" display="Left lower quadrant of abdomen" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="133943005" display="Left lumbar region" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="70253006" display="Left portal vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="50408007" display="Left pulmonary artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="86367003" display="Left upper quadrant of abdomen" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="87878005" display="Left ventricle" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="113264009" display="Lingual artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="10200004" display="Liver" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="30021000" display="Lower leg" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="34635009" display="Lumbar artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="52612000" display="Lumbar region" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="122496007" display="Lumbar spine" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="297173004" display="Lumbo-sacral spine" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="91747007" display="Lumen of blood vessel" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="39607008" display="Lung" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="59066005" display="Mastoid bone" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="70925003" display="Maxilla" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="72410000" display="Mediastinum" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="86570000" display="Mesenteric artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="128583004" display="Mesenteric vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="17232002" display="Middle cerebral artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="273099000" display="Middle hepatic vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="243977002" display="Morisons pouch" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="123851003" display="Mouth" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="360955006" display="Nasopharynx" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="45048000" display="Neck" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="416319003" display="Neck, Chest, Abdomen and Pelvis" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="416152001" display="Neck, Chest and Abdomen" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="417437006" display="Neck and Chest" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="45206002" display="Nose" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="31145008" display="Occipital artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="32114007" display="Occipital vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="53549008" display="Ophthalmic artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="55024004" display="Optic canal" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="363654007" display="Orbital structure" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="15497006" display="Ovary" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="15776009" display="Pancreas" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="69930009" display="Pancreatic duct" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="110621006" display="Pancreatic duct and bile duct systems" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="91691001" display="Parasternal" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="111002" display="Parathyroid" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="45289007" display="Parotid gland" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="64234005" display="Patella" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="816092008" display="Pelvis" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="282044005" display="Penile artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="18911002" display="Penis" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="38864007" display="Perineum" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="8821006" display="Peroneal artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="54066008" display="Pharynx" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="312535008" display="Pharynx and larynx" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="78067005" display="Placenta" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="43899006" display="Popliteal artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="32361000" display="Popliteal fossa" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="56849005" display="Popliteal vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="32764006" display="Portal vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="70382005" display="Posterior cerebral artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="43119007" display="Posterior communicating artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="13363002" display="Posterior tibial artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="31677005" display="Profunda femoris artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="23438002" display="Profunda femoris vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="41216001" display="Prostate" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="81040000" display="Pulmonary artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="122972007" display="Pulmonary vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="45631007" display="Radial artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="62413002" display="Radius" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="110535000" display="Radius and ulna" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="53843000" display="Rectouterine pouch" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="34402009" display="Rectum" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="2841007" display="Renal artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="56400007" display="Renal vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="82849001" display="Retroperitoneum" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="113197003" display="Rib" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="73829009" display="Right atrium" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="69833005" display="Right femoral artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="272998002" display="Right hepatic vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="133946002" display="Right hypochondriac region" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="37117007" display="Right inguinal region" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="48544008" display="Right lower quadrant of abdomen" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="133944004" display="Right lumbar region" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="73931004" display="Right portal vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="78480002" display="Right pulmonary artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="50519007" display="Right upper quadrant of abdomen" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="53085002" display="Right ventricle" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="39723000" display="Sacroiliac joint" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="54735007" display="Sacrum" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="128587003" display="Saphenofemoral junction" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="362072009" display="Saphenous vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="41695006" display="Scalp" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="79601000" display="Scapula" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="18619003" display="Sclera" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="20233005" display="Scrotum" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="42575006" display="Sella turcica" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="64739004" display="Seminal vesicle" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="58742003" display="Sesamoid bones of foot" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="16982005" display="Shoulder" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="60184004" display="Sigmoid colon" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="89546000" display="Skull" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="30315005" display="Small intestine" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="2748008" display="Spinal cord" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="421060004" display="Spine" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="78961009" display="Spleen" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="22083002" display="Splenic artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="35819009" display="Splenic vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="7844006" display="Sternoclavicular joint" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="56873002" display="Sternum" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="69695003" display="Stomach" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="36765005" display="Subclavian artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="9454009" display="Subclavian vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="19695001" display="Subcostal" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="54019009" display="Submandibular gland" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="181349008" display="Superficial femoral artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="397364003" display="Superficial femoral vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="43863001" display="Superior left pulmonary vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="42258001" display="Superior mesenteric artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="8629005" display="Superior right pulmonary vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="72021004" display="Superior thyroid artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="48345005" display="Superior vena cava" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="77621008" display="Supraclavicular region of neck" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="11708003" display="Suprapubic region" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="53620006" display="Temporomandibular joint" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="40689003" display="Testis" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="42695009" display="Thalamus" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="68367000" display="Thigh" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="49841001" display="Third ventricle" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="113262008" display="Thoracic aorta" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="122495006" display="Thoracic spine" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="297172009" display="Thoraco-lumbar spine" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="43799004" display="Thorax" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="76505004" display="Thumb" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="9875009" display="Thymus" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="69748006" display="Thyroid" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="12611008" display="Tibia" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="110536004" display="Tibia and fibula" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="29707007" display="Toe" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="21974007" display="Tongue" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="44567001" display="Trachea" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="110726009" display="Trachea and bronchus" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="485005" display="Transverse colon" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="23416004" display="Ulna" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="44984001" display="Ulnar artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="50536004" display="Umbilical artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="90290004" display="Umbilical region" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="284639000" display="Umbilical vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="40983000" display="Upper arm" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="431491007" display="Upper urinary tract" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="87953007" display="Ureter" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="13648007" display="Urethra" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="35039007" display="Uterus" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="76784001" display="Vagina" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="29092000" display="Vein" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="85234005" display="Vertebral artery" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="45292006" display="Vulva" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="74670003" display="Wrist joint" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="13881006" display="Zygoma" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
     </CodeType>
     <CodeType name="practiceSettingCode" classScheme="urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead">
         <Code code="R-300E3" display="Accident and Emergency" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
@@ -334,19 +644,22 @@
         <Code code="urn:hl7-org:sdwg:ccda-structuredBody:2.2" display="ccda-structuredBody:2.2" codingScheme="2.16.840.1.113883.4.642.1.1407" system="http://terminology.hl7.org/CodeSystem/hl7-document-format-codes"/>
         <Code code="urn:hl7-org:sdwg:ccda-nonXMLBody:2.2" display="ccda-nonXMLBody:2.2" codingScheme="2.16.840.1.113883.4.642.1.1407" system="http://terminology.hl7.org/CodeSystem/hl7-document-format-codes"/>
     </CodeType>
+
     <CodeType name="mimeType">
         <Code  code="application/pdf" ext="pdf"/>
-        <Code  code="text/xml" ext="xml"/>
         <Code  code="application/x-hl7" ext="hl7"/>
         <Code  code="application/dicom" ext="dicom"/>
         <Code  code="application/dicom-kos" ext="dicom-kos"/>
+        <Code  code="text/xml" ext="xml"/>
         <Code  code="text/plain" ext="txt"/>
+        <Code  code="text/goofy" ext="gfy"/>
         <Code  code="multipart/related" ext="mpr"/>
         <Code  code="image/tiff" ext="tiff"/>
         <Code  code="image/jpeg" ext="jpeg"/>
         <Code  code="image/gif" ext="gif"/>
-        <Code  code="text/goofy" ext="gfy"/>
+        <Code  code="image/png" ext="png"/>
     </CodeType>
+
     <AssigningAuthority id="&amp;1.3.6.1.4.1.21367.13.20.1000&amp;ISO" display="IHERED"/>
     <AssigningAuthority id="&amp;1.3.6.1.4.1.21367.13.20.2000&amp;ISO" display="IHEGREEN"/>
     <AssigningAuthority id="&amp;1.3.6.1.4.1.21367.13.20.3000&amp;ISO" display="IHEBLUE"/>

@@ -211,6 +211,19 @@ public class SimulatorProperties {
      * Endpoint to use to send the indicated transaction to this Simulator.
      * Updates to this property are ignored.
      */
+    public static final String                            xcdrEndpoint = "XCDR_endpoint";
+
+    /**
+     * Endpoint to use to send the indicated transaction to this Simulator.
+     * Updates to this property are ignored.
+     */
+    public static final String                         xcdrTlsEndpoint = "XCDR_TLS_endpoint";
+
+
+    /**
+     * Endpoint to use to send the indicated transaction to this Simulator.
+     * Updates to this property are ignored.
+     */
     public static final String                            xcirEndpoint = "XCIR_endpoint";
 
     /**
@@ -380,17 +393,17 @@ public class SimulatorProperties {
      */
     public static final String locked = "Locked";
 
-    public static final String pdbEndpoint = "Provide DocumentBundle Endpoint";
+//    public static final String pdbEndpoint = "Provide DocumentBundle Endpoint";
+//
+//    public static final String pdbTlsEndpoint = "Provide DocumentBundle TLS Endpoint";
 
-    public static final String pdbTlsEndpoint = "Provide DocumentBundle TLS Endpoint";
+//    public static final String fhirTlsEndpoint = "FHIR TLS Endpoint";
+//
+//    public static final String fhirEndpoint = "FHIR Endpoint";
 
-    public static final String fhirTlsEndpoint = "FHIR TLS Endpoint";
-
-    public static final String fhirEndpoint = "FHIR Endpoint";
-
-    public static final String fdrEndpoint = "Find Document Reference Endpoint";
-
-    public static final String fdrTlsEndpoint = "Find Document Reference Endpoint";
+//    public static final String fdrEndpoint = "Find Document Reference Endpoint";
+//
+//    public static final String fdrTlsEndpoint = "Find Document Reference Endpoint";
 
     public static final String rdrEndpoint = "Read Document Reference Endpoint";
 

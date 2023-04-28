@@ -1,5 +1,6 @@
 package gov.nist.toolkit.session.server.services;
 
+import gov.nist.toolkit.actortransaction.shared.ActorType;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.Uid;
 import gov.nist.toolkit.registrymetadata.client.Uids;
@@ -16,46 +17,46 @@ import java.util.List;
 import java.util.Map;
 
 public class RetrieveDocument extends CommonService {
-	Session session;
-	
-	public RetrieveDocument(Session session) throws XdsException {
-		this.session = session;
-	}
-	
-	public List<Result> run(SiteSpec site, Uids uids) throws Exception {
-		session.setSiteSpec(site);
+    Session session;
 
-			// the client should fill in the uids details, but for now... 
-			// eventually, the client request for getRepositoryNames needs to change to 
-			// getRepositories and the repuid and home are included. Then
-			// the client can send back a complete uid
-			AnyIds aids = session.queryServiceManager().fillInHome(new AnyIds(uids));
-			uids = new Uids(aids);
-			
-			// set repository from tool selection
-			for (Uid uid : uids.uids) {
-				if ((uid.repositoryUniqueId == null || uid.repositoryUniqueId.equals(""))
-						&& session.repUid != null && !session.repUid.equals(""))
-					uid.repositoryUniqueId = session.repUid;
-			}
+    public RetrieveDocument(Session session) throws XdsException {
+        this.session = session;
+    }
 
-			TestInstance testInstance = new TestInstance("RetrieveDocumentSet", session.getTestSession());
-			List<String> sections = new ArrayList<String>();
-			Map<String, String> params = new HashMap<String, String>();
-			if (session.siteSpec.isRG()) {
-				sections.add("XCA");
-				params.put("$home$", site.homeId);
-			} 
-			else if (session.siteSpec.isIG()) {
-				sections.add("IG");
-				params.put("$home$", site.homeId);
-			} 
-			else {
-				sections.add("XDS");
-			}
-			List<Result> results = session.queryServiceManager().perRepositoryRetrieve(uids, testInstance, sections, params);
-			return results;
-	}
+    public List<Result> run(SiteSpec site, Uids uids) throws Exception {
+        session.setSiteSpec(site);
+
+        // the client should fill in the uids details, but for now...
+        // eventually, the client request for getRepositoryNames needs to change to
+        // getRepositories and the repuid and home are included. Then
+        // the client can send back a complete uid
+        AnyIds aids = session.queryServiceManager().fillInHome(new AnyIds(uids));
+        uids = new Uids(aids);
+
+        // set repository from tool selection
+        for (Uid uid : uids.uids) {
+            if ((uid.repositoryUniqueId == null || uid.repositoryUniqueId.equals(""))
+                    && session.repUid != null && !session.repUid.equals(""))
+                uid.repositoryUniqueId = session.repUid;
+        }
+
+        TestInstance testInstance = new TestInstance("RetrieveDocumentSet", session.getTestSession());
+        List<String> sections = new ArrayList<String>();
+        Map<String, String> params = new HashMap<String, String>();
+
+        if (session.siteSpec.isRG()) {
+            sections.add("XCA");
+            params.put("$home$", site.homeId);
+        } else if (session.siteSpec.isIG()) {
+            sections.add("IG");
+            params.put("$home$", site.homeId);
+        } else {
+            sections.add("XDS");
+        }
+
+        List<Result> results = session.queryServiceManager().perRepositoryRetrieve(uids, testInstance, sections, params);
+        return results;
+    }
 
 
 }

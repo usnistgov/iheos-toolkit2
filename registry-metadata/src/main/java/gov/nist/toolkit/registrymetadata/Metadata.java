@@ -48,6 +48,7 @@ public class Metadata {
 	List<OMElement> allObjects = null;
 	List<String> objectsToDeprecate = null;
 	List<String> objectsReferenced = null;
+	OMElement submitObjectsRequest = null;
 	// for id, list of classification uuids
 	HashMap<String, List<String>> classificationsOfId = null;
 
@@ -398,6 +399,7 @@ public class Metadata {
 		if (wrapper == null) {
 			try {
 				wrapper = find_metadata_wrapper();
+				submitObjectsRequest = find_submit_objects_request();
 			} catch (NoMetadataException e) {
 				wrapper = null;
 			}
@@ -437,6 +439,7 @@ public class Metadata {
 		if (parse) {
 			try {
 				wrapper = find_metadata_wrapper();
+				submitObjectsRequest = find_submit_objects_request();
 			} catch (NoMetadataException e) {
 				wrapper = null;
 			}
@@ -457,6 +460,7 @@ public class Metadata {
 		if (find_wrapper) {
 			try {
 				wrapper = find_metadata_wrapper();
+				submitObjectsRequest = find_submit_objects_request();
 			} catch (NoMetadataException e) {
 				wrapper = null;
 			}
@@ -478,6 +482,7 @@ public class Metadata {
 		if (find_wrapper) {
 			try {
 				wrapper = find_metadata_wrapper();
+				submitObjectsRequest = find_submit_objects_request();
 			} catch (NoMetadataException e) {
 				wrapper = null;
 			}
@@ -2529,6 +2534,34 @@ public class Metadata {
 				EbRS.SOR_example);
 	}
 
+	private OMElement find_submit_objects_request() throws MetadataException {
+		if (metadata == null || metadata.getLocalName() == null)
+			throw new NoMetadataException(
+					"find_metadata_wrapper: Cannot find a wrapper element, top element is NULL"
+							+ ". A wrapper is one of the XML elements that holds metadata (ExtrinsicObject, RegistryPackage, Association etc.)",
+					EbRS.SOR_example);
+
+		// This case happens when we read metadata from a metadata.xml or similar file
+		// as part of a test step.
+		// The root element at this stage is <SubmitObjectsRequest>
+		if (metadata.getLocalName().equals("SubmitObjectsRequest"))
+			return metadata;
+
+		// This happens when a simulator receives a Provide and Register request
+		// The root element at this stage is the <ProvideAndRegisterDocumentSetRequest>
+		if (metadata.getLocalName().equals("ProvideAndRegisterDocumentSetRequest")) {
+			OMElement potential = metadata.getFirstElement();
+			if ((potential != null) && (potential.getLocalName().equals("SubmitObjectsRequest"))) {
+				return potential;
+			}
+		}
+
+		// If the metadata does not contain a SubmitObjectsRequest as the top level element,
+		// this is of no interest to this method.
+		return null;
+	}
+
+
 	OMElement find_metadata_wrapper2(OMElement ele) throws MetadataException {
 		for (@SuppressWarnings("unchecked")
 			 Iterator<OMElement> it = ele.getChildElements(); it.hasNext();) {
@@ -3380,6 +3413,16 @@ public class Metadata {
 				"SubmitObjectsRequest", lcm);
 		OMElement lrol = om_factory().createOMElement(
 				"RegistryObjectList", rim);
+
+		// TODO There is a better way to do this
+		// This is for the XCDR transaction that adds <RequestSLotList> to <SubmitObjectsRequest>
+		if (submitObjectsRequest != null) {
+			Iterator<OMElement> itxx = submitObjectsRequest.getChildrenWithLocalName("RequestSlotList");
+			if (itxx.hasNext()) {
+				OMElement requestSlotList = itxx.next();
+				sor.addChild(requestSlotList);
+			}
+		}
 		sor.addChild(lrol);
 
 		List<OMElement> objects = getV3();
@@ -3390,6 +3433,19 @@ public class Metadata {
 
 		return sor;
 
+	}
+
+	public OMElement getSubmitObjectsRequestRequestSlotList() {
+		OMElement rtn = null;
+		// TODO There is a better way to do this
+		if (submitObjectsRequest != null) {
+			Iterator<OMElement> itxx = submitObjectsRequest.getChildrenWithLocalName("RequestSlotList");
+			if (itxx.hasNext()) {
+				OMElement requestSlotList = itxx.next();
+				rtn = requestSlotList;
+			}
+		}
+		return rtn;
 	}
 
 	public OMElement asProvideAndRegister() throws XdsInternalException {

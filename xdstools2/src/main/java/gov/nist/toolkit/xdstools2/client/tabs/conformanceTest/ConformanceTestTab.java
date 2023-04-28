@@ -39,6 +39,7 @@ import gov.nist.toolkit.xdstools2.client.event.testContext.TestContextChangedEve
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.BuildIGTestOrchestrationButton;
+import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.BuildIGXTestOrchestrationButton;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.util.SimpleCallbackT;
 import gov.nist.toolkit.xdstools2.client.widgets.LaunchInspectorClickHandler;
@@ -840,8 +841,18 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
 			initializationPanel.add(orchInit.panel());
 		}
+		else if (currentActorOption.isRgx()) {
+			orchInit = new BuildRgxTestOrchestrationButton(this, initializationPanel, label, testContext, testContextView, this, pifType);
+			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
+			initializationPanel.add(orchInit.panel());
+		}
 		else if (currentActorOption.isIg()) {
 			orchInit = new BuildIGTestOrchestrationButton(this, initializationPanel, label, testContext, testContextView, this, false, currentActorOption);
+			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
+			initializationPanel.add(orchInit.panel());
+		}
+		else if (currentActorOption.isIgx()) {
+			orchInit = new BuildIGXTestOrchestrationButton(this, initializationPanel, label, testContext, testContextView, this, false, currentActorOption);
 			orchInit.addSelfTestClickHandler(new RefreshTestCollectionHandler());
 			initializationPanel.add(orchInit.panel());
 		}

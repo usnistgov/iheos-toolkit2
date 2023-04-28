@@ -27,6 +27,7 @@ public enum TransactionType implements Serializable, IsSerializable {
     XCRMU("ITI-92", "XCRMU", "xcrmu", "xcrmu.b", "xcrmu.b.as", false, "urn:ihe:iti:2018:RestrictedUpdateDocumentSet", "urn:ihe:iti:2018:RestrictedUpdateDocumentSetResponse", false, SimulatorProperties.xcRmuEndpoint, SimulatorProperties.xcRmuTlsEndpoint, false),
     XC_QUERY("ITI-38", "Cross-Community Query", "xcq", "xcq", "xcq.as", false, "urn:ihe:iti:2007:CrossGatewayQuery", "urn:ihe:iti:2007:CrossGatewayQueryResponse", false, SimulatorProperties.xcqEndpoint, SimulatorProperties.xcqTlsEndpoint, false),
     XC_RETRIEVE("ITI-39", "Cross-Community Retrieve", "xcr", "xcr", "xcr.as", false, "urn:ihe:iti:2007:CrossGatewayRetrieve", "urn:ihe:iti:2007:CrossGatewayRetrieveResponse", true, SimulatorProperties.xcrEndpoint, SimulatorProperties.xcrTlsEndpoint, true),
+    XC_PROVIDE("ITI-80", "Cross-Community Document Provide", "xcdrp", "xcdrp", "xcdrp.as", false, "urn:ihe:iti:2015:CrossGatewayDocumentProvide" , "urn:ihe:iti:2015:CrossGatewayDocumentProvideResponse" ,true, SimulatorProperties.xcdrEndpoint, SimulatorProperties.xcdrTlsEndpoint, true ),
     MPQ("ITI-51", "Multi-Patient Query", "mpq", "mpq", "mpq.as", false, "urn:ihe:iti:2009:MultiPatientStoredQuery", "urn:ihe:iti:2009:MultiPatientStoredQueryResponse", false, "MPQ", "tlsMPQ", false),
     XC_PATIENT_DISCOVERY("ITI-55", "Cross Community Patient Discovery", "xcpd", "xcpd", "xcpd.as", false, "urn:hl7-org:v3:PRPA_IN201305UV02:CrossGatewayPatientDiscovery", "urn:hl7-org:v3:PRPA_IN201306UV02:CrossGatewayPatientDiscovery", false, "XC_PATIENT_DISCOVERY", "tlsXC_PATIENT_DISCOVERY", false),
 //    DIRECT("ONC-DIRECT", "ONC-DIRECT", "direct", "direct", "direct.as", false, "", "", false, null, null),
@@ -41,13 +42,13 @@ public enum TransactionType implements Serializable, IsSerializable {
     REMOVE_METADATA("ITI-62", "Remove Metadata", "rm", "rm.b", "rm.b.as", false, "urn:ihe:iti:2010:DeleteDocumentSet", "urn:ihe:iti:2010:DeleteDocumentSetResponse", false, SimulatorProperties.removeMetadataEndpoint, SimulatorProperties.removeMetadataTlsEndpoint, false),
     REMOVE_DOCUMENTS("ITI-86", "Remove Documents", "rd", "rd.b", "rd.b.as", false, "urn:ihe:iti:2017:RemoveDocuments", "urn:ihe:iti:2017:RemoveDocumentsResponse", false, SimulatorProperties.removeDocumentsEndpoint, SimulatorProperties.removeDocumentsTlsEndpoint, false),
 	//    ANY("ANY", "ANY", "any", "any", "any.as", false, "any", "any", false, null, null, false),
-    FHIR("FHIR", "FHIR", "fhir", "fhir", "fhir.as", true, "fhir", "fhir", true, SimulatorProperties.fhirEndpoint, SimulatorProperties.fhirTlsEndpoint, true, FhirVerb.NONE),
-    PROV_DOC_BUNDLE("ITI-65", "Provide Document Bundle", "pdb", "pdb", "pdb.as", false, "fhir", "fhir", false, SimulatorProperties.pdbEndpoint, SimulatorProperties.pdbTlsEndpoint, true, FhirVerb.TRANSACTION),
+//    FHIR("FHIR", "FHIR", "fhir", "fhir", "fhir.as", true, "fhir", "fhir", true, SimulatorProperties.fhirEndpoint, SimulatorProperties.fhirTlsEndpoint, true, FhirVerb.NONE),
+//    PROV_DOC_BUNDLE("ITI-65", "Provide Document Bundle", "pdb", "pdb", "pdb.as", false, "fhir", "fhir", false, SimulatorProperties.pdbEndpoint, SimulatorProperties.pdbTlsEndpoint, true, FhirVerb.TRANSACTION),
     // for these FHIR types, the name field here matches the resource type
     // should only be looked for with the FhirVerb option on find()
-    FIND_DOC_REFS("ITI-67", "Find DocumentReference", "fdr", "fdr", "fdr.as", false, "fhir", "fhir", false, SimulatorProperties.fdrEndpoint, SimulatorProperties.fdrTlsEndpoint, true, FhirVerb.QUERY),
-    READ_DOC_REF("ITI-67", "Read DocumentReference", "rdr", "rdr", "rdr.as", false, "fhir", "fhir", false, SimulatorProperties.rdrEndpoint, SimulatorProperties.rdrTlsEndpoint, true, FhirVerb.READ),
-    READ_BINARY("ITI-68", "Binary", "br", "br", "br.as", false, "fhir", "fhir", false, SimulatorProperties.rdBinaryEndpoint, SimulatorProperties.rdBinaryTlsEndpoint, true, FhirVerb.READ),
+//    FIND_DOC_REFS("ITI-67", "Find DocumentReference", "fdr", "fdr", "fdr.as", false, "fhir", "fhir", false, SimulatorProperties.fdrEndpoint, SimulatorProperties.fdrTlsEndpoint, true, FhirVerb.QUERY),
+//    READ_DOC_REF("ITI-67", "Read DocumentReference", "rdr", "rdr", "rdr.as", false, "fhir", "fhir", false, SimulatorProperties.rdrEndpoint, SimulatorProperties.rdrTlsEndpoint, true, FhirVerb.READ),
+//    READ_BINARY("ITI-68", "Binary", "br", "br", "br.as", false, "fhir", "fhir", false, SimulatorProperties.rdBinaryEndpoint, SimulatorProperties.rdBinaryTlsEndpoint, true, FhirVerb.READ),
     /*
     Reuse ITI-38 and ITI-39 for Sequoia's QD and RD. A new UseSequoiaHeader test plan parameter dynamically adds security related headers.
 	QD("QD", "Sequoia Query Document", "qd", "qd", "qd.as", false, "urn:ihe:iti:2007:CrossGatewayQuery", "urn:ihe:iti:2007:CrossGatewayQueryResponse", false, SimulatorProperties.xcqEndpoint, SimulatorProperties.xcqTlsEndpoint),

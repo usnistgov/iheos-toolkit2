@@ -215,6 +215,20 @@ public enum ActorType implements IsSerializable, Serializable {
             false,
             Constants.USE_SHORTNAME
     ),
+
+    INITIATING_GATEWAY_X(
+            "Initiating Gateway X",
+            Arrays.asList("INIT_GATEWAY"),
+            "igx",
+            "gov.nist.toolkit.simcommon.server.factories.IGXActorFactory",
+            "gov.nist.toolkit.fhir.simulators.sim.ig.IgxActorSimulator",
+            Arrays.asList(TransactionType.IG_QUERY, TransactionType.IG_RETRIEVE),
+            true,
+            null,
+            false,
+            Constants.USE_SHORTNAME
+    ),
+
     INITIATING_IMAGING_GATEWAY(
        "Initiating Imaging Gateway",
        Arrays.asList("INIT_IMG_GATEWAY"),
@@ -246,12 +260,38 @@ public enum ActorType implements IsSerializable, Serializable {
             "rg",
             "gov.nist.toolkit.simcommon.server.factories.RGActorFactory",
             "gov.nist.toolkit.fhir.simulators.sim.rg.RGADActorSimulator",
-            Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE, TransactionType.XCPD, TransactionType.RMU, TransactionType.XCRMU),
+            Arrays.asList(
+                    TransactionType.XC_QUERY,
+                    TransactionType.XC_RETRIEVE,
+                    TransactionType.XCPD,
+                    TransactionType.XC_PROVIDE,
+                    TransactionType.RMU,
+                    TransactionType.XCRMU),
             true,
             null,
             false,
             Constants.USE_SHORTNAME
     ),
+
+    RESPONDING_GATEWAY_X(
+            "Responding Gateway X",
+            Arrays.asList("RESP_GATEWAY_X"),
+            "rgx",
+            "gov.nist.toolkit.simcommon.server.factories.RGXActorFactory",
+            "gov.nist.toolkit.fhir.simulators.sim.rg.RGXADActorSimulator",
+            Arrays.asList(
+                    TransactionType.XC_QUERY,
+                    TransactionType.XC_RETRIEVE,
+                    TransactionType.XCPD,
+                    TransactionType.XC_PROVIDE,
+                    TransactionType.RMU,
+                    TransactionType.XCRMU),
+            true,
+            null,
+            false,
+            Constants.USE_SHORTNAME
+    ),
+
     OD_RESPONDING_GATEWAY(
             "Responding Gateway - On Demand",
             Arrays.asList("On_DEMAND_RESP_GATEWAY"),
@@ -554,6 +594,10 @@ public enum ActorType implements IsSerializable, Serializable {
         return this.equals(RESPONDING_GATEWAY);
     }
 
+    public boolean isRGXActor() {
+        return this.equals(RESPONDING_GATEWAY_X);
+    }
+
     public boolean isRigActor() {
         return this.equals(RESPONDING_IMAGING_GATEWAY);
     }
@@ -562,13 +606,15 @@ public enum ActorType implements IsSerializable, Serializable {
         return this.equals(INITIATING_GATEWAY);
     }
 
+    public boolean isIGXActor() {
+        return this.equals(INITIATING_GATEWAY_X);
+    }
+
     public boolean isIigActor() {
         return this.equals(INITIATING_IMAGING_GATEWAY);
     }
 
-    public boolean isGW() {
-        return isRGActor() || isIGActor() || isIigActor() || isRigActor();
-    }
+    public boolean isGW() { return isRGActor() || isIGActor() || isIigActor() || isRigActor() || isIGXActor() || isRGXActor(); }
 
     public boolean isImagingDocumentSourceActor() {
         return this.equals(IMAGING_DOC_SOURCE);

@@ -648,6 +648,13 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         return new OrchestrationManager().buildIgTestEnvironment(s, request.getIgOrchestrationRequest());
     }
     @Override
+    public RawResponse buildIgxTestOrchestration(BuildIgxTestOrchestrationRequest request) throws Exception{
+        installCommandContext(request);
+        Session s = getSession();
+        if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+        return new OrchestrationManager().buildIgxTestEnvironment(s, request.getIgxOrchestrationRequest());
+    }
+    @Override
     public RawResponse buildIigTestOrchestration(BuildIigTestOrchestrationRequest request) throws Exception{
         installCommandContext(request);
         Session s = getSession();
@@ -660,6 +667,13 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         Session s = getSession();
         if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
         return new OrchestrationManager().buildRgTestEnvironment(s, request.getRgOrchestrationRequest());
+    }
+    @Override
+    public RawResponse buildRgxTestOrchestration(BuildRgxTestOrchestrationRequest request) throws Exception{
+        installCommandContext(request);
+        Session s = getSession();
+        if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+        return new OrchestrationManager().buildRgxTestEnvironment(s, request.getRgxOrchestrationRequest());
     }
     @Override
     public RawResponse buildRigTestOrchestration(BuildRigTestOrchestrationRequest request) throws Exception{

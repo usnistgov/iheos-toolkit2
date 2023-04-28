@@ -2,18 +2,34 @@ package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.docref.MetadataTables;
 import gov.nist.toolkit.registrymetadata.Metadata;
+import gov.nist.toolkit.registrymsg.registry.AdhocQueryRequest;
+import gov.nist.toolkit.registrymsg.repository.RetrieveItemRequestModel;
+import gov.nist.toolkit.registrymsg.repository.RetrieveRequestModel;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
 import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.simcommon.server.SimDbEvent;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
+import gov.nist.toolkit.valregmsg.registry.storedquery.support.SqParams;
 import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.Files;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.logging.Logger;
 
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -32,14 +48,12 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 
 public class Validator {
 	Metadata m;
+	AdhocQueryRequest request;
+	SqParams storedQueryParams;
+	RetrieveRequestModel retrieveRequestModel;
 	StringBuffer errs = new StringBuffer();
 	boolean error = false;
 	OMElement test_assertions;
@@ -73,6 +87,21 @@ public class Validator {
 
 	public Validator setM(Metadata m) {
 		this.m = m;
+		return this;
+	}
+
+	public Validator setRequest(AdhocQueryRequest request) {
+		this.request = request;
+		return this;
+	}
+
+	public Validator setStoredQueryParams(SqParams storedQueryParams) {
+		this.storedQueryParams = storedQueryParams;
+		return this;
+	}
+
+	public Validator setRetrieveRequestModel(RetrieveRequestModel retrieveRequestModel) {
+		this.retrieveRequestModel = retrieveRequestModel;
 		return this;
 	}
 
@@ -807,6 +836,58 @@ public class Validator {
 		return rtn;
 	}
 
+	public boolean namedMetadataCodeFromValueSet(String metadataField, String environment, String valueSetOID) throws MetadataException {
+		boolean rtn = false;
+		Code submittedCode = extractNamedMetadataCoded(metadataField);
+
+		Installation i = Installation.instance();
+		File f = i.environmentFile(environment);
+		Path p = Paths.get(f.getAbsolutePath(), "value_sets", valueSetOID + ".txt");
+		f = p.toFile();
+		if (! f.exists()) {
+			err("The value set file does not exist in environment: " +
+					environment +
+					". and Value Set OID: " +
+					valueSetOID);
+		} else {
+			List<String> valueSetList = readTextFile(p);
+			Iterator<String> it = valueSetList.iterator();
+			while (it.hasNext() && !rtn) {
+				String[] tokens = it.next().split("\t");
+				if (tokens.length >= 3) {
+					Code code = new Code(tokens[0], tokens[1], tokens[2]);
+					if (submittedCode.equals(code)) {
+						rtn = true;
+					}
+				}
+			}
+			if (!rtn) {
+				err("Did not find the submitted coded value (" +
+						submittedCode.toString() +
+						") in value set: " + valueSetOID +
+						". Value set contains " +
+						valueSetList.size() +
+						" item(s).");
+			}
+
+		}
+
+
+		return rtn;
+	}
+
+	private List<String> readTextFile(Path path) {
+		List<String> rtn = new ArrayList<>();
+
+		try (Stream<String> stream = Files.lines(path)) {
+			rtn = stream
+					.filter(line -> !line.startsWith("#"))
+					.collect(Collectors.toList());
+		} catch (IOException e) {
+		}
+		return rtn;
+	}
+
 	private String extractNamedMetadata(String metadataField) throws MetadataException {
 		String rtn = "";
 		OMElement oe;
@@ -839,12 +920,25 @@ public class Validator {
 				oe = getSingleDocumentEntry();
 				rtn = m.getUniqueIdValue(oe);
 				break;
+			// RequestSlotList.homeCommunityId is not in the traditional metadata area
+			// We have to pull from a different spot
+			case "RequestSlotList.homeCommunityId":
+				oe = m.getSubmitObjectsRequestRequestSlotList();
+				rtn = extractSingleSlotValue(oe, "homeCommunityId");
+				break;
+			// Cases below are taken from Stored Queries
+			case "AdhocQuery.DocumentEntry.patientId":
+				rtn = request.getPatientId();
+				break;
 
 			default:
+				rtn = "Validator::extractNamedMetadata does not understand: " + metadataField;
 				break;
 		}
 		return rtn;
 	}
+
+
 
 	private OMElement getSingleDocumentEntry() throws MetadataException {
 		HashMap<String, OMElement> map = m.getDocumentUidMap();
@@ -920,6 +1014,149 @@ public class Validator {
 		}
 		return codeList;
 	}
+
+	/*
+        extractSingleSlotValue
+        Extracts and returns all Slot values in a SlotList as a single string
+        This is used when the caller is expecting a single Slot in the list.
+        If there are multiple slots, the method will concatenate the values.
+        We could throw an exception or return just the first value, but this
+        will get the attention of someone reviewing validation logs.
+	 */
+	private String extractSingleSlotValue(OMElement e, String slotName) throws MetadataException{
+		String rtn = "";
+		String delimiter = "";
+
+		List<String> stringList = extractSlotValues(e, slotName);
+		for (String x: stringList) {
+			rtn += delimiter + x;
+			delimiter = ":";
+		}
+		return rtn;
+	}
+
+	/*
+        extractSlotValues
+        Extracts and returns a list of all Slot values found in a SlotList.
+	 */
+	private List<String> extractSlotValues(OMElement e, String slotName) throws MetadataException {
+		List<String> rtn = new ArrayList<>();
+
+		if (e != null) {
+			Iterator<OMElement> iterator = e.getChildElements();
+			while (iterator.hasNext()) {
+				OMElement slot = iterator.next();
+				String name = slot.getAttributeValue(new QName("name"));
+				if ((!(name == null)) && name.equals(slotName)) {
+					OMElement valueList = slot.getFirstElement();
+					Iterator<OMElement> itValues = valueList.getChildElements();
+					while (itValues.hasNext()) {
+						OMElement value = itValues.next();
+						String x = value.getText();
+						rtn.add(x);
+					}
+				}
+			}
+		}
+		return rtn;
+	}
+
+	/*
+    This is the public method that is called to compare the value in a field in an adhoc query.
+    to an expected value provided by the caller.
+    The argument field is a string of the form:
+       AdhocQuery.SubmimssionSet.xxx
+       AdhocQuery.DocumentEntry.xxx
+    where the xxx labels correspond to ..
+    TODO fix above
+    For example: AdhocQuery.DocumentEntry.xx
+ */
+	public boolean namedFieldCompare(String field, String expectedValue) throws MetadataException {
+		String submittedValue = extractNamedField(field);
+		boolean rtn = true;
+		if (!expectedValue.equals(submittedValue)) {
+			err("Metadata Content Failure, key: " + field + ", expectedValue: " + expectedValue + ", submittedValue: " + submittedValue);
+			rtn = false;
+		}
+		return rtn;
+	}
+
+	public boolean namedFieldContains(String field, String expectedValue) throws XdsInternalException, MetadataException {
+		boolean rtn = true;
+		List<String> stringList = extractNamedFieldAsList(field);
+		if (stringList != null) {
+			Set<String> set = new HashSet<>(stringList);
+			if (!set.contains(expectedValue)) {
+				err("Named Field Failure for field: " + field + ". Did not find " + expectedValue + " in list of values.");
+				rtn = false;
+			}
+		} else {
+			err("Named Field Failure for field: " + field + ". There was no value for this field/key.");
+			rtn = false;
+		}
+
+		return rtn;
+	}
+
+	private List<String> extractNamedFieldAsList(String field) throws XdsInternalException, MetadataException {
+		List<String> rtn = null;
+		switch(field) {
+			case "AdhocQuery.DocumentEntry.objectType":
+				rtn = storedQueryParams.getListParm("$XDSDocumentEntryType");
+				break;
+			case "AdhocQuery.DocumentEntry.availabilityStatus":
+				rtn = storedQueryParams.getListParm("$XDSDocumentEntryStatus");
+				break;
+		}
+		return rtn;
+	}
+
+	private String extractNamedField(String field) throws MetadataException {
+		String rtn = "";
+		List<RetrieveItemRequestModel> models;
+		switch(field) {
+			case "AdhocQuery.DocumentEntry.patientId":
+				rtn = request.getPatientId();
+				break;
+			case "AdhocQuery.returnType":
+				//TODO fix how we get the ResponseOption element
+				OMElement x = request.getAdhocQueryRequestElement();
+				OMElement y = x.getFirstElement();
+//				OMElement z = x.getFirstChildWithName(new QName("{urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0}ResponseOption"));
+//				OMElement e = request.getAdhocQueryRequestElement().getFirstChildWithName(new QName("ResponseOption"));
+				rtn = y.getAttributeValue(new QName("returnType"));
+				break;
+				//TODO this was moved to the list section
+			case "AdhocQuery.DocumentEntry.objectType":
+				rtn = firstValue(request.getDocumentEntryObjectTypeList());
+				break;
+			case "XCR.homeCommunityId":
+				models = retrieveRequestModel.getModels();
+				rtn = models.get(0).getHomeId();
+				break;
+			case "XCR.repositoryUniqueId":
+				models = retrieveRequestModel.getModels();
+				rtn = models.get(0).getRepositoryId();
+				break;
+			case "XCR.documentId":
+				models = retrieveRequestModel.getModels();
+				rtn = models.get(0).getDocumentId();
+				break;
+			default:
+				break;
+		}
+		return rtn;
+	}
+
+	private String firstValue(List<String> valueList) {
+		String rtn = "";
+		if (valueList != null && valueList.size() > 0) {
+			rtn = valueList.get(0);
+		}
+		return rtn;
+	}
+
+
 
 	public void run_test_assertions(OMElement xml, OMElement instruction_output)  throws MetadataException, XdsInternalException, MetadataValidationException {
 		Metadata m = new Metadata(xml);

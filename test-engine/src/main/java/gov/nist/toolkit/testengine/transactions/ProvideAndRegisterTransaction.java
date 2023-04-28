@@ -39,10 +39,19 @@ import java.util.HashMap;
 
 public class ProvideAndRegisterTransaction extends RegisterTransaction {
 	boolean use_mtom = true;
+	boolean is_xca = false;
+	boolean useIG = false;
+	boolean removeHomeFromRequest = false;
+
 	HashMap<String, String> document_id_filenames = new HashMap<String, String>();
 
 	public ProvideAndRegisterTransaction(StepContext s_ctx, OMElement instruction, OMElement instruction_output) {
 		super(s_ctx, instruction, instruction_output);
+	}
+
+	public void setIsXca(boolean isXca) {
+		is_xca = isXca;
+		xds_version = BasicTransaction.xds_b;
 	}
 
 	@Override

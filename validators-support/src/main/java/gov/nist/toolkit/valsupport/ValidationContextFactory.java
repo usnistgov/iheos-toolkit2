@@ -17,6 +17,7 @@ public class ValidationContextFactory {
         return vc;
     }
 
+    // TODO Do we need to add something for XCDR?
     public static ValidationContext get(MessageTransaction trans, MessageDirection dir) {
         ValidationContext vc = new ValidationContext();
 

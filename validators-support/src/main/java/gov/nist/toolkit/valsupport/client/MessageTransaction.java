@@ -16,3 +16,4 @@ public enum MessageTransaction {
     RM,
     DIRECT
 }
+// TODO Do we need to  add something for XCDR?

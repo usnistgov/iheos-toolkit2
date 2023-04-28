@@ -24,12 +24,15 @@ class SimEndpoint {
     FhirVerb fhirVerb = FhirVerb.NONE
     TransactionType transactionType
 
+    /*
     def resourceNames = [
             'DocumentReference',
             'DocumentManifest',
             'Binary'
      //       'Patient'
     ]
+
+     */
 
     String toString() {
         "service=${service} actorType=${actorType} transactionType=${transactionType} simIdString=${simIdString} resourceType=${resourceType} fhirVerb=${fhirVerb}"
@@ -69,6 +72,7 @@ class SimEndpoint {
         else
             baseAddress = "${schemeName}://${hostName}:${port}/${partsList.subList(0,3).join('/')}"
 
+        /*
         transactionTypeName = partsList[simStart+3]// with FHIR this is sometimes null
         if (!transactionTypeName)
             transactionTypeName = 'fhir'
@@ -102,8 +106,9 @@ class SimEndpoint {
             else
                 transactionType = TransactionType.find(transactionTypeName, fhirVerb)
         }
+         */
 
-        def x = 0
+//        def x = 0
     }
 
     HttpHost getHost() {

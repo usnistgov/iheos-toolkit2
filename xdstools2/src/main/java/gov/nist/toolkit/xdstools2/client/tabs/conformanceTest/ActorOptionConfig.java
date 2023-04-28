@@ -132,9 +132,13 @@ public class ActorOptionConfig extends ActorOption {
         return actorTypeId != null && ActorType.RESPONDING_GATEWAY.getActorCode().equals(actorTypeId);
     }
 
+    public boolean isRgx() { return actorTypeId != null && ActorType.RESPONDING_GATEWAY_X.getActorCode().equals(actorTypeId);  }
+
     public boolean isIg() {
         return actorTypeId != null && ActorType.INITIATING_GATEWAY.getActorCode().equals(actorTypeId);
     }
+
+    public boolean isIgx() { return actorTypeId != null && ActorType.INITIATING_GATEWAY_X.getActorCode().equals(actorTypeId); }
 
     public boolean isReg() {
         return actorTypeId != null && ActorType.REGISTRY.getActorCode().equals(actorTypeId);

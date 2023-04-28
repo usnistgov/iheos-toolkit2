@@ -5,7 +5,7 @@
     <parent>
         <groupId>gov.nist.toolkit</groupId>
         <artifactId>tk-deps</artifactId>
-        <version>7.8.0</version><!-- xdstk -->
+        <version>7.9.0</version><!-- xdstk -->
         <relativePath>../tk-deps/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -192,6 +192,9 @@
                             <!-- end include all tests -->
                         </includes>
                         <!-- Exclude tests that disturb other tests or require to be run in complete isolation. -->
+<!--                        <excludes>-->
+<!--                            <exclude>**/StsSamlAssertionSpec.java</exclude>-->
+<!--                        </excludes>-->
                         <!--<parallel>classes</parallel>-->
                         <!--<runOrder>alphabetical</runOrder>-->
                         <!--<useUnlimitedThreads>true</useUnlimitedThreads>-->
