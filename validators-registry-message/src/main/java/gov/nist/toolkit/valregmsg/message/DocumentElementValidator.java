@@ -8,6 +8,7 @@ import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
+import gov.nist.toolkit.xdsexception.client.ToolkitRuntimeException;
 
 import java.util.List;
 
@@ -23,7 +24,14 @@ public class DocumentElementValidator extends AbstractMessageValidator {
 		this.er = er;
 		er.registerValidator(this);
 		
-		AbstractMessageValidator mcmv = mvc.findMessageValidator("MultipartContainer");
+		AbstractMessageValidator mcmv = null;
+		try {
+			mvc.findMessageValidator("MultipartContainer");
+		} catch (ToolkitRuntimeException e) {
+			er.detail("DocumentElementValidator: Document contents not available\n\nVerify MTOM message (not SIMPLE SOAP)");
+			er.unRegisterValidator(this);
+			return;
+		}
 		if (mcmv == null) {
 			er.detail("DocumentElementValidator: Document contents not available");
             er.unRegisterValidator(this);
