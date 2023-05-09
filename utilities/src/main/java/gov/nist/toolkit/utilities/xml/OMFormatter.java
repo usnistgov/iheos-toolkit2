@@ -104,7 +104,7 @@ public class OMFormatter {
 
 		OMNamespace parentsNamespace = null;
 		String parentsNamespaceUri = null;
-		String parentsDefaultNamespaceUri = null;
+//		String parentsDefaultNamespaceUri = null;
 
 		OMElement parent = null;
 		try {
@@ -115,11 +115,13 @@ public class OMFormatter {
 			parentsNamespace = parent.getNamespace();
 			parentsNamespaceUri = (parentsNamespace != null) ? parentsNamespace.getNamespaceURI() : null;
 		} catch (Exception e) {}
-		
+
+		/*
 		try {
 			OMNamespace parentsDefaultNamespace = parent.getDefaultNamespace();
 			parentsDefaultNamespaceUri = parentsDefaultNamespace.getNamespaceURI();
 		} catch (Exception e) {}
+		 */
 		
 		boolean addDefaultNSDef = false;
 		if (defaultNamespaceUri != null) {
@@ -193,6 +195,41 @@ public class OMFormatter {
 		indentation--;
 	}
 
+	void attributes(OMElement e) {
+		NamespaceManager nsman = null;
+
+		String elementNsPrefix = e.getNamespace() != null && e.getNamespace().getPrefix() != null ? e.getNamespace().getPrefix() : "";
+
+		Iterator<OMAttribute> it = e.getAllAttributes();
+		while (it.hasNext()) {
+			addIndentation();
+			OMAttribute a = it.next();
+			String attributeNsPrefix = a.getNamespace() != null && a.getNamespace().getPrefix() != null ? a.getNamespace().getPrefix() : "";
+			String attributeName = a.getLocalName();
+
+			buf.append(space)
+					.append((attributeNsPrefix != "" ? attributeNsPrefix + ":" : "") + attributeName)
+					.append("=")
+					.append('"')
+					.append(encodeQuote(encodeAmp(a.getAttributeValue())))
+					.append('"');
+
+			if (attributeNsPrefix != "" && ! attributeNsPrefix.equals(elementNsPrefix)) {
+				// Only add attribute namespace if it differs from the element namespace prefix
+				if (nsman == null) {
+					nsman = new NamespaceManager();
+				}
+				nsman.add(a.getNamespace());
+			}
+		}
+		if (nsman != null)
+			buf.append(nsman.toString());
+	}
+
+	/*
+	Sunil Bhaskarla:
+	This method no longer needed since it mixes the namespace prefix string literal (which is variable) with the attribute name (fixed value).
+
 	OMNamespace attNamespace; // used for communication between getAttributeName() and attributes()
 	OMNamespace xsiAttNameSpace;
 
@@ -212,6 +249,13 @@ public class OMFormatter {
 
 		return prefix + attName;
 	}
+	 */
+
+	/*
+	Sunil Bhaskarla:
+	1. This method incorrectly assumes the namespace prefix string literal "wsu" is always used by the Timestamp element. This may not be the case, especially when default namespace is used.
+	2. ITSVersion attribute does not seem to need the xsi namespace (according to the element in following schema:
+	https://github.com/CONNECT-Solution/Common-Types/blob/master/src/main/resources/schemas/HL7V3/NE2008/multicacheschemas/PRPA_IN201306UV02.xsd.
 
 	@SuppressWarnings("unchecked")
 	void attributes(OMElement ele) {
@@ -278,6 +322,7 @@ public class OMFormatter {
 		if (nsman != null)
 			buf.append(nsman.toString());
 	}
+	 */
 
 	private void addIndentation() {
 		if (currentLineLength() > lineLengthLimit) {
