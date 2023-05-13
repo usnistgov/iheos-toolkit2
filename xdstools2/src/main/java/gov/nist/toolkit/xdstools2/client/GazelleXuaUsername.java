@@ -44,5 +44,22 @@ public enum GazelleXuaUsername {
     secondauthncontext,
     secondrole,
     secondpurposeofuse,
-    withauthzconsent
-    }
+    withauthzconsent,
+
+    secondpurposeofuseDOTCOVERAGE,
+    secondpurposeofuseDOTOPERATIONS,
+    secondpurposeofuseDOTPAYMENT,
+    secondpurposeofuseDOTPUBLICHEALTH,
+    secondpurposeofuseDOTREQUEST,
+    secondpurposeofuseDOTTREATMENT,
+    secondpurposeofuseDOTLEGACYTREATMENT,
+    secondpurposeofuseDOTREASSURANCE,
+    secondpurposeofuseDOTTREATMENTOID,
+    secondpurposeofuseDOTCOVERAGEOID,
+    secondpurposeofuseDOTOPERATIONSOID,
+    secondpurposeofuseDOTPAYMENTOID,
+    secondpurposeofuseDOTPUBLICHEALTHOID,
+    secondpurposeofuseDOTREQUESTOID
+
+
+}
