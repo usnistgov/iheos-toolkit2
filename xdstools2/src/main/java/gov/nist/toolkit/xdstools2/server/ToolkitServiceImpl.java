@@ -2054,6 +2054,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         Map<String,String> assertionMap = null;
         for (GazelleXuaUsername username : GazelleXuaUsername.values()) {
             String usernameStr = username.name();
+            if (usernameStr.contains("DOT")) {
+                usernameStr = usernameStr.replace("DOT", ".");
+            }
             if (request.getParams()!=null) {
                 request.getParams().clear();
                 request.getParams().put("$saml-username$", usernameStr);

@@ -322,7 +322,8 @@ public abstract class GenericQueryTab  extends ToolWindow implements StatusDispl
         samlListBox = new ListBox();
         samlListBox.addItem("SAML OFF", "NoSaml");
         for (GazelleXuaUsername username : GazelleXuaUsername.values()) {
-            samlListBox.addItem("SAML - " + username.name(), username.name());
+            String name = username.name().replace("DOT", ".");
+            samlListBox.addItem("SAML - " + name, name);
         }
         samlListBox.setVisibleItemCount(1);
         samlListBox.addChangeHandler(new SamlSelector(this));
