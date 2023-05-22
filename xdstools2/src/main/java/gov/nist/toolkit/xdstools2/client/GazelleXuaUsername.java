@@ -46,20 +46,33 @@ public enum GazelleXuaUsername {
     secondpurposeofuse,
     withauthzconsent,
 
-    secondpurposeofuseDOTCOVERAGE,
-    secondpurposeofuseDOTOPERATIONS,
-    secondpurposeofuseDOTPAYMENT,
-    secondpurposeofuseDOTPUBLICHEALTH,
-    secondpurposeofuseDOTREQUEST,
-    secondpurposeofuseDOTTREATMENT,
-    secondpurposeofuseDOTLEGACYTREATMENT,
-    secondpurposeofuseDOTREASSURANCE,
-    secondpurposeofuseDOTTREATMENTOID,
-    secondpurposeofuseDOTCOVERAGEOID,
-    secondpurposeofuseDOTOPERATIONSOID,
-    secondpurposeofuseDOTPAYMENTOID,
-    secondpurposeofuseDOTPUBLICHEALTHOID,
-    secondpurposeofuseDOTREQUESTOID
+    secondpurposeofuseDOTCOVERAGE("secondpurposeofuse.COVERAGE"),
+    secondpurposeofuseDOTOPERATIONS("secondpurposeofuse.OPERATIONS"),
+    secondpurposeofuseDOTPAYMENT("secondpurposeofuse.PAYMENT"),
+    secondpurposeofuseDOTPUBLICHEALTH("secondpurposeofuse.PUBLICHEALTH"),
+    secondpurposeofuseDOTREQUEST("secondpurposeofuse.REQUEST"),
+    secondpurposeofuseDOTTREATMENT("secondpurposeofuse.TREATMENT"),
+    secondpurposeofuseDOTLEGACYTREATMENT("secondpurposeofuse.LEGACYTREATMENT"),
+    secondpurposeofuseDOTREASSURANCE("secondpurposeofuse.REASSURANCE"),
+    secondpurposeofuseDOTTREATMENTOID("secondpurposeofuse.TREATMENTOID"),
+    secondpurposeofuseDOTCOVERAGEOID("secondpurposeofuse.COVERAGEOID"),
+    secondpurposeofuseDOTOPERATIONSOID("secondpurposeofuse.OPERATIONSOID"),
+    secondpurposeofuseDOTPAYMENTOID("secondpurposeofuse.PAYMENTOID"),
+    secondpurposeofuseDOTPUBLICHEALTHOID("secondpurposeofuse.PUBLICHEALTHOID"),
+    secondpurposeofuseDOTREQUESTOID("secondpurposeofuse.REQUESTOID");
 
+    private String username;
 
+    GazelleXuaUsername() {
+        this.username = this.name();
+    }
+
+    GazelleXuaUsername(String username) {
+        this.username = username;
+    }
+
+    @Override
+    public String toString() {
+        return this.username;
+    }
 }

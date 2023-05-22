@@ -2053,10 +2053,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     public Map<String,String> getStsSamlAssertionsMap(GetStsSamlAssertionMapRequest request) throws Exception {
         Map<String,String> assertionMap = null;
         for (GazelleXuaUsername username : GazelleXuaUsername.values()) {
-            String usernameStr = username.name();
-            if (usernameStr.contains("DOT")) {
-                usernameStr = usernameStr.replace("DOT", ".");
-            }
+            String usernameStr = username.toString();
+//            if (usernameStr.contains("DOT")) {
+//                usernameStr = usernameStr.replace("DOT", ".");
+//            }
             if (request.getParams()!=null) {
                 request.getParams().clear();
                 request.getParams().put("$saml-username$", usernameStr);
