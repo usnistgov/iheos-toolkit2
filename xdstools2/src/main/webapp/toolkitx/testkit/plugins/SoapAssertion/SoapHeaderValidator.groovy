@@ -105,7 +105,7 @@ class SoapHeaderValidator extends AbstractSoapValidater {
                             }
                             break;
                         case "isPresent":
-                            if (!v.namedFieldIsPresent(key,section, XPath, attribute, comment)) {
+                            if (!v.namedFieldIsPresent(key,section, XPath, comment)) {
                                 errors = v.getErrors();
                             }
                             break;

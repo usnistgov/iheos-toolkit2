@@ -396,4 +396,10 @@ public class XmlUtil {
 		return rtn;
 	}
 
+	public static OMElement getElementFromXPath(OMElement element, String XPath) throws Exception{
+		AXIOMXPath xpathExpression = new AXIOMXPath (XPath);
+		OMElement o = (OMElement) xpathExpression.selectSingleNode(element);
+		return o;
+	}
+
 }

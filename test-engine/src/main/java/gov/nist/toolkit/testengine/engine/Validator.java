@@ -1079,7 +1079,7 @@ public class Validator {
     For example: AdhocQuery.DocumentEntry.xx
  */
 	public boolean namedFieldCompare(String field, String expectedValue) throws MetadataException {
-		String submittedValue = extractNamedField(field);
+		String submittedValue = extractNamedFieldString(field);
 		boolean rtn = true;
 		if (!expectedValue.equals(submittedValue)) {
 			err("Metadata Content Failure, key: " + field + ", expectedValue: " + expectedValue + ", submittedValue: " + submittedValue);
@@ -1090,18 +1090,22 @@ public class Validator {
 
 	public boolean namedFieldCompare(String field, String section, String XPath, String attribute, String comment, String expectedValue) throws Exception {
 		String submittedValue = null;
+		boolean rtn = true;
 		if (field == null || field.equals("")) {
-			submittedValue = extractNamedField(section, XPath, attribute, comment);
+			submittedValue = extractNamedFieldString(section, XPath, attribute, comment);
+			if (!expectedValue.equals(submittedValue)) {
+				err("Metadata Content Failure, comment: " + comment + ", expectedValue: " + expectedValue + ", submittedValue: " + submittedValue);
+				err(section + " XPath: " + XPath.replaceAll("=", "  _EQ_  ") + " @ " + attribute);
+				rtn = false;
+			}
 		} else {
-			submittedValue = extractNamedField(field);
+			submittedValue = extractNamedFieldString(field);
+			if (!expectedValue.equals(submittedValue)) {
+				err("Metadata Content Failure, key: " + field + ", expectedValue: " + expectedValue + ", submittedValue: " + submittedValue);
+				rtn = false;
+			}
 		}
 
-		boolean rtn = true;
-		if (!expectedValue.equals(submittedValue)) {
-			err("Metadata Content Failure, key: " + field + ", expectedValue: " + expectedValue + ", submittedValue: " + submittedValue);
-			err(section + " XPath: " + XPath + " @ " + attribute);
-			rtn = false;
-		}
 		return rtn;
 	}
 
@@ -1123,7 +1127,7 @@ public class Validator {
 	}
 
 	public boolean namedFieldIsPresent(String field) throws MetadataException {
-		String submittedValue = extractNamedField(field);
+		String submittedValue = extractNamedFieldString(field);
 		if (submittedValue != null)
 			return true;
 
@@ -1131,40 +1135,45 @@ public class Validator {
 		return false;
 	}
 
-	public boolean namedFieldIsPresent(String field, String section, String XPath, String attribute, String comment) throws Exception {
-		String submittedValue = null;
+	public boolean namedFieldIsPresent(String field, String section, String XPath, String comment) throws Exception {
+		boolean rtn = false;
 		if (field == null || field.equals("")) {
-			submittedValue = extractNamedField(section, XPath, attribute, comment);
+			OMElement e = extractNamedFieldElement(section, XPath, comment);
+			rtn = (e != null);
 		} else {
-			submittedValue = extractNamedField(field);
+			String submittedValue = extractNamedFieldString(field);
+			rtn = (submittedValue != null);
 		}
-
-		if (submittedValue != null)
-			return true;
-
-		err("Content failure. A value was not discovered for this field: " + field + " " + comment + " " + section);
-		err("XPath: " + XPath + " @ " + attribute);
-		return false;
+		if (!rtn) {
+			err("Content failure. A value was not discovered for this field: " + field + " " + comment + " " + section);
+			err("XPath: " + XPath.replaceAll("=", "  _EQ_  "));
+		}
+		return rtn;
 	}
 
 	public boolean namedFieldIsNotEmpty(String field, String section, String XPath, String attribute, String comment) throws Exception {
 		String submittedValue = null;
+		boolean rtn = true;
 		if (field == null || field.equals("")) {
-			submittedValue = extractNamedField(section, XPath, attribute, comment);
+			submittedValue = extractNamedFieldString(section, XPath, attribute, comment);
+			if ((submittedValue == null) || (submittedValue.isEmpty())) {
+				rtn = false;
+				err("Content failure. A value was not discovered for this field: " + comment + " " + section);
+				err("XPath: " + XPath.replaceAll("=", "  _EQ_  ") + " @ " + attribute);
+			}
 		} else {
-			submittedValue = extractNamedField(field);
+			submittedValue = extractNamedFieldString(field);
+			if ((submittedValue == null) || (submittedValue.isEmpty())) {
+				rtn = false;
+				err("Content failure. A value was not discovered for this field: " + field + " " + comment + " " + section);
+			}
 		}
 
-		if ((submittedValue != null) && (!submittedValue.isEmpty()))
-			return true;
-
-		err("Content failure. A value was not discovered for this field: " + field + " " + comment + " " + section);
-		err("XPath: " + XPath + " @ " + attribute);
-		return false;
+		return rtn;
 	}
 
 	public boolean namedFieldIsNotPresent(String field) throws MetadataException {
-		String submittedValue = extractNamedField(field);
+		String submittedValue = extractNamedFieldString(field);
 		if (submittedValue == null)
 			return true;
 
@@ -1185,7 +1194,7 @@ public class Validator {
 		return rtn;
 	}
 
-	private String extractNamedField(String field) throws MetadataException {
+	private String extractNamedFieldString(String field) throws MetadataException {
 		String rtn = "";
 		List<RetrieveItemRequestModel> models;
 		switch(field) {
@@ -1279,7 +1288,7 @@ public class Validator {
 		return rtn;
 	}
 
-	private String extractNamedField(String section, String XPath, String attribute, String comment) throws Exception {
+	private String extractNamedFieldString(String section, String XPath, String attribute, String comment) throws Exception {
 		String rtn = null;
 
 		OMElement sectionElement = null;
@@ -1296,6 +1305,22 @@ public class Validator {
 			} else {
 				rtn = XmlUtil.getStringFromXPath(sectionElement, XPath);
 			}
+		}
+
+		return rtn;
+	}
+	private OMElement extractNamedFieldElement(String section, String XPath, String comment) throws Exception {
+		OMElement sectionElement = null;
+		switch (section) {
+			case "requestHeader":
+				sectionElement = requestHeader.getOmElement();
+				break;
+			default:
+				break;
+		}
+		OMElement rtn = null;
+		if (sectionElement != null ) {
+			rtn = XmlUtil.getElementFromXPath(sectionElement, XPath);
 		}
 
 		return rtn;
