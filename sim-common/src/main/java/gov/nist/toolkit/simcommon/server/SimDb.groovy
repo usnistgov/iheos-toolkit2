@@ -54,6 +54,7 @@ public class SimDb {
 	static String luceneIndexDirectoryName = 'simindex'
 	private TestSession testSession = null;
 	static String simTypeFilename = 'sim_type.txt'
+	private static final Object fileLock = new Object();
 
 	static final String MARKER = 'MARKER';
 	/**
@@ -111,9 +112,17 @@ public class SimDb {
 		if (openToLastTransaction) {
 			openMostRecentEvent(actor, transaction)
 		} else {
-			eventDate = new Date();
-			File eventDir = mkEventDir(eventDate);
-			eventDir.mkdirs();
+			/**
+			 * Fixes race condition
+			 * @mratzenb Contributed code
+			 * See https://github.com/usnistgov/iheos-toolkit2/issues/583
+			 */
+			File eventDir;
+			synchronized (fileLock) {
+				eventDate = new Date();
+				eventDir = mkEventDir(eventDate);
+				eventDir.mkdirs();
+			}
 			Serialize.out(new File(eventDir, "date.ser"), eventDate);
 		}
 	}
