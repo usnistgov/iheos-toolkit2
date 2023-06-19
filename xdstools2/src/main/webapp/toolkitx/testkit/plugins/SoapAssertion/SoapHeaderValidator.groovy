@@ -76,13 +76,14 @@ class SoapHeaderValidator extends AbstractSoapValidater {
             if (sst.requestBody) {
                 ParamParser paramsParser = new ParamParser();
                 SqParams params = paramsParser.parse(Util.parse_xml(sst.requestBody), true);
-                AdhocQueryRequestParser parser = new AdhocQueryRequestParser(Util.parse_xml(sst.requestBody))
-                AdhocQueryRequest r = parser.getAdhocQueryRequest()
+//                AdhocQueryRequestParser parser = new AdhocQueryRequestParser(Util.parse_xml(sst.requestBody))
+//                AdhocQueryRequest r = parser.getAdhocQueryRequest()
                 RequestHeaderParser headerParser = new RequestHeaderParser(Util.parse_xml(sst.requestHeader))
                 RequestHeader requestHeader = headerParser.getRequestHeader()
                 String errors = "";
                 if (requestMsgExpectedContent.equals("SoapHeader")) {
-                    Validator v = new Validator().setRequest(r).setStoredQueryParams(params).setRequestHeader(requestHeader)
+//                    Validator v = new Validator().setRequest(r).setStoredQueryParams(params).setRequestHeader(requestHeader)
+                    Validator v = new Validator().setStoredQueryParams(params).setRequestHeader(requestHeader)
                     switch (method) {
                         case "single":
                             if (!v.namedFieldCompare(key,section, XPath, attribute, comment, value)) {
