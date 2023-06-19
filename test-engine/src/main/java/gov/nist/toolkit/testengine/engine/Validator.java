@@ -937,6 +937,9 @@ public class Validator {
 			case "AdhocQuery.DocumentEntry.patientId":
 				rtn = request.getPatientId();
 				break;
+			case "AdhocQuery.home":
+				rtn = request.getHome();
+				break;
 
 			default:
 				rtn = "Validator::extractNamedMetadata does not understand: " + metadataField;
