@@ -11,6 +11,7 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
 import org.apache.axiom.om.util.AXIOMUtil;
+import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -374,5 +375,31 @@ public class XmlUtil {
       }
       return;
    }
+
+   public static String getStringFromXPath(OMElement element, String XPath) throws Exception{
+		String rtn = null;
+	   AXIOMXPath xpathExpression = new AXIOMXPath (XPath);
+	   Object o =  xpathExpression.selectSingleNode(element);
+	   if (o != null) {
+		   rtn = ((OMElement)o).getText();
+	   }
+	   return rtn;
+   }
+
+	public static String getStringFromXPath(OMElement element, String XPath, String attribute) throws Exception{
+		String rtn = null;
+		AXIOMXPath xpathExpression = new AXIOMXPath (XPath);
+		Object o =  xpathExpression.selectSingleNode(element);
+		if (o != null) {
+			rtn = ((OMElement)o).getAttributeValue(new QName(attribute));
+		}
+		return rtn;
+	}
+
+	public static OMElement getElementFromXPath(OMElement element, String XPath) throws Exception{
+		AXIOMXPath xpathExpression = new AXIOMXPath (XPath);
+		OMElement o = (OMElement) xpathExpression.selectSingleNode(element);
+		return o;
+	}
 
 }

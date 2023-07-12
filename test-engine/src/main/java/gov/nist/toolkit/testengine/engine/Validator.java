@@ -5,6 +5,7 @@ import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymsg.registry.AdhocQueryRequest;
 import gov.nist.toolkit.registrymsg.repository.RetrieveItemRequestModel;
 import gov.nist.toolkit.registrymsg.repository.RetrieveRequestModel;
+import gov.nist.toolkit.registrymsg.common.RequestHeader;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
 import gov.nist.toolkit.simcommon.server.SimDb;
@@ -53,6 +54,7 @@ public class Validator {
 	Metadata m;
 	AdhocQueryRequest request;
 	SqParams storedQueryParams;
+	RequestHeader requestHeader;
 	RetrieveRequestModel retrieveRequestModel;
 	StringBuffer errs = new StringBuffer();
 	boolean error = false;
@@ -92,6 +94,11 @@ public class Validator {
 
 	public Validator setRequest(AdhocQueryRequest request) {
 		this.request = request;
+		return this;
+	}
+
+	public Validator setRequestHeader(RequestHeader requestHeader) {
+		this.requestHeader = requestHeader;
 		return this;
 	}
 
@@ -930,6 +937,9 @@ public class Validator {
 			case "AdhocQuery.DocumentEntry.patientId":
 				rtn = request.getPatientId();
 				break;
+			case "AdhocQuery.home":
+				rtn = request.getHome();
+				break;
 
 			default:
 				rtn = "Validator::extractNamedMetadata does not understand: " + metadataField;
@@ -1072,12 +1082,33 @@ public class Validator {
     For example: AdhocQuery.DocumentEntry.xx
  */
 	public boolean namedFieldCompare(String field, String expectedValue) throws MetadataException {
-		String submittedValue = extractNamedField(field);
+		String submittedValue = extractNamedFieldString(field);
 		boolean rtn = true;
 		if (!expectedValue.equals(submittedValue)) {
 			err("Metadata Content Failure, key: " + field + ", expectedValue: " + expectedValue + ", submittedValue: " + submittedValue);
 			rtn = false;
 		}
+		return rtn;
+	}
+
+	public boolean namedFieldCompare(String field, String section, String XPath, String attribute, String comment, String expectedValue) throws Exception {
+		String submittedValue = null;
+		boolean rtn = true;
+		if (field == null || field.equals("")) {
+			submittedValue = extractNamedFieldString(section, XPath, attribute, comment);
+			if (!expectedValue.equals(submittedValue)) {
+				err("Metadata Content Failure, comment: " + comment + ", expectedValue: " + expectedValue + ", submittedValue: " + submittedValue);
+				err(section + " XPath: " + XPath.replaceAll("=", "  _EQ_  ") + " @ " + attribute);
+				rtn = false;
+			}
+		} else {
+			submittedValue = extractNamedFieldString(field);
+			if (!expectedValue.equals(submittedValue)) {
+				err("Metadata Content Failure, key: " + field + ", expectedValue: " + expectedValue + ", submittedValue: " + submittedValue);
+				rtn = false;
+			}
+		}
+
 		return rtn;
 	}
 
@@ -1098,6 +1129,61 @@ public class Validator {
 		return rtn;
 	}
 
+	public boolean namedFieldIsPresent(String field) throws MetadataException {
+		String submittedValue = extractNamedFieldString(field);
+		if (submittedValue != null)
+			return true;
+
+		err("Content failure. A value was not discovered for this key: " + field);
+		return false;
+	}
+
+	public boolean namedFieldIsPresent(String field, String section, String XPath, String comment) throws Exception {
+		boolean rtn = false;
+		if (field == null || field.equals("")) {
+			OMElement e = extractNamedFieldElement(section, XPath, comment);
+			rtn = (e != null);
+		} else {
+			String submittedValue = extractNamedFieldString(field);
+			rtn = (submittedValue != null);
+		}
+		if (!rtn) {
+			err("Content failure. A value was not discovered for this field: " + field + " " + comment + " " + section);
+			err("XPath: " + XPath.replaceAll("=", "  _EQ_  "));
+		}
+		return rtn;
+	}
+
+	public boolean namedFieldIsNotEmpty(String field, String section, String XPath, String attribute, String comment) throws Exception {
+		String submittedValue = null;
+		boolean rtn = true;
+		if (field == null || field.equals("")) {
+			submittedValue = extractNamedFieldString(section, XPath, attribute, comment);
+			if ((submittedValue == null) || (submittedValue.isEmpty())) {
+				rtn = false;
+				err("Content failure. A value was not discovered for this field: " + comment + " " + section);
+				err("XPath: " + XPath.replaceAll("=", "  _EQ_  ") + " @ " + attribute);
+			}
+		} else {
+			submittedValue = extractNamedFieldString(field);
+			if ((submittedValue == null) || (submittedValue.isEmpty())) {
+				rtn = false;
+				err("Content failure. A value was not discovered for this field: " + field + " " + comment + " " + section);
+			}
+		}
+
+		return rtn;
+	}
+
+	public boolean namedFieldIsNotPresent(String field) throws MetadataException {
+		String submittedValue = extractNamedFieldString(field);
+		if (submittedValue == null)
+			return true;
+
+		err("Content failure. A value was discovered when the expectation was no value for this key: " + field);
+		return false;
+	}
+
 	private List<String> extractNamedFieldAsList(String field) throws XdsInternalException, MetadataException {
 		List<String> rtn = null;
 		switch(field) {
@@ -1111,7 +1197,7 @@ public class Validator {
 		return rtn;
 	}
 
-	private String extractNamedField(String field) throws MetadataException {
+	private String extractNamedFieldString(String field) throws MetadataException {
 		String rtn = "";
 		List<RetrieveItemRequestModel> models;
 		switch(field) {
@@ -1130,6 +1216,7 @@ public class Validator {
 			case "AdhocQuery.DocumentEntry.objectType":
 				rtn = firstValue(request.getDocumentEntryObjectTypeList());
 				break;
+
 			case "XCR.homeCommunityId":
 				models = retrieveRequestModel.getModels();
 				rtn = models.get(0).getHomeId();
@@ -1142,9 +1229,103 @@ public class Validator {
 				models = retrieveRequestModel.getModels();
 				rtn = models.get(0).getDocumentId();
 				break;
+			case "SoapHeader.SAML.PoU.Code":
+//				OMElement pouElement = requestHeader.getAttributeStatementAttribute("urn:oasis:names:tc:xspa:1.0:subject:purposeofuse");
+				rtn = getPurposeOfUseCode();
+				break;
+			case "SoapHeader.SAML.PoU.CodeScheme":
+				rtn = getPurposeOfUseCodeSystem();
+				break;
+			case "SoapHeader.SAML.Assertion@ID":
+				rtn = requestHeader.getSamlAssertionID();
+				break;
+			case "SoapHeader.SAML.Assertion@IssueInstant":
+				rtn = requestHeader.getSamlAssertionIssueInstant();
+				break;
+			case "SoapHeader.SAML.Assertion@Version":
+				rtn = requestHeader.getSamlAssertionVersion();
+				break;
+			case "SoapHeader.SAML.Assertion.Issuer":
+				rtn = requestHeader.getSamlAssertionIssuer();
+				break;
+			case "SoapHeader.SAML.Sig.CanonicalizationMethod@Algorithm":
+				rtn = requestHeader.getSamlCanonicalizationMethodAlgorithm();
+				break;
+			case "SoapHeader.SAML.Sig.SignatureMethod@Algorithm":
+				rtn = requestHeader.getSamlSignatureMethodAlgorithm();
+				break;
+			case "SoapHeader.SAML.Sig.DigestMethod@Algorithm":
+				rtn = requestHeader.getSamlDigestMethodAlgorithm();
+				break;
+			case "SoapHeader.SAML.Sig.DigestValue":
+				rtn = requestHeader.getSamlDigestValue();
+				break;
+			case "SoapHeader.SAML.Sig.SignatureValue":
+				rtn = requestHeader.getSamlSignatureValue();
+				break;
+			case "SoapHeader.SAML.Sig.X509Certificate":
+				rtn = requestHeader.getSamlX509Certificate();
+				break;
+			case "SoapHeader.SAML.Sig.RSAKeyValue.Modulus":
+				rtn = requestHeader.getSamlRSAKyValueModulus();
+				break;
+			case "SoapHeader.SAML.Sig.RSAKeyValue.Exponent":
+				rtn = requestHeader.getSamlRSAKeyValueExponent();
+				break;
+			case "SoapHeader.SAML.NHIN.HCID":
+				rtn = requestHeader.getSamlNHINHomeCommunityID();
+				break;
+			case "SoapHeader.SAML.IHE.HCID":
+				rtn = requestHeader.getSamlIHEHomeCommunityID();
+				break;
+			case "SoapHeader.SAML.PoU.csp":
+				rtn = requestHeader.getSamlPurposeOfUseCSP();
+				break;
+			case "SoapHeader.SAML.PoU.validated_attributes":
+				rtn = requestHeader.getSamlPurposeOfUseValidatedAttributes();
+				break;
+			default:
+				rtn = null;
+				break;
+		}
+		return rtn;
+	}
+
+	private String extractNamedFieldString(String section, String XPath, String attribute, String comment) throws Exception {
+		String rtn = null;
+
+		OMElement sectionElement = null;
+		switch (section) {
+			case "requestHeader":
+				sectionElement = requestHeader.getOmElement();
+				break;
 			default:
 				break;
 		}
+		if (sectionElement != null ) {
+			if (attribute != null) {
+				rtn = XmlUtil.getStringFromXPath(sectionElement, XPath, attribute);
+			} else {
+				rtn = XmlUtil.getStringFromXPath(sectionElement, XPath);
+			}
+		}
+
+		return rtn;
+	}
+	private OMElement extractNamedFieldElement(String section, String XPath, String comment) throws Exception {
+		OMElement sectionElement = null;
+		switch (section) {
+			case "requestHeader":
+				sectionElement = requestHeader.getOmElement();
+				break;
+			default:
+				break;
+		}
+		OMElement rtn = null;
+		if (sectionElement != null ) {
+			rtn = XmlUtil.getElementFromXPath(sectionElement, XPath);
+		}
+
 		return rtn;
 	}
 
@@ -1152,6 +1333,26 @@ public class Validator {
 		String rtn = "";
 		if (valueList != null && valueList.size() > 0) {
 			rtn = valueList.get(0);
+		}
+		return rtn;
+	}
+
+	private String getPurposeOfUseCode() {
+		String rtn = "";
+		OMElement pouElement = requestHeader.getAttributeStatementAttribute("urn:oasis:names:tc:xspa:1.0:subject:purposeofuse");
+		if (pouElement != null) {
+			OMElement value = XmlUtil.firstChildChain(pouElement, "AttributeValue", "PurposeOfUse");
+			rtn = (value == null) ? "" : value.getAttributeValue(new QName("code"));
+		}
+		return rtn;
+	}
+
+	private String getPurposeOfUseCodeSystem() {
+		String rtn = null;
+		OMElement pouElement = requestHeader.getAttributeStatementAttribute("urn:oasis:names:tc:xspa:1.0:subject:purposeofuse");
+		if (pouElement != null) {
+			OMElement value = XmlUtil.firstChildChain(pouElement, "AttributeValue", "PurposeOfUse");
+			rtn = (value == null) ? "" : value.getAttributeValue(new QName("codeSystem"));
 		}
 		return rtn;
 	}

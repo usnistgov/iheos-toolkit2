@@ -21,7 +21,7 @@ import org.apache.axiom.om.OMElement
 /**
  * Runs an MetadataContent validator through this plugin. @see Validator#run_test_assertions.
  */
-class StoredQueryValidator extends AbstractSoapValidater {
+class SoapHeaderValidator extends AbstractSoapValidater {
     /**
      * Required parameter
      */
@@ -45,14 +45,19 @@ class StoredQueryValidator extends AbstractSoapValidater {
     String codeValue
     String codingScheme
     String codeDisplayName
+    String XPath
+    String attribute
+    String section
+    String comment
+    String reference
 
     /**
      * Optional parameter
      */
     String metadataValidationFile;
 
-    StoredQueryValidator() {
-        filterDescription = 'Runs a StoredQuery validator (Validator#run_test_assertions) through this plugin.'
+    SoapHeaderValidator() {
+        filterDescription = 'Runs a Soap Header validator (Validator#run_test_assertions) through this plugin.'
     }
 
     @Override
@@ -71,16 +76,17 @@ class StoredQueryValidator extends AbstractSoapValidater {
             if (sst.requestBody) {
                 ParamParser paramsParser = new ParamParser();
                 SqParams params = paramsParser.parse(Util.parse_xml(sst.requestBody), true);
-                AdhocQueryRequestParser parser = new AdhocQueryRequestParser(Util.parse_xml(sst.requestBody))
-                AdhocQueryRequest r = parser.getAdhocQueryRequest()
+//                AdhocQueryRequestParser parser = new AdhocQueryRequestParser(Util.parse_xml(sst.requestBody))
+//                AdhocQueryRequest r = parser.getAdhocQueryRequest()
                 RequestHeaderParser headerParser = new RequestHeaderParser(Util.parse_xml(sst.requestHeader))
                 RequestHeader requestHeader = headerParser.getRequestHeader()
                 String errors = "";
-                if (requestMsgExpectedContent.equals("StoredQuery")) {
-                    Validator v = new Validator().setRequest(r).setStoredQueryParams(params).setRequestHeader(requestHeader)
+                if (requestMsgExpectedContent.equals("SoapHeader")) {
+//                    Validator v = new Validator().setRequest(r).setStoredQueryParams(params).setRequestHeader(requestHeader)
+                    Validator v = new Validator().setStoredQueryParams(params).setRequestHeader(requestHeader)
                     switch (method) {
                         case "single":
-                            if (!v.namedFieldCompare(key, value)) {
+                            if (!v.namedFieldCompare(key,section, XPath, attribute, comment, value)) {
                                 errors = v.getErrors()
                             }
                             break;
@@ -97,6 +103,21 @@ class StoredQueryValidator extends AbstractSoapValidater {
                         case "contains":
                             if (!v.namedFieldContains(key, value)) {
                                 errors = v.getErrors()
+                            }
+                            break;
+                        case "isPresent":
+                            if (!v.namedFieldIsPresent(key,section, XPath, comment)) {
+                                errors = v.getErrors();
+                            }
+                            break;
+                        case "isNotEmpty":
+                            if (!v.namedFieldIsNotEmpty(key,section, XPath, attribute, comment)) {
+                                errors = v.getErrors();
+                            }
+                            break;
+                        case "isNotPresent":
+                            if (!v.namedFieldIsNotPresent(key)) {
+                                errors = v.getErrors();
                             }
                             break;
                         default:
@@ -151,7 +172,7 @@ class StoredQueryValidator extends AbstractSoapValidater {
     }
 
     AbstractSoapValidater copy() {
-        StoredQueryValidator mcv = new StoredQueryValidator()
+        SoapHeaderValidator mcv = new SoapHeaderValidator()
         mcv.responseMsgExpectedContent = responseMsgExpectedContent
         mcv.requestMsgExpectedContent = requestMsgExpectedContent
         mcv.responseMsgECCount = responseMsgECCount
