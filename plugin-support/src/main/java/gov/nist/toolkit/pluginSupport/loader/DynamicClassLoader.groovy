@@ -2,6 +2,8 @@ package gov.nist.toolkit.pluginSupport.loader;
 
 import java.util.jar.JarFile
 import java.util.zip.ZipEntry
+import gov.nist.toolkit.utilities.io.Io
+
 
 class DynamicClassLoader extends AggressiveClassLoader {
     private LinkedList<Loader> loaders = new LinkedList<>()

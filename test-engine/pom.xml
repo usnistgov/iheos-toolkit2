@@ -209,6 +209,13 @@
 			<groupId>net.ihe.gazelle</groupId>
 			<artifactId>sequoia-security-adaptor-jar</artifactId>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/javax.xml.soap/javax.xml.soap-api -->
+		<dependency>
+			<groupId>javax.xml.soap</groupId>
+			<artifactId>javax.xml.soap-api</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -229,7 +236,7 @@
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<!-- 2.8.0-01 and later require maven-compiler-plugin 3.1 or higher -->
-				<version>3.1</version>
+				<version>${mavenCompilerPluginVersion}</version>
 				<configuration>
 					<compilerId>groovy-eclipse-compiler</compilerId>
                     <source>1.8</source>
@@ -252,6 +259,10 @@
 						<!-- <version>1.8.6-01</version> -->
 						<!-- <version>1.7.10-06</version> -->
 					</dependency>
+
+
+
+
 				</dependencies>
 			</plugin>
 		</plugins>

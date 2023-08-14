@@ -10,7 +10,10 @@ class InitEC {
 
     static init() {
 //        org.apache.log4j.BasicConfigurator.configure()
-        URL externalCacheMarker = getClass().getResource('/external_cache/external_cache.txt')
+//        System.out.println("*** pr classpath " + System.getProperty("java.class.path") )
+//        System.out.println("*** getClass() ***" + InitEC.class.getClassLoader().getResource("/").toString())
+//        System.out.println("*** getClass() 2 ***" + InitEC.class.getResource("/").toString())
+        URL externalCacheMarker = InitEC.class.getResource('/external_cache/external_cache.txt')
         if (externalCacheMarker == null) {
             throw new ToolkitRuntimeException("Cannot locate external cache for test environment")
         }

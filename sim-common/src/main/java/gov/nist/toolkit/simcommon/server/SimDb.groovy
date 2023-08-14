@@ -9,8 +9,8 @@ import gov.nist.toolkit.http.*
 import gov.nist.toolkit.installation.server.Installation
 import gov.nist.toolkit.installation.shared.TestSession
 import gov.nist.toolkit.simcommon.client.*
-import gov.nist.toolkit.simcommon.server.index.SiTypeWrapper
-import gov.nist.toolkit.simcommon.server.index.SimIndex
+//import gov.nist.toolkit.simcommon.server.index.SiTypeWrapper
+//import gov.nist.toolkit.simcommon.server.index.SimIndex
 import gov.nist.toolkit.utilities.io.Io
 import gov.nist.toolkit.utilities.io.ZipDir
 import gov.nist.toolkit.xdsexception.ExceptionUtil
@@ -30,7 +30,7 @@ import javax.xml.transform.stream.StreamResult
 import java.nio.file.Files
 import java.nio.file.Paths
 
-import org.apache.lucene.store.FSDirectory
+//import org.apache.lucene.store.FSDirectory
 /**
  * Each simulator has an on-disk presence that keeps track of its long
  * term status and a log of its input/output messages. This class
@@ -51,7 +51,7 @@ public class SimDb {
 	private String transaction = null;
 	private File transactionDir = null;
 	static private final Logger logger = Logger.getLogger(SimDb.class.getName());
-	static String luceneIndexDirectoryName = 'simindex'
+//	static String luceneIndexDirectoryName = 'simindex'
 	private TestSession testSession = null;
 	static String simTypeFilename = 'sim_type.txt'
 	private static final Object fileLock = new Object();
@@ -260,9 +260,9 @@ public class SimDb {
 	static public boolean exists(SimId simId) {
 		File f = new File(getSimDbFile(simId), simId.toString())
         // Lucene walkaround
-        if (countFoldersByName(luceneIndexDirectoryName,f)>0) {
-			return (isSimDir(f)) // Safety file should not exist when it is deleted minus the simindex folder(s)
-		}
+//        if (countFoldersByName(luceneIndexDirectoryName,f)>0) {
+//			return (isSimDir(f)) // Safety file should not exist when it is deleted minus the simindex folder(s)
+//		}
 		// end
 		return f.exists();
 	}
@@ -485,15 +485,14 @@ public class SimDb {
 	void delete() {
 		if (isSim()) {
 			if (simId != null) {
+                /*
 				File indexFile = getIndexFile(simId);
 				if (indexFile != null && indexFile.exists()) {
 					stopLuceneIndex(indexFile)
-					/*
-					On Windows, there a problem with deleting Lucene indexes.
-					See https://lucene.apache.org/core/7_0_1/core/org/apache/lucene/store/FSDirectory.htm
-					deleteLuceneIndex(indexFile).
-					Walkaround is to use a new index folder on every delete and pickup the most recent folder on new-sim index.
-					 */
+//					On Windows, there a problem with deleting Lucene indexes.
+//					See https://lucene.apache.org/core/7_0_1/core/org/apache/lucene/store/FSDirectory.htm
+//					deleteLuceneIndex(indexFile).
+//					Walkaround is to use a new index folder on every delete and pickup the most recent folder on new-sim index.
 //                    delete(simDir)
 					Io.delete(simDir, luceneIndexDirectoryName)
 					if (isSimDir(simDir)) { // This should not happen
@@ -508,8 +507,9 @@ public class SimDb {
 						newIndexDir.mkdirs()
 					}
 				} else {
+				*/
 					delete(simDir)
-				}
+//				}
 			}
 		}
 	}
@@ -522,6 +522,7 @@ public class SimDb {
 			return 0
 	}
 
+	/*
 	private void stopLuceneIndex(File indexFile) {
 		if (indexFile != null && indexFile.exists()) {
             if (SimIndex.getIndexMap().containsKey(simId)) {
@@ -537,7 +538,9 @@ public class SimDb {
 			}
 		}
 	}
+	*/
 
+    /*
 	private void deleteLuceneIndex(File indexFile) {
 	 if (indexFile != null && indexFile.exists()) {
 		FSDirectory dir = null
@@ -546,11 +549,11 @@ public class SimDb {
 				for (String s : dir.listAll(indexFile.toPath())) {
 					dir.deleteFile(s)
 				}
-			/* Lucene v7.0.1
-                if (dir.checkPendingDeletions()) {
-					dir.deletePendingFiles()
-				}
-				*/
+//			 Lucene v7.0.1
+//                if (dir.checkPendingDeletions()) {
+//					dir.deletePendingFiles()
+//				}
+
 		} catch (Exception ex) {
 			logger.severe(ex.toString())
 		} finally {
@@ -559,6 +562,7 @@ public class SimDb {
 		}
 	 }
 	}
+*/
 
 	public List<String> getActorsForSimulator() {
 		List<String> actors = new ArrayList<>();
@@ -1408,6 +1412,7 @@ public class SimDb {
 	 * @param simId
 	 * @return
 	 */
+	/*
 	static File getIndexFile(SimId simId) {
         // Lucene walkaround
 		int count = countFoldersByName(luceneIndexDirectoryName, getSimBase(simId))
@@ -1420,6 +1425,8 @@ public class SimDb {
 		}
 		return new File(getSimBase(simId), luceneIndexDirectoryName)
 	}
+
+	 */
 
 	/**
 	 * Base location of FHIR simulator
