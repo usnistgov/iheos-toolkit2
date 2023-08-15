@@ -153,7 +153,7 @@ public class DocEntryCollection extends RegObCollection implements Serializable 
 			return null;
 		return parent.getRo(id);
 	}
-	
+
 	public DocEntry getById(String id) {
 		if (id == null)
 			return null;
@@ -596,7 +596,20 @@ public class DocEntryCollection extends RegObCollection implements Serializable 
 		return parent.getRoByUid(uid);
 	}
 
-
+	@Override
+	public List<Ro> getRosByUid(String uid) {
+		List<Ro> list = new ArrayList<>();
+		for (DocEntry de : getAll()) {
+			if (de.uid.equals(uid))
+				list.add(de);
+		}
+		if (! list.isEmpty()) {
+			return list;
+		}
+		if (parent == null)
+			return null;
+		return parent.getRosByUid(uid);
+	}
 
 	public List<?> getAllRo() {
 		return getAll();

@@ -386,9 +386,9 @@ public class MetadataCollection implements RegistryValidationInterface, Serializ
 		List<Ro> objs  = new ArrayList<>();
 		buildAllCollections();
 		for (RegObCollection c : allCollections) {
-			Ro ro = c.getRoByUid(uid);
-			if (ro != null)
-				objs.add(ro);
+			List<Ro> ros = c.getRosByUid(uid);
+			if (ros != null)
+				objs.addAll(ros);
 		}
 		return objs;
 	}

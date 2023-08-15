@@ -148,6 +148,19 @@ public class SubSetCollection extends RegObCollection implements Serializable {
 		return parent.getRoByUid(uid);
 	}
 
+	public List<Ro> getRosByUid(String uid) {
+		List<Ro> list = new ArrayList<>();
+		for (SubSet s : getAll()) {
+			if (s.uid.equals(uid))
+				list.add(s);
+		}
+		if (! list.isEmpty())
+			return list;
+		if (parent == null)
+			return null;
+		return parent.getRosByUid(uid);
+	}
+
 	public SubSet getByUid(String uid) {
 		for (SubSet s : getAll()) {
 			if (s.uid.equals(uid))

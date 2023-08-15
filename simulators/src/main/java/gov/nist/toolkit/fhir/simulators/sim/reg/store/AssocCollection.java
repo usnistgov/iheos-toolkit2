@@ -123,9 +123,7 @@ public class AssocCollection extends RegObCollection implements Serializable {
 		else
 			return parent.getRo(id);
 	}
-	
 
-	
 	public String statsToString() {
 		int parentCount = 0;
 		if (parent != null)
@@ -161,6 +159,10 @@ public class AssocCollection extends RegObCollection implements Serializable {
 	}
 
 	public Ro getRoByUid(String uid) {
+		return null;
+	}
+
+	public List<Ro> getRosByUid(String uid) {
 		return null;
 	}
 

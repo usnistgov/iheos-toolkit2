@@ -215,7 +215,20 @@ public class FolCollection extends RegObCollection implements Serializable {
 			return null;
 		return parent.getRoByUid(uid);
 	}
-	
+
+	public List<Ro> getRosByUid(String uid) {
+		List<Ro> list = new ArrayList<>();
+		for (Fol f : getAll()) {
+			if (f.uid.equals(uid))
+			    list.add(f);
+		}
+		if (! list.isEmpty())
+			return list;
+		if (parent == null)
+			return null;
+		return parent.getRosByUid(uid);
+	}
+
 	public List<Fol> findByPid(String pid) {
 		List<Fol> results = new ArrayList<Fol>();
 		
