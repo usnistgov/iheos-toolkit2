@@ -106,11 +106,6 @@
       </tag0:RegistryPackage>
       <tag0:Association targetObject="Folder01" sourceObject="SubmissionSet01"
             associationType="HasMember">
-         <tag0:Slot name="SubmissionSetStatus">
-            <tag0:ValueList>
-               <tag0:Value>Original</tag0:Value>
-            </tag0:ValueList>
-         </tag0:Slot>
          <tag0:Slot name="PreviousVersion">
             <tag0:ValueList>
                <tag0:Value>1</tag0:Value>

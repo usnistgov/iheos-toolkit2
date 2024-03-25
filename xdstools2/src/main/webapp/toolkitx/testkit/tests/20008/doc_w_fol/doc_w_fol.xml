@@ -300,13 +300,7 @@
          </rim:Slot>
       </rim:Association>
       <rim:Association targetObject="Folder" sourceObject="SubmissionSet01"
-            associationType="HasMember">
-         <rim:Slot name="SubmissionSetStatus">
-            <rim:ValueList>
-               <rim:Value>Original</rim:Value>
-            </rim:ValueList>
-         </rim:Slot>
-      </rim:Association>
+            associationType="HasMember"/>
       <rim:Association sourceObject="SubmissionSet01"
             targetObject="FolderDocument01Assoc" associationType="HasMember"/>
       <rim:Association id="FolderDocument01Assoc" sourceObject="Folder"
