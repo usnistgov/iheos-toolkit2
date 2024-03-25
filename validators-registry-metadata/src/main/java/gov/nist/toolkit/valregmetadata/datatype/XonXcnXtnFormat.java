@@ -20,23 +20,29 @@ public class XonXcnXtnFormat extends FormatValidator {
 		String[] parts = input.split("\\|");
 		int barCount = count(input, '|');
 
+/*
 		if (barCount != 2)
+ */
+		if  (! (parts.length > 0 && parts.length <= 3))
 			err(input, "Format is XON|XCN|XTN and at least one of these values is required", xresource);
 
 		String xon = null;
 		String xcn = null;
 		String xtn = null;
-		try {
+
+		if (parts.length > 0)
 			xon = parts[0];
+		if (parts.length > 1)
 			xcn = parts[1];
+		if (parts.length == 3)
 			xtn = parts[2];
-		} catch (Exception e){}
+
 		if (xon == null) xon = "";
 		if (xcn == null) xcn = "";
 		if (xtn == null) xtn = "";
 
 		if (xon.equals("") && xcn.equals("") && xtn.equals("")) {
-			err(input, "Format is XON|XCN|XTN and at least one of these values is required", xresource);
+			err(input, "Format is XON|XCN|XTN and at least one of these values is required to be non-empty.", xresource);
 		}
 
 		if (!xon.equals(""))
