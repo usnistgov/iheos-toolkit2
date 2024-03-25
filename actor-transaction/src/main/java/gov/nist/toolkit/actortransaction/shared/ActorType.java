@@ -223,7 +223,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "gov.nist.toolkit.simcommon.server.factories.IGXActorFactory",
             "gov.nist.toolkit.fhir.simulators.sim.ig.IgxActorSimulator",
             Arrays.asList(TransactionType.IG_QUERY, TransactionType.IG_RETRIEVE),
-            true,
+            false,
             null,
             false,
             Constants.USE_SHORTNAME
@@ -236,11 +236,12 @@ public enum ActorType implements IsSerializable, Serializable {
             "gov.nist.toolkit.simcommon.server.factories.IigActorFactory",
        "gov.nist.toolkit.fhir.simulators.sim.iig.IigActorSimulator",
        Arrays.asList(TransactionType.RET_IMG_DOC_SET_GW),
-       true,
+       false,
        null,
        false,
        Constants.USE_SHORTNAME
     ),
+
 
     COMBINED_INITIATING_GATEWAY(
        "Combined Initiating Gateway",
@@ -249,7 +250,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "gov.nist.toolkit.simcommon.server.factories.CigActorFactory",
        "gov.nist.toolkit.fhir.simulators.sim.CigActorSimulator",
        Arrays.asList(TransactionType.IG_QUERY, TransactionType.IG_RETRIEVE,TransactionType.RET_IMG_DOC_SET_GW),
-       true,
+       false,
        null,
        false,
        Constants.USE_SHORTNAME
@@ -311,7 +312,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "gov.nist.toolkit.simcommon.server.factories.RigActorFactory",
             "gov.nist.toolkit.fhir.simulators.sim.rig.RigActorSimulator",
             Arrays.asList(TransactionType.XC_RET_IMG_DOC_SET),
-            true,
+            false,
             null,
             false,
             Constants.USE_SHORTNAME
@@ -323,7 +324,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "gov.nist.toolkit.simcommon.server.factories.CrgActorFactory",
             "gov.nist.toolkit.fhir.simulators.sim.CrgActorSimulator",
             Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE, TransactionType.XC_RET_IMG_DOC_SET),
-            true,
+            false,
             null,
             false,
             Constants.USE_SHORTNAME
@@ -335,7 +336,7 @@ public enum ActorType implements IsSerializable, Serializable {
             null,
             "gov.nist.toolkit.fhir.simulators.sim.ris.RisActorSimulator", //TODO: Change to correct domain
             Arrays.asList(TransactionType.RET_IMG_DOC_SET_GW), //TODO: Change to correct Transaction Type
-            true,
+            false,
             null,
             false,
             Constants.USE_SHORTNAME
@@ -380,7 +381,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "gov.nist.toolkit.simcommon.server.factories.ImagingDocSourceActorFactory",
             "gov.nist.toolkit.fhir.simulators.sim.ids.IdsActorSimulator",
             Arrays.asList(TransactionType.RET_IMG_DOC_SET),
-            true,
+            false,
             null,
             "gov.nist.toolkit.fhir.simulators.sim.ids.IdsHttpActorSimulator",
             Arrays.asList(TransactionType.WADO_RETRIEVE),
@@ -388,6 +389,7 @@ public enum ActorType implements IsSerializable, Serializable {
             null,
             Constants.USE_SHORTNAME
         ),
+
     IMAGING_DOC_CONSUMER(
             "Imaging Document Consumer",
             Arrays.asList("IMAGING_DOC_CONSUMER", "XDSI_Consumer"),
@@ -611,13 +613,15 @@ public enum ActorType implements IsSerializable, Serializable {
     }
 
     public boolean isIigActor() {
-        return this.equals(INITIATING_IMAGING_GATEWAY);
+       return false;
+//        return this.equals(INITIATING_IMAGING_GATEWAY);
     }
 
     public boolean isGW() { return isRGActor() || isIGActor() || isIigActor() || isRigActor() || isIGXActor() || isRGXActor(); }
 
     public boolean isImagingDocumentSourceActor() {
-        return this.equals(IMAGING_DOC_SOURCE);
+       return false;
+//        return this.equals(IMAGING_DOC_SOURCE);
     }
 
     public String getSimulatorClassName() { return simulatorClassName; }

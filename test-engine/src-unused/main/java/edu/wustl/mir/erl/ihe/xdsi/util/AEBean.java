@@ -1,7 +1,6 @@
-/**
+package edu.wustl.mir.erl.ihe.xdsi.util; /**
  * 
  */
-package edu.wustl.mir.erl.ihe.xdsi.util;
 
 import java.nio.file.Path;
 

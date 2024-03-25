@@ -14,7 +14,6 @@ import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.commons.lang3.StringUtils;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;

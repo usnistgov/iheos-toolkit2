@@ -425,6 +425,7 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
                   transaction = new RetrieveImgDocSetTransaction(this,
                      instruction, instruction_output, TransactionType.XC_RET_IMG_DOC_SET);
                   break;
+                  /*
                case "ImgDetailTransaction":
                case "XmlDetailTransaction":
                   transaction = new ImgDetailTransaction(this, step, instruction, instruction_output);
@@ -432,6 +433,8 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
                case "WADOTransaction":
                   transaction = new WADOTransaction(this, instruction, instruction_output);
                   break;
+
+                   */
 //				case "FhirCreateTransaction":
 //					transaction = new FhirCreateTransaction(this, instruction, instruction_output);
 //					break;

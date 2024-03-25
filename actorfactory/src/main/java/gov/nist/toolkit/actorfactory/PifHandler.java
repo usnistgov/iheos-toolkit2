@@ -29,6 +29,7 @@ public class PifHandler implements PifCallback {
         }
     }
 
+    /*
     @Override
     public void addhl7v2Msg(String simId, String msg, String msh9, String dateDir, boolean inboundMsg) {
         try {
@@ -37,4 +38,6 @@ public class PifHandler implements PifCallback {
             throw new ToolkitRuntimeException("add hl7v2 msg error: ", e);
         }
     }
+    *
+     */
 }

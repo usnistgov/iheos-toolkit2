@@ -41,8 +41,9 @@ public class ATFactory implements IsSerializable, Serializable {
 	static public List<ActorType> RetrieveActorTypes = Arrays.asList(
 			ActorType.REPOSITORY,
 			ActorType.ONDEMAND_DOCUMENT_SOURCE,
-			ActorType.ISR,
-			ActorType.IMAGING_DOC_SOURCE);
+			ActorType.ISR
+//			ActorType.IMAGING_DOC_SOURCE
+	);
 
 
 	static List<TransactionType> gatewayTransactions = new ArrayList<TransactionType>();
