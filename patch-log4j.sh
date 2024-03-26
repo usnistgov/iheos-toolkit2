@@ -29,7 +29,7 @@ else
      echo ls -l $LOG4J_PATCHED_JAR
      echo "Already patched."
   else
-      echo "Error: patched file does not exist nor the unpatched file does not exist. Check dependencies."
+      echo "Neither the patched file does not exist nor the unpatched file exists."
   fi
 fi
 
