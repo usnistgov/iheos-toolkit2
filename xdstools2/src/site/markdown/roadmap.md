@@ -1,5 +1,9 @@
 # Project Road Map #
 
+## Recent 
+For recent updates, please see https://github.com/usnistgov/iheos-toolkit2/wiki/Plans.
+
+## Previous updates
 As of December 2021
 
 Apache Log4j server side logging framework was replaced with Java Util Logging. See https://github.com/usnistgov/iheos-toolkit2/wiki/XDS-Toolkit-Server-Logging-Configuration
