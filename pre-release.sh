@@ -25,10 +25,9 @@ cd xdstools2/target
 WARNAME=$(basename *.war .war)
 
 
-
 cd $BUILDDIR
 mkdir xdstools2/target/$WARNAME/javadoc
-bash $BASEDIR/genapidoc.sh xdstools2/target/$WARNAME/javadoc
+bash $BASEDIR/genapidoc.sh xdstools2/target/$WARNAME/javadoc "./xdstools2/target/$WARNAME/WEB-INF/lib/*"
 
 
 # This will fail if plexus stuff is not up to date locally.  If so, run mvn site
