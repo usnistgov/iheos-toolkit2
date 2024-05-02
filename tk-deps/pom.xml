@@ -38,22 +38,60 @@
         <!-- This one works with IntelliJ/Jetty/Windows. -->
         <!--        <groovyVersion>2.5.0</groovyVersion>-->
         <!-- This one is more compatible with Windows and Linux -->
-        <groovyVersion>2.4.13</groovyVersion>
+<!--        <groovyVersion>2.4.13</groovyVersion>-->
+        <!-- Spock version must use same Groovy version -->
+        <!--
+        Groovy versions prior to 2.5 included a core groovy jar and numerous "module" jars, e.g. groovy-xml.jar. Note: Groovy’s existing "modules" aren’t (currently) the same as Java9+ modules (more on that later)
+        Source:
+        https://groovy-lang.org/releasenotes/groovy-2.5.html
+        -->
+        <groovyVersion>2.4.21</groovyVersion>
+
         <!--<groovyVersion>2.4.5</groovyVersion>-->
         <!--<groovyVersion>2.1.1</groovyVersion>-->
-        <gwtVersion>2.8.2</gwtVersion>    <!-- 2.7.0 -->
+        <gwtVersion>2.8.2</gwtVersion>    <!--
+        2.8.2 worked in JDK8 compiler,
+        2.9.0 with JDK16 gave errors:
+        [INFO] [ERROR] Unexpected internal compiler error
+        java.lang.IllegalArgumentException when Client only was debugged
+        2.10.0 gave errors when XDS built from IJ
+        Error:(58, 19) java: cannot find symbol
+  symbol:   class Selection
+  location: class gov.nist.toolkit.xdstools2.client.widgets.buttons.CopyButton.CopyButtonClickHandler
+        -->
         <!-- <gwtVersion>2.6.1</gwtVersion> -->
-        <spock.version>1.2-groovy-2.4</spock.version>   <!-- 0.7-groovy-2.0   -->
+        <spock.version>1.3-groovy-2.4</spock.version>
+        <!--
+        1.3-groovy-2.4
+        1.2-groovy-2.4
+         0.7-groovy-2.0
+         -->
 <!--        as of 8/9/2023
 <mavenCompilerPluginVersion>3.1</mavenCompilerPluginVersion>-->
-        <mavenCompilerPluginVersion>3.8.0</mavenCompilerPluginVersion>
+        <mavenCompilerPluginVersion>3.8.1</mavenCompilerPluginVersion> <!-- 3.8.0 -->
 <!--        <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>-->
         <!-- as of 8/10/2023 -->
 <!--        <groovy-eclipse-compiler.version>2.9.0-01</groovy-eclipse-compiler.version>-->
+        <!--
+        The maven-compiler-plugin does not actually compile, but rather delegates the compilation to a different artifact (in our case, the groovy-eclipse-batch artifact):
+        Source:
+        https://github.com/groovy/groovy-eclipse/wiki/Groovy-Eclipse-Maven-plugin
+        -->
         <groovy-eclipse-compiler.version>3.6.0-03</groovy-eclipse-compiler.version>
+        <!-- 3.6.0-03 -->
         <!-- as of 8/10/2023 -->
+        <!--
+        Remember that you still need to specify a Groovy artifact as a build dependency in addition to the maven-compiler-plugin dependency. The Groovy dependency version should match the compiler version.
+        Source:
+        https://github.com/groovy/groovy-eclipse/wiki/Groovy-Eclipse-Maven-plugin
+        -->
 <!--        <groovy-eclipse-batch.version>2.4.3-01</groovy-eclipse-batch.version> &lt;!&ndash; 2.3.4-01 &ndash;&gt;-->
-        <groovy-eclipse-batch.version>2.4.21-01</groovy-eclipse-batch.version> <!-- 2.3.4-01 -->
+        <groovy-eclipse-batch.version>2.4.21-01</groovy-eclipse-batch.version>
+        <!--
+        2.3.4-01,
+        2.4.21-01
+        2.5.10-01 NOTE: Matching Groovy version has no groovy-all jar file due to Java 9 re-design.
+        -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven-source-plugin.version>2.3</maven-source-plugin.version>
         <maven-deploy-plugin.version>2.8.1</maven-deploy-plugin.version>
@@ -69,6 +107,11 @@
         <thymeleaf-version>3.0.2.RELEASE</thymeleaf-version>
         <lucene-version>5.5.5</lucene-version>
         <!--<lucene-version>6.6.0</lucene-version>-->
+
+        <soap-api-version>1.4.0</soap-api-version>
+        <jaxb-api-version>2.3.1</jaxb-api-version>
+        <jaxb-core-version>2.3.0.1</jaxb-core-version>
+        <jaxb-impl-version>2.3.8</jaxb-impl-version>
     </properties>
 
     <repositories>
@@ -95,7 +138,7 @@
         <repository>
             <id>dcm4che</id>
             <name>dcm4che</name>
-            <url>https://www.dcm4che.org/maven2</url>
+           <url>https://www.dcm4che.org/maven2</url>
         </repository>
         <repository>
             <id>gazelle-3rd-party</id>
@@ -542,7 +585,7 @@
             <!--                <groupId>org.spockframework</groupId>-->
             <!--                <artifactId>spock-maven</artifactId>-->
             <!--                <version>${spock.version}</version>-->
-            <!--                <exclusions>-->
+            <!--                <exclusions>old-->
             <!--                    <exclusion>  &lt;!&ndash; exclude so we can pick up surefire-junit4 2.17 version for failsafe integration tests  &ndash;&gt;-->
             <!--                        <groupId>org.apache.maven.surefire</groupId>-->
             <!--                        <artifactId>surefire-junit47</artifactId>-->
@@ -889,22 +932,22 @@
             <dependency>
                 <groupId>javax.xml.bind</groupId>
                 <artifactId>jaxb-api</artifactId>
-                <version>2.3.1</version>
+                <version>${jaxb-api-version}</version>
             </dependency>
             <dependency>
                 <groupId>com.sun.xml.bind</groupId>
                 <artifactId>jaxb-core</artifactId>
-                <version>2.3.0.1</version>
+                <version>${jaxb-core-version}</version>
             </dependency>
             <dependency>
                 <groupId>com.sun.xml.bind</groupId>
                 <artifactId>jaxb-impl</artifactId>
-                <version>2.3.8</version>
+                <version>${jaxb-impl-version}</version>
             </dependency>
             <dependency>
                 <groupId>javax.xml.soap</groupId>
                 <artifactId>javax.xml.soap-api</artifactId>
-                <version>1.4.0</version>
+                <version>${soap-api-version}</version>
             </dependency>
             <!-- end JDK 11+ compiler support -->
 
@@ -939,8 +982,9 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${mavenCompilerPluginVersion}</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+<!--                    <release>11</release>-->
+                    <source>8</source>
+                    <target>8</target>
                 </configuration>
             </plugin>
 

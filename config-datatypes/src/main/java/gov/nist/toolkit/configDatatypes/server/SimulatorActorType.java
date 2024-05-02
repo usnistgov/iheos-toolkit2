@@ -79,6 +79,7 @@ public enum SimulatorActorType {
      */
     INITIATING_IMAGING_GATEWAY("iig"),
 
+     // Obsolete in XDS Toolkit code base
 //    FHIR_SERVER("fhir"),
 
     SIM_PROXY("simproxy"),

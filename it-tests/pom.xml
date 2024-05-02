@@ -221,9 +221,9 @@
                             <!-- end include all tests -->
                         </includes>
                         <!-- Exclude tests that disturb other tests or require to be run in complete isolation. -->
-<!--                        <excludes>-->
-<!--                            <exclude>**/StsSamlAssertionSpec.java</exclude>-->
-<!--                        </excludes>-->
+                        <excludes>
+<!--                            <exclude>**/StsSamlAssertionSpec.java</exclude> -->
+                        </excludes>
                         <!--<parallel>classes</parallel>-->
                         <!--<runOrder>alphabetical</runOrder>-->
                         <!--<useUnlimitedThreads>true</useUnlimitedThreads>-->
@@ -263,8 +263,8 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${mavenCompilerPluginVersion}</version>
                     <configuration>
-                        <source>1.8</source>
-                        <target>1.8</target>
+                        <source>8</source>
+                        <target>8</target>
                         <compilerArgument>-Xms1024m -Xmx1024m -XX:MaxPermSize=256m --add-exports=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED	--add-exports=jdk.unsupported/sun.misc=ALL-UNNAMED</compilerArgument>
                     </configuration>
                 </plugin>
