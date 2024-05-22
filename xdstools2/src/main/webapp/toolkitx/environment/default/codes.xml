@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!--
     Version: 2024.05
+    Update 5/22/2024 by Oliver Egger
+        SNOMED CT Codes instead of R-Codes for practiceSettingCode see https://connect.ihe-catalyst.net/client/stream/68004000000616809/68004000000690133
     Update 5/14/2024 by Oliver Egger
         formatCode - add sIPS format code
         mimeType - add FHIR MIME types application/fhir+xml and application/fhir+json
@@ -471,13 +473,13 @@
         <Code code="13881006" display="Zygoma" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
     </CodeType>
     <CodeType name="practiceSettingCode" classScheme="urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead">
-        <Code code="R-300E3" display="Accident and Emergency" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
-        <Code code="R-20348" display="Cardiology" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
-        <Code code="R-30254" display="General Medicine" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
-        <Code code="R-30263" display="Obstetrics and Gynecology" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
-        <Code code="R-3025C" display="Ophthalmology" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
-        <Code code="R-3026B" display="Pathology" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
-        <Code code="R-3027B" display="Radiology" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="225728007" display="Accident and Emergency department (environment)" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="309915006" display="Cardiology department (environment)" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="309927009" display="General medical department (environment)" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="309942007" display="Obstetrics and gynecology department (environment)" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="309935007" display="Medical ophthalmology department (environment)" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="309950003" display="Pathology department (environment)" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
+        <Code code="309964003" display="Radiology department (environment)" codingScheme="2.16.840.1.113883.6.96" system="http://snomed.info/sct"/>
         <Code code="Practice-A" display="Radiology-Old" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
         <Code code="Practice-B" display="Cardiology-Old" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
         <Code code="Practice-C" display="Laboratory" codingScheme="1.3.6.1.4.1.21367.2017.3" system="http://connectathon.ihe"/>
