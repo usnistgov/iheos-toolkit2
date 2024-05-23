@@ -164,9 +164,9 @@
 
 		<!-- practiceSettingCode for XDS-I -->
          <Classification classificationScheme="urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead"
-               classifiedObject="Document01" nodeRepresentation="R-3027B">
+               classifiedObject="Document01" nodeRepresentation="309964003">
             <Name>
-               <LocalizedString value="Radiology"/>
+               <LocalizedString value="Radiology department (environment)"/>
             </Name>
             <Slot name="codingScheme">
                <ValueList>
