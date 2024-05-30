@@ -159,16 +159,16 @@
             </rim:Name>
          </rim:Classification>
          <rim:Classification classificationScheme="urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4"
-               classifiedObject="Document01" nodeRepresentation="urn:connectathon:bppc:foundational:policy"
+               classifiedObject="Document01" nodeRepresentation="CT"
                objectType="urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:Classification"
                id="id_8">
             <rim:Slot name="codingScheme">
                <rim:ValueList>
-                  <rim:Value>1.3.6.1.4.1.21367.2017.3</rim:Value>
+                  <rim:Value>1.2.840.10008.2.16.4</rim:Value>
                </rim:ValueList>
             </rim:Slot>
             <rim:Name>
-               <rim:LocalizedString value="Foundational Connectathon Read-Access Policy"/>
+               <rim:LocalizedString value="Computed Tomography"/>
             </rim:Name>
          </rim:Classification>
          <rim:Classification classificationScheme="urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4"

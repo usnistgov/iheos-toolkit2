@@ -53,12 +53,67 @@ public class CodesUpdater {
     private String out=new String();
     private boolean error;
 
+    private List<Code> overrideCodes;
     /**
-     * Reset the class variable to their initial state before the algorithm is run again.
+     * goes by the index of overrideCodes. If index value is null or empty, all files are affected.
      */
+    private List<String> targetFileByOverrideCodeIndex;
+    private boolean backupReplacedFiles = true;
+    private boolean dryRun = false;
+
+    /**
+     * Normal mode to be used with the run method (replaces bad a Code by picking a new Code by an arbitrary index)
+     */
+    public CodesUpdater() {
+    }
+
+    /**
+     * Alternate mode to replacing Code with a supplied replacement
+     * @param overrideCodes
+     * @param replacementMap
+     * @param backupReplacedFiles
+     */
+    public CodesUpdater(List<String> targetFileByOverrideCodeIndex, List<Code> overrideCodes, Map<String, Code> replacementMap, boolean backupReplacedFiles, boolean dryRun) {
+        this.targetFileByOverrideCodeIndex = targetFileByOverrideCodeIndex;
+        this.overrideCodes = overrideCodes;
+        this.replacementMap = replacementMap;
+        this.backupReplacedFiles = backupReplacedFiles;
+        this.dryRun = dryRun;
+    }
+
+    public static void main(String[] args) {
+
+        // "C:\\Users\\skb1\\myprojects\\iheos-toolkit2\\xdstools2\\src\\main\\webapp\\toolkitx\\environment\\default";
+        String codesXmlFileParent = "c:\\temp\\xdscodesupdatertool\\toolkitx\\environment\\default";
+        String testkitSourceLocation = "C:\\Users\\skb1\\myprojects\\iheos-toolkit2\\xdstools2\\src\\main\\webapp\\toolkitx\\testkit";
+        TestSession testSession = TestSession.DEFAULT_TEST_SESSION;
+
+        List<Code> overrideCodes = Arrays.asList(
+                new Code("urn:connectathon:bppc:foundational:policy", "1.3.6.1.4.1.21367.2017.3", "Foundational Connectathon Read-Access Policy")
+        );
+        List<String> targetFileByOverrideCodeIndex = Arrays.asList(
+                "\\idc_init\\XDS-I-idc-a"
+        );
+
+        CodesUpdater tool = new CodesUpdater(
+                targetFileByOverrideCodeIndex,
+                overrideCodes,
+                new HashMap<String, Code>() {{
+                    /* key Is code + "^" + display + "^" + scheme; */
+                    put(overrideCodes.get(0).toString(), new Code("CT", "1.2.840.10008.2.16.4", "Computed Tomography"));
+                }},
+                false, // false=no bak files
+                false); // false=perform update, true=does not update update files
+        tool.run(codesXmlFileParent, testkitSourceLocation, testSession);
+    }
+
+        /**
+         * Reset the class variable to their initial state before the algorithm is run again.
+         */
     void reset(){
         filesTreated=new ArrayList<String>();
         replacementMap=new HashMap<String,Code>();
+        overrideCodes = null;
     }
 
     /**
@@ -195,18 +250,25 @@ public class CodesUpdater {
                         if (!badCodes.isEmpty()) {
                             LOGGER.info(badCodes.size() + " codes to update in query file: " + filePath);
                             out += badCodes.size() + " codes to update in query file: " + filePath + "\n";
-                            File backupFile = new File(file.toString() + ".bak");
-                            if (!backupFile.exists()) {
-                                // backup the unmodified file before updating
-                                FileUtils.copyFile(file, backupFile);
+                            if (!dryRun && backupReplacedFiles) {
+                                File backupFile = new File(file.toString() + ".bak");
+                                if (!backupFile.exists()) {
+                                    // backup the unmodified file before updating
+                                    FileUtils.copyFile(file, backupFile);
+                                }
                             }
+
                             // update bad codes
                             updateCode(badCodes);
-                            // update the file itself
-                            String returnType = queryElement.getFirstElement().getAttributeValue(new QName("returnType"));
-                            Io.stringToFile(file, new OMFormatter(StoredQueryGenerator.generateQueryFile(returnType, params)).toString());
+
+                            if (! dryRun) {
+                                // update the file itself
+                                String returnType = queryElement.getFirstElement().getAttributeValue(new QName("returnType"));
+                                Io.stringToFile(file, new OMFormatter(StoredQueryGenerator.generateQueryFile(returnType, params)).toString());
+                            }
                         } else {
-                            out += "No codes to update in query file: " + filePath + "\n";
+                            if (! dryRun && overrideCodes == null)
+                                out += "No codes to update in query file: " + filePath + "\n";
                         }
                     }
                 } else {
@@ -243,21 +305,31 @@ public class CodesUpdater {
                 if (file.exists()) {
                     // read the file
                     OMElement metadataElement = Util.parse_xml(file);
-                    List<OMElement> badCodes = findNonConformingCodes(metadataElement);
+//                    if (file.toString().contains("IDCDEPT012-a")) {
+//                        out += "found the target file.\n";
+//                    }
+                    List<OMElement> badCodes = findNonConformingCodes(file.toString(), metadataElement);
                     if (!badCodes.isEmpty()) {
                         LOGGER.info(badCodes.size() + " codes to update in " + filePath);
                         out += badCodes.size() + " codes to update in " + filePath + '\n';
-                        File backupFile = new File(file.toString() + ".bak");
-                        if (!backupFile.exists()) {
-                            // backup the unmodified file before updating
-                            FileUtils.copyFile(file, backupFile);
+                        if (!dryRun && backupReplacedFiles) {
+                            File backupFile = new File(file.toString() + ".bak");
+                            if (!backupFile.exists()) {
+                                // backup the unmodified file before updating
+                                FileUtils.copyFile(file, backupFile);
+                            }
                         }
+
                         // update bad codes
                         updateCodes(badCodes);
-                        // update the file itself
-                        Io.stringToFile(file, new OMFormatter(metadataElement).toString());
+
+                        if (! dryRun) {
+                            // update the file itself
+                            Io.stringToFile(file, new OMFormatter(metadataElement).toString());
+                        }
                     } else {
-                        out += "No codes to update in " + filePath + '\n';
+                        if (! dryRun && overrideCodes == null)
+                            out += "No codes to update in " + filePath + '\n';
                     }
                 } else {
                     LOGGER.warning("WARNING: " + filePath + " file referenced in test does not exist.");
@@ -375,7 +447,7 @@ public class CodesUpdater {
             OMElement localizedStringElement = MetadataSupport.firstChildWithLocalName(nameElement, "LocalizedString");
             if (localizedStringElement == null) return;
             OMAttribute nameToReplace = localizedStringElement.getAttribute(MetadataSupport.value_qname);
-            Code oldCode=new Code(codeToReplace.getAttributeValue(),valueToReplace.getText(),""/*nameToReplace.getAttributeValue()*/);
+            Code oldCode = asCode(codeToReplace.getAttributeValue(), valueToReplace.getText(), nameToReplace.getAttributeValue());
             // check if the code to be replaced as already been changed before.
             Code replacementCode=replacementMap.get(oldCode.toString());
             if (replacementCode==null){
@@ -387,6 +459,13 @@ public class CodesUpdater {
                 replacementMap.put(oldCode.toString(),replacementCode);
                 out += "New mapping: " + oldCode + " --> " + replacementCode + "\n";
             } else {
+                if (overrideCodes != null && ! overrideCodes.isEmpty()) {
+                    String classificationScheme = classification.getAttributeValue(MetadataSupport.classificationscheme_qname);
+                    Uuid classificationUuid = new Uuid(classificationScheme);
+                    if (! allCodes.exists(classificationUuid, replacementCode)) {
+                        throw new RuntimeException("Override replacement code does not exist in the loaded code map: " + replacementCode.toString());
+                    }
+                }
                 out += "Old mapping: " + oldCode + " --> " + replacementCode + "\n";
             }
             // replace the code
@@ -396,13 +475,20 @@ public class CodesUpdater {
         }
     }
 
+    private Code asCode(String attributeValue, String text, String display) {
+        if (overrideCodes != null && ! overrideCodes.isEmpty()) {
+            return new Code(attributeValue, text, display);
+        }
+        return new Code(attributeValue, text, "");
+    }
+
 
     /**
      * This method explore a parsed document and looks for non-conforming codes with codes.xml file.
      * @param metadataElement parsed document to analyze
      * @return list of non-confirming code elements
      */
-    private List<OMElement> findNonConformingCodes(OMElement metadataElement) {
+    private List<OMElement> findNonConformingCodes(String file, OMElement metadataElement) {
         List<OMElement> badCodes = new ArrayList<OMElement>();
         List<OMElement> classifications = MetadataSupport.decendentsWithLocalName(metadataElement, "Classification");
         for (OMElement classification : classifications) {
@@ -414,8 +500,15 @@ public class CodesUpdater {
             // Check if the type of code exists.
             if (allCodes.isKnownClassification(classificationUuid)) {
                 Code code = getCode(classification);
+                if (overrideCodes != null && ! overrideCodes.isEmpty()) {
+                    int oCodeIndex = overrideCodes.indexOf(code);
+                    if (oCodeIndex > -1 && file.contains(targetFileByOverrideCodeIndex.get(oCodeIndex))) {
+                        out += "Overriding code: " + code.getCode() + ". ";
+                        badCodes.add(classification);
+                    }
+                }
                 // check if the code exists in the environment codes.xml file
-                if (!allCodes.exists(classificationUuid, code)) {
+                else if (!allCodes.exists(classificationUuid, code)) {
                     // if it does not add the code to the list of bad codes.
                     badCodes.add(classification);
                 }
@@ -491,19 +584,22 @@ public class CodesUpdater {
             String to = replacementMap.get(from).toString();
             out += (from + "  ===>   " + to + "\n");
         }
-        reset();
-        out += outputSeparator + "\n";
-        out += "Pass 2\n\n";
-        execute();
-        if (error) return;
-        out = outputSeparator + outputSeparator + "\n" + "   SUCCESS on generating testkit in environment in " +
-                pathToEnvironment.split("/")[pathToEnvironment.split("/").length - 1] + "\n" +
-                outputSeparator + outputSeparator + "\n\n" + out;
-        out += outputSeparator + "\n";
-        out += "Mappings\n\n";
-        for (String from : replacementMap.keySet()) {
-            String to = replacementMap.get(from).toString();
-            out += (from + "  ===>   " + to + "\n");
+        if (! dryRun) {
+            // Check own work
+            reset();
+            out += outputSeparator + "\n";
+            out += "Pass 2\n\n";
+            execute();
+            if (error) return;
+            out = outputSeparator + outputSeparator + "\n" + "   SUCCESS on generating testkit in environment in " +
+                    pathToEnvironment.split("/")[pathToEnvironment.split("/").length - 1] + "\n" +
+                    outputSeparator + outputSeparator + "\n\n" + out;
+            out += outputSeparator + "\n";
+            out += "Mappings\n\n";
+            for (String from : replacementMap.keySet()) {
+                String to = replacementMap.get(from).toString();
+                out += (from + "  ===>   " + to + "\n");
+            }
         }
         try {
             SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyyMMddHHmmss");

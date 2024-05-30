@@ -1,5 +1,7 @@
 package gov.nist.toolkit.valregmetadata.coding;
 
+import java.util.Objects;
+
 public class Code {
 	private String code;
 	private String scheme;
@@ -22,14 +24,21 @@ public class Code {
 	public String getDisplay() {
 		return display;
 	}
-	
-	public boolean equals(Code c) {
-		if (c == null) return false;
-		if (!c.getCode().equals(code)) return false;
-		if (!c.getScheme().equals(scheme)) return false;
-		return true;
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Code code1 = (Code) o;
+		return code.equals(code1.code) &&
+				scheme.equals(code1.scheme);
 	}
-	
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(code, scheme);
+	}
+
 	public String toString() {
 		return code + "^" + display + "^" + scheme;
 	}
