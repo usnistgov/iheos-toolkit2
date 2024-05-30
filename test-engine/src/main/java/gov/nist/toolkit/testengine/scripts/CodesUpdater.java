@@ -83,6 +83,20 @@ public class CodesUpdater {
 
     public static void main(String[] args) {
 
+        /*
+        How to use code override feature
+        codesXmlFileParent - set to a temporary working directory (outside of toolkit source) with a copy of the environment folder and the codes.xml file
+        testkitSourceLocation - set to the toolkit testkit source directory, these tests will be copied to the codesXmlFileParent based location
+        testSession - set to default test session
+        overrideCodes - the bad code(s) to be replaced by the replacementMap (code.toString() is the map key)
+        targetFileByOverrideCodeIndex - only apply the replacement for metadata files which match this string. Note the index matches the index of the overrideCode.
+        Can be empty but not null, when overrideCodes is not null
+        Example
+        If index is 0, overrideCode[index] correlates to targetFileByOverrideCodeIndex[index]
+        new HashMap<String, Code>()
+        Key is the code.toString, value is the replacement Code.
+         */
+
         // "C:\\Users\\skb1\\myprojects\\iheos-toolkit2\\xdstools2\\src\\main\\webapp\\toolkitx\\environment\\default";
         String codesXmlFileParent = "c:\\temp\\xdscodesupdatertool\\toolkitx\\environment\\default";
         String testkitSourceLocation = "C:\\Users\\skb1\\myprojects\\iheos-toolkit2\\xdstools2\\src\\main\\webapp\\toolkitx\\testkit";
