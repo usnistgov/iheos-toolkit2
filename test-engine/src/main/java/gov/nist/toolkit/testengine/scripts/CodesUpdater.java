@@ -516,7 +516,10 @@ public class CodesUpdater {
                 Code code = getCode(classification);
                 if (overrideCodes != null && ! overrideCodes.isEmpty()) {
                     int oCodeIndex = overrideCodes.indexOf(code);
-                    if (oCodeIndex > -1 && file.contains(targetFileByOverrideCodeIndex.get(oCodeIndex))) {
+                    if (oCodeIndex > -1
+                            && targetFileByOverrideCodeIndex != null
+                            && targetFileByOverrideCodeIndex.get(oCodeIndex) != null
+                            && file.contains(targetFileByOverrideCodeIndex.get(oCodeIndex))) {
                         out += "Overriding code: " + code.getCode() + ". ";
                         badCodes.add(classification);
                     }
