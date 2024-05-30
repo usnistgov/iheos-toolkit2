@@ -135,11 +135,11 @@
             </snapshots>
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
         </repository>
-<!--        <repository>-->
-<!--            <id>dcm4che</id>-->
-<!--            <name>dcm4che</name>-->
-<!--            <url>https://www.dcm4che.org/maven2</url>-->
-<!--        </repository>-->
+        <repository>
+            <id>dcm4che</id>
+            <name>dcm4che</name>
+           <url>https://www.dcm4che.org/maven2</url>
+        </repository>
         <repository>
             <id>gazelle-3rd-party</id>
             <name>gazelle nexus</name>

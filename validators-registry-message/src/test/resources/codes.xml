@@ -286,7 +286,7 @@
 	</CodeType>
 	<CodeType name="practiceSettingCode" classScheme="urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead">
 		<!-- added 26 Jan 2015 - these codes are quoted in XDS-I tests in Gazelle -->
-		<Code code="R-3027B" display="Radiology"
+		<Code code="309964003" display="Radiology department (environment)"
 			codingScheme="SRT" />
 		<Code code="R-3026B" display="Pathology"
 			codingScheme="SRT" />

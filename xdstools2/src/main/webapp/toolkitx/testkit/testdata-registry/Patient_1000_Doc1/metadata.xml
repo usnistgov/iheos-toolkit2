@@ -197,10 +197,10 @@
             </Slot>
          </Classification>
          <Classification classificationScheme="urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead"
-               classifiedObject="Document01" nodeRepresentation="R-30254"
+               classifiedObject="Document01" nodeRepresentation="225728007"
                xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <Name xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <LocalizedString value="General Medicine"
+               <LocalizedString value="Accident and Emergency department (environment)"
                      xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
             </Name>
             <Slot name="codingScheme" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">

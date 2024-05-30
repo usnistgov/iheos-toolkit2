@@ -20,9 +20,7 @@ import org.apache.commons.io.comparator.NameFileComparator
 import org.apache.commons.io.filefilter.PrefixFileFilter
 import org.apache.http.annotation.Obsolete
 import java.util.logging.*
-/*
 import org.dcm4che3.hl7.HL7Parser
- */
 
 import javax.xml.transform.OutputKeys
 import javax.xml.transform.TransformerFactory
@@ -814,7 +812,6 @@ public class SimDb {
 		pidDb.addPatientId(patientId);
 	}
 
-    /*
 	public void addhl7v2Msg(String hl7msg, String msh9, String dateDir, boolean inboundMsg) {
 		if (hl7msg == null || hl7msg.isEmpty()) hl7msg="null or empty hl7 msg";
 		String xmlmsg = hl7v2ToXml(hl7msg);
@@ -826,7 +823,6 @@ public class SimDb {
 		Files.write(dir.toPath().resolve(hl7fn), hl7msg.getBytes("UTF-8"));
 		Files.write(dir.toPath().resolve(xmlfn), xmlmsg.getBytes("UTF-8"));
 	}
-     */
 
 	public boolean deletePatientIds(List<Pid> toDelete) {
 		return pidDb.deletePatientIds(toDelete);
@@ -1493,7 +1489,6 @@ public class SimDb {
 	 * @param inMsg hl7 v2 message.
 	 * @return XML equivalent. On error, returns error message and original hl7 msg.
 	 */
-    /*
 	public String hl7v2ToXml(String inMsg) {
 		try {
 			Reader reader = new StringReader(inMsg);
@@ -1511,8 +1506,6 @@ public class SimDb {
 				System.getProperty("line.separator") + inMsg;
 		}
 	}
-	*
-     */
 	void setActor(String actor) {
 		this.actor = actor
 	}

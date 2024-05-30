@@ -35,13 +35,6 @@
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
-<!--            <exclusions>-->
-<!--                <exclusion>-->
-<!--                    <artifactId>xml-apis</artifactId>-->
-<!--                    <groupId>xml-apis</groupId>-->
-<!--                </exclusion>-->
-<!--            </exclusions>-->
-
         </dependency>
         <dependency>
             <groupId>org.spockframework</groupId>

@@ -222,10 +222,7 @@
                         </includes>
                         <!-- Exclude tests that disturb other tests or require to be run in complete isolation. -->
                         <excludes>
-<!--                            <exclude>**/StsSamlAssertionSpec.java</exclude>-->
-                            <!-- Begin exclude XDS-I IT Tests not supported in Toolkit -->
-                            <!-- img folder -->
-                            <!-- End exclude XDS-I IT Tests not supported in Toolkit -->
+<!--                            <exclude>**/StsSamlAssertionSpec.java</exclude> -->
                         </excludes>
                         <!--<parallel>classes</parallel>-->
                         <!--<runOrder>alphabetical</runOrder>-->

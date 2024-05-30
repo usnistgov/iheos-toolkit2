@@ -243,11 +243,11 @@
 			<!-- DocumentEntry.practiceSettingCode -->
 			<rim:Classification
 				objectType="urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:Classification"
-				classifiedObject="KOS-01" nodeRepresentation="R-30254"
+				classifiedObject="KOS-01" nodeRepresentation="309927009"
 				classificationScheme="urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead"
 				id="id_de_pracSettCode">
 				<rim:Name>
-					<rim:LocalizedString value="General Medicine" />
+					<rim:LocalizedString value="General medical department (environment)" />
 				</rim:Name>
 				<rim:Slot name="codingScheme">
 					<rim:ValueList>

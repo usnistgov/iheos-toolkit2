@@ -11,8 +11,8 @@
          </Name>
          <Description xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <LocalizedString value="RMU Comments - Charles Hon - Id 1000 - Prescription in Folder"
-                  xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>   
-          </Description>
+                  xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
+         </Description>
          <Slot name="creationTime" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <ValueList xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
                <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">20181126</Value>
@@ -75,7 +75,8 @@
                classifiedObject="Document01" nodeRepresentation="PRESCRIPTIONS"
                xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <Name xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <LocalizedString value="Prescribed Treatments and Diagnoses" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
+               <LocalizedString value="Prescribed Treatments and Diagnoses"
+                     xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
             </Name>
             <Slot name="codingScheme" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
                <ValueList xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
@@ -87,8 +88,7 @@
                classifiedObject="Document01" nodeRepresentation="N"
                xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <Name xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <LocalizedString value="normal"
-                     xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
+               <LocalizedString value="normal" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
             </Name>
             <Slot name="codingScheme" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
                <ValueList xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
@@ -113,8 +113,7 @@
                classifiedObject="Document01" nodeRepresentation="264372000"
                xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <Name xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <LocalizedString value="Pharmacy"
-                     xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
+               <LocalizedString value="Pharmacy" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
             </Name>
             <Slot name="codingScheme" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
                <ValueList xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
@@ -123,10 +122,11 @@
             </Slot>
          </Classification>
          <Classification classificationScheme="urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead"
-               classifiedObject="Document01" nodeRepresentation="R-3027B"
+               classifiedObject="Document01" nodeRepresentation="309915006"
                xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <Name xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <LocalizedString value="General Medicine" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
+               <LocalizedString value="Cardiology department (environment)"
+                     xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
             </Name>
             <Slot name="codingScheme" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
                <ValueList xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
@@ -138,8 +138,7 @@
                classifiedObject="Document01" nodeRepresentation="T-15001"
                xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <Name xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <LocalizedString value="Joint"
-                     xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
+               <LocalizedString value="Joint" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
             </Name>
             <Slot name="codingScheme" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
                <ValueList xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
@@ -178,14 +177,14 @@
       <ExtrinsicObject id="Document02" mimeType="text/plain"
             objectType="urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1"
             xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-          <Name xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
+         <Name xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <LocalizedString value="RMU Title - Charles Hon - Id 1000 - Privacy Consent Doc in Folder"
                   xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
          </Name>
          <Description xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <LocalizedString value="RMU Comments - Charles Hon - Id 1000 - Privacy Consent Doc in Folder"
-                  xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>   
-          </Description>
+                  xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
+         </Description>
          <Slot name="creationTime" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <ValueList xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
                <Value xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">20181126</Value>
@@ -260,8 +259,7 @@
                classifiedObject="Document02" nodeRepresentation="N"
                xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <Name xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <LocalizedString value="normal"
-                     xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
+               <LocalizedString value="normal" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
             </Name>
             <Slot name="codingScheme" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
                <ValueList xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
@@ -286,8 +284,7 @@
                classifiedObject="Document02" nodeRepresentation="264372000"
                xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <Name xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <LocalizedString value="Pharmacy"
-                     xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
+               <LocalizedString value="Pharmacy" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
             </Name>
             <Slot name="codingScheme" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
                <ValueList xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
@@ -363,7 +360,8 @@
       </ExtrinsicObject>
       <RegistryPackage id="SubmissionSet01" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
          <Name xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-            <LocalizedString value="Post-surgery Prescription SS Title" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
+            <LocalizedString value="Post-surgery Prescription SS Title"
+                  xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
          </Name>
          <Description xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <LocalizedString value="Post-surgery Prescription SS Comments"
@@ -402,8 +400,7 @@
                classifiedObject="SubmissionSet01" nodeRepresentation="264372000"
                xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <Name xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <LocalizedString value="Pharmacy"
-                     xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
+               <LocalizedString value="Pharmacy" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
             </Name>
             <Slot name="codingScheme" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
                <ValueList xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
@@ -439,8 +436,7 @@
             xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
       <RegistryPackage id="Folder" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
          <Name xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-            <LocalizedString value="RMU Folder"
-                  xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
+            <LocalizedString value="RMU Folder" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
          </Name>
          <Description xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <LocalizedString value="RMU comments go here"
@@ -450,7 +446,8 @@
                classifiedObject="Folder" nodeRepresentation="Referrals"
                xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
             <Name xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
-               <LocalizedString value="Prescriptions" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
+               <LocalizedString value="Prescriptions"
+                     xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"/>
             </Name>
             <Slot name="codingScheme" xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">
                <ValueList xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1">

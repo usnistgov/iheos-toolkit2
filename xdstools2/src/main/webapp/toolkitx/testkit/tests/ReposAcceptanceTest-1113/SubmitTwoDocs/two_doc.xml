@@ -160,7 +160,7 @@
                </rim:Name>
             </rim:Classification>
             <rim:Classification classificationScheme="urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead"
-                  classifiedObject="myDocId1" nodeRepresentation="R-300E3"
+                  classifiedObject="myDocId1" nodeRepresentation="309927009"
                   objectType="urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:Classification"
                   id="id_8">
                <rim:Slot name="codingScheme">
@@ -169,7 +169,7 @@
                   </rim:ValueList>
                </rim:Slot>
                <rim:Name>
-                  <rim:LocalizedString value="Accident and Emergency"/>
+                  <rim:LocalizedString value="General medical department (environment)"/>
                </rim:Name>
             </rim:Classification>
             <rim:Classification classificationScheme="urn:uuid:f0306f51-975f-434e-a61c-c59651d33983"
@@ -360,7 +360,7 @@
                </rim:Name>
             </rim:Classification>
             <rim:Classification classificationScheme="urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead"
-                  classifiedObject="myDocId2" nodeRepresentation="R-300E3"
+                  classifiedObject="myDocId2" nodeRepresentation="309927009"
                   objectType="urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:Classification"
                   id="id_8">
                <rim:Slot name="codingScheme">
@@ -369,7 +369,7 @@
                   </rim:ValueList>
                </rim:Slot>
                <rim:Name>
-                  <rim:LocalizedString value="Accident and Emergency"/>
+                  <rim:LocalizedString value="General medical department (environment)"/>
                </rim:Name>
             </rim:Classification>
             <rim:Classification classificationScheme="urn:uuid:f0306f51-975f-434e-a61c-c59651d33983"

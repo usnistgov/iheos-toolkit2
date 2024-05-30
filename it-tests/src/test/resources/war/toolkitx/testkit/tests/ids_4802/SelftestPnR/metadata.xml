@@ -154,7 +154,7 @@
             </rim:Classification>
             <rim:Classification classificationScheme="urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead"
                classifiedObject="Document01"
-               nodeRepresentation="R-3027B"
+               nodeRepresentation="309964003"
                objectType="urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:Classification"
                id="id_7">
                <rim:Slot name="codingScheme">
@@ -163,7 +163,7 @@
                   </rim:ValueList>
                </rim:Slot>
                <rim:Name>
-                  <rim:LocalizedString value="Radiology"></rim:LocalizedString>
+                  <rim:LocalizedString value="Radiology department (environment)"></rim:LocalizedString>
                </rim:Name>
             </rim:Classification>
             <rim:Classification classificationScheme="urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4"

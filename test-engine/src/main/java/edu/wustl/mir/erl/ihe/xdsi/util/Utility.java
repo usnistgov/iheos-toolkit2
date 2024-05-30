@@ -18,10 +18,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import java.util.logging.Logger;
-/*
 import org.apache.log4j.PropertyConfigurator;
-
- */
 
 /**
  * General static utility methods. <b>Note:</b> Some of these are temporary

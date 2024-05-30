@@ -151,7 +151,7 @@
          </rim:Classification>
           <!-- practiceSettingCode for XDS-I -->
           <rim:Classification classificationScheme="urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead"
-               classifiedObject="Document01" nodeRepresentation="R-3027B"
+               classifiedObject="Document01" nodeRepresentation="309964003"
                objectType="urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:Classification"
                id="id_7">
             <rim:Slot name="codingScheme">
@@ -160,7 +160,7 @@
                </rim:ValueList>
             </rim:Slot>
             <rim:Name>
-               <rim:LocalizedString value="Radiology"/>
+               <rim:LocalizedString value="Radiology department (environment)"/>
             </rim:Name>
          </rim:Classification>
           <!-- eventCodeList for XDS-I. This is the list of modalities and anatomic regions -->

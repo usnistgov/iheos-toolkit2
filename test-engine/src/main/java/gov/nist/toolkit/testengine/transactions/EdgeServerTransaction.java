@@ -22,7 +22,7 @@ public class EdgeServerTransaction  extends BasicTransaction {
 
     private OMElement step;
     private PropertyManager pMgr;
-    private Logger log = Logger.getLogger(EdgeServerTransaction.class.getName());
+    private Logger log = Logger.getLogger(ImgDetailTransaction.class.getName());
 
 
     /**

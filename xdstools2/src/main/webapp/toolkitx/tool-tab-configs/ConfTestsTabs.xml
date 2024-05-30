@@ -213,8 +213,6 @@ The "tabs" element adds extra layer which is not necessary. It can be removed bu
 		</tabs>
 	</tab>
 
-	<!--	Begin remove Imaging support from XDS Toolkit-->
-	<!--
 	<tab label="Imaging Document Consumer" type="actor" tcCode="idc" displayColorCode="#a6ffd0">
 		<tabs label="Profiles">
 			<tab label="XDS-I" type="profile" tcCode="xds-i">
@@ -264,8 +262,6 @@ The "tabs" element adds extra layer which is not necessary. It can be removed bu
 			</tab>
 		</tabs>
 	</tab>
-	-->
-<!--	End remove Imaging support from XDS Toolkit-->
 
 
 

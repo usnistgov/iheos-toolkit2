@@ -187,9 +187,9 @@
             </rim:Slot>
          </rim:Classification>
          <rim:Classification classifiedObject="Document01"
-               nodeRepresentation="R-300E3" classificationScheme="urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead">
+               nodeRepresentation="309927009" classificationScheme="urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead">
             <rim:Name>
-               <rim:LocalizedString value="Accident and Emergency"/>
+               <rim:LocalizedString value="General medical department (environment)"/>
             </rim:Name>
             <rim:Slot name="codingScheme">
                <rim:ValueList>
