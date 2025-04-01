@@ -108,6 +108,7 @@ public class RegistryActorFactory extends AbstractActorFactory implements IActor
             addFixedEndpoint(sc, SimulatorProperties.removeMetadataTlsEndpoint,    actorType, TransactionType.REMOVE_METADATA,     true);
 		}
 		addEditableConfig(sc, SimulatorProperties.metadataValidatorClass, ParamType.TEXT, "");
+		addEditableConfig(sc, SimulatorProperties.METADATA_VALIDATION_DOCUMENT_ID_CODES, ParamType.TEXT, "OID");
 		addEditableConfig(sc, SimulatorProperties.errors, ParamType.SELECTION, new ArrayList<String>(), false);
 
 		return new Simulator(sc);

@@ -83,6 +83,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	public boolean isValidateCodes = true;
 	public boolean isPartOfRecipient = false;
 	public boolean validateAgainstPatientIdentityFeed = false;
+	public String metadataValidationDocumentIDCodes = "";
 
 	/**
 	 * Is this a Request? A setting of false does not mean that this is a
@@ -310,6 +311,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 		ccdaType = v.ccdaType;
 		codesFilename = v.codesFilename;
         forceMtom = v.forceMtom;
+		metadataValidationDocumentIDCodes = v.metadataValidationDocumentIDCodes;
 	}
 
 	public boolean hasMetadata() {
@@ -534,6 +536,9 @@ public class ValidationContext  implements Serializable, IsSerializable {
 			buf.append(";MetadataPatterns:").append(metadataPatterns);
 		if (ccdaType != null)
 			buf.append(";CCDA type is " + ccdaType);
+
+		if (metadataValidationDocumentIDCodes != null)
+			buf.append(";metadataValidationDocumentIDCodes:").append(metadataValidationDocumentIDCodes);
 
 		if (innerContexts != null) {
 			for (ValidationContext v : innerContexts) {
