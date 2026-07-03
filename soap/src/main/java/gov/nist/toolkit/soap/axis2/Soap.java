@@ -394,7 +394,11 @@ public class Soap implements SoapInterface {
 		// Axis2 has some timing problems so, yes, this is necessary
 		AxisFault lastFault = null;
 		boolean finished = false;
-
+/*
+		@Jason
+		I had to comment out these lines. The line serviceClient.engageModule("addressing") was failing
+		I don't know what this is intended to do. Removing it does not seem right. I should look
+		at the previous version and walk through the library to see the value of this.
 		// - CHECK engaging the addressing module. Should it really be
 		// engaged a each soap call? -Antoine
 		// - CHECK is the module engagement really asynchronous ?? -Antoine
@@ -425,7 +429,7 @@ public class Soap implements SoapInterface {
 		}
 		if (!finished)
 			throw lastFault;
-
+*/
 
 		// vbeera: modified code -START-
 		MessageContext outMsgCtx = null;
@@ -576,7 +580,15 @@ public class Soap implements SoapInterface {
 			// Unfortunately, when we are here, the inMsgCtx.getEnvelope() method returns null;
 			//			result = soapBody.getFirstElement();
 			//			logger.info(new OMFormatter(result).toString());
-        }
+        } catch (Exception e) {
+			// @Jason, I added this exception. It helped me find the class mismatch error.
+			logger.warning("$$$$$ Unknown exception: with timeout of " + deployedSocketTimeout + ", Elapsed time: " + TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start) / 1000.0 + " seconds");
+			logger.warning(ExceptionUtil.exception_details(e));
+			MessageContext inMsgCtx = getInputMessageContext();
+			OMElement soapBody = inMsgCtx.getEnvelope().getBody();
+			result = soapBody.getFirstElement();
+			logger.info(new OMFormatter(result).toString());
+		}
         finally {
 			logger.info(String.format("******************************** AFTER SOAP SEND to %s ****************************", endpoint));
 
@@ -636,14 +648,18 @@ public class Soap implements SoapInterface {
 		return host + " " + port + " " + ((isTls) ? "tls" : "");
 	}
 
-	// Build a per-client SSL context instead of relying on JVM-level
-	// javax.net.ssl.keyStore / trustStore properties.
-	SSLContext getAuthSslContext() throws IOException,
+	// This code is used to bypass the use of javax.net.ssl.keyStore and similar
+	// JVM level controls on the certs used and specify certs on a
+	// per-connection basis.
+
+	@SuppressWarnings("deprecation")
+	Protocol getAuthHttpsProtocol() throws MalformedURLException, IOException,
 			EnvironmentNotSelectedException {
 		String keyStoreFile = "file:/Users/bill/tmp/toolkit/environment/EURO2011/keystore/keystore";
 		String keyStorePass = "password";
 		String trustStoreFile = keyStoreFile;
 		String trustStorePass = keyStorePass;
+		int tlsPort = 9443;
 
 		if (securityParams == null)
 			throw new EnvironmentNotSelectedException("Trying to initiate a TLS connection - securityParams are null");
@@ -653,10 +669,13 @@ public class Soap implements SoapInterface {
 		keyStorePass = securityParams.getKeystorePassword();
 		trustStoreFile = "file:" + securityParams.getTruststore().toString();
 		trustStorePass = securityParams.getTruststorePassword();
+		tlsPort = tlsPortFromEndpoint();
 
-		return new AuthSSLProtocolSocketFactory(
-				new URL(keyStoreFile), keyStorePass,
-				new URL(trustStoreFile), trustStorePass).getSSLContext();
+		return new Protocol("https", new AuthSSLProtocolSocketFactory(
+
+		new URL(keyStoreFile), keyStorePass,
+
+		new URL(trustStoreFile), trustStorePass), tlsPort);
 	}
 
 	int tlsPortFromEndpoint() throws MalformedURLException {

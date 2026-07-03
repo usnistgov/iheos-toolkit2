@@ -226,13 +226,13 @@ public class SiteServiceManager {
 	private boolean useActorsFile() {
 		if (useGazelleConfigFeed())
 			return false;
-		return Installation.instance().propertyServiceManager().getPropertyManager()
-				.isUseActorsFile();
+		return (Installation.instance().propertyServiceManager().getPropertyManager()
+				.isUseActorsFile());
 	}
 
 	public boolean useGazelleConfigFeed() {
-		String c = Installation.instance().propertyServiceManager().getPropertyManager()
-				.getToolkitGazelleConfigURL();
+		String c = (Installation.instance().propertyServiceManager().getPropertyManager()
+				.getToolkitGazelleConfigURL());
 		return c.trim().length() > 0;
 	}
 
@@ -264,7 +264,7 @@ public class SiteServiceManager {
 
 	public List<String> getRepositoryNames(String sessionId, TestSession testSession) throws Exception {
 		logger.fine(sessionId + ": " + "getRepositoryNames");
-			return asSites(getAllSites(sessionId, testSession)).getSiteNamesWithRepository(testSession);
+		return asSites(getAllSites(sessionId, testSession)).getSiteNamesWithRepository(testSession);
 	}
 
 	private TestSession getTestSession(List<Site> sites) {
@@ -290,9 +290,9 @@ public class SiteServiceManager {
 		logger.fine(sessionId + ": " + "getRGNames");
 		try {
 			getAllSites(sessionId, testSession);
-			return SimManager
+			return (SimManager
 					.getAllSites(testSession)
-					.getSiteNamesWithActor(ActorType.RESPONDING_GATEWAY, testSession);
+					.getSiteNamesWithActor(ActorType.RESPONDING_GATEWAY, testSession));
 		} catch (Exception e) {
 			System.out.println(ExceptionUtil.exception_details(e, 10));
 			return new ArrayList<>();
@@ -303,9 +303,9 @@ public class SiteServiceManager {
 		logger.fine(sessionId + ": " + "getIGNames");
 		try {
 			getAllSites(sessionId, testSession);
-			return SimManager
+			return (SimManager
 					.getAllSites(testSession)
-					.getSiteNamesWithActor(ActorType.INITIATING_GATEWAY, testSession);
+					.getSiteNamesWithActor(ActorType.INITIATING_GATEWAY, testSession));
 		} catch (Exception e) {
 			System.out.println(ExceptionUtil.exception_details(e, 10));
 			return new ArrayList<String>();
@@ -339,8 +339,8 @@ public class SiteServiceManager {
 		logger.fine(sessionId + ": " + "saveSite");
 		try {
 			if (!useActorsFile())
-				new SeparateSiteLoader(testSession).saveToFile(Installation.instance()
-						.actorsDir(testSession), site);
+				(new SeparateSiteLoader(testSession).saveToFile(Installation.instance()
+						.actorsDir(testSession), site));
 			else {
 				throw new ToolkitRuntimeException("Combined site (all in one file) no longer supported");
 			}
@@ -357,8 +357,8 @@ public class SiteServiceManager {
 		logger.fine(sessionId + ": " + "deleteSite");
 		try {
 			if (!useActorsFile())
-				new SeparateSiteLoader(testSession).delete(Installation.instance()
-						.actorsDir(testSession), siteName);
+				(new SeparateSiteLoader(testSession).delete(Installation.instance()
+						.actorsDir(testSession), siteName));
 			else
 				throw new ToolkitRuntimeException("Combined site (all in one file) no longer supported");
 		} catch (Exception e) {

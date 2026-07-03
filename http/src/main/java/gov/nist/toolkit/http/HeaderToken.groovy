@@ -23,7 +23,7 @@ public enum HeaderToken {
 	HeaderToken(String value) { this.value = value; }
 	
 	static public boolean isSpecial(char c) {
-		return 
+		return (
 				OPEN_PAREN.value.charAt(0) == c 
 				|| CLOSE_PAREN.value.charAt(0) == c
 				|| LT.value.charAt(0) == c
@@ -35,7 +35,7 @@ public enum HeaderToken {
 				|| COLON.value.charAt(0) == c
 				|| PERIOD.value.charAt(0) == c
 				|| OPEN_BRACKET.value.charAt(0) == c
-				|| CLOSE_BRACKET.value.charAt(0) == c;
+				|| CLOSE_BRACKET.value.charAt(0) == c );
 	}
 	
 	static public boolean isSpecial(String s) {

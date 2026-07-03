@@ -309,7 +309,7 @@ public abstract class AbstractActorFactory {
 
 		String contextName = Installation.instance().getServletContextName();
 
-		return "http"
+		return ("http"
 		+ ((isTLS) ? "s" : "")
 		+ "://"
 		+ Installation.instance().propertyServiceManager().getToolkitHost()
@@ -323,7 +323,7 @@ public abstract class AbstractActorFactory {
 		+ "/" +
 		actor           //asc.getActorType().toLowerCase()
 		+ "/"
-		+ transtype;
+		+ transtype);
 	}
 
 	protected String mkFhirEndpoint(SimulatorConfig asc, SimulatorConfigElement ele, String actor, boolean isTLS) throws Exception {
@@ -335,7 +335,7 @@ public abstract class AbstractActorFactory {
 
 		String contextName = Installation.instance().getServletContextName();
 
-		return "http"
+		return ("http"
 				+ ((isTLS) ? "s" : "")
 				+ "://"
 				+ Installation.instance().propertyServiceManager().getToolkitHost()
@@ -350,7 +350,7 @@ public abstract class AbstractActorFactory {
 				+ "/" + actor
 	//			+ "/fhir"
 				+ ((transactionType != null && transactionType.getFhirVerb() == FhirVerb.TRANSACTION ? "/" + transactionType.getShortName() : ""))
-				;
+				);
 	}
 
 	private String getEndpointPort(boolean isTLS, boolean isProxy) throws Exception {
