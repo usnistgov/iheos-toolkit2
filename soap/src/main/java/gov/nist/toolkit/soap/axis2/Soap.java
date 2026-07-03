@@ -39,17 +39,26 @@ import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.axis2.engine.Phase;
 import org.apache.axis2.kernel.http.HTTPConstants;
 import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
-import org.apache.commons.httpclient.protocol.Protocol;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocket;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -483,26 +492,7 @@ public class Soap implements SoapInterface {
 			header.setValue(timestampProxyString());
 		}
 
-		// This creates an HTTPClient using the requested keystore and
-		// truststore
-		// so that different users can get what they need
-
-		if (isTLS()) {
-			try {
-				// this is the overly heavy handed approach
-				// Protocol.registerProtocol("https", authhttps);
-
-				//  REMOVE - I guess this is dead code -Antoine
-				Protocol protocol = getAuthHttpsProtocol();
-				options.setProperty(HTTPConstants.CUSTOM_PROTOCOL_HANDLER,
-						protocol);
-
-			} catch (IOException e) {
-				throw new XdsInternalException(
-						"Failed to create custom Protocol for TLS\n"
-								+ ExceptionUtil.exception_details(e), e);
-			}
-		}
+		// TLS setup is applied to the cached HttpClient 4 client in setMaxConnections().
 
 		// outMsgCtx.setEnvelope(createSOAPEnvelope()); //vbeera: modified
 		SOAPEnvelope envelope = createSOAPEnvelope();
@@ -646,18 +636,14 @@ public class Soap implements SoapInterface {
 		return host + " " + port + " " + ((isTls) ? "tls" : "");
 	}
 
-	// This code is used to bypass the use of javax.net.ssl.keyStore and similar
-	// JVM level controls on the certs used and specify certs on a
-	// per-connection basis.
-
-	@SuppressWarnings("deprecation")
-	Protocol getAuthHttpsProtocol() throws MalformedURLException, IOException,
+	// Build a per-client SSL context instead of relying on JVM-level
+	// javax.net.ssl.keyStore / trustStore properties.
+	SSLContext getAuthSslContext() throws IOException,
 			EnvironmentNotSelectedException {
 		String keyStoreFile = "file:/Users/bill/tmp/toolkit/environment/EURO2011/keystore/keystore";
 		String keyStorePass = "password";
 		String trustStoreFile = keyStoreFile;
 		String trustStorePass = keyStorePass;
-		int tlsPort = 9443;
 
 		if (securityParams == null)
 			throw new EnvironmentNotSelectedException("Trying to initiate a TLS connection - securityParams are null");
@@ -667,13 +653,10 @@ public class Soap implements SoapInterface {
 		keyStorePass = securityParams.getKeystorePassword();
 		trustStoreFile = "file:" + securityParams.getTruststore().toString();
 		trustStorePass = securityParams.getTruststorePassword();
-		tlsPort = tlsPortFromEndpoint();
 
-		return new Protocol("https", new AuthSSLProtocolSocketFactory(
-
-		new URL(keyStoreFile), keyStorePass,
-
-		new URL(trustStoreFile), trustStorePass), tlsPort);
+		return new AuthSSLProtocolSocketFactory(
+				new URL(keyStoreFile), keyStorePass,
+				new URL(trustStoreFile), trustStorePass).getSSLContext();
 	}
 
 	int tlsPortFromEndpoint() throws MalformedURLException {
@@ -864,16 +847,86 @@ public class Soap implements SoapInterface {
 
     // Set the max connections and timeout - needed because by default you can only have
     // two connections to a single host.  This doesn't work with simulators in toolkit.
-    void setMaxConnections() {
-        MultiThreadedHttpConnectionManager multiThreadedHttpConnectionManager = new MultiThreadedHttpConnectionManager();
-        HttpConnectionManagerParams params = new HttpConnectionManagerParams();
-        params.setDefaultMaxConnectionsPerHost(50);
-        params.setMaxTotalConnections(50);
-        params.setSoTimeout(deployedSocketTimeout);
-        params.setConnectionTimeout(deployedConnectTimeout);
-        multiThreadedHttpConnectionManager.setParams(params);
-        HttpClient httpClient = new HttpClient(multiThreadedHttpConnectionManager);
+    void setMaxConnections() throws XdsInternalException, EnvironmentNotSelectedException {
+        // axis2 1.8.2 uses HttpComponents HttpClient 4.x: CACHED_HTTP_CLIENT must be an
+        // org.apache.http.client.HttpClient. The old commons-httpclient 3.x client caused a
+        // ClassCastException in axis2's HTTPSenderImpl. Pool sized >2 per host for simulators.
+        PoolingHttpClientConnectionManager connectionManager;
+        try {
+            connectionManager = createConnectionManager();
+        } catch (IOException e) {
+            throw new XdsInternalException(
+                    "Failed to create HttpClient 4 TLS configuration\n"
+                            + ExceptionUtil.exception_details(e), e);
+        }
+        connectionManager.setDefaultMaxPerRoute(50);
+        connectionManager.setMaxTotal(50);
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setSocketTimeout(deployedSocketTimeout)
+                .setConnectTimeout(deployedConnectTimeout)
+                .build();
+        HttpClient httpClient = HttpClients.custom()
+                .setConnectionManager(connectionManager)
+                .setDefaultRequestConfig(requestConfig)
+                .build();
         serviceClient.getServiceContext().getConfigurationContext().setProperty(HTTPConstants.CACHED_HTTP_CLIENT, httpClient);
+    }
+
+    private PoolingHttpClientConnectionManager createConnectionManager()
+            throws IOException, EnvironmentNotSelectedException {
+        if (!isTLS()) {
+            return new PoolingHttpClientConnectionManager();
+        }
+
+        SSLContext sslContext = getAuthSslContext();
+        serviceClient.getServiceContext().getConfigurationContext().setProperty(SSLContext.class.getName(), sslContext);
+
+        SSLConnectionSocketFactory sslSocketFactory = new SSLConnectionSocketFactory(
+                sslContext,
+                getSupportedClientSslProtocols(sslContext),
+                getSupportedClientCipherSuites(sslContext),
+                NoopHostnameVerifier.INSTANCE);
+        Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
+                .register("http", PlainConnectionSocketFactory.getSocketFactory())
+                .register("https", sslSocketFactory)
+                .build();
+        return new PoolingHttpClientConnectionManager(socketFactoryRegistry);
+    }
+
+    private String[] getSupportedClientSslProtocols(SSLContext sslContext) throws IOException {
+        String[] configuredProtocols = Installation.instance().propertyServiceManager().getPropertyManager().getClientSSLProtocols();
+        if (configuredProtocols == null) {
+            return null;
+        }
+
+        SSLSocket socket = (SSLSocket) sslContext.getSocketFactory().createSocket();
+        try {
+            return filterSupportedValues(configuredProtocols, socket.getSupportedProtocols(), "SSL protocol");
+        } finally {
+            socket.close();
+        }
+    }
+
+    private String[] getSupportedClientCipherSuites(SSLContext sslContext) {
+        String[] configuredCipherSuites = Installation.instance().propertyServiceManager().getPropertyManager().getClientCipherSuites();
+        if (configuredCipherSuites == null) {
+            return null;
+        }
+
+        return filterSupportedValues(configuredCipherSuites, sslContext.getSocketFactory().getSupportedCipherSuites(), "cipher suite");
+    }
+
+    private String[] filterSupportedValues(String[] configuredValues, String[] supportedValues, String valueType) {
+        List<String> supported = Arrays.asList(supportedValues);
+        List<String> enabled = new ArrayList<>();
+        for (String configuredValue : configuredValues) {
+            if (supported.contains(configuredValue)) {
+                enabled.add(configuredValue);
+            } else {
+                logger.fine("Configured " + valueType + " is not supported by JVM: " + configuredValue);
+            }
+        }
+        return enabled.toArray(new String[0]);
     }
 
     /*
