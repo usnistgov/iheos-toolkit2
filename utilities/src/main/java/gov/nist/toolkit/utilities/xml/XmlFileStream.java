@@ -2,7 +2,8 @@ package gov.nist.toolkit.utilities.xml;
 
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
+import org.apache.axiom.om.OMXMLBuilderFactory;
+import org.apache.axiom.om.OMXMLParserWrapper;
 
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
@@ -37,7 +38,7 @@ public class XmlFileStream {
         }
 
         //		create the builder
-        StAXOMBuilder builder = new StAXOMBuilder(x.parser);
+        OMXMLParserWrapper builder = OMXMLBuilderFactory.createStAXOMBuilder(x.parser);
 
         x.omElement =  builder.getDocumentElement();
         if (x.omElement == null)

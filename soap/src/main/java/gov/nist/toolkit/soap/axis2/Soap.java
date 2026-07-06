@@ -56,6 +56,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -211,15 +212,20 @@ public class Soap implements SoapInterface {
 
 	ConfigurationContext buildConfigurationContext()
 			throws XdsInternalException, AxisFault {
-		if (repositoryLocation == null)
+		return buildConfigurationContext(repositoryLocation);
+	}
+
+	ConfigurationContext buildConfigurationContext(String location)
+			throws XdsInternalException, AxisFault {
+		if (location == null)
 			throw new XdsInternalException(
 					"Internal Error: Axis2 Repository not configured");
 
 		// - remove rl not use anywhere -Antoine
-		File rl = new File(repositoryLocation);
+		File rl = new File(location);
 		if (!rl.exists() || !rl.isDirectory())
 			throw new XdsInternalException("Axis2 repository location, "
-					+ repositoryLocation
+					+ location
 					+ ", does not exist or is not a directory");
 		/*
 		 * File ax = new File(repositoryLocation + File.separator + "conf" +
@@ -229,10 +235,10 @@ public class Soap implements SoapInterface {
 		 */
 		ConfigurationContext cc = null;
 		System.out.println(" ******** repositoryLocation = ["
-				+ repositoryLocation + "]");
+				+ location + "]");
 		try {
 			cc = ConfigurationContextFactory
-					.createConfigurationContextFromFileSystem(repositoryLocation);
+					.createConfigurationContextFromFileSystem(location);
 		} catch (Exception e) {
 			StringBuffer buf = new StringBuffer();
 			buf.append("Error loading Axis2 Repository: " + e.getMessage()
@@ -241,7 +247,7 @@ public class Soap implements SoapInterface {
 			// - REMOVE ?? exact same call = exact same result. I am puzzled
 			// -Antoine
 			cc = ConfigurationContextFactory
-					.createConfigurationContextFromFileSystem(repositoryLocation);
+					.createConfigurationContextFromFileSystem(location);
 			Hashtable faultyModules = cc.getAxisConfiguration()
 					.getFaultyModules();
 			for (Object keyObj : faultyModules.keySet()) {
@@ -255,6 +261,39 @@ public class Soap implements SoapInterface {
 		}
 
 		return cc;
+	}
+
+	ConfigurationContext buildConfigurationContextIfAvailable()
+			throws XdsInternalException, AxisFault {
+		String location = getRepositoryLocationIfAvailable();
+		if (location == null)
+			return null;
+		return buildConfigurationContext(location);
+	}
+
+	private String getRepositoryLocationIfAvailable()
+			throws XdsInternalException {
+		if (repositoryLocation != null && repositoryLocation.trim().length() > 0)
+			return repositoryLocation;
+
+		URL axis2Xml = Soap.class.getClassLoader().getResource("axis2.xml");
+		if (axis2Xml == null || !"file".equals(axis2Xml.getProtocol()))
+			return null;
+
+		try {
+			File axis2XmlFile = new File(axis2Xml.toURI());
+			File repository = axis2XmlFile.getParentFile();
+			if (repository == null)
+				return null;
+			File modules = new File(repository, "modules");
+			if (!modules.isDirectory())
+				return null;
+			return repository.getAbsolutePath();
+		} catch (URISyntaxException e) {
+			throw new XdsInternalException(
+					"Error resolving Axis2 Repository from classpath: "
+							+ axis2Xml, e);
+		}
 	}
 
 	SOAPEnvelope createSOAPEnvelope() throws LoadKeystoreException {
@@ -382,9 +421,7 @@ public class Soap implements SoapInterface {
             EnvironmentNotSelectedException, LoadKeystoreException {
 		System.out.println("soapCallWithWSSEC() ----- useWSSEC :" + useWSSEC);
 		installDefaultSecurityParamsIfNeeded();
-		ConfigurationContext cc = null;
-		if (useWSSEC)
-			cc = buildConfigurationContext();
+		ConfigurationContext cc = buildConfigurationContextIfAvailable();
 
 		AxisService ANONYMOUS_SERVICE = null;
 
@@ -394,11 +431,7 @@ public class Soap implements SoapInterface {
 		// Axis2 has some timing problems so, yes, this is necessary
 		AxisFault lastFault = null;
 		boolean finished = false;
-/*
-		@Jason
-		I had to comment out these lines. The line serviceClient.engageModule("addressing") was failing
-		I don't know what this is intended to do. Removing it does not seem right. I should look
-		at the previous version and walk through the library to see the value of this.
+
 		// - CHECK engaging the addressing module. Should it really be
 		// engaged a each soap call? -Antoine
 		// - CHECK is the module engagement really asynchronous ?? -Antoine
@@ -429,7 +462,7 @@ public class Soap implements SoapInterface {
 		}
 		if (!finished)
 			throw lastFault;
-*/
+
 
 		// vbeera: modified code -START-
 		MessageContext outMsgCtx = null;
@@ -457,7 +490,8 @@ public class Soap implements SoapInterface {
 			// already created by the serviceClient constructor! -Antoine
 			operationClient = serviceClient
 					.createClient(ServiceClient.ANON_OUT_IN_OP);
-			outMsgCtx = new MessageContext();
+			outMsgCtx = serviceClient.getServiceContext()
+					.getConfigurationContext().createMessageContext();
 		}
 		// vbeera: modified code -END-
 
@@ -477,11 +511,12 @@ public class Soap implements SoapInterface {
 		}
 		// end
 
-		Options options = outMsgCtx.getOptions();
+		Options options = operationClient.getOptions();
 		// options.setProperty(AddressingConstants.ADD_MUST_UNDERSTAND_TO_ADDRESSING_HEADERS,
 		// Boolean.TRUE);
 		// includes setting of endpoint
 		setOptions(options);
+		outMsgCtx.setOptions(options);
         loadTimeoutValues();
         setMaxConnections();
         options.setProperty(
@@ -559,6 +594,8 @@ public class Soap implements SoapInterface {
 		logger.info(String.format("******************************** BEFORE SOAP SEND to %s ****************************", endpoint));
         AxisFault soapFault = null;
 		OMException networkFault = null;
+        RuntimeException runtimeFault = null;
+        Throwable sendFailure = null;
         long start = 0;
 		try {
 		   start = System.nanoTime();
@@ -580,15 +617,11 @@ public class Soap implements SoapInterface {
 			// Unfortunately, when we are here, the inMsgCtx.getEnvelope() method returns null;
 			//			result = soapBody.getFirstElement();
 			//			logger.info(new OMFormatter(result).toString());
-        } catch (Exception e) {
-			// @Jason, I added this exception. It helped me find the class mismatch error.
-			logger.warning("$$$$$ Unknown exception: with timeout of " + deployedSocketTimeout + ", Elapsed time: " + TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start) / 1000.0 + " seconds");
-			logger.warning(ExceptionUtil.exception_details(e));
-			MessageContext inMsgCtx = getInputMessageContext();
-			OMElement soapBody = inMsgCtx.getEnvelope().getBody();
-			result = soapBody.getFirstElement();
-			logger.info(new OMFormatter(result).toString());
-		}
+        } catch (RuntimeException e) {
+            runtimeFault = e;
+        } catch (Throwable e) {
+            sendFailure = e;
+        }
         finally {
 			logger.info(String.format("******************************** AFTER SOAP SEND to %s ****************************", endpoint));
 
@@ -611,14 +644,16 @@ public class Soap implements SoapInterface {
             if (networkFault != null) {
             	throw new XdsInternalException("Network connection fault: " + networkFault.toString(), networkFault);
 			}
-			//  - null pointer exception here if port number in configuration is wrong
-			//  - can also get a null pointer exception if the TLS handshake fails.
-			try {
-				inMsgCtx.getEnvelope().build();
-			} catch (NullPointerException e) {
-            	logger.throwing("Soap", "soapCallWithWSSEC", e);
-				throw new XdsInternalException("Toolkit Exception: TLS handshake failed or service not available on this host:port (" + endpoint + ")", e);
+            if (runtimeFault != null) {
+                throw new XdsInternalException("SOAP send failed before a response was received: " + runtimeFault, runtimeFault);
+            }
+            if (sendFailure != null) {
+                throw new XdsInternalException("SOAP send failed before a response was received: " + sendFailure, sendFailure);
+            }
+			if (inMsgCtx == null || inMsgCtx.getEnvelope() == null) {
+				throw new XdsInternalException("Toolkit Exception: No SOAP response message received from " + endpoint);
 			}
+			inMsgCtx.getEnvelope().build();
 
 			OMElement soapBody = inMsgCtx.getEnvelope().getBody();
 
@@ -648,18 +683,14 @@ public class Soap implements SoapInterface {
 		return host + " " + port + " " + ((isTls) ? "tls" : "");
 	}
 
-	// This code is used to bypass the use of javax.net.ssl.keyStore and similar
-	// JVM level controls on the certs used and specify certs on a
-	// per-connection basis.
-
-	@SuppressWarnings("deprecation")
-	Protocol getAuthHttpsProtocol() throws MalformedURLException, IOException,
+	// Build a per-client SSL context instead of relying on JVM-level
+	// javax.net.ssl.keyStore / trustStore properties.
+	SSLContext getAuthSslContext() throws IOException,
 			EnvironmentNotSelectedException {
 		String keyStoreFile = "file:/Users/bill/tmp/toolkit/environment/EURO2011/keystore/keystore";
 		String keyStorePass = "password";
 		String trustStoreFile = keyStoreFile;
 		String trustStorePass = keyStorePass;
-		int tlsPort = 9443;
 
 		if (securityParams == null)
 			throw new EnvironmentNotSelectedException("Trying to initiate a TLS connection - securityParams are null");
@@ -669,13 +700,10 @@ public class Soap implements SoapInterface {
 		keyStorePass = securityParams.getKeystorePassword();
 		trustStoreFile = "file:" + securityParams.getTruststore().toString();
 		trustStorePass = securityParams.getTruststorePassword();
-		tlsPort = tlsPortFromEndpoint();
 
-		return new Protocol("https", new AuthSSLProtocolSocketFactory(
-
-		new URL(keyStoreFile), keyStorePass,
-
-		new URL(trustStoreFile), trustStorePass), tlsPort);
+		return new AuthSSLProtocolSocketFactory(
+				new URL(keyStoreFile), keyStorePass,
+				new URL(trustStoreFile), trustStorePass).getSSLContext();
 	}
 
 	int tlsPortFromEndpoint() throws MalformedURLException {

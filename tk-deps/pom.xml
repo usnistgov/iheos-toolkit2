@@ -85,6 +85,7 @@
 <!--        <tomcat7-maven-plugin.version>2.2</tomcat7-maven-plugin.version>-->
         <!--<axis2-version>1.7.9</axis2-version>-->
         <axis2-version>1.8.2</axis2-version>
+        <axiom-version>1.4.0</axiom-version>
 
         <hapi.version>2.5</hapi.version>
         <spring_version>6.2.11</spring_version> <!-- SECURITY FIX: 4.3.6.RELEASE → 6.2.11 to fix authorization bypass (CVE SNYK-JAVA-ORGSPRINGFRAMEWORK-12817817) - Compatible with OpenSAML 5.1.4 -->
@@ -757,7 +758,7 @@
             <dependency>
                 <groupId>org.apache.ws.commons.axiom</groupId>
                 <artifactId>axiom-api</artifactId>
-                <version>1.2.19</version>
+                <version>${axiom-version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.codehaus.groovy</groupId>
@@ -768,7 +769,7 @@
             <dependency>
                 <groupId>org.apache.ws.commons.axiom</groupId>
                 <artifactId>axiom-impl</artifactId>
-                <version>1.2.19</version>
+                <version>${axiom-version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.codehaus.groovy</groupId>
@@ -779,7 +780,7 @@
             <dependency>
                 <groupId>org.apache.ws.commons.axiom</groupId>
                 <artifactId>axiom-dom</artifactId>
-                <version>1.2.19</version>
+                <version>${axiom-version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.codehaus.groovy</groupId>
@@ -850,17 +851,6 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>1.7.5</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.ws.commons.axiom</groupId>
-                <artifactId>axiom-common-impl</artifactId>
-                <version>1.2.14</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.codehaus.groovy</groupId>
-                        <artifactId>*</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <!-- grizzly-http-servlet 2.4.4 uses at least javax 4.0 servlet -->
             <dependency>

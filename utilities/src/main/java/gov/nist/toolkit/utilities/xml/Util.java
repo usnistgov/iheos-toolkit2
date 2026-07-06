@@ -7,8 +7,9 @@ import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMNode;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
-import org.apache.axiom.om.util.XPathEvaluator;
+import org.apache.axiom.om.OMXMLBuilderFactory;
+import org.apache.axiom.om.OMXMLParserWrapper;
+import org.apache.axiom.om.xpath.AXIOMXPath;
 
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
@@ -52,7 +53,7 @@ public class Util {
 		}
 
 		//		create the builder
-		StAXOMBuilder builder = new StAXOMBuilder(parser);
+		OMXMLParserWrapper builder = OMXMLBuilderFactory.createStAXOMBuilder(parser);
 
 		//		get the root element (in this case the envelope)
 		OMElement documentElement =  builder.getDocumentElement();
@@ -88,9 +89,9 @@ public class Util {
 		}
 
 		//		create the builder
-		StAXOMBuilder builder = null;
+		OMXMLParserWrapper builder = null;
 		try {
-			builder = new StAXOMBuilder(parser);
+			builder = OMXMLBuilderFactory.createStAXOMBuilder(parser);
 		} catch (Exception e) {
 			throw new XdsInternalException("Util.parse_xml(): Could not create StAXOMBuilder from parser");
 		}
@@ -196,8 +197,7 @@ public class Util {
 	}
 
 	public static String getAttributeValue(OMElement doc, String xpath) throws Exception {
-		XPathEvaluator eval = new XPathEvaluator();
-		List<OMNode> node_list = eval.evaluateXpath(xpath, doc, null);
+		List<?> node_list = evaluateXpath(xpath, doc);
 
 		for (Iterator<?> it=node_list.iterator(); it.hasNext(); ) {
 			OMAttribute attr = (OMAttribute) it.next();
@@ -208,8 +208,7 @@ public class Util {
 
 	public static List<String> getAttributeValues(OMElement doc, String xpath) throws Exception {
 		List<String> values = new ArrayList<String>();
-		XPathEvaluator eval = new XPathEvaluator();
-		List<OMNode> node_list = eval.evaluateXpath(xpath, doc, null);
+		List<?> node_list = evaluateXpath(xpath, doc);
 
 		for (Iterator<?> it=node_list.iterator(); it.hasNext(); ) {
 			OMAttribute attr = (OMAttribute) it.next();
@@ -223,12 +222,11 @@ public class Util {
 	}
 
 	public static List<OMElement> getElements(OMElement doc, String xpath) throws Exception {
-		XPathEvaluator eval = new XPathEvaluator();
-		List<OMNode> node_list = eval.evaluateXpath(xpath, doc, null);
+		List<?> node_list = evaluateXpath(xpath, doc);
 		List<OMElement> ele_list = new ArrayList<OMElement>();
 
 		for (Iterator<?> it=node_list.iterator(); it.hasNext(); ) {
-			OMNode node = (OMNode) it.next();
+			Object node = it.next();
 			if (! (node instanceof OMElement))
 				continue;
 			OMElement ele = (OMElement) node;
@@ -239,17 +237,20 @@ public class Util {
 	}
 
 	public static String getElementValue(OMElement doc, String xpath) throws Exception {
-		XPathEvaluator eval = new XPathEvaluator();
-		List<OMNode> node_list = eval.evaluateXpath(xpath, doc, null);
+		List<?> node_list = evaluateXpath(xpath, doc);
 
 		for (Iterator<?> it=node_list.iterator(); it.hasNext(); ) {
-			OMNode node = (OMNode) it.next();
+			Object node = it.next();
 			if (! (node instanceof OMElement))
 				continue;
 			OMElement ele = (OMElement) node;
 			return ele.getText();
 		}
 		throw new Exception("Path " + xpath + " not found");
+	}
+
+	private static List<?> evaluateXpath(String xpath, OMElement doc) throws Exception {
+		return new AXIOMXPath(xpath).selectNodes(doc);
 	}
 
 	public static OMElement mkElement(String name, String text, OMElement parent) {
