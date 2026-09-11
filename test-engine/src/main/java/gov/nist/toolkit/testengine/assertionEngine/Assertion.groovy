@@ -75,9 +75,21 @@ public class Assertion {
 		process = asser.getAttributeValue(new QName("process"));
 		xpath = asser.getText();
 		if (xpath != null) {
+
+			// Fix for Java 17 upgrade.
+			// Calling .replaceAll for \$DATE\$ did not work. Plain .replace method does
+			// Added a null pointer guard
+			xpath = xpath.replace("\$DATE\$", date)
+			if (testConfig.siteXPath != null) {
+				xpath = xpath.replaceAll("SITE", testConfig.siteXPath)
+			}
+			// End of 2026 code addition
+/*
+			Pre 2026 code that we removed.
 			xpath = xpath
 					.replaceAll(/\$DATE\$/, date)
 					.replaceAll("SITE", testConfig.siteXPath);
+ */
 		}
 		OMElement validationsEle = asser.getFirstChildWithName(new QName("Validations"));
 		if (validationsEle != null) {
