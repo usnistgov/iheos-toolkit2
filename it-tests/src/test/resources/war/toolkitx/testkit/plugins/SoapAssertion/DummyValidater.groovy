@@ -4,9 +4,12 @@ import gov.nist.toolkit.testengine.engine.SoapSimulatorTransaction
 import gov.nist.toolkit.testengine.engine.validations.ValidaterResult
 import gov.nist.toolkit.testengine.engine.validations.soap.AbstractSoapValidater
 
+import groovy.transform.MapConstructor
+
 /**
  * Runs an ExpectedContent validater through this plugin. @see Validator#run_test_assertions.
  */
+@MapConstructor
 class DummyValidater extends AbstractSoapValidater {
     String testAttribute;
 

@@ -16,9 +16,11 @@ import gov.nist.toolkit.utilities.xml.Util
 import org.apache.axiom.om.OMElement
 import java.nio.file.Path
 
+import groovy.transform.MapConstructor
 /**
  * Runs an DocumentContent validator through this plugin. @see Validator#run_test_assertions.
  */
+@MapConstructor
 class DocumentContentValidator extends AbstractSoapValidater {
     /**
      * Required parameter

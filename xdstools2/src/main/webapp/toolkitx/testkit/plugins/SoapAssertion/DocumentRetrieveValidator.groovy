@@ -16,9 +16,12 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.charset.Charset
 
+import groovy.transform.MapConstructor
+
 /**
  * Runs an MetadataContent validator through this plugin. @see Validator#run_test_assertions.
  */
+@MapConstructor
 class DocumentRetrieveValidator extends AbstractSoapValidater {
     /**
      * Required parameter

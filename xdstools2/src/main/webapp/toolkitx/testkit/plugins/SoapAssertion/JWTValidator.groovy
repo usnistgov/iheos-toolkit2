@@ -22,9 +22,12 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.interfaces.DecodedJWT
 import com.auth0.jwt.algorithms.Algorithm
 import java.net.URL
+
+import groovy.transform.MapConstructor
 /**
  * Runs an MetadataContent validator through this plugin. @see Validator#run_test_assertions.
  */
+@MapConstructor
 class JWTValidator extends AbstractSoapValidater {
     /**
      * Required parameter

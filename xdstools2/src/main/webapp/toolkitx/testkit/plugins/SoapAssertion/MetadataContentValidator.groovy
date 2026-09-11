@@ -13,10 +13,12 @@ import gov.nist.toolkit.registrymetadata.MetadataParser
 import gov.nist.toolkit.utilities.xml.Util
 
 import org.apache.axiom.om.OMElement
+import groovy.transform.MapConstructor
 
 /**
  * Runs an MetadataContent validator through this plugin. @see Validator#run_test_assertions.
  */
+@MapConstructor
 class MetadataContentValidator extends AbstractSoapValidater {
     /**
      * Required parameter
