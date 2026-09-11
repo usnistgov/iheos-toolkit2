@@ -18,10 +18,7 @@ import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMException;
 import org.apache.axiom.om.OMNamespace;
-import org.apache.axiom.soap.SOAP11Constants;
-import org.apache.axiom.soap.SOAP12Constants;
-import org.apache.axiom.soap.SOAPEnvelope;
-import org.apache.axiom.soap.SOAPFactory;
+import org.apache.axiom.soap.*;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
 import org.apache.axis2.addressing.AddressingConstants;
@@ -592,6 +589,11 @@ public class Soap implements SoapInterface {
 
 
 		logger.info(String.format("******************************** BEFORE SOAP SEND to %s ****************************", endpoint));
+		// This line added for Java 17 and new libraries.
+		// Without this, we have a problem with the logging software trying to read nodes a second time.
+		String k = envelope.toString();
+		// End workaround for node caching issue.
+
         AxisFault soapFault = null;
 		OMException networkFault = null;
         RuntimeException runtimeFault = null;
@@ -1092,7 +1094,20 @@ public class Soap implements SoapInterface {
 				fac = OMAbstractFactory.getSOAP11Factory();
 
 //			"http://www.w3.org/2003/05/soap-envelope"
-			OMNamespace ns = fac.createOMNamespace(in.getEnvelope().getDefaultNamespace().toString(), in.getEnvelope().getDefaultNamespace().getPrefix());
+			// Added this code with Java 17/library upgrades in 2026.
+			// Without this checking, we would sometimes get null pointer errors
+			String nameSpace = "";
+			String prefix = "";
+			if (in.getEnvelope().getDefaultNamespace() != null) {
+				nameSpace = in.getEnvelope().getDefaultNamespace().toString();
+				prefix = String.valueOf(in.getEnvelope().getDefaultNamespace().getPrefix());
+			}
+
+			OMNamespace ns = fac.createOMNamespace(nameSpace, prefix);
+
+//			OMNamespace ns = fac.createOMNamespace(in.getEnvelope().getDefaultNamespace().toString(), in.getEnvelope().getDefaultNamespace().getPrefix());
+			// End fix for null pointer issue, 2026
+
 			outHeader = fac.createOMElement("Header", ns);
 			logger.warning("inHeader value could not be set: " + ex.toString());
 			logger.info("Empty SOAP IN Header was created.");
@@ -1123,7 +1138,19 @@ public class Soap implements SoapInterface {
 				fac = OMAbstractFactory.getSOAP11Factory();
 
 //			"http://www.w3.org/2003/05/soap-envelope"
-			OMNamespace ns = fac.createOMNamespace(out.getEnvelope().getDefaultNamespace().toString(), out.getEnvelope().getDefaultNamespace().getPrefix());
+			// Added this code with Java 17/library upgrades in 2026.
+			// Without this checking, we would sometimes get null pointer errors
+			String nameSpace = "";
+			String prefix = "";
+			if (out.getEnvelope().getDefaultNamespace() != null) {
+				nameSpace =out.getEnvelope().getDefaultNamespace().toString();
+				prefix = String.valueOf(out.getEnvelope().getDefaultNamespace().getPrefix());
+			}
+
+			OMNamespace ns = fac.createOMNamespace(nameSpace, prefix);
+//			OMNamespace ns = fac.createOMNamespace(out.getEnvelope().getDefaultNamespace().toString(), out.getEnvelope().getDefaultNamespace().getPrefix());
+			// End fix for null pointer issue, 2026
+
 			outHeader = fac.createOMElement("Header", ns);
 			logger.warning("outHeader value could not be set: " + ex.toString());
 			logger.info("Empty SOAP OUT Header was created.");
