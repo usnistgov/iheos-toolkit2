@@ -2039,7 +2039,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         TestSession testSession = request.getTestSession();
 //        System.out.println("Target name: " + targetName);
 //        System.out.println("Test Session: " + testSession);
-        if (! targetName.isEmpty()) {
+        if (targetName != null && ! targetName.isEmpty()) {
             Site t = siteServiceManager.getSite("", targetName, testSession);
 //            System.out.println("t " + t);
 //            System.out.println("site home: " + t.getHome());
