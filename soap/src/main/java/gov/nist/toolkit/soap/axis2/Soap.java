@@ -18,10 +18,7 @@ import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMException;
 import org.apache.axiom.om.OMNamespace;
-import org.apache.axiom.soap.SOAP11Constants;
-import org.apache.axiom.soap.SOAP12Constants;
-import org.apache.axiom.soap.SOAPEnvelope;
-import org.apache.axiom.soap.SOAPFactory;
+import org.apache.axiom.soap.*;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
 import org.apache.axis2.addressing.AddressingConstants;
@@ -37,19 +34,29 @@ import org.apache.axis2.context.OperationContext;
 import org.apache.axis2.description.AxisService;
 import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.axis2.engine.Phase;
-import org.apache.axis2.transport.http.HTTPConstants;
+import org.apache.axis2.kernel.http.HTTPConstants;
 import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
-import org.apache.commons.httpclient.protocol.Protocol;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocket;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -74,6 +81,10 @@ public class Soap implements SoapInterface {
     private static Logger logger = Logger.getLogger(Soap.class.getName());
 
 	int timeout = 1000 * 60 * 60;
+        int defaultSocketTimeout = 20;	// 20 seconds
+        int defaultConnectTimeout = 20;	// 20 seconds
+        int deployedSocketTimeout = -1;
+        int deployedConnectTimeout = -1;
 	ServiceClient serviceClient = null;
 	OperationClient operationClient = null;
 	OMElement result = null;
@@ -198,15 +209,20 @@ public class Soap implements SoapInterface {
 
 	ConfigurationContext buildConfigurationContext()
 			throws XdsInternalException, AxisFault {
-		if (repositoryLocation == null)
+		return buildConfigurationContext(repositoryLocation);
+	}
+
+	ConfigurationContext buildConfigurationContext(String location)
+			throws XdsInternalException, AxisFault {
+		if (location == null)
 			throw new XdsInternalException(
 					"Internal Error: Axis2 Repository not configured");
 
 		// - remove rl not use anywhere -Antoine
-		File rl = new File(repositoryLocation);
+		File rl = new File(location);
 		if (!rl.exists() || !rl.isDirectory())
 			throw new XdsInternalException("Axis2 repository location, "
-					+ repositoryLocation
+					+ location
 					+ ", does not exist or is not a directory");
 		/*
 		 * File ax = new File(repositoryLocation + File.separator + "conf" +
@@ -216,10 +232,10 @@ public class Soap implements SoapInterface {
 		 */
 		ConfigurationContext cc = null;
 		System.out.println(" ******** repositoryLocation = ["
-				+ repositoryLocation + "]");
+				+ location + "]");
 		try {
 			cc = ConfigurationContextFactory
-					.createConfigurationContextFromFileSystem(repositoryLocation);
+					.createConfigurationContextFromFileSystem(location);
 		} catch (Exception e) {
 			StringBuffer buf = new StringBuffer();
 			buf.append("Error loading Axis2 Repository: " + e.getMessage()
@@ -228,7 +244,7 @@ public class Soap implements SoapInterface {
 			// - REMOVE ?? exact same call = exact same result. I am puzzled
 			// -Antoine
 			cc = ConfigurationContextFactory
-					.createConfigurationContextFromFileSystem(repositoryLocation);
+					.createConfigurationContextFromFileSystem(location);
 			Hashtable faultyModules = cc.getAxisConfiguration()
 					.getFaultyModules();
 			for (Object keyObj : faultyModules.keySet()) {
@@ -242,6 +258,39 @@ public class Soap implements SoapInterface {
 		}
 
 		return cc;
+	}
+
+	ConfigurationContext buildConfigurationContextIfAvailable()
+			throws XdsInternalException, AxisFault {
+		String location = getRepositoryLocationIfAvailable();
+		if (location == null)
+			return null;
+		return buildConfigurationContext(location);
+	}
+
+	private String getRepositoryLocationIfAvailable()
+			throws XdsInternalException {
+		if (repositoryLocation != null && repositoryLocation.trim().length() > 0)
+			return repositoryLocation;
+
+		URL axis2Xml = Soap.class.getClassLoader().getResource("axis2.xml");
+		if (axis2Xml == null || !"file".equals(axis2Xml.getProtocol()))
+			return null;
+
+		try {
+			File axis2XmlFile = new File(axis2Xml.toURI());
+			File repository = axis2XmlFile.getParentFile();
+			if (repository == null)
+				return null;
+			File modules = new File(repository, "modules");
+			if (!modules.isDirectory())
+				return null;
+			return repository.getAbsolutePath();
+		} catch (URISyntaxException e) {
+			throw new XdsInternalException(
+					"Error resolving Axis2 Repository from classpath: "
+							+ axis2Xml, e);
+		}
 	}
 
 	SOAPEnvelope createSOAPEnvelope() throws LoadKeystoreException {
@@ -369,9 +418,7 @@ public class Soap implements SoapInterface {
             EnvironmentNotSelectedException, LoadKeystoreException {
 		System.out.println("soapCallWithWSSEC() ----- useWSSEC :" + useWSSEC);
 		installDefaultSecurityParamsIfNeeded();
-		ConfigurationContext cc = null;
-		if (useWSSEC)
-			cc = buildConfigurationContext();
+		ConfigurationContext cc = buildConfigurationContextIfAvailable();
 
 		AxisService ANONYMOUS_SERVICE = null;
 
@@ -440,7 +487,8 @@ public class Soap implements SoapInterface {
 			// already created by the serviceClient constructor! -Antoine
 			operationClient = serviceClient
 					.createClient(ServiceClient.ANON_OUT_IN_OP);
-			outMsgCtx = new MessageContext();
+			outMsgCtx = serviceClient.getServiceContext()
+					.getConfigurationContext().createMessageContext();
 		}
 		// vbeera: modified code -END-
 
@@ -460,11 +508,13 @@ public class Soap implements SoapInterface {
 		}
 		// end
 
-		Options options = outMsgCtx.getOptions();
+		Options options = operationClient.getOptions();
 		// options.setProperty(AddressingConstants.ADD_MUST_UNDERSTAND_TO_ADDRESSING_HEADERS,
 		// Boolean.TRUE);
 		// includes setting of endpoint
 		setOptions(options);
+		outMsgCtx.setOptions(options);
+        loadTimeoutValues();
         setMaxConnections();
         options.setProperty(
 				AddressingConstants.ADD_MUST_UNDERSTAND_TO_ADDRESSING_HEADERS,
@@ -478,26 +528,7 @@ public class Soap implements SoapInterface {
 			header.setValue(timestampProxyString());
 		}
 
-		// This creates an HTTPClient using the requested keystore and
-		// truststore
-		// so that different users can get what they need
-
-		if (isTLS()) {
-			try {
-				// this is the overly heavy handed approach
-				// Protocol.registerProtocol("https", authhttps);
-
-				//  REMOVE - I guess this is dead code -Antoine
-				Protocol protocol = getAuthHttpsProtocol();
-				options.setProperty(HTTPConstants.CUSTOM_PROTOCOL_HANDLER,
-						protocol);
-
-			} catch (IOException e) {
-				throw new XdsInternalException(
-						"Failed to create custom Protocol for TLS\n"
-								+ ExceptionUtil.exception_details(e), e);
-			}
-		}
+		// TLS setup is applied to the cached HttpClient 4 client in setMaxConnections().
 
 		// outMsgCtx.setEnvelope(createSOAPEnvelope()); //vbeera: modified
 		SOAPEnvelope envelope = createSOAPEnvelope();
@@ -558,14 +589,21 @@ public class Soap implements SoapInterface {
 
 
 		logger.info(String.format("******************************** BEFORE SOAP SEND to %s ****************************", endpoint));
+		// This line added for Java 17 and new libraries.
+		// Without this, we have a problem with the logging software trying to read nodes a second time.
+		String k = envelope.toString();
+		// End workaround for node caching issue.
+
         AxisFault soapFault = null;
 		OMException networkFault = null;
+        RuntimeException runtimeFault = null;
+        Throwable sendFailure = null;
         long start = 0;
 		try {
 		   start = System.nanoTime();
 			operationClient.execute(block); // execute sync or async
         } catch (AxisFault e) {
-           logger.warning("$$$$$ AxisFault: with timeout of " + timeout + ", Elapsed time: " + TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start) / 1000.0 + " milliseconds");
+           logger.warning("$$$$$ AxisFault: with timeout of " + deployedSocketTimeout + ", Elapsed time: " + TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start) / 1000.0 + " seconds");
            soapFault = e;
            logger.warning(ExceptionUtil.exception_details(soapFault));
             MessageContext inMsgCtx = getInputMessageContext();
@@ -581,6 +619,10 @@ public class Soap implements SoapInterface {
 			// Unfortunately, when we are here, the inMsgCtx.getEnvelope() method returns null;
 			//			result = soapBody.getFirstElement();
 			//			logger.info(new OMFormatter(result).toString());
+        } catch (RuntimeException e) {
+            runtimeFault = e;
+        } catch (Throwable e) {
+            sendFailure = e;
         }
         finally {
 			logger.info(String.format("******************************** AFTER SOAP SEND to %s ****************************", endpoint));
@@ -604,14 +646,16 @@ public class Soap implements SoapInterface {
             if (networkFault != null) {
             	throw new XdsInternalException("Network connection fault: " + networkFault.toString(), networkFault);
 			}
-			//  - null pointer exception here if port number in configuration is wrong
-			//  - can also get a null pointer exception if the TLS handshake fails.
-			try {
-				inMsgCtx.getEnvelope().build();
-			} catch (NullPointerException e) {
-            	logger.throwing("Soap", "soapCallWithWSSEC", e);
-				throw new XdsInternalException("Toolkit Exception: TLS handshake failed or service not available on this host:port (" + endpoint + ")", e);
+            if (runtimeFault != null) {
+                throw new XdsInternalException("SOAP send failed before a response was received: " + runtimeFault, runtimeFault);
+            }
+            if (sendFailure != null) {
+                throw new XdsInternalException("SOAP send failed before a response was received: " + sendFailure, sendFailure);
+            }
+			if (inMsgCtx == null || inMsgCtx.getEnvelope() == null) {
+				throw new XdsInternalException("Toolkit Exception: No SOAP response message received from " + endpoint);
 			}
+			inMsgCtx.getEnvelope().build();
 
 			OMElement soapBody = inMsgCtx.getEnvelope().getBody();
 
@@ -641,18 +685,14 @@ public class Soap implements SoapInterface {
 		return host + " " + port + " " + ((isTls) ? "tls" : "");
 	}
 
-	// This code is used to bypass the use of javax.net.ssl.keyStore and similar
-	// JVM level controls on the certs used and specify certs on a
-	// per-connection basis.
-
-	@SuppressWarnings("deprecation")
-	Protocol getAuthHttpsProtocol() throws MalformedURLException, IOException,
+	// Build a per-client SSL context instead of relying on JVM-level
+	// javax.net.ssl.keyStore / trustStore properties.
+	SSLContext getAuthSslContext() throws IOException,
 			EnvironmentNotSelectedException {
 		String keyStoreFile = "file:/Users/bill/tmp/toolkit/environment/EURO2011/keystore/keystore";
 		String keyStorePass = "password";
 		String trustStoreFile = keyStoreFile;
 		String trustStorePass = keyStorePass;
-		int tlsPort = 9443;
 
 		if (securityParams == null)
 			throw new EnvironmentNotSelectedException("Trying to initiate a TLS connection - securityParams are null");
@@ -662,13 +702,10 @@ public class Soap implements SoapInterface {
 		keyStorePass = securityParams.getKeystorePassword();
 		trustStoreFile = "file:" + securityParams.getTruststore().toString();
 		trustStorePass = securityParams.getTruststorePassword();
-		tlsPort = tlsPortFromEndpoint();
 
-		return new Protocol("https", new AuthSSLProtocolSocketFactory(
-
-		new URL(keyStoreFile), keyStorePass,
-
-		new URL(trustStoreFile), trustStorePass), tlsPort);
+		return new AuthSSLProtocolSocketFactory(
+				new URL(keyStoreFile), keyStorePass,
+				new URL(trustStoreFile), trustStorePass).getSSLContext();
 	}
 
 	int tlsPortFromEndpoint() throws MalformedURLException {
@@ -795,11 +832,11 @@ public class Soap implements SoapInterface {
 			System.out.println("Generating HTTP 1.0");
 
 			opts.setProperty(
-					org.apache.axis2.transport.http.HTTPConstants.HTTP_PROTOCOL_VERSION,
-					org.apache.axis2.transport.http.HTTPConstants.HEADER_PROTOCOL_10);
+					org.apache.axis2.kernel.http.HTTPConstants.HTTP_PROTOCOL_VERSION,
+					org.apache.axis2.kernel.http.HTTPConstants.HEADER_PROTOCOL_10);
 
 			opts.setProperty(
-					org.apache.axis2.transport.http.HTTPConstants.CHUNKED,
+					org.apache.axis2.kernel.http.HTTPConstants.CHUNKED,
 					Boolean.FALSE);
 
 		}
@@ -837,18 +874,108 @@ public class Soap implements SoapInterface {
 
 	}
 
+    // Load timeout values one time.
+    // They will be set to -1 the first time through.
+    // First choice is from the properties file.
+    // Second choice is from the default values
+
+    void loadTimeoutValues() {
+        if (deployedSocketTimeout < 0) {
+            if (Installation.instance().propertyServiceManager().getPropertyManager().getSocketTimeout() >= 0) {
+                deployedSocketTimeout = Installation.instance().propertyServiceManager().getPropertyManager().getSocketTimeout() * 1000;
+            } else {
+                deployedSocketTimeout = defaultSocketTimeout * 1000;
+            }
+            if (Installation.instance().propertyServiceManager().getPropertyManager().getConnectTimeout() >= 0) {
+                deployedConnectTimeout = Installation.instance().propertyServiceManager().getPropertyManager().getConnectTimeout() * 1000;
+            } else {
+                deployedConnectTimeout = defaultConnectTimeout * 1000;
+            }
+        }
+    }
+
     // Set the max connections and timeout - needed because by default you can only have
     // two connections to a single host.  This doesn't work with simulators in toolkit.
-    void setMaxConnections() {
-        MultiThreadedHttpConnectionManager multiThreadedHttpConnectionManager = new MultiThreadedHttpConnectionManager();
-        HttpConnectionManagerParams params = new HttpConnectionManagerParams();
-        params.setDefaultMaxConnectionsPerHost(50);
-        params.setMaxTotalConnections(50);
-        params.setSoTimeout(20000);
-        params.setConnectionTimeout(20000);
-        multiThreadedHttpConnectionManager.setParams(params);
-        HttpClient httpClient = new HttpClient(multiThreadedHttpConnectionManager);
+    void setMaxConnections() throws XdsInternalException, EnvironmentNotSelectedException {
+        // axis2 1.8.2 uses HttpComponents HttpClient 4.x: CACHED_HTTP_CLIENT must be an
+        // org.apache.http.client.HttpClient. The old commons-httpclient 3.x client caused a
+        // ClassCastException in axis2's HTTPSenderImpl. Pool sized >2 per host for simulators.
+        PoolingHttpClientConnectionManager connectionManager;
+        try {
+            connectionManager = createConnectionManager();
+        } catch (IOException e) {
+            throw new XdsInternalException(
+                    "Failed to create HttpClient 4 TLS configuration\n"
+                            + ExceptionUtil.exception_details(e), e);
+        }
+        connectionManager.setDefaultMaxPerRoute(50);
+        connectionManager.setMaxTotal(50);
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setSocketTimeout(deployedSocketTimeout)
+                .setConnectTimeout(deployedConnectTimeout)
+                .build();
+        HttpClient httpClient = HttpClients.custom()
+                .setConnectionManager(connectionManager)
+                .setDefaultRequestConfig(requestConfig)
+                .build();
         serviceClient.getServiceContext().getConfigurationContext().setProperty(HTTPConstants.CACHED_HTTP_CLIENT, httpClient);
+    }
+
+    private PoolingHttpClientConnectionManager createConnectionManager()
+            throws IOException, EnvironmentNotSelectedException {
+        if (!isTLS()) {
+            return new PoolingHttpClientConnectionManager();
+        }
+
+        SSLContext sslContext = getAuthSslContext();
+        serviceClient.getServiceContext().getConfigurationContext().setProperty(SSLContext.class.getName(), sslContext);
+
+        SSLConnectionSocketFactory sslSocketFactory = new SSLConnectionSocketFactory(
+                sslContext,
+                getSupportedClientSslProtocols(sslContext),
+                getSupportedClientCipherSuites(sslContext),
+                NoopHostnameVerifier.INSTANCE);
+        Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
+                .register("http", PlainConnectionSocketFactory.getSocketFactory())
+                .register("https", sslSocketFactory)
+                .build();
+        return new PoolingHttpClientConnectionManager(socketFactoryRegistry);
+    }
+
+    private String[] getSupportedClientSslProtocols(SSLContext sslContext) throws IOException {
+        String[] configuredProtocols = Installation.instance().propertyServiceManager().getPropertyManager().getClientSSLProtocols();
+        if (configuredProtocols == null) {
+            return null;
+        }
+
+        SSLSocket socket = (SSLSocket) sslContext.getSocketFactory().createSocket();
+        try {
+            return filterSupportedValues(configuredProtocols, socket.getSupportedProtocols(), "SSL protocol");
+        } finally {
+            socket.close();
+        }
+    }
+
+    private String[] getSupportedClientCipherSuites(SSLContext sslContext) {
+        String[] configuredCipherSuites = Installation.instance().propertyServiceManager().getPropertyManager().getClientCipherSuites();
+        if (configuredCipherSuites == null) {
+            return null;
+        }
+
+        return filterSupportedValues(configuredCipherSuites, sslContext.getSocketFactory().getSupportedCipherSuites(), "cipher suite");
+    }
+
+    private String[] filterSupportedValues(String[] configuredValues, String[] supportedValues, String valueType) {
+        List<String> supported = Arrays.asList(supportedValues);
+        List<String> enabled = new ArrayList<>();
+        for (String configuredValue : configuredValues) {
+            if (supported.contains(configuredValue)) {
+                enabled.add(configuredValue);
+            } else {
+                logger.fine("Configured " + valueType + " is not supported by JVM: " + configuredValue);
+            }
+        }
+        return enabled.toArray(new String[0]);
     }
 
     /*
@@ -967,7 +1094,20 @@ public class Soap implements SoapInterface {
 				fac = OMAbstractFactory.getSOAP11Factory();
 
 //			"http://www.w3.org/2003/05/soap-envelope"
-			OMNamespace ns = fac.createOMNamespace(in.getEnvelope().getDefaultNamespace().toString(), in.getEnvelope().getDefaultNamespace().getPrefix());
+			// Added this code with Java 17/library upgrades in 2026.
+			// Without this checking, we would sometimes get null pointer errors
+			String nameSpace = "";
+			String prefix = "";
+			if (in.getEnvelope().getDefaultNamespace() != null) {
+				nameSpace = in.getEnvelope().getDefaultNamespace().toString();
+				prefix = String.valueOf(in.getEnvelope().getDefaultNamespace().getPrefix());
+			}
+
+			OMNamespace ns = fac.createOMNamespace(nameSpace, prefix);
+
+//			OMNamespace ns = fac.createOMNamespace(in.getEnvelope().getDefaultNamespace().toString(), in.getEnvelope().getDefaultNamespace().getPrefix());
+			// End fix for null pointer issue, 2026
+
 			outHeader = fac.createOMElement("Header", ns);
 			logger.warning("inHeader value could not be set: " + ex.toString());
 			logger.info("Empty SOAP IN Header was created.");
@@ -998,7 +1138,19 @@ public class Soap implements SoapInterface {
 				fac = OMAbstractFactory.getSOAP11Factory();
 
 //			"http://www.w3.org/2003/05/soap-envelope"
-			OMNamespace ns = fac.createOMNamespace(out.getEnvelope().getDefaultNamespace().toString(), out.getEnvelope().getDefaultNamespace().getPrefix());
+			// Added this code with Java 17/library upgrades in 2026.
+			// Without this checking, we would sometimes get null pointer errors
+			String nameSpace = "";
+			String prefix = "";
+			if (out.getEnvelope().getDefaultNamespace() != null) {
+				nameSpace =out.getEnvelope().getDefaultNamespace().toString();
+				prefix = String.valueOf(out.getEnvelope().getDefaultNamespace().getPrefix());
+			}
+
+			OMNamespace ns = fac.createOMNamespace(nameSpace, prefix);
+//			OMNamespace ns = fac.createOMNamespace(out.getEnvelope().getDefaultNamespace().toString(), out.getEnvelope().getDefaultNamespace().getPrefix());
+			// End fix for null pointer issue, 2026
+
 			outHeader = fac.createOMElement("Header", ns);
 			logger.warning("outHeader value could not be set: " + ex.toString());
 			logger.info("Empty SOAP OUT Header was created.");

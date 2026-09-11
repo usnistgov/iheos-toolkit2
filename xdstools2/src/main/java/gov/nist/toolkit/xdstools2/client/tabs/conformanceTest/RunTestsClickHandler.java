@@ -56,6 +56,9 @@ class RunTestsClickHandler implements ClickHandler, TestIterator {
             TestInstance testInstance = new TestInstance(stsTpName, TestSession.DEFAULT_TEST_SESSION);
             testInstance.setSection("samlassertion-issue");
             Map<String, String> params = new HashMap<>();
+            //SiteSpec x = conformanceTestTab.getTestContext().getSiteUnderTestAsSiteSpec();
+            SiteSpec x = stsSpec.copy();
+            x.setStsAssertion("RunTestsClickHandler");
 
             if (orchInit.isXuaOption()) {
                 conformanceTestTab.getSiteToIssueTestAgainst().setSaml(true);
@@ -67,7 +70,7 @@ class RunTestsClickHandler implements ClickHandler, TestIterator {
                             orchInit.setSamlAssertionsMap(result);
                             onDone(null);
                         }
-                    }.run(new GetStsSamlAssertionMapRequest(conformanceTestTab.getCommandContext(),testInstance,stsSpec,params));
+                    }.run(new GetStsSamlAssertionMapRequest(conformanceTestTab.getCommandContext(),testInstance,stsSpec,params,x));
 
                 } catch (Exception ex) {
                     testsHeaderView.showRunningMessage(false);
@@ -85,7 +88,7 @@ class RunTestsClickHandler implements ClickHandler, TestIterator {
 
                             onDone(null);
                         }
-                    }.run(new GetStsSamlAssertionRequest(conformanceTestTab.getCommandContext(), xuaUsername, testInstance, stsSpec, params));
+                    }.run(new GetStsSamlAssertionRequest(conformanceTestTab.getCommandContext(), xuaUsername, testInstance, stsSpec, params, x));
                 } catch (Exception ex) {
                     testsHeaderView.showRunningMessage(false);
                     new PopupMessage("runAll: Client call failed: getStsSamlAssertion: " + ex.toString());

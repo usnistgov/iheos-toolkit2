@@ -4,39 +4,66 @@ import gov.nist.toolkit.saml.util.SamlConstants;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.nio.charset.StandardCharsets;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.opensaml.common.xml.SAMLConstants;
-import org.opensaml.saml2.core.Attribute;
-import org.opensaml.saml2.core.AttributeStatement;
-import org.opensaml.saml2.core.AttributeValue;
-import org.opensaml.saml2.core.impl.AttributeBuilder;
-import org.opensaml.xml.Namespace;
-import org.opensaml.xml.XMLObject;
-import org.opensaml.xml.parse.BasicParserPool;
-import org.opensaml.xml.schema.XSAny;
-import org.opensaml.xml.schema.XSString;
-import org.opensaml.xml.schema.impl.XSAnyBuilder;
-import org.opensaml.xml.util.XMLConstants;
-import org.opensaml.xml.util.XMLHelper;
+import org.opensaml.saml.saml2.core.Attribute;
+import org.opensaml.saml.saml2.core.AttributeStatement;
+import org.opensaml.core.xml.schema.XSString;
+import org.opensaml.saml.saml2.core.impl.AttributeBuilder;
+import org.opensaml.core.xml.Namespace;
+import org.opensaml.core.xml.XMLObject;
+import org.opensaml.core.xml.schema.XSAny;
+import org.opensaml.core.xml.schema.impl.XSAnyBuilder;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import net.shibboleth.shared.xml.SerializeSupport;
+import net.shibboleth.shared.xml.XMLConstants;
 
 public class AttributeUtil extends SamlConstants {
 	public static final String VERSION = "$Id: AttributeUtil.java 2950 2008-05-28 08:22:34Z jre $";
 
+	private static final Logger logger = LoggerFactory.getLogger(AttributeUtil.class);
 
-	protected static BasicParserPool parser = new BasicParserPool();
+	private static final String ATTRIBUTE_VALUE_LOCAL_PART = "AttributeValue";
 
-	/** Default atrributes for AttributeValue */
-	public static final QName XSI_TYPE_ATTRIBUTE_NAME = new QName(XMLConstants.XSI_NS, "type", XMLConstants.XSI_PREFIX);
+	private static final String SAML_ASSERTION_NAMESPACE = "urn:oasis:names:tc:SAML:2.0:assertion";
+
+	// ThreadLocal ensures each thread gets its own DocumentBuilder instance,
+	// avoiding the thread-safety issues of sharing a single DocumentBuilderFactory.
+	// This is important in an IHE XDS/XUA context where multiple threads may
+	// process concurrent SAML assertions simultaneously.
+	//
+	// Security features configured here prevent XXE (XML External Entity) attacks,
+	// which are a critical vulnerability when parsing externally-supplied XML
+	// in a healthcare document exchange environment.
+	private static final ThreadLocal<DocumentBuilder> THREAD_LOCAL_BUILDER =
+			ThreadLocal.withInitial(() -> {
+				try {
+					DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+					dbFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+					dbFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+					dbFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+					dbFactory.setExpandEntityReferences(false);
+					dbFactory.setNamespaceAware(true);
+					return dbFactory.newDocumentBuilder();
+				} catch (Exception e) {
+					throw new IllegalStateException("Failed to create secure XML parser", e);
+				}
+			});
+
+	/** Default attributes for AttributeValue */
+	public static final QName XSI_TYPE_ATTRIBUTE_NAME = new QName(javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type", "xsi");
 
 	public static final String XS_STRING = XMLConstants.XSD_PREFIX + ":" + XSString.TYPE_LOCAL_NAME;
 
@@ -51,9 +78,9 @@ public class AttributeUtil extends SamlConstants {
 
 	private static XSAny createAttributeValue() {
 		XSAnyBuilder builder = new XSAnyBuilder();
-		XSAny ep = builder.buildObject(SAMLConstants.SAML20_NS,
-										AttributeValue.DEFAULT_ELEMENT_LOCAL_NAME,
-										SAMLConstants.SAML20_PREFIX);
+		XSAny ep = builder.buildObject("urn:oasis:names:tc:SAML:2.0:assertion",
+										"AttributeValue",
+										"saml");
 		return ep;
 	}
 
@@ -62,7 +89,6 @@ public class AttributeUtil extends SamlConstants {
 		ep.setTextContent(String.valueOf(value));
 		ep.getUnknownAttributes().put(XSI_TYPE_ATTRIBUTE_NAME, type);
 		
-		ep.addNamespace(new Namespace(XMLConstants.XSI_NS, XMLConstants.XSI_PREFIX));
 		return ep;
 	}
 
@@ -199,7 +225,7 @@ public class AttributeUtil extends SamlConstants {
 	 * ridNumberIdentifier
 	 * 
 	 * @param value
-	 *            The pidNumberIdentier of the certificate
+	 *            The RidNumberIdentifier of the certificate
 	 * @return The attribute
 	 */
 	public static Attribute createRidNumberIdentifier(String value) {
@@ -239,11 +265,11 @@ public class AttributeUtil extends SamlConstants {
 	 *            The assuranceLevel
 	 * @return The attribute
 	 */
-	public static Attribute createAssuranceLevel(int value) {
+	public static Attribute createAssuranceLevel(Integer value) {
 		Attribute attribute = createAttribute(ATTRIBUTE_ASSURANCE_LEVEL_NAME,
 				ATTRIBUTE_ASSURANCE_LEVEL_FRIENDLY_NAME,
 				URI_ATTRIBUTE_NAME_FORMAT);
-		if (value != 0) {
+		if (value != null) {
 			attribute.getAttributeValues().add(
 					createAttributeValue(String.valueOf(value)));
 		}
@@ -258,22 +284,22 @@ public class AttributeUtil extends SamlConstants {
 	 * @return The text value of the attributeValue
 	 * @throws Exception 
 	 */
+
 	public static String extractAttributeValueValue(Attribute attribute) throws Exception {
-		for (int i = 0; i < attribute.getAttributeValues().size(); i++) {
-			if (attribute.getAttributeValues().get(i) instanceof XSString) {
-				XSString str = (XSString) attribute.getAttributeValues().get(i);
-				if (AttributeValue.DEFAULT_ELEMENT_LOCAL_NAME.equals(str.getElementQName().getLocalPart())
-						&& SAMLConstants.SAML20_NS.equals(str.getElementQName().getNamespaceURI())) {
+		List<XMLObject> attributeValues = attribute.getAttributeValues();
+		for (XMLObject attributeValue : attributeValues) {
+			if (attributeValue instanceof XSString) {
+				XSString str = (XSString) attributeValue;
+				if (isValidAttributeValue(str.getElementQName())) {
 					return str.getValue();
 				}
-			} else {
-				XSAny ep = (XSAny) attribute.getAttributeValues().get(i);
-				if (AttributeValue.DEFAULT_ELEMENT_LOCAL_NAME.equals(ep.getElementQName().getLocalPart())
-						&& SAMLConstants.SAML20_NS.equals(ep.getElementQName().getNamespaceURI())) {
-					if (ep.getUnknownXMLObjects().size() > 0) {
+			} else if (attributeValue instanceof XSAny) {
+				XSAny ep = (XSAny) attributeValue;
+				if (isValidAttributeValue(ep.getElementQName())) {
+					if (!ep.getUnknownXMLObjects().isEmpty()) {
 						StringBuilder res = new StringBuilder();
 						for (XMLObject obj : ep.getUnknownXMLObjects()) {
-							res.append(XMLHelper.nodeToString(SamlUtil.marshallObject(obj)));
+							res.append(SerializeSupport.nodeToString(SamlUtil.marshallObject(obj)));
 						}
 						return res.toString();
 					}
@@ -292,66 +318,68 @@ public class AttributeUtil extends SamlConstants {
 	 * @throws Exception 
 	 */
 	public static List<String> extractAttributeValueValues(Attribute attribute) throws Exception {
-		List<String> values = new ArrayList<String>();
-		for (int i = 0; i < attribute.getAttributeValues().size(); i++) {
-			if (attribute.getAttributeValues().get(i) instanceof XSString) {
-				XSString str = (XSString) attribute.getAttributeValues().get(i);
-				if (AttributeValue.DEFAULT_ELEMENT_LOCAL_NAME.equals(str.getElementQName().getLocalPart())
-						&& SAMLConstants.SAML20_NS.equals(str.getElementQName().getNamespaceURI())) {
+		List<String> values = new ArrayList<>();
+		List<XMLObject> attributeValues = attribute.getAttributeValues();
+
+		for (XMLObject attributeValue : attributeValues) {
+			if (attributeValue instanceof XSString) {
+				XSString str = (XSString) attributeValue;
+				if (isValidAttributeValue(str.getElementQName())) {
 					values.add(str.getValue());
 				}
-			} else {
-				XSAny ep = (XSAny) attribute.getAttributeValues().get(i);
-				if (AttributeValue.DEFAULT_ELEMENT_LOCAL_NAME.equals(ep.getElementQName().getLocalPart())
-						&& SAMLConstants.SAML20_NS.equals(ep.getElementQName().getNamespaceURI())) {
-					if (ep.getUnknownXMLObjects().size() > 0) {
+			} else if (attributeValue instanceof XSAny) {
+				XSAny ep = (XSAny) attributeValue;
+				if (isValidAttributeValue(ep.getElementQName())) {
+					if (!ep.getUnknownXMLObjects().isEmpty()) {
 						StringBuilder res = new StringBuilder();
 						for (XMLObject obj : ep.getUnknownXMLObjects()) {
-							res.append(XMLHelper.nodeToString(SamlUtil.marshallObject(obj)));
+							res.append(SerializeSupport.nodeToString(SamlUtil.marshallObject(obj)));
 						}
 						values.add(res.toString());
+					} else {
+						values.add(ep.getTextContent());
 					}
-					values.add(ep.getTextContent());
 				}
 			}
 		}
 		return values;
 	}
-	
-	
-	
-	public static Hashtable<String, String> getCodeAttributes(String xmlstring) {
-		Hashtable<String, String> codeAttributes = new Hashtable<String, String>();
+
+	private static boolean isValidAttributeValue(QName qName) {
+		return ATTRIBUTE_VALUE_LOCAL_PART.equals(qName.getLocalPart())
+				&& SAML_ASSERTION_NAMESPACE.equals(qName.getNamespaceURI());
+	}
+
+
+
+	public static Map<String, String> getCodeAttributes(String xmlstring) {
+		Map<String, String> codeAttributes = new HashMap<>();
 		try {
-			
-			byte[] bytes = xmlstring.getBytes();
+			byte[] bytes = xmlstring.getBytes(StandardCharsets.UTF_8);
 			ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-	    	Document document = null;
-	    	dbFactory.setNamespaceAware(true);
-	    	DocumentBuilder builder = dbFactory.newDocumentBuilder();
-	    	document = builder.parse(bais);
-			
-	    	// Document d = XML.parse(xmlstring);
+
+			// Reuse the thread-local DocumentBuilder rather than creating a new
+			// DocumentBuilderFactory on every call. builder.reset() clears any
+			// state left over from the previous parse on this thread.
+			DocumentBuilder builder = THREAD_LOCAL_BUILDER.get();
+			builder.reset(); // clear state from any previous parse
+			Document document = builder.parse(bais);
+
 			NodeList nl = document.getChildNodes();
-			
-			for ( int i = 0 ; i < nl.getLength() ; i++) {
+			for (int i = 0; i < nl.getLength(); i++) {
 				Node node = nl.item(i);
 				NamedNodeMap nnm = node.getAttributes();
-				for (int j = 0 ; j < nnm.getLength(); j++ ) {
-					Node n = nnm.item(j);
-					// System.out.println("Node Name: " + n.getNodeName());
-					// System.out.println("Node Value: " + n.getNodeValue());
-					codeAttributes.put(n.getNodeName(), n.getNodeValue());
-					// System.out.println("attribute name["+ j +"]:  " + n.getNodeName());
-					// System.out.println("value["+ j +"]: " + n.getNodeValue());
+				if (nnm != null) {
+					for (int j = 0; j < nnm.getLength(); j++) {
+						Node n = nnm.item(j);
+						codeAttributes.put(n.getNodeName(), n.getNodeValue());
+					}
 				}
 			}
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			logger.error("Failed to parse XML string for code attributes", e);
 		}
-		
 		return codeAttributes;
-}
+	}
 }
 

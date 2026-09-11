@@ -19,7 +19,7 @@
 
 package gov.nist.toolkit.saml.util;
 
-import org.opensaml.common.SAMLVersion;
+import org.opensaml.saml.common.SAMLVersion;
 
 import gov.nist.toolkit.saml.builder.bean.KeyInfoBean;
 import gov.nist.toolkit.saml.builder.bean.SubjectBean;

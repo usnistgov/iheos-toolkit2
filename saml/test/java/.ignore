@@ -1,2 +1,2 @@
-Just to hold the directory in Mercurial
-in order to avoid build path errors in Eclipse
+Directory placeholder to maintain Maven test structure
+Ensures Eclipse and other IDEs recognize test source directory

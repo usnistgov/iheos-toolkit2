@@ -3,6 +3,7 @@ package gov.nist.toolkit.http;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
+import java.text.ParseException;
 
 import java.util.List;
 
@@ -13,12 +14,12 @@ public class MultipartParserBa {
 		boolean appendixV = true;
 		MultipartMessageBa message = new MultipartMessageBa();
 
-		public MultipartParserBa(HttpParserBa hp) throws ParseException, HttpHeaderParseException, HttpParseException {
+		public MultipartParserBa(HttpParserBa hp) throws gov.nist.toolkit.http.ParseException, ParseException, HttpHeaderParseException, HttpParseException {
 			this.hp = hp;
 			parse();
 		}
 
-		public MultipartParserBa(HttpParserBa hp, ErrorRecorder er, boolean appendixV) throws ParseException, HttpHeaderParseException, HttpParseException {
+		public MultipartParserBa(HttpParserBa hp, ErrorRecorder er, boolean appendixV) throws gov.nist.toolkit.http.ParseException, ParseException, HttpHeaderParseException, HttpParseException {
 			this.hp = hp;
 			this.er = er;
 			this.appendixV = appendixV;
@@ -75,7 +76,7 @@ public class MultipartParserBa {
 			return indexOf(in, b1, startingAt);
 		}
 		
-		int indexOf(byte[] in, byte b[], int startingAt) {
+		int indexOf(byte[] in, byte[] b, int startingAt) {
 			for (int start=startingAt; start<in.length; start++) {
 				boolean found = true;
 				for (int i=0; i<b.length; i++) {
@@ -122,16 +123,16 @@ public class MultipartParserBa {
 //			return subarray(in, 0, i+1);
 		}
 
-		public void parse() throws ParseException, HttpHeaderParseException, HttpParseException {
+		public void parse() throws gov.nist.toolkit.http.ParseException, ParseException, HttpHeaderParseException, HttpParseException {
 			if (!isMultipart())
-				throw new ParseException("Not a Multipart");
+				throw new gov.nist.toolkit.http.ParseException("Not a Multipart");
 			message.boundary = contentTypeHeader.getParam("boundary");
 			
 			if (er != null)
 				er.detail("boundary string = " + message.boundary);
 			
 			if (message.boundary == null || message.boundary.equals(""))
-				throw new ParseException("No boundary");
+				throw new gov.nist.toolkit.http.ParseException("No boundary");
 
 			String pboundary = "--" + message.boundary;
 			byte[] body = hp.message.getBody();
@@ -151,7 +152,14 @@ public class MultipartParserBa {
 				if (to == -1)
 					break;
 
-				PartParserBa pp = new PartParserBa(trim(subarray(body, from, to)), er, appendixV);
+				PartParserBa pp;
+				try {
+					pp = new PartParserBa(trim(subarray(body, from, to)), er, appendixV);
+				} catch (java.text.ParseException e) {
+					if (er != null)
+						er.err(XdsErrorCode.Code.NoCode, "Invalid Part", this, "");
+					continue;
+				}
 				message.parts.add(pp.part);
 			}
 
@@ -164,7 +172,15 @@ public class MultipartParserBa {
 					er.detail("multipart has " + message.parts.size() + " parts");
 
 			String contentTypeString = hp.message.getHeader("content-type");
-			HttpHeader contentTypeHeader = new HttpHeader(contentTypeString);
+			HttpHeader contentTypeHeader;
+			try {
+				contentTypeHeader = new HttpHeader(contentTypeString);
+			} catch (java.text.ParseException e) {
+				if (er != null)
+					er.err(XdsErrorCode.Code.NoCode, "Invalid Content-Type header: " + contentTypeString, this, "");
+				message.startPartId = null;
+				return;
+			}
 			message.startPartId = contentTypeHeader.getParam("start");
 			if (message.startPartId == null || message.startPartId.equals("")) {
 				if (er != null)

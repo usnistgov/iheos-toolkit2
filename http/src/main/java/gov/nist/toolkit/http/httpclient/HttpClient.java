@@ -43,7 +43,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.axiom.om.util.Base64;
+import java.util.Base64;
 import org.apache.soap.util.mime.ByteArrayDataSource;
 import org.apache.xml.serialize.DOMSerializer;
 import org.apache.xml.serialize.OutputFormat;
@@ -304,7 +304,7 @@ public class HttpClient implements HostnameVerifier {
 
 	static public String generateAuthorization(String username_password) {
 //		return  "Basic " + new sun.misc.BASE64Encoder().encode(username_password.getBytes());
-		return "Basic " + Base64.encode(username_password.getBytes());
+		return "Basic " + Base64.getEncoder().encodeToString(username_password.getBytes());
 	}
 
 	/****************************************************************************
@@ -380,7 +380,7 @@ public class HttpClient implements HostnameVerifier {
 		if (username.equals("")) return null;
 		if (password == null) return null;
 		if (password.equals("")) return null;
-		return "Basic " + Base64.encode(username_password().getBytes());
+		return "Basic " + Base64.getEncoder().encodeToString(username_password().getBytes());
 	}
 
 	/*****************************************************************************

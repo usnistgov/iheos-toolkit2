@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestPlan>
-    <Test>FindDocuments</Test>
+    <Test>FindDocuments2/XDS</Test>
     <TestStep id="object_refs">
         <ExpectedStatus>Success</ExpectedStatus>
         <StoredQueryTransaction>

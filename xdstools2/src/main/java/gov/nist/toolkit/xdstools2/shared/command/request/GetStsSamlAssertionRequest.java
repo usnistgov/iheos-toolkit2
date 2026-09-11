@@ -14,14 +14,16 @@ public class GetStsSamlAssertionRequest extends CommandContext{
     private SiteSpec registry;
     private TestInstance testInstance;
     private String username;
+    private SiteSpec targetSystem = null;
 
     public GetStsSamlAssertionRequest(){}
-    public GetStsSamlAssertionRequest(CommandContext context, String username, TestInstance testInstance, SiteSpec registry, Map<String, String> params){
+    public GetStsSamlAssertionRequest(CommandContext context, String username, TestInstance testInstance, SiteSpec registry, Map<String, String> params, SiteSpec targetSystem){
         copyFrom(context);
         this.username=username;
         this.testInstance=testInstance;
         this.registry=registry;
         this.params=params;
+        this.targetSystem=targetSystem;
     }
     public TestInstance getTestInstance() {
         return testInstance;
@@ -53,5 +55,13 @@ public class GetStsSamlAssertionRequest extends CommandContext{
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public SiteSpec getTargetSystem() {
+        return targetSystem;
+    }
+
+    public void setTargetSystem(SiteSpec targetSystem) {
+        this.targetSystem = targetSystem;
     }
 }

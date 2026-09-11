@@ -703,6 +703,8 @@ public abstract class GenericQueryTab  extends ToolWindow implements StatusDispl
                 getGoButton().addClickHandler(new ClickHandler() {
                     @Override
                     public void onClick(final ClickEvent clickEvent) {
+                        //SiteSpec x = getSiteSelection();
+
                         String selectedValue = samlListBox.getSelectedValue();
                         if (samlEnabled && !"NoSaml".equals(selectedValue)) {
                             Map<String,String> tkPropMap = ClientUtils.INSTANCE.getTkPropMap();
@@ -719,6 +721,15 @@ public abstract class GenericQueryTab  extends ToolWindow implements StatusDispl
                             SiteSpec stsSpec =  new SiteSpec(new TestSession(stsActorName));
                             stsSpec.setSaml(true);
                             stsSpec.setGazelleXuaUsername(selectedValue);
+                            SiteSpec x = getSiteSelection();
+                            if (x == null) {
+                                // TODO from 617x
+                                x = new SiteSpec();
+                                x.setName("NONE");
+                                x.setHomeId("NONE");
+                                x.setStsAssertion("GenericQueryTab");
+                            }
+
                             Map<String, String> params = new HashMap<>();
                             params.put("$saml-username$",selectedValue);
                             new GetStsSamlAssertionCommand(){
@@ -736,7 +747,7 @@ public abstract class GenericQueryTab  extends ToolWindow implements StatusDispl
                                     samlAssertion = result;
                                     runner.onClick(clickEvent);
                                 }
-                            }.run(new GetStsSamlAssertionRequest(getCommandContext(),selectedValue,testInstance,stsSpec,params));
+                            }.run(new GetStsSamlAssertionRequest(getCommandContext(),selectedValue,testInstance,stsSpec,params, x));
                         } else {
                             runner.onClick(clickEvent);
                         }

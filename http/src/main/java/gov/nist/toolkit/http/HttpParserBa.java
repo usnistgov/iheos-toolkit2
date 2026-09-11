@@ -3,6 +3,7 @@ package gov.nist.toolkit.http;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.utilities.io.Io;
+import java.text.ParseException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -141,7 +142,10 @@ public class HttpParserBa {
 		try {
 			multiparser = new MultipartParserBa(this, er, appendixV);
 			message.multipart = multiparser.message;
-		} catch (ParseException e) {
+		} catch (gov.nist.toolkit.http.ParseException e) {
+			// not a multipart
+			message.multipart = null;
+		} catch (java.text.ParseException e) {
 			// not a multipart
 			message.multipart = null;
 		} catch (HttpHeaderParseException e) {

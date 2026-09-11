@@ -2,7 +2,7 @@ package gov.nist.toolkit.errorrecording.server;
 
 
 import gov.nist.toolkit.errorrecording.client.*;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 public class ValidationReportItem {
 	
@@ -19,7 +19,7 @@ public class ValidationReportItem {
 	//public enum ReportingLevel { SECTIONHEADING, SUCCESS, ERROR, WARNING,  INFO, CONTENT};
 	
 	public ValidationReportItem(ValidatorErrorItem.ReportingLevel type, String name, String dts, String found, String expected, String rfc) {
-		this.name = StringEscapeUtils.escapeHtml(name);
+		this.name = StringEscapeUtils.escapeHtml4(name);
 		switch(type) {
 		
 		case SECTIONHEADING:
@@ -65,11 +65,11 @@ public class ValidationReportItem {
 			break;
 
 		}
-		this.dts = StringEscapeUtils.escapeHtml(dts);
-		//this.found = StringEscapeUtils.escapeHtml(found);
+		this.dts = StringEscapeUtils.escapeHtml4(dts);
+		//this.found = StringEscapeUtils.escapeHtml4(found);
 		this.found = found;
-		this.expected = StringEscapeUtils.escapeHtml(expected);
-		rfc = StringEscapeUtils.escapeHtml(rfc);
+		this.expected = StringEscapeUtils.escapeHtml4(expected);
+		rfc = StringEscapeUtils.escapeHtml4(rfc);
 		if(rfc.contains(";")) {
 			String[] rfcSplit = rfc.split(";");
 			this.rfc_name = rfcSplit[0];
@@ -82,9 +82,9 @@ public class ValidationReportItem {
 	}
 	
 	public ValidationReportItem(String name, String content) {
-		this.name = StringEscapeUtils.escapeHtml(name);
+		this.name = StringEscapeUtils.escapeHtml4(name);
 		//this.found = content;
-		this.found = StringEscapeUtils.escapeHtml(content);
+		this.found = StringEscapeUtils.escapeHtml4(content);
 		//this.found = this.found.replace(" ", "&nbsp;");
 		//this.found = this.found.replace("\n", "<br />\n");
 		this.type = 2;

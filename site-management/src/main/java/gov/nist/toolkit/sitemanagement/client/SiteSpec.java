@@ -161,6 +161,22 @@ public class SiteSpec implements Serializable, IsSerializable {
 		this.stsAssertion = stsAssertion;
 	}
 
+	public String getHomeId() {
+		return homeId;
+	}
+
+	public void setHomeId(String homeId) {
+		this.homeId = homeId;
+	}
+
+	public String getHomeName() {
+		return homeName;
+	}
+
+	public void setHomeName(String homeName) {
+		this.homeName = homeName;
+	}
+
 	public void validate() {
 		if (name == null || name.equalsIgnoreCase(""))
 			throw new ToolkitRuntimeException("SiteSpec does not validate - no name - " + toString());
@@ -176,7 +192,8 @@ public class SiteSpec implements Serializable, IsSerializable {
 
 	@Override
 	public String toString() {
-		return testSession.getValue() + "/" + name;
+		String testSessionValue = (testSession == null) ? "NULL Test Session" : testSession.getValue();
+		return testSessionValue + "/" + name;
 	}
 
 	public SiteSpec copy() {
@@ -188,6 +205,18 @@ public class SiteSpec implements Serializable, IsSerializable {
 		siteSpec.setActorType(actorType);
 		siteSpec.testSession = new TestSession(testSession.toString());
 		return siteSpec;
+	}
+
+	public String fullDump() {
+		String dump =
+				" isSaml: " + isSaml +
+				" assertion: " + stsAssertion +
+				" xuaUserName: " + 	gazelleXuaUsername +
+				" name: " + name +
+				" actorType: " + actorType +
+				" homeId:  " + homeId +
+				" homeName: " + homeName;
+		return dump;
 	}
 
 }

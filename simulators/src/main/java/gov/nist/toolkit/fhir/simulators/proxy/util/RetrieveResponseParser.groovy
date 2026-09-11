@@ -1,5 +1,7 @@
 package gov.nist.toolkit.fhir.simulators.proxy.util
 
+import groovy.xml.XmlSlurper
+
 class RetrieveResponseParser {
 
     List<RetrieveContent> parse(String msg) {

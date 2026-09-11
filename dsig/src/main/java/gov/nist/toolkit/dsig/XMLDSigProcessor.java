@@ -129,16 +129,16 @@ public class XMLDSigProcessor {
 				(CanonicalizationMethod.EXCLUSIVE, (C14NMethodParameterSpec) null));
 		
 		Reference ref = fac.newReference
-		(referenceURI, fac.newDigestMethod(DigestMethod.SHA1, null),
+		(referenceURI, fac.newDigestMethod("http://www.w3.org/2001/04/xmlenc#sha256", null),
 				sl,	null, null);
 
 
 		// Create the SignedInfo
 		SignedInfo si = fac.newSignedInfo
 		(fac.newCanonicalizationMethod
-				(CanonicalizationMethod.EXCLUSIVE, 
-						(C14NMethodParameterSpec) null), 
-						fac.newSignatureMethod(SignatureMethod.RSA_SHA1, null),
+				(CanonicalizationMethod.EXCLUSIVE,
+						(C14NMethodParameterSpec) null),
+						fac.newSignatureMethod("http://www.w3.org/2001/04/xmldsig-more#rsa-sha256", null),
 						Collections.singletonList(ref));
 
 		// Create a RSA KeyPair

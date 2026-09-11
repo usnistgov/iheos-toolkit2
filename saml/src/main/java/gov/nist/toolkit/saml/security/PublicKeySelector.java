@@ -52,24 +52,21 @@ public class PublicKeySelector extends KeySelector
 		throw new KeySelectorException("No KeyValue element found!");
 	}
 
-	static boolean algEquals(String algURI, String algName) 
+	static boolean algEquals(String algURI, String algName)
 	{
-		System.out.println("algURI =["+algURI+"],    algName = ["+algName+"]");
-		if (algName.equalsIgnoreCase("DSA") && algURI.equalsIgnoreCase(SignatureMethod.DSA_SHA1)) 
+		if (algName.equalsIgnoreCase("DSA"))
 		{
-			System.out.println("return true for DSA_SHA1");
-			return true;
-		} 
-		else if (algName.equalsIgnoreCase("RSA") && algURI.equalsIgnoreCase(SignatureMethod.RSA_SHA1)) 
-		{
-			System.out.println("return true for RSA_SHA1");
-			return true;
-		} 
-		else 
-		{
-			System.out.println("return false..");
-			return false;
+			return algURI.equalsIgnoreCase(SignatureMethod.DSA_SHA1)
+				|| algURI.equalsIgnoreCase("http://www.w3.org/2009/xmldsig11#dsa-sha256");
 		}
+		else if (algName.equalsIgnoreCase("RSA"))
+		{
+			return algURI.equalsIgnoreCase(SignatureMethod.RSA_SHA1)
+				|| algURI.equalsIgnoreCase("http://www.w3.org/2001/04/xmldsig-more#rsa-sha256")
+				|| algURI.equalsIgnoreCase("http://www.w3.org/2001/04/xmldsig-more#rsa-sha384")
+				|| algURI.equalsIgnoreCase("http://www.w3.org/2001/04/xmldsig-more#rsa-sha512");
+		}
+		return false;
 	}
 
 

@@ -32,7 +32,10 @@ public class TestSession implements Serializable, IsSerializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        // NOTE: this class is compiled by groovyc in the installation module (joint compilation),
+        // where '==' means .equals(). A 'this == o' identity short-circuit therefore recurses
+        // infinitely (StackOverflow). The class+value comparison below already returns true for the
+        // identity case, so the short-circuit is intentionally omitted for groovyc/javac portability.
         if (o == null || getClass() != o.getClass()) return false;
 
         TestSession that = (TestSession) o;

@@ -1,7 +1,6 @@
 package gov.nist.toolkit.saml.builder.bean;
 
 import gov.nist.toolkit.saml.builder.OpenSamlBootStrap;
-import gov.nist.toolkit.saml.builder.SAMLAssertionWrapper;
 import gov.nist.toolkit.saml.util.SAML2CallbackHandler;
 import gov.nist.toolkit.saml.util.SAMLCallback;
 import gov.nist.toolkit.saml.util.SAMLParms;

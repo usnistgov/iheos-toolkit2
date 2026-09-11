@@ -6,11 +6,10 @@ import java.util.Set;
 
 import org.joda.time.DateTime;
 import org.joda.time.chrono.ISOChronology;
-import org.opensaml.saml2.core.Assertion;
-import org.opensaml.saml2.core.SubjectConfirmation;
-import org.opensaml.saml2.core.SubjectConfirmationData;
-import org.opensaml.xml.util.DatatypeHelper;
-import org.opensaml.xml.validation.ValidationException;
+import java.time.Instant;
+import org.opensaml.saml.saml2.core.Assertion;
+import org.opensaml.saml.saml2.core.SubjectConfirmation;
+import org.opensaml.saml.saml2.core.SubjectConfirmationData;
 public abstract class AbstractSubjectConfirmationValidator {
 	/**
 	     * The name of the {@link ValidationContext#getStaticParameters()} carrying a {@link Set<String>} whose values are
@@ -39,7 +38,7 @@ public abstract class AbstractSubjectConfirmationValidator {
 	
 	    /** {@inheritDoc} */
 	    public ValidationResult validate(SubjectConfirmation confirmation, Assertion assertion, ValidationContext context)
-	            throws ValidationException {
+	            throws Exception {
 	
 	        if (confirmation.getSubjectConfirmationData() != null) {
 	            ValidationResult result = validateNotBefore(confirmation, assertion, context);
@@ -78,7 +77,8 @@ public abstract class AbstractSubjectConfirmationValidator {
 	    protected ValidationResult validateNotBefore(SubjectConfirmation confirmation, Assertion assertion,
 	            ValidationContext context) {
 	        DateTime skewedNow = new DateTime(ISOChronology.getInstanceUTC()).plus(getClockSkew(context));
-	        DateTime notBefore = confirmation.getSubjectConfirmationData().getNotBefore();
+	        Instant notBeforeInstant = confirmation.getSubjectConfirmationData().getNotBefore();
+        DateTime notBefore = notBeforeInstant != null ? new DateTime(notBeforeInstant.toEpochMilli()) : null;
 	        
 	       
 	        if (notBefore != null && notBefore.isAfter(skewedNow)) {
@@ -128,7 +128,8 @@ public abstract class AbstractSubjectConfirmationValidator {
 	    protected ValidationResult validateNotOnOrAfter(SubjectConfirmation confirmation, Assertion assertion,
 	            ValidationContext context) {
 	        DateTime skewedNow = new DateTime(ISOChronology.getInstanceUTC()).minus(getClockSkew(context));
-	        DateTime notOnOrAfter = confirmation.getSubjectConfirmationData().getNotOnOrAfter();
+	        Instant notOnOrAfterInstant = confirmation.getSubjectConfirmationData().getNotOnOrAfter();
+        DateTime notOnOrAfter = notOnOrAfterInstant != null ? new DateTime(notOnOrAfterInstant.toEpochMilli()) : null;
 	        
 	       
 	        if (notOnOrAfter != null && notOnOrAfter.isBefore(skewedNow)) {
@@ -152,8 +153,7 @@ public abstract class AbstractSubjectConfirmationValidator {
 	     */
 	    protected ValidationResult validateRecipient(SubjectConfirmation confirmation, Assertion assertion,
 	            ValidationContext context) {
-	        String recipient = DatatypeHelper
-	                .safeTrimOrNullString(confirmation.getSubjectConfirmationData().getRecipient());
+	        String recipient = confirmation.getSubjectConfirmationData().getRecipient();
 	        if (recipient == null) {
 	            return ValidationResult.VALID;
 	        }
@@ -198,8 +198,8 @@ public abstract class AbstractSubjectConfirmationValidator {
 	     *             confirmation data
 	     */
 	    protected ValidationResult validateAddress(SubjectConfirmation confirmation, Assertion assertion,
-	            ValidationContext context) throws ValidationException {
-	        String address = DatatypeHelper.safeTrimOrNullString(confirmation.getSubjectConfirmationData().getAddress());
+	            ValidationContext context) throws Exception {
+	        String address = confirmation.getSubjectConfirmationData().getAddress();
 	        if (address == null) {
 	            return ValidationResult.VALID;
 	        }
@@ -251,5 +251,5 @@ public abstract class AbstractSubjectConfirmationValidator {
 	     * @throws ValidationException thrown if further validation finds the confirmation method to be invalid
 	     */
 	    protected abstract ValidationResult doValidate(SubjectConfirmation confirmation, Assertion assertion,
-	            ValidationContext context) throws ValidationException;
+	            ValidationContext context) throws Exception;
 }

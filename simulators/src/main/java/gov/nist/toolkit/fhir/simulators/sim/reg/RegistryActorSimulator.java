@@ -95,6 +95,11 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 		return sce != null && sce.asBoolean();
 	}
 
+	private String metadataValidationDocumentIDCodes() {
+		SimulatorConfigElement sce = getSimulatorConfig().get(SimulatorProperties.METADATA_VALIDATION_DOCUMENT_ID_CODES);
+		return (sce == null) ? "" : sce.asString();
+	}
+
 	// this constructor must be used when running simulator
 	public RegistryActorSimulator(DsSimCommon dsSimCommon, SimulatorConfig simulatorConfig) {
 		super(dsSimCommon.simCommon, dsSimCommon);
@@ -148,6 +153,7 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 			common.vc.isPartOfRecipient = isPartOfRecipient();   // part of implementation of Document Recipient
 			common.vc.isValidateCodes = isValidateCodes();
 			common.vc.validateAgainstPatientIdentityFeed = validateAgainstPatientIdentityFeed();
+			common.vc.metadataValidationDocumentIDCodes  = metadataValidationDocumentIDCodes();
 			common.vc.xds_b = true;
 			common.vc.isRequest = true;
 			common.vc.hasHttp = true;

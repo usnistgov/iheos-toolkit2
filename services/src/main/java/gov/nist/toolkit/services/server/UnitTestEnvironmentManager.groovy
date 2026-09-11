@@ -39,7 +39,7 @@ public class UnitTestEnvironmentManager {
         initEcDir(ecDir)
 
         this.session = createSession(warHomeDir, ecDir)
-        new EnvSetting(session.getId(), getDefaultEnv(), Installation.instance().environmentFile(getDefaultEnv()))
+        EnvSetting envSetting = new EnvSetting(session.getId(), getDefaultEnv(), Installation.instance().environmentFile(getDefaultEnv()))
     }
 
     static public Session setupLocalToolkit(String environmentName) {

@@ -5,6 +5,9 @@ import gov.nist.toolkit.testengine.engine.validations.fhir.AbstractFhirValidater
 import gov.nist.toolkit.testengine.engine.validations.ValidaterResult
 import gov.nist.toolkit.testengine.transactions.BasicTransaction
 
+import groovy.transform.MapConstructor
+
+@MapConstructor
 class PostValidater extends AbstractFhirValidater {
 
     PostValidater() {

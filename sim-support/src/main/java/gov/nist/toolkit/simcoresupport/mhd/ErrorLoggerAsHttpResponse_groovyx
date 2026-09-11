@@ -2,7 +2,7 @@ package gov.nist.toolkit.simcoresupport.mhd
 
 import gov.nist.toolkit.fhir.server.utility.WrapResourceInHttpResponse
 import gov.nist.toolkit.simcoresupport.mhd.errors.AbstractError
-import gov.nist.toolkit.simcoresupport.proxy.util.SimProxyBase
+import gov.nist.toolkit.simcommon.proxy.SimProxyBase
 import org.apache.commons.httpclient.HttpStatus
 import org.apache.http.HttpResponse
 import org.hl7.fhir.dstu3.model.OperationOutcome

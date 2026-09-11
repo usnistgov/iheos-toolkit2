@@ -3,17 +3,15 @@ package gov.nist.toolkit.saml.bean;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.opensaml.Configuration;
-import org.opensaml.common.xml.SAMLConstants;
-import org.opensaml.saml2.core.Attribute;
-import org.opensaml.saml2.core.AttributeValue;
-import org.opensaml.xml.XMLObject;
-import org.opensaml.xml.io.Marshaller;
-import org.opensaml.xml.io.MarshallingException;
-import org.opensaml.xml.schema.XSAny;
-import org.opensaml.xml.schema.XSString;
-import org.opensaml.xml.util.XMLHelper;
+import org.opensaml.core.config.Configuration;
+import org.opensaml.saml.saml2.core.Attribute;
+import org.opensaml.core.xml.XMLObject;
+import org.opensaml.core.xml.io.Marshaller;
+import org.opensaml.core.xml.io.MarshallingException;
+import org.opensaml.core.xml.schema.XSAny;
+import org.opensaml.core.xml.schema.XSString;
 import org.w3c.dom.Element;
+import gov.nist.toolkit.saml.builder.OpenSamlBootStrap;
 
 /**
  * @author Srinivasarao.Eadara
@@ -32,18 +30,18 @@ public class SamlUtil {
 		for (int i = 0; i < attribute.getAttributeValues().size(); i++) {
 			if (attribute.getAttributeValues().get(i) instanceof XSString) {
 				XSString str = (XSString) attribute.getAttributeValues().get(i);
-				if (AttributeValue.DEFAULT_ELEMENT_LOCAL_NAME.equals(str.getElementQName().getLocalPart())
-						&& SAMLConstants.SAML20_NS.equals(str.getElementQName().getNamespaceURI())) {
+				if ("AttributeValue".equals(str.getElementQName().getLocalPart())
+						&& "urn:oasis:names:tc:SAML:2.0:assertion".equals(str.getElementQName().getNamespaceURI())) {
 					return str.getValue();
 				}
 			} else {
 				XSAny ep = (XSAny) attribute.getAttributeValues().get(i);
-				if (AttributeValue.DEFAULT_ELEMENT_LOCAL_NAME.equals(ep.getElementQName().getLocalPart())
-						&& SAMLConstants.SAML20_NS.equals(ep.getElementQName().getNamespaceURI())) {
+				if ("AttributeValue".equals(ep.getElementQName().getLocalPart())
+						&& "urn:oasis:names:tc:SAML:2.0:assertion".equals(ep.getElementQName().getNamespaceURI())) {
 					if (ep.getUnknownXMLObjects().size() > 0) {
 						StringBuilder res = new StringBuilder();
 						for (XMLObject obj : ep.getUnknownXMLObjects()) {
-							res.append(XMLHelper.nodeToString(marshallObject(obj)));
+							res.append(marshallObject(obj).getTextContent());
 						}
 						return res.toString();
 					}
@@ -66,18 +64,18 @@ public class SamlUtil {
 		for (int i = 0; i < attribute.getAttributeValues().size(); i++) {
 			if (attribute.getAttributeValues().get(i) instanceof XSString) {
 				XSString str = (XSString) attribute.getAttributeValues().get(i);
-				if (AttributeValue.DEFAULT_ELEMENT_LOCAL_NAME.equals(str.getElementQName().getLocalPart())
-						&& SAMLConstants.SAML20_NS.equals(str.getElementQName().getNamespaceURI())) {
+				if ("AttributeValue".equals(str.getElementQName().getLocalPart())
+						&& "urn:oasis:names:tc:SAML:2.0:assertion".equals(str.getElementQName().getNamespaceURI())) {
 					values.add(str.getValue());
 				}
 			} else {
 				XSAny ep = (XSAny) attribute.getAttributeValues().get(i);
-				if (AttributeValue.DEFAULT_ELEMENT_LOCAL_NAME.equals(ep.getElementQName().getLocalPart())
-						&& SAMLConstants.SAML20_NS.equals(ep.getElementQName().getNamespaceURI())) {
+				if ("AttributeValue".equals(ep.getElementQName().getLocalPart())
+						&& "urn:oasis:names:tc:SAML:2.0:assertion".equals(ep.getElementQName().getNamespaceURI())) {
 					if (ep.getUnknownXMLObjects().size() > 0) {
 						StringBuilder res = new StringBuilder();
 						for (XMLObject obj : ep.getUnknownXMLObjects()) {
-							res.append(XMLHelper.nodeToString(SamlUtil.marshallObject(obj)));
+							res.append(marshallObject(obj).getTextContent());
 						}
 						values.add(res.toString());
 					}
@@ -90,7 +88,7 @@ public class SamlUtil {
 	
 	public static Element marshallObject(XMLObject object) throws Exception {
 		if (object.getDOM() == null) {
-			Marshaller m = (Marshaller) Configuration.getMarshallerFactory().getMarshaller(object);
+			Marshaller m = (Marshaller) OpenSamlBootStrap.getMarshallerFactory().getMarshaller(object);
 			if (m == null) {
 				throw new IllegalArgumentException("No unmarshaller for " + object);
 			}

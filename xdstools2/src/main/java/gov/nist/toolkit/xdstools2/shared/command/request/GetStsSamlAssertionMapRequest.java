@@ -13,13 +13,16 @@ public class GetStsSamlAssertionMapRequest extends CommandContext{
     private Map<String, String> params;
     private SiteSpec siteSpec;
     private TestInstance testInstance;
+    private SiteSpec targetSystem = null;
 
     public GetStsSamlAssertionMapRequest(){}
-    public GetStsSamlAssertionMapRequest(CommandContext context, TestInstance testInstance, SiteSpec siteSpec, Map<String, String> params){
+    public GetStsSamlAssertionMapRequest(CommandContext context, TestInstance testInstance, SiteSpec siteSpec, Map<String, String> params, SiteSpec targetSystem){
         copyFrom(context);
         this.testInstance=testInstance;
         this.siteSpec = siteSpec;
         this.params=params;
+        this.targetSystem=targetSystem;
+
     }
     public TestInstance getTestInstance() {
         return testInstance;
@@ -44,5 +47,12 @@ public class GetStsSamlAssertionMapRequest extends CommandContext{
     public void setSiteSpec(SiteSpec siteSpec) {
         this.siteSpec = siteSpec;
     }
+/*
+    public SiteSpec getTargetSystem() {
+        return targetSystem;
+    }
 
+    public void setTargetSystem(SiteSpec targetSystem) {
+        this.targetSystem = targetSystem;
+    }*/
 }

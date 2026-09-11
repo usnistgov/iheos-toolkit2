@@ -28,7 +28,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.jaxen.JaxenException;
-import org.opensaml.xml.signature.P;
+import org.opensaml.xmlsec.signature.P;
 
 import javax.xml.namespace.QName;
 import java.io.ByteArrayInputStream;

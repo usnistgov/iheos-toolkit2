@@ -23,11 +23,13 @@ import gov.nist.toolkit.valregmetadata.coding.Uuid
 import groovy.transform.TypeChecked
 import org.apache.axiom.om.OMElement
 
+import groovy.transform.MapConstructor
 
 /**
  * Runs a plugin based on utility tools. (Overwrites user session utility tool logs.)
  */
 @TypeChecked
+@MapConstructor
 class FolderAssociationValidater extends AbstractSoapValidater {
     /**
      * Total associations in SubmissionSet

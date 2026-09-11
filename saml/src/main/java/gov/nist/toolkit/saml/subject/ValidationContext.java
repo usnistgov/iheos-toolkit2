@@ -3,8 +3,7 @@ package gov.nist.toolkit.saml.subject;
 import java.util.Collections;
 import java.util.Map;
 	
-import org.opensaml.xml.util.DatatypeHelper;
-import org.opensaml.xml.util.LazyMap;
+import java.util.HashMap;
 public class ValidationContext {
 	/** Static parameters used as input to the validation process. */
 		    private Map<String, Object> staticParameters;
@@ -31,7 +30,7 @@ public class ValidationContext {
 		        } else {
 		            staticParameters = Collections.unmodifiableMap(newStaticParameters);
 		        }
-		        dynamicParameters = new LazyMap<String, Object>();
+		        dynamicParameters = new HashMap<String, Object>();
 		    }
 		
 		    /**
@@ -67,6 +66,6 @@ public class ValidationContext {
 		     * @param message message describing why the validation process failed
 		     */
 		    public void setValidationFailureMessage(String message) {
-		        validationFailureMessage = DatatypeHelper.safeTrimOrNullString(message);
+		        validationFailureMessage = (message != null && !message.trim().isEmpty()) ? message.trim() : null;
 		    }
 }

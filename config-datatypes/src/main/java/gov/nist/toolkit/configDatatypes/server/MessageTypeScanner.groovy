@@ -5,6 +5,9 @@ import gov.nist.toolkit.configDatatypes.server.datatypes.MessageType
 import gov.nist.toolkit.configDatatypes.server.datatypes.Multipart
 import gov.nist.toolkit.configDatatypes.server.datatypes.Part
 
+import groovy.xml.XmlSlurper
+
+
 /**
  * Scan message and determine whether it is a SOAP message (and what its SOAP Action is
  * or a FHIR message

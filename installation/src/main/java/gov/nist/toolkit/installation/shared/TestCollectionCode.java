@@ -32,7 +32,10 @@ public class TestCollectionCode implements IsSerializable, Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        // NOTE: this class is compiled by the Groovy compiler (see installation/pom.xml
+        // gmavenplus sources), where '==' maps to .equals() rather than reference identity.
+        // A 'this == o' guard here would recurse into equals() infinitely (StackOverflowError),
+        // so the identity short-circuit is intentionally omitted.
         if (o == null || getClass() != o.getClass()) return false;
         TestCollectionCode that = (TestCollectionCode) o;
         return Objects.equals(code, that.code);

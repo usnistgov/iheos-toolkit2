@@ -13,7 +13,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
+import org.apache.axiom.om.OMXMLBuilderFactory;
+import org.apache.axiom.om.OMXMLParserWrapper;
 
 public class Parse {
 	static public OMElement parse_xml_file(String filename) throws FactoryConfigurationError, XMLParserException {
@@ -31,7 +32,7 @@ public class Parse {
 		}
 
 //		create the builder
-		StAXOMBuilder builder = new StAXOMBuilder(parser);
+		OMXMLParserWrapper builder = OMXMLBuilderFactory.createStAXOMBuilder(parser);
 
 //		get the root element (in this case the envelope)
 		OMElement documentElement =  builder.getDocumentElement();	
@@ -51,7 +52,7 @@ public class Parse {
 			throw new XMLParserException("gov.nist.registry.common2.xml.Parse: Could not create XMLStreamReader from " + "input stream", null);
 		}
 //		create the builder
-		StAXOMBuilder builder = new StAXOMBuilder(parser);
+		OMXMLParserWrapper builder = OMXMLBuilderFactory.createStAXOMBuilder(parser);
 
 //		get the root element (in this case the envelope)
 		OMElement documentElement =  builder.getDocumentElement();

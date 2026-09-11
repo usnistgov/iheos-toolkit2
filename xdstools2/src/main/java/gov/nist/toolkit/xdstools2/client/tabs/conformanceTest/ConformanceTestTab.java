@@ -1061,10 +1061,10 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 
 		if (orchInit.isSaml()) {
 			if (testIterator == null /* Signifies individual test runner */) {
-				Map<String,String> tkPropMap = ClientUtils.INSTANCE.getTkPropMap();
+				Map<String, String> tkPropMap = ClientUtils.INSTANCE.getTkPropMap();
 				String stsActorName = null;
 				String stsTpName = null;
-				if (tkPropMap!=null) {
+				if (tkPropMap != null) {
 					stsActorName = tkPropMap.get("Sts_ActorName");
 					stsTpName = tkPropMap.get("Sts_TpName");
 				} else {
@@ -1075,13 +1075,23 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 				// Interface can be refactored to support mulitple run methods such as runTest[WithSamlOption] and runTest.
 				TestInstance stsTestInstance = new TestInstance(stsTpName, TestSession.DEFAULT_TEST_SESSION);
 				stsTestInstance.setSection("samlassertion-issue");
-				SiteSpec stsSpec =  new SiteSpec(stsActorName, TestSession.DEFAULT_TEST_SESSION);
+				SiteSpec stsSpec = new SiteSpec(stsActorName, TestSession.DEFAULT_TEST_SESSION);
 				Map<String, String> params = new HashMap<>();
 				String xuaUsername = "valid";
 				if (orchInit.isXuaOption()) {
 					xuaUsername = getXuaUsernameFromTestplan(testInstance);
 				}
-				params.put("$saml-username$",xuaUsername);
+				params.put("$saml-username$", xuaUsername);
+				SiteSpec x = getTestContext().getSiteUnderTestAsSiteSpec();
+				//SiteSpec x = stsSpec.copy();
+				x.setStsAssertion("ConformanceTestTab");
+				if (testContext == null) {
+					x.setHomeName("testContext is null");
+				} else {
+					// TODO This was in 617x
+					//x.setHomeName(testContext.getSiteName());
+					//x.setHomeId(testContext.getSiteUnderTestName());
+				}
 				try {
 					new GetStsSamlAssertionCommand(){
 						@Override
@@ -1091,7 +1101,7 @@ public class ConformanceTestTab extends ToolWindow implements TestRunner, Contro
 
 							runTestInstance(testInstance, null, null, onRunComplete);
 						}
-					}.run(new GetStsSamlAssertionRequest(getCommandContext(),xuaUsername,stsTestInstance,stsSpec,params));
+					}.run(new GetStsSamlAssertionRequest(getCommandContext(),xuaUsername,stsTestInstance,stsSpec,params, x));
 				} catch (Exception ex) {
 					showPopupMessage("runTestInstance: Client call failed: getStsSamlAssertion: " + ex.toString());
 				}

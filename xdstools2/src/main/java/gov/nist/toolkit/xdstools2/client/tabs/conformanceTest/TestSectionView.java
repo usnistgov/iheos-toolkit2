@@ -97,6 +97,14 @@ public class TestSectionView implements IsWidget {
         }
 
         @Override
+        public void labelReadme() {
+            super.labelReadme();
+            //statusIcon = new Image("icons2/correct-16.png");
+            //statusIcon.addStyleName("right");
+            //statusIcon.addStyleName("iconStyle");
+        }
+
+        @Override
         public void labelFailure() {
             super.labelFailure();
             statusIcon = new Image(ClientFactoryImpl.getIconsResources().getWarningIcon());
@@ -132,6 +140,7 @@ public class TestSectionView implements IsWidget {
     void setDone(String label, String title, ClickHandler clickHandler) { header.setDone(label, title, clickHandler); }
     void labelSuccess() { header.labelSuccess(); }
     void labelFailure() { header.labelFailure(); }
+    void labelReadme() { header.labelReadme(); }
     void labelNotRun() { header.labelNotRun(); }
     void labelTls(boolean isTls) { header.setTls(isTls); }
 

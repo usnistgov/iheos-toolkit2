@@ -15,7 +15,7 @@ import gov.nist.toolkit.saml.builder.bean.SubjectBean;
 
 import javax.security.auth.callback.Callback;
 
-import org.opensaml.common.SAMLVersion;
+import org.opensaml.saml.common.SAMLVersion;
 
 import java.util.ArrayList;
 import java.util.List;

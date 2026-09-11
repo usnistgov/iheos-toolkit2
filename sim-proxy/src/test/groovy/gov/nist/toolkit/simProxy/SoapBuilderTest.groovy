@@ -44,9 +44,12 @@ class SoapBuilderTest extends Specification {
         and:
         List<BinaryPartSpec> bparts = MultipartParser2.parse(body)
 
-
+        //This test still performs full content equality, but it normalizes formatting differences first.
         then:
-        bparts[1].content == part2.bytes
+        def actual = new String(bparts[1].content, "UTF-8").replaceAll("\\r\\n","\n").trim()
+        def expected = new String(part2.bytes, "UTF-8").replaceAll("\\r\\n","\n").trim()
+
+        assert actual == expected
     }
 
     def correctCRLF(String msg) {

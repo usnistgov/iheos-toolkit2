@@ -70,6 +70,14 @@ public class Site  implements IsSerializable, Serializable {
 	private String orchestrationSiteName = null;
 	private boolean isASimulator = false;
 
+	/* Added 2026.02.12 to support multiple communities and devices for XCPD transactions */
+	public String home_1 = "";
+	public String home_2 = "";
+	public String home_3 = "";
+	public String xcpd_rcvr_device_id_a = "";
+	public String xcpd_rcvr_device_id_b = "";
+	public String xcpd_rcvr_device_id_c = "";
+
 	public Site() {
 	}
 

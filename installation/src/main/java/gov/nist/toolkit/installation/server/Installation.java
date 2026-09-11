@@ -255,7 +255,7 @@ public class Installation {
     }
 
     public File getTkPropsFile() {
-        return new File(Installation.instance().externalCache() + File.separator + "tk_props.txt");
+        return new File(Installation.instance().externalCache(), "tk_props.txt");
     }
 
 
@@ -269,7 +269,7 @@ public class Installation {
     }
 
     public File actorsDir() {
-        return new File(externalCache() + File.separator + "actors");
+        return new File(externalCache(), "actors");
     }
 
     public File actorsDir(TestSession testSession) {
@@ -376,11 +376,11 @@ public class Installation {
     public String defaultEnvironmentName() { return propertyServiceManager().getDefaultEnvironment(); }
 
     public File environmentFile(String envName) {
-        return new File(externalCache + sep + "environment" + sep + envName);
+        return new File(new File(externalCache, "environment"), envName);
     }
 
     public File environmentFile() {
-        return new File(externalCache + sep + "environment");
+        return new File(externalCache, "environment");
     }
 
     public File getDefaultCodesFile() {
@@ -471,19 +471,19 @@ public class Installation {
     }
 
     public File sessionLogFile(String sessionId) {
-        return new File(warHome + sep + "SessionCache" + sep + sessionId);
+        return new File(new File(warHome, "SessionCache"), sessionId);
     }
 
     public File sessionCache() {
-        return new File(warHome + sep + "SessionCache");
+        return new File(warHome, "SessionCache");
     }
 
     protected File testLogCacheDir() {
-        return new File(externalCache + sep + "TestLogCache");
+        return new File(externalCache, "TestLogCache");
     }
 
     public File testLogCache() {
-        return new File(externalCache + sep + "TestLogCache");
+        return new File(externalCache, "TestLogCache");
     }
 
     public File testLogCache(TestSession testSession) {
@@ -501,7 +501,7 @@ public class Installation {
     }
 
     public File imageCache(String cacheName) {
-        return new File(externalCache + sep + "ImageCache" + sep + cacheName);
+        return new File(new File(externalCache, "ImageCache"), cacheName);
     }
 
     public File getInteractionSequencesFile() {

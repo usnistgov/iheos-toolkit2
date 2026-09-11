@@ -14,6 +14,7 @@ import gov.nist.toolkit.xdstools2.client.ErrorHandler;
 import gov.nist.toolkit.xdstools2.client.command.command.GetStsSamlAssertionCommand;
 import gov.nist.toolkit.xdstools2.client.command.command.GetToolkitPropertiesCommand;
 import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.ConformanceTestTab;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TestContext;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.shared.command.request.GetStsSamlAssertionRequest;
@@ -58,6 +59,7 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
         stsTestInstance = new TestInstance(stsTpName);
         stsTestInstance.setSection("samlassertion-issue");
     }
+    private TestContext context;
     private static final Map<String, String> samlParams = new HashMap<>();
     static public final String XUA_OPTION = "xua";
 
@@ -173,6 +175,24 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
             String xuaUsername = "valid";
             getSamlParams().put("$saml-username$",xuaUsername);
             try {
+                // TODO from 617x
+                SiteSpec x = null;
+                if (context == null) {
+                    x = new SiteSpec();
+                    x.setName("NONE");
+                    x.setHomeId("NONE");
+                    x.setStsAssertion("AbstractOrchestrationButton Null Context");
+                } else {
+                    x = context.getCurrentSiteSpec();
+                    if (x == null) {
+                        x = new SiteSpec();
+                        x.setName("NONE");
+                        x.setHomeId("NONE");
+                        x.setStsAssertion("AbstractOrchestrationButton Null CurrentSiteSpec");
+                    } else {
+                        x.setStsAssertion("AbstractOrchestrationButton");
+                    }
+                }
 
                 new GetStsSamlAssertionCommand(){
                     @Override
@@ -180,7 +200,7 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
                         setSamlAssertion(result);
                         orchestrate();
                     }
-                }.run(new GetStsSamlAssertionRequest(ClientUtils.INSTANCE.getCommandContext(), xuaUsername, getStsTestInstance(), getStsSpec(), getSamlParams()));
+                }.run(new GetStsSamlAssertionRequest(ClientUtils.INSTANCE.getCommandContext(), xuaUsername, getStsTestInstance(), getStsSpec(), getSamlParams(), x));
             } catch (Throwable t) {
                 handleError(t);
             } finally {
@@ -309,4 +329,11 @@ abstract public class AbstractOrchestrationButton implements ClickHandler {
         return new TestSession(testTab.getCurrentTestSession());
     }
 
+    public TestContext getContext() {
+        return context;
+    }
+
+    public void setContext(TestContext context) {
+        this.context = context;
+    }
 }
