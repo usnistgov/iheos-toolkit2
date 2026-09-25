@@ -39,7 +39,7 @@ public class MultipartMap {
         return s;
     }
     
-    static public void main(String args[]) throws Exception, java.io.IOException {
+    static public void main(String[] args) throws Exception, java.io.IOException {
         try {
             //String xx = "------=_Part_2_9110923.1073664290010\r\nContent-Type: text/plain\r\nContent-ID: urn:uuid:d4bfb124-7922-45bc-a03d-823351eed716\r\n\r\nhttp://ratbert.ncsl.nist.gov:8081/hl7services/transform.html\r\n------=_Part_2_9110923.1073664290010\r\nContent-Type: text/plain\r\nContent-ID: urn:uuid:45b90888-49c1-4b64-a8eb-e94f541368f0\r\n\r\nhttp://ratbert.ncsl.nist.gov:8081/hl7services/rawSQL.html\r\n------=_Part_2_9110923.1073664290010--\r\n";
             String xx = "------_Part_\r\nContent-Type: text/plain\r\nContent-ID: urn:uuid:d4bfb124-7922-45bc-a03d-823351eed716\r\n\r\nhttp://ratbert.ncsl.nist.gov:8081/hl7services/transform.html\r\n------_Part_\r\nContent-Type: text/plain\r\nContent-ID: urn:uuid:45b90888-49c1-4b64-a8eb-e94f541368f0\r\n\r\nhttp://ratbert.ncsl.nist.gov:8081/hl7services/rawSQL.html\r\n------_Part_--\r\n";

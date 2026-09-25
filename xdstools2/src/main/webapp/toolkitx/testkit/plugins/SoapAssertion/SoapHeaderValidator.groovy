@@ -18,9 +18,12 @@ import gov.nist.toolkit.valregmsg.registry.storedquery.support.ParamParser
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.SqParams
 import org.apache.axiom.om.OMElement
 
+import groovy.transform.MapConstructor
+
 /**
  * Runs an MetadataContent validator through this plugin. @see Validator#run_test_assertions.
  */
+@MapConstructor
 class SoapHeaderValidator extends AbstractSoapValidater {
     /**
      * Required parameter
@@ -116,12 +119,12 @@ class SoapHeaderValidator extends AbstractSoapValidater {
                             }
                             break;
                         case "isNotPresent":
-                            if (!v.namedFieldIsNotPresent(key)) {
+                            if (!v.namedFieldIsNotPresent(key, section, XPath, attribute, comment)) {
                                 errors = v.getErrors();
                             }
                             break;
                         default:
-                            errors="Unrecognized Stored Query validation method:" + method + ". Expecting one of single, singleCode, containsCode, contains.";
+                            errors="Unrecognized Soap Header validation method:" + method + ". Expecting one of single, singleCode, containsCode, contains, isPresent, isNotEmpty, isNotPresent.";
                             break;
                     }
                 } else {

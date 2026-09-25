@@ -2,7 +2,7 @@ package gov.nist.toolkit.saml.util;
 
 import javax.security.auth.callback.CallbackHandler;
 
-import org.opensaml.common.SAMLVersion;
+import org.opensaml.saml.common.SAMLVersion;
 
 /**
  * @author Srinivasarao.Eadara

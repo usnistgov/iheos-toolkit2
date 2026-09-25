@@ -1,6 +1,6 @@
 package gov.nist.toolkit.fhir.simulators.proxy.service;
 
-import gov.nist.toolkit.simcoresupport.proxy.util.SimProxyBase;
+import gov.nist.toolkit.simcommon.proxy.SimProxyBase;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.config.MessageConstraints;

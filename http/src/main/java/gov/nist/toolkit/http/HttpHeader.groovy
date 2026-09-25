@@ -1,6 +1,7 @@
 package gov.nist.toolkit.http
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder
+import java.text.ParseException
 
 public class HttpHeader {
 	private String line;

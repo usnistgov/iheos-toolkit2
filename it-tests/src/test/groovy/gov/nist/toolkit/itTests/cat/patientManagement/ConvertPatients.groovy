@@ -41,11 +41,11 @@ class ConvertPatients extends Specification {
 
         buf.append('[')
         items.each {
-            buf.append(noPI(it.redId)).append(',')
+            (buf.append(noPI(it.redId)).append(',')
             .append(noPI(it.greenId)).append(',')
             .append(noPI(it.blueId)).append(', ')
             .append(it.first).append(' ').append(it.last)
-            .append('\n')
+            .append('\n'))
         }
         buf.append(']')
         println buf.toString()

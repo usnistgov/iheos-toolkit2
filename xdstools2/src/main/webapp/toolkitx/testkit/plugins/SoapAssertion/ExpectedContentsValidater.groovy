@@ -13,10 +13,13 @@ import gov.nist.toolkit.testengine.engine.Validator
 
 import org.apache.axiom.om.OMElement
 
+import groovy.transform.MapConstructor
+
 
 /**
  * Runs an ExpectedContent validater through this plugin. @see Validator#run_test_assertions.
  */
+@MapConstructor
 class ExpectedContentsValidater extends AbstractSoapValidater {
     /**
      * Required parameter

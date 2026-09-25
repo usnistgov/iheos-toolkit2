@@ -44,8 +44,16 @@
             <artifactId>commons-io</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
+            <groupId>org.apache.groovy</groupId>
+            <artifactId>groovy</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.groovy</groupId>
+            <artifactId>groovy-json</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.groovy</groupId>
+            <artifactId>groovy-xml</artifactId>
         </dependency>
         <dependency>
             <groupId>org.spockframework</groupId>
@@ -64,7 +72,18 @@
                     <groupId>org.apache.maven.surefire</groupId>
                     <artifactId>surefire-junit47</artifactId>
                 </exclusion>
+                <!-- CRITICAL SECURITY FIX: Exclude vulnerable plexus-utils 1.5.7 -->
+                <exclusion>
+                    <groupId>org.codehaus.plexus</groupId>
+                    <artifactId>plexus-utils</artifactId>
+                </exclusion>
             </exclusions>
+        </dependency>
+        <!-- CRITICAL SECURITY FIX: Add secure plexus-utils version -->
+        <dependency>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-utils</artifactId>
+            <version>3.0.16</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -79,32 +98,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <!-- 2.8.0-01 and later require maven-compiler-plugin 3.1 or higher -->
-                <version>${mavenCompilerPluginVersion}</version>
-                <configuration>
-                    <compilerId>groovy-eclipse-compiler</compilerId>
-                    <!-- set verbose to be true if you want lots of uninteresting messages -->
-                    <!-- <verbose>true</verbose> -->
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.codehaus.groovy</groupId>
-                        <artifactId>groovy-eclipse-compiler</artifactId>
-                        <version>${groovy-eclipse-compiler.version}</version>
-                    </dependency>
-                    <!-- for 2.8.0-01 and later you must have an explicit dependency on groovy-eclipse-batch -->
-                    <dependency>
-                        <groupId>org.codehaus.groovy</groupId>
-                        <artifactId>groovy-eclipse-batch</artifactId>
-                        <version>${groovy-eclipse-batch.version}</version>
-                        <!-- or choose a different compiler version -->
-                        <!-- <version>1.8.6-01</version> -->
-                        <!-- <version>1.7.10-06</version> -->
-                    </dependency>
-                </dependencies>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>

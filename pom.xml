@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>gov.nist.toolkit</groupId>
+        <artifactId>tk-deps</artifactId>
+        <version>7.12.0</version><!-- xdstk -->
+        <relativePath>tk-deps/pom.xml</relativePath>
+    </parent>
+
+    <properties>
+        <groovyVersion>4.0.23</groovyVersion>
+        <groovy.version>4.0.23</groovy.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
@@ -12,6 +25,16 @@
             <artifactId>toolkit-api</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.18.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>1.11.0</version>
+        </dependency>
 <!--        <dependency>-->
 <!--            <groupId>org.codehaus.groovy</groupId>-->
 <!--            <artifactId>groovy-all</artifactId>-->
@@ -19,12 +42,18 @@
 <!--        </dependency>-->
     </dependencies>
 
-    <parent>
-        <groupId>gov.nist.toolkit</groupId>
-        <artifactId>tk-deps</artifactId>
-        <version>7.12.0</version><!-- xdstk -->
-        <relativePath>/tk-deps/pom.xml</relativePath>
-    </parent>
+    <repositories>
+        <repository>
+            <id>shibboleth-releases</id>
+            <url>https://build.shibboleth.net/maven/releases/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
     <artifactId>toolkit2</artifactId>
     <packaging>pom</packaging>
@@ -119,6 +148,20 @@
         <outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
 
         <plugins>
+            <!--
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>9.2.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            -->
             <plugin>
                 <groupId>com.bluetrainsoftware.maven</groupId>
                 <artifactId>groovydoc-maven-plugin</artifactId>
@@ -140,26 +183,10 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${mavenCompilerPluginVersion}</version>
                 <configuration>
-                    <compilerId>groovy-eclipse-compiler</compilerId>
-                    <source>8</source>
-                    <target>8</target>
-                    <compilerArgument>-Xms1024m -Xmx1024m -XX:MaxPermSize=256m --add-exports=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED	--add-exports=jdk.unsupported/sun.misc=ALL-UNNAMED</compilerArgument>
+                    <source>17</source>
+                    <target>17</target>
                 </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.codehaus.groovy</groupId>
-                        <artifactId>groovy-eclipse-compiler</artifactId>
-                        <version>${groovy-eclipse-compiler.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.codehaus.groovy</groupId>
-                        <artifactId>groovy-eclipse-batch</artifactId>
-                        <!-- Groovy version -->
-                        <version>${groovy-eclipse-batch.version}</version>
-                    </dependency>
-                </dependencies>
             </plugin>
-
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

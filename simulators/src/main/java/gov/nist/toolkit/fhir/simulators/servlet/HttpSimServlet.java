@@ -11,7 +11,7 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.http.HttpHeader;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
-import gov.nist.toolkit.http.ParseException;
+import java.text.ParseException;
 import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.simcommon.client.BadSimIdException;

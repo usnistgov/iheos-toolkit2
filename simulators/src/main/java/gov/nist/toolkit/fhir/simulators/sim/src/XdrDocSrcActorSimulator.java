@@ -16,7 +16,7 @@ import gov.nist.toolkit.xdsexception.XdsConfigurationException;
 import gov.nist.toolkit.xdsexception.XdsFormatException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.ds.ByteArrayDataSource;
+import org.apache.axiom.attachments.ByteArrayDataSource;
 import org.apache.axis2.AxisFault;
 import java.util.logging.Logger;
 

@@ -2,9 +2,9 @@ package gov.nist.toolkit.fhir.simulators.proxy.service;
 
 
 import gov.nist.toolkit.simcommon.client.BadSimIdException;
-import gov.nist.toolkit.simcoresupport.proxy.util.ProxyLogger;
-import gov.nist.toolkit.simcoresupport.proxy.util.ReturnableErrorException;
-import gov.nist.toolkit.simcoresupport.proxy.util.SimProxyBase;
+import gov.nist.toolkit.simcommon.proxy.ProxyLogger;
+import gov.nist.toolkit.simcommon.proxy.ReturnableErrorException;
+import gov.nist.toolkit.simcommon.proxy.SimProxyBase;
 //import gov.nist.toolkit.testengine.fhir.FhirSupport;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;

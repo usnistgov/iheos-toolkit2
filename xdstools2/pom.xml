@@ -6,7 +6,7 @@
 		<groupId>gov.nist.toolkit</groupId>
 		<artifactId>tk-deps</artifactId>
         <version>7.12.0</version><!-- xdstk -->
-		<relativePath>../tk-deps/pom.xml</relativePath>
+        <relativePath>../tk-deps/pom.xml</relativePath>
 	</parent>
 
 	<properties>
@@ -362,10 +362,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.axis2</groupId>
-			<artifactId>axis2</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.axis2</groupId>
 			<artifactId>axis2-transport-local</artifactId>
 			<scope>runtime</scope>
 		</dependency>
@@ -385,7 +381,18 @@
 		<dependency>
 			<groupId>org.spockframework</groupId>
 			<artifactId>spock-core</artifactId>
+			<version>${spock.version}</version>
 			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.codehaus.groovy</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.groovy</groupId>
+					<artifactId>groovy-all</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<!-- These two needed by wsseTool -->
 		<dependency>
@@ -477,29 +484,21 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<!-- 2.8.0-01 and later require maven-compiler-plugin 3.1 or higher -->
-				<version>${mavenCompilerPluginVersion}</version>
+				<!-- GWT requires access to JDK internals via add-exports and add-opens flags -->
 				<configuration>
-					<compilerId>groovy-eclipse-compiler</compilerId>
-					<!-- set verbose to be true if you want lots of uninteresting messages -->
-					<!-- <verbose>true</verbose> -->
-					<compilerArgument>-Xms1024m -Xmx1024m --add-exports=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED	--add-exports=jdk.unsupported/sun.misc=ALL-UNNAMED</compilerArgument>
+					<compilerArgs>
+						<arg>--add-exports=java.base/sun.nio.ch=ALL-UNNAMED</arg>
+						<arg>--add-opens=java.base/java.lang=ALL-UNNAMED</arg>
+						<arg>--add-opens=java.base/java.lang.reflect=ALL-UNNAMED</arg>
+						<arg>--add-opens=java.base/java.io=ALL-UNNAMED</arg>
+						<arg>--add-exports=jdk.unsupported/sun.misc=ALL-UNNAMED</arg>
+					</compilerArgs>
 				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>org.codehaus.groovy</groupId>
-						<artifactId>groovy-eclipse-compiler</artifactId>
-						<version>${groovy-eclipse-compiler.version}</version>
-					</dependency>
-					<!-- for 2.8.0-01 and later you must have an explicit dependency on
-						groovy-eclipse-batch -->
-					<dependency>
-						<groupId>org.codehaus.groovy</groupId>
-						<artifactId>groovy-eclipse-batch</artifactId>
-						<version>${groovy-eclipse-batch.version}</version>
-					</dependency>
-				</dependencies>
 			</plugin>
+            <plugin>
+                <groupId>org.codehaus.gmavenplus</groupId>
+                <artifactId>gmavenplus-plugin</artifactId>
+            </plugin>
 
 
 			<!-- There are two copies of this plugin - I have no idea which one is
@@ -546,6 +545,8 @@
 					<!-- Use Style for source formatting in the web browser. -->
 					<style>OBFUSCATED</style>
 <!--                    <style>DETAILED</style>-->
+					<!-- compileSourcesArtifacts deprecated - removed -->
+					<!-- compileSourcesArtifact entries reverted to original format -->
 					<compileSourcesArtifacts>
 						<compileSourcesArtifact>${project.groupId}:installation</compileSourcesArtifact>
 						<compileSourcesArtifact>${project.groupId}:tk</compileSourcesArtifact>

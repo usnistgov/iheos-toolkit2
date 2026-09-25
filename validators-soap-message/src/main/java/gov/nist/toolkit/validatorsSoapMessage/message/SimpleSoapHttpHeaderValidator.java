@@ -5,7 +5,7 @@ import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.http.HttpHeader;
 import gov.nist.toolkit.http.HttpParserBa;
-import gov.nist.toolkit.http.ParseException;
+import java.text.ParseException;
 import gov.nist.toolkit.installation.shared.TestSession;
 import gov.nist.toolkit.validatorsSoapMessage.factories.SoapMessageValidatorFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;

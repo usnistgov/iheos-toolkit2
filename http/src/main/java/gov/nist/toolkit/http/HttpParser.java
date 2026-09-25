@@ -318,7 +318,16 @@ public class HttpParser {
 		String contentTypeString = message.getHeader("content-type");
 		logger.fine("HttpParser(" + this.toString() + ") - content-type=" + contentTypeString);
 
-		HttpHeader contentTypeHeader = new HttpHeader(contentTypeString);
+		HttpHeader contentTypeHeader;
+		try {
+			contentTypeHeader = new HttpHeader(contentTypeString);
+		} catch (java.text.ParseException e) {
+			charset = "UTF-8";
+			if (er != null) {
+				er.detail(getPartLabel() + "Invalid Content-Type header, assuming " + charset);
+			}
+			return;
+		}
 
 		charset = contentTypeHeader.getParam("charset");
 		if (charset == null || charset.equals("")) {

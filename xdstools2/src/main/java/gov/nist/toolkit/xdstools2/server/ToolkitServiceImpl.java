@@ -111,14 +111,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Scanner;
+import java.util.*;
 import java.util.logging.Logger;
 
 //import gov.nist.toolkit.session.server.serviceManager.FhirServiceManager;
@@ -2008,6 +2001,32 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 
 
     public String getStsSamlAssertion(GetStsSamlAssertionRequest request) throws Exception {
+//        System.out.println("ToolkitServiceImpl::getstsSamlAssertion request " + request);
+//        System.out.println("request.getTargetSystem");
+        SiteSpec target = request.getTargetSystem();
+//        System.out.println("Have target system");
+//        try {
+//            System.out.println("request.targetSystem " + target);
+//            System.out.println(target.fullDump());
+//            System.out.println("---------------------------");
+//        } catch (Exception e) {
+//            System.out.println("Failed right after have target system");
+//            e.printStackTrace();
+//        }
+//        System.out.println("request.targetSystem" + request.getTargetSystem().toString());
+        Map<String, String> m = request.getParams();
+//        Iterator<String> it = m.keySet().iterator();
+//        while (it.hasNext()) {
+//            String key = it.next();
+//            System.out.println("Key/value " + key + " "  + m.get(key));
+//        }
+        SiteSpec registry =  request.getRegistry();
+//        System.out.println("Site Spec name: " + registry.getName());
+//        System.out.println(" Gazelle XuaUser Name  " + registry.getGazelleXuaUsername());
+
+//        System.out.println("============\n\n");
+        m.put("$homeCommunityId$", "Test HCID");
+        request.setParams(m);
         installCommandContext(request);
         XdsTestServiceManager xtsm = session().xdsTestServiceManager();
         String step = "issue";
@@ -2015,6 +2034,20 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
         String stsActor = Installation.instance().propertyServiceManager().getStsActorName();
         SiteSpec stsSpec = new SiteSpec(stsActor, request.getTestSession());
         stsSpec.setGazelleXuaUsername(request.getUsername());
+
+        String targetName = target.getName();
+        TestSession testSession = request.getTestSession();
+//        System.out.println("Target name: " + targetName);
+//        System.out.println("Test Session: " + testSession);
+        if (targetName != null && ! targetName.isEmpty()) {
+            Site t = siteServiceManager.getSite("", targetName, testSession);
+//            System.out.println("t " + t);
+//            System.out.println("site home: " + t.getHome());
+            request.getParams().put("$homeCommunityId$", t.getHome());
+        }
+        String v = request.getParams().get("$homeCommunityId$");
+//        System.out.println("$homeCommunityId$: " + v);
+
         List<Result> results = xtsm.querySts(stsSpec,query,request.getParams(), false, request.getTestSession());
 
         if (results!=null) {
@@ -2062,7 +2095,14 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
                 request.getParams().put("$saml-username$", usernameStr);
             }
             try {
-                GetStsSamlAssertionRequest getStsSamlAssertionRequest = new GetStsSamlAssertionRequest(request,usernameStr,request.getTestInstance(),request.getSiteSpec(),request.getParams());
+                //SiteSpec x = request.getTargetSystem();
+
+                SiteSpec x = new SiteSpec();
+                x.setName("NONE");
+                x.setHomeId("NONE");
+                x.setStsAssertion("ToolkitServiceImpl");
+                System.out.println("ToolkitServiceImpl::getStsSamlAssertionsMap +username " + usernameStr);
+                GetStsSamlAssertionRequest getStsSamlAssertionRequest = new GetStsSamlAssertionRequest(request,usernameStr,request.getTestInstance(),request.getSiteSpec(),request.getParams(), x);
                 String samlAssertion = getStsSamlAssertion(getStsSamlAssertionRequest);
                 if (samlAssertion!=null) {
                     if (assertionMap == null) {

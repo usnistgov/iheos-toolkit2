@@ -47,10 +47,11 @@
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>common-datatypes</artifactId>
         </dependency>
-        <dependency>
+        <!-- Temporarily commented out wsseTool dependency - not in local repository and only referenced in commented-out import -->
+        <!--<dependency>
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>wsseTool</artifactId>
-        </dependency>
+        </dependency>-->
         <!--<dependency>-->
             <!--<groupId>org.slf4j</groupId>-->
             <!--<artifactId>slf4j-log4j12</artifactId>-->
@@ -67,6 +68,12 @@
             <groupId>org.apache.ws.commons.axiom</groupId>
             <artifactId>axiom-dom</artifactId>
         </dependency>
+        <!-- javax.mail.util.ByteArrayDataSource (Document.java): previously came transitively
+             via axiom's geronimo-javamail; declared explicitly after the axiom 1.2.19 bump. -->
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.apache.axis2</groupId>
             <artifactId>axis2-transport-http</artifactId>
@@ -76,13 +83,37 @@
             <artifactId>gwt-user</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
+            <groupId>org.apache.groovy</groupId>
+            <artifactId>groovy</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.groovy</groupId>
+            <artifactId>groovy-json</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.groovy</groupId>
+            <artifactId>groovy-xml</artifactId>
         </dependency>
         <dependency>
             <groupId>org.spockframework</groupId>
             <artifactId>spock-core</artifactId>
+            <version>${spock.version}</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.codehaus.groovy</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.groovy</groupId>
+                    <artifactId>groovy-all</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
         </dependency>
     </dependencies>
 
@@ -103,32 +134,12 @@
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <!-- 2.8.0-01 and later require maven-compiler-plugin 3.1 or higher -->
-                <version>${mavenCompilerPluginVersion}</version>
+                <!-- excludes the WSSE adapter stub which has unresolvable types -->
                 <configuration>
-                    <compilerId>groovy-eclipse-compiler</compilerId>
-                    <!-- set verbose to be true if you want lots of uninteresting messages -->
-                    <!-- <verbose>true</verbose> -->
                     <excludes>
                         <exclude>**/src/main/java/gov/nist/toolkit/soap/wsseToolkitAdapter/**/*.java</exclude>
                     </excludes>
                 </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.codehaus.groovy</groupId>
-                        <artifactId>groovy-eclipse-compiler</artifactId>
-                        <version>${groovy-eclipse-compiler.version}</version>
-                    </dependency>
-                    <!-- for 2.8.0-01 and later you must have an explicit dependency on groovy-eclipse-batch -->
-                    <dependency>
-                        <groupId>org.codehaus.groovy</groupId>
-                        <artifactId>groovy-eclipse-batch</artifactId>
-                        <version>${groovy-eclipse-batch.version}</version>
-                        <!-- or choose a different compiler version -->
-                        <!-- <version>1.8.6-01</version> -->
-                        <!-- <version>1.7.10-06</version> -->
-                    </dependency>
-                </dependencies>
             </plugin>
         </plugins>
     </build>

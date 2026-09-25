@@ -1,6 +1,6 @@
 package gov.nist.toolkit.saml.builder.bean;
 
-import org.joda.time.DateTime;
+import java.time.Instant;
 
 
 /**
@@ -8,8 +8,8 @@ import org.joda.time.DateTime;
  *
  */
 public class ConditionsBean {
-    private DateTime notBefore;
-    private DateTime notAfter;
+    private Instant notBefore;
+    private Instant notAfter;
     private int tokenPeriodMinutes;
     private String audienceURI;
 
@@ -26,8 +26,8 @@ public class ConditionsBean {
      * @param notAfter The notAfter instance
      */
     public ConditionsBean(
-        DateTime notBefore, 
-        DateTime notAfter
+        Instant notBefore, 
+        Instant notAfter
     ) {
         this.notBefore = notBefore;
         this.notAfter = notAfter;
@@ -49,7 +49,7 @@ public class ConditionsBean {
      *
      * @return the notBefore instance
      */
-    public DateTime getNotBefore() {
+    public Instant getNotBefore() {
         return notBefore;
     }
 
@@ -58,7 +58,7 @@ public class ConditionsBean {
      *
      * @param notBefore the notBefore instance to set
      */
-    public void setNotBefore(DateTime notBefore) {
+    public void setNotBefore(Instant notBefore) {
         this.notBefore = notBefore;
     }
     
@@ -67,7 +67,7 @@ public class ConditionsBean {
      *
      * @return the notAfter instance
      */
-    public DateTime getNotAfter() {
+    public Instant getNotAfter() {
         return notAfter;
     }
 
@@ -76,7 +76,7 @@ public class ConditionsBean {
      *
      * @param notAfter the notAfter instance to set
      */
-    public void setNotAfter(DateTime notAfter) {
+    public void setNotAfter(Instant notAfter) {
         this.notAfter = notAfter;
     }
     

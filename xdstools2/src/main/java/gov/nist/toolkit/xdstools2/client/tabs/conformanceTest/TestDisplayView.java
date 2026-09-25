@@ -30,6 +30,7 @@ public class TestDisplayView extends FlowPanel implements TestStatusDisplay {
     private Image statusIcon = null;
     private Image testKitSourceIcon = null;
     private HTML tls = new HTML();
+    boolean isReadmeTest = false;
 
     // Parts of the body
     private HTML description = new HTML();
@@ -89,6 +90,9 @@ public class TestDisplayView extends FlowPanel implements TestStatusDisplay {
     }
 
     void setTestTitle(String text) {
+        if (text.toLowerCase().contains("readme")) {
+            isReadmeTest = true;
+        }
         title.setText(text);
         title.addStyleName("test-title");
     }
@@ -146,15 +150,31 @@ public class TestDisplayView extends FlowPanel implements TestStatusDisplay {
 
     @Override
     public void labelSuccess() {
-        header.labelSuccess();
+        if (isReadmeTest) {
+            header.labelReadme();
+        } else {
+            header.labelSuccess();
+        }
         statusIcon = new Image("icons2/correct-24.png");
         statusIcon.addStyleName("right");
         statusIcon.addStyleName("iconStyle");
     }
 
     @Override
+    public void labelReadme() {
+        header.labelReadme();
+        //statusIcon = new Image("icons2/correct-24.png");
+        //statusIcon.addStyleName("right");
+        //statusIcon.addStyleName("iconStyle");
+    }
+
+    @Override
     public void labelFailure() {
-        header.labelFailure();
+        if (isReadmeTest) {
+            header.labelReadme();
+        } else {
+            header.labelFailure();
+        }
         statusIcon = new Image(ClientFactoryImpl.getIconsResources().getWarningIcon());
         statusIcon.addStyleName("right");
         statusIcon.addStyleName("iconStyle");
@@ -162,7 +182,11 @@ public class TestDisplayView extends FlowPanel implements TestStatusDisplay {
 
     @Override
     public void labelNotRun() {
-        header.labelNotRun();
+        if (isReadmeTest) {
+            header.labelReadme();
+        } else {
+            header.labelNotRun();
+        }
     }
 
     @Override

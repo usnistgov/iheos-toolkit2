@@ -7,6 +7,11 @@ import gov.nist.toolkit.http.ParseException;
 import gov.nist.toolkit.simcommon.server.SimDb;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 
+import javax.servlet.AsyncContext;
+import javax.servlet.DispatcherType;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -418,6 +423,41 @@ public class ServletSimulator  {
 
 		public Part getPart(String x) { return null; }
 		public List<Part> getParts() { return null; }
+
+		@Override
+		public AsyncContext startAsync() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public AsyncContext startAsync(ServletRequest servletRequest, ServletResponse servletResponse) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public boolean isAsyncStarted() {
+			return false;
+		}
+
+		@Override
+		public boolean isAsyncSupported() {
+			return false;
+		}
+
+		@Override
+		public AsyncContext getAsyncContext() {
+			return null;
+		}
+
+		@Override
+		public ServletContext getServletContext() {
+			return null;
+		}
+
+		@Override
+		public DispatcherType getDispatcherType() {
+			return DispatcherType.REQUEST;
+		}
 	}
 	
 	class HttpServletResponseImpl implements HttpServletResponse {

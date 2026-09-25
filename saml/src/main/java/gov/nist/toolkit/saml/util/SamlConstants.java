@@ -2,9 +2,8 @@ package gov.nist.toolkit.saml.util;
 
 import java.math.BigInteger;
 
-import org.opensaml.common.xml.SAMLConstants;
-import org.opensaml.saml2.core.Attribute;
-import org.opensaml.xml.Namespace;
+import org.opensaml.saml.saml2.core.Attribute;
+import org.opensaml.core.xml.Namespace;
 /**
  * @author Srinivasarao.Eadara
  *
@@ -272,7 +271,7 @@ public class SamlConstants {
     public final static String XS_PREFIX ="xs";
     
     /** Used name spaces */
-	public static final Namespace SAML20_NAMESPACE = new Namespace(SAMLConstants.SAML20_NS,SAMLConstants.SAML20_PREFIX);	
+	public static final Namespace SAML20_NAMESPACE = new Namespace("urn:oasis:names:tc:SAML:2.0:assertion","saml");	
     
 	/** AunthContextClassRef urn */
 	public static final String PASSWORD_AUTHN_CONTEXT_CLASS_REF = "urn:oasis:names:tc:SAML:2.0:ac:classes:Password";

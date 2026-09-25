@@ -1,10 +1,12 @@
 package gov.nist.toolkit.testengine.engine;
 
+import edu.emory.mathcs.backport.java.util.Arrays;
 import gov.nist.toolkit.docref.MetadataTables;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymsg.registry.AdhocQueryRequest;
 import gov.nist.toolkit.registrymsg.repository.RetrieveItemRequestModel;
 import gov.nist.toolkit.registrymsg.repository.RetrieveRequestModel;
+import gov.nist.toolkit.registrymsg.repository.ProvideAndRegisterModel;
 import gov.nist.toolkit.registrymsg.common.RequestHeader;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
@@ -56,6 +58,7 @@ public class Validator {
 	SqParams storedQueryParams;
 	RequestHeader requestHeader;
 	RetrieveRequestModel retrieveRequestModel;
+	ProvideAndRegisterModel provideAndRegisterModel;
 	StringBuffer errs = new StringBuffer();
 	boolean error = false;
 	OMElement test_assertions;
@@ -109,6 +112,11 @@ public class Validator {
 
 	public Validator setRetrieveRequestModel(RetrieveRequestModel retrieveRequestModel) {
 		this.retrieveRequestModel = retrieveRequestModel;
+		return this;
+	}
+
+	public Validator setProvideAndRegisterModel(ProvideAndRegisterModel provideAndRegisterModel) {
+		this.provideAndRegisterModel = provideAndRegisterModel;
 		return this;
 	}
 
@@ -1112,6 +1120,38 @@ public class Validator {
 		return rtn;
 	}
 
+	public boolean namedFieldIsInSet(String field, String expectedValue) throws Exception {
+		return this.namedFieldIsInSet(field, "", "", "", "", expectedValue);
+        }
+	public boolean namedFieldIsInSet(String field, String section, String XPath, String attribute, String comment, String expectedValue) throws Exception {
+		String submittedValue = null;
+		boolean rtn = true;
+		Set<String> setOfValues = convertToSet(expectedValue);
+		if (field == null || field.equals("")) {
+			submittedValue = extractNamedFieldString(section, XPath, attribute, comment);
+			if (!setOfValues.contains(submittedValue)) {
+				err("Metadata Content Failure (isInSet), comment: " + comment + ", expectedValue: " + expectedValue + ", submittedValue: " + submittedValue);
+				err(section + " XPath: " + XPath.replaceAll("=", "  _EQ_  ") + " @ " + attribute);
+				rtn = false;
+			}
+		} else {
+			submittedValue = extractNamedFieldString(field);
+			if (!setOfValues.contains(submittedValue)) {
+				err("Metadata Content Failure (isInSet), key: " + field + ", expectedValue: " + expectedValue + ", submittedValue: " + submittedValue);
+				rtn = false;
+			}
+		}
+
+		return rtn;
+	}
+
+	private Set<String> convertToSet(String expectedValue) {
+		String delimiter = expectedValue.substring(0,1);
+		String tokens[] = expectedValue.substring(1).split(delimiter);
+		Set<String> rtn = new HashSet<>(Arrays.asList(tokens));
+		return rtn;
+	}
+
 	public boolean namedFieldContains(String field, String expectedValue) throws XdsInternalException, MetadataException {
 		boolean rtn = true;
 		List<String> stringList = extractNamedFieldAsList(field);
@@ -1175,13 +1215,26 @@ public class Validator {
 		return rtn;
 	}
 
-	public boolean namedFieldIsNotPresent(String field) throws MetadataException {
-		String submittedValue = extractNamedFieldString(field);
-		if (submittedValue == null)
-			return true;
+	public boolean namedFieldIsNotPresent(String field, String section, String XPath, String attribute, String comment) throws Exception {
+		// Assume that the assertion is satisfied
+		boolean rtn = true;
 
-		err("Content failure. A value was discovered when the expectation was no value for this key: " + field);
-		return false;
+		if (field == null || field.equals("")) {
+			String submittedValue = extractNamedFieldString(section, XPath, attribute, comment);
+			if (submittedValue != null) {
+				err("Content failure. A value WAS discovered for this field that should not be present: " + comment + " " + section);
+				err("XPath: " + XPath.replaceAll("=", "  _EQ_  ") + " @ " + attribute);
+				rtn = false;
+			}
+		} else {
+			String submittedValue = extractNamedFieldString(field);
+			if (submittedValue != null) {
+				err("Content failure. A value WAS discovered for this key that should not be present: " + field + " " + section);
+				err("XPath: " + XPath.replaceAll("=", "  _EQ_  ") + " @ " + attribute);
+				rtn = false;
+			}
+		}
+		return rtn;
 	}
 
 	private List<String> extractNamedFieldAsList(String field) throws XdsInternalException, MetadataException {
@@ -1228,6 +1281,12 @@ public class Validator {
 			case "XCR.documentId":
 				models = retrieveRequestModel.getModels();
 				rtn = models.get(0).getDocumentId();
+				break;
+			case "PRB.DocumentEntry.patientID":
+				rtn = provideAndRegisterModel.getDocumentEntryPatientId();
+				break;
+			case "PRB.DocumentEntry.mimeType":
+				rtn = provideAndRegisterModel.getDocumentEntryMimeType();
 				break;
 			case "SoapHeader.SAML.PoU.Code":
 //				OMElement pouElement = requestHeader.getAttributeStatementAttribute("urn:oasis:names:tc:xspa:1.0:subject:purposeofuse");

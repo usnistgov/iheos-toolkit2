@@ -165,7 +165,15 @@ public class MultipartParser {
 		}
 
 		String contentTypeString = hp.message.getHeader("content-type");
-		HttpHeader contentTypeHeader = new HttpHeader(contentTypeString);
+		HttpHeader contentTypeHeader;
+		try {
+			contentTypeHeader = new HttpHeader(contentTypeString);
+		} catch (java.text.ParseException e) {
+			if (er != null)
+				er.err(XdsErrorCode.Code.NoCode, "Invalid Content-Type header: " + contentTypeString, this, "");
+			message.startPartId = null;
+			return;
+		}
 		message.startPartId = contentTypeHeader.getParam("start");
 		if (message.startPartId == null || message.startPartId.equals("")) {
 			if (er != null)

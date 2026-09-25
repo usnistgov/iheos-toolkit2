@@ -224,8 +224,13 @@ public class OmLogger implements ILogger {
 	 */
 	@Override
 	public OMElement add_name_value(OMElement parent, OMElement element) {
-		parent.addChild(element);
-		return element;
+		try {
+			OMElement elementCopy = Util.deep_copy(element);
+			parent.addChild(elementCopy);
+			return elementCopy;
+		} catch (XdsInternalException e) {
+			return null;
+		}
 	}
 
 }

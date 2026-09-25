@@ -150,6 +150,8 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/rest-tools"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/results"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/saml"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/saml/src/test/java"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/saml/src/test/resources"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/security-common"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/services"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/session"/>

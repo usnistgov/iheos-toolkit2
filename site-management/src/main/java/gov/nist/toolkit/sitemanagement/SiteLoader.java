@@ -88,6 +88,18 @@ public abstract class SiteLoader {
 				s.repositories().add(uid, value, isSecure, async);
 			} else if ("home".equals(ele_name)) {
 				s.home = value;
+			} else if ("home_1".equals(ele_name)) {
+				s.home_1 = value;
+			} else if ("home_2".equals(ele_name)) {
+				s.home_2 = value;
+			} else if ("home_3".equals(ele_name)) {
+				s.home_3 = value;
+			} else if ("xcpd_rcvr_device_id_a".equals(ele_name)) {
+				s.xcpd_rcvr_device_id_a = value;
+			} else if ("xcpd_rcvr_device_id_b".equals(ele_name)) {
+				s.xcpd_rcvr_device_id_b = value;
+			} else if ("xcpd_rcvr_device_id_c".equals(ele_name)) {
+				s.xcpd_rcvr_device_id_c = value;
 //			} else if ("PidAllocateEndpoint".equals(ele_name)) {
 //				s.pidAllocateURI = ele.getText().trim();
 			} else if ("patientIdFeed".equals(ele_name)) {

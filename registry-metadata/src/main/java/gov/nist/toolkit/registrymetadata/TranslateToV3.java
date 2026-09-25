@@ -85,8 +85,11 @@ public class TranslateToV3 extends Translate {
 			to.addChild(deep_copy(x, new_namespace));
 		}
 
-		String text = from.getText();
-		to.setText(text);
+		boolean isTerminalNode = (from.getFirstElement() == null);
+		if (isTerminalNode) {
+			String text = from.getText();
+			to.setText(text);
+		}
 
 		return to;
 	}

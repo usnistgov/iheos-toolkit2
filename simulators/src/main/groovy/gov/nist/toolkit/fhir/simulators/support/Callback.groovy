@@ -30,9 +30,9 @@ class Callback {
                 Client client = ClientBuilder.newClient()
                 WebTarget target = client.target(callbackURI)
 
-                Response response = target
+                Response response = (target
                         .request('text/xml')
-                        .post(Entity.xml(bean))
+                        .post(Entity.xml(bean)))
 
                 if (response.getStatus() != 200) {
                     throw new RuntimeException("Failed :\n...HTTP error code : "

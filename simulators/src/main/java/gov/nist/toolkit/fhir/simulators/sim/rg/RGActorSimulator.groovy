@@ -314,6 +314,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
             common.vc.hasHttp = true;
             common.vc.isPnR   = true;
             common.vc.isXCDR  = true;
+            common.vc.metadataValidationDocumentIDCodes  = metadataValidationDocumentIDCodes();
 
             if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
                return false;  // returns if SOAP Fault was generated
@@ -507,6 +508,11 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 
    public Metadata getMetadata() {
       return m;
+   }
+
+   private String metadataValidationDocumentIDCodes() {
+      SimulatorConfigElement sce = getSimulatorConfig().get(SimulatorProperties.METADATA_VALIDATION_DOCUMENT_ID_CODES);
+      return (sce == null) ? "" : sce.asString();
    }
 
 

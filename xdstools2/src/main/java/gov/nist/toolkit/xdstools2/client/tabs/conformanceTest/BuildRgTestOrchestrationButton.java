@@ -9,12 +9,15 @@ import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.client.RgOrchestrationRequest;
 import gov.nist.toolkit.services.client.RgOrchestrationResponse;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.command.command.BuildRGTestOrchestrationCommand;
 import gov.nist.toolkit.xdstools2.client.util.ClientUtils;
 import gov.nist.toolkit.xdstools2.client.widgets.OrchestrationSupportTestsDisplay;
 import gov.nist.toolkit.xdstools2.client.widgets.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.AbstractOrchestrationButton;
 import gov.nist.toolkit.xdstools2.shared.command.request.BuildRgTestOrchestrationRequest;
+
+import java.util.Map;
 
 /**
  * Build orchestration for testing a Responding Gateway
@@ -134,7 +137,13 @@ public class BuildRgTestOrchestrationButton extends AbstractOrchestrationButton 
         }
         setCustomPanel(customPanel);
 
-        build(!isOnDemand);
+        Map<String,String> tkPropMap = ClientUtils.INSTANCE.getTkPropMap();
+        String reset_property = tkPropMap.get("Restrict_Orchestration_Reset");
+        reset_property = reset_property == null ? "false" : reset_property;
+        Boolean restrictOrchestrationReset = Boolean.parseBoolean(reset_property);
+        Boolean restrictFlag = restrictOrchestrationReset && !PasswordManagement.isSignedIn;
+
+        build(!isOnDemand && !restrictFlag);
         panel().add(initializationResultsPanel);
 
     }

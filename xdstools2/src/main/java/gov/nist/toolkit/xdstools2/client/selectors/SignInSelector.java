@@ -16,15 +16,29 @@ import gov.nist.toolkit.xdstools2.client.widgets.AccessControlledMenuItem;
 import gov.nist.toolkit.xdstools2.client.widgets.AdminPasswordDialogBox;
 import gov.nist.toolkit.xdstools2.client.widgets.HorizontalFlowPanel;
 
+import java.util.Map;
+
 public class SignInSelector implements IsWidget {
     private FlowPanel panel = new HorizontalFlowPanel();
     private HTML signInStatus = new HTML();
-    private Anchor signIn = new Anchor("Sign In.");
-    private Anchor signOut = new Anchor("Sign Out.");
-    private final String signedIn = "You are signed-in.";
-    private final String signedOut = "You are not signed-in.";
+    private String signInLabel   = "Sign In.";
+    private String signOutLabel  = "Sign Out.";
+    private String signedIn      = "You are signed-in.";
+    private String signedOut     = "You are not signed-in.";
+
+    private Anchor signIn  = null;
+    private Anchor signOut = null;
 
     public SignInSelector() {
+        Map<String,String> tkPropMap = ClientUtils.INSTANCE.getTkPropMap();
+        signInLabel  = tkPropMap.containsKey("Sign_in_label")  ? tkPropMap.get("Sign_in_label")  : signInLabel;
+        signOutLabel = tkPropMap.containsKey("Sign_out_label") ? tkPropMap.get("Sign_out_label") : signOutLabel;
+        signedIn     = tkPropMap.containsKey("Signed_in")      ? tkPropMap.get("Signed_in")      : signedIn;
+        signedOut    = tkPropMap.containsKey("Signed_out")     ? tkPropMap.get("Signed_out")     : signedOut;
+
+        signIn = new Anchor(signInLabel);
+        signOut = new Anchor(signOutLabel);
+
 //        panel.add(new HTML("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"));
         panel.add(signInStatus);
         panel.add(signIn);

@@ -10,8 +10,7 @@ import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMNode;
-import org.apache.axiom.om.util.XPathEvaluator;
+import org.apache.axiom.om.xpath.AXIOMXPath;
 
 import java.util.*;
 
@@ -96,11 +95,10 @@ public class DocumentAttachmentMapper  extends AbstractMessageValidator {
 		this.er = er;
 		er.registerValidator(this);
 
-		XPathEvaluator eval = new XPathEvaluator();
 		try {
 			@SuppressWarnings("unchecked")
-			List<OMNode> node_list = eval.evaluateXpath("//*[local-name()='Document']", xml, null);
-			for (OMNode node : node_list) {
+			List<?> node_list = new AXIOMXPath("//*[local-name()='Document']").selectNodes(xml);
+			for (Object node : node_list) {
 				OMElement docEle;
 
 				if (node instanceof OMElement)

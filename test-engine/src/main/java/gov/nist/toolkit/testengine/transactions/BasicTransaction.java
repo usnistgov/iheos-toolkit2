@@ -310,6 +310,30 @@ public abstract class BasicTransaction  implements ToolkitEnvironment {
 		linkage.addLinkage("$now$", new Hl7Date().now());
 		linkage.addLinkage("$lastyear$", new Hl7Date().lastyear());
 		linkage.addLinkage("$homeCommunityId$",  homeCommunityId);
+		linkage.addLinkage("$home_1$", testConfig.site.home_1);
+		linkage.addLinkage("$home_2$", testConfig.site.home_2);
+		linkage.addLinkage("$home_3$", testConfig.site.home_3);
+		linkage.addLinkage("$xcpd_rcvr_device_id_a$", testConfig.site.xcpd_rcvr_device_id_a);
+		linkage.addLinkage("$xcpd_rcvr_device_id_b$", testConfig.site.xcpd_rcvr_device_id_b);
+		linkage.addLinkage("$xcpd_rcvr_device_id_c$", testConfig.site.xcpd_rcvr_device_id_c);
+
+		if (testConfig.site.home_1.startsWith("urn:oid:")) {
+			linkage.addLinkage("$denuded_home_1$", testConfig.site.home_1.substring(8));
+		} else {
+			linkage.addLinkage("$denuded_home_1$", testConfig.site.home_1);
+		}
+		if (testConfig.site.home_2.startsWith("urn:oid:")) {
+			linkage.addLinkage("$denuded_home_2$", testConfig.site.home_2.substring(8));
+		} else {
+			linkage.addLinkage("$denuded_home_2$", testConfig.site.home_2);
+		}
+		if (testConfig.site.home_3.startsWith("urn:oid:")) {
+			linkage.addLinkage("$denuded_home_3$", testConfig.site.home_3.substring(8));
+		} else {
+			linkage.addLinkage("$denuded_home_3$", testConfig.site.home_3);
+		}
+
+
 //		linkage.addLinkage("$AlternatePatientId$", new PatientIdAllocator(testConfig).getAltPatientId());
 		linkage.compileLinkage();
 	}

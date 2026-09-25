@@ -5,7 +5,7 @@ import gov.nist.toolkit.simcommon.server.SimCommon;
 import gov.nist.toolkit.fhir.simulators.support.TransactionSimulator;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.impl.llom.util.AXIOMUtil;
+import org.apache.axiom.om.util.AXIOMUtil;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.*;

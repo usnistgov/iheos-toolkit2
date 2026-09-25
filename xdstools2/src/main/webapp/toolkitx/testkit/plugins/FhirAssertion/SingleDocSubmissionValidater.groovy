@@ -9,6 +9,9 @@ import org.hl7.fhir.dstu3.model.DocumentManifest
 import org.hl7.fhir.dstu3.model.DocumentReference
 import org.hl7.fhir.dstu3.model.Resource
 
+import groovy.transform.MapConstructor
+
+@MapConstructor
 class SingleDocSubmissionValidater extends AbstractFhirValidater {
 
     SingleDocSubmissionValidater() {

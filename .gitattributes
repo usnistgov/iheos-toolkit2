@@ -1,0 +1,37 @@
+# Enforce LF line endings for all text files, regardless of OS or tooling.
+# Rationale: editors and scripts on Windows (e.g. Windows Python's text-mode
+# writes) can silently rewrite files as CRLF, producing huge whitespace-only
+# diffs even when content is unchanged. text=auto lets git classify files and
+# normalize text to LF in the repo; eol=lf forces LF in the working tree too.
+* text=auto eol=lf
+
+# --- Binary files: never apply text detection or EOL normalization ---
+# (explicit, so git's heuristic can never corrupt a binary fixture)
+*.png    binary
+*.gif    binary
+*.jpg    binary
+*.jpeg   binary
+*.ico    binary
+*.pdf    binary
+*.zip    binary
+*.gz     binary
+*.tgz    binary
+*.jar    binary
+*.war    binary
+*.class  binary
+*.docx   binary
+*.xlsx   binary
+*.pptx   binary
+
+# Keystores / certificates — corruption here silently breaks TLS/SAML tests
+*.jks       binary
+*.p12       binary
+*.pfx       binary
+*.keystore  binary
+*.der       binary
+*.cer       binary
+*.crt       binary
+
+# --- Windows scripts must keep CRLF to run correctly ---
+*.bat text eol=crlf
+*.cmd text eol=crlf

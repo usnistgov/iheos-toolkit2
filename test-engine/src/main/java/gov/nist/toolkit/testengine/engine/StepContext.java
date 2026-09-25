@@ -476,6 +476,11 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 				case "EdgeServerTransaction":
 					EdgeServerTransaction edgeServerTransaction = new EdgeServerTransaction(this, step, instruction, instruction_output);
 					transaction = edgeServerTransaction;
+					break;
+				case "EVSValidateTransaction":
+					EVSValidateTransaction eVSValidateTransaction = new EVSValidateTransaction(this, step, instruction, instruction_output);
+					transaction = eVSValidateTransaction;
+					break;
                default:
                   dumpContextIntoOutput(test_step_output);
                   throw new XdsInternalException(

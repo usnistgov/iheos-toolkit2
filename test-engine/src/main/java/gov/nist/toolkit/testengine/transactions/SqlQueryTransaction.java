@@ -99,11 +99,11 @@ public class SqlQueryTransaction extends QueryTransaction {
 				System.out.println("Generating HTTP 1.0");
 
 				serviceClient.getOptions().setProperty
-				(org.apache.axis2.transport.http.HTTPConstants.HTTP_PROTOCOL_VERSION,
-						org.apache.axis2.transport.http.HTTPConstants.HEADER_PROTOCOL_10);
+				(org.apache.axis2.kernel.http.HTTPConstants.HTTP_PROTOCOL_VERSION,
+						org.apache.axis2.kernel.http.HTTPConstants.HEADER_PROTOCOL_10);
 
 				serviceClient.getOptions().setProperty
-				(org.apache.axis2.transport.http.HTTPConstants.CHUNKED,
+				(org.apache.axis2.kernel.http.HTTPConstants.CHUNKED,
 						Boolean.FALSE);
 
 			}

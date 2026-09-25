@@ -10,11 +10,17 @@ public class TestOverviewDisplayPanel extends HorizontalFlowPanel implements Tes
         removeStyleName("testOverviewHeaderSuccess");
         removeStyleName("testOverviewHeaderFail");
         removeStyleName("testOverviewHeaderNotRun");
+        removeStyleName("testOverviewHeaderReadme");
     }
 
     public void labelSuccess() {
         resetBackground();
         addStyleName("testOverviewHeaderSuccess");
+    }
+
+    public void labelReadme() {
+        resetBackground();
+        addStyleName("testOverviewHeaderReadme");
     }
 
     public void labelFailure() {
@@ -25,6 +31,7 @@ public class TestOverviewDisplayPanel extends HorizontalFlowPanel implements Tes
     public void labelNotRun() {
         resetBackground();
         addStyleName("testOverviewHeaderNotRun");
+//      addStyleName("test-row-yellow");
     }
 
     public void addExtraStyle(String extra) {

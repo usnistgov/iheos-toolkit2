@@ -11,7 +11,7 @@ import gov.nist.toolkit.xdsexception.client.XdsException;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.xpath.AXIOMXPath;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.codehaus.plexus.util.StringUtils;
@@ -67,7 +67,7 @@ public class AssertionEngine {
    public void addDetail(String detail) {
       OMElement d = MetadataSupport.om_factory.createOMElement("Detail", null);
       output.addChild(d);
-      d.setText(StringEscapeUtils.escapeHtml(detail));
+      d.setText(StringEscapeUtils.escapeHtml4(detail));
    }
 
    /** {@code <Data>} element. All the DataRef elements are children of this */

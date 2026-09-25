@@ -8,7 +8,7 @@ public class SummaryToken {
 	private String link;
 	
 	public SummaryToken(String name, int status) {
-		//this.name = StringEscapeUtils.escapeHtml(name);
+		//this.name = StringEscapeUtils.escapeHtml4(name);
 		this.name = name;
 		this.status = status;
 		this.offset = 1;

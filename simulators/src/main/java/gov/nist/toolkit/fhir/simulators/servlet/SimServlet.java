@@ -16,7 +16,7 @@ import gov.nist.toolkit.fhir.simulators.support.BaseDsActorSimulator;
 import gov.nist.toolkit.fhir.simulators.support.DsSimCommon;
 import gov.nist.toolkit.http.HttpHeader;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
-import gov.nist.toolkit.http.ParseException;
+import java.text.ParseException;
 import gov.nist.toolkit.installation.server.Installation;
 import gov.nist.toolkit.installation.server.TestSessionFactory;
 import gov.nist.toolkit.installation.shared.TestSession;

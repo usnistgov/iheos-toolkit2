@@ -2,7 +2,7 @@ package war.toolkitx.testkit.plugins.SoapAssertion
 
 import gov.nist.toolkit.registrymsg.repository.RetrieveRequestParser
 import gov.nist.toolkit.registrymsg.repository.RetrieveRequestModel
-import gov.nist.toolkit.testengine.engine.Validator
+//import gov.nist.toolkit.testengine.engine.Validator
 import gov.nist.toolkit.testengine.engine.SimReference
 import gov.nist.toolkit.testengine.engine.SoapSimulatorTransaction
 import gov.nist.toolkit.testengine.engine.validations.ValidaterResult
@@ -12,10 +12,16 @@ import gov.nist.toolkit.testengine.engine.Validator
 import gov.nist.toolkit.registrymetadata.Metadata
 import gov.nist.toolkit.utilities.xml.Util
 import org.apache.axiom.om.OMElement
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.nio.charset.Charset
+
+import groovy.transform.MapConstructor
 
 /**
  * Runs an MetadataContent validator through this plugin. @see Validator#run_test_assertions.
  */
+@MapConstructor
 class DocumentRetrieveValidator extends AbstractSoapValidater {
     /**
      * Required parameter
@@ -40,11 +46,12 @@ class DocumentRetrieveValidator extends AbstractSoapValidater {
     String codeValue
     String codingScheme
     String codeDisplayName
+    String transactionBase
 
     /**
      * Optional parameter
      */
-    String metadataValidationFile;
+    String metadataValidationFile
 
     DocumentRetrieveValidator() {
         filterDescription = 'Runs a Document Retrieve validator (Validator#run_test_assertions) through this plugin.'
@@ -67,7 +74,7 @@ class DocumentRetrieveValidator extends AbstractSoapValidater {
 
                 RetrieveRequestParser parser = new RetrieveRequestParser(Util.parse_xml(sst.requestBody))
                 RetrieveRequestModel retrieveRequestModel = parser.getRequest()
-                String errors = "";
+                String errors = ""
                 if (requestMsgExpectedContent.equals("Retrieve")) {
                     Validator v = new Validator().setRetrieveRequestModel(retrieveRequestModel)
                     switch (method) {
@@ -75,25 +82,38 @@ class DocumentRetrieveValidator extends AbstractSoapValidater {
                             if (!v.namedFieldCompare(key, value)) {
                                 errors = v.getErrors()
                             }
-                            break;
+                            break
                         case "singleCode":
                             if (!v.namedMetadataCompareCode(key, codeValue, codingScheme, codeDisplayName)) {
                                 errors = v.getErrors()
                             }
-                            break;
+                            break
+                        case "isInSet":
+                            if (!v.namedFieldIsInSet(key, value)) {
+                                errors = v.getErrors()
+                            }
+                            break
                         case "containsCode":
                             if (!v.namedMetadataContainsCode(key, codeValue, codingScheme, codeDisplayName)) {
                                 errors = v.getErrors()
                             }
-                            break;
+                            break
                         case "contains":
                             if (!v.namedFieldContains(key, value)) {
                                 errors = v.getErrors()
                             }
-                            break;
+                            break
+                        case "atOrAfter":
+                            String referenceTimestamp = value
+                            String transactionTimeStamp = sst.simDbEvent.eventId.replace('_', '')
+                            int lexicalCompare = transactionTimeStamp.compareTo(referenceTimestamp)
+                            if (lexicalCompare < 0) {
+                                errors="The transaction time stamp " + transactionTimeStamp + " is not atOrAfter the reference time stamp " + referenceTimestamp
+                            }
+                            break
                         default:
-                            errors="Unrecognized Document Retrieve validation method:" + method + ". Expecting one of single, singleCode, containsCode, contains.";
-                            break;
+                            errors="Unrecognized Document Retrieve validation method:" + method + ". Expecting one of single, singleCode, containsCode, contains, atOrAfter."
+                            break
                     }
                 } else {
                     error("NA", "This validator expects requestMsgExpectedContent=Retrieve. Testplan provide: " + requestMsgExpectedContent)

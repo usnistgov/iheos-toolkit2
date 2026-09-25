@@ -163,13 +163,13 @@ public class SimulatorProperties {
      * Endpoint to use to send the indicated transaction to this Simulator.
      * Updates to this property are ignored.
      */
-    public static final String                           xcqrEndpoint = "XCQR_endpoint";
+//    public static final String                           xcqrEndpoint = "XCQR_endpoint";
 
     /**
      * Endpoint to use to send the indicated transaction to this Simulator.
      * Updates to this property are ignored.
      */
-    public static final String                        xcqrTlsEndpoint = "XCQR_TLS_endpoint";
+//    public static final String                        xcqrTlsEndpoint = "XCQR_TLS_endpoint";
 
     /**
      * Endpoint to use to send the indicated transaction to this Simulator.
@@ -262,6 +262,12 @@ public class SimulatorProperties {
     public static final String                      metadataValidatorClass = "Register_Metadata_Validator_Class_Name";
 
     /**
+     * Colon separated list of validation rules to validate DocumentEntry.uniqueId on register transaction
+     */
+
+    public static final String                       METADATA_VALIDATION_DOCUMENT_ID_CODES = "Register_Metadata_Validation_Document_ID_Codes";
+
+    /**
      * Boolean property controlling whether a Registry Simulator should support the Extra Metadata option.
      */
     public static final String                 extraMetadataSupported = "Extra_Metadata_Supported";
@@ -280,14 +286,14 @@ public class SimulatorProperties {
     /**
      * The current index state of the content bundle. The index number is the item ordinal from the bundle index.
      */
-    public static final String                      currentContentBundleIdx = "Current Content Bundle Idx";
+//    public static final String                      currentContentBundleIdx = "Current Content Bundle Idx";
 
     /**
      * Content bundle
      * Should be in the format of "9999/Trans/ContentBundle" where 9999 is a test number.
      * @See https://bitbucket.org/iheos/toolkit/wiki/blog/odds_overview
      */
-    public static final String                      contentBundle = "Content Bundle";
+//    public static final String                      contentBundle = "Content Bundle";
     /**
      * Testplan to register On-Demand Document Entry and supply content
      * Look up will be in this order: "{Test plan#}/{section[0]}/ContentBundle" Example: 15812/Register_OD/ContentBundle
