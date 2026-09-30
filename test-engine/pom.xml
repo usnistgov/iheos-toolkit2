@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>gov.nist.toolkit</groupId>
 		<artifactId>tk-deps</artifactId>
-        <version>7.12.0</version><!-- xdstk -->
+        <version>7.13.0</version><!-- xdstk -->
         <relativePath>../tk-deps/pom.xml</relativePath>
 	</parent>
 
@@ -84,10 +84,12 @@
 			<groupId>gov.nist.toolkit</groupId>
 			<artifactId>installation</artifactId>
 		</dependency>
+<!--
 		<dependency>
 			<groupId>gov.nist.toolkit</groupId>
 			<artifactId>registry-msg-formats</artifactId>
 		</dependency>
+-->
 		<dependency>
 			<groupId>gov.nist.toolkit</groupId>
 			<artifactId>site-management</artifactId>

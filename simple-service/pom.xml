@@ -5,7 +5,7 @@
   <parent>
     <groupId>gov.nist.toolkit</groupId>
     <artifactId>toolkit2</artifactId>
-    <version>7.12.0</version>
+    <version>7.13.0</version>
   </parent>
   <groupId>gov.nist.toolkit.simple</groupId>
   <artifactId>simple-service</artifactId>
