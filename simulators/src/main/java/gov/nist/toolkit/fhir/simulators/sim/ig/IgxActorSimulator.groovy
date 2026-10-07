@@ -22,7 +22,6 @@ import java.util.logging.*
 @TypeChecked
 public class IgxActorSimulator extends GatewaySimulatorCommon {
    static Logger logger = Logger.getLogger(IgxActorSimulator.class.getName());
-   AdhocQueryResponseGenerator sqs;
 
    public IgxActorSimulator(SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig simulatorConfig) {
       super(common, dsSimCommon);
@@ -93,10 +92,9 @@ public class IgxActorSimulator extends GatewaySimulatorCommon {
             AdhocQueryResponseGenerator ahqrg = new AdhocQueryResponseGenerator(common, dsSimCommon, xcqSim);
             mvc.addMessageValidator("Attach Errors", ahqrg, er);
             mvc.run();
-            sqs = ahqrg;
 
          // wrap in soap wrapper and http wrapper
-            mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, dsSimCommon, sqs), er);
+            mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, dsSimCommon, ahqrg), er);
 
             mvc.run();
 
